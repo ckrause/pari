@@ -21,6 +21,8 @@ Description:
  (small, gen):gen                gaddsg($1, $2)
  (gen, gen):gen                  gadd($1, $2)
 
+ (Flx, Flx):Flx                  Flx_add($1, $2, p)
+
  (Fp, Fp):Fp                     Fp_add($1, $2, p)
  (FpX, Fp):FpX                   FpX_Fp_add($1, $2, p)
  (Fp, FpX):FpX                   FpX_Fp_add($2, $1, p)

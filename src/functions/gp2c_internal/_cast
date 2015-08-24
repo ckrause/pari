@@ -132,10 +132,12 @@ Description:
  (genstr):gen
  (error):gen
  (closure):gen
+ (Flx):gen
  (Fp):gen
  (FpX):gen
  (Fq):gen
  (FqX):gen
+ (gen):Flx
  (gen):Fp
  (gen):FpX
  (gen):Fq

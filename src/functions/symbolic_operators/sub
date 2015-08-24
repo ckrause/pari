@@ -19,6 +19,8 @@ Description:
  (small, gen):gen                gsubsg($1, $2)
  (gen, gen):gen                  gsub($1, $2)
 
+ (Flx, Flx):Flx                  Flx_sub($1, $2, p)
+
  (Fp, Fp):Fp                     Fp_sub($1, $2, p)
  (Fp, FpX):FpX                   Fp_FpX_sub($1, $2, p)
  (FpX, Fp):FpX                   FpX_Fp_sub($1, $2, p)

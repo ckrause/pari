@@ -23,6 +23,9 @@ Description:
  (gen, int):gen              powgi($1, $2)
  (gen, gen):gen:prec         gpow($1, $2, $prec)
 
+ (Flx, 2):Flx                Flx_sqr($1, p)
+ (Flx, usmall):Flx           Flx_powu($1, $2, p)
+
  (Fp, 2):Fp                  Fp_sqr($1, p)
  (Fp, usmall):Fp             Fp_powu($1, $2, p)
  (Fp, small):Fp              Fp_pows($1, $2, p)

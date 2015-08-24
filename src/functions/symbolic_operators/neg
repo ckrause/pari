@@ -10,6 +10,8 @@ Description:
  (mp):mp                        mpneg($1)
  (gen):gen                      gneg($1)
 
+ (Flx):Flx   Flx_neg($1, p)
+
  (Fp):Fp     Fp_neg($1, p)
  (FpX):FpX   FpX_neg($1, p)
  (Fq):Fq     Fq_neg($1, T, p)
