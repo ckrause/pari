@@ -39,7 +39,7 @@ Doc: Let $PQ$ be a polynomial $P$, resp. a vector $[P,Q]$ of polynomials, with
  (potential) stable reduction: [1, []]
  reduction at p: [III{9}] page 184, [3, 3], f = 10
  %1 = [59049, Mat([3, 10]), x^6 + 3*x^3 + 63, [3, [1, []],
-        ["[III{9}] page 184", [3, 3]]]]
+        ["[III{9}] page 184", [3, 3]], Vecsmall([0, 0, 2])]]
  ? [N, FaN, T, V] = genus2red([x^2-x, x^3-x^2-1]);  \\ X_1(13), global reduction
  p = 13
  (potential) stable reduction: [5, [Mod(0, 13), Mod(0, 13)]]
@@ -51,11 +51,12 @@ Doc: Let $PQ$ be a polynomial $P$, resp. a vector $[P,Q]$ of polynomials, with
  ? T
  %5 = [-x^5 - x^3 + x^2 - x, x^3 + x^2 + 1]
  ? V
- %6 = [[13, [5, [Mod(0, 13), Mod(0, 13)]], ["[I{0}-II-0] page 159", []]]]
+ %6 = [[13, [5, [Mod(0, 13), Mod(0, 13)]], ["[I{0}-II-0] page 159", []],
+            Vecsmall([1, 0, 1])]]
  @eprog\noindent
  We now first describe the format of the vector $V = V_{p}$ in the case where
- $p$ was specified (local reduction at~$p$): it is a triple $[p, \var{stable},
- \var{red}]$. The component $\var{stable} = [\var{type}, \var{vecj}]$ contains
+ $p$ was specified (local reduction at~$p$): it is a quadruple $[p, \var{stable},
+ \var{red}, \var{pic}]$. The component $\var{stable} = [\var{type}, \var{vecj}]$ contains
  information about the stable reduction after a field extension;
  depending on \var{type}s, the stable reduction is
 
@@ -105,6 +106,10 @@ Doc: Let $PQ$ be a polynomial $P$, resp. a vector $[P,Q]$ of polynomials, with
  replaced by \kbd{[]}, in the case where the program could not compute it.
  When $p$ was not specified, $V$ is the vector of all $V_{p}$, for all
  considered $p$.
+
+ The component $\var{pic}$ is \typ{VECSMALL} with $3$ components
+ $[r_a,r_t,r_u]$ describing the Picard group of the curve: $r_a$ is the Abelian
+ rank, $r_t$ is the toric rank, and $r_u$ is the unipotent rank.
 
  \misctitle{Notes about Namikawa-Ueno types}
 
