@@ -325,6 +325,7 @@ gp_read_file(const char *s)
     x = gnil;
     for (;;) {
       if (!gp_read_stream_buf(f, b)) break;
+      if (!strcmp(b->buf,"\\qf")) break;
       if (*(b->buf)) { set_avma(av); x = readseq(b->buf); }
     }
     delete_buffer(b);

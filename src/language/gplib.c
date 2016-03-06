@@ -1262,7 +1262,7 @@ gp_read_line(filtre_t *F, const char *PROMPT)
     else
       res = get_line_from_file(p, F, pari_infile);
   }
-
+  if (!strcmp(b->buf,"\\qf")) return 0;
   if (!disable_color && p != DFT_PROMPT &&
       (gp_colors[c_PROMPT] != c_NONE || gp_colors[c_INPUT] != c_NONE))
   {

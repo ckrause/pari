@@ -3054,6 +3054,9 @@ Prints its current value if $n$ is omitted.
 \subsec{\b{q}} Quits the \kbd{gp} session and returns to the system.
 Shortcut for \tet{quit}\kbd{()} (see \secref{se:quit}).
 
+\subsec{\b{qf}} Stop reading the current \kbd{gp} file or stream. If there are
+no remaining file or stream to read, quit GP.
+
 \subsec{\b{r} $\{$\var{filename}$\}$} Reads into \kbd{gp} all the
 commands contained in the named file as if they had been typed from the
 keyboard, one line after the other. Can be used in combination with the \b{w}
