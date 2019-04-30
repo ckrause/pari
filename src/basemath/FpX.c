@@ -2078,12 +2078,6 @@ _FpXQ_sub(void *data, GEN x, GEN y)
   return ZX_sub(x, y);
 }
 static GEN
-_FpXQ_cmul(void *data, GEN P, long a, GEN x)
-{
-  (void) data;
-  return ZX_Z_mul(x, gel(P,a+2));
-}
-static GEN
 _FpXQ_sqr(void *data, GEN x)
 {
   struct _FpXQ *D = (struct _FpXQ*)data;
@@ -2228,19 +2222,72 @@ FpX_matFrobenius(GEN T, GEN p)
   return FpXQ_matrix_pow(FpX_Frobenius(T, p), n, n, T, p);
 }
 
+static GEN
+RgX_blocks_RgM(GEN P, long n, long m)
+{
+  GEN z = cgetg(m+1,t_MAT);
+  long i,j, k=2, l = lg(P);
+  for(i=1; i<=m; i++)
+  {
+    GEN zi = cgetg(n+1,t_COL);
+    gel(z,i) = zi;
+    for(j=1; j<=n; j++)
+      gel(zi, j) = k==l ? gen_0 : gel(P,k++);
+  }
+  return z;
+}
+
+static GEN
+RgXV_to_RgM_lg(GEN x, long m, long n)
+{
+  long i;
+  GEN y = cgetg(n+1, t_MAT);
+  for (i=1; i<=n; i++) gel(y,i) = RgX_to_RgC(gel(x,i), m);
+  return y;
+}
+
 GEN
 FpX_FpXQV_eval(GEN Q, GEN x, GEN T, GEN p)
 {
-  struct _FpXQ D;
-  D.T = FpX_get_red(T,p); D.p = p;
-  return gen_bkeval_powers(Q,degpol(Q),x,(void*)&D,&FpXQ_algebra,_FpXQ_cmul);
+  pari_sp btop, av = avma;
+  long v = get_FpX_var(T), m = get_FpX_degree(T);
+  long i, l = lg(x)-1, lQ = lgpol(Q), n,  d;
+  GEN A, B, C, S, g;
+  if (lQ == 0) return pol_0(v);
+  if (lQ <= l)
+  {
+    n = l;
+    d = 1;
+  }
+  else
+  {
+    n = l-1;
+    d = (lQ+n-1)/n;
+  }
+  A = RgXV_to_RgM_lg(x, m, n);
+  B = RgX_blocks_RgM(Q, n, d);
+  C = gc_upto(av, FpM_mul(A, B, p));
+  g = gel(x, l);
+  T = FpX_get_red(T, p);
+  btop = avma;
+  S = RgV_to_RgX(gel(C, d), v);
+  if (d==1) return gc_GEN(av, S);
+  for (i = d-1; i>0; i--)
+  {
+    S = FpX_add(FpXQ_mul(S, g, T, p), RgV_to_RgX(gel(C,i), v), p);
+    if (gc_needed(btop,1))
+      S = gc_upto(btop, S);
+  }
+  return gc_upto(av, S);
 }
 
 GEN
 FpX_FpXQ_eval(GEN Q, GEN x, GEN T, GEN p)
 {
-  struct _FpXQ D;
-  int use_sqr;
+  pari_sp av = avma;
+  GEN z, V;
+  long d = degpol(Q), rtd;
+  if (d < 0) return pol_0(get_FpX_var(T));
   if (lgefint(p) == 3)
   {
     pari_sp av = avma;
@@ -2248,9 +2295,11 @@ FpX_FpXQ_eval(GEN Q, GEN x, GEN T, GEN p)
     GEN z = Flx_Flxq_eval(ZX_to_Flx(Q, pp), x, T, pp);
     return Flx_to_ZX_inplace(gc_leaf(av, z));
   }
-  use_sqr = 2*degpol(x) >= get_FpX_degree(T);
-  D.T = FpX_get_red(T,p); D.p = p;
-  return gen_bkeval(Q,degpol(Q),x,use_sqr,(void*)&D,&FpXQ_algebra,_FpXQ_cmul);
+  rtd = (long) sqrt((double)d);
+  T = FpX_get_red(T, p);
+  V = FpXQ_powers(x, rtd, T, p);
+  z = FpX_FpXQV_eval(Q, V, T, p);
+  return gc_upto(av, z);
 }
 
 GEN
