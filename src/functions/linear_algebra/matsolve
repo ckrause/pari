@@ -38,6 +38,12 @@ Prototype: GG
 Section: programming/internals
 Help: worker for ZM_inv
 
+Function: _ZM_gauss_worker
+C-Name: ZM_gauss_worker
+Prototype: GGG
+Section: programming/internals
+Help: worker for ZM_gauss
+
 Function: _ZabM_inv_worker
 C-Name: ZabM_inv_worker
 Prototype: GGG

@@ -2838,118 +2838,6 @@ gauss(GEN a, GEN b)
   return z;
 }
 
-static GEN
-ZlM_gauss_ratlift(GEN a, GEN b, ulong p, long e, GEN C)
-{
-  pari_sp av = avma, av2;
-  GEN bb, xi, xb, pi, q, B, r;
-  long i, f, k;
-  ulong mask;
-  if (!C) {
-    C = Flm_inv(ZM_to_Flm(a, p), p);
-    if (!C) pari_err_INV("ZlM_gauss", a);
-  }
-  k = f = ZM_max_lg(a)-1;
-  mask = quadratic_prec_mask((e+f-1)/f);
-  pi = q = powuu(p, f);
-  bb = b;
-  C = ZpM_invlift(FpM_red(a, q), Flm_to_ZM(C), utoipos(p), f);
-  av2 = avma;
-  xb = xi = FpM_mul(C, b, q);
-  for (i = f; i <= e; i+=f)
-  {
-    if (i==k)
-    {
-      k = (mask&1UL) ? 2*k-f: 2*k;
-      mask >>= 1;
-      B = sqrti(shifti(pi,-1));
-      r = FpM_ratlift(xb, pi, B, B, NULL);
-      if (r)
-      {
-        GEN dr, nr = Q_remove_denom(r,&dr);
-        if (ZM_equal(ZM_mul(a,nr), dr? ZM_Z_mul(b,dr): b))
-        {
-          if (DEBUGLEVEL>=4)
-            err_printf("ZlM_gauss: early solution: %ld/%ld\n",i,e);
-          return gerepilecopy(av, r);
-        }
-      }
-    }
-    bb = ZM_Z_divexact(ZM_sub(bb, ZM_mul(a, xi)), q);
-    if (gc_needed(av,2))
-    {
-      if(DEBUGMEM>1) pari_warn(warnmem,"ZlM_gauss. i=%ld/%ld",i,e);
-      gerepileall(av2,3, &pi,&bb,&xb);
-    }
-    xi = FpM_mul(C, bb, q);
-    xb = ZM_add(xb, ZM_Z_mul(xi, pi));
-    pi = mulii(pi, q);
-  }
-  B = sqrti(shifti(pi,-1));
-  return gerepileupto(av, FpM_ratlift(xb, pi, B, B, NULL));
-}
-
-/* Dixon p-adic lifting algorithm.
- * Numer. Math. 40, 137-141 (1982), DOI: 10.1007/BF01459082 */
-GEN
-ZM_gauss(GEN a, GEN b)
-{
-  pari_sp av = avma, av2;
-  int iscol;
-  long n, ncol, i, m, elim;
-  ulong p;
-  GEN C, delta, nb, nmin, res;
-  forprime_t S;
-
-  if (!init_gauss(a, &b, &n, &ncol, &iscol)) return cgetg(1, iscol?t_COL:t_MAT);
-  if (n < ncol)
-  {
-    GEN y = ZM_indexrank(a), y1 = gel(y,1), y2 = gel(y,2);
-    if (lg(y2)-1 != n) return NULL;
-    a = rowpermute(a, y1);
-    b = rowpermute(b, y1);
-  }
-  /* a is square and invertible */
-  nb = gen_0; ncol = lg(b);
-  for (i = 1; i < ncol; i++)
-  {
-    GEN ni = gnorml2(gel(b, i));
-    if (cmpii(nb, ni) < 0) nb = ni;
-  }
-  if (!signe(nb)) {set_avma(av); return iscol? zerocol(n): zeromat(n,lg(b)-1);}
-  delta = gen_1; nmin = nb;
-  for (i = 1; i <= n; i++)
-  {
-    GEN ni = gnorml2(gel(a, i));
-    if (cmpii(ni, nmin) < 0)
-    {
-      delta = mulii(delta, nmin); nmin = ni;
-    }
-    else
-      delta = mulii(delta, ni);
-  }
-  if (!signe(nmin)) return NULL;
-  elim = expi(delta)+1;
-  av2 = avma;
-  init_modular_big(&S);
-  for(;;)
-  {
-    p = u_forprime_next(&S);
-    C = Flm_inv_sp(ZM_to_Flm(a, p), NULL, p);
-    if (C) break;
-    elim -= expu(p);
-    if (elim < 0) return NULL;
-    set_avma(av2);
-  }
-  /* N.B. Our delta/lambda are SQUARES of those in the paper
-   * log(delta lambda) / log p, where lambda is 3+sqrt(5) / 2,
-   * whose log is < 1, hence + 1 (to cater for rounding errors) */
-  m = (long)ceil((dbllog2(delta)*M_LN2 + 1) / log((double)p));
-  res = ZlM_gauss_ratlift(a, b, p, m, C);
-  if (iscol) return gerepilecopy(av, gel(res, 1));
-  return gerepileupto(av, res);
-}
-
 /* #C = n, C[z[i]] = K[i], complete by 0s */
 static GEN
 RgC_inflate(GEN K, GEN z, long n)
@@ -3430,6 +3318,89 @@ ZM_ker(GEN M)
   if (l==0) return cgetg(1, t_MAT);
   if (lgcols(M)==1) return matid(l);
   return gerepilecopy(av, ZM_ker_i(M));
+}
+
+static GEN
+ZM_gauss_slice(GEN A, GEN B, GEN P, GEN *mod)
+{
+  pari_sp av = avma;
+  long i, n = lg(P)-1;
+  GEN H, T;
+  if (n == 1)
+  {
+    ulong p = uel(P,1);
+    GEN Hp = Flm_gauss(ZM_to_Flm(A, p) , ZM_to_Flm(B, p) ,p);
+    if (!Hp)  { *mod=gen_1; return zeromat(lg(A)-1,lg(B)-1); }
+    Hp = gerepileupto(av, Flm_to_ZM(Hp));
+    *mod = utoipos(p); return Hp;
+  }
+  T = ZV_producttree(P);
+  A = ZM_nv_mod_tree(A, P, T);
+  B = ZM_nv_mod_tree(B, P, T);
+  H = cgetg(n+1, t_VEC);
+  for(i=1; i <= n; i++)
+  {
+    GEN Hi = Flm_gauss(gel(A, i), gel(B,i), uel(P,i));
+    gel(H,i) = Hi ? Hi: zero_Flm(lg(A)-1,lg(B)-1);
+    if (!Hi) uel(P,i)=1;
+  }
+  H = nmV_chinese_center_tree_seq(H, P, T, ZV_chinesetree(P,T));
+  *mod = gmael(T, lg(T)-1, 1); return gc_all(av, 2, &H, mod);
+}
+
+GEN
+ZM_gauss_worker(GEN P, GEN A, GEN B)
+{
+  GEN V = cgetg(3, t_VEC);
+  gel(V,1) = ZM_gauss_slice(A, B, P, &gel(V,2));
+  return V;
+}
+
+/* assume lg(A) > 1 */
+static GEN
+ZM_gauss_i(GEN A, GEN B)
+{
+  pari_sp av;
+  long k, m, ncol;
+  int iscol;
+  GEN y, y1, y2, Hr, H = NULL, mod = gen_1, worker;
+  forprime_t S;
+  if (!init_gauss(A, &B, &m, &ncol, &iscol)) return cgetg(1, iscol?t_COL:t_MAT);
+  init_modular_big(&S);
+  y = ZM_indexrank(A); y1 = gel(y,1); y2 = gel(y,2);
+  if (lg(y2)-1 != m) return NULL;
+  A = rowpermute(A, y1);
+  B = rowpermute(B, y1);
+  /* a is square and invertible */
+  ncol = lg(B);
+  worker = snm_closure(is_entry("_ZM_gauss_worker"), mkvec2(A,B));
+  av = avma;
+  for (k = 1;; k <<= 1)
+  {
+    pari_timer ti;
+    gen_inccrt_i("ZM_gauss", worker, NULL, (k+1)>>1 , m,
+                 &S, &H, &mod, nmV_chinese_center, FpM_center);
+    gerepileall(av, 2, &H, &mod);
+    if (DEBUGLEVEL >= 4) timer_start(&ti);
+    Hr = FpM_ratlift_parallel(H, mod, NULL);
+    if (DEBUGLEVEL >= 4) timer_printf(&ti,"ZM_gauss: ratlift (%ld)",!!Hr);
+    if (Hr)
+    {
+      GEN MH, c;
+      MH = ZM_mul(A, Q_remove_denom(Hr, &c));
+      if (DEBUGLEVEL >= 4) timer_printf(&ti,"ZM_ker: QM_mul");
+      if (ZM_equal(MH, c ? ZM_Z_mul(B, c): B)) break;
+    }
+  }
+  return iscol ? gel(Hr, 1): Hr;
+}
+
+GEN
+ZM_gauss(GEN A, GEN B)
+{
+  pari_sp av = avma;
+  GEN C = ZM_gauss_i(A,B);
+  return C ? gerepilecopy(av, C): NULL;
 }
 
 GEN
