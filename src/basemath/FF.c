@@ -181,14 +181,16 @@ Fq_to_FF(GEN x, GEN ff)
   {
   case t_FF_FpXQ:
     r= is_int ? scalarpol(x, varn(T)): ZX_copy(x);
+    if (!is_int) setvarn(r, varn(T)); /* paranoia */
     break;
   case t_FF_F2xq:
     r= is_int ? Z_to_F2x(x,T[1]): ZX_to_F2x(x);
+    if (!is_int) r[1] = T[1]; /* paranoia */
     break;
   default:
     r= is_int ? Z_to_Flx(x,pp,T[1]): ZX_to_Flx(x,pp);
+    if (!is_int) r[1] = T[1]; /* paranoia */
   }
-  setvarn(r, varn(T)); /* paranoia */
   return _mkFF_i(ff,z,r);
 }
 
