@@ -13,6 +13,7 @@ BA   2- [loongarch64] add loongarch64 assembly kernel
 BA   3- [libpari] closuretoinl
 BA   4- [libpari] using closuretoinl, closures can be made usable with E/I
         GP prototype codes
+BA   5- quadclassunit now use MPQS for negative discriminant.
 
   Changed
 BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.

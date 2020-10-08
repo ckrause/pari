@@ -13,6 +13,7 @@ with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #include "pari.h"
 #include "paripriv.h"
+#include "../modules/mpqs.h"
 
 #define DEBUGLEVEL DEBUGLEVEL_quadclassunit
 
@@ -545,6 +546,35 @@ sub_fact(struct buch_quad *B, GEN col, GEN F)
     col[k] -= e;
   }
 }
+
+#if 0
+static void
+dbg_fact(struct buch_quad *B)
+{
+  long i;
+  for (i=1; i<=B->primfact[0]; i++)
+  {
+    ulong p = B->primfact[i];
+    long e = B->exprimfact[i];
+    err_printf("%lu^%ld ",p,e);
+  }
+}
+
+static void
+chk_fact(struct buch_quad *B, GEN col)
+{
+  long i, l = lg(col);
+  GEN Q = qfi_pf(B->q->D, 1);
+  for (i=1; i< l; i++)
+  {
+    ulong p = B->FB[i];
+    long k = col[i];
+    Q = qfbcomp(qfbpowraw(qfi_pf(B->q->D, p),k),Q);
+  }
+  if (!gequal1(gel(Q,1))) pari_err_BUG("chk_fact");}
+}
+#endif
+
 static void
 add_fact(struct buch_quad *B, GEN col, GEN F)
 {
@@ -622,6 +652,18 @@ dbg_all(pari_timer *T, const char *phase, long s, long n)
 /* Imaginary Quadratic fields */
 
 static void
+rel_to_col(struct buch_quad *B, GEN col, GEN rel, GEN b)
+{
+  GEN P = gel(rel, 1), E = gel(rel, 2);
+  long i, lP = lg(P);
+  for (i=1; i<lP; i++)
+  {
+    ulong p = uel(P, i), e = uel(E, i);
+    col[B->numFB[p]] += umodiu(b, p<<1) > p ? -e :e;
+  }
+}
+
+static void
 imag_relations(struct buch_quad *B, long need, long *pc, ulong LIMC, GEN mat)
 {
   pari_timer T;
@@ -689,6 +731,22 @@ imag_relations(struct buch_quad *B, long need, long *pc, ulong LIMC, GEN mat)
   }
   if (DEBUGLEVEL>2) dbg_all(&T, "random", s, nbtest);
   *pc = current;
+}
+
+static void
+mpqs_relations(struct buch_quad *B, long need, long *pc, ulong LIMC, GEN mat, mpqs_handle_t *H, GEN missing_primes)
+{
+  long i, lV;
+  GEN V = mpqs_class_rels(H, need, missing_primes);
+  if (!V) { imag_relations(B, need, pc, LIMC, mat); return; }
+  lV = lg(V);
+  for (i = 1; i < lV && i <= need; i++)
+  {
+    GEN formA = gel(V,i), rel = gel(formA,2), b = gel(formA,1);
+    GEN col = gel(mat,i);
+    rel_to_col(B, col, rel, b);
+  }
+  *pc = 1;
 }
 
 static int
@@ -968,7 +1026,7 @@ quad_be_honest(struct buch_quad *B)
 static GEN
 Buchquad_i(GEN D, double cbach, double cbach2, long prec)
 {
-  const long MAXRELSUP = 7, SFB_MAX = 3;
+  const long MAXRELSUP = 20, SFB_MAX = 3, MPQS_THRESHOLD = 60;
   pari_timer T;
   pari_sp av, av2;
   const long RELSUP = 5;
@@ -979,7 +1037,9 @@ Buchquad_i(GEN D, double cbach, double cbach2, long prec)
   GRHcheck_t GRHcheck;
   struct qfr_data q;
   struct buch_quad BQ;
-  int FIRST = 1;
+  int FIRST = 1, use_mpqs = 0;
+  mpqs_handle_t H;
+  GEN missing_primes;
 
   check_quaddisc(D, &s, /*junk*/&i, "Buchquad");
   R = NULL; /* -Wall */
@@ -990,6 +1050,8 @@ Buchquad_i(GEN D, double cbach, double cbach2, long prec)
     if (abscmpiu(q.D,4) <= 0)
       retmkvec4(gen_1, cgetg(1,t_VEC), cgetg(1,t_VEC), gen_1);
     prec = BQ.PRECREG = 0;
+    if (expi(D) >= MPQS_THRESHOLD)
+      use_mpqs = 1;
   } else {
     BQ.PRECREG = maxss(prec+EXTRAPREC64, nbits2prec(2*expi(q.D) + 128));
   }
@@ -1045,6 +1107,7 @@ Buchquad_i(GEN D, double cbach, double cbach2, long prec)
 
 /* LIMC = Max(cbach*(log D)^2, exp(sqrt(log D loglog D) / 8)) */
 START:
+  missing_primes = NULL;
   do
   {
     if (!FIRST) LIMC = bnf_increase_LIMC(LIMC,LIMCMAX);
@@ -1078,6 +1141,8 @@ START:
   W = NULL;
   sfb_trials = nreldep = nrelsup = 0;
   s = nsubFB + RELSUP;
+  if (use_mpqs)
+    use_mpqs = mpqs_class_init(&H, D, BQ.KC);
   av2 = avma;
 
   do
@@ -1091,7 +1156,7 @@ START:
       if (DEBUGLEVEL>2) timer_printf(&T, "powsubFBquad");
       clearhash(BQ.hashtab);
     }
-    need += 2;
+    if (!use_mpqs) need += 2;
     mat    = cgetg(need+1, t_MAT);
     extraC = cgetg(need+1, t_VEC);
     if (!W) { /* first time */
@@ -1113,14 +1178,20 @@ START:
         gel(mat,i) = zero_zv(BQ.KC);
         gel(extraC,i) = gen_0;
       }
-      imag_relations(&BQ, need - triv, &current, LIMC,mat + triv);
+      if (use_mpqs)
+        mpqs_relations(&BQ, need - triv, &current, LIMC,mat + triv, &H, missing_primes);
+      else
+        imag_relations(&BQ, need - triv, &current, LIMC,mat + triv);
     }
+    if (DEBUGLEVEL>2) timer_start(&T);
     if (!W)
       W = hnfspec_i(mat,BQ.vperm,&dep,&B,&C,nsubFB);
     else
       W = hnfadd_i(W,BQ.vperm,&dep,&B,&C, mat,extraC);
-    gerepileall(av2, 4, &W,&C,&B,&dep);
+    if (DEBUGLEVEL>2) timer_printf(&T, "hnfadd");
     need = BQ.KC - (lg(W)-1) - (lg(B)-1);
+    gerepileall(av2, 4, &W,&C,&B,&dep);
+    missing_primes = vecslice(BQ.vperm,1,need);
     if (need)
     {
       if (++nreldep > 15 && cbach < 1) goto START;

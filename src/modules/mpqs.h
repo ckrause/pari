@@ -1,3 +1,5 @@
+BEGINEXTERN
+
 /* - debug support */
 
 #ifdef MPQS_DEBUG_VERBOSE
@@ -14,6 +16,10 @@
 #else
 #  define MPQS_DEBUGLEVEL DEBUGLEVEL
 #endif
+
+/* mode */
+#define MPQS_MODE_FACTOR     0
+#define MPQS_MODE_CLASSGROUP 1
 
 /* - non-configurable sizing parameters */
 
@@ -83,6 +89,7 @@ typedef union mpqs_FB_entry {
  * those of k.  Must occupy the rightmost bit because we also use it as a
  * shift count after extracting it from the byte. */
 #define MPQS_FBE_DIVIDES_A   0x1ul /* and Q(x) mod p only has degree 1 */
+#define MPQS_FBE_DIVIDES_N   0x2ul
 
 /* TODO (tentative): one bit to mark normal FB primes,
  * one to mark the factors of k,
@@ -212,6 +219,8 @@ typedef struct mpqs_handle {
   unsigned char sieve_threshold; /* distinguishes candidates in sieve */
   GEN N, kN;                 /* number to be factored, with multiplier */
   GEN A, B;                  /* leading, middle coefficient */
+  mpqs_int32_t two_is_norm;  /* 1 if 2 is a norm */
+  mpqs_int32_t two_is_bad;   /* 1 if 2 divide the conductor */
   mpqs_int32_t omega_A;      /* number of primes going into each A */
   mpqs_int32_t no_B;         /* number of B's for each A: 2^(omega_A-1) */
   double l2_target_A;        /* ~log2 of desired typical A */
@@ -240,6 +249,9 @@ typedef struct mpqs_handle {
   void *FB_chunk;            /* (unaligned) chunk containing the FB */
   void *invAH_chunk;         /* (unaligned) chunk for self-init array */
 } mpqs_handle_t;
+
+int  mpqs_class_init(mpqs_handle_t *H, GEN D, long L);
+GEN  mpqs_class_rels(mpqs_handle_t *H, ulong nb, GEN missing_primes);
 
 /* -- sizing table entries */
 
@@ -389,3 +401,5 @@ static const mpqs_parameterset_t mpqs_parameters[] =
 };
 
 #define MPQS_MAX_DIGIT_SIZE_KN 107
+
+ENDEXTERN
