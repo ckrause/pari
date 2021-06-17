@@ -1777,6 +1777,63 @@ groupelts_cyclic_primepow(GEN elt, GEN *pt_pr, GEN *pt_po)
 }
 
 static GEN
+perm_bracket(GEN p, GEN q)
+{
+  return perm_mul(perm_mul(p,q), perm_inv(perm_mul(q,p)));
+}
+
+static GEN
+set_groupelts(GEN S, GEN x)
+{
+  long i, n = F2v_hamming(x), k=1, m = x[1];
+  GEN v = cgetg(n+1, t_VEC);
+  for (i=1; i<=m; i++)
+    if (F2v_coeff(x,i))
+      gel(v,k++) = gel(S,i);
+  return v;
+}
+
+static GEN
+set_idx(GEN x)
+{
+  long i, n = F2v_hamming(x), k=1, m = x[1];
+  GEN v = cgetg(n+1, t_VECSMALL);
+  for (i=1; i<=m; i++)
+    if (F2v_coeff(x,i))
+      uel(v,k++) = i;
+  return v;
+}
+
+static GEN
+set_derived(GEN set, GEN elts)
+{
+  long i, j, l = lg(elts);
+  GEN V = zero_F2v(l-1);
+  for(i = 1; i < l; i++)
+    if (F2v_coeff(set, i))
+      for(j = 1; j < l; j++)
+        if (F2v_coeff(set, j))
+          F2v_set(V, perm_bracket(gel(elts,i),gel(elts,j))[1]);
+  return V;
+}
+
+static GEN
+groupelts_residuum(GEN elts)
+{
+  pari_sp av = avma;
+  long o = lg(elts)-1, oo;
+  GEN set = const_F2v(o);
+  do
+  {
+    oo = o;
+    set = set_derived(set, elts);
+    o = F2v_hamming(set);
+  } while (o > 1 && o < oo);
+  if (o==1) return NULL;
+  return gerepilecopy(av,mkvec2(set_idx(set), set));
+}
+
+static GEN
 all_cyclic_subg(GEN pr, GEN po, GEN elt)
 {
   long i, n = lg(pr)-1, m = 0, k = 1;
@@ -1798,11 +1855,11 @@ groupelts_subgroups_raw(GEN elts)
   GEN pr, po, cyc = groupelts_cyclic_primepow(elt, &pr, &po);
   long n = lg(elt)-1;
   long i, j, nS = 1;
-  GEN S, L;
+  GEN S, L, R = NULL;
   S = cgetg(1+bigomegau(n)+1, t_VEC);
   gel(S, nS++) = mkvec(triv_subg(elt));
   gel(S, nS++) = L = all_cyclic_subg(pr, po, elt);
-  if (DEBUGLEVEL) err_printf("subgroups: level %ld: %ld\n",nS,lg(L)-1);
+  if (DEBUGLEVEL) err_printf("subgroups: level %ld: %ld\n",nS-1,lg(L)-1);
   while (lg(L) > 1)
   {
     pari_sp av2 = avma;
@@ -1834,23 +1891,18 @@ groupelts_subgroups_raw(GEN elts)
         }
     }
     setlg(W, nW);
-    if (DEBUGLEVEL) err_printf("subgroups: level %ld: %ld\n",nS,nW-1);
     L = W;
     if (nW > 1) gel(S, nS++) = L = gerepilecopy(av2, W);
+    if (DEBUGLEVEL) err_printf("subgroups: level %ld: %ld\n",nS-1,nW-1);
+    if (lg(L)==1 && !R)
+    {
+      R = groupelts_residuum(elt);
+      if (!R) break;
+      gel(S, nS++) = L = mkvec(R);
+    }
   }
   setlg(S, nS);
   return gerepilecopy(av, shallowconcat1(S));
-}
-
-static GEN
-set_groupelts(GEN S, GEN x)
-{
-  long i, n = F2v_hamming(x), k=1, m = x[1];
-  GEN v = cgetg(n+1, t_VEC);
-  for (i=1; i<=m; i++)
-    if (F2v_coeff(x,i))
-      gel(v,k++) = gel(S,i);
-  return v;
 }
 
 static GEN
