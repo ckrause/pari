@@ -712,6 +712,12 @@ GEN     famat_zlog_pr(GEN nf, GEN g, GEN e, GEN sprk, GEN mod);
 
 GEN     factorbackprime(GEN nf, GEN L, GEN e);
 
+/* base5.c */
+
+GEN     condliftA4(GEN nf);
+GEN     condliftA5(GEN nf);
+GEN     condliftS4(GEN nf);
+
 /* bb_group.c */
 
 GEN     producttree_scheme(long n);

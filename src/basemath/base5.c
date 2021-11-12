@@ -1894,3 +1894,603 @@ nfhnfmod(GEN nf, GEN x, GEN D)
   if (dA) I = gdiv(I,dA);
   return gerepilecopy(av0, mkvec2(A, I));
 }
+
+static long
+decind(GEN nf, GEN p)
+{
+  pari_sp av = avma;
+  GEN dec = idealprimedec(nf, p);
+  long i, l = lg(dec), s = 0;
+  GEN v = cgetg(l, t_VECSMALL);
+  for (i=1; i<l; i++)
+  {
+    GEN pr = gel(dec, i);
+    v[i] = 10*pr_get_e(pr)+pr_get_f(pr);
+  }
+  vecsmall_sort(v);
+  for (i = 1; i<l; i++)
+    s = 100*s + v[i];
+  return gc_long(av, s);
+};
+
+static GEN
+K6_pol(GEN P, GEN D)
+{
+  GEN t = gel(P,5);
+  GEN P2 = signe(t) ? ZX_translate(ZX_rescale2n(P,2), gneg(t)): P;
+  GEN D2 = sqri(D), D3 = mulii(D,D2);
+  GEN a2 = gel(P2, 4), a1 = gel(P2, 3), a0 = gel(P, 2);
+  return mkpoln(7,gen_1, gen_0, mulii(D,shifti(a2,1)), gen_0,
+                  mulii(D2,subii(sqri(a2),shifti(a0,2))), gen_0,
+                  negi(mulii(D3,sqri(a1))));
+}
+
+static long
+decmat(GEN Q, GEN p)
+{
+  pari_sp av = avma;
+  GEN dec = ZpX_primedec(Q,p);
+  long i, l = lgcols(dec), s = 0;
+  GEN v = cgetg(l, t_VECSMALL);
+  for (i=1; i<l; i++)
+  {
+    long e = itos(gcoeff(dec,i,1));
+    long f = itos(gcoeff(dec,i,2));
+    v[i] = 10*e+f;
+  }
+  vecsmall_sort(v);
+  for (i = 1; i<l; i++)
+    s = 100*s + v[i];
+  return gc_long(av, s);
+}
+
+static long
+K6_invar(GEN nf, GEN p)
+{
+  pari_sp av = avma;
+  GEN Q1 = K6_pol(nf_get_pol(nf), nf_get_disc(nf));
+  long s1 = decmat(Q1, p);
+  return gc_long(av, s1);
+}
+
+static GEN
+condliftpS4(GEN nf, GEN p)
+{
+  GEN disc = nf_get_disc(nf);
+  GEN D, D3;
+  long val = Z_pvalrem(disc, p, &D);
+  long dec = decind(nf,p);
+  GEN nf3 = nfinit(nfresolvent(nf_get_pol(nf), 0), nf_get_prec(nf));
+  long dec3 = decind(nf3,p);
+  long val3 = Z_pvalrem(nf_get_disc(nf3), p, &D3);
+  if (DEBUGLEVEL)
+    err_printf("p=%Ps dec=%ld val=%ld D=%Ps |  dec3=%ld val3=%ld D3=%Ps\n",p,dec,val,D,dec3,val3,D3);
+  switch(itou_or_0(p))
+  {
+  default:
+    switch(dec)
+    {
+    case 41: /* C4 or D8 */
+      if (odd(val))
+      {
+        if (Mod4(p)==1)
+          return mkvecsmall2(1, 0);
+        else
+          return mkvecsmall2(2, 1);
+      }
+      else if (kronecker(D, p)==1)
+        return mkvecsmall2(1, 0);
+      else
+        return mkvecsmall2(2, 0);
+    case 1221: /* C2+C2 */
+      return mkvecsmall2(2, 3);
+    case 2121:
+      if (odd(val))
+        pari_err_BUG("condliftpS4");
+      if (kronecker(D, p)==1)
+        return  mkvecsmall2(1, 0); /* V4 */
+      else
+        return  mkvecsmall2(2, 2); /* D8 */
+    case 1131:
+      if (odd(val))
+        pari_err_BUG("condliftpS4");
+      if (kronecker(D, p)==1)
+        return  mkvecsmall2(1, 0); /* C3 */
+      else
+        return  mkvecsmall2(2, 0); /* D6 */
+    case 22:
+      if (odd(val))
+        pari_err_BUG("condliftpS4");
+      if (kronecker(D, p)==1)
+        return mkvecsmall2(2, 2);
+      else
+        return mkvecsmall2(1, 0);
+    case 111121: /* C2 */
+      return  mkvecsmall2(1, 0);
+    default:
+      pari_err_BUG("condliftpS4");
+    }
+  case 3:
+    switch(val)
+    {
+    case 1:
+      switch(dec)
+      {
+      case 1221:
+        return mkvecsmall2(2, 3);
+      case 111121:
+        return mkvecsmall2(1, 0);
+      default:
+        pari_err_BUG("condliftpS4");
+      }
+    case 2:
+      switch(dec)
+      {
+      case 22:
+        {
+          switch(dec3)
+          {
+          case 1112:
+            return mkvecsmall2(1, 0);
+          case 111111:
+            return mkvecsmall2(2, 2);
+          default:
+            pari_err_BUG("condliftpS4");
+          }
+        }
+      case 2121:
+        if (odd(val))
+          pari_err_BUG("condliftpS4");
+        if (kronecker(D, p)==1)
+          return  mkvecsmall2(1, 0); /* C3 */
+        else
+          return  mkvecsmall2(2, 2); /* D6 */
+      default:
+        pari_err_BUG("condliftpS4");
+      }
+    case 3:
+      switch(dec)
+      {
+      case 41:
+        return mkvecsmall2(2, 1);
+      case 1131:
+        return mkvecsmall2(3, 0);
+      default:
+        pari_err_BUG("condliftpS4");
+      }
+    case 4:
+      if (dec!=1131) pari_err_BUG("condliftpS4");
+      if (odd(val))
+        pari_err_BUG("condliftpS4");
+      if (kronecker(D, p)==1)
+        return mkvecsmall2(2, 0); /* C3 */
+      else
+        return mkvecsmall2(4, 0); /* D6 */
+    case 5:
+      if (dec!=1131) pari_err_BUG("condliftpS4");
+      return mkvecsmall2(5, 0);
+    default:
+      pari_err_BUG("condliftpS4");
+    }
+  case 2:
+    switch(val)
+    {
+    case 2:
+      switch(dec)
+      {
+      case 1131:
+        return mkvecsmall2(2, 0);
+      case 1221:
+        return mkvecsmall2(4, 6);
+      case 111121:
+        return mkvecsmall2(2, 0);
+      default:
+        pari_err_BUG("condliftpS4");
+      }
+    case 3:
+      switch(dec)
+      {
+      case 1221:
+        return mkvecsmall2(6, 9);
+      case 111121:
+        return mkvecsmall2(3, 0);
+      default:
+        pari_err_BUG("condliftpS4");
+      }
+    case 4:
+      switch(dec)
+      {
+      case 22:
+        switch(Mod8(D))
+        {
+          case 1:
+            return mkvecsmall2(4, 4);
+          case 5:
+            return mkvecsmall2(2, 0);
+          case 3: case 7:
+            return mkvecsmall2(5, 6);
+          default:
+            pari_err_BUG("condliftpS4");
+        }
+      case 41:
+        return mkvecsmall2(3, 2);
+      case 2121:
+        switch(Mod8(D))
+        {
+          case 1:
+            return mkvecsmall2(2, 0);
+          case 5:
+            return mkvecsmall2(4, 4);
+          default:
+            pari_err_BUG("condliftpS4");
+        }
+      default:
+        pari_err_BUG("condliftpS4");
+      }
+    case 5:
+      if (dec!=2121) pari_err_BUG("condliftpS4");
+      return mkvecsmall2(7, 9);
+    case 6:
+      switch(dec)
+      {
+      case 2121:
+        switch(Mod8(D))
+        {
+        case 1:
+          return mkvecsmall2(3, 0);
+        case 3:
+          return mkvecsmall2(7, 8);
+        case 5:
+          return mkvecsmall2(6, 6);
+        case 7:
+          return mkvecsmall2(7, 8);
+        default:
+          pari_err_BUG("condliftpS4");
+        }
+      case 22:
+        switch(Mod8(D))
+        {
+        case 1:
+          return mkvecsmall2(6, 6);
+        case 3:
+          return mkvecsmall2(7, 8);
+        case 5:
+          return mkvecsmall2(3, 0);
+        case 7:
+          return mkvecsmall2(7, 8);
+        default:
+          pari_err_BUG("condliftpS4");
+        }
+      case 41:
+        return mkvecsmall2(5, 4);
+      default:
+        pari_err_BUG("condliftpS4");
+      }
+    case 8:
+      if (dec!=41) pari_err_BUG("condliftpS4");
+      return mkvecsmall2(7, 6);
+    case 9:
+      if (dec!=41) pari_err_BUG("condliftpS4");
+      return mkvecsmall2(9, 9);
+    case 10:
+      if (dec!=41) pari_err_BUG("condliftpS4");
+      return mkvecsmall2(9, 8);
+    case 11:
+    {
+      long invk6 = K6_invar(nf,p);
+      if (dec!=41) pari_err_BUG("condliftpS4");
+      switch(invk6)
+      {
+        case 1214:
+          return mkvecsmall2(9, 7);
+        case 1421:
+          return mkvecsmall2(8, 5);
+        case 111114:
+          return mkvecsmall2(4, 0);
+        default:
+          pari_err_BUG("condliftpS4");
+      }
+    }
+    default:
+      pari_err_BUG("condliftpS4");
+    }
+  }
+  return NULL; /* LCOV_EXCL_LINE */
+}
+
+GEN
+condliftS4(GEN nf)
+{
+  pari_sp av = avma;
+  GEN disc = nf_get_disc(nf);
+  GEN fa = gel(absZ_factor(disc), 1);
+  long i, l = lg(fa);
+  GEN V = cgetg(l, t_COL);
+  GEN W = cgetg(l, t_COL);
+  for (i = 1; i<l; i++)
+  {
+    GEN p = gel(fa,i);
+    GEN cnd = condliftpS4(nf, p);
+    gel(V,i) = powiu(p, uel(cnd,1));
+    gel(W,i) = powiu(p, uel(cnd,2));
+  }
+  return gerepilecopy(av, mkvec2(ZV_prod(V), ZV_prod(W)));
+}
+
+/* output:
+  [T,f6,f4,e] where
+  - T encodes the type of the local representation: T = [N,g,c] where
+    * p^N is the conductor;
+    * g is the size of the projective image;
+    * c is the conductor exponent of the corresponding character;
+  - p^e = gcd(Norm(f6),Norm(f4))
+*/
+static GEN
+condliftpA4(GEN nf, GEN p)
+{
+  long val = Z_pval(nf_get_disc(nf), p);
+  long dec = decind(nf,p);
+  switch(itou_or_0(p))
+  {
+  default:
+    if(val!=2) pari_err_BUG("condliftpA4");
+    switch(dec)
+    {
+    case 2121:
+      return mkvecsmall4(1,2,1,0); /* type 1+chi2 */
+    case 1131:
+      return  mkvecsmall4(1,3,1,0); /* type 1+chi3 */
+    case 22:
+      return  mkvecsmall4(2,4,1,2); /* type ind_{Qq/Qp}psi2 (c=1) */
+    default:
+      pari_err_BUG("condliftpA4");
+    }
+  case 3:
+    switch(val)
+    {
+    case 2:
+      switch(dec)
+      {
+      case 2121:
+        return mkvecsmall4(1,2,1,0); /* type 1+chi2 */
+      case 22:
+        return mkvecsmall4(2,4,1,2); /* type ind_{Qq/Qp}psi2 (c=1) */
+      default:
+        pari_err_BUG("condliftpA4");
+      }
+    case 4:
+      if (dec!=1131) pari_err_BUG("condliftpA4");
+      return mkvecsmall4(2,3,2,0); /* type 1+chi3 */
+    default:
+      pari_err_BUG("condliftpA4");
+    }
+  case 2:
+    switch(val)
+    {
+    case 4:
+      switch(dec)
+      {
+      case 2121:
+        return mkvecsmall4(2,2,2,0); /* type 1+chi2 */
+      case 22:
+        return mkvecsmall4(4,4,2,4); /* type ind_{Q4/Q2}psi2 (c=2) */
+      default:
+        pari_err_BUG("condliftpA4");
+      }
+    case 6:
+      switch(dec)
+      {
+      case 2121:
+        return mkvecsmall4(3,2,3,0); /* type 1+chi2 */
+      case 22:
+        return mkvecsmall4(6,4,3,4); /* type ind_{Q4/Q2}psi2 (c=3) */
+      case 41:
+        return mkvecsmall4(5,12,-1,4); /* type exceptional A4 */
+      default:
+        pari_err_BUG("condliftpA4");
+      }
+    case 8:
+      if (dec!=41) pari_err_BUG("condliftpA4");
+      return mkvecsmall4(7,4,4,6); /* type ind_{Kram/Q2}psi2 (c=4) */
+    default:
+      pari_err_BUG("condliftpA4");
+    }
+  }
+  return NULL; /* LCOV_EXCL_LINE */
+}
+
+GEN
+condliftA4(GEN nf)
+{
+  pari_sp av = avma;
+  GEN disc = nf_get_disc(nf);
+  GEN fa = gel(absZ_factor(disc), 1);
+  long i, l = lg(fa);
+  GEN V = cgetg(l, t_COL);
+  GEN W = cgetg(l, t_COL);
+  for (i = 1; i<l; i++)
+  {
+    GEN p = gel(fa,i);
+    GEN cnd = condliftpA4(nf, p);
+    gel(V,i) = powiu(p, uel(cnd,1));
+    gel(W,i) = powiu(p, uel(cnd,4));
+  }
+  return gerepilecopy(av, mkvec2(ZV_prod(V), ZV_prod(W)));
+}
+/* output:
+  [e,g,c] where
+  - p^e the conductor of a minimal lift;
+  - g is the size of the projective image:
+    2,3,5 for cyclic image,
+    4,6,10 for dihedral image,
+    12 for exceptional image;
+  - c is the conductor exponent of the corresponding character:
+    cond(L/Qp) for cyclic image,
+    cond(L/K) for dihedral image, where K/Qp is quadratic,
+    -1 for exceptional image.
+*/
+static GEN
+condliftpA5(GEN nf, GEN p)
+{
+  long val = Z_pval(nf_get_disc(nf), p);
+  long dec = decind(nf,p);
+  switch(itou_or_0(p))
+  {
+  default:
+    switch (val)
+    {
+    case 2:
+      switch(dec)
+      {
+      case 112121:
+        return mkvecsmall4(1,2,1,0); /* type 1+chi2 */
+      case 111131:
+        return mkvecsmall4(1,3,1,0); /* type 1+chi3 */
+      case 1122:
+        return mkvecsmall4(2,4,1,6); /* type ind_{Qq/Qp} psi2 (c=1) */
+      case 1231:
+        return mkvecsmall4(2,6,1,0); /* type ind_{Qq/Qp} psi3 (c=1) */
+      default:
+        pari_err_BUG("condliftpA5");
+      }
+    case 4:
+      if (dec!=51) pari_err_BUG("condliftpA5");
+      switch (umodiu(p,5))
+      {
+       case 1:
+         return  mkvecsmall4(1,5,1,0); /* type 1+chi5 */
+       case 4:
+         return  mkvecsmall4(2,10,1,0); /* type ind_{Qq/Qp} psi5 (c=1) */
+       default:
+         pari_err_BUG("condliftpA5");
+      }
+    default:
+      pari_err_BUG("condliftpA5");
+    }
+  case 5:
+    switch(val)
+    {
+    case 2:
+      switch (dec)
+      {
+      case 112121:
+        return mkvecsmall4(1,2,1,0); /* type 1+chi2 */
+      case 1122:
+        return mkvecsmall4(2,4,1,6); /* type ind_{Q25/Q5} psi2 (c=1) */
+      case 1231:
+        return mkvecsmall4(2,6,1,0); /* type ind_{Q25/Q5} psi3 (c=1) */
+      default:
+        pari_err_BUG("condliftpA5");
+      }
+    case 6:
+      if (dec!=51) pari_err_BUG("condliftpA5");
+      return mkvecsmall4(3,10,2,2); /* type ind_{Kram/Q5} psi5 (c=2) */
+    case 8:
+      if (dec!=51) pari_err_BUG("condliftpA5");
+      else
+      {
+        GEN pol = nf_get_pol(nf);
+        long lambda;
+        GEN res = ZX_compositum(pol,pol,&lambda);
+        switch (lg(gel(factorpadic(res,p,1),1))-1)
+        {
+        case 5:  /* degrees (1,1,1,1,1) */
+          return mkvecsmall4(2,5,2,0); /* type 1+chi5 */
+        case 3: /* degrees (1,2,2) ; (1,1,3) forbidden but not checked */
+          return mkvecsmall4(4,10,2,0); /* type ind_{Q25/Q5} psi5 (c=2) */
+        default:
+          pari_err_BUG("condliftpA5");
+        }
+      }
+    default:
+      pari_err_BUG("condliftpA5");
+    }
+  case 3:
+    switch(val)
+    {
+    case 2:
+      switch (dec)
+      {
+      case 112121:
+        return mkvecsmall4(1,2,1,0); /* type 1+chi2 */
+      case 1122:
+        return mkvecsmall4(2,4,1,6); /* type ind_{Q9/Q3} psi2 (c=1) */
+      default:
+        pari_err_BUG("condliftpA5");
+      }
+    case 4:
+      switch (dec)
+      {
+      case 111131:
+        return mkvecsmall4(2,3,1,0); /* type 1+chi3 */
+      case 2131:
+        return mkvecsmall4(3,6,2,0); /* type ind_{Kram/Q3} psi3 (c=2) */
+      case 1231:
+        return mkvecsmall4(4,6,2,0); /* ind_{Q9/Q3} psi3 (c=2) */
+      default:
+        pari_err_BUG("condliftpA5");
+      }
+    case 6:
+      if (dec!=2131) pari_err_BUG("condliftpA5");
+      return mkvecsmall4(5,6,4,0); /* type ind_{Kram/Q3} psi3 (c=4) */
+    default:
+      pari_err_BUG("condliftpA5");
+    }
+    case 2:
+      switch (val)
+      {
+      case 2:
+        if (dec!=1231) pari_err_BUG("condliftpA5");
+        return mkvecsmall4(2,6,1,0); /* type ind_{Q4/Q2} psi3 (c=1) */
+      case 4:
+        switch (dec)
+        {
+        case 112121:
+          return mkvecsmall4(2,2,2,0); /* type 1+chi2 */
+        case 51:
+          return mkvecsmall4(2,10,1,0); /* type ind_{Q4/Q2} psi5 (c=1) */
+        case 1122:
+          return mkvecsmall4(4,4,2,12); /* type ind_{Q4/Q2} psi2 (c=2) */
+        default:
+          pari_err_BUG("condliftpA5");
+        }
+      case 6:
+        switch (dec)
+        {
+          case 112121:
+            return mkvecsmall4(3,2,3,0); /* type 1+chi2 */
+          case 1122:
+            return mkvecsmall4(6,4,3,18); /* type ind_{Q4/Q2} psi2 (c=3) */
+          case 1141:
+            return mkvecsmall4(5,12,-1,12); /* type exceptional A4 */
+          default:
+            pari_err_BUG("condliftpA5");
+        }
+      case 8:
+        if (dec!=1141) pari_err_BUG("condliftpA5");
+        return mkvecsmall4(7,4,4,18); /* type ind_{K(4)/Q2} psi2 (c=4) */
+      default:
+        pari_err_BUG("condliftpA5");
+      }
+  }
+  return NULL; /* LCOV_EXCL_LINE */
+}
+
+GEN
+condliftA5(GEN nf)
+{
+  pari_sp av = avma;
+  GEN disc = nf_get_disc(nf);
+  GEN fa = gel(absZ_factor(disc), 1);
+  long i, l = lg(fa);
+  GEN V = cgetg(l, t_COL);
+  GEN W = cgetg(l, t_COL);
+  for (i = 1; i<l; i++)
+  {
+    GEN p = gel(fa,i);
+    GEN cnd = condliftpA5(nf, p);
+    gel(V,i) = powiu(p, uel(cnd,1));
+    gel(W,i) = powiu(p, uel(cnd,4));
+  }
+  return gerepilecopy(av, mkvec2(ZV_prod(V), ZV_prod(W)));
+}
