@@ -2214,6 +2214,30 @@ ellfromeqncharpoly(GEN P, GEN Q, GEN p)
   return mkpoln(3, gen_1, negi(t), p);
 }
 
+static GEN
+nfellcharpoly(GEN e, GEN T, GEN p)
+{
+  GEN nf, E, t;
+  nf = nfinit(mkvec2(T, mkvec(p)), DEFAULTPREC);
+  E = ellinit(e, nf, DEFAULTPREC);
+  if (lg(E)==1) return NULL;
+  t = elleulerf(E, p);
+  obj_free(E);
+  return t;
+}
+
+static GEN
+genus2_type5(GEN P, GEN p)
+{
+  GEN E, F, T, a, a2, Q;
+  F = FpX_red(ZX_Z_divexact(P, p), p);
+  if (degpol(F) < 1) return NULL;
+  T = gmael(FpX_factor(F, p), 1, 1);
+  Q = ZX_digits(P, T); a = gel(Q,4); a2 = ZX_sqr(a);
+  E = mkvec5(gen_0, gel(Q,3), gen_0, ZX_mul(gel(Q,2),a), ZX_mul(gel(Q,1),a2));
+  return nfellcharpoly(E, T, p);
+}
+
 /* Assume P has semistable reduction at p */
 static GEN
 genus2_eulerfact_semistable(GEN P, GEN p)
@@ -2263,7 +2287,12 @@ static GEN
 genus2_eulerfact(GEN P, GEN p)
 {
   GEN W;
-  if (ZX_pval(P, p) > 0) return genus2_eulerfact_semistable(P,p);
+  if (ZX_pval(P, p) > 0)
+  {
+    GEN R = genus2_type5(P, p);
+    if (R) return R;
+    return genus2_eulerfact_semistable(P,p);
+  }
   W = hyperellextremalmodels(P, 2, p);
   if (lg(W) < 3) return genus2_eulerfact_semistable(P,p);
   return gmul(genus2_eulerfact_semistable(gel(W,1),p),
