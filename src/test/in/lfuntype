@@ -62,7 +62,9 @@ lfunhgm(hgminit([5]),1),
 if(1,my(bnf=bnfinit(x^2-x+2), gc=gcharinit(bnf,idealprimedec(bnf,11)[1]),chi=[1,-1,-1/2]~);
   lfuncreate([gc,chi])),
 if(1,my(bnf=bnfinit(a^2-a-9), bnr=bnrinit(bnf,[2,[0,0]]));
-  lfuncreate([bnr,matdiagonal(bnr.cyc)]))
+  lfuncreate([bnr,matdiagonal(bnr.cyc)])),
+  lfuninit(1, []),
+  lfuninit(x^2+1, [])
 ];
 }
 \p36
@@ -84,20 +86,24 @@ for(i=1,#VALL,
   a=lfun(L,2+2*I);
   b=lfun(ldata,2+2*I);
   chk("lfun(2+2*I)",i,a,b);
-  a=lfun(L,2);
-  b=lfun(ldata,2);
-  chk("lfun",i,a,b);
-  b=lfun(lfuncreate(ldata),2);
-  chk("lfuncreate",i,a,b);
-  a=lfun(L,2,2);
-  b=lfun(ldata,2,2);
-  chk("lfunderiv",i,a,b);
-  a=lfunlambda(L,2);
-  b=lfunlambda(ldata,2);
-  chk("lfunlambda",i,a,b);
-  a=lfunlambda(L,2,2);
-  b=lfunlambda(ldata,2,2);
-  chk("lfunderivlambda",i,a,b);
+  iferr(
+    a=lfun(L,2);
+    b=lfun(ldata,2);
+    chk("lfun",i,a,b);
+    b=lfun(lfuncreate(ldata),2);
+    chk("lfuncreate",i,a,b), E, print(E));
+  iferr(
+    a=lfun(L,2,2);
+    b=lfun(ldata,2,2);
+    chk("lfunderiv",i,a,b), E, print(E));
+  iferr(
+    a=lfunlambda(L,2);
+    b=lfunlambda(ldata,2);
+    chk("lfunlambda",i,a,b), E, print(E));
+  iferr(
+    a=lfunlambda(L,2,2);
+    b=lfunlambda(ldata,2,2);
+    chk("lfunderivlambda",i,a,b), E, print(E));
   a=lfuncheckfeq(L);
   b=lfuncheckfeq(ldata);
   chk("lfuncheckfeq",i,a,b, 1); \\ we may have a != b

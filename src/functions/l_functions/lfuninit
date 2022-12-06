@@ -36,6 +36,21 @@ Doc: initalization function for all functions linked to the
  ? L = lfuninit(L0, [1/2, 0, 100]); \\ for zeta(1/2+it), |t| < 100
  ? lfun(L, 1/2 + I)
  ? L = lfuninit(L0, [100]); \\ same as above !
+ @eprog\noindent
+ \misctitle{Riemann-Siegel formula}
+ If $L$ is a function of degree $d = 1$, then a completely different
+ algorithm is implemented which can compute with complexity $N \sqrt{h}$, so
+ much higher than the default implementation. But this variant is
+ restricted to $s$ with imaginary part at least $2$ and medium precision at
+ most, say less than 1000 decimal digits.
+ For such functions, you can use $\var{sdom} = \kbd{[]}$ to indicate that you
+ are only interested in relatively high imaginary parts and do not want to
+ perform any initialization:
+ \bprog
+ ? L = lfuninit(1, []); \\ Riemann zeta
+ ? #lfunzeros(L, [10^12, 10^12+1])
+ time = 1min, 31,496 ms.
+ %2 = 4
  @eprog
 
 Function: _lfuninit_worker

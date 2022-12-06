@@ -69,6 +69,7 @@ BA  10- [libpari] rename qfb_apply_ZM -> qfb_ZM_apply,
 BA  12- [libpari] change prec to be a number of bits, instead of lg
 BA  13- [libpari] suminf_bitprec, intnumromb_bitprec: use suminf, intnumromb
         ellL1_bitprec, ellanalyticrank_bitprec: use ellL1, ellanalyticrank
+    14- lfun for degree 1 L-functions: use Riemann-Siegel when imag(s) is large
 
   Added
      1- [libpari] nfeltembed_i

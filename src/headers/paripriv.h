@@ -860,6 +860,16 @@ ulong snextpr(ulong p, byteptr *d, long *rcn, long *q, int (*ispsp)(ulong));
 GEN     contfraceval_inv(GEN CF, GEN tinv, long nlim);
 GEN     contfracinit_i(GEN M, long n);
 
+/* lfunlarge.c */
+
+GEN parsqfboth_worker(GEN gk, GEN vZ, GEN vVQ, GEN vV, GEN P, GEN Nsqstep);
+GEN parsumprimeWfunboth_worker(GEN gk, GEN s, GEN W1, GEN W2, GEN f, GEN Nsqprec);
+GEN int_h0_worker(GEN j, GEN sel, GEN s, GEN chi, GEN gprec);
+
+/* FIXME: delete */
+GEN lfunlambdalarge(GEN CHI, GEN s, long bitprec);
+GEN lfunlarge(GEN CHI, GEN s, long bitprec);
+
 /* mftrace.c */
 
 void pari_close_mf(void);

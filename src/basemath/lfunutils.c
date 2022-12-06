@@ -1010,6 +1010,7 @@ lfunzetak_i(GEN T)
     T = nfinit0(T, nf_NOLLL, DEFAULTPREC);
     if (lg(T) == 3) T = gel(T,1); /* [nf,change of var] */
   }
+  if (nf_get_degree(T) == 1) return lfunzeta();
   nf_get_sign(T,&r1,&r2); Vga = vec01(r1+r2,r2);
   N = absi_shallow(nf_get_disc(T));
   return mkvecn(7, tag(T,t_LFUN_NF), gen_0, Vga, gen_1, N, gen_1, gen_0);
@@ -1172,7 +1173,7 @@ chigenkerfind(GEN bnr, GEN H, GEN *pcnj)
   {
     GEN chi = gel(L,i);
     gel(res, k) = chi;
-    gel(cnj, k) = ZV_equal0(chi)? gen_0: bnrconductorofchar(bnr, chi);
+    gel(cnj, k) = ZV_equal0(chi)? gen_0: bnrconductor_raw(bnr, chi);
     k++;
   }
   setlg(cnj, k);
@@ -1419,16 +1420,19 @@ GEN
 lfunzetakinit(GEN nf, GEN dom, long der, long bitprec)
 {
   long n, d = nf_get_degree(nf);
-  GEN L, Q, R, G, T = nf_get_pol(nf);
+  GEN L, Q, R, T = nf_get_pol(nf);
   if (d == 1) return lfuninit(lfunzeta(), dom, der, bitprec);
-  G = galoisinit(nf, NULL);
-  if (isintzero(G))
+  if (d > 2)
   {
-    GEN S = nfsubfields(nf, 0); n = lg(S)-1;
-    return lfunzetakinit_quotient(nf, gmael(S,n-1,1), dom, der, bitprec);
+    GEN G = galoisinit(nf, NULL);
+    if (isintzero(G))
+    {
+      GEN S = nfsubfields(nf, 0); n = lg(S)-1;
+      return lfunzetakinit_quotient(nf, gmael(S,n-1,1), dom, der, bitprec);
+    }
+    if (!group_isabelian(galois_group(G)))
+      return lfunzetakinit_artin(nf, G, dom, der, bitprec);
   }
-  if (!group_isabelian(galois_group(G)))
-    return lfunzetakinit_artin(nf, G, dom, der, bitprec);
   Q = Buchall(pol_x(1), 0, nbits2prec(bitprec));
   T = shallowcopy(T); setvarn(T,0);
   R = rnfconductor0(Q, T, 1);

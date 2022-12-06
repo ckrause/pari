@@ -1227,6 +1227,12 @@ parse_dom(double k, GEN dom, struct lfunp *S)
 {
   long l = lg(dom);
   if (typ(dom)!=t_VEC) pari_err_TYPE("lfuninit [domain]", dom);
+  if (l == 1)
+  {
+    S->dc = 0;
+    S->dw = -1;
+    S->dh = -1; return;
+  }
   if (l == 2)
   {
     S->dc = k/2.;
@@ -1258,20 +1264,22 @@ int
 sdomain_isincl(double k, GEN dom, GEN dom0)
 {
   struct lfunp S0, S;
-  parse_dom(k, dom, &S);
-  parse_dom(k, dom0, &S0);
+  parse_dom(k, dom, &S); if (S.dw < 0) return 1;
+  parse_dom(k, dom0, &S0); if (S0.dw < 0) return 0;
   return S0.dc - S0.dw <= S.dc - S.dw
       && S0.dc + S0.dw >= S.dc + S.dw && S0.dh >= S.dh;
 }
 
 static int
-checklfuninit(GEN linit, GEN dom, long der, long bitprec)
+checklfuninit(GEN linit, GEN DOM, long der, long bitprec)
 {
   GEN ldata = linit_get_ldata(linit);
   GEN domain = lfun_get_domain(linit_get_tech(linit));
+  GEN dom = domain_get_dom(domain);
+  if (lg(dom) == 1) return 1;
   return domain_get_der(domain) >= der
     && domain_get_bitprec(domain) >= bitprec
-    && sdomain_isincl(gtodouble(ldata_get_k(ldata)), dom, domain_get_dom(domain));
+    && sdomain_isincl(gtodouble(ldata_get_k(ldata)), DOM, dom);
 }
 
 static GEN
@@ -1297,6 +1305,21 @@ lfuninit_make(long t, GEN ldata, GEN tech, GEN domain)
   }
   tech = mkvec3(domain, tech, mkvec4(k2, w2, expot, gammafactor(Vga)));
   return mkvec3(mkvecsmall(t), ldata, tech);
+}
+static GEN
+lfunnoinit(GEN ldata, long bitprec)
+{
+  GEN tech, domain = mkvec2(cgetg(1,t_VEC), mkvecsmall2(0, bitprec));
+  GEN R = gen_0, r = ldata_get_residue(ldata), v = lfunrootres(ldata, bitprec);
+  ldata = shallowcopy(ldata);
+  gel(ldata,6) = gel(v,3);
+  if (r)
+  {
+    if (isintzero(r)) setlg(ldata,7); else gel(ldata,7) = r;
+    R = gel(v,2);
+  }
+  tech = mkvec3(domain, gen_0, R);
+  return lfuninit_make(t_LDESC_INIT, ldata, tech, domain);
 }
 
 static void
@@ -1390,7 +1413,7 @@ lfuncost(GEN L, GEN dom, long der, long bit)
   GEN w, k = ldata_get_k(ldata);
   struct lfunp S;
 
-  parse_dom(gtodouble(k), dom, &S);
+  parse_dom(gtodouble(k), dom, &S); if (S.dw < 0) return mkvecsmall2(0, 0);
   lfunp_set(ldata, der, bit, &S);
   w = ldata_get_rootno(ldata);
   if (isintzero(w)) /* for lfunrootres */
@@ -1425,6 +1448,34 @@ lfuncost0(GEN L, GEN dom, long der, long bitprec)
   return gerepileupto(av, zv_to_ZV(C));
 }
 
+static int
+is_dirichlet(GEN ldata)
+{
+  switch(ldata_get_type(ldata))
+  {
+    case t_LFUN_ZETA:
+    case t_LFUN_KRONECKER:
+    case t_LFUN_CHIZ: return 1;
+    case t_LFUN_CHIGEN: return ldata_get_degree(ldata)==1;
+    default: return 0;
+  }
+}
+
+static ulong
+lfuninit_cutoff(GEN ldata)
+{
+#if 0
+  ulong L, N = itou_or_0(ldata_get_conductor(ldata));
+  if (N > 1000) L = 7000;
+  else if (N > 100) L = 5000;
+  else if (N > 15) L = 3000;
+  else L = 2500;
+  return L;
+#else
+  return 1000;
+#endif
+}
+
 GEN
 lfuninit(GEN lmisc, GEN dom, long der, long bitprec)
 {
@@ -1435,7 +1486,7 @@ lfuninit(GEN lmisc, GEN dom, long der, long bitprec)
   if (is_linit(lmisc))
   {
     long t = linit_get_type(lmisc);
-    if (t==t_LDESC_INIT || t==t_LDESC_PRODUCT)
+    if (t == t_LDESC_INIT || t == t_LDESC_PRODUCT)
     {
       if (checklfuninit(lmisc, dom, der, bitprec)) return lmisc;
       pari_warn(warner,"lfuninit: insufficient initialization");
@@ -1458,6 +1509,17 @@ lfuninit(GEN lmisc, GEN dom, long der, long bitprec)
   }
   k = ldata_get_k(ldata);
   parse_dom(gtodouble(k), dom, &S);
+  if (S.dw >= 0 && (!der && is_dirichlet(ldata)))
+    S.dh = mindd(S.dh, lfuninit_cutoff(ldata));
+  if (S.dw < 0)
+  {
+    if (der)
+      pari_err_IMPL("domain = [] for derivatives in lfuninit");
+    if (!is_dirichlet(ldata))
+      pari_err_IMPL("domain = [] for L functions of degree > 1");
+    return gerepilecopy(av, lfunnoinit(ldata, bitprec));
+  }
+
   lfunp_set(ldata, der, bitprec, &S);
   ldata = ldata_newprec(ldata, nbits2prec(S.Dmax));
   r = ldata_get_residue(ldata);
@@ -1623,8 +1685,7 @@ get_domain(GEN s, GEN *dom, long *der)
 static GEN
 lfunlambda_OK(GEN linit, GEN s, GEN sdom, long bitprec)
 {
-  GEN eno, ldata, tech, h, pol;
-  GEN S, S0 = NULL, k2, cost;
+  GEN dom, eno, ldata, tech, h, pol, k2, cost, S, S0 = NULL;
   long prec, prec0;
   struct lfunp D, D0;
 
@@ -1633,10 +1694,12 @@ lfunlambda_OK(GEN linit, GEN s, GEN sdom, long bitprec)
   ldata = linit_get_ldata(linit);
   eno = ldata_get_rootno(ldata);
   tech = linit_get_tech(linit);
+  dom = lfun_get_dom(tech);
+  if (lg(dom) == 1) return lfunlambda(linit, s, bitprec); /* FIXME:not OK! */
   h = lfun_get_step(tech); prec = realprec(h);
   /* try to reduce accuracy */
   parse_dom(0, sdom, &D0);
-  parse_dom(0, domain_get_dom(lfun_get_domain(tech)), &D);
+  parse_dom(0, dom, &D);
   if (0.8 * D.dh > D0.dh)
   {
     cost = lfuncost(linit, sdom, typ(s)==t_SER? der_level(s): 0, bitprec);
@@ -1671,6 +1734,48 @@ lfunlambda_OK(GEN linit, GEN s, GEN sdom, long bitprec)
   if (S0) S = gadd(S,S0);
   return gprec_w(gmul(S,h), nbits2prec(bitprec));
 }
+
+static long
+lfunspec_OK(GEN lmisc, GEN s, GEN *pldata)
+{
+  long t, large = 0;
+  GEN ldata;
+  *pldata = ldata = lfunmisc_to_ldata_shallow(lmisc);
+  if (!is_linit(lmisc)) lmisc = ldata;
+  else switch(linit_get_type(lmisc))
+  {
+    case t_LDESC_INIT:
+      if (lg(lfun_get_dom(linit_get_tech(lmisc))) == 1) large = 1;
+      break;
+    default: return 0;
+  }
+  switch(typ(s))
+  {
+    case t_INT: case t_REAL: case t_FRAC: case t_COMPLEX: break;
+    default: return 0;
+  }
+  t = ldata_get_type(ldata);
+  switch(t)
+  {
+    case t_LFUN_KRONECKER: case t_LFUN_ZETA:
+      if (typ(s) == t_INT && !is_bigint(s)) return 1;
+      /* fall through */
+    case t_LFUN_NF: case t_LFUN_CHIZ:
+      if (!large)
+        large = (fabs(gtodouble(imag_i(s))) >= lfuninit_cutoff(ldata));
+  }
+  if (large)
+  {
+    if (t == t_LFUN_NF)
+    {
+      GEN an = ldata_get_an(ldata), nf = gel(an,2), G = galoisinit(nf, NULL);
+      if (isintzero(G) || !group_isabelian(galois_group(G))) return 0;
+    }
+    return 2;
+  }
+  return 0;
+}
+
 GEN
 lfunlambda(GEN lmisc, GEN s, long bitprec)
 {
@@ -1678,6 +1783,27 @@ lfunlambda(GEN lmisc, GEN s, long bitprec)
   GEN linit, dom, z;
   long der;
   s = get_domain(s, &dom, &der);
+  if (!der)
+  {
+    GEN ldata;
+    long t = lfunspec_OK(lmisc, s, &ldata);
+    if (t == 1)
+    { /* special value ? */
+      GEN z = lfun(ldata, s, bitprec);
+      if (!isintzero(z)) /* TODO */
+      {
+        GEN gv = ldata_get_gammavec(ldata), q = ldata_get_conductor(ldata);
+        long e = itou(gel(gv, 1)), prec = nbits2prec(bitprec);
+        GEN se, r, Q = divir(q, mppi(prec));
+        se = gmul2n(gaddgs(s, e), -1);
+        r = gmul(gpow(Q, se, prec), ggamma(se, prec));
+        if (e && !equali1(q)) r = gdiv(r, gsqrt(q, prec));
+        return gmul(r, z);
+      }
+    }
+    if (t == 2) return lfunlambdalarge(ldata, s, bitprec);
+    if (!is_linit(lmisc)) lmisc = ldata;
+  }
   linit = lfuninit(lmisc, dom, der, bitprec);
   z = lfunlambda_OK(linit,s, dom, bitprec);
   return gerepilecopy(av, z);
@@ -1757,18 +1883,13 @@ lfun(GEN lmisc, GEN s, long bitprec)
   GEN linit, dom, z;
   long der;
   s = get_domain(s, &dom, &der);
-  if (!der && typ(s) == t_INT && !is_bigint(s))
-  { /* special value ? */
+  if (!der)
+  {
     GEN ldata;
-    long t, ss = itos(s);
-    if (is_linit(lmisc))
-      ldata = linit_get_ldata(lmisc);
-    else
-      lmisc = ldata = lfunmisc_to_ldata_shallow(lmisc);
-    t = ldata_get_type(ldata);
-    if (t == t_LFUN_KRONECKER || t == t_LFUN_ZETA)
-    {
-      long D = itos_or_0(gel(ldata_get_an(ldata), 2));
+    long t = lfunspec_OK(lmisc, s, &ldata);
+    if (t == 1)
+    { /* special value ? */
+      long D = itos_or_0(gel(ldata_get_an(ldata), 2)), ss = itos(s);
       if (D)
       {
         if (ss <= 0) return lfunquadneg(D, ss);
@@ -1785,6 +1906,8 @@ lfun(GEN lmisc, GEN s, long bitprec)
         }
       }
     }
+    if (t == 2) return lfunlarge(ldata, s, bitprec);
+    if (!is_linit(lmisc)) lmisc = ldata;
   }
   linit = lfuninit(lmisc, dom, der, bitprec);
   z = lfun_OK(linit, s, dom, bitprec);
@@ -1867,6 +1990,8 @@ lfunderiv(GEN lmisc, long m, GEN s, long flag, long bitprec)
     if (gequal0(s)) s = gen_0;
     s = deg1ser_shallow(gen_1, s, 0, m+1+ex);
   }
+  if (lg(lfun_get_dom(linit_get_tech(linit))) == 1)
+    pari_err_IMPL("domain = [] for derivatives in lfuninit");
   res = flag ? lfunlambda_OK(linit, s, dom, bitprec):
                lfun_OK(linit, s, dom, bitprec);
   if (S)
@@ -1904,32 +2029,46 @@ lfunhardy(GEN lmisc, GEN t, long bitprec)
 {
   pari_sp ltop = avma;
   long prec = nbits2prec(bitprec), d;
-  GEN argz, z, linit, ldata, tech, dom, w2, k2, E, h, a, k;
+  GEN h, linit, ldata, tech, w2, k2, E, a, argz, z;
 
   switch(typ(t))
   {
     case t_INT: case t_FRAC: case t_REAL: break;
     default: pari_err_TYPE("lfunhardy",t);
   }
-
-  ldata = lfunmisc_to_ldata_shallow(lmisc);
-  if (!is_linit(lmisc)) lmisc = ldata;
-  k = ldata_get_k(ldata);
-  d = ldata_get_degree(ldata);
-  dom = mkvec3(gmul2n(k, -1), gen_0, gabs(t,LOWDEFAULTPREC));
-  linit = lfuninit(lmisc, dom, 0, bitprec);
-  tech = linit_get_tech(linit);
+  if (lfunspec_OK(lmisc, mkcomplex(gen_0, t), &ldata) == 2)
+  {
+    k2 = ghalf;
+    z = mkcomplex(k2, t);
+    if (is_linit(lmisc)) linit = lmisc;
+    else
+    {
+      linit = lfunnoinit(ldata, bitprec);
+      ldata = linit_get_ldata(linit); /* make sure eno is included */
+    }
+    h = lfunlambdalarge(ldata, z, bitprec);
+    tech = linit_get_tech(linit);
+  }
+  else
+  {
+    GEN k = ldata_get_k(ldata);
+    GEN dom = mkvec3(gmul2n(k, -1), gen_0, gabs(t,LOWDEFAULTPREC));
+    if (!is_linit(lmisc)) lmisc = ldata;
+    linit = lfuninit(lmisc, dom, 0, bitprec);
+    tech = linit_get_tech(linit);
+    k2 = lfun_get_k2(tech);
+    z = mkcomplex(k2, t);
+    h = lfunlambda_OK(linit, z, dom, bitprec);
+  }
   w2 = lfun_get_w2(tech);
-  k2 = lfun_get_k2(tech);
   E = lfun_get_expot(tech); /* 4E = d(k2 - 1) + real(vecsum(Vga)) */
-  z = mkcomplex(k2, t);
+  d = ldata_get_degree(ldata);
   /* more accurate than garg: k/2 in Q */
   argz = gequal0(k2)? Pi2n(-1, prec): gatan(gdiv(t, k2), prec);
   prec = precision(argz);
   /* prec may have increased: don't lose accuracy if |z|^2 is exact */
   a = gsub(gmulsg(d, gmul(t, gmul2n(argz,-1))),
            gmul(E, glog(gnorm(z),prec)));
-  h = lfunlambda_OK(linit, z, dom, bitprec);
   if (!isint1(w2) && typ(ldata_get_dual(ldata))==t_INT)
     h = mulrealvec(h, w2);
   if (typ(h) == t_COMPLEX && gexpo(imag_i(h)) < -(bitprec >> 1))
@@ -2270,15 +2409,17 @@ lfunhardyzeros(void *E, GEN t)
 static GEN
 lfuncenterinit(GEN lmisc, double h, long m, long bitprec)
 {
+  GEN ldata = lfunmisc_to_ldata_shallow(lmisc);
   if (m < 0)
   { /* choose a sensible default */
-    if (!is_linit(lmisc) || linit_get_type(lmisc) != t_LDESC_INIT) m = 4;
-    else
+    m = 4;
+    if (is_linit(lmisc) && linit_get_type(lmisc) == t_LDESC_INIT)
     {
       GEN domain = lfun_get_domain(linit_get_tech(lmisc));
       m = domain_get_der(domain);
     }
   }
+  if (is_dirichlet(ldata)) m = 0;
   return lfuninit(lmisc, mkvec(dbltor(h)), m, bitprec);
 }
 
@@ -2341,7 +2482,7 @@ lfunzeros_i(struct lhardyz_t *S, GEN *pw, long *ct, GEN T1, GEN T2, long d,
     GEN D, T0, z;
     D = gcmp(T, pi2) < 0? cN
                         : gadd(cN, gmulsg(d, glog(gdiv(T, pi2), prec)));
-    D = gdiv(pi2div, D);
+    D = gdiv(pi2div, gmulsg(d, D));
     for(;;)
     {
       long s0;
@@ -2378,15 +2519,15 @@ lfunzeros(GEN ldata, GEN lim, long divz, long bitprec)
   }
   if (typ(lim) == t_VEC)
   {
-    if (lg(lim) != 3 || gcmp(gel(lim,1),gel(lim,2)) >= 0)
+    if (lg(lim) != 3 || gcmp(gel(lim, 1), gel(lim, 2)) >= 0)
       pari_err_TYPE("lfunzeros",lim);
-    h1 = gel(lim,1);
-    h2 = gel(lim,2);
+    h1 = gel(lim, 1);
+    h2 = gel(lim, 2);
     maxt = maxdd(fabs(gtodouble(h1)), fabs(gtodouble(h2)));
   }
   else
   {
-    if (gcmp(lim,gen_0) <= 0) pari_err_TYPE("lfunzeros",lim);
+    if (gcmp(lim, gen_0) <= 0) pari_err_TYPE("lfunzeros",lim);
     h1 = gen_0;
     h2 = lim;
     maxt = gtodouble(h2);

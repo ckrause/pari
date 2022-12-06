@@ -1551,17 +1551,18 @@ get_xinf(double beta)
 }
 /* optimize for zeta( s + it, prec ), assume |s-1| > 0.1
  * (if gexpo(u = s-1) < -5, we use the functional equation s->1-s) */
-static void
+static int
 optim_zeta(GEN S, long prec, long *pp, long *pn)
 {
   double s, t, alpha, beta, n, B;
   long p;
   if (typ(S) == t_REAL) {
-    s = rtodbl(S);
     t = 0.;
+    s = rtodbl(S);
   } else {
-    s = rtodbl(gel(S,1));
     t = fabs( rtodbl(gel(S,2)) );
+    if (t > 2500) return 0; /* lfunlarge */
+    s = rtodbl(gel(S,1));
   }
 
   B = prec2nbits_mul(prec, M_LN2);
@@ -1608,6 +1609,7 @@ optim_zeta(GEN S, long prec, long *pp, long *pn)
   *pp = p;
   *pn = (long)ceil(n);
   if (*pp < 0 || *pn < 0) pari_err_OVERFLOW("zeta");
+  return 1;
 }
 
 /* zeta(a*j+b), j=0..N-1, b>1, using sumalt. Johansonn's thesis, Algo 4.7.1 */
@@ -1823,9 +1825,14 @@ czeta(GEN s0, long prec)
     if (!funeq_factor) { set_avma(av0); return real_1(prec); }
     return gerepileupto(av0, funeq_factor);
   }
-  optim_zeta(s, prec, &lim, &nn);
+  if (!optim_zeta(s, prec, &lim, &nn))
+  {
+    long bit = prec2nbits(prec);
+    y = lfun(lfuninit(gen_1, cgetg(1,t_VEC), 0, bit), s, bit);
+    if (funeq_factor) y = gmul(y, funeq_factor);
+    set_avma(av); return affc_fixlg(y,res);
+  }
   if (DEBUGLEVEL>2) err_printf("lim, nn: [%ld, %ld]\n", lim, nn);
-
   ms = gneg(s);
   if (umuluu_le(nn, prec, 10000000))
   {

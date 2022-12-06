@@ -1,0 +1,20 @@
+Function: _parsumprimeWfunboth_worker
+Section: number_theoretical
+C-Name: parsumprimeWfunboth_worker
+Prototype: GGGGGG
+Help: _parsumprimeWfunboth_worker(gk,s,W1,W2,f,Nsqprec): auxiliary
+Doc: auxiliary
+
+Function: _parsqfboth_worker
+Section: number_theoretical
+C-Name: parsqfboth_worker
+Prototype: GGGGGG
+Help: _parsqfboth_worker(gk, vZ, vVQ, vV, P, Nsqstep): auxiliary.
+Doc: auxiliary
+
+Function: _int_h0_worker
+Section: transcendental
+C-Name: int_h0_worker
+Prototype: GGGGG
+Help: _int_h0_worker(j, sel, s, VCALL, gprec): auxiliary.
+Doc: auxiliary
