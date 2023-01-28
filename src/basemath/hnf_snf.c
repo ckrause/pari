@@ -1572,6 +1572,52 @@ findi_normalize(GEN Aj, GEN B, long j, GEN lambda)
 }
 
 static void
+subzi(GEN *a, GEN b)
+{
+  pari_sp av = avma;
+  b = subii(*a, b);
+  if (lgefint(b)<=lg(*a) && isonstack(*a)) { affii(b,*a); set_avma(av); }
+  else *a = b;
+}
+
+static void
+addzi(GEN *a, GEN b)
+{
+  pari_sp av = avma;
+  b = addii(*a, b);
+  if (lgefint(b)<=lg(*a) && isonstack(*a)) { affii(b,*a); set_avma(av); }
+  else *a = b;
+}
+
+/* x + y*z */
+static void
+addmulzii(GEN *x, GEN y, GEN z)
+{
+  long lx = lgefint(*x);
+  pari_sp av;
+  GEN t;
+  long ly = lgefint(y), lz;
+  if (ly == 2) return;
+  lz = lgefint(z);
+  av = avma; (void)new_chunk(lx+ly+lz); /*HACK*/
+  t = mulii(z, y);
+  set_avma(av); return addzi(x,t);
+}
+
+static void
+ZC_lincomb1z_i(GEN X, GEN Y, GEN v, long n)
+{
+  long i;
+  for (i = n; i; i--) addmulzii(&gel(X,i), gel(Y,i), v);
+}
+/* X <- X + v Y (elementary col operation) */
+static void
+ZC_lincomb1z(GEN X, GEN Y, GEN v)
+{
+  if (lgefint(v) != 2) return ZC_lincomb1z_i(X, Y, v, lg(X)-1);
+}
+
+static void
 reduce2(GEN A, GEN B, long k, long j, long *row0, long *row1, GEN lambda, GEN D)
 {
   GEN q;
@@ -1581,42 +1627,90 @@ reduce2(GEN A, GEN B, long k, long j, long *row0, long *row1, GEN lambda, GEN D)
   *row1 = findi_normalize(gel(A,k), B,k,lambda);
   if (*row0)
     q = truedivii(gcoeff(A,*row0,k), gcoeff(A,*row0,j));
-  else if (abscmpii(shifti(gcoeff(lambda,j,k), 1), gel(D,j)) > 0)
-    q = diviiround(gcoeff(lambda,j,k), gel(D,j));
   else
-    return;
+  {
+    pari_sp btop = avma;
+    int c = abscmpii(shifti(gcoeff(lambda,j,k), 1), gel(D,j));
+    set_avma(btop);
+    if (c > 0)
+      q = diviiround(gcoeff(lambda,j,k), gel(D,j));
+    else
+      return;
+  }
 
   if (signe(q))
   {
     GEN Lk = gel(lambda,k), Lj = gel(lambda,j);
     togglesign_safe(&q);
-    if (*row0) ZC_lincomb1_inplace(gel(A,k),gel(A,j),q);
-    if (B) ZC_lincomb1_inplace(gel(B,k),gel(B,j),q);
-    gel(Lk,j) = addmulii(gel(Lk,j), q, gel(D,j));
+    if (*row0) ZC_lincomb1z(gel(A,k),gel(A,j),q);
+    if (B) ZC_lincomb1z(gel(B,k),gel(B,j),q);
+    addmulzii(&gel(Lk,j), q, gel(D,j));
     if (is_pm1(q))
     {
       if (signe(q) > 0)
       {
         for (i=1; i<j; i++)
-          if (signe(gel(Lj,i))) gel(Lk,i) = addii(gel(Lk,i), gel(Lj,i));
+          if (signe(gel(Lj,i))) addzi(&gel(Lk,i), gel(Lj,i));
       }
       else
       {
         for (i=1; i<j; i++)
-          if (signe(gel(Lj,i))) gel(Lk,i) = subii(gel(Lk,i), gel(Lj,i));
+          if (signe(gel(Lj,i))) subzi(&gel(Lk,i), gel(Lj,i));
       }
     }
     else
     {
       for (i=1; i<j; i++)
-        if (signe(gel(Lj,i))) gel(Lk,i) = addmulii(gel(Lk,i), q, gel(Lj,i));
+        if (signe(gel(Lj,i))) addmulzii(&gel(Lk,i), q, gel(Lj,i));
     }
   }
 }
-
+static void
+affii2_or_copy_gc(pari_sp av, GEN x, GEN *y, GEN x1, GEN *y1)
+{
+  long l = lg(*y), l1 = lg(*y1);
+  if(x==*y && x1==*y1) return;
+  if (lgefint(x) <= l && isonstack(*y) && lgefint(x1) <= l1 && isonstack(*y1))
+  {
+    affii(x,*y);
+    affii(x1,*y1);
+    set_avma(av);
+  }
+  else if (lgefint(x) <= l && isonstack(*y))
+  {
+    affii(x,*y);
+    *y1 = gerepilecopy(av, x1);
+  }
+  else if (lgefint(x1) <= l1 && isonstack(*y1))
+  {
+    affii(x1,*y1);
+    *y = gerepilecopy(av, x);
+  }
+  else
+  {
+    *y  = cgeti(2*lg(x));
+    *y1 = cgeti(2*lg(x1));
+    affii(x,*y);
+    affii(x1,*y1);
+    gerepileall(av,2,y,y1);
+  }
+}
+static void
+affii_or_copy_gc(pari_sp av, GEN x, GEN *y)
+{
+  long l = lg(*y);
+  if (lgefint(x) <= l && isonstack(*y))
+  {
+    affii(x,*y);
+    set_avma(av);
+  }
+  else
+    *y = gerepileuptoint(av, x);
+}
 static void
 hnfswap(GEN A, GEN B, long k, GEN lambda, GEN D)
 {
+  pari_sp av;
   GEN t, p1, p2, Lk = gel(lambda,k);
   long i,j,n = lg(A);
 
@@ -1625,19 +1719,21 @@ hnfswap(GEN A, GEN B, long k, GEN lambda, GEN D)
   for (j=k-2; j; j--) swap(gcoeff(lambda,j,k-1), gel(Lk,j));
   for (i=k+1; i<n; i++)
   {
+    pari_sp btop = avma;
     GEN Li = gel(lambda,i);
+    if (signe(gel(Li,k-1))==0 && signe(gel(Li,k))==0) continue;
     p1 = mulii(gel(Li,k-1), gel(D,k));
     p2 = mulii(gel(Li,k), gel(Lk,k-1));
     t = subii(p1,p2);
-
     p1 = mulii(gel(Li,k), gel(D,k-2));
     p2 = mulii(gel(Li,k-1), gel(Lk,k-1));
-    gel(Li,k-1) = diviiexact(addii(p1,p2), gel(D,k-1));
-    gel(Li,k) = diviiexact(t, gel(D,k-1));
+    affii2_or_copy_gc(btop, diviiexact(addii(p1,p2), gel(D,k-1)),
+                      &gel(Li,k-1), diviiexact(t, gel(D,k-1)), &gel(Li,k));
   }
+  av = avma;
   p1 = mulii(gel(D,k-2), gel(D,k));
   p2 = sqri(gel(Lk,k-1));
-  gel(D,k-1) = diviiexact(addii(p1,p2), gel(D,k-1));
+  affii_or_copy_gc(av, diviiexact(addii(p1,p2), gel(D,k-1)), &gel(D,k-1));
 }
 
 /* reverse row order in matrix A, IN PLACE */
