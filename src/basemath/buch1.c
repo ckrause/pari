@@ -711,6 +711,13 @@ imag_be_honest(struct buch_quad *B)
   return 1;
 }
 
+static GEN
+dist(GEN e, GEN d, long prec)
+{
+  GEN t = qfr5_dist(e, d, prec);
+  return signe(d) < 0 ? mkcomplex(t, gen_1): t;
+}
+
 /* Real Quadratic fields */
 
 static void
@@ -825,7 +832,7 @@ CYCLE:
         for (i=1; i<lgsub; i++) col[B->subFB[i]] += fpd[i]-ex[i];
         sub_fact(B,col, form2);
         if (fpd[-2]) col[fpd[-2]]++;
-        d = qfr5_dist(subii(gel(form1,4),gel(form2,4)),
+        d = dist(subii(gel(form1,4),gel(form2,4)),
                       divrr(gel(form1,5),gel(form2,5)), prec);
       }
       else
@@ -833,7 +840,7 @@ CYCLE:
         for (i=1; i<lgsub; i++) col[B->subFB[i]] += -fpd[i]-ex[i];
         add_fact(B, col, form2);
         if (fpd[-2]) col[fpd[-2]]--;
-        d = qfr5_dist(addii(gel(form1,4),gel(form2,4)),
+        d = dist(addii(gel(form1,4),gel(form2,4)),
                       mulrr(gel(form1,5),gel(form2,5)), prec);
       }
       if (DEBUGLEVEL>2) err_printf(" %ldP",s);
@@ -852,10 +859,10 @@ CYCLE:
       col = gel(mat,++s);
       for (i=1; i<lgsub; i++) col[B->subFB[i]] = -ex[i];
       add_fact(B, col, form1);
-      d = qfr5_dist(gel(form1,4), gel(form1,5), prec);
+      d = dist(gel(form1,4), gel(form1,5), prec);
       if (DEBUGLEVEL>2) err_printf(" %ld",s);
     }
-    affrr(d, gel(C,s));
+    gaffect(d, gel(C,s));
     if (first)
     {
       if (s >= lim) continue;
@@ -897,21 +904,27 @@ real_be_honest(struct buch_quad *B)
 }
 
 static GEN
+crabs(GEN a)
+{
+  return signe(real_i(a)) < 0 ? gneg(a): a;
+}
+
+static GEN
 gcdreal(GEN a,GEN b)
 {
-  if (!signe(a)) return mpabs_shallow(b);
-  if (!signe(b)) return mpabs_shallow(a);
-  if (expo(a)<-5) return absr(b);
-  if (expo(b)<-5) return absr(a);
-  a = absr(a); b = absr(b);
-  while (expo(b) >= -5  && signe(b))
+  if (!signe(real_i(a))) return crabs(b);
+  if (!signe(real_i(b))) return crabs(a);
+  if (expo(real_i(a))<-5) return crabs(b);
+  if (expo(real_i(b))<-5) return crabs(a);
+  a = crabs(a); b = crabs(b);
+  while (expo(real_i(b)) >= -5  && signe(real_i(b)))
   {
     long e;
-    GEN r, q = gcvtoi(divrr(a,b),&e);
+    GEN r, q = gcvtoi(divrr(real_i(a),real_i(b)),&e);
     if (e > 0) return NULL;
-    r = subrr(a, mulir(q,b)); a = b; b = r;
+    r = gsub(a, gmul(q,b)); a = b; b = r;
   }
-  return mpabs_shallow(a);
+  return crabs(a);
 }
 
 static int
@@ -920,23 +933,22 @@ get_R(struct buch_quad *B, GEN C, long sreg, GEN z, GEN *ptR)
   GEN R = gen_1;
   double c;
   long i;
-
   if (B->PRECREG)
   {
-    R = mpabs_shallow(gel(C,1));
+    R = crabs(gel(C,1));
     for (i=2; i<=sreg; i++)
     {
       R = gcdreal(gel(C,i), R);
       if (!R) return fupb_PRECI;
     }
-    if (gexpo(R) <= -3)
+    if (gexpo(real_i(R)) <= -3)
     {
       if (DEBUGLEVEL>2) err_printf("regulator is zero.\n");
       return fupb_RELAT;
     }
     if (DEBUGLEVEL>2) err_printf("#### Tentative regulator: %Ps\n",R);
   }
-  c = gtodouble(gmul(z, R));
+  c = gtodouble(gmul(z, real_i(R)));
   if (c < 0.8 || c > 1.3) return fupb_RELAT;
   *ptR = R; return fupb_NONE;
 }
@@ -1093,7 +1105,7 @@ START:
     if (BQ.PRECREG) {
       for (i = triv+1; i<=need; i++) {
         gel(mat,i) = zero_zv(BQ.KC);
-        gel(extraC,i) = cgetr(BQ.PRECREG);
+        gel(extraC,i) = mkcomplex(cgetr(BQ.PRECREG), cgeti(3));
       }
       real_relations(&BQ, need - triv, &current, s,LIMC,mat + triv,extraC + triv);
     } else {
@@ -1103,7 +1115,6 @@ START:
       }
       imag_relations(&BQ, need - triv, &current, LIMC,mat + triv);
     }
-
     if (!W)
       W = hnfspec_i(mat,BQ.vperm,&dep,&B,&C,nsubFB);
     else
@@ -1144,7 +1155,10 @@ START:
   gen = get_clgp(&BQ,W,&cyc);
   gunclone(BQ.subFB);
   gunclone(BQ.powsubFB);
-  return mkvec4(h, cyc, gen, R);
+  if (BQ.PRECREG)
+    return mkvec5(h, cyc, gen, real_i(R), mpodd(imag_i(R)) ? gen_m1:gen_1);
+  else
+    return mkvec4(h, cyc, gen, real_i(R));
 }
 GEN
 Buchquad(GEN D, double c, double c2, long prec)

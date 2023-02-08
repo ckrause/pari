@@ -185,6 +185,7 @@ typv6(GEN x)
     }
   }
   if (typ(gel(x,2)) == t_COL && typ(gel(x,3)) == t_INT) return typ_PRID;
+  if (typ(gel(x,1)) == t_INT && typ(gel(x,2)) == t_VEC) return typ_QUA;
   return typ_NULL;
 }
 
