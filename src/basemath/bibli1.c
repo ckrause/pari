@@ -1092,6 +1092,22 @@ minim_alloc(long n, double ***q, GEN *x, double **y,  double **z, double **v)
   for (i=1; i<n; i++) (*q)[i] = (double*) stack_malloc_align(s, sizeof(double));
 }
 
+static void
+cvp_alloc(long n, double ***q, GEN *x, double **y,  double **z, double **v, double **t, double **tpre)
+{
+  long i, s;
+
+  *x = cgetg(n, t_VECSMALL);
+  *q = (double**) new_chunk(n);
+  s = n * sizeof(double);
+  *y = (double*) stack_malloc_align(s, sizeof(double));
+  *z = (double*) stack_malloc_align(s, sizeof(double));
+  *v = (double*) stack_malloc_align(s, sizeof(double));
+  *t = (double*) stack_malloc_align(s, sizeof(double));
+  *tpre = (double*) stack_malloc_align(s, sizeof(double));
+  for (i=1; i<n; i++) (*q)[i] = (double*) stack_malloc_align(s, sizeof(double));
+}
+
 static GEN
 ZC_canon(GEN V)
 {
@@ -1459,11 +1475,209 @@ minim0_dolll(GEN a, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
   return gerepilecopy(av, mkvec3(stoi(s<<1), r, L));
 }
 
+/* Closest vectors for the integral definite quadratic form: a.
+ * Code bases on minim0_dolll
+ * Result u:
+ *   u[1]= Number of closest vectors of square distance <= BORNE
+ *   u[2]= maximum squared distance found
+ *   u[3]= list of vectors found (at most STOCKMAX, unless NULL)
+ *
+ *  If BORNE = NULL or <= 0.: returns closest vectors.
+ *  flag = min_ALL,   as above
+ *  flag = min_FIRST, exits when first suitable vector is found.
+*/
+static GEN
+cvp0_dolll(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
+{
+  GEN x, u, r, L;
+  GEN uinv, tv;
+  GEN pd;
+  long n = lg(a)-1, nt = lg(target)-1, i, j, k, s, maxrank;
+  pari_sp av = avma, av1;
+  double p,maxnorm,BOUND,*v,*y,*z,*tt,**q, *tpre, sBORNE;
+  const double eps = 1e-10;
+  int stockall = 0;
+  struct qfvec qv;
+  int done = 0;
+  if (typ(target) != t_VEC && typ(target) != t_COL ) pari_err_TYPE("cvp0",target);
+  if (n != nt) pari_err_TYPE("cvp0 [different dimensions]",target);
+  if (!BORNE)
+    sBORNE = 0.;
+  else
+  {
+    if (typ(BORNE) != t_REAL && typ(BORNE) != t_INT && typ(BORNE) != t_FRAC ) pari_err_TYPE("cvp0",BORNE);
+    sBORNE = gtodouble(BORNE); set_avma(av);
+    if (sBORNE < 0.) sBORNE = 0.;
+  }
+  if (!STOCKMAX)
+  {
+    stockall = 1;
+    maxrank = 200;
+  }
+  else
+  {
+    STOCKMAX = gfloor(STOCKMAX);
+    if (typ(STOCKMAX) != t_INT) pari_err_TYPE("cvp0",STOCKMAX);
+    maxrank = itos(STOCKMAX);
+    if (maxrank < 0)
+      pari_err_TYPE("cvp0 [negative number of vectors]",STOCKMAX);
+  }
+
+  L = (flag==min_ALL) ? new_chunk(1+maxrank) : NULL;
+  if (n == 0 ) {
+    if (flag==min_ALL) {
+      retmkvec3(gen_0, gen_0, cgetg(1, t_MAT));
+    }
+    else {
+      return cgetg(1,t_VEC);
+    }
+  }
+
+  cvp_alloc(n+1, &q, &x, &y, &z, &v, &tt, &tpre);
+
+  forqfvec_init_dolll(&qv, &a, dolll);
+  av1 = avma;
+  r = qv.r;
+  u = qv.u;
+  for (j=1; j<=n; j++)
+  {
+    v[j] = rtodbl(gcoeff(r,j,j));
+    for (i=1; i<j; i++) q[i][j] = rtodbl(gcoeff(r,i,j)); /* |.| <= 1/2 */
+  }
+
+  if( dolll ) {
+    /* compute U^-1 * tt */
+    uinv = ZM_inv(u, &pd);
+    tv = RgM_RgC_mul(uinv, target);
+    for (j=1; j<=n; j++)
+    {
+      tt[j] = gtodouble(gel(tv, j));
+    }
+  } else {
+    for (j=1; j<=n; j++)
+    {
+      tt[j] = gtodouble(gel(target, j));
+    }
+  }
+
+  if (sBORNE) maxnorm = 0.;
+  else
+  {
+    GEN B = gcoeff(a,1,1);
+    for (i=2; i<=n; i++)
+    {
+      B = addrr(B,gcoeff(a,i,i));
+    }
+    maxnorm = -1.; /* don't update maxnorm */
+    if (is_bigint(B)) return NULL;
+    sBORNE = 0.;
+    for(i=1; i<=n; i++)
+      sBORNE += v[i];
+  }
+  BOUND = sBORNE * (1 + eps);
+
+  /* precompute contribution of tt to z[l] */
+
+  for(k=1; k <= n; k++) {
+    tpre[k] = -tt[k];
+    for(j=k+1; j<=n; j++) {
+      tpre[k] -= q[k][j] * tt[j];
+    }
+  }
+
+  s = 0;
+  k = n; y[n] = 0;
+  z[n] = tpre[n];
+  x[n] = (long)floor(sqrt(BOUND/v[n])-z[n]);
+  for(;;x[1]--)
+  {
+    do
+    {
+      if (k>1)
+      {
+        long l = k-1;
+        z[l] = tpre[l];
+        for (j=k; j<=n; j++) z[l] += q[l][j]*x[j];
+        p = (double)x[k] + z[k];
+        y[l] = y[k] + p*p*v[k];
+        x[l] = (long)floor(sqrt((BOUND-y[l])/v[l])-z[l]);
+        k = l;
+      }
+      for(;;)
+      {
+        p = (double)x[k] + z[k];
+        if (y[k] + p*p*v[k] <= BOUND) break;
+        if (k >= n) {
+          done = 1;
+          break;
+        }
+        k++; x[k]--;
+      }
+    }
+    while (k > 1 && !done);
+    if (done) break;
+
+    p = (double)x[1] + z[1];
+    p = y[1] + p*p*v[1]; /* norm(x-target) */
+    if (maxnorm >= 0)
+    {
+      if (p > maxnorm) maxnorm = p;
+    }
+    else
+    { /* maxnorm < 0 : only look for closests vectors */
+      if (p * (1+10*eps) < sBORNE) {
+        sBORNE = p; set_avma(av1);
+        BOUND = sBORNE * (1+eps);
+        L = new_chunk(maxrank+1);
+        s = 0;
+      }
+    }
+    s++;
+
+    switch(flag)
+    {
+      case min_FIRST:
+        if (dolll) x = ZM_zc_mul(u,x);
+        return gerepilecopy(av, mkvec2(dbltor(p), x));
+
+      case min_ALL:
+        if (s > maxrank && stockall) /* overflow */
+        {
+          long maxranknew = maxrank << 1;
+          GEN Lnew = new_chunk(1 + maxranknew);
+          for (i=1; i<=maxrank; i++) Lnew[i] = L[i];
+          L = Lnew; maxrank = maxranknew;
+        }
+        if (s<=maxrank) gel(L,s) = leafcopy(x);
+        break;
+    }
+  }
+  switch(flag)
+  {
+    case min_FIRST:
+      set_avma(av); return cgetg(1,t_VEC);
+  }
+  r = (maxnorm >= 0) ? dbltor(maxnorm): dbltor(sBORNE);
+  k = minss(s,maxrank);
+  L[0] = evaltyp(t_MAT) | evallg(k + 1);
+  for (j=1; j<=k; j++)
+    gel(L,j) = (dolll==1) ? ZM_zc_mul(u, gel(L,j)) : zc_to_ZC(gel(L,j));
+  return gerepilecopy(av, mkvec3(stoi(s), r, L));
+}
+
 static GEN
 minim0(GEN a, GEN BORNE, GEN STOCKMAX, long flag)
 {
   GEN v = minim0_dolll(a, BORNE, STOCKMAX, flag, 1);
   if (!v) pari_err_PREC("qfminim");
+  return v;
+}
+
+static GEN
+cvp0(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag)
+{
+  GEN v = cvp0_dolll(a, target, BORNE, STOCKMAX, flag, 1);
+  if (!v) pari_err_PREC("qfcvp");
   return v;
 }
 
@@ -1499,6 +1713,21 @@ qfminim0(GEN a, GEN borne, GEN stockmax, long flag, long prec)
       return a;
     }
     default: pari_err_FLAG("qfminim");
+  }
+  return NULL; /* LCOV_EXCL_LINE */
+}
+
+
+GEN
+qfcvp0(GEN a, GEN target, GEN borne, GEN stockmax, long flag)
+{
+  switch(flag)
+  {
+    case 0: return cvp0(a,target,borne,stockmax,min_ALL);
+    case 1: return cvp0(a,target,borne,gen_0   ,min_FIRST);
+    /* case 2:
+       TODO: more robust finke_pohst enumeration */
+    default: pari_err_FLAG("qfcvp");
   }
   return NULL; /* LCOV_EXCL_LINE */
 }

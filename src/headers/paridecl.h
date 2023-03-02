@@ -2797,6 +2797,7 @@ GEN     minim(GEN a, GEN borne, GEN stockmax);
 GEN     minim_raw(GEN a, GEN borne, GEN stockmax);
 GEN     minim_zm(GEN a, GEN borne, GEN stockmax);
 GEN     minim2(GEN a, GEN borne, GEN stockmax);
+GEN     qfcvp0(GEN a, GEN target, GEN borne, GEN stockmax,long flag);
 GEN     qfminim0(GEN a, GEN borne, GEN stockmax,long flag, long prec);
 GEN     qfperfection(GEN a);
 GEN     qfrep0(GEN a, GEN borne, long flag);

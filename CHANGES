@@ -56,6 +56,7 @@ XR   9- new GP function bnrstarkunit
     11- [libpari] Z_to_famat, Q_to_famat
 BA  12- new GP function hyperellordinate
 BA  13- [libpari] closure_callgen0
+WvW 14- new GP function qfcvp
 
 Done for version 2.16.1 (released 04/01/2024):
   Fixed
