@@ -715,6 +715,7 @@ GEN     ZXXV_to_FlxXV(GEN V, ulong p, long v);
 const struct bb_group * get_FlxqE_group(void **E, GEN a4, GEN a6, GEN T, ulong p);
 GEN     RgE_to_FlxqE(GEN x, GEN T, ulong p);
 GEN     random_FlxqE(GEN a4, GEN a6, GEN T, ulong p);
+long    polisclass(GEN H);
 
 /* FpE.c */
 

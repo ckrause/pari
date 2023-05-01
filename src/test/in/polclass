@@ -32,7 +32,10 @@ hash_ZX(pol) =
 check_disc(D, hash, seed = 0) =
 {
    if (seed != 0, setrand(seed));
-   my (h = hash_ZX(polclass(D[1], D[2])));
+   my(P = polclass(D[1], D[2]));
+   if (D[2]==0 && polisclass(P)!=D[1],
+     error("polisclass(polclass(",D[1],"))!=",D[1]));
+   my (h = hash_ZX(P));
    if (h != hash,
        error("Wrong class polynomial for D = ", D[1], ", inv = ", D[2]),
              "hash = ", h);
