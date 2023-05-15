@@ -45,6 +45,7 @@ BA  14- [libpari] Fp_ellj_to_a4a6
 BA  15- [libpari] ec_half_deriv_2divpol
 BA  16- New GP functions polisclass, elliscm
 BA  17- [libpari] elljsupersingular_FpXQ
+BA  18- New GP function ellsupersingularj
 
 Done for version 2.16.0 (released 25/02/2023):
   Fixed

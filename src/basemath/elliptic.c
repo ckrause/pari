@@ -7336,6 +7336,37 @@ ellissupersingular(GEN E, GEN p)
   return 0; /*LCOV_EXCL_LINE*/
 }
 
+GEN
+ellsupersingularj(GEN a)
+{
+  pari_sp av = avma;
+  GEN r, T, p;
+  long d;
+  switch(typ(a))
+  {
+    case t_INT:
+      p = a;
+      T = init_Fq(p, 2, fetch_user_var("w"));
+      d = 2;
+      break;
+    case t_FFELT:
+      p = FF_p_i(a); T = FF_mod(a); d = degpol(T);
+      if (!odd(d))
+      {
+        if (d != 2)
+          T = init_Fq(p, 2, varn(T));
+        break;
+      }
+    default: /* FALL THROUGH */
+      pari_err_TYPE("ellsupersingular", a);
+      return NULL; /* LCOV_EXCL_LINE */
+  }
+  r = Fq_to_FF(ellsupersingularj_FpXQ(T, p), Tp_to_FF(T, p));
+  if (d != 2)
+    r = ffmap(ffembed(r, a), r);
+  return gerepilecopy(av, r);
+}
+
 /* n <= 4, N is the characteristic of the base ring or NULL (char 0) */
 static GEN
 elldivpol4(GEN e, GEN N, long n, long v)

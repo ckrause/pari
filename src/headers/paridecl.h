@@ -3326,6 +3326,7 @@ GEN     ellsaturation(GEN E, GEN P, long B, long prec);
 GEN     ellsea(GEN E, long smallfact);
 GEN     ellsigma(GEN om, GEN z, long flag, long prec);
 GEN     ellsub(GEN e, GEN z1, GEN z2);
+GEN     ellsupersingularj(GEN a);
 GEN     elltamagawa(GEN e);
 GEN     elltaniyama(GEN e, long prec);
 GEN     elltatepairing(GEN E, GEN t, GEN s, GEN m);
