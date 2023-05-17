@@ -477,6 +477,10 @@ parameters $a_4$ and $a_6$ are given as \typ{INT}s when required.
 \fun{GEN}{Fp_ellj}{GEN a4, GEN a6, GEN p}
 returns the $j$-invariant of the curve $E$.
 
+\fun{void}{Fp_ellj_to_a4a6}{GEN j, GEN p, GEN *pa4, GEN *pa6}
+sets \kbd{*pa4} to $a_4$ and \kbd{*pa6} to $a_6$ where $a_4$ and $a_6$
+define a fixed elliptic curve with $j$-invariant $j$.
+
 \fun{int}{Fp_elljissupersingular}{GEN j, GEN p} returns $1$ if $j$ is the
 $j$-invariant of a supersingular curve over $\F_p$, $0$ otherwise.
 

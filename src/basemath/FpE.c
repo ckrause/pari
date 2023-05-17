@@ -1386,6 +1386,21 @@ Fp_ellj(GEN a4, GEN a6, GEN p)
   return gerepileuptoint(av,Fp_div(gel(z,1),gel(z,2),p));
 }
 
+void
+Fp_ellj_to_a4a6(GEN j, GEN p, GEN *pt_a4, GEN *pt_a6)
+{
+  if (signe(j) == 0)    { *pt_a4 = gen_0; *pt_a6 = gen_1; }
+  else if (equaliu(j,umodiu(1728,p))) { *pt_a4 = gen_1; *pt_a6 = gen_0; }
+  else
+  {
+    GEN k = Fp_sub(utoi(1728), j, p);
+    GEN kj = Fp_mul(k, j, p);
+    GEN k2j = Fp_mul(kj, k, p);
+    *pt_a4 = Fp_mulu(kj, 3, p);
+    *pt_a6 = Fp_mulu(k2j, 2, p);
+  }
+}
+
 static GEN /* Only compute a mod p, so assume p>=17 */
 Fp_ellcard_CM(GEN a4, GEN a6, GEN p)
 {

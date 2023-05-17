@@ -725,6 +725,7 @@ GEN     Fp_elldivpol(GEN a4, GEN a6, long n, GEN p);
 GEN     Fp_ellgens(GEN a4, GEN a6, GEN ch, GEN D, GEN m, GEN p);
 GEN     Fp_ellgroup(GEN a4, GEN a6, GEN N, GEN p, GEN *pt_m);
 GEN     Fp_ellj(GEN a4, GEN a6, GEN p);
+void    Fp_ellj_to_a4a6(GEN j, GEN p, GEN *pt_a4, GEN *pt_a6);
 int     Fp_elljissupersingular(GEN j, GEN p);
 void    Fp_elltwist(GEN a4, GEN a6, GEN p, GEN *pt_a4, GEN *pt_a6);
 GEN     Fp_ffellcard(GEN a4, GEN a6, GEN q, long n, GEN p);

@@ -516,20 +516,6 @@ cert_get_J(GEN x)
   return Fp_ellj(a, b, N);
 }
 
-/* Given J, N, set A = 3*J*(1728-J) mod N, B = 2*J*(1728-J)^2 mod N */
-static void
-Fp_ellfromj(GEN j, GEN N, GEN *A, GEN *B)
-{
-  GEN k, jk;
-  j = Fp_red(j, N);
-  if (isintzero(j)) { *A = gen_0; *B = gen_1; return; }
-  if (absequalui(umodui(1728,N), j)) { *A = gen_1; *B = gen_0; return; }
-  k = Fp_sub(utoi(1728), j, N);
-  jk = Fp_mul(j, k, N);
-  *A = Fp_mulu(jk, 3, N);
-  *B = Fp_mulu(Fp_mul(j, Fp_sqr(k,N), N), 2, N);
-}
-
 /* "Twist factor". Does not cover J = 0, 1728 */
 static GEN
 cert_get_lambda(GEN z)
@@ -539,7 +525,7 @@ cert_get_lambda(GEN z)
   N = cert_get_N(z);
   a = cert_get_a4(z);
   b = cert_get_a6(z);
-  Fp_ellfromj(J, N, &A, &B);
+  Fp_ellj_to_a4a6(J, N, &A, &B);
   return Fp_div(Fp_mul(a,B,N), Fp_mul(b,A,N), N);
 }
 
@@ -609,7 +595,8 @@ j0_find_g(GEN N)
 static GEN
 find_EP(GEN N, long D, GEN q, GEN g, GEN J, GEN s)
 {
-  GEN A0, B0; Fp_ellfromj(J, N, &A0, &B0);
+  GEN A0, B0;
+  Fp_ellj_to_a4a6(J, N, &A0, &B0);
   for(;;)
   { /* expect one iteration: not worth saving the A's and B's */
     GEN gg, v, A = A0, B = B0;
