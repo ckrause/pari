@@ -1389,8 +1389,9 @@ Fp_ellj(GEN a4, GEN a6, GEN p)
 void
 Fp_ellj_to_a4a6(GEN j, GEN p, GEN *pt_a4, GEN *pt_a6)
 {
+  j = modii(j, p);
   if (signe(j) == 0)    { *pt_a4 = gen_0; *pt_a6 = gen_1; }
-  else if (equaliu(j,umodiu(1728,p))) { *pt_a4 = gen_1; *pt_a6 = gen_0; }
+  else if (equaliu(j,umodui(1728,p))) { *pt_a4 = gen_1; *pt_a6 = gen_0; }
   else
   {
     GEN k = Fp_sub(utoi(1728), j, p);
