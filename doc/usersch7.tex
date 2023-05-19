@@ -853,6 +853,10 @@ the $j$-invariant of a supersingular curve over $\F_p[X]/(T)$, $0$ otherwise.
 \fun{int}{Fq_elljissupersingular}{GEN j, GEN T, GEN p}
 as \kbd{FpXQ\_elljissupersingular} but \kbd{j} can be a \typ{INT}.
 
+\fun{GEN}{ellsupersingularj_FpXQ}{GEN T, GEN p}
+$T$ being a \kbd{ZX} of degree $2$, return a random supersingular $j$-invariant
+in $\F_p[X]/T$.
+
 \fun{GEN}{FpXQ_ellcard}{GEN a4, GEN a6, GEN T, GEN p}
 returns the order of $E(\F_p[X]/(T))$.
 

@@ -1983,6 +1983,51 @@ Fq_elljissupersingular(GEN j, GEN T, GEN p)
 { return typ(j)==t_INT? Fp_elljissupersingular(j, p)
                       : FpXQ_elljissupersingular(j, T, p); }
 
+static ulong
+find_inert_disc(GEN p)
+{
+  ulong d = 3;
+  while(1)
+  {
+    if(krosi(-d,p)==-1) return d;
+    d++;
+    if(krosi(-d,p)==-1) return d;
+    d += 3;
+  }
+}
+
+static GEN
+ellsupersingularj_easy_FpXQ(GEN T, GEN p)
+{
+  long d;
+  GEN R;
+  if (cmpiu(p, 5) <= 0) return gen_0;
+  d = find_inert_disc(p);
+  R = FpXQX_roots(polclass(stoi(-d), 0, 0), T, p);
+  return gel(R,1);
+}
+
+GEN
+ellsupersingularj_FpXQ(GEN T, GEN p)
+{
+  GEN j, j2, R, Phi2;
+  long i, ep, lp;
+  if (cmpiu(p, 5) <= 0) return pol_0(get_FpX_var(T));
+  j2 = ellsupersingularj_easy_FpXQ(T, p);
+  Phi2 = polmodular_ZXX(2,0,0,1);
+  R = FpXQX_roots(FqXY_evalx(Phi2, j2, T, p), T, p);
+  j = gel(R,1+random_Fl(lg(R)-1));
+  ep = expi(p); lp = ep + random_Fl(ep);
+  for (i = 1; i <= lp; i++)
+  {
+    GEN Phi2_j = FqX_div_by_X_x(FqXY_evalx(Phi2, j, T, p), j2, T, p, NULL);
+    R = FqX_quad_root(Phi2_j, T, p);
+    if (!R) pari_err_PRIME("ellsupersingularj",p);
+    j2 = j; j = random_bits(1) ? R: Fq_neg(Fq_add(gel(Phi2_j,3), R, T, p), T, p);
+  }
+  return j;
+}
+
 /***********************************************************************/
 /**                                                                   **/
 /**                           Point counting                          **/
