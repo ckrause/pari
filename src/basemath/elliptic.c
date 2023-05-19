@@ -6043,6 +6043,28 @@ ellQ_get_CM(GEN e)
   return CM;
 }
 
+static long
+ellnf_get_CM(GEN E)
+{
+  long av = avma;
+  GEN j = ell_get_j(E), nf = ellnf_get_nf(E);
+  GEN P = minpoly(basistoalg(nf, j), 0);
+  return gc_long(av, polisclass(P));
+}
+
+long
+elliscm(GEN E)
+{
+  checkell(E);
+  switch(ell_get_type(E))
+  {
+    case t_ELL_Q:  return ellQ_get_CM(E);
+    case t_ELL_NF: return ellnf_get_CM(E);
+    default: pari_err_TYPE("elliscm", E);
+             return 0; /*LCOV_EXCL_LINE*/
+  }
+}
+
 /* E/Q or Qp, return cardinality including the (possible) ramified point */
 static GEN
 ellcard_ram(GEN E, GEN p, int *good_red)

@@ -3294,6 +3294,7 @@ GEN     ellheightoo(GEN e, GEN z, long prec);
 GEN     ellinit(GEN x, GEN p, long prec);
 GEN     ellintegralmodel(GEN e, GEN *pv);
 GEN     ellintegralmodel_i(GEN e, GEN *pv);
+long    elliscm(GEN e);
 GEN     ellisoncurve(GEN e, GEN z);
 GEN     ellisotree(GEN e);
 int     ellissupersingular(GEN x, GEN p);
