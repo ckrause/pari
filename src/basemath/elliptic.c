@@ -347,7 +347,7 @@ ec_2divpol_evalx(GEN E, GEN x)
   GEN b2 = ell_get_b2(E), x4 = gmul2n(x,2), t1, t2;
   GEN b42 = gmul2n(ell_get_b4(E), 1);
   GEN b6 = ell_get_b6(E);
-  if (ell_get_type(E) == t_ELL_NF)
+  if (ell_get_type(E) == t_ELL_NF && typ(x)==t_COL)
   {
     GEN nf = ellnf_get_nf(E);
     t1 = nfmul(nf, nfadd(nf, x4, b2), x);
