@@ -797,7 +797,7 @@ ellpadicfrobenius(GEN E, ulong p, long n)
     case t_ELL_Qp: if (equaliu(ellQp_get_p(E), p)) break;
     default: pari_err_TYPE("ellpadicfrobenius", E);
   }
-  return hyperellpadicfrobenius(ec_bmodel(E), p, n);
+  return hyperellpadicfrobenius(ec_bmodel(E,0), p, n);
 }
 
 /* s2 = (b_2-E_2)/12 */

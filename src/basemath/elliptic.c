@@ -200,10 +200,11 @@ checkcoordch(GEN z)
 
 /* 4 X^3 + b2 X^2 + 2b4 X + b6 */
 GEN
-ec_bmodel(GEN e)
+ec_bmodel(GEN e, long v)
 {
   GEN b2 = ell_get_b2(e), b6 = ell_get_b6(e), b42 = gmul2n(ell_get_b4(e),1);
-  return mkpoln(4, utoipos(4), b2, b42, b6);
+  GEN P = mkpoln(4, utoipos(4), b2, b42, b6);
+  setvarn(P, v); return P;
 }
 
 /* X^4 - b4*X^2 - 2b6*X - b8 */
@@ -221,7 +222,7 @@ invcmp(void *E, GEN x, GEN y) { (void)E; return -gcmp(x,y); }
 static GEN
 doellR_roots_i(GEN e, long prec, long prec0)
 {
-  GEN d1, d2, d3, e1, e2, e3, R = cleanroots(ec_bmodel(e), prec);
+  GEN d1, d2, d3, e1, e2, e3, R = cleanroots(ec_bmodel(e,0), prec);
   long s = ellR_get_sign(e);
   if (s > 0)
   { /* sort 3 real roots in decreasing order */
@@ -5897,13 +5898,6 @@ static long
 rootnovalp(GEN z, ulong p, long prec)
 { return mpodd(ground(gdiv(glog(z, prec), glog(utoi(p),prec)))); }
 
-static GEN
-ec_bmodel_var(GEN E, long v)
-{
-  GEN P = ec_bmodel(E);
-  setvarn(P,v); return P;
-}
-
 static long
 ellnf_rootno_global(GEN E)
 {
@@ -5913,7 +5907,7 @@ ellnf_rootno_global(GEN E)
   long v, var = fetch_var_higher();
   GEN F;
   E = ellintegralmodel_i(E, NULL);
-  F = nfroots(nf, ec_bmodel_var(E, var));
+  F = nfroots(nf, ec_bmodel(E, var));
   if (lg(F)>1)
   {
     GEN Et = ellnf2isog(E, gel(F,1));
@@ -5923,7 +5917,7 @@ ellnf_rootno_global(GEN E)
   } else
   {
     GEN D = deg2pol_shallow(gen_1, gen_0, gneg(ell_get_disc(E)), var);
-    GEN P = RgX_divs(RgX_rescale(ec_bmodel_var(E, var), utoi(4)), 4);
+    GEN P = RgX_divs(RgX_rescale(ec_bmodel(E, var), utoi(4)), 4);
     GEN c = ellnf_reladelicvolume(E, P, gmul2n(pol_x(var),-2), prec);
     GEN cL = gel(c,1), cLt = gel(c,2);
     GEN F = nfroots(nf, D);
@@ -7382,8 +7376,7 @@ elldivpol(GEN e, long n0, long v)
     f = elldivpol4(e, N, n, v);
   else
   {
-    GEN d2 = ec_bmodel(e); /* (2y + a1x + a3)^2 mod E */
-    setvarn(d2,v);
+    GEN d2 = ec_bmodel(e,v); /* (2y + a1x + a3)^2 mod E */
     if (N && !mod2(N)) { gel(d2,5) = modsi(4,N); d2 = normalizepol(d2); }
     if (n <= 4)
       f = elldivpol4(e, N, n, v);
@@ -7407,8 +7400,7 @@ ellxn(GEN e, long n, long v)
   N = characteristic(D);
   if (!signe(N)) N = NULL;
   if (n < 0) n = -n;
-  d2 = ec_bmodel(e); /* (2y + a1x + 3)^2 mod E */
-  setvarn(d2,v);
+  d2 = ec_bmodel(e,v); /* (2y + a1x + 3)^2 mod E */
   if (N && !mod2(N)) { gel(d2,5) = modsi(4,N); d2 = normalizepol(d2); }
   if (n == 0)
   {

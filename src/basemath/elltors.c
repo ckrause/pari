@@ -150,7 +150,7 @@ t2points(GEN E, GEN *f2)
 {
   long i, l;
   GEN v;
-  *f2 = ec_bmodel(E);
+  *f2 = ec_bmodel(E,0);
   v = nfrootsQ(*f2); l = lg(v);
   for (i = 1; i < l; i++)
   {

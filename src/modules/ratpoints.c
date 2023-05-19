@@ -1879,7 +1879,7 @@ ellratpoints(GEN E, GEN h, long flag)
   if (!RgV_is_QV(vecslice(E,1,5))) pari_err_TYPE("ellratpoints",E);
   a1 = ell_get_a1(E);
   a3 = ell_get_a3(E);
-  L = QX_hyperellratpoints(ec_bmodel(E), h, flag|2L, &den);
+  L = QX_hyperellratpoints(ec_bmodel(E,0), h, flag|2L, &den);
   l = lg(L);
   for (i = 1; i < l; i++)
   {
