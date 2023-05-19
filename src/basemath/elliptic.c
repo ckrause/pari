@@ -209,10 +209,11 @@ ec_bmodel(GEN e, long v)
 
 /* X^4 - b4*X^2 - 2b6*X - b8 */
 GEN
-ec_phi2(GEN e)
+ec_phi2(GEN e, long v)
 {
   GEN b4 = ell_get_b4(e), b6 = ell_get_b6(e), b8 = ell_get_b8(e);
-  return mkpoln(5, gen_1, gen_0, gneg(b4), gmul2n(gneg(b6),1), gneg(b8));
+  GEN P = mkpoln(5, gen_1, gen_0, gneg(b4), gmul2n(gneg(b6),1), gneg(b8));
+  setvarn(P, v); return P;
 }
 
 static int
@@ -7415,8 +7416,7 @@ ellxn(GEN e, long n, long v)
   else if (n == 2)
   {
     A = d2;
-    B = ec_phi2(e);
-    setvarn(B,v);
+    B = ec_phi2(e, v);
   }
   else
   {

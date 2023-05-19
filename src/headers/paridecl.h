@@ -3237,7 +3237,7 @@ GEN     ec_dFdx_evalQ(GEN E, GEN Q);
 GEN     ec_dFdy_evalQ(GEN E, GEN Q);
 GEN     ec_dmFdy_evalQ(GEN e, GEN Q);
 GEN     ec_half_deriv_2divpol_evalx(GEN E, GEN x);
-GEN     ec_phi2(GEN e);
+GEN     ec_phi2(GEN e, long v);
 int     ell_is_integral(GEN E);
 long    ellQ_get_CM(GEN e);
 GEN     ellQ_get_N(GEN e);

@@ -21,7 +21,8 @@ BA  16- ellisogeny over a nf -> inconsistent variables error
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output
 HC   2- dirpowerssum: add optional flag 'both' [also in library mode]
-BA   3- RgX_halfgcd now only return the matrix. Use RgX_halfgcd_all
+BA   3- [libpari] RgX_halfgcd now only return the matrix. Use RgX_halfgcd_all
+BA   4- [libpari] ec_bmodel, ec_phi2 now take a variable number
 
   Added
      1- [libpari] nfeltembed_i
