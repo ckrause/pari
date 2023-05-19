@@ -387,6 +387,10 @@ ec_3divpol_evalx(GEN E, GEN x)
  *   6 xQ^2 + E.b2 xQ + E.b4
  * which, if f is the curve equation, is 2 dfdx - E.a1 dfdy evaluated at Q */
 GEN
+ec_half_deriv_2divpol(GEN E, long v)
+{ return deg2pol_shallow(utoi(6), ell_get_b2(E), ell_get_b4(E), v); }
+
+GEN
 ec_half_deriv_2divpol_evalx(GEN E, GEN x)
 {
   pari_sp av = avma;

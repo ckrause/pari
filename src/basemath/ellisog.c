@@ -464,7 +464,7 @@ non_two_torsion_abscissa(GEN E, GEN h0, long vx)
   dh0 = RgX_deriv(h0);
   ddh0 = RgX_deriv(dh0);
   t = ec_bmodel(E, vx);
-  u = ec_half_deriv_2divpol_evalx(E, pol_x(vx));
+  u = ec_half_deriv_2divpol(E, vx);
   t1 = RgX_sub(RgX_sqr(dh0), RgX_mul(ddh0, h0));
   t2 = RgX_mul(u, RgX_mul(h0, dh0));
   t3 = RgX_mul(RgX_sqr(h0),
