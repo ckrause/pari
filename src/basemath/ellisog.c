@@ -456,33 +456,33 @@ derivhasse(GEN f, ulong j)
 }
 
 static GEN
-non_two_torsion_abscissa(GEN E, GEN h0, GEN x)
+non_two_torsion_abscissa(GEN E, GEN h0, long vx)
 {
   GEN mp1, dh0, ddh0, t, u, t1, t2, t3;
   long m = degpol(h0);
   mp1 = gel(h0, m + 1); /* negative of first power sum */
   dh0 = RgX_deriv(h0);
   ddh0 = RgX_deriv(dh0);
-  t = ec_2divpol_evalx(E, x);
-  u = ec_half_deriv_2divpol_evalx(E, x);
+  t = ec_bmodel(E, vx);
+  u = ec_half_deriv_2divpol_evalx(E, pol_x(vx));
   t1 = RgX_sub(RgX_sqr(dh0), RgX_mul(ddh0, h0));
   t2 = RgX_mul(u, RgX_mul(h0, dh0));
   t3 = RgX_mul(RgX_sqr(h0),
-               deg1pol_shallow(stoi(2*m), gmulsg(2L, mp1), varn(x)));
+               deg1pol_shallow(stoi(2*m), gmulsg(2L, mp1), vx));
   /* t * (dh0^2 - ddh0*h0) - u*dh0*h0 + (2*m*x - 2*s1) * h0^2); */
   return RgX_add(RgX_sub(RgX_mul(t, t1), t2), t3);
 }
 
 static GEN
-isog_abscissa(GEN E, GEN kerp, GEN h0, GEN x, GEN two_tors)
+isog_abscissa(GEN E, GEN kerp, GEN h0, long vx, GEN two_tors)
 {
   GEN f0, f2, h2, t1, t2, t3;
-  f0 = (degpol(h0) > 0)? non_two_torsion_abscissa(E, h0, x): pol_0(varn(x));
+  f0 = (degpol(h0) > 0)? non_two_torsion_abscissa(E, h0, vx): pol_0(vx);
   f2 = gel(two_tors, 3);
   h2 = gel(two_tors, 5);
 
   /* Combine f0 and f2 into the final abscissa of the isogeny. */
-  t1 = RgX_mul(x, RgX_sqr(kerp));
+  t1 = RgX_mul(pol_x(vx), RgX_sqr(kerp));
   t2 = RgX_mul(f2, RgX_sqr(h0));
   t3 = RgX_mul(f0, RgX_sqr(h2));
   /* x * kerp^2 + f2 * h0^2 + f0 * h2^2 */
@@ -615,7 +615,7 @@ isogeny_from_kernel_poly(GEN E, GEN kerp, long only_image, long vx, long vy)
                           gadd(w, gel(two_tors, 2)));
   if (only_image) return EE;
 
-  f = isog_abscissa(E, kerp, kerq, x, two_tors);
+  f = isog_abscissa(E, kerp, kerq, vx, two_tors);
   g = isog_ordinate(E, kerp, kerq, x, y, two_tors, f);
   return mkvec2(EE, mkvec3(f,g,kerp));
 }
