@@ -2435,14 +2435,14 @@ Set \kbd{*pd} to $d$.
 let $D$ be a fundamental discriminant, and $f = \prod_i P[i]^{E[i]}$ be a
 positive conductor for the order of discriminant $Df^2$ ($P$ is a \kbd{ZV}
 and $E$ is a \kbd{ZV} or \kbd{zv}). Returns the positive integer
-$$ h(Df^2) / h(D) = \frac{f}{[O_D^\times : O_{Df^2}^\times]}
+$$ h(Df^2) / h(D) = {f \over [O_D^\times : O_{Df^2}^\times]}
    \prod_{p | f} \big(1 - (D/p)p^{-1}\big).$$
 
 \fun{ulong}{uquadclassnoF_fact}{ulong d, long s, GEN P, GEN E}
 let $s = 1$ or $-1$ be a sign, $D = sd$ be a fundamental discriminant,
 and $f = \prod_i P[i]^{E[i]}$ be a positive conductor for the order of
 discriminant $Df^2$ ($P$ and $E$ are \typ{VECSMALL}). Returns the integer
-$$ h(Df^2)/h(d) = \frac{f}{[O_D^\times : O_{Df^2}^\times]}
+$$ h(Df^2)/h(d) = {f \over [O_D^\times : O_{Df^2}^\times]}
   \prod_{p | f} \big(1 - (D/p)p^{-1}\big).$$
 
 \fun{GEN}{hclassno}{GEN d} returns the Hurwitz-Kronecker class number $H(d)$.
