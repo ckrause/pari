@@ -1055,12 +1055,15 @@ zero in the \kbd{pari\_init} call.
 
 \noindent Some convenience functions:
 
-\fun{ulong}{maxprime}{} the largest prime computable using our prime table.
+\fun{ulong}{maxprime}{void} the largest prime computable using our prime table.
 
-\fun{ulong}{maxprimeN}{} the index $N$ of the largest prime computable using
+\fun{ulong}{maxprimeN}{void} the index $N$ of the largest prime computable using
 the prime table. I.e., $p_N = \kbd{maxprime()}$.
 
-\fun{ulong}{maxprimelim}{} the argument used for the last \kbd{initprimes}
+\fun{GEN}{prodprimes}{void} a vector $T$ where \kbd{T[i]} of the product of the
+primes in our prime table that are smaller than $2^{7+i}$.
+
+\fun{ulong}{maxprimelim}{void} the argument used for the last \kbd{initprimes}
 call. This belongs to $[65537, 436273289]$ and the largest prime
 less than or equal to this number is \kbd{maxprime}$()$.
 
