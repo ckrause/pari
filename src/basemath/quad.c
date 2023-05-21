@@ -738,7 +738,7 @@ unegquadclassnoF(ulong x, ulong *pD)
   GEN E, P;
   ulong D = coredisc2u_fact(factoru(x), -1, &P, &E);
   long H = uquadclassnoF_fact(D, -1, P, E);
-  switch(D)
+  if (x != D) switch(D)
   { /* divide by [ O_K^* : O^* ] */
     case 4: H >>= 1; break;
     case 3: H /= 3; break;
