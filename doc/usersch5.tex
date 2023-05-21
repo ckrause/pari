@@ -1060,8 +1060,9 @@ zero in the \kbd{pari\_init} call.
 \fun{ulong}{maxprimeN}{void} the index $N$ of the largest prime computable using
 the prime table. I.e., $p_N = \kbd{maxprime()}$.
 
-\fun{GEN}{prodprimes}{void} a vector $T$ where \kbd{T[i]} of the product of the
-primes in our prime table that are smaller than $2^{7+i}$.
+\fun{GEN}{prodprimes}{void} a vector $T$ where \kbd{T[i]} is the product of the
+primes in our prime table that are smaller than $2^{7+i}$. Used to quickly
+detect small prime divisors of large integers, using a few gcd's.
 
 \fun{ulong}{maxprimelim}{void} the argument used for the last \kbd{initprimes}
 call. This belongs to $[65537, 436273289]$ and the largest prime
