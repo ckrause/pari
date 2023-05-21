@@ -363,12 +363,35 @@ quadunit_mod(GEN D, GEN N)
   }
   return deg1pol_shallow(v, u, 0);
 }
-/* y mod (N,T) congruent to fundamental unit of maximal order and disc D,
- * return unit index of order of conductor N */
+
+/* f \prod_{p|f}  [ 1 - (D/p) p^-1 ] = \prod_{p^e||f} p^(e-1) [ p - (D/p) ] */
 static GEN
-quadunitindex_i(GEN D, GEN N, GEN F, GEN y, GEN T)
+quadclassnoEuler_fact(GEN D, GEN P, GEN E)
 {
-  GEN H = quadclassnoF_fact(D, gel(F,1), gel(F,2));
+  long i, l = lg(P);
+  GEN H;
+  if (typ(E) != t_VECSMALL) E = vec_to_vecsmall(E);
+  for (i = 1, H = gen_1; i < l; i++)
+  {
+    GEN p = gel(P,i);
+    long e = E[i], s = kronecker(D,p);
+    if (!s)
+      H = mulii(H, e == 1? p: powiu(p, e));
+    else
+    {
+      H = mulii(H, subis(p, s));
+      if (e >= 2) H = mulii(H, e == 2? p: powiu(p,e-1));
+    }
+  }
+  return H;
+}
+
+/* D > 0; y mod (N,T) congruent to fundamental unit of maximal order and
+ * disc D. Return unit index of order of conductor N */
+static GEN
+quadunitindex_ii(GEN D, GEN N, GEN F, GEN y, GEN T)
+{
+  GEN H = quadclassnoEuler_fact(D, gel(F,1), gel(F,2));
   GEN P, E, a = Z_smoothen(H, gel(F,1), &P, &E), faH = mkmat2(P, E);
   struct uimod S;
 
@@ -377,13 +400,15 @@ quadunitindex_i(GEN D, GEN N, GEN F, GEN y, GEN T)
   S.N = N; S.T = FpX_red(T, N);
   return gen_order(y, mkvec2(H,faH), (void*)&S, &ui_group);
 }
+static GEN
+quadunitindex_i(GEN D, GEN N, GEN F)
+{ return quadunitindex_ii(D, N, F, quadunit_mod(D, N), quadpoly_i(D)); }
 GEN
 quadunitindex(GEN D, GEN N)
 {
   pari_sp av = avma;
-  GEN y, F;
   long r, s;
-
+  GEN F;
   check_quaddisc(D, &s, &r, "quadunitindex");
   if ((F = check_arith_pos(N,"quadunitindex")))
     N = typ(N) == t_VEC? gel(N,1): factorback(F);
@@ -393,9 +418,7 @@ quadunitindex(GEN D, GEN N)
     case -4: return utoipos(2);
     default: return gen_1;
   }
-  y = quadunit_mod(D, N); /* = fundamental unit (mod N) */
-  return gerepileuptoint(av, quadunitindex_i(D, N, F? F: Z_factor(N),
-                                             y, quadpoly_i(D)));
+  return gerepileuptoint(av, quadunitindex_i(D, N, F? F: Z_factor(N)));
 }
 
 /* fundamental unit is u + vx mod quadpoly(D); always called with D
@@ -469,7 +492,7 @@ quadunit(GEN D0)
   { /* non-trivial conductor N > 1 */
     GEN N = factorback2(P,E), qD = quadpoly_i(D);
     GEN n, y = deg1pol_shallow(v, u, 0); /* maximal order fund unit */
-    n = quadunitindex_i(D, N, mkvec2(P,E), FpX_red(y,N), qD); /* unit index */
+    n = quadunitindex_ii(D, N, mkvec2(P,E), FpX_red(y,N), qD); /* unit index */
     y = ZXQ_powu(y, itou(n), qD); /* fund unit of order of conductor N */
     v = gel(y,3); u = gel(y,2); /* u + v w_D */
     if (mpodd(D))
@@ -654,41 +677,9 @@ update_g1(GEN *pg1, GEN *pd1, GEN *pfad1, GEN f, GEN o, GEN fao)
   *pd1 = mulii(A,B); /* g1 has order d1 <- lcm(d1,o) */
 }
 
-/* *pD = coredisc(x), *pR = regulator (x > 0) or NULL */
-GEN
-quadclassnoF(GEN x, GEN *pD)
-{
-  GEN D, H, P, E;
-  if (lgefint(x) == 3)
-  {
-    ulong d, h;
-    if (signe(x) < 0)
-    {
-      h = unegquadclassnoF(x[2], &d);
-      if (pD) *pD = utoineg(d);
-    }
-    else
-    {
-      h = uposquadclassnoF(x[2], &d);
-      if (pD) *pD = utoipos(d);
-    }
-    return utoi(h);
-  }
-  D = coredisc2_fact(absZ_factor(x), signe(x), &P, &E);
-  H = quadclassnoF_fact(D, P, E);
-  /* divide by [ O_K^* : O^* ] */
-  if (signe(x) < 0) switch(itou_or_0(D))
-  { /* |x| >= 2^BIL, hence x != D */
-    case 4: H = shifti(H,-1); break;
-    case 3: H = divis(H,3); break;
-  }
-  else if (!equalii(x,D))
-    H = diviiexact(H, quadunitindex(D, mkmat2(P, zc_to_ZC(E))));
-  if (pD) *pD = D; return H;
-}
-
-/* f \prod_{p|f}  [ 1 - (D/p) p^-1 ] = \prod_{p^e||f} p^(e-1) [ p - (D/p) ];
- * s = 1 or -1; D = s * d; assume Df^2 fits in an ulong */
+/* Let s = 1 or -1; D = s * d; assume Df^2 fits in an ulong
+ * Return  f / [O_{Df^2}^*:O_D^*] * \prod_{p|f}  [ 1 - (D/p) p^-1 ]
+ * The Euler product is \prod_{p^e||f} p^(e-1) [ p - (D/p) ] */
 ulong
 uquadclassnoF_fact(ulong d, long s, GEN P, GEN E)
 {
@@ -708,55 +699,72 @@ uquadclassnoF_fact(ulong d, long s, GEN P, GEN E)
       if (e >= 2) H *= upowuu(p, e-1);
     }
   }
+  if (l == 1) return H;
+  if (s < 0)
+  {
+    switch(d)
+    { /* divide by [ O_K^* : O^* ] */
+      case 4: H >>= 1; break;
+      case 3: H /= 3; break;
+    }
+  }
+  else
+  {
+    GEN fa = mkmat2(zc_to_ZC(P), zc_to_ZC(E));
+    H /= itou(quadunitindex_i(utoipos(d), factorback(fa), fa));
+  }
   return H;
 }
-/* f \prod_{p|f}  [ 1 - (D/p) p^-1 ] = \prod_{p^e||f} p^(e-1) [ p - (D/p) ] */
 GEN
 quadclassnoF_fact(GEN D, GEN P, GEN E)
 {
-  long i, l = lg(P);
-  GEN H;
-  if (typ(E) != t_VECSMALL) E = vec_to_vecsmall(E);
-  for (i = 1, H = gen_1; i < l; i++)
+  GEN H = quadclassnoEuler_fact(D, P, E);
+  if (lg(P) == 1) return H;
+  if (signe(D) < 0)
   {
-    GEN p = gel(P,i);
-    long e = E[i], s = kronecker(D,p);
-    if (!s)
-      H = mulii(H, e == 1? p: powiu(p, e));
-    else
-    {
-      H = mulii(H, subis(p, s));
-      if (e >= 2) H = mulii(H, e == 2? p: powiu(p,e-1));
+    switch(itou_or_0(D))
+    { /* divide by [ O_K^* : O^* ] */
+      case 4: H = shifti(H,-1); break;
+      case 3: H = diviuexact(H,3); break;
     }
+  }
+  else
+  {
+    GEN fa = mkmat2(P, E);
+    H = diviiexact(H, quadunitindex_i(D, factorback(fa), fa));
   }
   return H;
 }
-ulong
-unegquadclassnoF(ulong x, ulong *pD)
+
+static ulong
+quadclassnoF_u(ulong x, long s, ulong *pD)
 {
   pari_sp av = avma;
-  GEN E, P;
-  ulong D = coredisc2u_fact(factoru(x), -1, &P, &E);
-  long H = uquadclassnoF_fact(D, -1, P, E);
-  if (x != D) switch(D)
-  { /* divide by [ O_K^* : O^* ] */
-    case 4: H >>= 1; break;
-    case 3: H /= 3; break;
-  }
+  GEN P, E;
+  ulong D = coredisc2u_fact(factoru(x), s, &P, &E);
+  long H = uquadclassnoF_fact(D, s, P, E);
   *pD = D; return gc_ulong(av, H);
 }
 ulong
-uposquadclassnoF(ulong x, ulong *pD)
+unegquadclassnoF(ulong x, ulong *pD) { return quadclassnoF_u(x, -1, pD); }
+ulong
+uposquadclassnoF(ulong x, ulong *pD) { return quadclassnoF_u(x, 1, pD); }
+
+/* *pD = coredisc(x), *pR = regulator (x > 0) or NULL */
+GEN
+quadclassnoF(GEN x, GEN *pD)
 {
-  GEN P, E;
-  ulong D = coredisc2u_fact(factoru(x), 1, &P, &E);
-  ulong H = uquadclassnoF_fact(D, 1, P, E);
-  if (x != D)
+  GEN D, P, E;
+  if (lgefint(x) == 3)
   {
-    GEN F = mkvec2(utoipos(usqrt(x / D)), mkmat2(zc_to_ZC(P), zc_to_ZC(E)));
-    H /= itou(quadunitindex(utoipos(D), F));
+    long s = signe(x);
+    ulong d, h = quadclassnoF_u(x[2], s, &d);
+    if (pD) *pD = s > 0? utoipos(d): utoineg(d);
+    return utoipos(h);
   }
-  *pD = D; return H;
+  D = coredisc2_fact(absZ_factor(x), signe(x), &P, &E);
+  if (pD) *pD = D;
+  return quadclassnoF_fact(D, P, E);
 }
 
 static long

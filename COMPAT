@@ -16,6 +16,8 @@ This file lists the incompatible changes between Version 2.x and older versions
    - dirpowerssum: add argument flag 'both'
    - RgX_halfgcd now only return the matrix. Use RgX_halfgcd_all.
    - ec_bmodel, ec_phi2 now take a variable number (you can set it to 0).
+   - quadclassnoF_fact and uquadclassnoF_fact now return h(D)/h(d),
+     like quadclassnoF.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.14 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - qfbredsl2(q, S): change format of S: was [D,isD], is now isD

@@ -1962,11 +1962,6 @@ quadnegclassnou(long D, long *pD0, GEN *pP, GEN *pE)
 {
   ulong d = (ulong)-D, d0 = coredisc2u_fact(factoru(d), -1, pP, pE);
   ulong h = uquadclassnoF_fact(d0, -1, *pP, *pE) * quadclassnos(-(long)d0);
-  if (d0 != d) switch(d0)
-  {
-    case 4: h >>= 1; break;
-    case 3: h /= 3; break;
-  }
   *pD0 = -(long)d0; return h;
 }
 

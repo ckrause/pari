@@ -100,6 +100,8 @@ BA  33- polylogmult(1,[],-1) -> SEGV
      9- allow fromdigits(t_COL or t_VECSMALL, B)
     10- [libpari] cgetalloc arguments swapped to mirror cgetg's definition
     11- simplified lfunabelianrelinit (absolute equation is now optional)
+    12- quadclassnoF_fact and uquadclassnoF_fact now return h(D)/h(d),
+        like quadclassnoF.
 
   Added
 PMo  1- new syntax for forvec loops

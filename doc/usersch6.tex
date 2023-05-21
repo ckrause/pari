@@ -2413,9 +2413,9 @@ it also becomes relatively less interesting compared to \kbd{quadclassunit}.
 time $O(D^{1/2})$; the function is provided for testing purposes only since
 it is never competitive.
 
-\fun{GEN}{quadclassnoF}{GEN D, GEN *pd} returns $h(D)/h(d)$ where
-$d$ is the fundamental discriminant attached to $D$. If \kbd{pd} is not
-\kbd{NULL}, set \kbd{*pd} to $d$.
+\fun{GEN}{quadclassnoF}{GEN D, GEN *pd} returns the positive integer
+$h(D)/h(d)$ where $d$ is the fundamental discriminant attached to $D$.
+If \kbd{pd} is not \kbd{NULL}, set \kbd{*pd} to $d$.
 
 \fun{GEN}{quadclassno}{GEN D} returns $h(D)$ using Buchmann's algorithm
 on the order of discriminant $D$. If $D$ is not fundamental, it will
@@ -2434,16 +2434,16 @@ Set \kbd{*pd} to $d$.
 \fun{GEN}{quadclassnoF_fact}{GEN D, GEN P, GEN E}
 let $D$ be a fundamental discriminant, and $f = \prod_i P[i]^{E[i]}$ be a
 positive conductor for the order of discriminant $Df^2$ ($P$ is a \kbd{ZV}
-and $E$ is a \kbd{ZV} or \kbd{zv}). Returns
-$$ [O_D^\times : O_{Df^2}^\times] \cdot h(Df^2)/h(d) = f\prod_{p | f}
-  \big(1 - (D/p)p^{-1}\big).$$
+and $E$ is a \kbd{ZV} or \kbd{zv}). Returns the positive integer
+$$ h(Df^2) / h(D) = \frac{f}{[O_D^\times : O_{Df^2}^\times]}
+   \prod_{p | f} \big(1 - (D/p)p^{-1}\big).$$
 
 \fun{ulong}{uquadclassnoF_fact}{ulong d, long s, GEN P, GEN E}
 let $s = 1$ or $-1$ be a sign, $D = sd$ be a fundamental discriminant,
 and $f = \prod_i P[i]^{E[i]}$ be a positive conductor for the order of
-discriminant $Df^2$ ($P$ and $E$ are \typ{VECSMALL}). Returns
-$$ [O_D^\times : O_{Df^2}^\times] \cdot h(Df^2)/h(d) = f\prod_{p | f}
-  \big(1 - (D/p)p^{-1}\big).$$
+discriminant $Df^2$ ($P$ and $E$ are \typ{VECSMALL}). Returns the integer
+$$ h(Df^2)/h(d) = \frac{f}{[O_D^\times : O_{Df^2}^\times]}
+  \prod_{p | f} \big(1 - (D/p)p^{-1}\big).$$
 
 \fun{GEN}{hclassno}{GEN d} returns the Hurwitz-Kronecker class number $H(d)$.
 These play a central role in trace fomulas and are usually needed for many
