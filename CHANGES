@@ -17,6 +17,7 @@ BA  13- [libpari] RgX_div_by_X_x: wrong variable number
     14- incorrect results in bnrisprincipal if bitprecision too low [#2474]
 MS  15- hyperellratpoints(2*x^3+x^2-x,1000) -> wrong result [#2475]
 BA  16- ellisogeny over a nf -> inconsistent variables error
+BA  17- w=3;quadgen(5) -> print x instead of w [#2477]
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output

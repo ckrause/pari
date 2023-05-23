@@ -1043,7 +1043,7 @@ fetch_user_var(const char *s)
   long v;
   switch (EpVALENCE(ep))
   {
-    case EpVAR: return varn((GEN)initial_value(ep));
+    case EpVAR: return pari_var_create(ep);
     case EpNEW: break;
     default: pari_err(e_MISC, "%s already exists with incompatible valence", s);
   }

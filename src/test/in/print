@@ -6,6 +6,7 @@ printsep(":",matid(2));print(0);
 printsep1(":",matid(2));print(0);
 printp(matid(2))
 
+w=42; print(quadgen(5))
 q = 2 + 0*quadgen(-3,z);
 printtex(q)
 print(q)
