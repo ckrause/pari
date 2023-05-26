@@ -1605,7 +1605,7 @@ polisclass(GEN H)
   GEN h2list;
   forprime_t T;
   if (typ(H)!= t_POL) pari_err_TYPE("polsisclass",H);
-  if (!RgX_is_monic_ZX(H)) return gc_long(av, 0);
+  if (degpol(H) <= 0 || !RgX_is_monic_ZX(H)) return 0;
   vh = vals(h);
   h2list = cgetg(vh+2, t_VECSMALL); hl = 1;
   for (i = 0; i <= vh; i++)

@@ -152,3 +152,4 @@ if (variable(polclass(-7, , 'z)) != 'z, error("Didn't use user-provided variable
 \\ Regressions
 setrand(51);polclass(-8,5)
 hash_ZX(polclass(-54087))
+polisclass(x^0)
