@@ -12,13 +12,21 @@ Doc:
  The random distribution is mostly uniform except that when $0$ or $1728$ are supersingular,
  they are less likely.
  \bprog
- ? j = ellsupersingularj(1009)
+ ?  j = ellsupersingularj(1009)
  %1 = 12*w+295
- ? ellissupersingular(j)
+ ?  ellissupersingular(j)
  %2 = 1
- ? a = ffgen([1009,2],'a);
- ? j = ellsupersingularj(a)
+ ?  a = ffgen([1009,2],'a);
+ ?  j = ellsupersingularj(a)
  %4 = 867*a+721
- ? ellissupersingular(j)
+ ?  ellissupersingular(j)
  %5 = 1
+ ?  E = ellinit([j]);
+ ?  F = elltwist(E);
+ ?  ellissupersingular(F)
+ %8 = 1
+ ?  ellap(E)
+ %9 = 2018
+ ?  ellap(F)
+ %10 = -2018
  @eprog
