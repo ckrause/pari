@@ -535,7 +535,7 @@ kroui(ulong x, GEN y)
     if (odd(r) && ome(x)) s = -s;
     y = shifti(y,-r);
   }
-  return gc_long(av,  krouodd(x, y, s));
+  return gc_long(av, krouodd(x, y, s));
 }
 
 long
