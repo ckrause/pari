@@ -12,23 +12,27 @@ Help: ellisomat(E, {p=0}, {fl=0}): E being an elliptic curve over a number
 Doc:
  Given an elliptic curve $E$ defined over a number field $K$, compute
  representatives of the isomorphism classes of elliptic curves defined over
- $K$ and $K$-isogenous to $E$. We assume that $E$ does not have CM over $K$
- (otherwise that set would be infinite).
+ $K$ and $K$-isogenous to $E$, assuming it is finite (see below).
  For any such curve $E_i$, let $f_i: E \to E_i$ be a rational isogeny
  of minimal degree and let $g_i: E_i \to E$ be the dual isogeny; and let $M$
  be the matrix such that $M_{i,j}$ is the minimal degree for an isogeny $E_i
  \to E_j$.
 
  The function returns a vector $[L,M]$ where $L$ is a list of triples
- $[E_i, f_i, g_i]$ ($\fl  = 0$), or simply the list of $E_i$ ($\fl = 1$,
+ $[E_i, f_i, g_i]$ ($\fl = 0$), or simply the list of $E_i$ ($\fl = 1$,
  which saves time). The curves $E_i$ are given in $[a_4,a_6]$ form and the
  first curve $E_1$ is isomorphic to $E$ by $f_1$.
+
+ The set of isomorphism classes is finite except when $E$ has CM over an
+ quadratic order contained in $K$. In that case the function only returns the
+ discriminant of the quadratic order.
 
  If $p$ is set, it must be a prime number; in this which case only isogenies of
  degree a power of $p$ are considered.
 
  Over a number field, the possible isogeny degrees are determined by
  Billerey algorithm.
+
  \bprog
  ? E = ellinit("14a1");
  ? [L,M] = ellisomat(E);

@@ -61,7 +61,22 @@ ellisotree(ellisomat(E,2))
 ellisotree(ellisomat(E,3,1))
 ellisotree(ellisomat(E,,1))
 
+\\ CM case
+E=ellinit([8000],nfinit(a^2+2));
+ellisomat(E)
+ellisomat(E,2)[2]
+
+\\ hard case
+L=bnfinit(polcompositum(t^2+3,t^2+7)[1]);
+a = Mod(t,L.pol);
+sqrt_3= subst(nfsubfields(L,2)[1][2],t,a)/2; \\ square root of -3 in L
+sqrt_7= subst(nfsubfields(L,2)[2][2],t,a)/2; \\ square root of -7 in L
+sqrt21=-sqrt_3*sqrt_7; \\ square root of 21 in L
+a4=81/4*(69+43*sqrt_3+29*sqrt_7+17*sqrt21);
+a6=162*(207-84*sqrt_3-54*sqrt_7+46*sqrt21);
+E=ellinit([a4,a6],L);
+ellisomat(E)
+
 \\ ERRORS
-ellisomat(ellinit([1,0],nfinit(a^2+1)))
 ellisomat(ellinit([-824740032823875,9115932407325507114750],nfinit(x-16581375)))
 ellisomat(ellinit([-824740032823875,9115932407325507114750],nfinit(y-16581375)))

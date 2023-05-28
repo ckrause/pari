@@ -1285,7 +1285,7 @@ ellnf_prime_degree(GEN E)
     B = gcdii(B, ellnf_get_degree(E, utoipos(p)));
     if (Z_issquareall(B, &r)) B = r;
   }
-  if (!signe(B)) pari_err_DOMAIN("ellisomat", "E","has",strtoGENstr("CM"),E);
+  if (!signe(B)) return NULL;
   P = vec_to_vecsmall(gel(Z_factor(B),1));
   return shallowextract(P, utoi(ellnf_goodl_l(E, P)));
 }
@@ -1446,24 +1446,33 @@ ellnf_isomat(GEN E, long flag)
 {
   GEN nf = ellnf_get_nf(E);
   GEN v = ellnf_prime_degree(E);
-  long vy = fetch_var_higher();
-  long vx = fetch_var_higher();
-  GEN P = ellnf_modpoly(v,vx,vy);
-  GEN LM = ellnf_isocrv(nf, E, v, P, flag), L = gel(LM,1), M = gel(LM,2);
-  long i, l = lg(L);
-  GEN R = cgetg(l, t_MAT);
-  gel(R,1) = M;
-  for(i = 2; i < l; i++)
+  if (v)
   {
-    GEN Li = gel(L,i);
-    GEN e = mkvec2(gdivgs(gel(Li,1), -48), gdivgs(gel(Li,2), -864));
-    GEN LMi = ellnf_isocrv(nf, ellinit(e, nf, DEFAULTPREC), v, P, 1);
-    GEN LLi = gel(LMi, 1), Mi = gel(LMi, 2);
-    GEN r = isomat_perm(nf, L, LLi);
-    gel(R,i) = vecpermute(Mi, r);
+    long vy = fetch_var_higher();
+    long vx = fetch_var_higher();
+    GEN P = ellnf_modpoly(v,vx,vy);
+    GEN LM = ellnf_isocrv(nf, E, v, P, flag), L = gel(LM,1), M = gel(LM,2);
+    long i, l = lg(L);
+    GEN R = cgetg(l, t_MAT);
+    gel(R,1) = M;
+    for(i = 2; i < l; i++)
+    {
+      GEN Li = gel(L,i);
+      GEN e = mkvec2(gdivgs(gel(Li,1), -48), gdivgs(gel(Li,2), -864));
+      GEN LMi = ellnf_isocrv(nf, ellinit(e, nf, DEFAULTPREC), v, P, 1);
+      GEN LLi = gel(LMi, 1), Mi = gel(LMi, 2);
+      GEN r = isomat_perm(nf, L, LLi);
+      gel(R,i) = vecpermute(Mi, r);
+    }
+    delete_var(); delete_var();
+    return mkvec2(L, R);
+  } else
+  {
+    long D = elliscm(E);
+    if (!D || isintzero(nfisincl(quadpoly(stoi(D)),nf)))
+      pari_err_IMPL("ellisomat, hard case");
+    return stoi(D);
   }
-  delete_var(); delete_var();
-  return mkvec2(L, R);
 }
 
 static GEN
@@ -1512,7 +1521,8 @@ ellisomat(GEN E, long p, long flag)
       r = nfmkisomat(nf, p, ellisograph_p(nf, E, p, flag));
     else
       r = nf? ellnf_isomat(E, flag): ellQ_isomat(E, flag);
-    gel(r,1) = list_to_crv(gel(r,1));
+    if (typ(r)==t_VEC)
+      gel(r,1) = list_to_crv(gel(r,1));
   }
   return gerepilecopy(av, r);
 }

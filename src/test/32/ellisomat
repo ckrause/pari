@@ -163,13 +163,19 @@ ll([1]), [Vecsmall([64, -1])], [0, 0, 0, 0, 0, 0, 0, 0]], [1, 0, 1, -1, 0, 1
 88, 2251439055699625/25088, Vecsmall([1]), [Vecsmall([64, 1])], [0, 0, 0, 0,
  0, 0, 0, 0]]], [0, 0, 3, 2, 0, 0; 3, 0, 0, 0, 2, 0; 0, 0, 0, 0, 0, 2; 0, 0,
  0, 0, 0, 3; 0, 0, 0, 3, 0, 0; 0, 0, 0, 0, 0, 0]]
-  ***   at top-level: ellisomat(ellinit([1,0],nfinit(a^2+1)))
-  ***                 ^---------------------------------------
-  *** ellisomat: domain error in ellisomat: E has CM
+-8
+
+[1 2]
+
+[2 1]
+
+  ***   at top-level: ellisomat(E)
+  ***                 ^------------
+  *** ellisomat: sorry, ellisomat, hard case is not yet implemented.
   ***   at top-level: ellisomat(ellinit([-824740032823875,9115932407
   ***                 ^----------------------------------------------
   *** ellisomat: incorrect priority in ellisomat: variable x <= x
   ***   at top-level: ellisomat(ellinit([-824740032823875,9115932407
   ***                 ^----------------------------------------------
   *** ellisomat: incorrect priority in ellisomat: variable y <= y
-Total time spent: 2132
+Total time spent: 1583
