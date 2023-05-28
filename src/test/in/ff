@@ -190,6 +190,7 @@ test(nextprime(2^100),1,3,2)
 test(nextprime(2^100),3,3,2)
 
 /* error */
+ffinit(1,1)
 ffgen(x^2+x+Mod(1,3))
 ffembed(ffgen([3,5],'b),ffgen([3,6],'a));
 a=ffgen(3^3,'a); ffinvmap(ffextend(a,x^2+x+a));

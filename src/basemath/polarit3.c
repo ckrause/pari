@@ -3117,7 +3117,7 @@ init_Fq_i(GEN p, long n, long v)
   GEN P;
   if (n <= 0) pari_err_DOMAIN("ffinit", "degree", "<=", gen_0, stoi(n));
   if (typ(p) != t_INT) pari_err_TYPE("ffinit",p);
-  if (signe(p) <= 0) pari_err_PRIME("ffinit",p);
+  if (cmpiu(p, 2) < 0) pari_err_PRIME("ffinit",p);
   if (v < 0) v = 0;
   if (n == 1) return pol_x(v);
   if (lgefint(p) == 3)
