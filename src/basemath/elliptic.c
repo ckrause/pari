@@ -7346,8 +7346,7 @@ ellsupersingularj(GEN a)
   {
     case t_INT:
       p = a;
-      if (cmpiu(p,2) < 0 || Z_issquare(p))
-        pari_err_PRIME("ellsupersingularj", p);
+      if (Z_issquare(p)) pari_err_PRIME("ellsupersingularj", p);
       T = init_Fq(p, 2, fetch_user_var("w"));
       d = 2;
       break;
