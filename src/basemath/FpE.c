@@ -1983,16 +1983,26 @@ Fq_elljissupersingular(GEN j, GEN T, GEN p)
 { return typ(j)==t_INT? Fp_elljissupersingular(j, p)
                       : FpXQ_elljissupersingular(j, T, p); }
 
+/* p > 5 prime; return d such that (-d/p) = -1 */
 static ulong
 find_inert_disc(GEN p)
 {
+  long s = mod4(p) == 1? -1: 1; /* - (-1/p) */
   ulong d = 3;
   while(1)
   {
-    if(krosi(-d,p)==-1) return d;
+    if (kroui(d,p) == s) return d; /* = 3 mod (16) */
     d++;
-    if(krosi(-d,p)==-1) return d;
+    if (kroui(d>>2,p) == s) return d; /* = 4 mod (16) */
     d += 3;
+    if (kroui(d,p) == s) return d; /* = 7 mod (16) */
+    d++;
+    if (kroui(d>>2,p) == s) return d; /* = 8 mod (16) */
+    d += 3;
+    if (kroui(d,p) == s) return d; /* = 11 mod (16) */
+    d += 4;
+    if (kroui(d,p) == s) return d; /* = 15 mod (16) */
+    d += 4;
   }
 }
 
