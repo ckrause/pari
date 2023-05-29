@@ -1771,7 +1771,7 @@ FpX_direct_compositum(GEN a, GEN b, GEN p)
   {
     pari_sp av = avma;
     ulong pp = p[2];
-    GEN z = Flx_direct_compositum(ZX_to_Flx(a, pp), ZX_to_Flx(b, pp), pp);
+    GEN z = Flx_composedsum(ZX_to_Flx(a, pp), ZX_to_Flx(b, pp), pp);
     return gerepileupto(av, Flx_to_ZX(z));
   }
   return FpX_composedsum(a, b, p);
@@ -2812,7 +2812,7 @@ ZX_direct_compositum_slice(GEN A, GEN B, GEN P, GEN *mod)
   {
     ulong p = uel(P,1);
     GEN a = ZX_to_Flx(A, p), b = ZX_to_Flx(B, p);
-    GEN Hp = Flx_direct_compositum(a, b, p);
+    GEN Hp = Flx_composedsum(a, b, p);
     H = gerepileupto(av, Flx_to_ZX(Hp));
     *mod = utoipos(p); return H;
   }
@@ -2824,7 +2824,7 @@ ZX_direct_compositum_slice(GEN A, GEN B, GEN P, GEN *mod)
   {
     ulong p = P[i];
     GEN a = gel(A,i), b = gel(B,i);
-    gel(H,i) = Flx_direct_compositum(a, b, p);
+    gel(H,i) = Flx_composedsum(a, b, p);
   }
   H = nxV_chinese_center_tree(H, P, T, ZV_chinesetree(P, T));
   *mod = gmael(T, lg(T)-1, 1); return gc_all(av, 2, &H, mod);
@@ -2870,7 +2870,7 @@ ZX_compositum_lambda(GEN A, GEN B, GEN lead, long lambda)
     if (DEBUGLEVEL>4) err_printf("Trying lambda = %ld\n", lambda);
     if (lead && dvdiu(lead,p)) { p = u_forprime_next(&S); continue; }
     a = ZX_to_Flx(ZX_rescale(A, stoi(-lambda)), p);
-    Hp = Flx_direct_compositum(a, ZX_to_Flx(B, p), p);
+    Hp = Flx_composedsum(a, ZX_to_Flx(B, p), p);
     if (!Flx_is_squarefree(Hp, p)) { lambda = next_lambda(lambda); continue; }
     if (DEBUGLEVEL>4) err_printf("Final lambda = %ld\n", lambda);
     return gc_long(av, lambda);

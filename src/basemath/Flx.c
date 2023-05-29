@@ -4063,17 +4063,13 @@ Flx_composedsum(GEN P, GEN Q, ulong p)
   return gerepileuptoleaf(av, Flx_Fl_mul(R, lead, p));
 }
 
-GEN
-Flx_direct_compositum(GEN a, GEN b, ulong p)
-{ return Flx_composedsum(a, b, p); }
-
 static GEN
-_Flx_direct_compositum(void *E, GEN a, GEN b)
-{ return Flx_direct_compositum(a, b, (ulong)E); }
+_Flx_composedsum(void *E, GEN a, GEN b)
+{ return Flx_composedsum(a, b, (ulong)E); }
 
 GEN
 FlxV_direct_compositum(GEN V, ulong p)
-{ return gen_product(V, (void *)p, &_Flx_direct_compositum); }
+{ return gen_product(V, (void *)p, &_Flx_composedsum); }
 
 /* (x+1)^n mod p; assume 2 <= n < 2p prime */
 static GEN
