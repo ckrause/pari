@@ -2006,14 +2006,12 @@ find_inert_disc(GEN p)
   }
 }
 
+/* p > 5 */
 static GEN
 ellsupersingularj_easy_FpXQ(GEN T, GEN p)
 {
-  long d;
-  GEN R;
-  if (cmpiu(p, 5) <= 0) return gen_0;
-  d = find_inert_disc(p);
-  R = FpXQX_roots(polclass(stoi(-d), 0, 0), T, p);
+  long d = find_inert_disc(p);
+  GEN R = FpXQX_roots(polclass(stoi(-d), 0, 0), T, p);
   return gel(R,1);
 }
 
