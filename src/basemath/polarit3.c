@@ -1787,7 +1787,7 @@ FpXV_direct_compositum(GEN V, GEN p)
   if (lgefint(p)==3)
   {
     ulong pp = p[2];
-    return Flx_to_ZX(FlxV_direct_compositum(ZXV_to_FlxV(V, pp), pp));
+    return Flx_to_ZX(FlxV_composedsum(ZXV_to_FlxV(V, pp), pp));
   }
   return gen_product(V, (void *)p, &_FpX_direct_compositum);
 }
@@ -3050,7 +3050,7 @@ ffinit_fact_Flx(ulong p, long n)
     gel(P,i) = p==uel(Fp,i) ?
                  ffinit_Artin_Schreier(uel(Fp,i), Fe[i])
                : flinit(p, uel(Fm,i));
-  return FlxV_direct_compositum(P, p);
+  return FlxV_composedsum(P, p);
 }
 
 static GEN

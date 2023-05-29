@@ -470,6 +470,7 @@ GEN     FlxT_red(GEN z, ulong p);
 GEN     FlxV_Flc_mul(GEN V, GEN W, ulong p);
 GEN     FlxV_Flv_multieval(GEN P, GEN v, ulong p);
 GEN     FlxV_Flx_fromdigits(GEN x, GEN T, ulong p);
+GEN     FlxV_composedsum(GEN V, ulong p);
 GEN     FlxV_prod(GEN V, ulong p);
 GEN     FlxV_red(GEN z, ulong p);
 GEN     FlxV_to_Flm(GEN v, long n);

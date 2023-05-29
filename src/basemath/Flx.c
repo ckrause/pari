@@ -4068,7 +4068,7 @@ _Flx_composedsum(void *E, GEN a, GEN b)
 { return Flx_composedsum(a, b, (ulong)E); }
 
 GEN
-FlxV_direct_compositum(GEN V, ulong p)
+FlxV_composedsum(GEN V, ulong p)
 { return gen_product(V, (void *)p, &_Flx_composedsum); }
 
 /* (x+1)^n mod p; assume 2 <= n < 2p prime */
