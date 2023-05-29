@@ -2890,7 +2890,7 @@ ZX_composedsum(GEN A, GEN B)
 { return ZX_composedsum_i(A, B, NULL); }
 
 static GEN
-ZXQX_direct_compositum_slice(GEN A, GEN B, GEN C, GEN P, GEN *mod)
+ZXQX_composedsum_slice(GEN A, GEN B, GEN C, GEN P, GEN *mod)
 {
   pari_sp av = avma;
   long i, n = lg(P)-1, dC = degpol(C), v = varn(C);
@@ -2920,24 +2920,24 @@ ZXQX_direct_compositum_slice(GEN A, GEN B, GEN C, GEN P, GEN *mod)
 }
 
 GEN
-ZXQX_direct_compositum_worker(GEN P, GEN A, GEN B, GEN C)
+ZXQX_composedsum_worker(GEN P, GEN A, GEN B, GEN C)
 {
   GEN V = cgetg(3, t_VEC);
-  gel(V,1) = ZXQX_direct_compositum_slice(A, B, C, P, &gel(V,2));
+  gel(V,1) = ZXQX_composedsum_slice(A, B, C, P, &gel(V,2));
   return V;
 }
 
 static GEN
-ZXQX_direct_compositum(GEN A, GEN B, GEN T, ulong bound)
+ZXQX_composedsum(GEN A, GEN B, GEN T, ulong bound)
 {
   pari_sp av = avma;
   forprime_t S;
   GEN H, worker, mod;
   GEN lead = mulii(Q_content(leading_coeff(A)), Q_content(leading_coeff(B)));
-  worker = snm_closure(is_entry("_ZXQX_direct_compositum_worker")
+  worker = snm_closure(is_entry("_ZXQX_composedsum_worker")
                       , mkvec3(A,B,T));
   init_modular_big(&S);
-  H = gen_crt("ZXQX_direct_compositum", worker, &S, lead, bound, 0, &mod,
+  H = gen_crt("ZXQX_composedsum", worker, &S, lead, bound, 0, &mod,
               nmV_chinese_center, FpM_center);
   if (DEBUGLEVEL > 4)
     err_printf("nfcompositum: a priori bound: %lu, a posteriori: %lu\n",
@@ -2946,14 +2946,14 @@ ZXQX_direct_compositum(GEN A, GEN B, GEN T, ulong bound)
 }
 
 static long
-ZXQX_direct_compositum_bound(GEN nf, GEN A, GEN B)
+ZXQX_composedsum_bound(GEN nf, GEN A, GEN B)
 { return ZXQX_resultant_bound_i(nf, A, B, &RgX_RgXY_ResBound_1); }
 
 GEN
 nf_direct_compositum(GEN nf, GEN A, GEN B)
 {
-  ulong bnd = ZXQX_direct_compositum_bound(nf, A, B);
-  return ZXQX_direct_compositum(A, B, nf_get_pol(nf), bnd);
+  ulong bnd = ZXQX_composedsum_bound(nf, A, B);
+  return ZXQX_composedsum(A, B, nf_get_pol(nf), bnd);
 }
 
 /************************************************************************

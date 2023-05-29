@@ -88,8 +88,8 @@ Prototype: GGG
 Section: programming/internals
 Help: worker for ZX_composedsum
 
-Function: _ZXQX_direct_compositum_worker
-C-Name: ZXQX_direct_compositum_worker
+Function: _ZXQX_composedsum_worker
+C-Name: ZXQX_composedsum_worker
 Prototype: GGGG
 Section: programming/internals
-Help: worker for ZX_direct_compositum
+Help: worker for ZXQX_composedsum
