@@ -5221,6 +5221,10 @@ given two \kbd{FpX} \kbd{a} and \kbd{b},
 returns their resultant and sets Bezout coefficients (if the resultant is $0$,
 the latter are not set). Assumes that $p$ is prime.
 
+\fun{GEN}{FpX_composedsum}{GEN P, GEN Q, GEN p} if
+$P=a\prod_i(x-p_i)$ and $Q=b\prod_j(x-q_j)$ in some suitable algebraic extenstion,
+return $a\*b\prod_{i,j}(x-(p_i+q_j))$.
+
 \fun{GEN}{FpX_Newton}{GEN x, long n, GEN p} return
 $\sum{i=0}^{n-1} \pi_i\*X^i$ where $\pi_i$ is the sum of the $i$th-power
 of the roots of $x$ in an algebraic closure.

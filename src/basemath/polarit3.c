@@ -1741,19 +1741,6 @@ FpX_FpXY_resultant(GEN a, GEN b, GEN p)
   return FpV_polint(x,y, p, vY);
 }
 
-static GEN
-FpX_composedsum(GEN P, GEN Q, GEN p)
-{
-  long n = 1+ degpol(P)*degpol(Q);
-  GEN Pl = FpX_invLaplace(FpX_Newton(P,n,p), p);
-  GEN Ql = FpX_invLaplace(FpX_Newton(Q,n,p), p);
-  GEN L = FpX_Laplace(FpXn_mul(Pl, Ql, n, p), p);
-  GEN lead = Fp_mul(Fp_powu(leading_coeff(P),degpol(Q), p),
-                    Fp_powu(leading_coeff(Q),degpol(P), p), p);
-  GEN R = FpX_fromNewton(L, p);
-  return FpX_Fp_mul(R, lead, p);
-}
-
 #if 0
 GEN
 FpX_composedprod(GEN P, GEN Q, GEN p)
@@ -1765,21 +1752,31 @@ FpX_composedprod(GEN P, GEN Q, GEN p)
 #endif
 
 GEN
-FpX_direct_compositum(GEN a, GEN b, GEN p)
+FpX_composedsum(GEN P, GEN Q, GEN p)
 {
+  pari_sp av = avma;
   if (lgefint(p)==3)
   {
-    pari_sp av = avma;
     ulong pp = p[2];
-    GEN z = Flx_composedsum(ZX_to_Flx(a, pp), ZX_to_Flx(b, pp), pp);
+    GEN z = Flx_composedsum(ZX_to_Flx(P, pp), ZX_to_Flx(Q, pp), pp);
     return gerepileupto(av, Flx_to_ZX(z));
   }
-  return FpX_composedsum(a, b, p);
+  else
+  {
+    long n = 1+ degpol(P)*degpol(Q);
+    GEN Pl = FpX_invLaplace(FpX_Newton(P,n,p), p);
+    GEN Ql = FpX_invLaplace(FpX_Newton(Q,n,p), p);
+    GEN L = FpX_Laplace(FpXn_mul(Pl, Ql, n, p), p);
+    GEN lead = Fp_mul(Fp_powu(leading_coeff(P),degpol(Q), p),
+        Fp_powu(leading_coeff(Q),degpol(P), p), p);
+    GEN R = FpX_fromNewton(L, p);
+    return gerepileupto(av, FpX_Fp_mul(R, lead, p));
+  }
 }
 
 static GEN
 _FpX_direct_compositum(void *E, GEN a, GEN b)
-{ return FpX_direct_compositum(a,b, (GEN)E); }
+{ return FpX_composedsum(a,b, (GEN)E); }
 
 GEN
 FpXV_direct_compositum(GEN V, GEN p)

@@ -914,7 +914,6 @@ ulong   Flj_order_ufact(GEN P, ulong n, GEN F, ulong a4, ulong p, ulong pi);
 GEN     Flm_Frobenius_pow(GEN M, long d, GEN T, ulong p);
 GEN     FpM_Frobenius_pow(GEN M, long d, GEN T, GEN p);
 GEN     FlxqX_direct_compositum(GEN P, GEN Q, GEN T, ulong p);
-GEN     FpX_direct_compositum(GEN A, GEN B, GEN p);
 GEN     FpXV_direct_compositum(GEN V, GEN p);
 GEN     nf_direct_compositum(GEN nf, GEN A, GEN B);
 ulong   ZX_ZXY_ResBound(GEN A, GEN B, GEN dB);
