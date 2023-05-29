@@ -16,4 +16,8 @@ Doc: sum of expression \var{expr}, the formal parameter
  %1 = 20
  @eprog
  returns the number of prime numbers among the first $1000$ Mersenne numbers.
+ \misctitle{Note} This function is only useful when summing entries
+ that are too large to fit in memory simultaneously. To sum a small number of
+ values, using \kbd{vecsum(parvector())} is likely to be more efficient; the
+ sumation order also becomes deterministic.
  %\syn{NO}
