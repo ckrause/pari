@@ -6316,6 +6316,10 @@ the latter are not set). Assumes that $p$ is prime.
 
 \fun{ulong}{Flx_extresultant_pre}{GEN a, GEN b, ulong p, ulong pi, GEN *ptU, GEN *ptV}
 
+\fun{GEN}{Flx_composedsum}{GEN P, GEN Q, ulong p} if
+$P=a\prod_i(x-p_i)$ and $Q=b\prod_j(x-q_j)$ in some suitable algebraic extenstion,
+return $a\*b\prod_{i,j}(x-(p_i+q_j))$.
+
 \fun{GEN}{Flx_invBarrett}{GEN T, ulong p}, returns the Barrett inverse
 $M$ of $T$ defined by $M(x)\*x^n\*T(1/x)\equiv 1\pmod{x^{n-1}}$ where $n$ is
 the degree of $T$. Assumes that $p$ is prime.

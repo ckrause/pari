@@ -4033,9 +4033,10 @@ ZpX_invLaplace_init(long n, GEN q, ulong p, long v, long sv)
   return gerepilecopy(av, ZX_renormalize(y, d+3));
 }
 
-static GEN
+GEN
 Flx_composedsum(GEN P, GEN Q, ulong p)
 {
+  pari_sp av = avma;
   long n = 1 + degpol(P)*degpol(Q);
   ulong lead = Fl_mul(Fl_powu(Flx_lead(P), degpol(Q), p),
                       Fl_powu(Flx_lead(Q), degpol(P), p), p);
@@ -4059,7 +4060,7 @@ Flx_composedsum(GEN P, GEN Q, ulong p)
     GEN L  = ZX_Z_divexact(FpX_Laplace(Ln, q), pv);
     R = ZX_to_Flx(FpX_fromNewton(L, qf), p);
   }
-  return Flx_Fl_mul(R, lead, p);
+  return gerepileuptoleaf(av, Flx_Fl_mul(R, lead, p));
 }
 
 GEN
