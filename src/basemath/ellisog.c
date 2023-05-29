@@ -1251,7 +1251,7 @@ startor(GEN p, long r)
 }
 
 static GEN
-ellnf_get_degree(GEN E, GEN p)
+stariter_easy(GEN E, GEN p)
 {
   GEN nf = ellnf_get_nf(E), dec = idealprimedec(nf, p);
   long d = nf_get_degree(nf), l = lg(dec), i, k;
@@ -1265,30 +1265,110 @@ ellnf_get_degree(GEN E, GEN p)
   return R;
 }
 
+static GEN
+idealgen_minpoly(GEN bnf, GEN pr)
+{
+  GEN h = bnf_get_no(bnf), nf = bnf_get_nf(bnf);
+  GEN prh = gel(bnfisprincipal0(bnf,idealpow(nf,pr,h),1),2);
+  return minpoly(basistoalg(nf, prh), 0);
+}
+
+static GEN
+stariter(GEN p, long r)
+{
+  GEN starl = deg1pol_shallow(gen_1, gen_m1, 0);
+  long i;
+  for (i = 1; i <= r; i++)
+    starl = starlaw(starl, p);
+  return starl;
+}
+
+static GEN
+stariter_hard(GEN E, GEN bnf, GEN pr)
+{
+  GEN nf = bnf_get_nf(bnf);
+  long k, d = nf_get_degree(nf), d2 = d>>1;
+  GEN cyc = bnf_get_cyc(bnf);
+  long h = lg(cyc)==1 ? 1 : itos(gel(cyc,1));
+  GEN pol = idealgen_minpoly(bnf,pr);
+  GEN S = startor(pol,12), P = gen_1, polchar;
+  for (k = 0; k <= d2; k++)
+    P = gmul(P, stariter(S,k));
+  polchar = ellnf_charpoly(E, pr);
+  return ZX_resultant(startor(polchar,12*h), P);
+}
+
 /* Based on a GP script by Nicolas Billerey and Theorems 2.4 and 2.8 of
  * N. Billerey, Criteres d'irreductibilite pour les representations des
  * courbes elliptiques, Int. J. Number Theory 7 (2011), no. 4, 1001-1032. */
 static GEN
-ellnf_prime_degree(GEN E)
+ellnf_prime_degree_hard(GEN E, GEN bad)
+{
+  GEN nf = ellnf_get_nf(E), bnf = ellnf_get_bnf(E), R = gen_0;
+  forprime_t T;
+  long i;
+  if (!bnf) bnf = bnfinit0(nf,1,NULL,DEFAULTPREC);
+  u_forprime_init(&T, 5UL, ULONG_MAX);
+  for (i = 1; i <= 20; i++)
+  {
+    long j, lpr;
+    GEN pri;
+    ulong p = u_forprime_next(&T);
+    if (dvdiu(bad, p)) { i--; continue; }
+    pri = idealprimedec(nf,utoi(p)); lpr = lg(pri);
+    for(j = 1; j < lpr; j++)
+    {
+      GEN R0 = stariter_hard(E,bnf,gel(pri,j)), r;
+      R = gcdii(R, mului(p, R0));
+      if (Z_issquareall(R, &r)) R = r;
+    }
+  }
+  return R;
+}
+
+/* Based on a GP script by Nicolas Billerey and Theorems 2.4 and 2.8 of
+ * N. Billerey, Criteres d'irreductibilite pour les representations des
+ * courbes elliptiques, Int. J. Number Theory 7 (2011), no. 4, 1001-1032. */
+static GEN
+ellnf_prime_degree_easy(GEN E, GEN bad)
 {
   forprime_t T;
   long i;
-  GEN nf = ellnf_get_nf(E), nf_bad = nf_get_ramified_primes(nf);
-  GEN g = ellglobalred(E);
-  GEN N = idealnorm(nf,gel(g,1)), Nfa = prV_primes(gmael(g,4,1));
-  GEN bad = mulii(N, nf_get_disc(nf)), B = gen_0, P;
+  GEN B = gen_0;
   u_forprime_init(&T, 5UL,ULONG_MAX);
   for (i = 1; i <= 20; i++)
   {
     ulong p = u_forprime_next(&T);
-    GEN r;
+    GEN b;
     if (dvdiu(bad, p)) { i--; continue; }
-    B = gcdii(B, ellnf_get_degree(E, utoipos(p)));
-    if (Z_issquareall(B, &r)) B = r;
+    B = gcdii(B, stariter_easy(E, utoipos(p)));
+    if (Z_issquareall(B, &b)) B = b;
+  }
+  return B;
+}
+
+static GEN
+ellnf_prime_degree(GEN E)
+{
+  GEN nf = ellnf_get_nf(E), nf_bad = nf_get_ramified_primes(nf);
+  GEN g = ellglobalred(E);
+  GEN N = idealnorm(nf,gel(g,1)), Nfa = prV_primes(gmael(g,4,1));
+  GEN bad = mulii(N, nf_get_disc(nf)), P;
+  GEN B = ellnf_prime_degree_easy(E, bad);
+  if (!signe(B))
+  {
+    B = ellnf_prime_degree_hard(E, bad);
+    if (!signe(B))
+    {
+      long D = elliscm(E);
+      if (!D || isintzero(nfisincl(quadpoly(stoi(D)), ellnf_get_nf(E))))
+        pari_err_IMPL("ellisomat, very hard case");
+      return stoi(D);
+    }
   }
   if (!signe(B)) return NULL;
-  B = muliu(B, 6);
-  P = ZV_union_shallow(ZV_union_shallow(Nfa,nf_bad), gel(Z_factor(absi(B)),1));
+  B = muliu(absi(B), 6);
+  P = ZV_union_shallow(ZV_union_shallow(Nfa,nf_bad), gel(Z_factor(B),1));
   return vec_to_vecsmall(RgV_F2v_extract_shallow(P, ellnf_goodl_l(E, P)));
 }
 
@@ -1448,7 +1528,7 @@ ellnf_isomat(GEN E, long flag)
 {
   GEN nf = ellnf_get_nf(E);
   GEN v = ellnf_prime_degree(E);
-  if (v)
+  if (typ(v)!=t_INT)
   {
     long vy = fetch_var_higher();
     long vx = fetch_var_higher();
@@ -1469,12 +1549,7 @@ ellnf_isomat(GEN E, long flag)
     delete_var(); delete_var();
     return mkvec2(L, R);
   } else
-  {
-    long D = elliscm(E);
-    if (!D || isintzero(nfisincl(quadpoly(stoi(D)),nf)))
-      pari_err_IMPL("ellisomat, hard case");
-    return stoi(D);
-  }
+    return v;
 }
 
 static GEN
