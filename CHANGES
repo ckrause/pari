@@ -49,7 +49,8 @@ BA  15- [libpari] ec_half_deriv_2divpol
 BA  16- New GP functions polisclass, elliscm
 BA  17- [libpari] elljsupersingular_FpXQ
 BA  18- New GP function ellsupersingularj
-BA  19- [libpari] Flx_composedsum, FlxV_composedsum, FpX_composedsum
+BA  19- [libpari] Flx_composedsum, FlxV_composedsum
+                  FpX_composedsum, FpXV_composedsum
 
 Done for version 2.16.0 (released 25/02/2023):
   Fixed

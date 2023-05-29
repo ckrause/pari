@@ -1775,18 +1775,18 @@ FpX_composedsum(GEN P, GEN Q, GEN p)
 }
 
 static GEN
-_FpX_direct_compositum(void *E, GEN a, GEN b)
+_FpX_composedsum(void *E, GEN a, GEN b)
 { return FpX_composedsum(a,b, (GEN)E); }
 
 GEN
-FpXV_direct_compositum(GEN V, GEN p)
+FpXV_composedsum(GEN V, GEN p)
 {
   if (lgefint(p)==3)
   {
     ulong pp = p[2];
     return Flx_to_ZX(FlxV_composedsum(ZXV_to_FlxV(V, pp), pp));
   }
-  return gen_product(V, (void *)p, &_FpX_direct_compositum);
+  return gen_product(V, (void *)p, &_FpX_composedsum);
 }
 
 /* 0, 1, -1, 2, -2, ... */
@@ -3104,7 +3104,7 @@ ffinit_fact(GEN p, long n)
     gel(P,i) = absequaliu(p, Fp[i]) ?
                  Flx_to_ZX(ffinit_Artin_Schreier(Fp[i], Fe[i]))
                : fpinit(p, Fm[i]);
-  return FpXV_direct_compositum(P, p);
+  return FpXV_composedsum(P, p);
 }
 
 static GEN
