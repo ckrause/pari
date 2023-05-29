@@ -633,6 +633,7 @@ GEN     FlxqX_Flxq_mul_to_monic(GEN P, GEN U, GEN T, ulong p);
 GEN     FlxqX_Flxq_mul_to_monic_pre(GEN P, GEN U, GEN T, ulong p, ulong pi);
 GEN     FlxqX_Newton(GEN P, long n, GEN T, ulong p);
 GEN     FlxqX_Newton_pre(GEN P, long n, GEN T, ulong p, ulong pi);
+GEN     FlxqX_composedsum(GEN P, GEN Q, GEN T, ulong p);
 GEN     FlxqX_disc(GEN x, GEN T, ulong p);
 GEN     FlxqX_div_by_X_x(GEN a, GEN x, GEN T, ulong p, GEN *r);
 GEN     FlxqX_div_by_X_x_pre(GEN a, GEN x, GEN T, ulong p, ulong pi, GEN *r);

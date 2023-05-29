@@ -2900,7 +2900,7 @@ ZXQX_direct_compositum_slice(GEN A, GEN B, GEN C, GEN P, GEN *mod)
     ulong p = uel(P,1);
     GEN a = ZXX_to_FlxX(A, p, v), b = ZXX_to_FlxX(B, p, v);
     GEN c = ZX_to_Flx(C, p);
-    GEN Hp = FlxX_to_Flm(FlxqX_direct_compositum(a, b, c, p), dC);
+    GEN Hp = FlxX_to_Flm(FlxqX_composedsum(a, b, c, p), dC);
     H = gerepileupto(av, Flm_to_ZM(Hp));
     *mod = utoipos(p); return H;
   }
@@ -2913,7 +2913,7 @@ ZXQX_direct_compositum_slice(GEN A, GEN B, GEN C, GEN P, GEN *mod)
   {
     ulong p = P[i];
     GEN a = gel(A,i), b = gel(B,i), c = gel(C,i);
-    gel(H,i) = FlxX_to_Flm(FlxqX_direct_compositum(a, b, c, p), dC);
+    gel(H,i) = FlxX_to_Flm(FlxqX_composedsum(a, b, c, p), dC);
   }
   H = nmV_chinese_center_tree_seq(H, P, T, ZV_chinesetree(P, T));
   *mod = gmael(T, lg(T)-1, 1); return gc_all(av, 2, &H, mod);

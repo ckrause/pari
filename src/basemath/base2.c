@@ -3958,7 +3958,7 @@ nfcompositum_lambda(GEN nf, GEN A, GEN B, long lambda)
     if (DEBUGLEVEL>4) err_printf("Trying lambda = %ld\n", lambda);
     a = ZXX_to_FlxX(RgX_rescale(A, stoi(-lambda)), p, vT);
     Tp = ZX_to_Flx(T, p);
-    Hp = FlxqX_direct_compositum(a, ZXX_to_FlxX(B, p, vT), Tp, p);
+    Hp = FlxqX_composedsum(a, ZXX_to_FlxX(B, p, vT), Tp, p);
     if (!FlxqX_is_squarefree(Hp, Tp, p))
       { lambda = next_lambda(lambda); continue; }
     if (DEBUGLEVEL>4) err_printf("Final lambda = %ld\n", lambda);

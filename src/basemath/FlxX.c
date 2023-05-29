@@ -1793,9 +1793,10 @@ GEN
 FlxqX_fromNewton(GEN P, GEN T, ulong p)
 { return FlxqX_fromNewton_pre(P, T, p, SMALL_ULONG(p)? 0: get_Fl_red(p)); }
 
-static GEN
+GEN
 FlxqX_composedsum(GEN P, GEN Q, GEN T, ulong p)
 {
+  pari_sp av = avma;
   ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
   long n = 1+ degpol(P)*degpol(Q);
   GEN Pl = FlxX_invLaplace(FlxqX_Newton_pre(P,n, T,p,pi), p);
@@ -1805,12 +1806,8 @@ FlxqX_composedsum(GEN P, GEN Q, GEN T, ulong p)
   GEN lead = Flxq_mul_pre(Flxq_powu_pre(leading_coeff(P),degpol(Q), T,p,pi),
                           Flxq_powu_pre(leading_coeff(Q),degpol(P), T,p,pi),
                           T, p, pi);
-  return FlxqX_Flxq_mul_pre(R, lead, T, p, pi);
+  return gerepileupto(av, FlxqX_Flxq_mul_pre(R, lead, T, p, pi));
 }
-
-GEN
-FlxqX_direct_compositum(GEN P, GEN Q, GEN T, ulong p)
-{ return FlxqX_composedsum(P, Q, T, p); }
 
 GEN
 FlxqXV_prod(GEN V, GEN T, ulong p)
