@@ -2838,10 +2838,8 @@ ZX_composedsum_worker(GEN P, GEN A, GEN B)
   return V;
 }
 
-/* Assume A,B irreducible (in particular squarefree) and define linearly
- * disjoint extensions: no factorisation needed */
 static GEN
-ZX_direct_compositum(GEN A, GEN B, GEN lead)
+ZX_composedsum_i(GEN A, GEN B, GEN lead)
 {
   pari_sp av = avma;
   forprime_t S;
@@ -2887,12 +2885,12 @@ ZX_compositum(GEN A, GEN B, long *lambda)
     *lambda = ZX_compositum_lambda(A, B, lead, *lambda);
     A = ZX_rescale(A, stoi(-*lambda));
   }
-  return ZX_direct_compositum(A, B, lead);
+  return ZX_composedsum_i(A, B, lead);
 }
 
 GEN
-ZX_compositum_disjoint(GEN A, GEN B)
-{ return ZX_compositum(A, B, NULL); }
+ZX_composedsum(GEN A, GEN B)
+{ return ZX_composedsum_i(A, B, NULL); }
 
 static GEN
 ZXQX_direct_compositum_slice(GEN A, GEN B, GEN C, GEN P, GEN *mod)

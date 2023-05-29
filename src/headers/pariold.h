@@ -41,6 +41,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define padic_lindep lindep_padic
 #define ZM_ker_ratlift ZM_ker
 #define keri ZM_ker
+/* Following obsoleted in 2.16.* (2024) */
+#define ZX_compositum_disjoint ZX_composedsum
 /* Following obsoleted in 2.9.* (2016) */
 #define absi_factor absZ_factor
 #define absi_factor_limit absZ_factor_limit

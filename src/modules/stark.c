@@ -2160,7 +2160,7 @@ GenusFieldQuadReal(GEN disc)
     else
       d = (mod4(p) == 1)? p: mulii(p0, p);
     t = mkpoln(3, gen_1, gen_0, negi(d)); /* x^2 - d */
-    T = T? ZX_compositum_disjoint(T, t): t;
+    T = T? ZX_composedsum(T, t): t;
   }
   return polredbest(T, 0);
 }
@@ -2182,7 +2182,7 @@ GenusFieldQuadImag(GEN disc)
     else
       d = (mod4(p) == 1)? p: negi(p);
     t = mkpoln(3, gen_1, gen_0, negi(d)); /* x^2 - d */
-    T = T? ZX_compositum_disjoint(T, t): t;
+    T = T? ZX_composedsum(T, t): t;
   }
   return polredbest(T, 0);
 }

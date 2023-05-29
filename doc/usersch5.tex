@@ -10229,9 +10229,9 @@ is advised to make $P$ primitive first.
 under the assumption that \kbd{A} in $\Z[Y]$, \kbd{B} in $\Q[Y][X]$, and
 $R = \text{Res}_Y(A, B) \in \Z[X]$, returns the resultant $R$.
 
-\fun{GEN}{ZX_compositum_disjoint}{GEN A, GEN B} given two irreducible \kbd{ZX}
-defining linearly disjoint extensions, returns a \kbd{ZX} defining their
-compositum.
+\fun{GEN}{ZX_composedsum}{GEN P, GEN Q} if
+$P=a\prod_i(x-p_i)$ and $Q=b\prod_j(x-q_j)$ in some suitable algebraic extenstion,
+return $a\*b\prod_{i,j}(x-(p_i+q_j))$.
 
 \fun{GEN}{ZX_compositum}{GEN A, GEN B, long *lambda}
 given two irreducible \kbd{ZX}, returns an irreducible \kbd{ZX} $C$ defining

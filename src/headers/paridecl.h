@@ -2360,7 +2360,7 @@ GEN     FqX_to_nfX(GEN x, GEN modpr);
 GEN     Rg_nffix(const char *f, GEN T, GEN c, int lift);
 GEN     RgV_nffix(const char *f, GEN T, GEN P, int lift);
 GEN     RgX_nffix(const char *s, GEN nf, GEN x, int lift);
-GEN     ZX_compositum_disjoint(GEN A, GEN B);
+GEN     ZX_composedsum(GEN A, GEN B);
 GEN     ZX_compositum(GEN A, GEN B, long *lambda);
 long    ZpX_disc_val(GEN f, GEN p);
 GEN     ZpX_gcd(GEN f1,GEN f2,GEN p, GEN pm);
