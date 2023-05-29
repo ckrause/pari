@@ -82,11 +82,11 @@ Variant: Also available are
  \fun{GEN}{compositum}{GEN P, GEN Q} ($\fl = 0$) and
  \fun{GEN}{compositum2}{GEN P, GEN Q} ($\fl = 1$).
 
-Function: _ZX_direct_compositum_worker
-C-Name: ZX_direct_compositum_worker
+Function: _ZX_composedsum_worker
+C-Name: ZX_composedsum_worker
 Prototype: GGG
 Section: programming/internals
-Help: worker for ZX_direct_compositum
+Help: worker for ZX_composedsum
 
 Function: _ZXQX_direct_compositum_worker
 C-Name: ZXQX_direct_compositum_worker

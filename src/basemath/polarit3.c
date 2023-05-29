@@ -2803,7 +2803,7 @@ ZX_ZXY_rnfequation(GEN A, GEN B, long *lambda)
 }
 
 static GEN
-ZX_direct_compositum_slice(GEN A, GEN B, GEN P, GEN *mod)
+ZX_composedsum_slice(GEN A, GEN B, GEN P, GEN *mod)
 {
   pari_sp av = avma;
   long i, n = lg(P)-1;
@@ -2831,10 +2831,10 @@ ZX_direct_compositum_slice(GEN A, GEN B, GEN P, GEN *mod)
 }
 
 GEN
-ZX_direct_compositum_worker(GEN P, GEN A, GEN B)
+ZX_composedsum_worker(GEN P, GEN A, GEN B)
 {
   GEN V = cgetg(3, t_VEC);
-  gel(V,1) = ZX_direct_compositum_slice(A, B, P, &gel(V,2));
+  gel(V,1) = ZX_composedsum_slice(A, B, P, &gel(V,2));
   return V;
 }
 
@@ -2848,10 +2848,11 @@ ZX_direct_compositum(GEN A, GEN B, GEN lead)
   ulong bound;
   GEN H, worker, mod;
   if (degpol(A) < degpol(B)) swap(A, B);
+  if (!lead) lead  = mulii(leading_coeff(A),leading_coeff(B));
   bound = ZX_ZXY_ResBound_1(A, B);
-  worker = snm_closure(is_entry("_ZX_direct_compositum_worker"), mkvec2(A,B));
+  worker = snm_closure(is_entry("_ZX_composedsum_worker"), mkvec2(A,B));
   init_modular_big(&S);
-  H = gen_crt("ZX_direct_compositum", worker, &S, lead, bound, 0, &mod,
+  H = gen_crt("ZX_composedsum", worker, &S, lead, bound, 0, &mod,
               nxV_chinese_center, FpX_center);
   return gerepileupto(av, H);
 }

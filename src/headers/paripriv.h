@@ -194,7 +194,7 @@ GEN  RgM_ZM_mul_worker(GEN y, GEN x);
 GEN  ZX_resultant_worker(GEN P, GEN A, GEN B, GEN dB);
 GEN  ZXQX_resultant_worker(GEN P, GEN A, GEN B, GEN T, GEN dB);
 GEN  ZX_ZXY_resultant_worker(GEN P, GEN A, GEN B, GEN dB, GEN v);
-GEN  ZX_direct_compositum_worker(GEN P, GEN A, GEN B);
+GEN  ZX_composedsum_worker(GEN P, GEN A, GEN B);
 GEN  ZXQX_direct_compositum_worker(GEN P, GEN A, GEN B, GEN C);
 GEN  ZX_gcd_worker(GEN P, GEN A, GEN B, GEN g);
 GEN  ZXQ_minpoly_worker(GEN P, GEN A, GEN B, long d);
