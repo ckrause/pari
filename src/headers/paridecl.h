@@ -385,6 +385,7 @@ GEN     Flx_Laplace(GEN x, ulong p);
 GEN     Flx_Newton(GEN P, long n, ulong p);
 GEN     Flx_add(GEN x, GEN y, ulong p);
 GEN     Flx_blocks(GEN P, long n, long m);
+GEN     Flx_composedprod(GEN P, GEN Q, ulong p);
 GEN     Flx_composedsum(GEN P, GEN Q, ulong p);
 GEN     Flx_convol(GEN x, GEN y, ulong p);
 GEN     Flx_deflate(GEN x0, long d);

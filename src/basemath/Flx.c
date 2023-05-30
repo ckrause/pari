@@ -4070,6 +4070,29 @@ GEN
 FlxV_composedsum(GEN V, ulong p)
 { return gen_product(V, (void *)p, &_Flx_composedsum); }
 
+GEN
+Flx_composedprod(GEN P, GEN Q, ulong p)
+{
+  pari_sp av = avma;
+  long n = 1+ degpol(P)*degpol(Q);
+  ulong lead = Fl_mul(Fl_powu(Flx_lead(P), degpol(Q), p),
+                      Fl_powu(Flx_lead(Q), degpol(P), p), p);
+  GEN R;
+  if (p >= (ulong)n)
+  {
+    GEN L = Flx_convol(Flx_Newton(P,n,p), Flx_Newton(Q,n,p), p);
+    R = Flx_fromNewton(L, p);
+  } else
+  {
+    long w = 1 + ulogint(n, p);
+    GEN qf = powuu(p, w);
+    GEN Pl = FpX_convol(FpX_Newton(Flx_to_ZX(P), n, qf), FpX_Newton(Flx_to_ZX(Q), n, qf), qf);
+    R = ZX_to_Flx(FpX_fromNewton(Pl, qf), p);
+  }
+  return gerepileuptoleaf(av, Flx_Fl_mul(R, lead, p));
+
+}
+
 /* (x+1)^n mod p; assume 2 <= n < 2p prime */
 static GEN
 Fl_Xp1_powu(ulong n, ulong p, long v)

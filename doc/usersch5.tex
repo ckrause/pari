@@ -6326,6 +6326,10 @@ the latter are not set). Assumes that $p$ is prime.
 
 \fun{ulong}{Flx_extresultant_pre}{GEN a, GEN b, ulong p, ulong pi, GEN *ptU, GEN *ptV}
 
+\fun{GEN}{Flx_composedprod}{GEN P, GEN Q, ulong p} if
+$P=a\prod_{i=1}^m(x-p_i)$ and $Q=b\prod_{j=1}^n(x-q_j)$ in some suitable
+algebraic extension, return $a^n\*b^m\prod_{i,j}(x-p_i\*q_j)$.
+
 \fun{GEN}{Flx_composedsum}{GEN P, GEN Q, ulong p} if
 $P=a\prod_{i=1}^m(x-p_i)$ and $Q=b\prod_{j=1}^n(x-q_j)$ in some suitable
 algebraic extension, return $a^n\*b^m\prod_{i,j}(x-(p_i+q_j))$.
