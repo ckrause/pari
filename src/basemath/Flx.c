@@ -500,6 +500,17 @@ Flx_Fl_mul(GEN x, ulong y, ulong p)
 { return Flx_Fl_mul_pre(x, y, p, SMALL_ULONG(p)? 0: get_Fl_red(p)); }
 
 GEN
+Flx_convol(GEN x, GEN y, ulong p)
+{
+  long lx = lg(x), ly = lg(y), i;
+  GEN z;
+  if (lx < ly) swapspec(x,y, lx,ly);
+  z = cgetg(ly,t_VECSMALL); z[1] = x[1];
+  for (i=2; i<ly; i++) uel(z,i) = Fl_mul(uel(x,i),uel(y,i), p);
+  return Flx_renormalize(z, ly);
+}
+
+GEN
 Flx_Fl_mul_to_monic(GEN y, ulong x, ulong p)
 {
   GEN z;
