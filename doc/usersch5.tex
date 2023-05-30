@@ -5225,8 +5225,8 @@ returns their resultant and sets Bezout coefficients (if the resultant is $0$,
 the latter are not set). Assumes that $p$ is prime.
 
 \fun{GEN}{FpX_composedsum}{GEN P, GEN Q, GEN p} if
-$P=a\prod_{i=1}^m(x-p_i)$ and $Q=b\prod_{j=1}^n(x-q_j)$ in some suitable algebraic extenstion,
-return $a^n\*b^m\prod_{i,j}(x-(p_i+q_j))$.
+$P=a\prod_{i=1}^m(x-p_i)$ and $Q=b\prod_{j=1}^n(x-q_j)$ in some suitable
+algebraic extension, return $a^n\*b^m\prod_{i,j}(x-(p_i+q_j))$.
 
 \fun{GEN}{FpX_Newton}{GEN x, long n, GEN p} return
 $\sum{i=0}^{n-1} \pi_i\*X^i$ where $\pi_i$ is the sum of the $i$th-power
@@ -6324,9 +6324,8 @@ the latter are not set). Assumes that $p$ is prime.
 \fun{ulong}{Flx_extresultant_pre}{GEN a, GEN b, ulong p, ulong pi, GEN *ptU, GEN *ptV}
 
 \fun{GEN}{Flx_composedsum}{GEN P, GEN Q, ulong p} if
-$P=a\prod_{i=1}^m(x-p_i)$ and $Q=b\prod_{j=1}^n(x-q_j)$ in some suitable algebraic extenstion,
-return $a^n\*b^m\prod_{i,j}(x-(p_i+q_j))$.
-
+$P=a\prod_{i=1}^m(x-p_i)$ and $Q=b\prod_{j=1}^n(x-q_j)$ in some suitable
+algebraic extension, return $a^n\*b^m\prod_{i,j}(x-(p_i+q_j))$.
 
 \fun{GEN}{Flx_invBarrett}{GEN T, ulong p}, returns the Barrett inverse
 $M$ of $T$ defined by $M(x)\*x^n\*T(1/x)\equiv 1\pmod{x^{n-1}}$ where $n$ is
@@ -10240,8 +10239,8 @@ under the assumption that \kbd{A} in $\Z[Y]$, \kbd{B} in $\Q[Y][X]$, and
 $R = \text{Res}_Y(A, B) \in \Z[X]$, returns the resultant $R$.
 
 \fun{GEN}{ZX_composedsum}{GEN P, GEN Q} if
-$P=a\prod_i(x-p_i)$ and $Q=b\prod_j(x-q_j)$ in some suitable algebraic extenstion,
-return $a\*b\prod_{i,j}(x-(p_i+q_j))$.
+$P=a\prod_i(x-p_i)$ and $Q=b\prod_j(x-q_j)$ in some suitable algebraic
+extension, return $a\*b\prod_{i,j}(x-(p_i+q_j))$.
 
 \fun{GEN}{ZX_compositum}{GEN A, GEN B, long *lambda}
 given two irreducible \kbd{ZX}, returns an irreducible \kbd{ZX} $C$ defining
