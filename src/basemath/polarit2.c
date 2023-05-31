@@ -3310,25 +3310,47 @@ polresultantext(GEN x, GEN y) { return polresultantext0(x,y,-1); }
 /*                                                                 */
 /*******************************************************************/
 
+static GEN
+RgXQ_charpoly_FpXQ(GEN x, GEN T, GEN p, long v)
+{
+  pari_sp av = avma;
+  GEN r;
+  if (lgefint(p)==3)
+  {
+    ulong pp = p[2];
+    r = Flx_to_ZX(Flxq_charpoly(RgX_to_Flx(x, pp), RgX_to_Flx(T, pp), pp));
+  }
+  else
+    r = FpXQ_charpoly(RgX_to_FpX(x, p), RgX_to_FpX(T, p), p);
+  r = FpX_to_mod(r, p); setvarn(r, v);
+  return gerepileupto(av, r);
+}
+
+static GEN
+RgXQ_charpoly_fast(GEN x, GEN T, long v)
+{
+  GEN p, pol;
+  long pa, t = RgX_type2(x,T, &p,&pol,&pa);
+  switch(t)
+  {
+    case t_INT:    return ZXQ_charpoly(x, T, v);
+    case t_FRAC:   return QXQ_charpoly(x, T, v);
+    case t_INTMOD: return RgXQ_charpoly_FpXQ(x, T, p, v);
+    default:       return NULL;
+  }
+}
+
 /* (v - x)^d */
 static GEN
 caract_const(pari_sp av, GEN x, long v, long d)
 { return gerepileupto(av, gpowgs(deg1pol_shallow(gen_1, gneg_i(x), v), d)); }
 
-/* return caract(Mod(x,T)) in variable v */
 GEN
-RgXQ_charpoly(GEN x, GEN T, long v)
+RgXQ_charpoly_i(GEN x, GEN T, long v)
 {
   pari_sp av = avma;
-  long d = degpol(T), dx, vx, vp, v0;
+  long d = degpol(T), dx = degpol(x), v0;
   GEN ch, L;
-
-  if (typ(x) != t_POL) return caract_const(av, x, v, d);
-  vx = varn(x);
-  vp = varn(T);
-  if (varncmp(vx, vp) > 0) return caract_const(av, x, v, d);
-  if (varncmp(vx, vp) < 0) pari_err_PRIORITY("RgXQ_charpoly", x, "<", vp);
-  dx = degpol(x);
   if (dx >= degpol(T)) { x = RgX_rem(x, T); dx = degpol(x); }
   if (dx <= 0) return dx? pol_xn(d, v): caract_const(av, gel(x,2), v, d);
 
@@ -3345,6 +3367,24 @@ RgXQ_charpoly(GEN x, GEN T, long v)
   L = leading_coeff(ch);
   if (!gequal1(L)) ch = RgX_Rg_div(ch, L);
   return gerepileupto(av, ch);
+}
+
+/* return caract(Mod(x,T)) in variable v */
+GEN
+RgXQ_charpoly(GEN x, GEN T, long v)
+{
+  pari_sp av = avma;
+  long d = degpol(T), vx, vp;
+  GEN ch;
+
+  if (typ(x) != t_POL) return caract_const(av, x, v, d);
+  vx = varn(x);
+  vp = varn(T);
+  if (varncmp(vx, vp) > 0) return caract_const(av, x, v, d);
+  if (varncmp(vx, vp) < 0) pari_err_PRIORITY("RgXQ_charpoly", x, "<", vp);
+  ch = RgXQ_charpoly_fast(x, T, v);
+  if (ch) return ch;
+  return RgXQ_charpoly_i(x, T, v);
 }
 
 /* characteristic polynomial (in v) of x over nf, where x is an element of the

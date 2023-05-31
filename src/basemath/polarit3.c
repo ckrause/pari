@@ -1985,7 +1985,7 @@ ZXQ_charpoly_sqf(GEN A, GEN T, long *lambda, long v)
 GEN
 ZXQ_charpoly(GEN A, GEN T, long v)
 {
-  return (degpol(T) < 16) ? RgXQ_charpoly(A,T,v): ZXQ_charpoly_sqf(A,T, NULL, v);
+  return (degpol(T) < 16) ? RgXQ_charpoly_i(A,T,v): ZXQ_charpoly_sqf(A,T, NULL, v);
 }
 
 GEN

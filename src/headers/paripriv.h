@@ -913,10 +913,11 @@ ulong   Flj_order_ufact(GEN P, ulong n, GEN F, ulong a4, ulong p, ulong pi);
 
 GEN     Flm_Frobenius_pow(GEN M, long d, GEN T, ulong p);
 GEN     FpM_Frobenius_pow(GEN M, long d, GEN T, GEN p);
-GEN     nf_direct_compositum(GEN nf, GEN A, GEN B);
+GEN     RgXQ_charpoly_i(GEN x, GEN T, long v);
 ulong   ZX_ZXY_ResBound(GEN A, GEN B, GEN dB);
 GEN     ffinit_Artin_Schreier(ulong p, long l);
 GEN     ffinit_rand(GEN p, long n);
+GEN     nf_direct_compositum(GEN nf, GEN A, GEN B);
 
 /* nflist.c */
 
