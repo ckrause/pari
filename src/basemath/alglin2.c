@@ -117,6 +117,11 @@ charpoly0(GEN x, long v, long flag)
   return NULL; /* LCOV_EXCL_LINE */
 }
 
+/* (v - x)^d */
+static GEN
+caract_const(pari_sp av, GEN x, long v, long d)
+{ return gerepileupto(av, gpowgs(deg1pol_shallow(gen_1, gneg_i(x), v), d)); }
+
 /* characteristic pol. Easy cases. Return NULL in case it's not so easy. */
 static GEN
 easychar(GEN x, long v)
@@ -150,10 +155,13 @@ easychar(GEN x, long v)
     case t_POLMOD:
     {
       GEN A = gel(x,2), T = gel(x,1);
-      if (typ(A)==t_POL && RgX_is_QX(A) && RgX_is_ZX(T))
-        return QXQ_charpoly(A, T, v);
-      else
-        return RgXQ_charpoly(A, T, v);
+      long vx, vp;
+      if (typ(A) != t_POL) return caract_const(avma, x, v, degpol(T));
+      vx = varn(A);
+      vp = varn(T);
+      if (varncmp(vx, vp) > 0) return caract_const(avma, x, v, degpol(T));
+      if (varncmp(vx, vp) < 0) pari_err_PRIORITY("charpoly", x, "<", vp);
+      return RgXQ_charpoly(A, T, v);
     }
     case t_MAT:
       lx=lg(x);

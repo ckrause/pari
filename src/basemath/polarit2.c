@@ -3373,16 +3373,7 @@ RgXQ_charpoly_i(GEN x, GEN T, long v)
 GEN
 RgXQ_charpoly(GEN x, GEN T, long v)
 {
-  pari_sp av = avma;
-  long d = degpol(T), vx, vp;
-  GEN ch;
-
-  if (typ(x) != t_POL) return caract_const(av, x, v, d);
-  vx = varn(x);
-  vp = varn(T);
-  if (varncmp(vx, vp) > 0) return caract_const(av, x, v, d);
-  if (varncmp(vx, vp) < 0) pari_err_PRIORITY("RgXQ_charpoly", x, "<", vp);
-  ch = RgXQ_charpoly_fast(x, T, v);
+  GEN ch = RgXQ_charpoly_fast(x, T, v);
   if (ch) return ch;
   return RgXQ_charpoly_i(x, T, v);
 }
