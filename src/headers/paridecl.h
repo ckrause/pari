@@ -812,6 +812,7 @@ GEN     FpX_add(GEN x, GEN y, GEN p);
 GEN     FpX_center(GEN x, GEN p, GEN pov2);
 GEN     FpX_center_i(GEN T, GEN p, GEN pov2);
 GEN     FpX_chinese_coprime(GEN x,GEN y,GEN Tx,GEN Ty,GEN Tz,GEN p);
+GEN     FpX_composedprod(GEN P, GEN Q, GEN p);
 GEN     FpX_composedsum(GEN P, GEN Q, GEN p);
 GEN     FpX_convol(GEN x, GEN y, GEN p);
 GEN     FpX_deriv(GEN x, GEN p);
