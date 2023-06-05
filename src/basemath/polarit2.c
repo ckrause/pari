@@ -1368,6 +1368,10 @@ gauss_gcd(GEN x, GEN y)
   {
     GEN z = gsub(x, gmul(ground(gdiv(x,y)), y));
     x = y; y = z;
+    if (gc_needed(av,1)) {
+      if(DEBUGMEM>1) pari_warn(warnmem,"RgX_gcd_simple");
+      gerepileall(av,2, &x,&y);
+    }
   }
   x = gauss_normal(x);
   if (typ(x) == t_COMPLEX)
