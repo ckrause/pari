@@ -272,4 +272,17 @@ x^2
   ***   at top-level: znsubgroupgenerators([I])
   ***                 ^-------------------------
   *** znsubgroupgenerators: incorrect type in znsubgroupgenerators (t_VEC).
-Total time spent: 986
+[[1, [0]], [1, [], []], [[]~, Vecsmall([])], [[], [], [;], [], [], []], [;]]
+  ***   at top-level: znconreylog(G,"")
+  ***                 ^-----------------
+  *** znconreylog: incorrect type in znconreylog (t_STR).
+  ***   at top-level: znconreylog(G,Mod(0,2))
+  ***                 ^-----------------------
+  *** znconreylog: incorrect type in znconreylog (t_INTMOD).
+  ***   at top-level: znconreylog(G,[1])
+  ***                 ^------------------
+  *** znconreylog: incorrect type in znconreylog (t_VEC).
+  ***   at top-level: znconreylog(G,[1]~)
+  ***                 ^-------------------
+  *** znconreylog: incorrect type in znconreylog (t_COL).
+Total time spent: 1872

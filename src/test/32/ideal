@@ -305,7 +305,7 @@ matrix(0,2)
   *** ideallog: incorrect type in checkbid (t_VEC).
   ***   at top-level: ideallog(,3,zQ)
   ***                 ^---------------
-  *** ideallog: incorrect type in znconreylog (t_MAT).
+  *** ideallog: incorrect type in znconreylog (t_VEC).
   ***   at top-level: idealmul(Kerror,[2,1;0,1],[2,1;0,1])
   ***                 ^------------------------------------
   *** idealmul: inconsistent dimensions in idealmul.

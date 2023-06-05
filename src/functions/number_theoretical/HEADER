@@ -117,7 +117,7 @@ Doc:
  generators don't satisfy the SNF condition in general since their orders are
  now $(p-1)p^{e_p-1}$ for $p$ odd; for $p = 2$, the generator $-1$ has order
  $2$ and $5$ has order $2^{e_2-2}$ $(e_2 > 2)$. Nevertheless, any $m\in
- (\Z/N\Z)^*$ can be uniquely decomposed as $\prod G_i^{m_i}$ for some $m_i$
+ (\Z/N\Z)^*$ can be uniquely decomposed as $m = \prod G_i^{m_i}$ for some $m_i$
  modulo $D_i$ and we can define a character by $\chi(G_j) = e(m_j / D_j)$ for
  all $j$.
 
@@ -129,8 +129,9 @@ Doc:
  \item The attached character is called the \tev{Conrey character}
  attached to $m$.
 
- To sum up a Dirichlet character can be defined by a \typ{INT} (the Conrey
- label $m$), a \typ{COL} (the Conrey logarithm of $m$, in terms of the Conrey
+ To sum up a Dirichlet character can be defined by a \typ{INTMOD}
+ \kbd{Mod}$(m, N)$, a \typ{INT} lift (the Conrey label $m$),
+ a \typ{COL} (the Conrey logarithm of $m$, in terms of the Conrey
  generators) or a \typ{VEC} (in  terms of the SNF generators). The \typ{COL}
  format, i.e. Conrey logarithms, is the preferred (fastest) representation.
 
@@ -139,9 +140,11 @@ Doc:
  \kbd{G = znstar(N, 1)} initializes $(\Z/N\Z)^*$, which must be given as
  first arguments to all functions handling Dirichlet characters.
 
- \kbd{znconreychar} transforms \typ{INT} and \typ{COL} to a SNF character.
+ \kbd{znconreychar} transforms \typ{INT}, \typ{INTMOD} and \typ{COL} to a SNF
+ character.
 
- \kbd{znconreylog} transforms \typ{INT} and \typ{VEC} to a Conrey logarithm.
+ \kbd{znconreylog} transforms \typ{INT}, \typ{INTMOD} and \typ{VEC}
+ to a Conrey logarithm.
 
  \kbd{znconreyexp} transforms \typ{VEC} and \typ{COL} to a Conrey label.
 

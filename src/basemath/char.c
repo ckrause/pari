@@ -24,6 +24,7 @@ int
 checkznstar_i(GEN G)
 {
   return (typ(G) == t_VEC && lg(G) == 6
+      && typ(znstar_get_N(G)) == t_INT
       && typ(znstar_get_faN(G)) == t_VEC
       && typ(gel(G,1)) == t_VEC && lg(gel(G,1)) == 3);
 }
@@ -794,12 +795,29 @@ znconreylog(GEN bid, GEN x)
   long i, l;
   if (!checkznstar_i(bid)) pari_err_TYPE("znconreylog", bid);
   N = znstar_get_N(bid);
-  if (typ(N) != t_INT) pari_err_TYPE("znconreylog", N);
-  if (abscmpiu(N, 2) <= 0) return cgetg(1, t_COL);
+  if (abscmpiu(N, 2) <= 0)
+  {
+    switch(typ(x))
+    {
+    case t_INT: break;
+    case t_INTMOD:
+      if (!equalii(N, gel(x,1))) pari_err_TYPE("znconreylog", x);
+      x = gel(x,2); break;
+    case t_COL:
+    case t_VEC:
+      if (lg(x) != 1) pari_err_TYPE("znconreylog", x);
+      break;
+    default: pari_err_TYPE("znconreylog", x);
+    }
+    return cgetg(1, t_COL);
+  }
   cycg = znstar_get_conreycyc(bid);
   switch(typ(x))
   {
     GEN Ui;
+    case t_INTMOD:
+      if (!equalii(N, gel(x,1))) pari_err_TYPE("znconreylog", x);
+      x = gel(x,2); /* fall through */
     case t_INT:
       if (!signe(x)) pari_err_COPRIME("znconreylog", x, N);
       break;
@@ -927,8 +945,12 @@ znconreychar(GEN bid, GEN m)
   if (!checkznstar_i(bid)) pari_err_TYPE("znconreychar", bid);
   switch(typ(m))
   {
-    case t_COL:
+    case t_INTMOD:
+      if (!equalii(gel(m,1), znstar_get_N(bid)))
+        pari_err_TYPE("znconreychar",m);
+      m = gel(m,2); /* fall through */
     case t_INT:
+    case t_COL:
       nchi = znconrey_normalized(bid,m); /* images of primroot gens */
       break;
     default:
