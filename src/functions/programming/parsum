@@ -21,3 +21,10 @@ Doc: sum of expression \var{expr}, the formal parameter
  values, using \kbd{vecsum(parvector())} is likely to be more efficient; the
  sumation order also becomes deterministic.
  %\syn{NO}
+
+Function: _parsum_slice_worker
+Section: programming/internals
+C-Name: parsum_slice_worker
+Prototype: GGGG
+Help: _parsum_slice_worker(a,b,m,C): return sum(k=0,(b-a)\m,C(a+k*m)).
+ a and m must be integers and m must be positive.

@@ -233,6 +233,7 @@ GEN  FpM_ratlift_worker(GEN A, GEN mod, GEN B);
 GEN  ellQ_factorback_worker(GEN P, GEN E, GEN A, GEN L, ulong l);
 GEN  chinese_unit_worker(GEN P, GEN A, GEN U, GEN B, GEN D, GEN C);
 GEN  partmap_reverse_frac_worker(GEN t, GEN a, GEN b, GEN la, GEN lb, long v);
+GEN  parsum_slice_worker(GEN a, GEN b, GEN m, GEN worker);
 
 /* Relative number fields */
 enum { rnf_NFABS = 1, rnf_MAPS };

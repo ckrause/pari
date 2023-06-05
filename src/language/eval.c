@@ -1778,49 +1778,64 @@ parvector(long n, GEN code)
   return V;
 }
 
-/* B <- {a + k * m : k = 0, ..., (b-a)/m)} */
-static void
-arithprogset(GEN B, GEN a, GEN b, long m)
+/* suitable for gerepileupto */
+GEN
+parsum_slice_worker(GEN a, GEN b, GEN m, GEN worker)
 {
-  long k;
-  for (k = 1; cmpii(a, b) <= 0; a = addui(m,a), k++) gel(B, k) = a;
-  setlg(B, k);
+  pari_sp av0 = avma, av;
+  GEN s = gen_0;
+  if (typ(a) != t_INT) pari_err_TYPE("parsum_slice",a);
+  if (typ(m) != t_INT) pari_err_TYPE("parsum_slice",m);
+  if (gsigne(m) <= 0) pari_err_DOMAIN("parsum_slice","m","<=",gen_0,m);
+  if (typ(b) != t_INT) b = gfloor(b);
+  av = avma;
+  while (gcmp(a,b)<=0)
+  {
+    s = gadd(s, closure_callgen1(worker, a));
+    a = addii(a, m);
+    if (gc_needed(av,1))
+    {
+      if (DEBUGMEM>1) pari_warn(warnmem,"parsum_slice");
+      gerepileall(av,2,&a,&s);
+    }
+  }
+  return gerepileupto(av0,s);
 }
-static GEN
-vecsum_i(GEN v)
-{
-  long i, l = lg(v);
-  GEN s;
-  if (l == 1) return gen_0;
-  s = gel(v,1); for (i = 2; i < l; i++) s = gadd(s, gel(v,i));
-  return s;
-}
+
 GEN
 parsum(GEN a, GEN b, GEN code)
 {
   pari_sp av = avma;
-  GEN worker, L, v, s, N;
+  GEN worker, mG, v, s, N;
   long r, m, pending;
   struct pari_mt pt;
   pari_sp av2;
 
   if (typ(a) != t_INT) pari_err_TYPE("parsum",a);
   if (gcmp(b,a) < 0) return gen_0;
-  worker = snm_closure(is_entry("_parapply_slice_worker"), mkvec(code));
   b = gfloor(b);
   N = addiu(subii(b, a), 1);
-  m = itou(sqrti(N));
+  mG = sqrti(N);
+  m = itou(mG);
+  worker = snm_closure(is_entry("_parsum_slice_worker"), mkvec3(b,mG,code));
   mt_queue_start_lim(&pt, worker, m);
-  L = cgetg(m + 2, t_VEC); v = mkvec(L);
-  s = gen_0; a = setloop(a); pending = 0; av2 = avma;
+  s = gen_0; a = setloop(a); v = mkvec(a); pending = 0; av2 = avma;
   for (r = 1; r <= m || pending; r++)
   {
     long workid;
     GEN done;
-    if (r <= m) { arithprogset(L, icopy(a), b, m); a = incloop(a); }
     mt_queue_submit(&pt, 0, r <= m? v: NULL);
     done = mt_queue_get(&pt, &workid, &pending);
-    if (done) s = gerepileupto(av2, gadd(s, vecsum_i(done)));
+    if (done)
+    {
+      s = gadd(s, done);
+      if (gc_needed(av2,1))
+      {
+        if (DEBUGMEM>1) pari_warn(warnmem,"parsum");
+        s = gerepileupto(av2,s);
+      }
+    }
+    a = incloop(a);
   }
   mt_queue_end(&pt); return gerepileupto(av, s);
 }
