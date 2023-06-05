@@ -1782,13 +1782,8 @@ parvector(long n, GEN code)
 GEN
 parsum_slice_worker(GEN a, GEN b, GEN m, GEN worker)
 {
-  pari_sp av0 = avma, av;
+  pari_sp av = avma;
   GEN s = gen_0;
-  if (typ(a) != t_INT) pari_err_TYPE("parsum_slice",a);
-  if (typ(m) != t_INT) pari_err_TYPE("parsum_slice",m);
-  if (gsigne(m) <= 0) pari_err_DOMAIN("parsum_slice","m","<=",gen_0,m);
-  if (typ(b) != t_INT) b = gfloor(b);
-  av = avma;
   while (gcmp(a,b)<=0)
   {
     s = gadd(s, closure_callgen1(worker, a));
@@ -1799,7 +1794,7 @@ parsum_slice_worker(GEN a, GEN b, GEN m, GEN worker)
       gerepileall(av,2,&a,&s);
     }
   }
-  return gerepileupto(av0,s);
+  return gerepileupto(av,s);
 }
 
 GEN
