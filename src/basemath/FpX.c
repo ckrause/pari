@@ -273,10 +273,9 @@ FpX_convol(GEN x, GEN y, GEN p)
   long lx = lg(x), ly = lg(y), i;
   GEN z;
   if (lx < ly) swapspec(x,y, lx,ly);
-  z = cgetg(lx,t_POL); z[1] = x[1];
+  z = cgetg(ly,t_POL); z[1] = x[1];
   for (i=2; i<ly; i++) gel(z,i) = Fp_mul(gel(x,i),gel(y,i), p);
-  for (   ; i<lx; i++) gel(z,i) = modii(gel(x,i), p);
-  z = ZX_renormalize(z, lx);
+  z = ZX_renormalize(z, ly);
   if (!lgpol(z)) { set_avma((pari_sp)(z + lx)); return pol_0(varn(x)); }
   return z;
 }
