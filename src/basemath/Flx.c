@@ -3986,18 +3986,6 @@ Flx_fromNewton(GEN P, ulong p)
   return gerepileuptoleaf(av, Q);
 }
 
-static long
-newtonlogint(ulong n, ulong pp)
-{
-  long s = 0;
-  while (n > pp)
-  {
-    s += ulogint(n, pp);
-    n = (n+1)>>1;
-  }
-  return s;
-}
-
 static void
 init_invlaplace(long d, ulong p, GEN *pt_P, GEN *pt_V)
 {
@@ -4061,7 +4049,7 @@ Flx_composedsum(GEN P, GEN Q, ulong p)
   } else
   {
     long v = factorial_lval(n-1, p);
-    long w = 1 + newtonlogint(n-1, p);
+    long w = 1 + ulogint(n-1, p);
     GEN pv = powuu(p, v);
     GEN qf = powuu(p, w), q = mulii(pv, qf), q2 = mulii(q, pv);
     GEN iL = ZpX_invLaplace_init(n, q, p, v, P[1]);
