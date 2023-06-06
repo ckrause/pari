@@ -846,8 +846,7 @@ static GEN
 find_kernel(GEN a4, GEN a6, long l, GEN b4, GEN b6, GEN pp1, GEN T, GEN p, GEN pp, long e)
 {
   GEN Ge, S, Sd;
-  const long ext = 1;
-  long d = (l+1)/2+ext;
+  long d = ((l+1)>>1)+1;
   if(l==3)
     return deg1pol(gen_1, Fq_neg(pp1, T, p), 0);
   S = Zq_Weierstrass(a4, a6, b4, b6, d + 1, T, p, pp, e);
@@ -860,7 +859,7 @@ find_kernel(GEN a4, GEN a6, long l, GEN b4, GEN b6, GEN pp1, GEN T, GEN p, GEN p
   Ge = T && lgefint(pp)==3 ? ZlXQXn_expint(Ge, d, T, p, pp[2])
                            : FqXn_expint(Ge, d, T, p);
   Ge = RgX_recip(FqX_red(Ge, T, pp));
-  if (degpol(Ge)==(l-1)/2) return Ge;
+  if (degpol(Ge)==(l-1)>>1) return Ge;
   return NULL;
 }
 
@@ -1219,23 +1218,11 @@ find_isogenous_from_J(GEN a4, GEN a6, ulong ell, struct meqn *MEQN, GEN g, GEN T
   return gerepilecopy(ltop, mkvec3(a4t, a6t, h));
 }
 
-static long
-newtonlogint(ulong n, ulong pp)
-{
-  long s = 0;
-  while (n > pp)
-  {
-    s += ulogint(n, pp);
-    n = (n+1)>>1;
-  }
-  return s;
-}
-
 static GEN
 find_isogenous(GEN a4,GEN a6, ulong ell, struct meqn *MEQN, GEN g, GEN T,GEN p)
 {
   ulong pp = itou_or_0(p);
-  long e = pp ? newtonlogint(1+(ell>>1), pp) + ulogint(2*ell+4, pp) + 1: 1;
+  long e = pp ? ulogint(((ell+1)>>1)+1, pp) + ulogint(2*ell+4, pp) + 1: 1;
   if (signe(a4)==0 || signe(a6)==0)
   {
     if (DEBUGLEVEL>0) err_printf("[%c: j=%ld]",MEQN->type,signe(a4)==0 ?0: 1728);
