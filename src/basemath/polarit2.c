@@ -764,7 +764,7 @@ gauss_cmp(GEN x, GEN y)
 static GEN
 gauss_normal(GEN x)
 {
-  if (typ(x) != t_COMPLEX) return (signe(x) < 0)? absi(x): x;
+  if (typ(x) != t_COMPLEX) return absi_shallow(x);
   if (signe(gel(x,1)) < 0) x = gneg(x);
   if (signe(gel(x,2)) < 0) x = mulcxI(x);
   return x;
@@ -1362,14 +1362,14 @@ gauss_gcd(GEN x, GEN y)
 {
   pari_sp av = avma;
   GEN dx, dy;
-  dx = denom_i(x); x = gmul(x, dx);
-  dy = denom_i(y); y = gmul(y, dy);
+  x = Q_remove_denom(x, &dx);
+  y = Q_remove_denom(y, &dy);
   while (!gequal0(y))
   {
     GEN z = gsub(x, gmul(ground(gdiv(x,y)), y));
     x = y; y = z;
     if (gc_needed(av,1)) {
-      if(DEBUGMEM>1) pari_warn(warnmem,"RgX_gcd_simple");
+      if(DEBUGMEM>1) pari_warn(warnmem,"gauss_gcd");
       gerepileall(av,2, &x,&y);
     }
   }
@@ -1379,7 +1379,8 @@ gauss_gcd(GEN x, GEN y)
     if      (gequal0(gel(x,2))) x = gel(x,1);
     else if (gequal0(gel(x,1))) x = gel(x,2);
   }
-  return gerepileupto(av, gdiv(x, lcmii(dx, dy)));
+  if (!dx && !dy) return gerepilecopy(av, x);
+  return gerepileupto(av, gdiv(x, dx? (dy? lcmii(dx, dy): dx): dy));
 }
 
 static int
