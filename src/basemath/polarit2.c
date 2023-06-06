@@ -1357,8 +1357,22 @@ padic_gcd(GEN x, GEN y)
 }
 
 /* x,y in Z[i], at least one of which is t_COMPLEX */
+
 static GEN
-gauss_gcd(GEN x, GEN y)
+Zi_rem(GEN x, GEN y)
+{
+  GEN xr = real_i(x), xi = imag_i(x);
+  GEN yr = real_i(y), yi = imag_i(y);
+  GEN n = addii(sqri(yr), sqri(yi));
+  GEN ur  = diviiround(addii(mulii(xr,yr), mulii(xi,yi)), n);
+  GEN ui  = diviiround(subii(mulii(xi,yr), mulii(xr,yi)), n);
+  GEN zr = subii(xr,subii(mulii(yr,ur),mulii(yi,ui)));
+  GEN zi = subii(xi,addii(mulii(yr,ui),mulii(yi,ur)));
+  return mkcomplex(zr, zi);
+}
+
+static GEN
+Qi_gcd(GEN x, GEN y)
 {
   pari_sp av = avma;
   GEN dx, dy;
@@ -1366,7 +1380,7 @@ gauss_gcd(GEN x, GEN y)
   y = Q_remove_denom(y, &dy);
   while (!gequal0(y))
   {
-    GEN z = gsub(x, gmul(ground(gdiv(x,y)), y));
+    GEN z = Zi_rem(x,y);
     x = y; y = z;
     if (gc_needed(av,1)) {
       if(DEBUGMEM>1) pari_warn(warnmem,"gauss_gcd");
@@ -1394,7 +1408,7 @@ c_zero_gcd(GEN c)
   if (tx == t_REAL || ty == t_REAL) return gen_1;
   if (tx == t_PADIC || tx == t_INTMOD
    || ty == t_PADIC || ty == t_INTMOD) return ggcd(x, y);
-  return gauss_gcd(c, gen_0);
+  return Qi_gcd(c, gen_0);
 }
 
 /* gcd(x, 0) */
@@ -1557,7 +1571,7 @@ ggcd(GEN x, GEN y)
         return FF_equal0(x) && FF_equal0(y)? FF_zero(y): FF_1(y);
 
       case t_COMPLEX:
-        if (c_is_rational(x) && c_is_rational(y)) return gauss_gcd(x,y);
+        if (c_is_rational(x) && c_is_rational(y)) return Qi_gcd(x,y);
         return triv_cont_gcd(y,x);
 
       case t_PADIC:
@@ -1601,7 +1615,7 @@ ggcd(GEN x, GEN y)
             return gcdiq(x,y);
 
           case t_COMPLEX:
-            if (c_is_rational(y)) return gauss_gcd(x,y);
+            if (c_is_rational(y)) return Qi_gcd(x,y);
             return triv_cont_gcd(y,x);
 
           case t_FFELT:
@@ -1655,7 +1669,7 @@ ggcd(GEN x, GEN y)
         switch(ty)
         {
           case t_COMPLEX:
-            if (c_is_rational(y)) return gauss_gcd(x,y);
+            if (c_is_rational(y)) return Qi_gcd(x,y);
           case t_QUAD:
             return triv_cont_gcd(y,x);
           case t_FFELT:
