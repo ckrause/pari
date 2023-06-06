@@ -1381,17 +1381,18 @@ Zi_rem(GEN x, GEN y)
 static GEN
 Qi_gcd(GEN x, GEN y)
 {
-  pari_sp av = avma;
+  pari_sp av = avma, btop;
   GEN dx, dy;
   x = Q_remove_denom(x, &dx);
   y = Q_remove_denom(y, &dy);
+  btop = avma;
   while (!gequal0(y))
   {
     GEN z = Zi_rem(x,y);
     x = y; y = z;
-    if (gc_needed(av,1)) {
+    if (gc_needed(btop,1)) {
       if(DEBUGMEM>1) pari_warn(warnmem,"Qi_gcd");
-      gerepileall(av,2, &x,&y);
+      gerepileall(btop,2, &x,&y);
     }
   }
   x = Qi_normal(x);
