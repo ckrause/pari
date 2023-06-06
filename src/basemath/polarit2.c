@@ -1356,7 +1356,17 @@ padic_gcd(GEN x, GEN y)
   return powis(p, v);
 }
 
-/* x,y in Z[i], at least one of which is t_COMPLEX */
+static void
+Zi_mul3(GEN xr, GEN xi, GEN yr, GEN yi, GEN *zr, GEN *zi)
+{
+  GEN p3 = addii(xr,xi);
+  GEN p4 = addii(yr,yi);
+  GEN p1 = mulii(xr,yr);
+  GEN p2 = mulii(xi,yi);
+  p3 = mulii(p3,p4);
+  p4 = addii(p2,p1);
+  *zr = subii(p1,p2); *zi = subii(p3,p4);
+}
 
 static GEN
 Zi_rem(GEN x, GEN y)
@@ -1364,11 +1374,10 @@ Zi_rem(GEN x, GEN y)
   GEN xr = real_i(x), xi = imag_i(x);
   GEN yr = real_i(y), yi = imag_i(y);
   GEN n = addii(sqri(yr), sqri(yi));
-  GEN ur  = diviiround(addii(mulii(xr,yr), mulii(xi,yi)), n);
-  GEN ui  = diviiround(subii(mulii(xi,yr), mulii(xr,yi)), n);
-  GEN zr = subii(xr,subii(mulii(yr,ur),mulii(yi,ui)));
-  GEN zi = subii(xi,addii(mulii(yr,ui),mulii(yi,ur)));
-  return mkcomplex(zr, zi);
+  GEN ur, ui, zr, zi;
+  Zi_mul3(xr, xi, yr, negi(yi), &ur, &ui);
+  Zi_mul3(yr, yi, diviiround(ur, n), diviiround(ui, n), &zr, &zi);
+  return mkcomplex(subii(xr,zr), subii(xi,zi));
 }
 
 static GEN
