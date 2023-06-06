@@ -717,14 +717,14 @@ roots_from_deg1(GEN x)
 }
 
 static GEN
-gauss_factor_p(GEN p)
+Qi_factor_p(GEN p)
 {
   GEN a, b; (void)cornacchia(gen_1, p, &a,&b);
   return mkcomplex(a, b);
 }
 
 static GEN
-gauss_primpart(GEN x, GEN *c)
+Qi_primpart(GEN x, GEN *c)
 {
   GEN a = real_i(x), b = imag_i(x), n = gcdii(a, b);
   *c = n; if (n == gen_1) return x;
@@ -732,7 +732,7 @@ gauss_primpart(GEN x, GEN *c)
 }
 
 static GEN
-gauss_primpart_try(GEN x, GEN c)
+Qi_primpart_try(GEN x, GEN c)
 {
   GEN r, y;
   if (typ(x) == t_INT)
@@ -749,7 +749,7 @@ gauss_primpart_try(GEN x, GEN c)
 }
 
 static int
-gauss_cmp(GEN x, GEN y)
+Qi_cmp(GEN x, GEN y)
 {
   int v;
   if (typ(x) != t_COMPLEX)
@@ -762,7 +762,7 @@ gauss_cmp(GEN x, GEN y)
 
 /* 0 or canonical representative in Z[i]^* / <i> (impose imag(x) >= 0) */
 static GEN
-gauss_normal(GEN x)
+Qi_normal(GEN x)
 {
   if (typ(x) != t_COMPLEX) return absi_shallow(x);
   if (signe(gel(x,1)) < 0) x = gneg(x);
@@ -771,7 +771,7 @@ gauss_normal(GEN x)
 }
 
 static GEN
-gauss_factor(GEN x)
+Qi_factor(GEN x)
 {
   pari_sp av = avma;
   GEN a = real_i(x), b = imag_i(x), d = gen_1, n, y, fa, P, E, P2, E2;
@@ -787,7 +787,7 @@ gauss_factor(GEN x)
     b = imag_i(y); t2 = typ(b);
   }
   if (t1 != t_INT || t2 != t_INT) return NULL;
-  y = gauss_primpart(y, &n);
+  y = Qi_primpart(y, &n);
   fa = factor(cxnorm(y));
   P = gel(fa,1);
   E = gel(fa,2); l = lg(P);
@@ -798,16 +798,16 @@ gauss_factor(GEN x)
     GEN p = gel(P,i), w, w2, t, we, pe;
     long v, e = itos(gel(E,i));
     int is2 = absequaliu(p, 2);
-    w = is2? mkcomplex(gen_1,gen_1): gauss_factor_p(p);
-    w2 = gauss_normal( conj_i(w) );
+    w = is2? mkcomplex(gen_1,gen_1): Qi_factor_p(p);
+    w2 = Qi_normal( conj_i(w) );
     /* w * w2 * I^3 = p, w2 = conj(w) * I */
     pe = powiu(p, e);
     we = gpowgs(w, e);
-    t = gauss_primpart_try( gmul(y, conj_i(we)), pe );
+    t = Qi_primpart_try( gmul(y, conj_i(we)), pe );
     if (t) y = t; /* y /= w^e */
     else {
       /* y /= conj(w)^e, should be y /= w2^e */
-      y = gauss_primpart_try( gmul(y, we), pe );
+      y = Qi_primpart_try( gmul(y, we), pe );
       swap(w, w2); exp -= e; /* += 3*e mod 4 */
     }
     gel(P,i) = w;
@@ -866,13 +866,13 @@ gauss_factor(GEN x)
         default:is2 = 0; break;
       }
       e = itos(gel(E,i));
-      w = is2? mkcomplex(gen_1,gen_1): gauss_factor_p(p);
+      w = is2? mkcomplex(gen_1,gen_1): Qi_factor_p(p);
       gel(P,i) = w;
       if (is2)
         gel(E,i) = stoi(2*e);
       else
       {
-        P = vec_append(P, gauss_normal( conj_i(w) ));
+        P = vec_append(P, Qi_normal( conj_i(w) ));
         E = vec_append(E, gel(E,i));
       }
       exp -= e; /* += 3*e mod 4 */
@@ -882,7 +882,7 @@ gauss_factor(GEN x)
     gel(Fa,2) = E;
     fa = famat_mul_shallow(fa, Fa);
   }
-  fa = sort_factor(fa, (void*)&gauss_cmp, &cmp_nodata);
+  fa = sort_factor(fa, (void*)&Qi_cmp, &cmp_nodata);
 
   y = gmul(y, powIs(exp));
   if (!gequal1(y)) {
@@ -1036,9 +1036,7 @@ factor_domain(GEN x, GEN dom)
     case t_FRAC: if (tdom==0 || tdom==t_INT) return Q_factor(x);
     case t_COMPLEX: /* fall through */
       if (tdom==0 || tdom==t_COMPLEX)
-      {
-        GEN y = gauss_factor(x); if (y) return y;
-      }
+      { GEN y = Qi_factor(x); if (y) return y; }
       /* fall through */
   }
   pari_err_TYPE("factor",x);
@@ -1392,11 +1390,11 @@ Qi_gcd(GEN x, GEN y)
     GEN z = Zi_rem(x,y);
     x = y; y = z;
     if (gc_needed(av,1)) {
-      if(DEBUGMEM>1) pari_warn(warnmem,"gauss_gcd");
+      if(DEBUGMEM>1) pari_warn(warnmem,"Qi_gcd");
       gerepileall(av,2, &x,&y);
     }
   }
-  x = gauss_normal(x);
+  x = Qi_normal(x);
   if (typ(x) == t_COMPLEX)
   {
     if      (gequal0(gel(x,2))) x = gel(x,1);
