@@ -241,7 +241,7 @@ FpE_changepointinv(GEN P, GEN ch, GEN p)
 }
 
 static GEN
-nonsquare_Fp(GEN p)
+random_nonsquare_Fp(GEN p)
 {
   pari_sp av = avma;
   GEN a;
@@ -256,7 +256,7 @@ nonsquare_Fp(GEN p)
 void
 Fp_elltwist(GEN a4, GEN a6, GEN p, GEN *pt_a4, GEN *pt_a6)
 {
-  GEN d = nonsquare_Fp(p), d2 = Fp_sqr(d, p), d3 = Fp_mul(d2, d, p);
+  GEN d = random_nonsquare_Fp(p), d2 = Fp_sqr(d, p), d3 = Fp_mul(d2, d, p);
   *pt_a4 = Fp_mul(a4, d2, p);
   *pt_a6 = Fp_mul(a6, d3, p);
 }
@@ -1548,7 +1548,7 @@ FpXQE_changepointinv(GEN x, GEN ch, GEN T, GEN p)
 }
 
 static GEN
-nonsquare_FpXQ(GEN T, GEN p)
+random_nonsquare_FpXQ(GEN T, GEN p)
 {
   pari_sp av = avma;
   long n = degpol(T), v = varn(T);
@@ -1557,7 +1557,7 @@ nonsquare_FpXQ(GEN T, GEN p)
   {
     GEN z = cgetg(3, t_POL);
     z[1] = evalsigne(1) | evalvarn(v);
-    gel(z,2) = nonsquare_Fp(p); return z;
+    gel(z,2) = random_nonsquare_Fp(p); return z;
   }
   do
   {
@@ -1570,7 +1570,7 @@ nonsquare_FpXQ(GEN T, GEN p)
 void
 FpXQ_elltwist(GEN a4, GEN a6, GEN T, GEN p, GEN *pt_a4, GEN *pt_a6)
 {
-  GEN d = nonsquare_FpXQ(T, p);
+  GEN d = random_nonsquare_FpXQ(T, p);
   GEN d2 = FpXQ_sqr(d, T, p), d3 = FpXQ_mul(d2, d, T, p);
   *pt_a4 = FpXQ_mul(a4, d2, T, p);
   *pt_a6 = FpXQ_mul(a6, d3, T, p);
