@@ -5058,12 +5058,12 @@ mateigen(GEN x, long flag, long prec)
   if (flag < 0 || flag > 1) pari_err_FLAG("mateigen");
   if (n == 1)
   {
-    if (flag) retmkvec2(cgetg(1,t_VEC), cgetg(1,t_MAT));
-    return cgetg(1,t_VEC);
+    if (flag) retmkvec2(cgetg(1,t_COL), cgetg(1,t_MAT));
+    return cgetg(1,t_MAT);
   }
   if (n == 2)
   {
-    if (flag) retmkvec2(mkveccopy(gcoeff(x,1,1)), matid(1));
+    if (flag) retmkvec2(mkcolcopy(gcoeff(x,1,1)), matid(1));
     return matid(1);
   }
 
@@ -5073,11 +5073,10 @@ mateigen(GEN x, long flag, long prec)
   if (exact)
   {
     T = ZX_radical( Q_primpart(T) );
-    R = nfrootsQ(T);
+    R = nfrootsQ(T); settyp(R, t_COL);
     if (lg(R)-1 < degpol(T))
     { /* add missing complex roots */
       GEN r = cleanroots(RgX_div(T, roots_to_pol(R, 0)), prec);
-      settyp(r, t_VEC);
       R = shallowconcat(R, r);
     }
   }
