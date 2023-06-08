@@ -5108,7 +5108,7 @@ mateigen(GEN x, long flag, long prec)
     long d = lg(F)-1;
     if (!d) { set_avma(av); return eigen_err(exact, x, flag, prec); }
     gel(y,k) = F;
-    if (flag) gel(R,k) = const_vec(d, gel(R,k));
+    if (flag) gel(R,k) = const_col(d, gel(R,k));
   }
   y = shallowconcat1(y);
   if (lg(y) > n) { set_avma(av); return eigen_err(exact, x, flag, prec); }
