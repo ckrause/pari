@@ -34,8 +34,10 @@ if test -n "$myuname"; then
             osname=mingw;;
   ultrix)   arch=mips;;
   nextstep) arch=`file /bin/sh | sed 's/.*(for architecture \(.*\))/\1/'`;;
-  darwin*)  arch=`uname -p`
-            if test "$arch" = powerpc; then arch=ppc; fi ;;
+  darwin*)  arch=`uname -m`
+            case $arch in
+              arm64) arch=aarch64;;
+            esac;;
   osf1)     case "$5" in alpha) arch=alpha;; esac;;
   linux)    arch=`uname -m`
 	    case $arch in
