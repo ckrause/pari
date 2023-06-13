@@ -1,4 +1,3 @@
-default(realprecision,38);
 test(a,b)= if(a==b,oo, exponent(a-b));
 test(zetamult([2,1]), zeta(3))
 test(zetamult([4,2]), (zeta(3)^2 - 4*zeta(6)/3))

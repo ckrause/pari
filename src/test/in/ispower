@@ -82,7 +82,6 @@ issquare(Mod(Mod(1,5)*y+2,y^3+y^2+1))
 if (issquare(Mod(Mod(1,5)*y,y^3+y^2+1),&b),b)
 if (issquare(Mod(Mod(4,5),y^3+y^2+1),&b),b)
 
-default(realprecision,38);
 if(issquare(Pol(0),&z),z)
 issquare(Pol(4))
 issquare(x^2+x)

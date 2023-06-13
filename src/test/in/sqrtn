@@ -1,4 +1,3 @@
-default(realprecision,38);
 sqrt(0)
 sqrtn(0.,3)
 sqrtn(0.*I,3)

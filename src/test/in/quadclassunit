@@ -1,4 +1,3 @@
-default(realprecision,38);
 default(parisize, "72M"); \\ overflows 70M
 test(D) =
 {

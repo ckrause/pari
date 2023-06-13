@@ -45,7 +45,6 @@ X = A^2 + B^2 + C^2; Y = A*B + A*C + B*C; Z = 'u^2 - 2*Y;
 
 poldegree(y/x)
 trace(I/x)
-default(realprecision,38);
 1./x-1/x
 type(1/x-1/x)
 

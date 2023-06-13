@@ -1,5 +1,4 @@
 default(parisize,"78M"); \\ overflows 76M
-default(realprecision,38);
 lfunrobustcheckfeq(ldata) = {
   my(bit = getlocalbitprec(), extrabit = 0);
   while(1,

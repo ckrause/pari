@@ -1,4 +1,3 @@
-default(realprecision,38);
 dirpowers(-1,1)
 dirpowers(0,1)
 dirpowers(4,0)

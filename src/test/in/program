@@ -1,7 +1,6 @@
-HEAP=[48, if(sizebyte(0)==16,2107,3541)];
+HEAP=[47, if(sizebyte(0)==16,2097,3531)];
 STACK=if(sizebyte(0)==16, 232, 128);
 STACK == getstack
-default(realprecision,38);
 \e
 alias(ln,log)
 ln(2)

@@ -1,4 +1,3 @@
-default(realprecision,38);
 w = rootsof1(2)
 g = fft(w, x+1)
 fftinv(w, g)

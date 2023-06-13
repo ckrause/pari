@@ -6,7 +6,6 @@ charpoly([0,0,2,2;0,0,2,2;2,2,0,0;2,2,0,0])
 charpoly([0,0,2,2;0,0,2,2;2,2,0,0;2,2,0,0],,4)
 minpoly(matrix(4,4,i,j,i/j))
 
-default(realprecision,38);
 A=[5/3,7/45;0,21/10];
 mateigen(A)
 mateigen(A*1.)

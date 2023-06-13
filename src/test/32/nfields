@@ -715,6 +715,6 @@ x^15 - 15*x^11 + 75*x^7 - x^5 - 125*x^3 + 5*x + 1
 ? setrand(1);quadclassunit(10^9-3,,[0.5,0.5])
 [4, [4], [Qfb(211, 31405, -16263)], 2800.6252519070160764863706217370745514]
 ? getheap()[1]
-166
+165
 ? print("Total time spent: ",gettime);
-Total time spent: 38
+Total time spent: 48

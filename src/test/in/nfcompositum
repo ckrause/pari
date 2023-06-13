@@ -1,5 +1,3 @@
-default(realprecision,38);
-
 do(name, test) = {
  setrand(1);
  print(name,": ", iferr(test(), E, E));

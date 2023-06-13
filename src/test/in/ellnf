@@ -1,5 +1,4 @@
 default(parisize,"16M");
-default(realprecision,38);
 K=nfinit(t^3-2);
 e=ellinit([t+1,t^2 - (t^3+(t+1)*t)], K);
 P=[t,t];

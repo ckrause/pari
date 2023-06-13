@@ -68,7 +68,6 @@ gcd(4*x,2*x^0)
 gcd(4*x,2*x+1)
 gcd((4*x+2)*(x+1),4*x*(x+1))
 
-default(realprecision,38);
 gcd(Pol(0.),x)
 (k+1.)/k - (2*k+1.)/k
 gcd(1/(2^64*y),Mod(x^2,2^64*x^3))

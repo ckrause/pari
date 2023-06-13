@@ -1,5 +1,4 @@
 default(parisize,"14M"); \\ overflows 10M [GMP], 12M [porable]
-default(realprecision,38);
 /* Test generic */
 
 F={

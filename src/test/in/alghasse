@@ -1,4 +1,3 @@
-default(realprecision,38);
 default(parisize,"12M"); \\ 10M overflows on 64 bit
 
 \\Tests related to hasse invariants in algebras

@@ -1,4 +1,3 @@
-default(realprecision,38);
 polylog(3,0.9)
 polylog(2,3.9)
 polylog(3,3.9)

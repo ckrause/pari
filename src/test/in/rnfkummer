@@ -1,4 +1,3 @@
-default(realprecision,38);
 allocatemem(40*10^6)
 count = 0;
 

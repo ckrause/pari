@@ -1,4 +1,3 @@
-default(realprecision,38);
 rk(x)=x=ellinit(x);ellanalyticrank(x);
 rk([0, -1, 1, -10, -20])
 rk([0, 0, 1, -1, 0])

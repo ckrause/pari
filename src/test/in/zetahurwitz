@@ -1,4 +1,3 @@
-default(realprecision,38);
 check(a,b)=my(c=abs(a-b)); if(!c,-oo, ceil(log(c)/log(10)));
 f(s,x)=check(zetahurwitz(s,x)+zetahurwitz(s,x+1/2), 2^s*zetahurwitz(s,2*x));
 f(Pi,Pi)

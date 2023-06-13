@@ -1,5 +1,4 @@
 default(parisize,"160M");
-default(realprecision,38);
 K=bnfinit(x^3-x-1);
 subgrouplist(bnrinit(K,10))
 K=bnrinit(K,20);

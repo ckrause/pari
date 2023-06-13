@@ -1,6 +1,5 @@
 al = alginit(nfinit(y), [Mat(1)]); \\reported by Bill
 J = varhigher("J",y);
-default(realprecision,38);
 Q=nfinit(y); T=polcyclo(5, 'x); F=rnfinit(Q, T);
 A = alginit(F, [Mod(x^2,T), 3]);
 print("contains nfabs: ", algsplittingfield(A)[12][1] != 0);

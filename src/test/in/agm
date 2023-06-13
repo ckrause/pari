@@ -1,4 +1,3 @@
-default(realprecision,38);
 gagm(a,b)=
 {
   my(prec=10^(1-precision(a*1.)));

@@ -1,4 +1,3 @@
-default(realprecision,38);
 hgmdegree(h)=hgmparams(h)[1];
 hgmmvalue(h)=h[6];
 hgmweight(h)=hgmparams(h)[2];

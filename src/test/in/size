@@ -1,4 +1,3 @@
-default(realprecision,38)
 long_is_64 = (#(2^32) == 1);
 #0.
 #1

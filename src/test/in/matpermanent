@@ -1,4 +1,3 @@
-default(realprecision,38);
 matpermanent([;])
 matpermanent(Mat(a))
 matpermanent(Mat(1))

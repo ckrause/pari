@@ -4,7 +4,6 @@ GP; init_programming()
 */
 foo()=1;
 global(GRAPH=0,W);
-default(realprecision,38);
 plot(x=0,10,sin(Pi*cos(x)))
 if(GRAPH,print("ploth: ",ploth(x=0,20,besselj(1,x))));
 plothexport("svg",x=0,20,[sin(2*x),cos(3*x)],1);

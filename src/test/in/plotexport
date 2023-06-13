@@ -1,4 +1,3 @@
-default(realprecision,38);
 \\ platform independent
 test(s)= concat(Vec(s)[30..88]);
 

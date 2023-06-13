@@ -28,7 +28,6 @@ Vx=[11/10,13/10,1/10000];
 test(incgam, 38)
 test(incgam, 76)
 
-default(realprecision, 38);
 incgam(-1000.4,2)
 incgam(1/2,10^8)
 incgam(-3,20)

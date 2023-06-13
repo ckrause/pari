@@ -1,5 +1,3 @@
-default(realprecision,38);
-
 \\examples from docu
 nf = nfinit(y^2+1);
 PR = idealprimedec(nf,5); #PR

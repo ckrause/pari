@@ -1,4 +1,3 @@
-default(realprecision,38);
 sin'(4)
 sin'(1+I)
 sin'(x)

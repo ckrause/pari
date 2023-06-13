@@ -1,5 +1,4 @@
 default(parisize,"32M");
-default(realprecision,38);
 zet=1;
 Z(a)=lfuncreate([(p,n)->1/(1-p^a*x),0,[-a],2*a+1,1,1,[[a+1,1/x+O(1)]]]);
 N=nfinit(x^10-2*x^8-9*x^6+57*x^4-69*x^2+47);

@@ -1,5 +1,4 @@
-HEAP=[62, if(sizebyte(0)==16,4904,4962)];
-default(realprecision,154); Pi; default(realprecision,38);
+HEAP=[61, if(sizebyte(0)==16,4887,4938)];
 \e
 apol=y^3+5*y+1
 deriv((x+y)^5,y)

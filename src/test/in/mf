@@ -1,5 +1,4 @@
 default(parisize,"64M"); \\ overflows 62M
-default(realprecision, 38);
 getcache()
 Z4=znstar(4,1);
 Z5=znstar(5,1);

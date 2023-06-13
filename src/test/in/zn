@@ -229,7 +229,6 @@ G=znstar(46,1);
 chi=znconreychar(G,45)
 znconreyexp(G,chi)
 
-default(realprecision,38);
 [G,chi]=znchar(-3);
 znchargauss(G,chi)
 [G,chi]=znchar(-4);

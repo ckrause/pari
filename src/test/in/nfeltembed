@@ -1,4 +1,3 @@
-default(realprecision,38);
 nf = nfinit('y^3 - 2);
 nfeltembed(nf, y)
 nfeltembed(nf, y, [2])

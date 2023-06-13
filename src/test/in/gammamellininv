@@ -1,4 +1,3 @@
-default(realprecision,38);
 f(t)=4*besselk(0,2*Pi*t);
 G = gammamellininvinit([0,0]);
 g(t)=gammamellininv(G,t);

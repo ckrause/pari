@@ -1,5 +1,4 @@
 \\package:elldata
-default(realprecision,38);
 {
 members=[
 a1,

@@ -615,9 +615,10 @@ regressions are easier to debug; e.g. include \kbd{setrand(1)} statement before
 a randomized computation. The expected output may be different on 32-bit and
 64-bit machines but should otherwise be platform-independent. If possible, the
 output shouldn't even depend on \kbd{sizeof(long)}; using a \kbd{realprecision}
-that exists on both 32-bit and 64-bit architectures, e.g. \kbd{\bs p 38} is a
-good first step. You can use \kbd{sizebyte(0)==16} to detect a 64-bit
-architecture and \kbd{sizebyte(0)==8} for 32-bit.
+that exists on both 32-bit and 64-bit architectures, e.g. the
+default~\kbd{\bs p 38} is a good first step. You can use
+\kbd{sizebyte(0)==16} to detect a 64-bit architecture and
+\kbd{sizebyte(0)==8} for 32-bit.
 
 \item Dump your script into \kbd{src/test/in/} and run \kbd{Configure}.
 

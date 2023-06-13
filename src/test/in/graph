@@ -1,5 +1,4 @@
-HEAP=[32, if(sizebyte(0)==16,372,376)];
-default(realprecision,38);
+HEAP=[31, if(sizebyte(0)==16,362,366)];
 \e
 plotinit(0,500,500)
 plotmove(0,0,0);plotbox(0,500,500)

@@ -1,4 +1,3 @@
-default(realprecision,38);
 T=x^3-6*x^2+11*x-6;
 polrootsreal(T)
 polrootsreal(T, [-oo,3/2])

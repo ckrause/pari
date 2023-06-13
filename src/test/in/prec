@@ -1,7 +1,6 @@
 precision(0)
 bitprecision(0)
 precision(I,3)
-default(realprecision,38);
 t=(precision(1.,77)*x+1);
 precision(t)
 localprec(57);precision(1.)

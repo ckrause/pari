@@ -1,4 +1,3 @@
-default(realprecision,38);
 default(seriesprecision,6);
 gamma(2+I+x)
 gamma(1+x)

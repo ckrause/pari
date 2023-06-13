@@ -1,5 +1,4 @@
-HEAP=[97, if(sizebyte(0)==16,3269,3315)];
-default(realprecision,154); Pi; default(realprecision,38);
+HEAP=[96, if(sizebyte(0)==16,3253,3293)];
 \e
 addprimes([nextprime(10^9),nextprime(10^10)])
 bestappr(Pi,10000)
