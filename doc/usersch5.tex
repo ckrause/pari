@@ -11687,7 +11687,7 @@ given as \kbd{real\_0(...)}). If the result is a \typ{COMPLEX} extra care is
 taken so that its modulus really has accuracy \kbd{prec}: there is a problem
 if the real part of the input is an exact $0$; indeed, converting it to
 \kbd{real\_0(prec)} would be wrong if the imaginary part is tiny, since the
-modulus would then become equal to $0$, as in $1.E-100 + 0.E-28 = 0.E-28$.
+modulus would then become equal to $0$, as in $1.E-100 + 0.E-38 = 0.E-38$.
 
 \fun{GEN}{gtomp}{GEN z, long prec} converts the real number~\kbd{x}
 (\typ{INT}, \typ{REAL}, \typ{FRAC}, real \typ{QUAD}) to either
