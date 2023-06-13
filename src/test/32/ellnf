@@ -1,3 +1,4 @@
+  ***   Warning: new stack size = 16000000 (15.259 Mbytes).
 1
 [Mod(5/2*t^2 - 3/8*t + 7/4, t^3 - 2), Mod(3/8*t^2 - 67/16*t - 123/16, t^3 - 
 2)]
@@ -197,4 +198,4 @@ od(1/8*z^2 + 3/4*z + 2, z^3 - 4*z^2 - 32*z + 64), Mod(1/16*z^2 + 1/4*z, z^3
   ***   at top-level: ellinit([Mod(-5*a+12,a^2-a-1),Mod(-10,a^2-a-1)
   ***                 ^----------------------------------------------
   *** ellinit: inconsistent moduli in ellinit: a^2 - a - 1 != a^2 - 11*a - 1
-Total time spent: 2208
+Total time spent: 2029
