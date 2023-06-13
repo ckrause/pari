@@ -926,11 +926,7 @@ init_path(gp_path *path, const char *v)
 static void
 init_fmt(gp_data *D)
 {
-#ifdef LONG_IS_64BIT
   static pariout_t DFLT_OUTPUT = { 'g', 38, 1, f_PRETTYMAT, 0 };
-#else
-  static pariout_t DFLT_OUTPUT = { 'g', 28, 1, f_PRETTYMAT, 0 };
-#endif
   D->fmt = &DFLT_OUTPUT;
 }
 
