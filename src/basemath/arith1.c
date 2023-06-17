@@ -1082,13 +1082,118 @@ Fp_2gener_i(GEN ns, GEN p)
   return Fp_pow(ns, shifti(q,-e), p);
 }
 
-/* 0 < a < p */
+static GEN
+nonsquare_Fp(GEN p)
+{
+  forprime_t T;
+  ulong a;
+  if (mod4(p)==3) return gen_m1;
+  if (mod8(p)==5) return gen_2;
+  u_forprime_init(&T, 3, ULONG_MAX);
+  while((a = u_forprime_next(&T)))
+    if (kroui(a,p) < 0)
+      return utoi(a);
+  pari_err_PRIME("Fp_sqrt [modulus]",p);
+  return NULL; /* LCOV_EXCL_LINE */
+}
+
+static GEN
+Fp_rootsof1(ulong l, GEN p)
+{
+   GEN z, pl = diviuexact(subis(p,1),l);
+   ulong a;
+   forprime_t T;
+   u_forprime_init(&T, 3, ULONG_MAX);
+   while((a = u_forprime_next(&T)))
+   {
+     z = Fp_pow(utoi(a), pl, p);
+     if (!equali1(z)) return z;
+   }
+  pari_err_PRIME("Fp_sqrt [modulus]",p);
+  return NULL; /* LCOV_EXCL_LINE */
+}
+
+static GEN
+Fp_gausssum(long D, GEN p)
+{
+  long i, l = labs(D);
+  GEN z = Fp_rootsof1(l, p);
+  GEN s = z, x = z;
+  for(i = 2; i < l; i++)
+  {
+    long k = kross(i,l);
+    x = mulii(x, z);
+    if (k==1) s = addii(s, x);
+    else if (k==-1) s = subii(s, x);
+  }
+  return s;
+}
+
+static GEN
+Fp_sqrts(long a, GEN p)
+{
+  long v = vals(a)>>1;
+  GEN r = gen_0;
+  a >>= v << 1;
+  switch(a)
+  {
+    case 1:
+      r = gen_1;
+      break;
+    case -1:
+      if (mod4(p)==1)
+        r = Fp_pow(nonsquare_Fp(p), shifti(p,-2),p);
+      else
+        r = NULL;
+      break;
+    case 2:
+      if (mod8(p)==1)
+      {
+        GEN z = Fp_pow(nonsquare_Fp(p), shifti(p,-3),p);
+        r = Fp_mul(z,Fp_sub(gen_1,Fp_sqr(z,p),p),p);
+      } else if (mod8(p)==7)
+        r = Fp_pow(gen_2, shifti(addiu(p,1),-2),p);
+      else
+        return NULL;
+      break;
+    case -2:
+      if (mod8(p)==1)
+      {
+        GEN z = Fp_pow(nonsquare_Fp(p), shifti(p,-3),p);
+        r = Fp_mul(z,Fp_add(gen_1,Fp_sqr(z,p),p),p);
+      } else if (mod8(p)==3)
+        r = Fp_pow(gen_m2, shifti(addiu(p,1),-2),p);
+      else
+        return NULL;
+      break;
+    case -3:
+      if (umodiu(p,3)==1)
+      {
+        GEN z = Fp_rootsof1(3, p);
+        r = Fp_sub(z,Fp_sqr(z,p),p);
+      }
+      else
+        return NULL;
+      break;
+    case 5: case 13: case 17: case 21: case 29: case 33:
+    case -7: case -11: case -15: case -19: case -23:
+      if (umodiu(p,labs(a))==1)
+        r = Fp_gausssum(a,p);
+      else
+        return gen_0;
+      break;
+    default:
+      return gen_0;
+  }
+  return remii(shifti(r, v), p);
+}
+
 static GEN
 Fp_sqrt_ii(GEN a, GEN y, GEN p)
 {
-  pari_sp av;
-  GEN q, v, w, p1 = subiu(p,1);
-  long i, k, e = vali(p1);
+  pari_sp av = avma;
+  GEN  q, v, w, p1 = subiu(p,1);
+  long i, k, e = vali(p1), as;
 
   /* direct formulas more efficient */
   if (e == 0) pari_err_PRIME("Fp_sqrt [modulus]",p); /* p != 2 */
@@ -1100,16 +1205,14 @@ Fp_sqrt_ii(GEN a, GEN y, GEN p)
     av = avma; e = equalii(Fp_sqr(v,p), a); set_avma(av);
     return e? v: NULL;
   }
-  if (equalii(p1, a)) /* sqrt(-1): important special case */
+  as = itos_or_0(a);
+  if (!as) as = itos_or_0(subii(a,p));
+  if (as)
   {
-    if (!y)
-    {
-      y = Fp_2gener_all(shifti(p1, -e), p);
-      if (!y) pari_err_PRIME("Fp_sqrt [modulus]",p);
-    }
-    /* y ^ 2^(e-1) = -1 */
-    e--; for (i = 1; i < e; i++) y = Fp_sqr(y, p);
-    return y;
+    GEN res = Fp_sqrts(as, p);
+    if (!res) return gc_NULL(av);
+    if (signe(res))
+    return gerepileupto(av, res);
   }
   if (e == 2)
   { /* Atkin's formula */
