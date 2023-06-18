@@ -1023,7 +1023,7 @@ static GEN
 sqrt_Cipolla(GEN a, GEN p)
 {
   pari_sp av;
-  GEN u, v, n, y, pov2;
+  GEN u, n, y, pov2;
   ulong t;
 
   if (kronecker(a, p) < 0) return NULL;
@@ -1046,113 +1046,93 @@ sqrt_Cipolla(GEN a, GEN p)
    *   sqrt(a) = (u+vt)t - v*a
    *   0       = (u+vt)
    * Thus a square root is v*a */
-
-  v = Fp_mul(gel(y, 2), a, p);
-  if (cmpii(v,pov2) > 0) v = subii(p,v);
-  return v;
+  return Fp_mul(gel(y,2), a, p);
 }
 
-/* Return NULL if p is found to be composite */
+/* Return NULL if p is found to be composite.
+ * e = v2(p-1) > 0, q = (p-1)/2^e is odd */
 static GEN
-Fp_2gener_all(long e, GEN p)
+Fp_2gener_all(long e, GEN q, GEN p)
 {
-  GEN y, m;
   long k;
-  GEN q = shifti(subiu(p,1), -e); /* q = (p-1)/2^oo is odd */
-  if (e==0 && !equaliu(p,2)) return NULL;
-  for (k=2; ; k++)
+  for (k = 2;; k++)
   {
-    long i = krosi(k, p);
-    if (i >= 0)
-    {
-      if (i) continue;
-      return NULL;
-    }
-    y = m = Fp_pow(utoi(k), q, p);
-    for (i=1; i<e; i++)
-      if (equali1(m = Fp_sqr(m, p))) break;
-    if (i == e) break; /* success */
+    long i = kroui(k, p);
+    if (i < 0) return Fp_pow(utoipos(k), q, p);
+    if (i == 0) return NULL;
   }
-  return y;
 }
 
 /* Return NULL if p is found to be composite */
 GEN
 Fp_2gener(GEN p)
-{ return Fp_2gener_all(vali(subis(p,1)),p); }
+{
+  GEN q = subiu(p, 1);
+  long e = Z_lvalrem(q, 2, &q);
+  if (e == 0 && !equaliu(p,2)) return NULL;
+  return Fp_2gener_all(e, q, p);
+}
 
 GEN
 Fp_2gener_i(GEN ns, GEN p)
 {
-  GEN p1 = subiu(p,1);
-  long e = vali(p1);
-  if (e == 1) return p1;
-  return Fp_pow(ns, shifti(p1,-e), p);
+  GEN q = subiu(p,1);
+  long e = vali(q);
+  if (e == 1) return q;
+  return Fp_pow(ns, shifti(q,-e), p);
 }
 
-/* smallest square root */
+/* 0 < a < p */
 static GEN
-choose_sqrt(GEN v, GEN p)
+Fp_sqrt_ii(GEN a, GEN y, GEN p)
 {
-  pari_sp av = avma;
-  GEN q = subii(p,v);
-  if (cmpii(v,q) > 0) v = q; else set_avma(av);
-  return v;
-}
-/* Tonelli-Shanks. Assume p is prime and return NULL if (a,p) = -1. */
-GEN
-Fp_sqrt_i(GEN a, GEN y, GEN p)
-{
-  pari_sp av = avma;
-  long i, k, e;
-  GEN p1, q, v, w;
+  pari_sp av;
+  GEN q, v, w, p1 = subiu(p,1);
+  long i, k, e = vali(p1);
 
-  if (lgefint(p) == 3)
+  /* direct formulas more efficient */
+  if (e == 0) pari_err_PRIME("Fp_sqrt [modulus]",p); /* p != 2 */
+  if (e == 1)
   {
-    ulong pp = uel(p,2), u = umodiu(a, pp);
-    if (!u) return gen_0;
-    u = Fl_sqrt(u, pp);
-    return (u == ~0UL)? NULL: utoipos(u);
-  }
-
-  a = modii(a, p); if (!signe(a)) return gc_const(av, gen_0);
-  p1 = subiu(p,1); e = vali(p1);
-  if (e <= 2)
-  { /* direct formulas more efficient */
-    pari_sp av2;
-    if (e == 0) pari_err_PRIME("Fp_sqrt [modulus]",p); /* p != 2 */
-    if (e == 1)
-    {
-      q = addiu(shifti(p1,-2),1); /* (p+1) / 4 */
-      v = Fp_pow(a, q, p);
-    }
-    else
-    { /* Atkin's formula */
-      GEN i, a2 = shifti(a,1);
-      if (cmpii(a2,p) >= 0) a2 = subii(a2,p);
-      q = shifti(p1, -3); /* (p-5)/8 */
-      v = Fp_pow(a2, q, p);
-      i = Fp_mul(a2, Fp_sqr(v,p), p); /* i^2 = -1 */
-      v = Fp_mul(a, Fp_mul(v, subiu(i,1), p), p);
-    }
-    av2 = avma;
+    q = addiu(shifti(p1,-2),1); /* (p+1) / 4 */
+    v = Fp_pow(a, q, p);
     /* must check equality in case (a/p) = -1 or p not prime */
-    e = equalii(Fp_sqr(v,p), a); set_avma(av2);
-    return e? gerepileuptoint(av,choose_sqrt(v,p)): NULL;
+    av = avma; e = equalii(Fp_sqr(v,p), a); set_avma(av);
+    return e? v: NULL;
+  }
+  if (equalii(p1, a)) /* sqrt(-1): important special case */
+  {
+    if (!y)
+    {
+      y = Fp_2gener_all(e, shifti(p1, -e), p);
+      if (!y) pari_err_PRIME("Fp_sqrt [modulus]",p);
+    }
+    /* y ^ 2^(e-1) = -1 */
+    e--; for (i = 1; i < e; i++) y = Fp_sqr(y, p);
+    return y;
+  }
+  if (e == 2)
+  { /* Atkin's formula */
+    GEN I, a2 = shifti(a,1);
+    if (cmpii(a2,p) >= 0) a2 = subii(a2,p);
+    q = shifti(p1, -3); /* (p-5)/8 */
+    v = Fp_pow(a2, q, p);
+    I = Fp_mul(a2, Fp_sqr(v,p), p); /* I^2 = -1 */
+    v = Fp_mul(a, Fp_mul(v, subiu(I,1), p), p);
+    /* must check equality in case (a/p) = -1 or p not prime */
+    av = avma; e = equalii(Fp_sqr(v,p), a); set_avma(av);
+    return e? v: NULL;
   }
   /* On average, Cipolla is better than Tonelli/Shanks if and only if
    * e(e-1) > 8*log2(n)+20, see LNCS 2286 pp 430 [GTL] */
-  if (e*(e-1) > 20 + 8 * expi(p))
-  {
-    v = sqrt_Cipolla(a,p); if (!v) return gc_NULL(av);
-    return gerepileuptoint(av,v);
-  }
+  if (e*(e-1) > 20 + 8 * expi(p)) return sqrt_Cipolla(a,p);
+  /* Tonelli-Shanks */
+  av = avma; q = shifti(p1,-e); /* q = (p-1)/2^oo is odd */
   if (!y)
   {
-    y = Fp_2gener_all(e, p);
+    y = Fp_2gener_all(e, q, p);
     if (!y) pari_err_PRIME("Fp_sqrt [modulus]",p);
   }
-  q = shifti(p1,-e); /* q = (p-1)/2^oo is odd */
   p1 = Fp_pow(a, shifti(q,-1), p); /* a ^ (q-1)/2 */
   v = Fp_mul(a, p1, p);
   w = Fp_mul(v, p1, p);
@@ -1161,7 +1141,7 @@ Fp_sqrt_i(GEN a, GEN y, GEN p)
        a square --> w even power of y, hence w^(2^(e-1)) = 1 */
     p1 = Fp_sqr(w,p);
     for (k=1; !equali1(p1) && k < e; k++) p1 = Fp_sqr(p1,p);
-    if (k == e) return gc_NULL(av); /* p composite or (a/p) != 1 */
+    if (k == e) return NULL; /* p composite or (a/p) != 1 */
     /* w ^ (2^k) = 1 --> w = y ^ (u * 2^(e-k)), u odd */
     p1 = y;
     for (i=1; i < e-k; i++) p1 = Fp_sqr(p1,p);
@@ -1174,12 +1154,33 @@ Fp_sqrt_i(GEN a, GEN y, GEN p)
       gerepileall(av,3, &y,&w,&v);
     }
   }
-  return gerepileuptoint(av, choose_sqrt(v,p));
+  return v;
 }
 
+/* Assume p is prime and return NULL if (a,p) = -1; y = NULL or generator
+ * of Fp^* 2-Sylow */
 GEN
-Fp_sqrt(GEN a, GEN p)
-{ return Fp_sqrt_i(a, NULL, p); }
+Fp_sqrt_i(GEN a, GEN y, GEN p)
+{
+  pari_sp av = avma, av2;
+  GEN q;
+
+  if (lgefint(p) == 3)
+  {
+    ulong pp = uel(p,2), u = umodiu(a, pp);
+    if (!u) return gen_0;
+    u = Fl_sqrt(u, pp);
+    return (u == ~0UL)? NULL: utoipos(u);
+  }
+  a = modii(a, p); if (!signe(a)) return gen_0;
+  a = Fp_sqrt_ii(a, y, p); if (!a) return gc_NULL(av);
+  /* smallest square root */
+  av2 = avma; q = subii(p, a);
+  if (cmpii(a, q) > 0) a = q; else set_avma(av2);
+  return gerepileuptoint(av, a);
+}
+GEN
+Fp_sqrt(GEN a, GEN p) { return Fp_sqrt_i(a, NULL, p); }
 
 /*********************************************************************/
 /**                        GCD & BEZOUT                             **/
