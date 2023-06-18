@@ -966,7 +966,6 @@ ZpXQ_log(GEN a, GEN T, GEN p, long N)
 /**                                                                   **/
 /***********************************************************************/
 /* q = p^N */
-
 GEN
 gen_ZpM_Dixon(GEN F, GEN V, GEN q, GEN p, long N, void *E,
                             GEN lin(void *E, GEN F, GEN d, GEN q),
