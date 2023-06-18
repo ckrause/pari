@@ -245,6 +245,11 @@ random_nonsquare_Fp(GEN p)
 {
   pari_sp av = avma;
   GEN a;
+  switch(mod8(p))
+  { /* easy special cases */
+    case 3: case 5: return gen_2;
+    case 7: return subiu(p, 1);
+  }
   do
   {
     set_avma(av);
