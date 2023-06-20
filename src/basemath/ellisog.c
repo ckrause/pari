@@ -1214,15 +1214,15 @@ ellnf_goodl_l(GEN E, GEN v)
         long t = itos(ellap(E, prj));
         for(k = 1; k < lv; k++)
         {
-          long l = v[k];
-          if (l==2)
+          GEN l = gel(v,k);
+          if (equaliu(l,2))
           {
             if (odd(t)) w |= 1<<(k-1);
           }
           else
           {
             GEN D = subii(sqrs(t), shifti(pr_norm(prj),2));
-            if (krois(D,l)==-1) w |= 1<<(k-1);
+            if (kronecker(D,l)==-1) w |= 1<<(k-1);
           }
         }
       }
@@ -1286,8 +1286,8 @@ ellnf_prime_degree(GEN E)
     if (Z_issquareall(B, &r)) B = r;
   }
   if (!signe(B)) return NULL;
-  P = vec_to_vecsmall(gel(Z_factor(B),1));
-  return shallowextract(P, utoi(ellnf_goodl_l(E, P)));
+  P = gel(Z_factor(absi(B)),1);
+  return vec_to_vecsmall(shallowextract(P, utoi(ellnf_goodl_l(E, P))));
 }
 
 static GEN
@@ -1505,7 +1505,7 @@ ellisomat(GEN E, long p, long flag)
       if (p) good = ellQ_goodl_l(E, p);
       break;
     case t_ELL_NF:
-      if (p) good = ellnf_goodl_l(E, mkvecsmall(p));
+      if (p) good = ellnf_goodl_l(E, mkvecs(p));
       nf = ellnf_get_nf(E);
       if (nf_get_varn(nf) <= 0)
         pari_err_PRIORITY("ellisomat", nf_get_pol(nf), "<=", 0);
