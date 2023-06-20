@@ -1181,7 +1181,7 @@ Flxq_kronecker(GEN x, GEN T, ulong p)
 static GEN
 Flxq_ellpoint(long KRO, GEN a4, GEN a6, GEN T, ulong p, ulong pi)
 {
-  long v = varn(a4), n = get_Flx_degree(T);
+  long v = get_Flx_var(T), n = get_Flx_degree(T);
   for(;;)
   {
     GEN x = random_Flx(n, v, p), x2 = Flxq_sqr_pre(x,T,p,pi);

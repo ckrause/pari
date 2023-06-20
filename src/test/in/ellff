@@ -193,3 +193,7 @@ check2(nextprime(2^64));
 
 z = ffgen(41^16); E=ellinit([z,z]); ellcard(E)
 z = ffgen([41,13]); E = ellinit([z^28]);ellcard(E)
+
+a=ffgen(('a^3-'a^2-2*'a+1)*Mod(1,23));
+E=ellinit([a^2-2,0,1,-14*a^2+9*a+19,-69*a^2+63*a+85],a);
+for(i=1,100,setrand(i);my(F=E);if(ellcard(F)!=12040,error(i)));

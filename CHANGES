@@ -21,6 +21,7 @@ BA  17- w=3;quadgen(5) -> print x instead of w [#2477]
 BA  18- FpX_convol: wrong result for mixed degree
 LGr 19- parsum was inefficient
     20- mateigen(,1): eigenvalues were given as t_VEC or t_COL. Use t_COL.
+BA  21- ellcard over small finite field: potential oo-loop [#2483]
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output
