@@ -1273,9 +1273,10 @@ ellnf_prime_degree(GEN E)
 {
   forprime_t T;
   long i;
-  GEN nf = ellnf_get_nf(E), N = nfnorm(nf, ell_get_disc(E)), B = gen_0, P;
-  GEN bad = mulii(typ(N) == t_FRAC? mulii(gel(N,1),gel(N,2)): N,
-                  nf_get_disc(nf));
+  GEN nf = ellnf_get_nf(E), nf_bad = nf_get_ramified_primes(nf);
+  GEN g = ellglobalred(E);
+  GEN N = idealnorm(nf,gel(g,1)), Nfa = prV_primes(gmael(g,4,1));
+  GEN bad = mulii(N, nf_get_disc(nf)), B = gen_0, P;
   u_forprime_init(&T, 5UL,ULONG_MAX);
   for (i = 1; i <= 20; i++)
   {
@@ -1286,7 +1287,8 @@ ellnf_prime_degree(GEN E)
     if (Z_issquareall(B, &r)) B = r;
   }
   if (!signe(B)) return NULL;
-  P = gel(Z_factor(absi(B)),1);
+  B = muliu(B, 6);
+  P = ZV_union_shallow(ZV_union_shallow(Nfa,nf_bad), gel(Z_factor(absi(B)),1));
   return vec_to_vecsmall(RgV_F2v_extract_shallow(P, ellnf_goodl_l(E, P)));
 }
 

@@ -46,6 +46,8 @@ E=ellinit([-1880854563/4225,6682049310818/274625],nfinit(a^2+1));
 ellisomat(E,,1)[2]
 my(s=7,t=(48*s^2+32)/(s^2-2));E=ellinit(ellfromj(t^3/(t+16)),bnfinit(a^2-2));
 ellisomat(E,,1)[2]
+E=ellinit([1,a-1,a+1,2510*a-4889,87171*a-107201],nfinit(a^2-a+3));
+ellisomat(E,,1)[2]
 
 \\ From Barinder Banwait:
 nf=nfinit(w^2-5);
