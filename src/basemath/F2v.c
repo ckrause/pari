@@ -105,6 +105,20 @@ GEN
 F2m_to_Flm(GEN x) { pari_APPLY_same(F2v_to_Flv(gel(x,i))) }
 
 GEN
+RgV_F2v_extract_shallow(GEN V, GEN x)
+{
+  long n = F2v_hamming(x), m = 1;
+  long l = x[1]+1, lx = lg(x);
+  GEN W = cgetg(n+1, t_VEC);
+  long i,j,k;
+  for (i=2, k=1; i<lx; i++)
+    for (j=0; j<BITS_IN_LONG && k<l; j++,k++)
+      if ((x[i]>>j)&1UL)
+        gel(W, m++) = gel(V,k);
+  return W;
+}
+
+GEN
 ZV_to_F2v(GEN x)
 {
   long i, j, k, l = lg(x)-1;

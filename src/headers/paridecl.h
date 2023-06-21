@@ -114,6 +114,7 @@ void    F2v_or_inplace(GEN x, GEN y);
 GEN     F2v_slice(GEN x, long a, long b);
 int     F2v_subset(GEN x, GEN y);
 GEN     F2v_to_Flv(GEN x);
+GEN     RgV_F2v_extract_shallow(GEN V, GEN x);
 GEN     matid_F2m(long n);
 
 /* F2x.c */
