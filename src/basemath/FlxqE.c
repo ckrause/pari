@@ -1202,10 +1202,9 @@ Flxq_ellcard_Shanks(GEN a4, GEN a6, GEN q, GEN T, ulong p)
   GEN bound = addiu(sqrti(gmul2n(q,4)), 1); /* ceil( 4sqrt(q) ) */
   struct _FlxqE e;
   e.p = p; e.pi = pi; e.T = Flx_get_red_pre(T, p, pi);
-  /* once #E(Flxq) is know mod B >= bound, it is completely determined */
-  /* how many 2-torsion points ? */
+  /* once #E(Flxq) is known mod B >= bound, it is determined */
   switch(FlxqX_nbroots(mkpoln(4, pol1_Flx(v), pol0_Flx(v), a4, a6), T, p))
-  {
+  { /* how many 2-torsion points ? */
   case 3:  A = gen_0; B = utoipos(4); break;
   case 1:  A = gen_0; B = gen_2; break;
   default: A = gen_1; B = gen_2; break; /* 0 */
