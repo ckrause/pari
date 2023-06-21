@@ -1191,13 +1191,13 @@ ellQ_goodl_l(GEN E, long l)
   return 1;
 }
 
-static ulong
+static GEN
 ellnf_goodl_l(GEN E, GEN v)
 {
   forprime_t T;
   GEN nf = ellnf_get_nf(E), disc = ell_get_disc(E);
   long i, lv = lg(v);
-  ulong w = 0UL;
+  GEN w = const_F2v(lv-1);
   pari_sp av = avma;
   u_forprime_init(&T, 17UL,ULONG_MAX);
   for (i = 1; i <= 20; i++)
@@ -1217,19 +1217,19 @@ ellnf_goodl_l(GEN E, GEN v)
           GEN l = gel(v,k);
           if (equaliu(l,2))
           {
-            if (odd(t)) w |= 1<<(k-1);
+            if (odd(t)) F2v_clear(w, k);
           }
           else
           {
             GEN D = subii(sqrs(t), shifti(pr_norm(prj),2));
-            if (kronecker(D,l)==-1) w |= 1<<(k-1);
+            if (kronecker(D,l)==-1) F2v_clear(w, k);
           }
         }
       }
     }
     set_avma(av);
   }
-  return w^((1UL<<(lv-1))-1);
+  return w;
 }
 
 static GEN
@@ -1287,7 +1287,7 @@ ellnf_prime_degree(GEN E)
   }
   if (!signe(B)) return NULL;
   P = gel(Z_factor(absi(B)),1);
-  return vec_to_vecsmall(shallowextract(P, utoi(ellnf_goodl_l(E, P))));
+  return vec_to_vecsmall(RgV_F2v_extract_shallow(P, ellnf_goodl_l(E, P)));
 }
 
 static GEN
@@ -1505,7 +1505,7 @@ ellisomat(GEN E, long p, long flag)
       if (p) good = ellQ_goodl_l(E, p);
       break;
     case t_ELL_NF:
-      if (p) good = ellnf_goodl_l(E, mkvecs(p));
+      if (p) good = F2v_coeff(ellnf_goodl_l(E, mkvecs(p)),1);
       nf = ellnf_get_nf(E);
       if (nf_get_varn(nf) <= 0)
         pari_err_PRIORITY("ellisomat", nf_get_pol(nf), "<=", 0);
