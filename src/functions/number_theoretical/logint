@@ -6,7 +6,8 @@ Help: logint(x,b,{&z}): return the largest non-negative integer e so that
  b^e <= x, where b > 1 is an integer and x >= 1 is a real number. If the
  parameter z is present, set it to b^e.
 Description:
- (gen,2):small        expi($1)
+ (int,2):small        expi($1)
+ (gen,gen):small      logint0($1, $2, NULL)
  (gen,gen,&int):small logint0($1, $2, &$3)
 Doc: Return the largest non-negative integer $e$ so that $b^e \leq x$, where
  $b > 1$ is an integer and $x \geq 1$ is a real number. If the parameter $z$
