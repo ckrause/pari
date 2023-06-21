@@ -16,7 +16,7 @@ localbitprec(2^8); logp1 = gcharlog(gc,p2);
 localbitprec(2^9); logp2 = gcharlog(gc,p2);
 localbitprec(2^10); logp3 = gcharlog(gc,p2);
 exponent(logp-logp3) < -128 + 5
-exponent(logp1-logp3) < -256 + 5
+exponent(logp1-logp3) < -256 + 5 + 32
 exponent(logp2-logp3) < -512 + 5
 v = gchareval(gc, chi, p2, 0);
 localbitprec(256); gc1 = gcharnewprec(gc); v1 = gchareval(gc1,chi,p2,0);

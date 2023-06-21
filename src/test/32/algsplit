@@ -22,14 +22,14 @@ d=3 n=2
 d=4 n=1
 examples from documentation
 
-[2*a 0]
+[2   0]
 
-[  0 2]
+[0 2*a]
 
 
-[1   2*a]
+[a + 2 0]
 
-[2 a + 2]
+[    a 2]
 
 1
 
@@ -59,4 +59,4 @@ bad input
   ***   at top-level: algsplit(algtableinit(mt,2))
   ***                 ^----------------------------
   *** algsplit: the algebra must be simple (alg_finite_csa_split 3).
-Total time spent: 604
+Total time spent: 708

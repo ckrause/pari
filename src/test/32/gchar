@@ -209,7 +209,7 @@ doc gcharidentify
 doc gcharinit
 [0, 0, 0, 0]
 
-[5 4 4 4]
+[5 4 1 4]
 
 [0 1 0 0]
 
@@ -449,4 +449,4 @@ bad inputs
   ***   at top-level: gcharlocal(gc,[0,1,O(5^2)]~,1)
   ***                 ^------------------------------
   *** gcharlocal: incorrect type in check_gchar_i [s] (t_PADIC).
-Total time spent: 2964
+Total time spent: 4577

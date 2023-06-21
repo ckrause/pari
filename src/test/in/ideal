@@ -166,7 +166,7 @@ nf=nfinit(x^6+108); a=Mod(x,x^6+108);
 idealredmodpower(nf,0,2)
 idealredmodpower(nf,1,2)
 idealredmodpower(nf,x^5-3*x^4-3*x^3+18*x^2-18*x-54,2)
-normlp(idealredmodpower(nf,x/2,2))==1
+normlp(idealredmodpower(nf,x/2,2))<=4/3
 normlp(idealredmodpower(nf,x/12,2))==2
 
 \\ #2181

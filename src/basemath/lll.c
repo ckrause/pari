@@ -20,6 +20,334 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 static int
 RgM_is_square_mat(GEN x) { long l = lg(x); return l == 1 || l == lgcols(x); }
 
+static long
+ZM_is_upper(GEN R)
+{
+  long i,j, l = lg(R);
+  if (l != lgcols(R)) return 0;
+  for(i = 1; i < l; i++)
+    for(j = 1; j < i; j++)
+      if (signe(gcoeff(R,i,j))) return 0;
+  return 1;
+}
+
+static long
+ZM_is_knapsack(GEN R)
+{
+  long i,j, l = lg(R);
+  if (l != lgcols(R)) return 0;
+  for(i = 2; i < l; i++)
+    for(j = 1; j < l; j++)
+      if ( i!=j && signe(gcoeff(R,i,j))) return 0;
+  return 1;
+}
+
+static long
+ZM_is_lower(GEN R)
+{
+  long i,j, l = lg(R);
+  if (l != lgcols(R)) return 0;
+  for(i = 1; i < l; i++)
+    for(j = 1; j < i; j++)
+      if (signe(gcoeff(R,j,i))) return 0;
+  return 1;
+}
+
+static GEN
+RgM_flip(GEN R)
+{
+  GEN M;
+  long i,j,l;
+  M = cgetg_copy(R, &l);
+  for(i = 1; i < l; i++)
+  {
+    gel(M,i) = cgetg(l, t_COL);
+    for(j = 1; j < l; j++)
+      gmael(M,i,j) = gmael(R,l-i, l-j);
+  }
+  return M;
+}
+
+static GEN
+RgM_flop(GEN R)
+{
+  GEN M;
+  long i,j,l;
+  M = cgetg_copy(R, &l);
+  for(i = 1; i < l; i++)
+  {
+    gel(M,i) = cgetg(l, t_COL);
+    for(j = 1; j < l; j++)
+      gmael(M,i,j) = gmael(R,i, l-j);
+  }
+  return M;
+}
+
+/* Assume x and y has same type! */
+INLINE int
+mpabscmp(GEN x, GEN y)
+{
+  return (typ(x)==t_INT) ? abscmpii(x,y) : abscmprr(x,y);
+}
+
+/****************************************************************************/
+/***                             FLATTER                                  ***/
+/****************************************************************************/
+
+/* Implementation of "FLATTER" algorithm based on
+   <https://eprint.iacr.org/2023/237>
+   Fast Practical Lattice Reduction through Iterated Compression
+
+   Keegan Ryan, University of California, San Diego
+   Nadia Heninger, University of California, San Diego
+BA20230925 */
+
+static long
+drop(GEN R)
+{
+  long i, n = lg(R)-1;
+  long s = 0, m = mpexpo(gcoeff(R, 1, 1));
+  for (i = 2; i <= n; ++i)
+  {
+    if (mpabscmp(gcoeff(R, i, i), gcoeff(R, i - 1, i - 1)) >= 0)
+    {
+      s += m - mpexpo(gcoeff(R, i - 1, i - 1));
+      m = mpexpo(gcoeff(R, i, i));
+    }
+  }
+  s += m - mpexpo(gcoeff(R, n, n));
+  return s;
+}
+
+static long
+gsisinv(GEN M)
+{
+  long i, l = lg(M);
+  for (i = 1; i < l; ++i)
+    if (signe(gmael(M, i, i))==0)
+      return 0;
+  return 1;
+}
+
+static GEN
+qfgaussred_positive_dynprec(GEN M)
+{
+  pari_sp ltop = avma;
+  GEN L, R;
+  long i, j, lM = lg(M);
+  long minprec = 3*(lg(M)-1) + 30, bitprec = minprec, prec;
+  while (1)
+  {
+    long mbitprec;
+    prec = nbits2prec(bitprec);
+    L = qfgaussred_positive(RgM_gtofp(M, prec));
+    if (!L)
+    {
+      bitprec *= 2;
+      set_avma(ltop);
+      continue;
+    }
+    mbitprec = minprec + 2*drop(L);
+    if (bitprec >= mbitprec)
+      break;
+    bitprec = mbitprec;
+    set_avma(ltop);
+  }
+  R = cgetg(lM, t_MAT);
+  for (j = 1; j < lM; ++j)
+  {
+    gel(R, j) = cgetg(lM, t_COL);
+    for (i = 1; i < lM; ++i)
+      gcoeff(R, i, j) = (i == j) ? gen_1 : gcoeff(L, i, j);
+  }
+  R = gmul(diagonal_shallow(gsqrt(RgM_diagonal_shallow(L), prec)), R);
+  return gerepilecopy(ltop, R);
+}
+
+static GEN
+gramschmidt_upper(GEN M)
+{
+  long bitprec = 3*(lg(M)-1) + 30 + 2*drop(M);
+  return RgM_gtofp(M, nbits2prec(bitprec));
+}
+
+static GEN
+gramschmidt_dynprec(GEN M)
+{
+  pari_sp ltop = avma;
+  long minprec = 3*(lg(M)-1) + 30, bitprec = minprec;
+  if (ZM_is_upper(M)) return gramschmidt_upper(M);
+  while (1)
+  {
+    GEN B, Q, L;
+    long prec = nbits2prec(bitprec), mbitprec;
+    if (!QR_init(RgM_gtofp(M, prec), &B, &Q, &L, prec) || !gsisinv(L))
+    {
+      bitprec *= 2;
+      set_avma(ltop);
+      continue;
+    }
+    mbitprec = minprec + 2*drop(L);
+    if (bitprec >= mbitprec)
+      return gerepilecopy(ltop, shallowtrans(L));
+    bitprec = mbitprec;
+    set_avma(ltop);
+  }
+}
+/* return -T1 * round(T1^-1*(R1^-1*R2)*T3) */
+static GEN
+sizered(GEN T1, GEN T3, GEN R1, GEN R2)
+{
+  pari_sp ltop = avma;
+  long e;
+  return gerepileupto(ltop, gmul(ZM_neg(T1), grndtoi(gmul(ZM_inv(T1,NULL),
+            gmul(RgM_mul(RgM_inv_upper(R1), R2), T3)), &e)));
+}
+
+static GEN
+flat(GEN M, long flag, GEN *pt_T, long *pt_s)
+{
+  pari_sp ltop = avma;
+  GEN R, R1, R2, R3, T1, T2, T3, T, S;
+  long k = lg(M)-1, n = k>>1, n2 = k - n, m = n>>1;
+  long keepfirst = flag & LLL_KEEP_FIRST, inplace = flag & LLL_INPLACE;
+  /* for k = 3, we want n = 1; n2  = 2; m = 0 */
+  /* for k = 5,         n = 2; n2 = 3; m = 1 */
+  R = gramschmidt_dynprec(M);
+  R1 = matslice(R, 1, n, 1, n);
+  R2 = matslice(R, 1, n, n + 1, k);
+  R3 = matslice(R, n + 1, k, n + 1, k);
+  T1 = lllfp(R1, 0.99, LLL_IM| LLL_UPPER| LLL_NOCERTIFY| (keepfirst ? LLL_KEEP_FIRST: 0));
+  T3 = lllfp(R3, 0.99, LLL_IM| LLL_UPPER| LLL_NOCERTIFY);
+  T2 = sizered(T1, T3, R1, R2);
+  T = shallowmatconcat(mkmat22(T1,T2,gen_0,T3));
+  M = ZM_mul(M, T);
+  R = gramschmidt_dynprec(M);
+  R3 = matslice(R, m + 1, m + n2, m + 1, m + n2);
+  T3 = lllfp(R3, 0.99, LLL_IM| LLL_UPPER| LLL_NOCERTIFY);
+  S = shallowmatconcat(diagonal(
+       m == 0     ? mkvec2(T3, matid(k - m - n2))
+     : m+n2 == k  ? mkvec2(matid(m), T3)
+                  : mkvec3(matid(m), T3, matid(k - m - n2))));
+  M = ZM_mul(M, S);
+  if (!inplace) *pt_T = ZM_mul(T, S);
+  *pt_s = drop(R);
+  return gc_all(ltop, inplace ? 1: 2, &M, pt_T);
+}
+
+static GEN
+ZM_flatter(GEN M, long flag)
+{
+  pari_sp ltop = avma, btop;
+  long i, n = lg(M)-1;
+  long s = -1;
+  GEN T;
+  pari_timer ti;
+  long lti = 1;
+  long inplace = flag & LLL_INPLACE, cert = !(flag & LLL_NOCERTIFY);
+  T = matid(n);
+  if (DEBUGLEVEL>=3)
+  {
+    timer_start(&ti);
+    if (cert)
+      err_printf("flatter dim = %ld size = %ld\n", n, ZM_max_expi(M));
+  }
+  btop = avma;
+  for (i = 1;;i++)
+  {
+    long t;
+    GEN U, M2 = flat(M, flag, &U, &t);
+    if (t==0) { s = t; break; }
+    if (s >= 0)
+    {
+      if (s==t)
+        break;
+      if (s<t && i > 20)
+      {
+        if (DEBUGLEVEL >= 3) err_printf("BACK:%ld:%ld:%g\n", n, i, s);
+        break;
+      }
+    }
+    if (DEBUGLEVEL>=3 && (cert || timer_get(&ti) > 1000))
+    {
+      if (i==lti)
+        timer_printf(&ti, "FLATTER, dim %ld, steps %ld: \t slope=%0.10g", n, i, ((double)t)/n);
+      else
+        timer_printf(&ti, "FLATTER, dim %ld, steps %ld-%ld: \t slope=%0.10g", n, lti,i,((double)t)/n);
+      lti = i+1;
+    }
+    s = t;
+    M = M2;
+    if (!inplace) T = ZM_mul(T, U);
+    if (gc_needed(btop, 1))
+      gerepileall(btop, 2, &M, &T);
+  }
+  if (DEBUGLEVEL>=3 && (cert || timer_get(&ti) > 1000))
+  {
+    if (i==lti)
+      timer_printf(&ti, "FLATTER, dim %ld, final \t slope=%0.10g", n, ((double)s)/n);
+    else
+      timer_printf(&ti, "FLATTER, dim %ld, steps %ld-final:\t slope=%0.10g", n, lti, ((double)s)/n);
+  }
+  return  gerepilecopy(ltop, inplace ? M: T);
+}
+
+static GEN
+flattergram_i(GEN M, long keepfirst, long *pt_s)
+{
+  pari_sp ltop = avma;
+  GEN R, T;
+  R = qfgaussred_positive_dynprec(M);
+  *pt_s = drop(R);
+  T =  lllfp(R, 0.99, LLL_IM| LLL_UPPER| LLL_NOCERTIFY);
+  return gerepilecopy(ltop, T);
+}
+
+static GEN
+ZM_flattergram(GEN M, long flag)
+{
+  pari_sp ltop = avma, btop;
+  GEN T;
+  long i, n = lg(M)-1;
+  pari_timer ti;
+  long s = -1;
+  if (DEBUGLEVEL>=3)
+  {
+    timer_start(&ti);
+    err_printf("FLATTERGRAM dim = %ld size = %ld\n", n, expi(gnorml2(M)));
+  }
+  btop = avma;
+  T = matid(n);
+  for (i = 1;; i++)
+  {
+    long t;
+    GEN S = flattergram_i(M, flag, &t);
+    t = expi(gnorml2(S));
+    if (t==0) { s = t;  break; }
+    if (s)
+    {
+      double st = s-t;
+      if (st == 0)
+        break;
+      if (st < 0 && i > 20)
+      {
+        if (DEBUGLEVEL >= 3) err_printf("BACK:%ld:%ld:%0.10g\n", n, i, ((double)s)/n);
+        break;
+      }
+    }
+    T = ZM_mul(T, S);
+    M = ZM_mul(shallowtrans(S), ZM_mul(M, S));
+    s = t;
+    if (DEBUGLEVEL >= 3)
+      timer_printf(&ti, "FLATTERGRAM, dim %ld step %ld, slope=%0.10g", n, i, ((double)s)/n);
+    if (gc_needed(btop, 1))
+      gerepileall(btop, 3, &M, &T, &s);
+  }
+  if (DEBUGLEVEL >= 3)
+    timer_printf(&ti, "FLATTERGRAM, dim %ld, slope=%0.10g", n, ((double)s)/n);
+  return gerepilecopy(ltop, T);
+}
+
 static double
 pari_rint(double a)
 {
@@ -1902,6 +2230,74 @@ ZM2_lll_norms(GEN x, long flag, GEN *pN)
   return U;
 }
 
+static void
+fplll_flatter(GEN *pG, GEN *pB, GEN *pU, long flag)
+{
+  if (!*pG)
+  {
+    GEN T = ZM_flatter(*pB, flag);
+    if (*pU)
+    {
+      *pU = ZM_mul(*pU, T);
+      *pB = ZM_mul(*pB, T);
+    } else *pB = T;
+  } else
+  {
+    GEN T, G = *pG;
+    long i, j, l = lg(G);
+    for (i = 1; i < l; i++)
+      for(j = 1; j < i; j++)
+        gmael(G,j,i) = gmael(G,i,j);
+    T = ZM_flattergram(*pG, flag);
+    if (*pU) *pU = ZM_mul(*pU, T);
+    *pG = ZM_mul(shallowtrans(T), ZM_mul(*pG,T));
+  }
+}
+
+static long
+spread(GEN R)
+{
+  long i, n = lg(R)-1;
+  GEN m = gcoeff(R, 1, 1), M = m;
+  for (i = 2; i <= n; ++i)
+  {
+    if (mpabscmp(gcoeff(R, i, i), m) < 0)
+      m = gcoeff(R, i, i);
+    if (mpabscmp(gcoeff(R, i, i), M) > 0)
+      M = gcoeff(R, i, i);
+  }
+  return mpexpo(M)-mpexpo(m);
+}
+
+static GEN
+get_gramschmidt(GEN M)
+{
+  GEN B, Q, L;
+  long l = lg(M), bitprec = 3*(l-1) + 30;
+  long prec = nbits2prec(bitprec);
+  if (!QR_init(RgM_gtofp(M, prec), &B, &Q, &L, prec) || !gsisinv(L)) return NULL;
+  return L;
+}
+
+static GEN
+get_gaussred(GEN M)
+{
+  pari_sp ltop = avma;
+  long i, j, lM = lg(M);
+  long bitprec = 3*(lM-1) + 30, prec = nbits2prec(bitprec);
+  GEN R, L = qfgaussred_positive(RgM_gtofp(M, prec));
+  if (!L) return NULL;
+  R = cgetg(lM, t_MAT);
+  for (j = 1; j < lM; ++j)
+  {
+    gel(R, j) = cgetg(lM, t_COL);
+    for (i = 1; i < lM; ++i)
+      gcoeff(R, i, j) = (i == j) ? gen_1 : gcoeff(L, i, j);
+  }
+  R = gmul(diagonal_shallow(gsqrt(RgM_diagonal_shallow(L), prec)), R);
+  return gerepilecopy(ltop, R);
+}
+
 /* Assume x a ZM, if pN != NULL, set it to Gram-Schmidt (squared) norms
  * The following modes are supported:
  * - flag & LLL_INPLACE: x a lattice basis, return x*U
@@ -1915,9 +2311,21 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
   pari_sp av = avma;
   const double ETA = 0.51;
   const long keepfirst = flag & LLL_KEEP_FIRST;
-  long p, zeros = -1, n = lg(x)-1;
-  GEN G, B, U;
+  long p, zeros = -1, n = lg(x)-1, is_upper, is_lower, useflatter = 0;
+  GEN G, B, U, L = NULL;
   pari_timer T;
+  long thre[]={31783,34393,20894,22525,13533,1928,672,671,
+                422,506,315,313,222,205,167,154,139,138,
+                110,120,98,94,81,75,74,64,74,74,
+                79,96,112,111,105,104,96,86,84,78,75,70,66,62,62,57,56,47,45,52,50,44,48,42,36,35,35,34,40,33,34,32,36,31,
+                38,38,40,38,38,37,35,31,34,36,34,32,34,32,28,27,25,31,25,27,28,26,25,21,21,25,25,22,21,24,24,22,21,23,22,22,22,22,21,24,21,22,19,20,19,20,19,19,19,18,19,18,18,20,19,20,18,19,18,21,18,20,18,18};
+  long thsn[]={23280,30486,50077,44136,78724,15690,1801,1611,
+               981,1359,978,1042,815,866,788,775,726,712,
+               626,613,548,564,474,481,504,447,453,508,
+               705,794,1008,946,767,898,886,763,842,757,
+               725,774,639,655,705,627,635,704,511,613,
+               583,595,568,640,541,640,567,540,577,584,
+               546,509,526,572,637,746,772,743,743,742,800,708,832,768,707,692,692,768,696,635,709,694,768,719,655,569,590,644,685,623,627,720,633,636,602,635,575,631,642,647,632,656,573,511,688,640,528,616,511,559,601,620,635,688,608,768,658,582,644,704,555,673,600,601,641,661,601,670};
   if (n <= 1) return lll_trivial(x, flag);
   if (nbrows(x)==0)
   {
@@ -1930,18 +2338,51 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
     U = ZM2_lll_norms(x, flag, pN);
     if (U) return U;
   }
-  x = gcopy(x);
   if (flag & LLL_GRAM)
-  { G = x; B = NULL; U = matid(n); }
+  { G = x; B = NULL; U = matid(n); is_upper = 0; is_lower = 0; }
   else
-  { G = NULL; B = x; U = (flag & LLL_INPLACE)? NULL: matid(n); }
+  {
+    G = NULL; B = x; U = (flag & LLL_INPLACE)? NULL: matid(n);
+    is_upper = (flag & LLL_UPPER) || ZM_is_upper(B);
+    is_lower = !B || is_upper || keepfirst ? 0: ZM_is_lower(B);
+    if (is_lower) L = RgM_flip(B);
+  }
   if(DEBUGLEVEL>=4) timer_start(&T);
+  if (n > 2 && RgM_is_square_mat(x)) /*n==2 can happen if rank < 2 or keepfirst */
+  {
+    GEN R = B ? is_upper ? B : is_lower ? L : get_gramschmidt(B) : get_gaussred(G);
+    if (R)
+    {
+      long spr = spread(R), sz = mpexpo(gsupnorm(R, DEFAULTPREC)), thr;
+      if (DEBUGLEVEL>=5) err_printf("LLL: dim %ld, size %ld, spread %ld\n",n, sz, spr);
+      if ((is_upper && ZM_is_knapsack(B)) || (is_lower && ZM_is_knapsack(L)))
+        thr = thsn[minss(n-3,numberof(thsn)-1)];
+      else
+        thr = thre[minss(n-3,numberof(thre)-1)];
+      useflatter = sz >= thr;
+    } else
+      useflatter = ZM_rank(x)==n;
+  } else useflatter = 0;
+  if (useflatter)
+  {
+    if (is_lower)
+    {
+      fplll_flatter(&G, &L, &U, flag | LLL_UPPER);
+      B = RgM_flop(L);
+      if (U) U = RgM_flop(U);
+    }
+    else
+      fplll_flatter(&G, &B, &U, flag | (is_upper? LLL_UPPER:0));
+    if (DEBUGLEVEL>=4  && !(flag & LLL_NOCERTIFY))
+      timer_printf(&T, "FLATTER");
+  }
   if (!(flag & LLL_GRAM))
   {
     long t;
+    B = gcopy(B);
     if(DEBUGLEVEL>=4)
-      err_printf("Entering L^2 (double): LLL-parameters (%.3f,%.3f)\n",
-                 DELTA,ETA);
+      err_printf("Entering L^2 (double): dim %ld, LLL-parameters (%.3f,%.3f)\n",
+                 n, DELTA,ETA);
     zeros = fplll_fast(&B, &U, DELTA, ETA, keepfirst);
     if (DEBUGLEVEL>=4) timer_printf(&T, zeros < 0? "LLL (failed)": "LLL");
     for (p = DEFAULTPREC, t = 0; zeros < 0 && t < 1 ; p += EXTRAPREC64, t++)
@@ -1952,22 +2393,26 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
       gc_lll(av, 2, &B, &U);
       if (DEBUGLEVEL>=4) timer_printf(&T, zeros < 0? "LLL (failed)": "LLL");
     }
+  } else
+    G = gcopy(G);
+  if (zeros < 0 || !(flag & LLL_NOCERTIFY))
+  {
+    if(DEBUGLEVEL>=4)
+      err_printf("Entering L^2 (dpe): LLL-parameters (%.3f,%.3f)\n", DELTA,ETA);
+    zeros = fplll_dpe(&G, &B, &U, pN, DELTA, ETA, keepfirst);
+    if (DEBUGLEVEL>=4) timer_printf(&T, zeros < 0? "LLL (failed)": "LLL");
+    if (zeros < 0)
+      for (p = DEFAULTPREC;; p += EXTRAPREC64)
+      {
+        if (DEBUGLEVEL>=4)
+          err_printf("Entering L^2: LLL-parameters (%.3f,%.3f), prec = %d\n",
+              DELTA,ETA, p);
+        zeros = fplll(&G, &B, &U, pN, DELTA, ETA, keepfirst, p);
+        if (DEBUGLEVEL>=4) timer_printf(&T, zeros < 0? "LLL (failed)": "LLL");
+        if (zeros >= 0) break;
+        gc_lll(av, 3, &G, &B, &U);
+      }
   }
-  if(DEBUGLEVEL>=4)
-    err_printf("Entering L^2 (dpe): LLL-parameters (%.3f,%.3f)\n", DELTA,ETA);
-  zeros = fplll_dpe(&G, &B, &U, pN, DELTA, ETA, keepfirst);
-  if (DEBUGLEVEL>=4) timer_printf(&T, zeros < 0? "LLL (failed)": "LLL");
-  if (zeros < 0)
-    for (p = DEFAULTPREC;; p += EXTRAPREC64)
-    {
-      if (DEBUGLEVEL>=4)
-        err_printf("Entering L^2: LLL-parameters (%.3f,%.3f), prec = %d\n",
-                    DELTA,ETA, p);
-      zeros = fplll(&G, &B, &U, pN, DELTA, ETA, keepfirst, p);
-      if (DEBUGLEVEL>=4) timer_printf(&T, zeros < 0? "LLL (failed)": "LLL");
-      if (zeros >= 0) break;
-      gc_lll(av, 3, &G, &B, &U);
-    }
   return lll_finish(U? U: B, zeros, flag);
 }
 

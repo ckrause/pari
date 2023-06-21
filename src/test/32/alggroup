@@ -1,5 +1,5 @@
 2
-x^3 + 21*x + 7*y
+x^3 - 21*x + 7
 1
 5
 ordering
@@ -297,4 +297,4 @@ D58
   ***   at top-level: alggroup([Vecsmall([1]),Vecsmall([2,3]),Vecsma
   ***                 ^----------------------------------------------
   *** alggroup: inconsistent dimensions in checkgroupelts [length of permutations].
-Total time spent: 576
+Total time spent: 608
