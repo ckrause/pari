@@ -1260,9 +1260,9 @@ stariter_easy(GEN E, GEN p)
 static GEN
 idealgen_minpoly(GEN bnf, GEN pr)
 {
-  GEN h = bnf_get_no(bnf), nf = bnf_get_nf(bnf);
-  GEN prh = gel(bnfisprincipal0(bnf,idealpow(nf,pr,h),1),2);
-  return minpoly(basistoalg(nf, prh), 0);
+  GEN h = bnf_get_no(bnf);
+  GEN e = isprincipalfact(bnf, NULL, mkvec(pr), mkvec(h), nf_GEN);
+  return minpoly(basistoalg(bnf, gel(e,2)), 0);
 }
 
 static GEN
