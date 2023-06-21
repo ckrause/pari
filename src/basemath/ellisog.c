@@ -1167,25 +1167,22 @@ ellQ_goodl_l(GEN E, long l)
   forprime_t T;
   long i;
   GEN disc = ell_get_disc(E);
-  pari_sp av = avma;
-  u_forprime_init(&T, 17UL, ULONG_MAX);
-  for (i=1; i<=20; i++)
+  pari_sp av;
+  u_forprime_init(&T, 17UL, ULONG_MAX); av = avma;
+  for (i = 1; i <= 20; i++, set_avma(av))
   {
     ulong p = u_forprime_next(&T);
+    long t;
     if (umodiu(disc,p)==0) { i--; continue; }
+    t = itos(ellap(E, utoipos(p)));
+    if (l==2)
+    {
+      if (odd(t)) return 0;
+    }
     else
     {
-      long t = itos(ellap(E, utoipos(p)));
-      if (l==2)
-      {
-        if (odd(t)) return 0;
-      }
-      else
-      {
-        long D = t*t - 4*p;
-        if (kross(D,l) == -1) return 0;
-      }
-      set_avma(av);
+      long D = t*t - 4*p;
+      if (kross(D,l) == -1) return 0;
     }
   }
   return 1;
@@ -1195,39 +1192,34 @@ static GEN
 ellnf_goodl_l(GEN E, GEN v)
 {
   forprime_t T;
-  GEN nf = ellnf_get_nf(E), disc = ell_get_disc(E);
   long i, lv = lg(v);
-  GEN w = const_F2v(lv-1);
-  pari_sp av = avma;
-  u_forprime_init(&T, 17UL,ULONG_MAX);
-  for (i = 1; i <= 20; i++)
+  GEN nf = ellnf_get_nf(E), disc = ell_get_disc(E), w = const_F2v(lv-1);
+  pari_sp av;
+  u_forprime_init(&T, 17UL,ULONG_MAX); av = avma;
+  for (i = 1; i <= 20; i++, set_avma(av))
   {
     ulong p = u_forprime_next(&T);
     GEN pr = idealprimedec(nf, utoipos(p));
-    long j, k, lv = lg(v), g = lg(pr)-1;
-    for (j=1; j<=g; j++)
+    long t, j, k, lv = lg(v), g = lg(pr)-1;
+    for (j = 1; j <= g; j++)
     {
       GEN prj = gel(pr, j);
-      if (idealval(nf,disc,prj) != 0) {i--; continue;}
-      else
+      if (idealval(nf, disc, prj)) {i--; continue;}
+      t = itos(ellap(E, prj));
+      for(k = 1; k < lv; k++)
       {
-        long t = itos(ellap(E, prj));
-        for(k = 1; k < lv; k++)
+        GEN l = gel(v,k);
+        if (equaliu(l,2))
         {
-          GEN l = gel(v,k);
-          if (equaliu(l,2))
-          {
-            if (odd(t)) F2v_clear(w, k);
-          }
-          else
-          {
-            GEN D = subii(sqrs(t), shifti(pr_norm(prj),2));
-            if (kronecker(D,l)==-1) F2v_clear(w, k);
-          }
+          if (odd(t)) F2v_clear(w, k);
+        }
+        else
+        {
+          GEN D = subii(sqrs(t), shifti(pr_norm(prj),2));
+          if (kronecker(D,l)==-1) F2v_clear(w, k);
         }
       }
     }
-    set_avma(av);
   }
   return w;
 }
