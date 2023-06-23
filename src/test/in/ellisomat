@@ -68,15 +68,34 @@ E=ellinit([8000],nfinit(a^2+2));
 ellisomat(E)
 ellisomat(E,2)[2]
 
-\\ hard case
-L=bnfinit(polcompositum(t^2+3,t^2+7)[1]);
-a = Mod(t,L.pol);
-sqrt_3= subst(nfsubfields(L,2)[1][2],t,a)/2; \\ square root of -3 in L
-sqrt_7= subst(nfsubfields(L,2)[2][2],t,a)/2; \\ square root of -7 in L
-sqrt21=-sqrt_3*sqrt_7; \\ square root of 21 in L
-a4=81/4*(69+43*sqrt_3+29*sqrt_7+17*sqrt21);
-a6=162*(207-84*sqrt_3-54*sqrt_7+46*sqrt21);
-E=ellinit([a4,a6],L);
+\\ hard cases
+K = bnfinit(t^4+20*t^2+16,1);
+E = ellinit([-567/16*t^3-1377/8*t^2+81/4*t-324,1215/2*t^3-3726*t^2+972*t-3726],K);
+ellisomat(E,,1)[2]
+
+\\ https://www.lmfdb.org/EllipticCurve/4.4.1600.1/1.1/a/1
+K = nfinit(Polrev([4, 0, -6, 0, 1],t));
+E = ellinit([Polrev([0,-1,0,1/2],t),Polrev([-1,-1,0,0],t),Polrev([-1,-2,1/2,1/2],t),Polrev([-304,-284,51/2,85/2],t),Polrev([-2650,-2911,589/2,951/2],t)], K);
+ellisomat(E,,1)[2]
+
+\\ https://www.lmfdb.org/EllipticCurve/4.4.1600.1/16.1/a/1
+K = nfinit(Polrev([4, 0, -6, 0, 1],t));
+E = ellinit([Polrev([0,-2,0,1/2],t),Polrev([-2,-1,1/2,1/2],t),Polrev([0,0,0,0],t),Polrev([60,-72,-12,14],t),Polrev([-34,44,8,-9],t)], K);
+ellisomat(E,,1)[2]
+
+\\ https://www.lmfdb.org/EllipticCurve/4.4.1600.1/81.1/a/1
+K = nfinit(Polrev([4, 0, -6, 0, 1],t));
+E = ellinit([Polrev([0,-2,0,1/2],t),Polrev([-2,-1,1/2,1/2],t),Polrev([1,-1,0,1/2],t),Polrev([3,1,-7/2,-3/2],t),Polrev([13,6,-35/2,-15/2],t)], K);
+ellisomat(E,,1)[2]
+
+\\ https://www.lmfdb.org/EllipticCurve/4.4.1600.1/81.2/b/2
+K = nfinit(Polrev([4, 0, -6, 0, 1],t));
+E = ellinit([Polrev([0,-1,0,1/2],t),Polrev([1,1,0,-1/2],t),Polrev([-1,1,1/2,0],t),Polrev([5,6,-3/2,-3/2],t),Polrev([6,7,-3/2,-3/2],t)], K);
+ellisomat(E,,1)[2]
+
+\\ https://www.lmfdb.org/EllipticCurve/4.4.2304.1/9.1/a/1
+K = nfinit(Polrev([1, 0, -4, 0, 1],t));
+E = ellinit([Polrev([-2,-4,1,1],t),Polrev([0,1,0,0],t),Polrev([0,1,0,0],t),Polrev([-4780,9170,1265,-2463],t),Polrev([163923,-316598,-43876,84852],t)], K);
 ellisomat(E,,1)[2]
 
 \\ ERRORS
