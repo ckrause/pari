@@ -1563,7 +1563,7 @@ ellisomat(GEN E, long p, long flag)
 {
   pari_sp av = avma;
   GEN r = NULL, nf = NULL;
-  long good = 1;
+  int good = 1;
   if (flag < 0 || flag > 1) pari_err_FLAG("ellisomat");
   if (p < 0) pari_err_PRIME("ellisomat", stoi(p));
   if (p == 1) { flag = 1; p = 0; } /* for backward compatibility */
@@ -1574,24 +1574,21 @@ ellisomat(GEN E, long p, long flag)
       if (p) good = ellQ_goodl_l(E, p);
       break;
     case t_ELL_NF:
-      if (p) good = F2v_coeff(ellnf_goodl_l(E, mkvecs(p)),1);
+      if (p) good = F2v_coeff(ellnf_goodl_l(E, mkvecs(p)), 1);
       nf = ellnf_get_nf(E);
-      if (nf_get_varn(nf) <= 0)
-        pari_err_PRIORITY("ellisomat", nf_get_pol(nf), "<=", 0);
-      if (flag==0 && nf_get_varn(nf) <= 1)
-        pari_err_PRIORITY("ellisomat", nf_get_pol(nf), "<=", 1);
+      if (nf_get_varn(nf) <= 1 - flag)
+        pari_err_PRIORITY("ellisomat", nf_get_pol(nf), "<=", 1 - flag);
       break;
     default: pari_err_TYPE("ellisomat",E);
   }
-  if (!good) r = mkvec2(mkvec(ellisograph_a4a6(E, flag)),matid(1));
+  if (!good) r = mkvec2(mkvec(ellisograph_a4a6(E, flag)), matid(1));
   else
   {
     if (p)
       r = nfmkisomat(nf, p, ellisograph_p(nf, E, p, flag));
     else
       r = nf? ellnf_isomat(E, flag): ellQ_isomat(E, flag);
-    if (typ(r)==t_VEC)
-      gel(r,1) = list_to_crv(gel(r,1));
+    if (typ(r) == t_VEC) gel(r,1) = list_to_crv(gel(r,1));
   }
   return gerepilecopy(av, r);
 }

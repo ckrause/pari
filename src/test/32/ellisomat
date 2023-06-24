@@ -278,8 +278,8 @@ ll([1]), [Vecsmall([64, -1])], [0, 0, 0, 0, 0, 0, 0, 0]], [1, 0, 1, -1, 0, 1
 
   ***   at top-level: ellisomat(ellinit([-824740032823875,9115932407
   ***                 ^----------------------------------------------
-  *** ellisomat: incorrect priority in ellisomat: variable x <= x
+  *** ellisomat: incorrect priority in ellisomat: variable x <= y
   ***   at top-level: ellisomat(ellinit([-824740032823875,9115932407
   ***                 ^----------------------------------------------
   *** ellisomat: incorrect priority in ellisomat: variable y <= y
-Total time spent: 2590
+Total time spent: 3038
