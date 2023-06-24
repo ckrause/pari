@@ -216,7 +216,7 @@ static GEN
 bezout_halfgcd(GEN x, GEN y, GEN *ptu, GEN *ptv)
 {
   pari_sp av=avma;
-  GEN u, v, R = matid(2);
+  GEN u, v, R = matid2();
   while (lgefint(y)-2 >= EXTGCD_HALFGCD_LIMIT)
   {
     GEN M = HGCD0(x,y);
