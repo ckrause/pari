@@ -760,6 +760,20 @@ x^2 - 2
 [0, 0]
 [11432100241/375584400, 1105240264347961/7278825672000]
 [Mod(1, 19), Mod(14, 19)]
+0
+-3
+-4
+-8
+-12
+-16
+-28
+-7
+-11
+-19
+-27
+-43
+-67
+-163
   ***   at top-level: ellK(1)
   ***                 ^-------
   *** ellK: domain error in ellK: k^2 = 1
@@ -802,4 +816,4 @@ x^2 - 2
   ***   at top-level: ellpointtoz(E3,[1,[0]])
   ***                 ^-----------------------
   *** ellpointtoz: incorrect type in ellpointtoz (t_VEC).
-Total time spent: 1189
+Total time spent: 1261

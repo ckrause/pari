@@ -6019,28 +6019,46 @@ long
 ellQ_get_CM(GEN e)
 {
   GEN j = ell_get_j(e);
-  long CM = 0;
-  if (typ(j) == t_INT) switch(itos_or_0(j))
+  if (typ(j) != t_INT) return 0;
+  if (is_bigint(j))
   {
-    case 0:
-      if (!signe(j)) CM = -3;
-      break;
-    case 1728: CM = -4; break;
-    case -3375: CM = -7; break;
-    case  8000: CM = -8; break;
-    case 54000: CM = -12; break;
-    case -32768: CM = -11; break;
-    case 287496: CM = -16; break;
-    case -884736: CM = -19; break;
-    case -12288000: CM = -27; break;
-    case  16581375: CM = -28; break;
-    case -884736000: CM = -43; break;
-#ifdef LONG_IS_64BIT
-    case -147197952000L: CM = -67; break;
-    case -262537412640768000L: CM = -163; break;
+#ifndef LONG_IS_64BIT
+    if (signe(j) < 0)
+    {
+      pari_sp av = avma;
+      if (absequalii(j, uu32toi(0x22UL,0x45ae8000UL))) return gc_long(av,-67);
+      if (absequalii(j, uu32toi(0x03a4b862,0xc4b40000UL))) return gc_long(av,-163);
+    }
 #endif
+    return 0;
   }
-  return CM;
+  switch(signe(j))
+  {
+    default: return -3; /* j = 0 */
+    case 1:
+      switch(j[2])
+      {
+      case 1728: return -4;
+      case 8000: return -8;
+      case 54000: return -12;
+      case 287496: return -16;
+      case 16581375: return -28;
+      default: return 0;
+      }
+    case -1:
+      switch(j[2]) {
+      case 3375: return -7;
+      case 32768: return -11;
+      case 884736: return -19;
+      case 12288000: return -27;
+      case 884736000: return -43;
+#ifdef LONG_IS_64BIT
+      case 147197952000L: return -67;
+      case 262537412640768000L: return -163;
+#endif
+      default: return 0;
+    }
+  }
 }
 
 static long
