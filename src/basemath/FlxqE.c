@@ -1546,19 +1546,20 @@ Fl_end13(ulong j, ulong h, ulong p)
   long i, lL, lc, lD, nc;
   GEN D, DF, cs, L, vP, vE;
   ulong t = Fl_ellj_trace(j, p);
+
   D0 = coredisc2u_fact(factoru(4*p-t*t), -1, &vP, &vE);
   h0 = itou(classno(stoi(-D0)));
-  if (h%h0!=0) return 0;
-  h/=h0;
+  if (h % h0 != 0) return 0;
+  h /= h0;
   D = divisorsu_fact_factored(mkmat2(vP,vE));
-  DF = gel(D,2); D = gel(D,1); lD = lg(D);
-  v = D[lD-1];
+  DF = gel(D,2); D = gel(D,1);
+  lD = lg(D); v = D[lD-1];
   cs = cgetg(lD,t_VECSMALL); nc = 0;
-  for (i=1; i<lD; i++)
+  for (i = 1; i < lD; i++)
   {
-    GEN   F = gel(DF,i);
-    ulong w = uquadclassnoF_fact(D0,-1,gel(F,1),gel(F,2));
-    if (w == h) uel(cs,++nc) = v/uel(D,i);
+    GEN F = gel(DF,i);
+    ulong w = uquadclassnoF_fact(D0, -1, gel(F,1), gel(F,2));
+    if (w == h) uel(cs,++nc) = v / uel(D,i);
   }
   if (nc==0) return 0;
   if (nc==1) { v /= uel(cs,1); return -D0*v*v; }
@@ -1620,8 +1621,8 @@ polisclass(GEN H)
     G  = Flx_gcd(Flx_sub(Xp, polx_Flx(evalvarn(vH)), p), Hp, p);
     nroots = degpol(G);
     if (nroots==0) { set_avma(btop); continue; }
-    if (nroots<h && zv_search(h2list,nroots)==0) return gc_long(av, 0);
-    r = uel(Flx_roots(G, p),1);
+    if (nroots < h && !zv_search(h2list,nroots)) return gc_long(av, 0);
+    r = Flx_oneroot(G, p);
     if (Fp_elljissupersingular(utoi(r), utoi(p))) { set_avma(btop); continue; }
     D = Fl_end13(r, h, p);
     if (D && gequal(H, polclass(stoi(D), 0, vH))) return gc_long(av, D);
