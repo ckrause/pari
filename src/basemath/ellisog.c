@@ -1200,11 +1200,11 @@ ellnf_goodl_l(GEN E, GEN v)
   {
     ulong p = u_forprime_next(&T);
     GEN pr = idealprimedec(nf, utoipos(p));
-    long t, j, k, lv = lg(v), g = lg(pr)-1;
+    long t, j, k, g = lg(pr)-1;
     for (j = 1; j <= g; j++)
     {
       GEN prj = gel(pr, j);
-      if (idealval(nf, disc, prj)) {i--; continue;}
+      if (nfval(nf, disc, prj)) {i--; continue;}
       t = itos(ellap(E, prj));
       for(k = 1; k < lv; k++)
       {
