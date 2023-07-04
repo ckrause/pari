@@ -270,8 +270,8 @@ REDBU(GEN a, GEN *b, GEN *c, GEN u1, GEN *u2)
 }
 
 /* q t_QFB, return reduced representative and set base change U in Sl2(Z) */
-GEN
-redimagsl2(GEN q, GEN *U)
+static GEN
+qfbredsl2_imag_basecase(GEN q, GEN *U)
 {
   pari_sp av = avma;
   GEN z, u1,u2,v1,v2,Q;
@@ -293,7 +293,7 @@ redimagsl2(GEN q, GEN *U)
     z = u1; u1 = u2; u2 = negi(z);
     REDBU(a,&b,&c, u1,&u2);
     if (gc_needed(av, 1)) {
-      if (DEBUGMEM>1) pari_warn(warnmem, "redimagsl2");
+      if (DEBUGMEM>1) pari_warn(warnmem, "qfbredsl2");
       gerepileall(av, 5, &a,&b,&c, &u1,&u2);
     }
   }
@@ -696,7 +696,7 @@ rhorealsl2(GEN A, GEN rd)
 }
 
 static GEN
-redrealsl2(GEN V, GEN rd)
+qfbredsl2_real_basecase(GEN V, GEN rd)
 {
   pari_sp av = avma;
   GEN u1 = gen_1, u2 = gen_0, v1 = gen_0, v2 = gen_1;
@@ -706,11 +706,254 @@ redrealsl2(GEN V, GEN rd)
     _rhorealsl2(&a,&b,&c, &u1,&u2,&v1,&v2, d, rd);
     if (gc_needed(av, 1))
     {
-      if (DEBUGMEM>1) pari_warn(warnmem,"redrealsl2");
+      if (DEBUGMEM>1) pari_warn(warnmem,"qfbredsl2");
       gerepileall(av, 7, &a,&b,&c,&u1,&u2,&v1,&v2);
     }
   }
   return gerepilecopy(av, mkvec2(mkqfb(a,b,c,d), mkmat22(u1,v1,u2,v2)));
+}
+
+/* fast reduction of qfb with positive coefficients, based on
+Arnold Schoenhage, Fast reduction and composition of binary quadratic forms,
+Proc. of Intern. Symp. on Symbolic and Algebraic Computation (Bonn) (S. M.
+Watt, ed.), ACM Press, 1991, pp. 128-133.
+<https://dl.acm.org/doi/pdf/10.1145/120694.120711>
+With thanks to Keegan Ryan
+BA20230927
+*/
+
+/* pqfb: qf with positive coefficients */
+
+static int
+lti2n(GEN a, long m)
+{
+  return signe(a) < 0 || expi(a) < m ? 1 : 0;
+}
+
+static GEN
+pqfbred_1(GEN Q, ulong m, GEN U)
+{
+  GEN a = gel(Q,1), b = gel(Q,2), c = gel(Q,3), d = gel(Q,4);
+  if (abscmpii(a, c) < 0)
+  {
+    GEN t, at, r, r2;
+    r2 = addii(shifti(a, m + 2), d);
+    if (lti2n(r2, 2*m+2))
+      r = int2n(m+1);
+    else
+      r = sqrti(r2);
+    t = truedivii(subii(b, r), shifti(a,1));
+    if (signe(t)==0) pari_err_BUG("pqfbred_1");
+    at = mulii(a,t);
+    c = addii(subii(c, mulii(b, t)), mulii(at, t));
+    b = subii(b, shifti(at,1));
+    gcoeff(U,1,2) = subii( gcoeff(U,1,2), mulii(gcoeff(U,1,1), t));
+    gcoeff(U,2,2) = subii( gcoeff(U,2,2), mulii(gcoeff(U,2,1), t));
+  } else
+  {
+    GEN t, ct, r, r2;
+    r2 = addii(shifti(c, m + 2), d);
+    if (lti2n(r2, 2*m+2))
+      r = int2n(m+1);
+    else
+      r = sqrti(r2);
+    t = truedivii(subii(b, r), shifti(c,1));
+    if (signe(t)==0) pari_err_BUG("pqfbred_1");
+    ct = mulii(c, t);
+    a = addii(subii(a, mulii(b, t)), mulii(ct, t));
+    b = subii(b, shifti(ct, 1));
+    gcoeff(U,1,1) = subii(gcoeff(U,1,1), mulii(gcoeff(U,1,2), t));
+    gcoeff(U,2,1) = subii(gcoeff(U,2,1), mulii(gcoeff(U,2,2), t));
+  }
+  return mkqfb(a,b,c,d);
+}
+
+static int
+is_minimal(GEN Q, long m)
+{
+  pari_sp av = avma;
+  GEN a = gel(Q,1), b = gel(Q,2), c = gel(Q,3);
+  return gc_bool(av, lti2n(addii(subii(a,b), c), m)
+                 || (lti2n(subii(b, shifti(a,1)), m+1)
+                     && lti2n(subii(b, shifti(c,1)), m+1)));
+}
+
+static GEN
+pqfbred_iter_1(GEN Q, ulong m, GEN U)
+{
+  pari_sp av = avma;
+  while (!is_minimal(Q,m))
+  {
+    Q = pqfbred_1(Q, m, U);
+    if (gc_needed(av, 1))
+    {
+      if (DEBUGMEM>1) pari_warn(warnmem,"pqfbred_iter_1, lc = %ld", expi(gel(Q,3)));
+      gerepileall(av, 2, &Q, &gel(U,1), &gel(U,2));
+    }
+  }
+  return Q;
+}
+
+static GEN
+pqfbred_basecase(GEN Q, ulong m, GEN *pt_U)
+{
+  pari_sp av = avma;
+  GEN  U = matid(2);
+  Q = pqfbred_iter_1(Q, m, U);
+  *pt_U = U;
+  return gc_all(av, 2, &Q, pt_U);
+}
+
+static long
+qfb_maxexpi(GEN Q)
+{ return 1+maxss(expi(gel(Q,1)), maxss(expi(gel(Q,2)), expi(gel(Q,3)))); }
+
+static long
+qfb_minexpi(GEN Q)
+{
+  long m =  minss(expi(gel(Q,1)), minss(expi(gel(Q,2)), expi(gel(Q,3))));
+  return m < 0 ? 0: m;
+}
+
+static GEN
+pqfbred_rec(GEN Q, long m, GEN *pt_U)
+{
+  pari_sp av = avma;
+  GEN Q0, Q1, QR;
+  GEN d = qfb_disc(Q);
+  long n = qfb_maxexpi(Q) - m;
+  long h;
+  int going_to_r8 = 0;
+  GEN U;
+
+  if (n < 50)
+    return pqfbred_basecase(Q, m, pt_U);
+
+  if (qfb_minexpi(Q) <= m + 2)
+  {
+    U = matid(2);
+    QR = Q;
+  }
+  else
+  {
+    long p, mm;
+    if (m <= n)
+    {
+      mm = m;
+      p = 0;
+      Q1 = Q;
+    } else
+    {
+      mm = n;
+      p = m + 1 - n;
+      Q0 = mkvec3(remi2n(gel(Q,1), p), remi2n(gel(Q,2), p), remi2n(gel(Q,3), p));
+      Q1 = qfb3(shifti(gel(Q,1),-p), shifti(gel(Q,2),-p), shifti(gel(Q,3),-p));
+    }
+    h = mm + (n>>1);
+    if (qfb_minexpi(Q1) <= h)
+    {
+      U = matid(2);
+      QR = Q1;
+    }
+    else
+      QR = pqfbred_rec(Q1, h, &U);
+    while (qfb_maxexpi(QR) > h)
+    {
+      if (is_minimal(QR, mm))
+      {
+        going_to_r8 = 1;
+        break;
+      }
+      QR = pqfbred_1(QR, mm, U);
+    }
+    if (!going_to_r8)
+    {
+      GEN V;
+      QR = pqfbred_rec(QR, mm, &V);
+      U = ZM2_mul(U,V);
+    }
+    if (p > 0)
+    {
+      GEN Q0U = qfb_apply_ZM(Q0,U);
+      QR = mkqfb(addii(shifti(gel(QR,1), p), gel(Q0U,1)),
+                 addii(shifti(gel(QR,2), p), gel(Q0U,2)),
+                 addii(shifti(gel(QR,3), p), gel(Q0U,3)), d);
+    }
+  }
+  QR = pqfbred_iter_1(QR, m, U);
+  *pt_U = U;
+  return gc_all(av, 2, &QR, pt_U);
+}
+
+static GEN
+qfbredsl2_real(GEN Q, GEN isqrtD)
+{
+  pari_sp av = avma;
+  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= 16400)
+    return qfbredsl2_real_basecase(Q, isqrtD);
+  else
+  {
+    GEN a = gel(Q,1), b = gel(Q,2), c = gel(Q,3), d = gel(Q,4);
+    GEN Qf, Qr, W, U, t = NULL;
+    long sa = signe(a), sb;
+    if (sa < 0) { a = negi(a); b = negi(b); c = negi(c); }
+    if (signe(c) < 0)
+    {
+      GEN at;
+      t  = addiu(truedivii(subii(isqrtD,b),shifti(a,1)),1);
+      at = mulii(a,t);
+      c = addii(subii(c, mulii(b, t)), mulii(at, t));
+      b = subii(b, shifti(at,1));
+    }
+    sb = signe(b);
+    Qr = pqfbred_rec(mkqfb(a, sb < 0 ? negi(b): b, c, d), 0, &U);
+    if (sa < 0)
+      Qr = mkqfb(negi(gel(Qr,1)), negi(gel(Qr,2)), negi(gel(Qr,3)), gel(Qr,4));
+    if (sb < 0)
+    {
+      gcoeff(U,2,1) = negi(gcoeff(U,2,1));
+      gcoeff(U,2,2) = negi(gcoeff(U,2,2));
+    }
+    if (t)
+    {
+      gcoeff(U,1,1) = subii( gcoeff(U,1,1), mulii(gcoeff(U,2,1), t));
+      gcoeff(U,1,2) = subii( gcoeff(U,1,2), mulii(gcoeff(U,2,2), t));
+    }
+    W = qfbredsl2_real_basecase(Qr, isqrtD);
+    Qf = gel(W,1);
+    U = ZM2_mul(U,gel(W,2));
+    return gerepilecopy(av, mkvec2(Qf,U));
+  }
+}
+
+static GEN
+qfbredsl2_imag(GEN Q)
+{
+  pari_sp av = avma;
+  GEN Qt, U;
+  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= 16400)
+    Qt = qfbredsl2_imag_basecase(Q, &U);
+  else
+  {
+    long sb = signe(gel(Q,2));
+    GEN Qr, W;
+    Qr = pqfbred_rec(sb < 0 ? mkqfb(gel(Q,1), negi(gel(Q,2)), gel(Q,3), gel(Q,4)): Q, 0, &U);
+    Qt = qfbredsl2_imag_basecase(Qr,&W);
+    U = ZM2_mul(U,W);
+    if (sb < 0)
+    {
+      gcoeff(U,2,1) = negi(gcoeff(U,2,1));
+      gcoeff(U,2,2) = negi(gcoeff(U,2,2));
+    }
+  }
+  return gerepilecopy(av, mkvec2(Qt,U));
+}
+
+GEN
+redimagsl2(GEN Q, GEN *U)
+{
+  GEN q = qfbredsl2_imag(Q);
+  *U = gel(q,2); return gel(q,1);
 }
 
 GEN
@@ -720,17 +963,14 @@ qfbredsl2(GEN q, GEN isD)
   if (typ(q) != t_QFB) pari_err_TYPE("qfbredsl2",q);
   if (qfb_is_qfi(q))
   {
-    GEN v = cgetg(3,t_VEC);
     if (isD) pari_err_TYPE("qfbredsl2", isD);
-    gel(v,1) = redimagsl2(q, &gel(v,2)); return v;
+    return qfbredsl2_imag(q);
   }
   av = avma;
   if (!isD) isD = sqrti(qfb_disc(q));
   else if (typ(isD) != t_INT) pari_err_TYPE("qfbredsl2",isD);
-  return gerepileupto(av, redrealsl2(q, isD));
+  return gerepileupto(av, qfbredsl2_real(q, isD));
 }
-
-
 
 /***********************************************************************/
 /**                                                                   **/
@@ -1523,7 +1763,7 @@ static GEN
 qfisolve_normform(GEN Q, GEN P)
 {
   GEN a = gel(Q,1), N = gel(Q,2);
-  GEN M, b = redimagsl2(P, &M);
+  GEN M, b = qfbredsl2_imag_basecase(P, &M);
   if (!qfb_equal(a,b)) return NULL;
   return SL2_div_mul_e1(N,M);
 }
@@ -1579,7 +1819,7 @@ qfisolvep_all(GEN Q, GEN p, long all)
       return allsols(Q, s, N, M);
     }
   }
-  R = redimagsl2(Q, &U);
+  R = qfbredsl2_imag_basecase(Q, &U);
   if (equali1(gel(R,1)))
   { /* principal form */
     if (!signe(gel(R,2)))
@@ -1596,7 +1836,7 @@ qfisolvep_all(GEN Q, GEN p, long all)
     x = ZM_ZC_mul(U, x); x[0] = evaltyp(t_VEC) | _evallg(3); /* transpose */
     return allsols(Q, s, gel(x,1), gel(x,2));
   }
-  q = redimagsl2(primeform(D, p), &V);
+  q = qfbredsl2_imag_basecase(primeform(D, p), &V);
   if (!GL2_qfb_equal(R,q)) return NULL;
   if (signe(gel(R,2)) != signe(gel(q,2))) gcoeff(V,2,1) = negi(gcoeff(V,2,1));
   x = SL2_div_mul_e1(U,V); return allsols(Q, s, gel(x,1), gel(x,2));
@@ -1613,7 +1853,7 @@ static GEN
 qfrsolve_normform(GEN N, GEN Ps, GEN rd)
 {
   pari_sp av = avma, btop;
-  GEN M = N, P = redrealsl2(Ps, rd), Q = P;
+  GEN M = N, P = qfbredsl2_real_basecase(Ps, rd), Q = P;
 
   btop = avma;
   for(;;)
@@ -1638,7 +1878,7 @@ qfrsolvep(GEN Q, GEN p)
 
   if (kronecker(d, p) < 0) return gc_const(av, gen_0);
   rd = sqrti(d);
-  N = redrealsl2(Q, rd);
+  N = qfbredsl2_real(Q, rd);
   x = qfrsolve_normform(N, primeform(d, p), rd);
   return x? gerepileupto(av, x): gc_const(av, gen_0);
 }
