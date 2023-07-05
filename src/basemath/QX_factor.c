@@ -778,7 +778,7 @@ DDF_roots(GEN A)
 
   if (DEBUGLEVEL>2) timer_start(&T);
   pp = pick_prime(A, 1, &T);
-  if (!pp) return cgetg(1,t_VEC); /* no root */
+  if (!pp) return cgetg(1,t_COL); /* no root */
   p = utoipos(pp);
   lc = leading_coeff(A);
   if (is_pm1(lc))
@@ -817,7 +817,7 @@ DDF_roots(GEN A)
     }
   }
   if (DEBUGLEVEL>2) timer_printf(&T, "Recombination");
-  z[0] = evaltyp(t_VEC) | evallg(m); return z;
+  setlg(z, m); return z;
 }
 
 /* Assume a squarefree ZX, deg(a) > 0, return rational factors.

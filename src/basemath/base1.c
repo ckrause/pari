@@ -1216,7 +1216,7 @@ nfisisom(GEN a, GEN b)
     if (la != gen_1) t = RgX_Rg_div(t, la);
     gel(y,i) = sw? RgXQ_reverse(t, b): t;
   }
-  return gerepilecopy(av,y);
+  settyp(y, t_VEC); return gerepilecopy(av,y);
 }
 
 static GEN

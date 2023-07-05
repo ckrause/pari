@@ -437,12 +437,12 @@ nfroots(GEN nf,GEN pol)
   A = RgX_nffix("nfroots", T,pol,1);
   d = degpol(A);
   if (d < 0) pari_err_ROOTS0("nfroots");
-  if (d == 0) return cgetg(1,t_VEC);
+  if (d == 0) return cgetg(1,t_COL);
   if (d == 1)
   {
     A = QXQX_normalize(A,T);
     A = mkpolmod(gneg_i(gel(A,2)), T);
-    return gerepilecopy(av, mkvec(A));
+    return gerepilecopy(av, mkcol(A));
   }
   dT = degpol(T);
   if (dT == 1) return gerepileupto(av, nfrootsQ(simplify_shallow(A)));
@@ -465,7 +465,7 @@ nfroots(GEN nf,GEN pol)
     z = nfsqff(nf,B, ROOTS, den);
   z = gerepileupto(av, QXQV_to_mod(z, T));
   gen_sort_inplace(z, (void*)&cmp_RgX, &cmp_nodata, NULL);
-  return z;
+  settyp(z, t_COL); return z;
 }
 
 static GEN
