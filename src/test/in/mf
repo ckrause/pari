@@ -832,3 +832,8 @@ mf=mfinit([7, 6, Mod(2,7)],0); [F] = mfeigenbasis(mf); mfpow(F,3)
 
 mffromqf(Mat(2),x*y)
 mffromqf(2*matid(2),x*y^2)
+
+\\ #2484
+[f] = mfeigensearch([11,2]); F = mftwist(f,-3);
+mfcoefs(F,20)
+vector(21,n,mfcoef(F,n-1))

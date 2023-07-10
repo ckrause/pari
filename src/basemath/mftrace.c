@@ -1376,11 +1376,27 @@ static GEN
 c_twist(long n, long d, GEN F, GEN D)
 {
   pari_sp av = avma;
-  GEN V = mfcoefs_i(F, n, d), res = cgetg(n+2, t_VEC);
+  GEN v = mfcoefs_i(F, n, d), z = cgetg(n+2, t_VEC);
   long i;
   for (i = 0; i <= n; i++)
-    gel(res, i + 1) = gmulsg(krois(D, i), gel(V, i+1));
-  return gerepileupto(av, res);
+  {
+    long s;
+    GEN a = gel(v, i+1);
+    if (d == 1) s = krois(D, i);
+    else
+    {
+      pari_sp av2 = avma;
+      s = kronecker(D, muluu(i, d)); set_avma(av2);
+    }
+    switch(s)
+    {
+      case 1: a = gcopy(a); break;
+      case -1: a = gneg(a); break;
+      default: a = gen_0; break;
+    }
+    gel(z, i+1) = a;
+  }
+  return gerepileupto(av, z);
 }
 
 /* form F given by closure, compute T(n)(F) as closure */

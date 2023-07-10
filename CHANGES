@@ -23,6 +23,7 @@ LGr 19- parsum was inefficient
     20- mateigen(,1): eigenvalues were given as t_VEC or t_COL. Use t_COL.
 BA  21- ellcard over small finite field: potential oo-loop [#2483]
 BA  22- ellisomat/nf could miss isogenies of degree dividing the conductor
+    23- mfcoef(mftwist(f,D), ...) wrong result [#2484]
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output
