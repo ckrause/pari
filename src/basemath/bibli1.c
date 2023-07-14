@@ -1193,7 +1193,8 @@ forqfvec_i(void *E, long (*fun)(void *, GEN, GEN, double), struct qfvec *qv, GEN
   else
     p = gtodouble(BORNE);
   BOUND = p * (1 + eps);
-  if (BOUND > ULONG_MAX || (ulong)BOUND != (ulong)p) pari_err_PREC("forqfvec");
+  if (BOUND > (double)ULONG_MAX || (ulong)BOUND != (ulong)p)
+    pari_err_PREC("forqfvec");
 
   k = n; y[n] = z[n] = 0;
   x[n] = (long)sqrt(BOUND/v[n]);
