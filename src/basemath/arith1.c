@@ -2132,9 +2132,9 @@ Fl_powers(ulong x, long n, ulong p)
  **********************************************************************/
 
 static GEN
-Fp_dblsqr(GEN x, GEN N)
+Fp_double(GEN x, GEN N)
 {
-  GEN z = shifti(Fp_sqr(x, N), 1);
+  GEN z = shifti(x, 1);
   return cmpii(z, N) >= 0? subii(z, N): z;
 }
 
@@ -2221,7 +2221,7 @@ _mul_remii(void* N, GEN x, GEN y)
 
 static GEN
 _mul2_remii(void* N, GEN x)
-{ return Fp_dblsqr(x, (GEN) N); }
+{ return Fp_double(_sqr_remii(N, x), (GEN)N); }
 
 struct redbarrett
 {
@@ -2247,7 +2247,7 @@ static GEN
 _mul2_remiibar(void *E, GEN x)
 {
   struct redbarrett * D = (struct redbarrett *) E;
-  return Fp_dblsqr(x, D->N);
+  return Fp_double(_sqr_remiibar(E, x), D->N);
 }
 
 static long
