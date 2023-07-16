@@ -147,13 +147,11 @@ GEN
 gen_powu_i(GEN x, ulong n, void *E, GEN (*sqr)(void*,GEN),
                                     GEN (*mul)(void*,GEN,GEN))
 {
-  long l;
   if (n == 1) return x;
-  l = expu(n);
-  if (l<=8)
+  if (n < 512)
     return leftright_binary_powu(x, n, E, sqr, mul);
   else
-    return sliding_window_powu(x, n, l<=24? 2: 3, E, sqr, mul);
+    return sliding_window_powu(x, n, n < (1UL<<25)? 2: 3, E, sqr, mul);
 }
 
 GEN
