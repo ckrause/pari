@@ -119,7 +119,7 @@ sliding_window_pow(GEN x, GEN n, long e, void *E, GEN (*sqr)(void*,GEN),
 /* assume n != 0, t_INT. Compute x^|n| using leftright binary powering */
 static GEN
 leftright_binary_powu(GEN x, ulong n, void *E, GEN (*sqr)(void*,GEN),
-                                              GEN (*mul)(void*,GEN,GEN))
+                                               GEN (*mul)(void*,GEN,GEN))
 {
   pari_sp av = avma;
   GEN  y;
