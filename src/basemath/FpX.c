@@ -2714,7 +2714,7 @@ Fp2_sqrt(GEN z, GEN D, GEN p)
   as2 = Fp_halve(Fp_add(a, s, p), p);
   if (kronecker(as2, p)==-1) as2 = Fp_sub(as2,s,p);
   u = Fp_sqrt_i(as2, y, p);
-  v = Fp_div(b, Fp_mulu(u, 2, p), p);
+  v = Fp_div(b, Fp_double(u, p), p);
   return mkvec2(u,v);
 }
 

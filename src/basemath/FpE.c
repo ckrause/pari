@@ -55,16 +55,13 @@ FpJ_dbl(GEN P, GEN a4, GEN p)
   YY = Fp_sqr(Y1, p);
   YYYY = Fp_sqr(YY, p);
   ZZ = Fp_sqr(Z1, p);
-  S = Fp_mulu(Fp_sub(Fp_sqr(Fp_add(X1, YY, p), p),
-                       Fp_add(XX, YYYY, p), p), 2, p);
+  S = Fp_double(Fp_sub(Fp_sqr(Fp_add(X1,YY,p), p), Fp_add(XX,YYYY,p), p), p);
   M = Fp_addmul(Fp_mulu(XX, 3, p), a4, Fp_sqr(ZZ, p),  p);
-  T = Fp_sub(Fp_sqr(M, p), Fp_mulu(S, 2, p), p);
+  T = Fp_sub(Fp_sqr(M, p), Fp_double(S, p), p);
   Q = cgetg(4, t_VEC);
   gel(Q,1) = T;
-  gel(Q,2) = Fp_sub(Fp_mul(M, Fp_sub(S, T, p), p),
-                Fp_mulu(YYYY, 8, p), p);
-  gel(Q,3) = Fp_sub(Fp_sqr(Fp_add(Y1, Z1, p), p),
-                Fp_add(YY, ZZ, p), p);
+  gel(Q,2) = Fp_sub(Fp_mul(M, Fp_sub(S, T, p), p), Fp_mulu(YYYY, 8, p), p);
+  gel(Q,3) = Fp_sub(Fp_sqr(Fp_add(Y1, Z1, p), p), Fp_add(YY, ZZ, p), p);
   return Q;
 }
 
@@ -92,7 +89,7 @@ FpJ_add(GEN P, GEN Q, GEN a4, GEN p)
   S1 = mulii(Y1, Fp_mul(Z2, Z2Z2, p));
   S2 = mulii(Y2, Fp_mul(Z1, Z1Z1, p));
   H = Fp_sub(U2, U1, p);
-  r = Fp_mulu(Fp_sub(S2, S1, p), 2, p);
+  r = Fp_double(Fp_sub(S2, S1, p), p);
 
   /* If points are equal we must double. */
   if (signe(H)== 0) {
@@ -102,10 +99,10 @@ FpJ_add(GEN P, GEN Q, GEN a4, GEN p)
     else
       return ellinf_FpJ();
   }
-  I = Fp_sqr(Fp_mulu(H, 2, p), p);
+  I = Fp_sqr(Fp_double(H, p), p);
   J = Fp_mul(H, I, p);
   V = Fp_mul(U1, I, p);
-  W = Fp_sub(Fp_sqr(r, p), Fp_add(J, Fp_mulu(V, 2, p), p), p);
+  W = Fp_sub(Fp_sqr(r, p), Fp_add(J, Fp_double(V, p), p), p);
   R = cgetg(4, t_VEC);
   gel(R,1) = W;
   gel(R,2) = Fp_sub(mulii(r, subii(V, W)),
@@ -1403,7 +1400,7 @@ Fp_ellj_to_a4a6(GEN j, GEN p, GEN *pt_a4, GEN *pt_a6)
     GEN kj = Fp_mul(k, j, p);
     GEN k2j = Fp_mul(kj, k, p);
     *pt_a4 = Fp_mulu(kj, 3, p);
-    *pt_a6 = Fp_mulu(k2j, 2, p);
+    *pt_a6 = Fp_double(k2j, p);
   }
 }
 
@@ -2124,7 +2121,7 @@ FpXQ_ellcardj(GEN a4, GEN a6, GEN j, GEN T, GEN q, GEN p, long n)
   {
     GEN g = Fp_div(j, Fp_sub(utoi(1728), j, p), p);
     GEN l = FpXQ_div(FpX_mulu(a6,3,p),FpX_mulu(a4,2,p),T,p);
-    GEN N = Fp_ffellcard(Fp_mulu(g,3,p),Fp_mulu(g,2,p),q,n,p);
+    GEN N = Fp_ffellcard(Fp_mulu(g,3,p),Fp_double(g,p),q,n,p);
     if (FpXQ_issquare(l,T,p)) return N;
     return subii(shifti(q1,1),N);
   }
