@@ -1692,6 +1692,12 @@ Fp_add(GEN a, GEN b, GEN m)
   return gerepileuptoint(av, p);
 }
 INLINE GEN
+Fp_double(GEN x, GEN N)
+{
+  GEN z = shifti(x, 1);
+  return cmpii(z, N) >= 0? subii(z, N): z;
+}
+INLINE GEN
 Fp_sub(GEN a, GEN b, GEN m)
 {
   pari_sp av=avma;

@@ -3576,7 +3576,11 @@ proper interval, it is returned as is, without a copy.
 \kbd{b} modulo \kbd{m} (smallest nonnegative residue).
 
 \fun{GEN}{Fp_halve}{GEN x, GEN m} returns $z$ such that $2\*z = x$ modulo
-$m$ assuming such $z$ exists.
+$m$ assuming such $z$ exists. Assume that $0 \leq x < m$. Not memory-clean,
+but suitable for \kbd{gerepileupto}.
+
+\fun{GEN}{Fp_double}{GEN x, GEN m} return $2x$ modulo $m$. Assume that $0
+\leq x < m$. Not memory-clean, but suitable for \kbd{gerepileupto}.
 
 \fun{GEN}{Fp_sqr}{GEN a, GEN m} returns $\kbd{a}^2$ modulo \kbd{m} (smallest
 nonnegative residue).

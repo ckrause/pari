@@ -2130,14 +2130,6 @@ Fl_powers(ulong x, long n, ulong p)
 /**********************************************************************
  **                    Powering  over (Z/NZ)^*, large N              **
  **********************************************************************/
-
-static GEN
-Fp_double(GEN x, GEN N)
-{
-  GEN z = shifti(x, 1);
-  return cmpii(z, N) >= 0? subii(z, N): z;
-}
-
 typedef struct muldata {
   GEN (*sqr)(void * E, GEN x);
   GEN (*mul)(void * E, GEN x, GEN y);

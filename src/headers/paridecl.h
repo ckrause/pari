@@ -6296,6 +6296,7 @@ INLINE GEN    Fp_addmul(GEN x, GEN y, GEN z, GEN p);
 INLINE GEN    Fp_center(GEN u, GEN p, GEN ps2);
 INLINE GEN    Fp_center_i(GEN u, GEN p, GEN ps2);
 INLINE GEN    Fp_div(GEN a, GEN b, GEN m);
+INLINE GEN    Fp_double(GEN x, GEN N);
 INLINE GEN    Fp_halve(GEN y, GEN p);
 INLINE GEN    Fp_inv(GEN a, GEN m);
 INLINE GEN    Fp_invsafe(GEN a, GEN m);

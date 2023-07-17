@@ -61,6 +61,7 @@ BA  19- [libpari] Flx_composedsum, FlxV_composedsum
                   FpX_composedsum, FpXV_composedsum FlxqX_composedsum
 BA  20- [libpari] Flx_convol, Flx_composedprod, FpX_composedprod
 BA  21- [libpari] RgV_F2v_extract_shallow
+    22- [libpari] Fp_double
 
 Done for version 2.16.0 (released 25/02/2023):
   Fixed
