@@ -43,9 +43,7 @@ x^2 + (-4*y^2 + 12*y - 13)
 x^2 + (-25*y^2 - 20*y - 28)
 x^3 + Mod(-372*y^2 + 24*y - 10371, y^3 + 28*y + 2)*x + Mod(13704*y^2 - 760*y
  + 382254, y^3 + 28*y + 2)
-[x]
-[x^3 + 12*x + (5282*a - 2641)]
   ***   at top-level: rnfkummer(bnfinit(x^2+23))
   ***                 ^--------------------------
   *** rnfkummer: incorrect priority in bnrclassfield: variable x = x
-Total time spent: 6582
+Total time spent: 3850

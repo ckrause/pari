@@ -107,11 +107,5 @@ rnfkummer(bnr,subgrouplist(bnr,[3],0)[1]);
 \\ #2182
 rnfkummer(bnrinit(bnfinit(y^3+28*y+2,1),1))
 
-K=bnrinit(bnfinit(y^4-y^3+16*y^2-16*y+61),[89,9,52,85;0,1,0,0;0,0,1,0;0,0,0,1]);
-bnrclassfield(K,5)
-
-\\ #2280
-setrand(1);bnf=bnfinit(quadpoly(-2923,a)); R=bnrclassfield(bnf,3)
-
 \\ ERRORS, keep at end of file
 rnfkummer(bnfinit(x^2+23))
