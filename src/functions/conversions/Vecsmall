@@ -4,7 +4,8 @@ C-Name: gtovecsmall0
 Prototype: GD0,L,
 Help: Vecsmall(x, {n}): transforms the object x into a VECSMALL of dimension n.
 Description:
- (gen):vecsmall                gtovecsmall($1)
+ (gen,?0):vecsmall               gtovecsmall($1)
+ (gen,small):vecsmall            gtovecsmall0($1, $2)
 Doc:
  transforms the object $x$ into a row vector of type \typ{VECSMALL}. The
  dimension of the resulting vector can be optionally specified via the extra
