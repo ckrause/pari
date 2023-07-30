@@ -3048,7 +3048,6 @@ compute_R(GEN lambda, GEN z, GEN *ptL, GEN *ptkR)
   GEN L, H, D, den, R, c;
 
   *ptL = NULL;
-  if (DEBUGLEVEL) err_printf("\n#### Computing check\n");
   if (RU == 1) { *ptkR = gen_1; *ptL = lambda; return bad_check(z); }
   D = gmul2n(mpmul(*ptkR,z), 1); /* bound for denom(lambda) */
   if (expo(D) < 0 && rtodbl(D) < 0.95) return fupb_PRECI;
@@ -3727,6 +3726,7 @@ Buchall_param(GEN P, double cbach, double cbach2, long Nrelid, long flag, long p
   GEN small_multiplier, auts, cyclic, embs, SUnits;
   GEN res, L, invhr, B, C, lambda, dep, clg1, clg2, Vbase;
   const char *precpb = NULL;
+  REL_t *old_cache = NULL;
   nfmaxord_t nfT;
   RELCACHE_t cache;
   FB_t F;
@@ -4114,6 +4114,8 @@ START:
       { precpb = "regulator"; PREC = myprecdbl(PREC, flag? C: NULL); }
       continue;
     }
+    if (cache.last==old_cache) { need=1; continue; }
+    old_cache = cache.last;
     h = ZM_det_triangular(W);
     if (DEBUGLEVEL) err_printf("\n#### Tentative class number: %Ps\n", h);
     i = compute_R(lambda, mulir(h,invhr), &L, &R);
