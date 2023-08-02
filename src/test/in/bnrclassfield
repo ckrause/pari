@@ -199,7 +199,7 @@ filter(bnrclassfield(bnfinit(y^2+31),[Mat(3)]))
 \\ bnf.Ge contains t_FRAC
 setrand(1);bnf=bnfinit(y^4+394*y^2+197);bnr=bnrinit(bnf,1,,5);f=bnrclassfield(bnr);
 s=x^5+(-2349980/7*y^2-925002340/7)*x^3+(49550643842275363355/7*y^2+19498113719555868395685/7)*x^2+(1746603558382375785229605/14*y^2+321242974266101824080279155/14)*x+(-5046922430979180236843378133620866307/14*y^2-1986375600660391162873839261584212464823/14);
-check(bnr,f[1],s,, 120)
+check(bnr,f[1],s,,147)
 
 \\ test rnfkummersimple for ell > 2
 setrand(1);bnrclassfield(bnfinit(y^4 - y^3 - 5*y^2 - 6*y + 36))

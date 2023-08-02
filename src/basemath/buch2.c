@@ -2567,7 +2567,7 @@ small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, GEN M,
   const long prec = nf_get_prec(nf);
   FP_t fp;
   pari_sp av;
-  GEN L_jid = F->L_jid, Np0;
+  GEN L_jid = F->L_jid, Np0 = NULL;
   long Nsmall, Nfact, n = lg(L_jid);
   pari_timer T;
 
@@ -2580,7 +2580,13 @@ small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, GEN M,
   }
   Nsmall = Nfact = 0;
   minim_alloc(lg(M), &fp.q, &fp.x, &fp.y, &fp.z, &fp.v);
-  Np0 = p0? pr_norm(p0): NULL;
+  if (p0)
+  {
+    GEN L = F->LP, n = pr_norm(p0);
+    ulong e = maxuu(1,logint0(sqri(pr_norm(gel(L,lg(L)-1))), n, NULL));
+    p0 = idealpow(nf, p0, utoi(e));
+    Np0 = powiu(n,e);
+  }
   for (av = avma; --n; set_avma(av))
   {
     long j = L_jid[n];

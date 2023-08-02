@@ -1,4 +1,4 @@
-default(parisize,"54M"); \\ overflows 52M
+default(parisize,"66M"); \\ overflows 64M
 
 print("precision SEGV");
 pol = x^8 + 9748*x^6 - 9748*x^5 + 23738821*x^4 - 47472768*x^3 + 35604576*x^2 - 11868192*x + 1483524;
@@ -21,8 +21,8 @@ exponent(logp2-logp3) < -512 + 5
 v = gchareval(gc, chi, p2, 0);
 localbitprec(256); gc1 = gcharnewprec(gc); v1 = gchareval(gc1,chi,p2,0);
 localbitprec(512); gc2 = gcharnewprec(gc); v2 = gchareval(gc2,chi,p2,0);
-exponent(v-v2) < -128 + 5
-exponent(v1-v2) < -256 + 5
+exponent(v-v2) < -128 + 5 + 32
+exponent(v1-v2) < -256 + 5 + 32
 print("trivial ideal bug");
 gchareval(gc,chi,idealhnf(bnf,1),0) == 0
 

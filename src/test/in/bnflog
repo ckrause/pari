@@ -1,4 +1,4 @@
-default(parisize,"10M"); \\ overflows 8M
+default(parisize,"12M"); \\ overflows 10M
 K=bnfinit(y^2+1);
 P2 = idealprimedec(K,2)[1]; bnflogef(K, P2)
 P3 = idealprimedec(K,3)[1]; bnflogef(K, P3)
