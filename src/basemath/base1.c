@@ -1335,9 +1335,6 @@ GEN
 nfisincl(GEN fa, GEN fb) { return nfisincl0(fa, fb, 0); }
 
 static GEN
-lastel(GEN x) { return gel(x, lg(x)-1); }
-
-static GEN
 RgF_to_Flxq(GEN F, GEN T, ulong p)
 {
   GEN N, D, iD;
@@ -1407,7 +1404,7 @@ nfsplitting_composite(GEN P)
   {
     GEN Fi = gel(F, i);
     if (degpol(Fi) == 1) continue;
-    Q = Q ? lastel(compositum(Q, Fi)): Fi;
+    Q = Q ? veclast(compositum(Q, Fi)): Fi;
   }
   return Q ? Q: pol_x(varn(P));
 }
@@ -1447,7 +1444,7 @@ nfsplitting0(GEN T0, GEN D, long flag)
   T = leafcopy(T); setvarn(T, fetch_var_higher());
   for(F = T;;)
   {
-    GEN P = gel(nffactor(K, F), 1), Q = gel(P,lg(P)-1);
+    GEN P = gel(nffactor(K, F), 1), Q = veclast(P);
     if (degpol(gel(P,1)) == degpol(Q))
     {
       if (!flag) break;

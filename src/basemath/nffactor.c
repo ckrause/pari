@@ -149,7 +149,7 @@ FpM_ratlift(GEN M, GEN mod, GEN amax, GEN bmax, GEN den)
 static GEN
 lead_simplify(GEN P)
 {
-  GEN x = gel(P, lg(P)-1); /* x a nonzero ZX or t_INT */
+  GEN x = leading_coeff(P); /* x a nonzero ZX or t_INT */
   if (typ(x) == t_POL)
   {
     if (degpol(x)) return x;

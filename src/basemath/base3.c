@@ -3203,11 +3203,7 @@ sprk_log_prk1(GEN nf, GEN a, GEN sprk)
 /* Log on bid.gen of generator of P_{1,f} / P_{1,f v[index]}
  * v = vector of r1 real places */
 GEN
-log_gen_arch(zlog_S *S, long index)
-{
-  GEN U = gel(S->U, lg(S->U)-1);
-  return gel(U, index);
-}
+log_gen_arch(zlog_S *S, long index) { return gel(veclast(S->U), index); }
 
 /* compute bid.clgp: [h,cyc] or [h,cyc,gen] */
 static GEN

@@ -12186,7 +12186,7 @@ mfperiodpol(GEN mf0, GEN F, long flag, long bit)
   {
     GEN mfpols = fs_get_pols(F);
     if (!mfs_checkmf(F, mf)) pari_err_TYPE("mfperiodpol [different mf]",F);
-    pol = gel(mfpols, lg(mfpols)-1); /* trivial coset is last */
+    pol = veclast(mfpols); /* trivial coset is last */
   }
   else
   {

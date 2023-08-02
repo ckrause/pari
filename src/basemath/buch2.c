@@ -2582,8 +2582,8 @@ small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, GEN M,
   minim_alloc(lg(M), &fp.q, &fp.x, &fp.y, &fp.z, &fp.v);
   if (p0)
   {
-    GEN L = F->LP, n = pr_norm(p0);
-    ulong e = maxuu(1,logint0(sqri(pr_norm(gel(L,lg(L)-1))), n, NULL));
+    GEN n = pr_norm(p0);
+    ulong e = maxuu(1,logint0(sqri(pr_norm(veclast(F->LP))), n, NULL));
     p0 = idealpow(nf, p0, utoi(e));
     Np0 = powiu(n,e);
   }
@@ -2860,7 +2860,7 @@ bnftestprimes(GEN bnf, GEN BOUND)
   ulong count = 0;
   GEN auts, p, nf = bnf_get_nf(bnf), Vbase = bnf_get_vbase(bnf);
   GEN fb = gen_sort_shallow(Vbase, (void*)&cmp_prime_ideal, cmp_nodata);
-  ulong pmax = pr_get_smallp(gel(fb, lg(fb)-1)); /*largest p in factorbase*/
+  ulong pmax = pr_get_smallp(veclast(fb)); /*largest p in factorbase*/
   forprime_t S;
   FACT *fact;
   FB_t F;

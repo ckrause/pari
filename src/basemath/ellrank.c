@@ -1309,7 +1309,7 @@ nf2selmer_quad(GEN nf, GEN S)
   if (equalis(D, -4)) G = bad;
   else
   {
-    G = vecsplice(bad, ZV_search(bad, gel(factD, lg(factD)-1)));
+    G = vecsplice(bad, ZV_search(bad, veclast(factD)));
     G = vec_prepend(G, gen_m1);
   }
   LS2gen = shallowconcat(G, LS2gen);

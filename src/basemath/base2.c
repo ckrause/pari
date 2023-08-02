@@ -116,7 +116,7 @@ poldiscfactors_i(GEN T, GEN dT, long flag)
   Z = mkcol(gel(U,1)); P = gel(fa,1); Tp = NULL;
   while (lg(Z) != 1)
   { /* pop and handle last element of Z */
-    GEN p = gel(Z, lg(Z)-1), r;
+    GEN p = veclast(Z), r;
     setlg(Z, lg(Z)-1);
     if (!Tp) /* first time: p is composite and not a power */
       Tp = ZX_deriv(T);

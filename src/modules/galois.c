@@ -2181,8 +2181,7 @@ closure11(long EVEN, buildroot *BR)
   }
   else
   {
-    GEN h = BR->p, r = compositum(h, h);
-    r = gel(r,lg(r)-1);
+    GEN h = BR->p, r = veclast(compositum(h, h));
     if (degpol(r) == 22) return 2; /* D11 */
     h = leafcopy(h); setvarn(h, fetch_var());
     setvarn(r, 0); r = nffactor(h, r);

@@ -15412,6 +15412,10 @@ empty vector/matrix).
 \fun{GEN}{vecsplice}{GEN A, long j} return $A$ with $j$-th entry removed
 (\typ{VEC}, \typ{COL}) or $j$-th column removed (\typ{MAT}).
 
+\fun{GEN}{veclast}{GEN A} return the last entry of $A$
+(\typ{VEC}, \typ{COL}) or last column of $A$ (\typ{MAT}). Shallow, undefined
+if \kbd{lg(A)} is $1$.
+
 \fun{GEN}{vecreverse}{GEN A}. Returns a \kbd{GEN} which has the same
 type as $A$ (\typ{VEC}, \typ{COL} or \typ{MAT}), and whose components
 are the $A[n],\dots,A[1]$. If $A$ is a \typ{MAT}, these are the

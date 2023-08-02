@@ -1088,6 +1088,9 @@ vecpermute(GEN A, GEN x)
 { pari_APPLY_type(typ(A), gel(A, x[i])) }
 
 INLINE GEN
+veclast(GEN A) { return gel(A, lg(A)-1); }
+
+INLINE GEN
 rowpermute(GEN x, GEN p)
 { pari_APPLY_same(typ(gel(x,i)) == t_VECSMALL ? vecsmallpermute(gel(x, i), p)
                                               : vecpermute(gel(x, i), p))

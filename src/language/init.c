@@ -2477,7 +2477,7 @@ obj_init(long d, long n)
 GEN
 obj_insert(GEN S, long K, GEN O)
 {
-  GEN o, v = gel(S, lg(S)-1);
+  GEN o, v = veclast(S);
   if (typ(v) != t_VEC) pari_err_TYPE("obj_insert", S);
   if (!check_clone(v))
   {
@@ -2492,7 +2492,7 @@ obj_insert(GEN S, long K, GEN O)
 GEN
 obj_insert_shallow(GEN S, long K, GEN O)
 {
-  GEN v = gel(S, lg(S)-1);
+  GEN v = veclast(S);
   if (typ(v) != t_VEC) pari_err_TYPE("obj_insert", S);
   gel(v,K) = O;
   return gel(v,K);
@@ -2502,7 +2502,7 @@ obj_insert_shallow(GEN S, long K, GEN O)
 GEN
 obj_check(GEN S, long K)
 {
-  GEN O, v = gel(S, lg(S)-1);
+  GEN O, v = veclast(S);
   if (typ(v) != t_VEC || K >= lg(v)) pari_err_TYPE("obj_check", S);
   O = gel(v,K); return isintzero(O)? NULL: O;
 }
@@ -2536,7 +2536,7 @@ obj_checkbuild_padicprec(GEN S, long tag, GEN (*build)(GEN,long), long prec)
 void
 obj_free(GEN S)
 {
-  GEN v = gel(S, lg(S)-1);
+  GEN v = veclast(S);
   long i;
   if (typ(v) != t_VEC) pari_err_TYPE("obj_free", S);
   for (i = 1; i < lg(v); i++)

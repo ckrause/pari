@@ -356,8 +356,7 @@ static int Z_easyfactor(GEN N, ulong lim)
   GEN fa;
   if (lgefint(N) <= 3) return 1;
   fa = absZ_factor_limit(N, lim);
-  fa = gel(fa,1);
-  return BPSW_psp(gel(fa,lg(fa)-1));
+  return BPSW_psp(veclast(gel(fa,1)));
 }
 
 /* no garbage collection */

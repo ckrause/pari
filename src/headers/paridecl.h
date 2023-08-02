@@ -6591,6 +6591,7 @@ INLINE GEN    vec_prepend(GEN v, GEN s);
 INLINE GEN    vec_setconst(GEN v, GEN x);
 INLINE GEN    vec_shorten(GEN v, long n);
 INLINE GEN    vec_to_vecsmall(GEN z);
+INLINE GEN    veclast(GEN A);
 INLINE GEN    vecpermute(GEN A, GEN p);
 INLINE GEN    vecreverse(GEN A);
 INLINE void   vecreverse_inplace(GEN y);

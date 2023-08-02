@@ -2583,7 +2583,7 @@ lfunconductor(GEN data, GEN maxcond, long flag, long bitprec)
   if (eval) bitprec += bitprec/2;
   prec = nbits2prec(bitprec);
   ld = shallowcopy(ldata);
-  gel(ld, 5) = eval? M: gel(M,lg(M)-1);
+  gel(ld, 5) = eval? M: veclast(M);
   theta = lfunthetainit_i(ld, tdom, 0, bitprec);
   thetad = theta_dual(theta, ldata_get_dual(ldata));
   gel(theta,3) = shallowcopy(linit_get_tech(theta));

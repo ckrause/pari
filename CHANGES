@@ -62,6 +62,7 @@ BA  19- [libpari] Flx_composedsum, FlxV_composedsum
 BA  20- [libpari] Flx_convol, Flx_composedprod, FpX_composedprod
 BA  21- [libpari] RgV_F2v_extract_shallow
     22- [libpari] Fp_double
+    23- [libpari] convenience function veclast
 
   Removed
      1- [graphic] support for Qt4

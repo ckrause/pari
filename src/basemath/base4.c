@@ -2770,11 +2770,8 @@ static GEN
 Z_cba_rec(GEN L, GEN a, GEN b)
 {
   GEN g;
-  if (lg(L) > 10)
-  { /* a few naive steps before switching to dcba */
-    Z_dcba_rec(L, a, b);
-    return gel(L, lg(L)-1);
-  }
+  /* a few naive steps before switching to dcba */
+  if (lg(L) > 10) { Z_dcba_rec(L, a, b); return veclast(L); }
   if (is_pm1(a)) return b;
   g = gcdii(a,b);
   if (is_pm1(g)) { vectrunc_append(L, a); return b; }

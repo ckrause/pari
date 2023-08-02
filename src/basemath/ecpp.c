@@ -492,7 +492,7 @@ cert_get_s(GEN x) { return gel(x,3); }
 INLINE GEN
 cert_get_q(GEN x) { return diviiexact(cert_get_m(x), cert_get_s(x)); }
 INLINE GEN
-cert_get_qlast(GEN x) { return cert_get_q( gel(x, lg(x)-1) ); }
+cert_get_qlast(GEN x) { return cert_get_q(veclast(x)); }
 INLINE GEN
 cert_get_a4(GEN x) { return gel(x,4); }
 INLINE GEN
@@ -1551,7 +1551,7 @@ ecppisvalid_i(GEN cert)
     return BPSW_psp(cert);
   }
   if (typ(cert) != t_VEC || lgcert <= 1) return 0;
-  ql = gel(cert, lgcert-1); if (lg(ql)-1 != 5) return 0;
+  ql = veclast(cert); if (lg(ql)-1 != 5) return 0;
   ql = cert_get_q(ql);
   if (expi(ql) >= trustbits || !BPSW_psp(ql)) return 0;
   worker = strtofunction("_primecertisvalid_ecpp_worker");
