@@ -1,4 +1,4 @@
-default(parisize,"20M"); \\ overflows 18M
+default(parisize,"22M"); \\ overflows 20M
 
 do(G, lim)=
 { my(B = [1, 10^lim], field, D, v, T);
