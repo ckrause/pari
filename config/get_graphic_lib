@@ -3,7 +3,7 @@ if test "$optimization" = profiling; then
 fi
 
 _graphic_list="which_graphic_lib X11 X11_INC X11_LIBS \
-FLTK_CXXFLAGS FLTK_LIBS QTDIR QTLIB gp_mime_open"
+FLTK_CXXFLAGS FLTK_LIBS gp_mime_open"
 
 if test -n "$with_fltk"; then which_graphic_lib=fltk; fi
 if test "$fastread" != yes; then
