@@ -63,7 +63,7 @@ typedef struct subFB_t {
 
 typedef struct FB_t {
   GEN FB; /* FB[i] = i-th rational prime used in factor base */
-  GEN LP; /* vector of all prime ideals in FB */
+  GEN LP; /* vector of all prime ideals in FB, by increasing norm */
   GEN LV; /* LV[p] = vector of P|p, NP <= n2
             * isclone() is set for LV[p] iff all P|p are in FB
             * LV[i], i not prime or i > n2, is undefined! */
