@@ -79,7 +79,7 @@ Qt4)
   PLOTLIBS="\$(QTLIB) $QTLIBS"
   graph=plotQt4;;
 fltk)
-  PLOTCFLAGS=
+  PLOTCFLAGS="$FLTK_CXXFLAGS"
   PLOTLIBS="$FLTK_LIBS"
   postconfig='fltk-config --post '
   graph=plotfltk;;
