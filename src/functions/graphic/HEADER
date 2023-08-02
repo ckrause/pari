@@ -48,7 +48,7 @@ Doc:
 
     Plotting functions are platform independent, but a number of graphical
  drivers are available for screen output: X11-windows (including
- Openwindows and Motif), Windows's Graphical Device Interface, the Qt and
+ Openwindows and Motif), Windows's Graphical Device Interface, and the
  FLTK graphical libraries and one may even write the graphical objects to a
  PostScript or SVG file and use an external viewer to open it. The physical
  window opened by \kbd{plotdraw} or any of the \kbd{ploth*} functions is

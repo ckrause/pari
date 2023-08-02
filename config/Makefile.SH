@@ -74,10 +74,6 @@ plotrunpath=
 case "$which_graphic_lib" in
 ps|svg|none)
   graph=plot$which_graphic_lib;;
-Qt4)
-  PLOTCFLAGS="\$(QTINC)"
-  PLOTLIBS="\$(QTLIB) $QTLIBS"
-  graph=plotQt4;;
 fltk)
   PLOTCFLAGS="$FLTK_CXXFLAGS"
   PLOTLIBS="$FLTK_LIBS"
@@ -747,11 +743,6 @@ for dir in basemath modules language gp graph systems mt; do
     depend="$RECT_H"
     ;;
   plotsvg|plotps)
-    ;;
-  plotQt4)
-    cflags="$cflags \$(PLOTCFLAGS)"
-    depend="$RECT_H"
-    compile="\$(QTMOC) \$(PLOTCFLAGS) -o plotQt4.moc.cpp $src/graph/plotQt4.c && \$(CXX)"
     ;;
   plotfltk)
     cflags="$cflags \$(PLOTCFLAGS)"

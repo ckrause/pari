@@ -134,7 +134,7 @@ Options: some names can be abbreviated to one character (e.g -h = -help)
 Build Options:
   --host=<arch-osname>  target achitecture
   --kernel=<kern>       kernel used
-  --graphic=<gr>        graphic library used (none, X11, Qt, fltk, ps, svg,
+  --graphic=<gr>        graphic library used (none, X11, fltk, ps, svg,
                           win32)
   --time=<fun>          timing function to use (getrusage, clock_gettime,
                           times, ftime)
@@ -170,10 +170,6 @@ Optional libraries:
   --with-gmp[=DIR]            use the GMP kernel [prefix for gmp files]
   --with-gmp-include=DIR      specify location of gmp headers
   --with-gmp-lib=DIR          specify location of gmp libs
-
-  --with-qt[=DIR]            use the Qt graphical library [prefix for Qt dir.]
-  --with-qt-include=DIR      specify location of Qt headers
-  --with-qt-lib=DIR          specify location of Qt libs
 
   --with-fltk                use the FLTK graphical library [need fltk-config]
 

@@ -63,6 +63,9 @@ BA  20- [libpari] Flx_convol, Flx_composedprod, FpX_composedprod
 BA  21- [libpari] RgV_F2v_extract_shallow
     22- [libpari] Fp_double
 
+  Removed
+     1- [graphic] support for Qt4
+
 Done for version 2.16.0 (released 25/02/2023):
   Fixed
 BA   1- ploth long help was misformatted
