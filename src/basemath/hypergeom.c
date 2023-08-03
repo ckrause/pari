@@ -79,7 +79,7 @@ airy_i(GEN x, long prec)
     A = invr(mulrr(s4, ggamma(uutoQ(2,3), prec)));
     B = mulrr(A, s3); return mkvec2(A, B);
   }
-  prec2 = prec + EXTRAPRECWORD;
+  prec2 = prec + EXTRAPREC64;
   x = gprec_wensure(x, prec2);
   z = gsqrt(gpowgs(x,3), prec2); z2 = gdivgu(gmul2n(z,1),3);
   if (is_real_t(tx) && gsigne(x) > 0)
@@ -176,7 +176,7 @@ hyperu_i(GEN a, GEN b, GEN x, long prec)
     return hyperu_F11(a, b, x, l, l);
   }
   bit = prec2nbits(l)-1;
-  l += EXTRAPRECWORD;
+  l += EXTRAPREC64;
   T = gadd(gadd(P, gmulsg(n-1, S)), sqru(n-1));
   x = gtofp(x, l);
   if (!bigx)
@@ -829,7 +829,7 @@ F21finitelim(GEN N, long m, GEN z, long prec)
   if (!m) return gen_0;
   a = gel(N,1);
   b = gel(N,2);
-  S = C = real_1(prec + EXTRAPRECWORD);
+  S = C = real_1(prec + EXTRAPREC64);
   for (j = 1; j < m; j++)
   {
     GEN v1 = gaddsg(j-1, a), v2 = gaddsg(j-1, b);

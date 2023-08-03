@@ -2180,7 +2180,7 @@ polsolve(GEN P, long bitprec)
   {
     GEN pows = gen_powers(rb, rt, 1, NULL, _mp_sqr, _mp_mul, _gen_one);
     Pc = splitpoleval(Pp, Pm, pows, D, bitaddprec);
-    if (!Pc) { cprec += EXTRAPRECWORD; rb = rtor(rb, cprec); continue; }
+    if (!Pc) { cprec += EXTRAPREC64; rb = rtor(rb, cprec); continue; }
     if (signe(Pc) != s0) break;
     shiftr_inplace(rb,1);
   }
@@ -2197,7 +2197,7 @@ polsolve(GEN P, long bitprec)
       GEN pows = gen_powers(rc, rt, 1, NULL, _mp_sqr, _mp_mul, _gen_one);
       Pc = splitpoleval(Pp, Pm, pows, D, bitaddprec+2);
       if (Pc) break;
-      cprec += EXTRAPRECWORD;
+      cprec += EXTRAPREC64;
       rc = rtor(rc, cprec);
     }
     if (signe(Pc) == s0)
@@ -2228,7 +2228,7 @@ polsolve(GEN P, long bitprec)
     if (!Ppc || !Pc)
     {
       if (cprec >= PREC)
-        cprec += EXTRAPRECWORD;
+        cprec += EXTRAPREC64;
       else
         cprec = minss(2*cprec, PREC);
       rc = rtor(rc, cprec); continue; /* backtrack one step */

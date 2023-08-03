@@ -2364,7 +2364,7 @@ rfrac_evalfp(GEN F, GEN x, long prec)
   a = (typ(N) == t_POL && varn(N) == varn(D))? poleval(N, x): N;
   if (typ(a) != t_INT || typ(b) != t_INT ||
       (lgefint(a) <= prec && lgefint(b) <= prec)) return gdiv(a, b);
-  return rdivii(a, b, prec + EXTRAPRECWORD);
+  return rdivii(a, b, prec + EXTRAPREC64);
 }
 
 /* op_p F(p^s): p in P, p >= a, F t_RFRAC */

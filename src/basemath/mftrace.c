@@ -11694,7 +11694,7 @@ intAoo(GEN van, long nlim, GEN al, long w, GEN P, GEN A, long k, long prec)
 static GEN
 get_P(long k, long v, long prec)
 {
-  GEN a, S = cgetg(k + 1, t_POL), u = invr(Pi2n(1, prec+EXTRAPRECWORD));
+  GEN a, S = cgetg(k + 1, t_POL), u = invr(Pi2n(1, prec+EXTRAPREC64));
   long j, K = k-2;
   S[1] = evalsigne(1)|evalvarn(0); a = u;
   gel(S,K+2) = monomial(mulcxpowIs(a,3), 1, v); /* j = K */

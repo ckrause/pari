@@ -2254,7 +2254,7 @@ static GEN
 ellomega_cx(GEN E, long prec)
 {
   pari_sp av = avma;
-  GEN roots = ellR_roots(E, prec + EXTRAPRECWORD);
+  GEN roots = ellR_roots(E, prec + EXTRAPREC64);
   GEN d1=gel(roots,4), d2=gel(roots,5), d3=gel(roots,6);
   GEN a = gsqrt(d3,prec), b = gsqrt(d1,prec), c = gsqrt(d2,prec);
   return gerepileupto(av, ellomega_agm(a,b,c,prec));
@@ -2269,7 +2269,7 @@ doellR_omega(GEN E, long prec)
   pari_sp av = avma;
   GEN roots, d2, z, a, b, c;
   if (ellR_get_sign(E) >= 0) return ellomega_cx(E,prec);
-  roots = ellR_roots(E,prec + EXTRAPRECWORD);
+  roots = ellR_roots(E,prec + EXTRAPREC64);
   d2 = gel(roots,5);
   z = gsqrt(d2,prec); /* imag(e1-e3) > 0, so that b > 0*/
   a = gel(z,1); /* >= 0 */
@@ -2280,7 +2280,7 @@ doellR_omega(GEN E, long prec)
 }
 static GEN
 doellR_eta(GEN E, long prec)
-{ GEN w = ellR_omega(E, prec + EXTRAPRECWORD); return elleta(w, prec); }
+{ GEN w = ellR_omega(E, prec + EXTRAPREC64); return elleta(w, prec); }
 
 GEN
 ellR_omega(GEN E, long prec)
@@ -2328,7 +2328,7 @@ zell_closest_0(GEN om, GEN x, GEN ro)
 static GEN
 zellcx(GEN E, GEN P, long prec)
 {
-  GEN R = ellR_roots(E, prec+EXTRAPRECWORD);
+  GEN R = ellR_roots(E, prec+EXTRAPREC64);
   GEN x0 = gel(P,1), y0 = ec_dmFdy_evalQ(E,P);
   if (gequal0(y0))
     return zell_closest_0(ellomega_cx(E,prec),x0,R);
@@ -2353,7 +2353,7 @@ zellrealneg(GEN E, GEN P, long prec)
   if (gequal0(y0)) return gmul2n(gel(ellR_omega(E,prec),1),-1);
   else
   {
-    GEN R = ellR_roots(E, prec+EXTRAPRECWORD);
+    GEN R = ellR_roots(E, prec+EXTRAPREC64);
     GEN d2 = gel(R,5), e3 = gel(R,3);
     GEN a = gsqrt(d2,prec);
     GEN z = gsqrt(gsub(x0,e3), prec);
@@ -2368,7 +2368,7 @@ zellrealneg(GEN E, GEN P, long prec)
 static GEN
 zellrealpos(GEN E, GEN P, long prec)
 {
-  GEN R = ellR_roots(E, prec+EXTRAPRECWORD);
+  GEN R = ellR_roots(E, prec+EXTRAPREC64);
   GEN d2,d3,e1,e2,e3, a,b, x0 = gel(P,1), y0 = ec_dmFdy_evalQ(E,P);
   if (gequal0(y0)) return zell_closest_0(ellR_omega(E,prec), x0,R);
   e1 = gel(R,1);
@@ -5119,7 +5119,7 @@ ellnfembed(GEN E, long prec)
 
   nf_get_sign(nf, &r1, &r2); n = r1+r2;
   E0 = RgC_to_nfC(nf, vecslice(E,1,5));
-  prec0 = prec + EXTRAPRECWORD;
+  prec0 = prec + EXTRAPREC64;
   /* need accuracy 3b for bmodel to ensure roots are correct to b bits */
   prec += (prec0-2)*3 + nfembed_extraprec(E0);
   L =  cgetg(n+1, t_VEC);
@@ -6476,7 +6476,7 @@ static GEN
 exphellagm(GEN e, GEN z, int flag, long prec)
 {
   GEN x_a, ab, a, b, e1, r, V = cgetg(1, t_VEC), x = gel(z,1);
-  long n, ex = 5-prec2nbits(prec), p = prec+EXTRAPRECWORD;
+  long n, ex = 5-prec2nbits(prec), p = prec+EXTRAPREC64;
 
   if (typ(x) == t_REAL && realprec(x) < p) x = gprec_w(x, p);
   ab = ellR_ab(e, p);

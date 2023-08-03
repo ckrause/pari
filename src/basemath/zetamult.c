@@ -301,7 +301,7 @@ zetamult_interpolate2_i(GEN avec, GEN t, long prec)
       gcoeff(a, i+1, j) = gerepileupto(av, gdivgu(S, j));
     }
   }
-  _1 = real_1(prec + EXTRAPRECWORD); av = avma;
+  _1 = real_1(prec + EXTRAPREC64); av = avma;
   ze = cgetg(n+1, t_VEC);
   for (i = 1; i <= n; i++)
   {
@@ -690,10 +690,10 @@ zetamult_i(GEN a, long prec)
   if (r == 1) return szeta(a[1], prec);
   bit = prec2nbits(prec);
   if (bit <= 128)
-    return zetamult_Zagier(a, bit, prec + EXTRAPRECWORD);
+    return zetamult_Zagier(a, bit, prec + EXTRAPREC64);
   k = zv_sum(a);
   if (((double)r) / (k*k) * bit / log((double)10*bit) < 0.5)
-    return zetamult_Zagier(a, bit, prec + EXTRAPRECWORD);
+    return zetamult_Zagier(a, bit, prec + EXTRAPREC64);
   bit += maxss(log2zeta_bound(a), 64);
   return zetamult_Akhilesh(atoe(a), bit, prec);
 }
@@ -725,7 +725,7 @@ zetamult_interpolate(GEN s, GEN t, long prec)
   v = allstar(avec); l = lg(v); la = lg(avec);
   V = cgetg(la, t_VEC);
   for (i = 1; i < la; i++)
-  { gel(V,i) = cgetr(prec + EXTRAPRECWORD); affur(0, gel(V,i)); }
+  { gel(V,i) = cgetr(prec + EXTRAPREC64); affur(0, gel(V,i)); }
   av2 = avma;
   for (i = 1; i < l; i++, set_avma(av2))
   {

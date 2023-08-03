@@ -184,7 +184,7 @@ lambertW(GEN z, long k, long prec)
     wd = dbllambertWfritsch(z, 0);
   if (fabs(wd + 1) < 1e-5)
   {
-    long prec2 = prec + EXTRAPRECWORD;
+    long prec2 = prec + EXTRAPREC64;
     GEN Z = rtor(z, prec2);
     GEN t = addrs(mulrr(Z, gexp(gen_1, prec2)), 1);
     if (signe(t) <= 0) { set_avma(av); return real_m1(prec); }

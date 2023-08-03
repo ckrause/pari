@@ -170,7 +170,7 @@ pi_ramanujan(long prec)
     S.p[n] = mulis(muluu(6*n-5, 2*n-1), 1-6*n);
     S.q[n] = mulii(sqru(n), muliu(D,n));
   }
-  abpq_sum(&R, 0, nmax, &S); prec2 = prec+EXTRAPRECWORD;
+  abpq_sum(&R, 0, nmax, &S); prec2 = prec+EXTRAPREC64;
   u = itor(muliu(R.Q,C/12), prec2);
   return rtor(mulrr(divri(u, R.T), sqrtr_abs(utor(C,prec2))), prec);
 }
@@ -259,7 +259,7 @@ consteuler(long prec)
 
   incrprec(prec);
 
-  l = prec+EXTRAPRECWORD; x = (long) (1 + prec2nbits_mul(l, M_LN2/4));
+  l = prec+EXTRAPREC64; x = (long) (1 + prec2nbits_mul(l, M_LN2/4));
   a = utor(x,l); u=logr_abs(a); setsigne(u,-1); affrr(u,a);
   b = real_1(l);
   v = real_1(l);
@@ -2346,8 +2346,8 @@ mpexp(GEN x)
   for(i=0, p=1; i<s+TWOPOTBITS_IN_LONG; i++) { p <<= 1; if (mask & 1) p-=1; mask >>= 1; }
   a = mpexp_basecase(rtor(x, nbits2prec(p)));
   x = addrs(x,1);
-  if (realprec(x) < l+EXTRAPRECWORD) x = rtor(x, l+EXTRAPRECWORD);
-  a = rtor(a, l+EXTRAPRECWORD); /*append 0s */
+  if (realprec(x) < l+EXTRAPREC64) x = rtor(x, l+EXTRAPREC64);
+  a = rtor(a, l+EXTRAPREC64); /*append 0s */
   t = NULL;
   for(;;)
   {
@@ -2568,7 +2568,7 @@ expQ(GEN x, long prec)
     e = ep - eq;
     if (e < -3) prec += nbits2extraprec(-e); /* see addrr 'extend' rule */
   }
-  if (e > 2) { z0 = cgetr(prec); prec += EXTRAPRECWORD; b += BITS_IN_LONG; }
+  if (e > 2) { z0 = cgetr(prec); prec += EXTRAPREC64; b += BITS_IN_LONG; }
   z = cgetr(prec); av = avma;
   if (e > 0)
   { /* simplify x/2^e = p / (q * 2^e) */
@@ -2909,7 +2909,7 @@ constlog2(long prec)
 
   tmp = cgetr_block(prec);
   av = avma;
-  affrr(log2_split(prec+EXTRAPRECWORD), tmp);
+  affrr(log2_split(prec+EXTRAPREC64), tmp);
   swap_clone(&glog2,tmp);
   return gc_const(av,glog2);
 }
@@ -3355,7 +3355,7 @@ mpcosm1(GEN x, long *ptmod8)
       if (expo(z) >= bit_prec(z) + 3) pari_err_PREC("mpcosm1");
       shiftr_inplace(P, 1);
       q = floorr(divrr(z, P)); /* round ( x / (Pi/2) ) */
-      p = l+EXTRAPRECWORD; x = rtor(x,p);
+      p = l+EXTRAPREC64; x = rtor(x,p);
     } else {
       q = stoi((long)floor(rtodbl(x) / (M_PI/2) + 0.5));
       p = l;

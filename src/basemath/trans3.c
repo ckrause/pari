@@ -369,7 +369,7 @@ kbessel1(GEN nu, GEN gx, long prec)
   shiftr_inplace(nu2,2); togglesign(nu2); /* nu2 = -4nu^2 */
   n = (long) (prec2nbits_mul(l,M_LN2) + M_PI*fabs(rtodbl(nu))) / 2;
   bit = prec2nbits(l) - 1;
-  l += EXTRAPRECWORD;
+  l += EXTRAPREC64;
   pi = mppi(l); n2 = n<<1; r = gmul2n(x,1);
   if (cmprs(x, n) < 0)
   {
@@ -1745,7 +1745,7 @@ szeta(long k, long prec)
       B = bernfrac(k);
     }
     /* B = B_k */
-    z = gmul(powru(Pi2n(1, prec + EXTRAPRECWORD), k), B);
+    z = gmul(powru(Pi2n(1, prec + EXTRAPREC64), k), B);
     z = divrr(z, mpfactr(k,prec));
     setsigne(z, 1); shiftr_inplace(z, -1);
   }
@@ -2026,7 +2026,7 @@ polylog(long m, GEN x, long prec)
   l = precision(x);
   if (!l) l = prec; else prec = l;
   res = cgetc(l); av = avma;
-  x = gtofp(x, l+EXTRAPRECWORD);
+  x = gtofp(x, l+EXTRAPREC64);
   e = gexpo(gnorm(x));
   if (!e || e == -1) {
     y = cxpolylog(m,x,prec);

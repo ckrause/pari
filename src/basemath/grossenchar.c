@@ -909,7 +909,7 @@ GEN
 gcharnewprec(GEN gc, long newprec)
 {
   pari_sp av = avma;
-  GEN gc2 = gcharnewprec_i(gc, newprec + EXTRAPRECWORD);
+  GEN gc2 = gcharnewprec_i(gc, newprec + EXTRAPREC64);
   gchar_set_evalprec(gc2, newprec);
   return gerepilecopy(av, gc2);
 }

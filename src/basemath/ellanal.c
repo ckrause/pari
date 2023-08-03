@@ -533,7 +533,7 @@ heegner_psi(GEN E, GEN N, GEN points, long bitprec)
   pari_sp av = avma, av2;
   struct baby_giant bb;
   struct bg_data bg;
-  long l, k, L = lg(points)-1, prec = nbits2prec(bitprec)+EXTRAPRECWORD;
+  long l, k, L = lg(points)-1, prec = nbits2prec(bitprec)+EXTRAPREC64;
   GEN Q, pi2 = Pi2n(1, prec), bnd, rbnd, bndmax;
   GEN B = divrr(mulur(bitprec,mplog2(DEFAULTPREC)), pi2);
 

@@ -730,7 +730,7 @@ dirpowerssumfun(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
   if ((f && N < 49) || (!f && N < 1000))
     return gerepilecopy(av, smalldirpowerssum(N, s, E, f, both, prec));
   sq = usqrt(N);
-  prec1 = prec0 = prec + EXTRAPRECWORD;
+  prec1 = prec0 = prec + EXTRAPREC64;
   s = gprec_w(s, prec0);
   needlog = get_needlog(s);
   if (needlog == 1) prec1 = powcx_prec(log2((double)N), s, prec);

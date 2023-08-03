@@ -983,7 +983,7 @@ Buchquad_i(GEN D, double cbach, double cbach2, long prec)
       retmkvec4(gen_1, cgetg(1,t_VEC), cgetg(1,t_VEC), gen_1);
     prec = BQ.PRECREG = 0;
   } else {
-    BQ.PRECREG = maxss(prec+EXTRAPRECWORD, nbits2prec(2*expi(q.D) + 128));
+    BQ.PRECREG = maxss(prec+EXTRAPREC64, nbits2prec(2*expi(q.D) + 128));
   }
   if (DEBUGLEVEL>2) timer_start(&T);
   BQ.primfact   = new_chunk(100);

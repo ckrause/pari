@@ -184,7 +184,7 @@ mpbern(long n, long prec) { (void)prec; constbern(n); }
 static GEN
 bernreal_using_zeta(long n, long prec)
 {
-  GEN pi2 = Pi2n(1, prec+EXTRAPRECWORD);
+  GEN pi2 = Pi2n(1, prec+EXTRAPREC64);
   GEN iz = inv_szeta_euler(n, prec);
   GEN z = divrr(mpfactr(n, prec), mulrr(powru(pi2, n), iz));
   shiftr_inplace(z, 1); /* 2 * n! * zeta(n) / (2Pi)^n */
@@ -579,7 +579,7 @@ inv_lfun4(long n, long prec)
 static GEN
 eulerreal_using_lfun4(long n, long prec)
 {
-  GEN pisur2 = Pi2n(-1, prec+EXTRAPRECWORD);
+  GEN pisur2 = Pi2n(-1, prec+EXTRAPREC64);
   GEN iz = inv_lfun4(n+1, prec);
   GEN z = divrr(mpfactr(n, prec), mulrr(powru(pisur2, n+1), iz));
   if ((n & 3L) == 2) setsigne(z, -1);

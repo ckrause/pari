@@ -1289,7 +1289,7 @@ sumalt2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
   av2 = avma;
   for (k=0; k<=N; k++)
   {
-    GEN t = itor(gel(pol,k+2), prec+EXTRAPRECWORD);
+    GEN t = itor(gel(pol,k+2), prec+EXTRAPREC64);
     s = gadd(s, gmul(t, eval(E, a)));
     if (k == N) break;
     a = incloop(a); /* in place! */

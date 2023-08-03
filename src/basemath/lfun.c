@@ -662,7 +662,7 @@ prec_fix(long prec)
 {
 #ifndef LONG_IS_64BIT
   /* make sure that default accuracy is the same on 32/64bit */
-  if (odd(prec)) prec += EXTRAPRECWORD;
+  if (odd(prec)) prec += EXTRAPREC64;
 #endif
   return prec;
 }
@@ -683,7 +683,7 @@ lfunthetainit0(GEN ldata, GEN tdom, GEN an2, long m,
     get_cone_fuzz(tdom, &r, &a);
     tdom = mkvec2(dbltor(r), a? dbltor(a): gen_0);
   }
-  prec += maxss(EXTRAPRECWORD, nbits2extraprec(extrabit));
+  prec += maxss(EXTRAPREC64, nbits2extraprec(extrabit));
   tech = mkvecn(7, an2,K,R, stoi(bitprec), stoi(m), tdom,
                    gsqrt(ginv(N), prec_fix(prec)));
   return mkvec3(mkvecsmall(t_LDESC_THETA), ldata, tech);
@@ -1777,7 +1777,7 @@ lfun(GEN lmisc, GEN s, long bitprec)
         {
           long prec = nbits2prec(bitprec), q = labs(D);
           ss = 1 - ss; /* <= 0 */
-          z = powrs(divrs(mppi(prec + EXTRAPRECWORD), q), 1-ss);
+          z = powrs(divrs(mppi(prec + EXTRAPREC64), q), 1-ss);
           z = mulrr(shiftr(z, -ss), sqrtr_abs(utor(q, prec)));
           z = gdiv(z, mpfactr(-ss, prec));
           if (smodss(ss, 4) > 1) togglesign(z);

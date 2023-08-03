@@ -2031,7 +2031,7 @@ lfunhgmwild(GEN L, GEN H, GEN t, GEN BAD, long pole, GEN hint, long bitprec)
     gel(L, 5) = gel(vN, lN - 1);
     if (DEBUGLEVEL) err_printf("\nmaxN = %ld\n", itos(gel(L,5)));
     lim = lfunthetacost(L, t0i, 0, bitprec);
-    vroots = dirpowers(lim, sstoQ(2, d), prec + EXTRAPRECWORD);
+    vroots = dirpowers(lim, sstoQ(2, d), prec + EXTRAPREC64);
     an0 = hgmcoefs(H, t, lim);
     if (pole)
     {
