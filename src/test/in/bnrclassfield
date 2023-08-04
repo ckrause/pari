@@ -18,17 +18,17 @@ check(K,f,sol,flag, expo = 32)=
   if (!nfisprobisom(sol,f,100),error("Non isomorphic: ",[f,sol]));
   1;
 }
-checkvec(K,f,~sol,flag)=
+checkvec(K,f,~sol,flag, expo = 32)=
 {
-  for(j=1,#sol, if (check(K,f,sol[j],flag), sol[j]=0; return(1)));
+  for(j=1,#sol, if (check(K,f,sol[j],flag,expo), sol[j]=0; return(1)));
   return(0);
 }
-do(nf,f = 1, H = 0, flag = 0, sol = 0) =
+do(nf,f = 1, H = 0, flag = 0, sol = 0, expo = 32) =
 { my(K = bnfinit(nf), T);
   setrand(1); print(count++); T=liftpol(bnrclassfield(bnrinit(K,f), H, flag));
   if (!sol, return(T));
-  if (type(T) != "t_VEC", return(check(K,T,sol,flag)));
-  [checkvec(K,t,~sol,flag) | t<-T];
+  if (type(T) != "t_VEC", return(check(K,T,sol,flag, expo)));
+  [checkvec(K,t,~sol,flag, expo) | t<-T];
 }
 
 do(y^2+6) \\1
@@ -111,7 +111,7 @@ do(y^2-y+58,,,2,s)
 do(y^2-y+10,,,2) \\30
 do(y^2-y+24,,,2)
 s=x^18-48*x^16+1566*x^14-23621*x^12+244113*x^10-19818*x^8-3170*x^6+17427*x^4-3258*x^2+199;
-do(y^2-y+50,,,2,s)
+do(y^2-y+50,,,2,s,64)
 
 
 \\#2371
