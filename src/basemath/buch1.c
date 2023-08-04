@@ -176,17 +176,20 @@ qfi_random(struct buch_quad *B,GEN ex) { return random_form(B, ex, &QFI_comp); }
 /*                     Common subroutines                          */
 /*                                                                 */
 /*******************************************************************/
-long
-bnf_increase_LIMC(long LIMC, long LIMCMAX)
+/* We assume prime ideals of norm < D generate Cl(K); failure with
+ * a factor base of primes with norm < LIMC <= D. Suggest new value.
+ * All values of the form c * log^2 (disc K) [where D has c = 4
+ * (Grenie-Molteni, under GRH)]. A value of c in [0.3, 1] should be OK for most
+ * fields. No example is known where c >= 2 is necessary. */
+ulong
+bnf_increase_LIMC(ulong LIMC, ulong D)
 {
-  if (LIMC >= LIMCMAX) pari_err_BUG("Buchmann's algorithm");
-  if (LIMC <= LIMCMAX/40) /* cbach <= 0.3 */
-    LIMC *= 2;
-  else if (LIMCMAX < 60) /* \Delta_K <= 9 */
-    LIMC++;
+  if (LIMC >= D) pari_err_BUG("Buchmann's algorithm");
+  if (LIMC <= D / 13.333)
+    LIMC *= 2; /* tiny c <= 0.3 : double it */
   else
-    LIMC += LIMCMAX / 60; /* cbach += 0.2 */
-  if (LIMC > LIMCMAX) LIMC = LIMCMAX;
+    LIMC += maxuu(1, D / 20); /* large c, add 0.2 to it */
+  if (LIMC > D) LIMC = D;
   return LIMC;
 }
 
@@ -1010,7 +1013,7 @@ Buchquad_i(GEN D, double cbach, double cbach2, long prec)
   minSFB = (expi(D) > 15)? 3: 2;
   init_GRHcheck(&GRHcheck, 2, BQ.PRECREG? 2: 0, LOGD);
   high = low = LIMC0 = maxss((long)(cbach2*LOGD2), 1);
-  LIMCMAX = (long)(6.*LOGD2);
+  LIMCMAX = (long)(4.*LOGD2);
   /* 97/1223 below to ensure a good enough approximation of residue */
   cache_prime_quad(&GRHcheck, expi(D) < 16 ? 97: 1223, D);
   while (!quadGRHchk(D, &GRHcheck, high))

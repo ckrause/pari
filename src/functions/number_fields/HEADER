@@ -404,11 +404,13 @@ Doc:
  span of $S(B_1)$. Under the assumption that $S(B_2)$ generates $\Cl(K)$, we
  are done. User-supplied $c_i$ are only used to compute initial guesses for
  the bounds $B_i$, and the algorithm increases them until one can \emph{prove}
- under GRH that $S(B_2)$ generates $\Cl(K)$. A uniform result of Bach says
- that $c_2 = 12$ is always suitable, but this bound is very pessimistic and a
- direct algorithm due to Belabas-Diaz-Friedman is used to check the condition,
- assuming GRH. The default values are $c_1 = c_2 = 0$. When $c_1$ is equal to
- $0$ the algorithm takes it equal to $c_2$.
+ under GRH that $S(B_2)$ generates $\Cl(K)$. A uniform result of Greni\'e
+ and Molteni says
+ that $c_2 = 4$ is always suitable, but this bound is very pessimistic and a
+ direct algorithm due to Belabas-Diaz-Friedman, improved by Greni\'e and
+ Molteni, is used to check the condition, assuming GRH. The default values
+ are $c_1 = c_2 = 0$. When $c_1$ is equal to $0$ the algorithm takes it equal
+ to $c_2$.
 
  $\var{nrpid}$ is the maximal number of small norm relations attached to each
  ideal in the factor base. Set it to $0$ to disable the search for small norm

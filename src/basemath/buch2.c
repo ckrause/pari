@@ -3763,7 +3763,7 @@ Buchall_param(GEN P, double cbach, double cbach2, long Nrelid, long flag, long p
   D = absi_shallow(D);
   LOGD = dbllog2(D) * M_LN2;
   LOGD2 = LOGD*LOGD;
-  LIMCMAX = (long)(12.*LOGD2);
+  LIMCMAX = (long)(4.*LOGD2);
   /* In small_norm, LLL reduction produces v0 in I such that
    *     T2(v0) <= (4/3)^((n-1)/2) NI^(2/n) disc(K)^(1/n)
    * We consider v with T2(v) <= BMULT * T2(v0)
@@ -3961,7 +3961,7 @@ START:
       if (need > 0)
       { /* Random relations */
         if (++nreldep > F.MAXDEPSIZESFB) {
-          if (++sfb_trials > SFB_MAX && LIMC < LIMCMAX/6) goto START;
+          if (++sfb_trials > SFB_MAX && LIMC < LIMCMAX/2) goto START;
           F.sfb_chg = sfb_INCREASE;
           nreldep = 0;
         }
@@ -4108,7 +4108,7 @@ START:
     if (need < old_need) small_fail = 0;
 #if 0 /* A good idea if we are indeed stuck but needs tuning */
     /* we have computed way more relations than should be necessary */
-    if (TRIES < 3 && LIMC < LIMCMAX / 24 &&
+    if (TRIES < 3 && LIMC < LIMCMAX / 8 &&
                      cache.last - cache.base > 10 * F.KC) goto START;
 #endif
     old_need = need;
@@ -4136,7 +4136,7 @@ START:
         need = 1; /* not enough relations */
         continue;
       case fupb_PRECI: /* prec problem unless we cheat on Bach constant */
-        if ((precdouble&7) == 7 && LIMC<=LIMCMAX/6) goto START;
+        if ((precdouble&7) == 7 && LIMC <= LIMCMAX/2) goto START;
         precpb = "compute_R"; PREC = myprecdbl(PREC, flag? C: NULL);
         continue;
     }

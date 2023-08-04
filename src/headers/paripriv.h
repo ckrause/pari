@@ -725,7 +725,7 @@ GEN sort_factor_pol(GEN y, int (*cmp)(GEN,GEN));
 
 /* buch1.c */
 
-long   bnf_increase_LIMC(long LIMC, long LIMCMAX);
+ulong   bnf_increase_LIMC(ulong LIMC, ulong LIMCMAX);
 
 /* buch2.c */
 
