@@ -2139,7 +2139,7 @@ Hseries(long m, long L, long v, long prec)
   pari_sp av = avma;
   GEN H = cgetg(l, t_SER);
   H[1] = evalsigne(1)|evalvarn(v)|evalvalser(0);
-  prec++;
+  prec += EXTRAPREC64;
   bit = -prec2nbits(prec);
   for(k = 2; k < l; k++) gel(H,k) = gen_1; /* i=1 */
   for (i = 2; i < M; i++)
