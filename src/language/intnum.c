@@ -2111,6 +2111,9 @@ sercoeff(GEN x, long n)
   long N = n - valser(x);
   return (N < 0)? gen_0: gel(x,N+2);
 }
+static GEN
+rfrac_gtofp(GEN F, long prec)
+{ return mkrfrac(gel(F,1), RgX_gtofp(gel(F,2), prec)); }
 
 /* Compute the integral from N to infinity of a rational function F, deg(F) < -1
  * We must have N > 2 * r, r = max(1, |poles F|). */
@@ -2122,8 +2125,8 @@ intnumainfrat(GEN F, long N, double r, long prec)
   pari_sp av = avma;
 
   lim = (long)ceil(B/log2(N/r));
-  ser = gmul(F, real_1(prec + EXTRAPREC64));
-  ser = rfracrecip_to_ser_absolute(ser, lim+2);
+  F = rfrac_gtofp(F, prec + EXTRAPREC64);
+  ser = rfracrecip_to_ser_absolute(F, lim+2);
   v = valser(ser);
   S = gdivgu(sercoeff(ser,lim+1), lim*N);
   /* goes down to 2, but coeffs are 0 in degree < v */
@@ -2287,7 +2290,7 @@ prodnumrat(GEN F, long a, long prec)
   G = gdiv(deriv(F, vx), F);
   intf = intnumainfrat(gmul(pol_x(vx),G), N, r, prec);
   intf = gneg(gadd(intf, gmulsg(N, glog(gsubst(F, vx, stoi(N)), prec))));
-  S = gmul(real_1(prec), gsubst(G, vx, gaddgs(pol_x(vx), N)));
+  S = rfrac_gtofp(gsubst(G, vx, gaddgs(pol_x(vx), N)), prec);
   S = rfrac_to_ser_i(S, k + 2);
   S1 = gsqrt(gsubst(F, vx, utoipos(N)), prec);
   for (m = 0; m < N; m++) S1 = gmul(S1, gsubst(F, vx, utoi(m)));
@@ -2448,8 +2451,7 @@ sumeulerrat(GEN F, GEN s, long a, long prec)
   if (rs <= RS)
     pari_err_DOMAIN("sumeulerrat", "real(s)", "<=",  dbltor(RS), dbltor(rs));
   lim = (long)ceil(B / (rs*lN - log2(r)));
-  ser = gmul(real_1(prec2), F);
-  ser = rfracrecip_to_ser_absolute(ser, lim+1);
+  ser = rfracrecip_to_ser_absolute(rfrac_gtofp(F, prec2), lim+1);
   P = N < 1000000? primes_interval(gen_2, utoipos(N)): NULL;
   z = sumlogzeta(ser, s, P, N, rs, lN, vF, lim, prec);
   z = gadd(z, opFps(&gadd, P, N, a, F, s, prec));
