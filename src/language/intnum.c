@@ -2307,18 +2307,27 @@ sdmob(GEN s, long n, GEN fan)
     S = gadd(S, gdivgs(sercoeff(s, n/labs(D[i])), D[i]));
   return S;
 }
+
+/* z * (1 - p^-s); ms = -s or NULL (in which case s is a t_INT) */
+static GEN
+auxeuler(GEN z, GEN p, GEN s, GEN ms, long prec)
+{ return ms? gsub(z, gmul(z, gpow(p, ms, prec)))
+           : gsub(z, gdiv(z, powii(p, s))); }
+
 /* log (zeta(s) * prod_i (1 - P[i]^-s) */
 static GEN
 logzetan(GEN s, GEN P, long N, long prec)
 {
-  pari_sp av = avma;
-  GEN Z = gzeta(s, prec);
+  GEN Z, ms = NULL;
+  pari_sp av;
+  if (typ(s) != t_INT) ms = gneg(s);
+  av = avma; Z = gzeta(s, prec);
   if (P)
   {
     long i, l = lg(P);
     for (i = 1; i < l; i++)
     {
-      Z = gsub(Z, gdiv(Z, gpow(gel(P,i), s, prec)));
+      Z = auxeuler(Z, gel(P,i), s, ms, prec);
       if (gc_needed(av,2)) Z = gerepileupto(av, Z);
     }
   }
@@ -2329,7 +2338,7 @@ logzetan(GEN s, GEN P, long N, long prec)
     forprime_init(&T, gen_2, utoi(N)); av = avma;
     while ((p = forprime_next(&T)))
     {
-      Z = gsub(Z, gdiv(Z, gpow(p, s, prec)));
+      Z = auxeuler(Z, p, s, ms, prec);
       if (gc_needed(av,2)) Z = gerepileupto(av, Z);
     }
   }
@@ -2431,7 +2440,10 @@ sumeulerrat(GEN F, GEN s, long a, long prec)
   vF = -poldegree(F, -1);
   if (vF <= 0) pari_err(e_MISC, "sum diverges in sumeulerrat");
   r = polmax(gel(F,2));
-  N = maxss(30, a); lN = log2((double)N);
+  N = a; /* >= 2 */
+  /* if s not integral, computing p^-s at increased accuracy is too expensive */
+  if (typ(s) == t_INT) N = maxss(30, N);
+  lN = log2((double)N);
   RS = maxdd(1./vF, log2(r) / lN);
   if (rs <= RS)
     pari_err_DOMAIN("sumeulerrat", "real(s)", "<=",  dbltor(RS), dbltor(rs));
@@ -2481,7 +2493,9 @@ prodeulerrat(GEN F, GEN s, long a, long prec)
   vF = - rfracm1_degree(NF, DF);
   if (rs * vF <= 1) pari_err(e_MISC, "product diverges in prodeulerrat");
   r = ratpolemax2(F);
-  N = maxss(maxss(30, a), (long)ceil(2*r)); lN = log2((double)N);
+  N = maxss(a, (long)ceil(2*r));
+  if (typ(s) == t_INT) N = maxss(N, 30);
+  lN = log2((double)N);
   RS = maxdd(1./vF, log2(r) / lN);
   if (rs <= RS)
     pari_err_DOMAIN("prodeulerrat", "real(s)", "<=",  dbltor(RS), dbltor(rs));
