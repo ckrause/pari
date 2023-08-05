@@ -27,3 +27,34 @@ Doc: return the norm ($1$ or $-1$) of the fundamental unit of the quadratic
  is \kbd{quadunitnorm}$(d)$. The narrow class number of the order of
  discriminant $D$ is equal to the class number if the unit norm is $1$ and to
  twice the class number otherwise.
+
+ \misctitle{Important remark} Assuming GRH, using \kbd{bnfinit} is \emph{much}
+ faster, running in time subexponential in $\log D$ (instead of exponential
+ for \kbd{quadunitnorm}). We give examples for the maximal order:
+ \bprog
+ ? GRHunitnorm(bnf) = vecprod(bnfsignunit(bnf)[,1])
+ ? bnf = bnfinit(x^2 - 17345, 1); GRHunitnorm(bnf)
+ %2 = -1
+ ? bnf = bnfinit(x^2 - nextprime(2^60), 1); GRHunitnorm(bnf)
+ time = 119 ms.
+ %3 = -1
+ ? quadunitnorm(nextprime(2^60))
+ time = 24,086 ms.
+ %4 = -1
+ @eprog\noindent Note that if the result is $-1$, it is unconditional because
+ (if GRH is false) it could happen that our tentative fundamental unit in
+ \var{bnf} is actually a power $u^k$ of the true fundamental unit, but we
+ would still have $\text{Norm}(u) = -1$ (and $k$ odd). We can also remove the
+ GRH assumption when the result is $1$ with a little more work:
+ \bprog
+ ? v = bnfunits(bnf)[1][1] \\ a unit in factored form
+ ? v[,2] %= 2;
+ ? nfeltissquare(bnf, nffactorback(bnf, v))
+ %7 = 0
+ @eprog\noindent Under GRH, we know that $v$ is the fundamental unit, but as
+ above it can be a power $u^k$ of the true fundamental unit $u$. But the
+ final two lines prove that $v$ is not a square, hence $k$ is odd and
+ $\text{Norm}(u)$ must also be $1$. We modified the factorization matrix
+ giving $v$ by reducing all exponents modulo $2$: this allows to computed
+ \kbd{nffactorback} even when the factorization involves huge exponents.
+ And of course the new $v$ is a square if and only if the original one was.
