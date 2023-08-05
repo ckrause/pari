@@ -1,4 +1,4 @@
-HEAP=[96, if(sizebyte(0)==16,3253,3293)];
+HEAP=[96, if(sizebyte(0)==16,3253,3294)];
 \e
 addprimes([nextprime(10^9),nextprime(10^10)])
 bestappr(Pi,10000)
