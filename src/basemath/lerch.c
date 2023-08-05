@@ -269,7 +269,8 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
   a = gneg(s);
   if (DEBUGLEVEL>2) timer_start(&T);
   incrprec(prec);
-  Nx = gmul(real_1(prec), gaddsg(N - 1, x));
+  Nx = gaddsg(N - 1, x);
+  Nx = typ(Nx) == t_SER? RgX_gtofp(Nx, prec): gtofp(Nx, prec);
   S1 = S3 = gpow(Nx, a, prec);
   av2 = avma;
   if (gequal1(x)) S1 = dirpowerssum(N, a, 0, prec);
