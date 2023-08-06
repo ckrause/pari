@@ -865,7 +865,8 @@ This function returns $\#E(\F_p[X]/(T))$, assuming the curve is
 supersingular, see \kbd{FpXQ\_elljissupersingular}.
 
 \fun{GEN}{Fq_ellcard_supersingular}{GEN a4, GEN a6, GEN T, GEN p}
-as \kbd{FpXQ\_ellcard\_supersingular} but allows \kbd{T=NULL}.
+This function is identical to
+\kbd{FpXQ\_ellcard\_supersingular}, except that it allows \kbd{T} to be {NULL}.
 
 \fun{GEN}{Fq_ellcard_SEA}{GEN a4, GEN a6, GEN q, GEN T, GEN p, long s}
 This function returns $\#E(\F_p[X]/(T))$, using the Schoof-Elkies-Atkin
