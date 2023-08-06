@@ -2946,6 +2946,7 @@ snfrank(GEN D, GEN p)
 {
   long i, l;
   if (typ(D) != t_VEC) pari_err_TYPE("snfrank", D);
+  if (!p) p = gen_0;
   l = lg(D);
   if (l == 4 && typ(gel(D,3)) == t_MAT)
   { /* from matsnf(,1) */

@@ -12,6 +12,7 @@ snfrank(D, 4)
 snfrank(D, 8)
 snfrank(D, 3)
 snfrank(D, 0)
+snfrank(D)
 p=2^64+13;
 D=[6*p^3, 2*p^2, p^2, p, 1];
 snfrank(D, p^3)
@@ -24,9 +25,9 @@ snfrank(D,x-1)
 snfrank(D,(x-1)^2)
 snfrank(D,(x-1)^3)
 snfrank(D,x^2+1)
-snfrank([0,12,1,1], 0)
+snfrank([0,12,1,1])
 snfrank([0,12,1,1], 2)
-snfrank([0,x,1,1], 0)
+snfrank([0,x,1,1])
 snfrank([0,x,1,1], x)
 
 checkfrobenius(M)=
