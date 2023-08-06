@@ -4268,6 +4268,7 @@ GEN     vecsquarefreeu(ulong a, ulong b);
 int     chk_gerepileupto(GEN x);
 GENbin* copy_bin(GEN x);
 GENbin* copy_bin_canon(GEN x);
+void    dbg_fill_stack(void);
 void    dbg_gerepile(pari_sp av);
 void    dbg_gerepileupto(GEN q);
 GEN     errname(GEN err);

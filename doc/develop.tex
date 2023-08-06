@@ -682,6 +682,232 @@ introduced a long time ago, when the \kbd{nfields} bench was so much slower
 than the others that it hid slowdowns elsewhere.)
 
 \newpage
+\chapter{Tips and tricks to edit and debug the PARI sources}
+
+First, fetch the pari sources from our \kbd{git} repository:
+\bprog
+  git clone http://pari.math.u-bordeaux.fr/git/pari.git
+@eprog\noindent
+The following sections assume you defined an environment variable
+\kbd{PARIDIR}, pointing to the toplevel where you install the pari sources,
+e.g. in \kbd{.bashrc},
+\bprog
+  export PARIDIR=$HOME/pari
+@eprog
+
+\section{Tags}
+To allow seamless navigation in PARI sources, we will use a
+\kbd{ctags} program. For instance, on Debian/Ubuntu systems,
+\bprog
+  sudo apt-get install exuberant-ctags
+@eprog
+
+\subsec{For \kbd{vim}}
+Type \kbd{make ctags} in PARI's toplevel, then add to your \kbd{.vimrc}
+\bprog
+  set tags=./tags,$PARIDIR/src/tags
+@eprog\noindent Now you can navigate the PARI sources in the usual \kbd{vim}
+way. Try \kbd{vi -t gadd}, then move the cursor to an identifier in the
+neighborhood, \kbd{typ} say, then type \kbd{Ctrl-]}  (and \kbd{Ctrl-t} to come
+back).
+
+\subsec{For \kbd{emacs}}
+Type \kbd{make etags} in PARI's toplevel, then add to your \kbd{.emacs}
+\bprog
+  (setq tags-table-list '("$PARIDIR/src"))
+@eprog
+
+\section{Editor customization}
+
+You can define special-purpose editor options to help you edit PARI code. We
+restrict to the \kbd{vim} editor; \kbd{emacs} and other programmer's editors
+give you analogous possibilities.
+
+\subsec{Create and customize \kbd{\$HOME/.vim/ftplugin/c.vim}}
+
+There you change \kbd{vim} settings whenever you're editing a C file.
+(Cleaner would be to call this \kbd{pari.vim} and load it conditionally from
+\kbd{c.vim} but this goes beyond the scope of these notes.) For instance
+
+\bprog
+  setlocal path+=$PARIDIR/src/headers
+  setlocal path+=$PARIDIR/Olinux-x86_64
+@eprog\noindent This allows the editor to find and process our include files;
+for instance typing \kbd{gf} on \kbd{\#include "paripriv.h"} will open that
+file!
+
+By the way, you can define more complex macros there, such as
+\bprog
+map <buffer> <Esc>r i  return NULL; /*LCOV_EXCL_LINE*/<Esc>
+@eprog\noindent When typing \kbd{<M-i>}, this inserts at the cursor the string
+\bprog
+  return NULL; /*LCOV_EXCL_LINE*/
+@eprog\noindent which is used in \kbd{libpari} code to mark unreachable
+lines, inserted to avoid warnings from the compiler, for instance after an
+error which we know will not return, when the function has a non \kbd{void}
+return type. The \kbd{LCOV\_EXCL\_LINE} comment instructs our coverage tool
+not to report that line as not reached by our testing suite. See
+\kbd{https://pari.math.u-bordeaux.fr/lcov-report/}.
+
+\bprog
+map <buffer> <Esc>a :if expand("%:t") == 'paridecl.h'\
+  <Bar> edit #\
+  <Bar> else\
+  <Bar> edit $PARIDIR/src/headers/paridecl.h\
+  <Bar> endif<C-M>
+@eprog\noindent This opens \kbd{paridecl.h} when hitting \kbd{<M-a>}
+from a PARI source file. Typing \kbd{<M-a>} once again moves back to where
+you where. That allows to edit a function, declare it or fix its declaration,
+and come back working. The same can be done for \kbd{paripriv.h}, obviously.
+
+\subsec{Create and customize \kbd{\$HOME/.vim/after/syntax/c.vim}}
+
+This allows to colorize in an appropriate way PARI-specific types and
+constants. For instance
+\bprog
+  syntax keyword cType GEN pari_sp ulong uchar hashentry hashtable
+  syntax keyword cNumber avma
+  syntax keyword cNumber gen_0 gen_1 gen_m1 gen_2 gen_m2 ghalf
+@eprog\noindent
+We also like to flag spaces at the end of a line as an error:
+\bprog
+  syntax match cError " \+$"
+@eprog
+
+\section{GDB configuration}
+Edit \kbd{\$HOME/.gdbinit} to teach \kbd{gdb} a number of useful macros.
+Here are some of the ones we use. Elaborate according to your needs.
+
+\subsec{Printing GENs}
+
+\bprog
+define o
+  call output((GEN)$arg0)
+end
+document o
+  Print the GEN value the same way as gp's print().
+  For instance o x prints the GEN x, o gadd(gen_1, gen_2) prints '3', etc.
+end
+@eprog
+
+\bprog
+define om
+  call outmat((GEN)$arg0)
+end
+document om
+  Pretty-print the GEN value, very suitable for matrices. For instance
+  'o matid(2)' prints [1,0;0,1] but 'om matid(2)' prints
+    [1 0]
+
+    [0 1]
+end
+@eprog
+
+\bprog
+define v
+  if $argc > 1
+    call dbgGEN((GEN)$arg0, $arg1)
+  else
+    call dbgGEN((GEN)$arg0, 2)
+  end
+end
+document v
+  Emit the GEN value the same way as gp's \x would. By default,
+  truncates the leaves at 2 words. This is changed by the 2nd optional
+  argument; special case -1 = no truncation.
+end
+@eprog
+
+The following GDB macros apply some preprocessing before printing so write and
+leave intermediate results (e.g., \kbd{liftall} result) on the PARI stack.
+\bprog
+define olm
+  call outmat(liftall((GEN)$arg0))
+end
+document olm
+  Pretty-print the GEN value lifting whenever possible.
+end
+@eprog
+
+\bprog
+define osm # prec_w: shallow copy with precision decreased
+  call outmat(gprec_w((GEN)$arg0,3))
+end
+document osm
+  Pretty-print the GEN value, printing floats with minimal precision,
+  suitable for large matrices or polynomials with floating point
+  entries of huge accuracy.
+end
+@eprog
+
+\subsec{Advanced use}
+
+\bprog
+define be
+  break pari_err
+end
+document be
+  Set a breakpoint in the PARI error handler.
+end
+
+define db
+  call setalldebug($argv0)
+end
+document db
+  Set 'DEBUGLEVEL' variables in all modules to the value given as argument
+  (between 0 and 10). Emulates gp's \g n.
+end
+
+define fs
+  call dbg_fill_stack()
+end
+document fs
+  Overwrite the unused portion of PARI's stack by junk. Allows to diagnose
+  garbage collection mistakes.
+end
+@eprog
+
+The final one is particularly useful.
+\bprog
+define w1
+  shell rm -f /var/tmp/gp.tmp1
+  call gpwritebin("/var/tmp/gp.tmp1",$arg0)
+end
+document w1
+  Write GEN argument to temp file in binary PARI format
+end
+@eprog\noindent The following GP function can now work its magic:
+\bprog
+  rtmp({n = 1}) = read( Str("/var/tmp/gp.tmp", n) );
+@eprog\noindent In particular, in any GP shell, \kbd{rtmp()} will read in
+the argument that was saved under \kbd{gdb} by \kbd{w1}, allowing to test and
+inspect it with GP functions and start again on error. This is in sharp
+contrast to the same inspection under GDB, which is error prone and
+unforgiving: an error when manipulation C functions is likely to crash the
+process, hitting a garbage collection point might destroy the object, etc.
+This is particularly useful when the saved value takes a non-negligible time
+to compute.
+
+Another possibility is to compare the behavior of a newly modified \kbd{gp}
+with a reference version. One can find and save internal values from the two
+different \kbd{gp} binaries from \kbd{gdb} and compare or test them in either
+one.
+
+One can obviously duplicate the definition to have \kbd{w2} write to
+\kbd{gp.tmp2}, etc. Here is a more generic solution:
+\bprog
+define W
+  set $tmp=stack_sprintf("/var/tmp/gp.tmp%d", $arg1)
+  eval "shell rm -f %s", $tmp
+  call gpwritebin($tmp, $arg0)
+end
+document W
+  'W x 7' writes the GEN x to /var/tmp/gp.tmp7. Note that 'rtmp(7)'
+  in a GP session would then recover the value of 'x'
+end
+@eprog
+
+\newpage
 \chapter{Parallelism}
 
 PARI provides an abstraction, herafter called the MT engine, for doing

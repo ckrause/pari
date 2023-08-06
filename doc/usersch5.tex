@@ -1469,6 +1469,14 @@ in a call to \kbd{gerepile(...,ltop,...)}.
 \fun{void}{dbg_gerepileupto}{GEN q} outputs the list of all objects on the
 stack that would be inspected in a call to \kbd{gerepileupto(...,q)}.
 
+\fun{void}{dbg_fill_stack}{void} marks the unused portion of the stack
+(between its bottom and \kbd{avma}) with repeated magic values:
+\kbd{0xBADC0FFEE0DDF00D} on 64-bit archs, and \kbd{0xDEADBEEF} on 32-bit.
+This allows to quickly detect garbage collection errors, e.g., objets one of
+whose component would be overwritten later or uninitialized memory access.
+The \kbd{valgrind} framework more thorough possibilities but requires
+instrumenting the code.
+
 \subsec{Copies}
 
 \fun{GEN}{gcopy}{GEN x} creates a new copy of $x$ on the stack.

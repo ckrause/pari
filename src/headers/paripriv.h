@@ -315,7 +315,6 @@ INLINE ulong Flx_deg1_root(GEN f, ulong p) {
 long   getdebugvar(void);
 void   setdebugvar(long n);
 void   debug_stack(void);
-void   fill_stack(void);
 void   minim_alloc(long n, double ***q, GEN *x, double **y,  double **z, double **v);
 int    pop_entree_block(entree *ep, long loc);
 int    pop_val_if_newer(entree *ep, long loc);

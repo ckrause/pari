@@ -68,6 +68,7 @@ BA  21- [libpari] RgV_F2v_extract_shallow
     22- [libpari] Fp_double
     23- [libpari] convenience function veclast
     24- allow snfrank(D,0) for snfrank(D)
+    25- [libpari] dbg_fill_stack() [#2361]
 
   Removed
      1- [graphic] support for Qt4

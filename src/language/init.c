@@ -2696,10 +2696,15 @@ gerepile(pari_sp av, pari_sp tetpil, GEN q)
 }
 
 void
-fill_stack(void)
+dbg_fill_stack(void)
 {
+#ifdef LONG_IS_64BIT
+  const long JUNK = 0xBADC0FFEE0DDF00D;
+#else
+  const long JUNK = 0xDEADBEEF;
+#endif
   GEN x = ((GEN)pari_mainstack->bot);
-  while (x < (GEN)avma) *x++ = 0xfefefefeUL;
+  while (x < (GEN)avma) *x++ = JUNK;
 }
 
 void
