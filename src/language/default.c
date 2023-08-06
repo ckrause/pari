@@ -138,11 +138,13 @@ expand_path(gp_path *p)
   delete_dirs(p);
   if (*v)
   {
-    v = pari_strdup(v);
+    char *v0 = v = pari_strdup(v);
+    while (*v == PATH_SEPARATOR) v++; /* empty leading path components */
+    /* First count non-empty path components. N.B. ignore empty ones */
     for (s=v; *s; s++)
-      if (*s == PATH_SEPARATOR) {
-        *s = 0;
-        if (s == v || s[-1] != 0) n++; /* ignore empty path components */
+      if (*s == PATH_SEPARATOR) { /* implies s > v */
+        *s = 0; /* path component */
+        if (s[-1] && s[1]) n++; /* ignore if previous is empty OR we are last */
       }
     dirs = (char**) pari_malloc((n + 2)*sizeof(char *));
 
@@ -155,7 +157,7 @@ expand_path(gp_path *p)
       dirs[i] = path_expand(s);
       s = end + 1; /* next path component */
     }
-    pari_free((void*)v);
+    pari_free((void*)v0);
   }
   else
   {
