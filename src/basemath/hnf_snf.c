@@ -2910,6 +2910,7 @@ long
 ZV_snf_rank_u(GEN D, ulong p)
 {
   long i, l = lg(D);
+  while (l > 1 && D[l-1] == 1) l--;
   if (!p) return l - 1;
   if (p == 2)
   {
@@ -2932,13 +2933,10 @@ ZV_snf_rank_u(GEN D, ulong p)
 long
 ZV_snf_rank(GEN D, GEN p)
 {
-  long i, l;
-  switch(lgefint(p))
-  {
-    case 2: return lg(D) - 1;
-    case 3: return ZV_snf_rank_u(D, p[2]);
-  }
-  l = lg(D);
+  long i, l = lg(D);
+  if (lgefint(p) == 3) return ZV_snf_rank_u(D, p[2]);
+  while (l > 1 && equali1(gel(D, l-1))) l--;
+  if (!signe(p)) return l - 1;
   for (i = 1; i < l; i++)
     if (!dvdii(gel(D,i), p)) break;
   return i - 1;
@@ -2965,11 +2963,14 @@ snfrank(GEN D, GEN p)
   switch(typ(p))
   {
     case t_INT:
-      if (!RgV_is_ZV(D)) pari_err_TYPE("snfrank", D);
-      return ZV_snf_rank(D, p);
+      if (RgV_is_ZV(D)) return ZV_snf_rank(D, p);
+      if (!signe(p)) break; /* allow p = 0 */
+      pari_err_TYPE("snfrank", D);
     case t_POL: break;
     default: pari_err_TYPE("snfrank", p);
   }
+  while (l > 1 && gequal1(gel(D, l-1))) l--;
+  if (gequal0(p)) return l - 1;
   for (i = 1; i < l; i++)
     if (!gdvd(gel(D,i), p)) break;
   return i - 1;

@@ -24,6 +24,10 @@ snfrank(D,x-1)
 snfrank(D,(x-1)^2)
 snfrank(D,(x-1)^3)
 snfrank(D,x^2+1)
+snfrank([0,12,1,1], 0)
+snfrank([0,12,1,1], 2)
+snfrank([0,x,1,1], 0)
+snfrank([0,x,1,1], x)
 
 checkfrobenius(M)=
 {

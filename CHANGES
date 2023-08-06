@@ -26,6 +26,8 @@ BA  22- ellisomat/nf could miss isogenies of degree dividing the conductor
     23- mfcoef(mftwist(f,D), ...) wrong result [#2484]
     24- sumeulerrat / prodeulerrat: slow if s not an integer [#2433]
     25- 'path' broken when initial or trailing ':'
+    26- snfrank([1],0) -> 1 [instead of 0].
+    27- snfrank(vector of polynomials, 0) -> error
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output
