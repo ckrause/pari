@@ -1473,6 +1473,17 @@ cxerfc_r1(GEN x, long prec)
   return gerepileupto(av,res);
 }
 
+static GEN
+sererfc(GEN x, long prec)
+{
+  GEN u, z = invr(sqrtr_abs(Pi2n(-2,prec)));
+  setsigne(z, -1); /* -2/sqrt(Pi) */
+  z = gmul(z, integser(gmul(derivser(x), gexp(gneg(gsqr(x)), prec))));
+  u = polcoef_i(x, 0, varn(x));
+  if (!gcmp0(u)) z = gadd(z, gerfc(u, prec));
+  return z;
+}
+
 GEN
 gerfc(GEN x, long prec)
 {
@@ -1480,6 +1491,16 @@ gerfc(GEN x, long prec)
   long s;
   pari_sp av;
 
+  switch(typ(x))
+  {
+    case t_INT: case t_REAL: case t_FRAC: case t_COMPLEX:
+      break;
+    default:
+      av = avma;
+      if ((z = toser_i(x))) return gerepileupto(av, sererfc(z,prec));
+      return trans_eval("erfc",gerfc,x,prec);
+  }
+  /* x a complex scalar */
   x = trans_fix_arg(&prec,&x,&xr,&xi, &av,&res);
   s = signe(xr);
   if (s > 0 || (s == 0 && signe(xi) >= 0)) {
