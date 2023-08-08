@@ -25,7 +25,7 @@ Doc: Solve the equation $Q(x,y)=n$ in coprime integers $x$ and $y$ (primitive
  algorithm returns a solution with minimal content; in particular, a
  primitive solution exists if and only if one is returned.
 
- The integer $n$ can be given by its factorization matrix
+ The integer $n$ can also be given by its factorization matrix
  \kbd{\var{fa} = factor(n)} or by the pair $[n, \var{fa}]$.
 
  \bprog

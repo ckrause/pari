@@ -1478,49 +1478,55 @@ qfbsolve_cornacchia(GEN c, GEN p)
   return mkvec2(M, N);
 }
 
-GEN
-qfisolvep(GEN Q, GEN p)
+static GEN
+qfisolvep_i(GEN Q, GEN p)
 {
   GEN M, N, x, y, a, c, d, q;
-  pari_sp av = avma;
   if (!signe(gel(Q,2)))
   {
     a = gel(Q,1);
     c = gel(Q,3); /* if principal form, use faster cornacchia */
     if (equali1(a))
     {
-      if (!(x = qfbsolve_cornacchia(c, p))) return gc_const(av, gen_0);
-      return gerepilecopy(av, x);
+      if (!(x = qfbsolve_cornacchia(c, p))) return NULL;
+      return x;
     }
     if (equali1(c))
     {
-      if (!(x = qfbsolve_cornacchia(a, p))) return gc_const(av, gen_0);
-      swap(gel(x,1), gel(x,2)); return gerepilecopy(av, x);
+      if (!(x = qfbsolve_cornacchia(a, p))) return NULL;
+      swap(gel(x,1), gel(x,2)); return x;
     }
   }
-  d = qfb_disc(Q); if (kronecker(d,p) < 0) return gen_0;
+  d = qfb_disc(Q); if (kronecker(d,p) < 0) return NULL;
   Q = redimagsl2(Q, &N);
   if (equali1(gel(Q,1))) /* principal form */
   {
     if (!signe(gel(Q,2)))
-    { if (!(x = qfbsolve_cornacchia(gel(Q,3), p))) return gc_const(av, gen_0); }
+    { if (!(x = qfbsolve_cornacchia(gel(Q,3), p))) return NULL; }
     else
     { /* x^2 + xy + ((1-d)/4)y^2 = p <==> (2x + y)^2 - d y^2 = 4p */
-      if (!cornacchia2(negi(d), p, &x, &y)) return gc_const(av, gen_0);
-      x = subii(x,y); if (mpodd(x)) return gc_const(av, gen_0);
+      if (!cornacchia2(negi(d), p, &x, &y)) return NULL;
+      x = subii(x,y); if (mpodd(x)) return NULL;
       x = mkvec2(shifti(x,-1), y);
     }
     x = ZM_ZC_mul(N, x);
     x[0] = evaltyp(t_VEC) | _evallg(3); /* transpose */
-    return gerepileupto(av, x);
+    return x;
   }
   q = redimagsl2(primeform(d, p), &M);
-  if (!GL2_qfb_equal(Q,q)) return gc_const(av, gen_0);
+  if (!GL2_qfb_equal(Q,q)) return NULL;
   if (signe(gel(Q,2))==signe(gel(q,2)))
     x = SL2_div_mul_e1(N,M);
   else
     x = SL2_swap_div_mul_e1(N,M);
-  return gerepileupto(av, x);
+  return x;
+}
+GEN
+qfisolvep(GEN Q, GEN p)
+{
+  pari_sp av = avma;
+  GEN x = qfisolvep_i(Q, p);
+  return x? gerepilecopy(av, x): gc_const(av, gen_0);
 }
 
 static void
@@ -1618,13 +1624,29 @@ qfrsolvep(GEN Q, GEN p)
 }
 
 static GEN
+known_prime(GEN v)
+{
+  GEN p, e, fa = check_arith_all(v, "qfbsolve");
+  if (!fa) return BPSW_psp(v)? v: NULL;
+  if (lg(gel(fa,1)) != 2) return NULL;
+  p = gcoeff(fa,1,1);
+  e = gcoeff(fa,1,2);
+  return (equali1(e) && !is_pm1(p) && signe(p) > 0)? p: NULL;
+}
+static GEN
 qfsolve_normform(GEN Q, GEN f, GEN rd)
 { return rd? qfrsolve_normform(Q, f, rd): qfisolve_normform(Q, f); }
 static GEN
 qfbsolve_primitive_i(GEN Q, GEN rd, GEN *Qr, GEN fa, long all)
 {
-  GEN x, W, F = normforms(qfb_disc(Q), fa);
+  GEN x, W, F, p;
   long i, j, l;
+  if (!rd && (p = known_prime(fa)))
+  {
+    x = qfisolvep_i(Q, p);
+    return (x && all)? mkvec(x): x;
+  }
+  F = normforms(qfb_disc(Q), fa);
   if (!F) return NULL;
   if (!*Qr) *Qr = qfbredsl2(Q, rd);
   l = lg(F); W = all? cgetg(l, t_VEC): NULL;
