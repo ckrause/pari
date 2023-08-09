@@ -1091,8 +1091,7 @@ nonsquare_Fp(GEN p)
   if (mod8(p)==5) return gen_2;
   u_forprime_init(&T, 3, ULONG_MAX);
   while((a = u_forprime_next(&T)))
-    if (kroui(a,p) < 0)
-      return utoi(a);
+    if (kroui(a,p) < 0) return utoi(a);
   pari_err_PRIME("Fp_sqrt [modulus]",p);
   return NULL; /* LCOV_EXCL_LINE */
 }
@@ -1100,15 +1099,15 @@ nonsquare_Fp(GEN p)
 static GEN
 Fp_rootsof1(ulong l, GEN p)
 {
-   GEN z, pl = diviuexact(subis(p,1),l);
-   ulong a;
-   forprime_t T;
-   u_forprime_init(&T, 3, ULONG_MAX);
-   while((a = u_forprime_next(&T)))
-   {
-     z = Fp_pow(utoi(a), pl, p);
-     if (!equali1(z)) return z;
-   }
+  GEN z, pl = diviuexact(subis(p,1),l);
+  ulong a;
+  forprime_t T;
+  u_forprime_init(&T, 3, ULONG_MAX);
+  while((a = u_forprime_next(&T)))
+  {
+    z = Fp_pow(utoi(a), pl, p);
+    if (!equali1(z)) return z;
+  }
   pari_err_PRIME("Fp_sqrt [modulus]",p);
   return NULL; /* LCOV_EXCL_LINE */
 }
@@ -1211,8 +1210,7 @@ Fp_sqrt_ii(GEN a, GEN y, GEN p)
   {
     GEN res = Fp_sqrts(as, p);
     if (!res) return gc_NULL(av);
-    if (signe(res))
-    return gerepileupto(av, res);
+    if (signe(res)) return gerepileupto(av, res);
   }
   if (e == 2)
   { /* Atkin's formula */
