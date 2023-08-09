@@ -1430,26 +1430,22 @@ normforms(GEN D, GEN fa)
   return L;
 }
 
-static void
-SL2_div_init(GEN N, GEN M, GEN *A, GEN *B, GEN *C, GEN *D)
-{
-  GEN b = gcoeff(M,2,1), d = gcoeff(M,2,2);
-  *A = mulii(gcoeff(N,1,1), d); *B = mulii(gcoeff(N,1,2), b);
-  *C = mulii(gcoeff(N,2,1), d); *D = mulii(gcoeff(N,2,2), b);
-}
 /* Let M and N in SL2(Z), return (N*M^-1)[,1] */
 static GEN
 SL2_div_mul_e1(GEN N, GEN M)
 {
-  GEN A, B, C, D; SL2_div_init(N, M, &A, &B, &C, &D);
+  GEN b = gcoeff(M,2,1), d = gcoeff(M,2,2);
+  GEN A = mulii(gcoeff(N,1,1), d), B = mulii(gcoeff(N,1,2), b);
+  GEN C = mulii(gcoeff(N,2,1), d), D = mulii(gcoeff(N,2,2), b);
   retmkvec2(subii(A,B), subii(C,D));
 }
-/* Let M and N in SL2(Z), return (N*[1,0;0,-1]*M^-1)[,1] */
 static GEN
-SL2_swap_div_mul_e1(GEN N, GEN M)
+qfisolve_normform(GEN Q, GEN P)
 {
-  GEN A, B, C, D; SL2_div_init(N, M, &A, &B, &C, &D);
-  retmkvec2(addii(A,B), addii(C,D));
+  GEN a = gel(Q,1), N = gel(Q,2);
+  GEN M, b = redimagsl2(P, &M);
+  if (!qfb_equal(a,b)) return NULL;
+  return SL2_div_mul_e1(N,M);
 }
 
 /* Test equality modulo GL2 of two reduced forms */
@@ -1461,71 +1457,75 @@ GL2_qfb_equal(GEN a, GEN b)
    &&    equalii(gel(a,3),gel(b,3));
 }
 
+/* Q(u,v) = p; if s < 0 return that solution; else the set of all solutions */
 static GEN
-qfisolve_normform(GEN Q, GEN P)
+allsols(GEN Q, long s, GEN u, GEN v)
 {
-  GEN a = gel(Q,1), N = gel(Q,2);
-  GEN M, b = redimagsl2(P, &M);
-  if (!qfb_equal(a,b)) return NULL;
-  return SL2_div_mul_e1(N,M);
+  GEN w = mkvec2(u, v), b;
+  if (signe(v) < 0) { u = negi(u); v = negi(v); } /* normalize for v >= 0 */
+  w = mkvec2(u, v); if (s < 0) return w;
+  if (!s) return mkvec(w);
+  b = gel(Q,2); /* sum of the 2 solutions (if they exist) is -bv / a */
+  if (signe(b))
+  { /* something to check */
+    GEN r, t;
+    t = dvmdii(mulii(b, v), gel(Q,1), &r);
+    if (signe(r)) return mkvec(w);
+    u = addii(u, t);
+  }
+  return mkvec2(w, mkvec2(negi(u), v));
 }
-
 static GEN
-qfbsolve_cornacchia(GEN c, GEN p)
+qfisolvep_all(GEN Q, GEN p, long all)
 {
-  GEN M, N;
-  if (kronecker(negi(c), p) < 0 || !cornacchia(c, p, &M,&N)) return NULL;
-  return mkvec2(M, N);
-}
+  GEN R, U, V, M, N, x, q, D = qfb_disc(Q);
+  long s = kronecker(D, p);
 
-static GEN
-qfisolvep_i(GEN Q, GEN p)
-{
-  GEN M, N, x, y, a, c, d, q;
+  if (s < 0) return NULL;
+  if (!all) s = -1; /* to indicate we want a single solution */
+  /* Solutions iff a class of maximal ideal above p is the class of Q;
+   * Two solutions iff (s > 0 and the class has order > 2), else one */
   if (!signe(gel(Q,2)))
-  {
-    a = gel(Q,1);
-    c = gel(Q,3); /* if principal form, use faster cornacchia */
+  { /* if principal form, use faster cornacchia */
+    GEN a = gel(Q,1), c = gel(Q,3);
     if (equali1(a))
     {
-      if (!(x = qfbsolve_cornacchia(c, p))) return NULL;
-      return x;
+      if (!cornacchia(c, p, &M,&N)) return NULL;
+      return allsols(Q, s, M, N);
     }
     if (equali1(c))
     {
-      if (!(x = qfbsolve_cornacchia(a, p))) return NULL;
-      swap(gel(x,1), gel(x,2)); return x;
+      if (!cornacchia(a, p, &M,&N)) return NULL;
+      return allsols(Q, s, N, M);
     }
   }
-  d = qfb_disc(Q); if (kronecker(d,p) < 0) return NULL;
-  Q = redimagsl2(Q, &N);
-  if (equali1(gel(Q,1))) /* principal form */
-  {
-    if (!signe(gel(Q,2)))
-    { if (!(x = qfbsolve_cornacchia(gel(Q,3), p))) return NULL; }
+  R = redimagsl2(Q, &U);
+  if (equali1(gel(R,1)))
+  { /* principal form */
+    if (!signe(gel(R,2)))
+    {
+      if (!cornacchia(gel(R,3), p, &M,&N)) return NULL;
+      x = mkvec2(M,N);
+    }
     else
-    { /* x^2 + xy + ((1-d)/4)y^2 = p <==> (2x + y)^2 - d y^2 = 4p */
-      if (!cornacchia2(negi(d), p, &x, &y)) return NULL;
-      x = subii(x,y); if (mpodd(x)) return NULL;
-      x = mkvec2(shifti(x,-1), y);
+    { /* x^2 + xy + ((1-D)/4)y^2 = p <==> (2x + y)^2 - D y^2 = 4p */
+      if (!cornacchia2(negi(D), p, &M, &N)) return NULL;
+      x = subii(M,N); if (mpodd(x)) return NULL;
+      x = mkvec2(shifti(x,-1), N);
     }
-    x = ZM_ZC_mul(N, x);
-    x[0] = evaltyp(t_VEC) | _evallg(3); /* transpose */
-    return x;
+    x = ZM_ZC_mul(U, x); x[0] = evaltyp(t_VEC) | _evallg(3); /* transpose */
+    return allsols(Q, s, gel(x,1), gel(x,2));
   }
-  q = redimagsl2(primeform(d, p), &M);
-  if (!GL2_qfb_equal(Q,q)) return NULL;
-  if (signe(gel(Q,2))==signe(gel(q,2)))
-    x = SL2_div_mul_e1(N,M);
-  else
-    x = SL2_swap_div_mul_e1(N,M);
-  return x;
+  q = redimagsl2(primeform(D, p), &V);
+  if (!GL2_qfb_equal(R,q)) return NULL;
+  if (signe(gel(R,2)) != signe(gel(q,2))) gcoeff(V,2,1) = negi(gcoeff(V,2,1));
+  x = SL2_div_mul_e1(U,V); return allsols(Q, s, gel(x,1), gel(x,2));
 }
 GEN
 qfisolvep(GEN Q, GEN p)
 {
   pari_sp av = avma;
-  GEN x = qfisolvep_i(Q, p);
+  GEN x = qfisolvep_all(Q, p, 0);
   return x? gerepilecopy(av, x): gc_const(av, gen_0);
 }
 
@@ -1641,11 +1641,7 @@ qfbsolve_primitive_i(GEN Q, GEN rd, GEN *Qr, GEN fa, long all)
 {
   GEN x, W, F, p;
   long i, j, l;
-  if (!rd && (p = known_prime(fa)))
-  {
-    x = qfisolvep_i(Q, p);
-    return (x && all)? mkvec(x): x;
-  }
+  if (!rd && (p = known_prime(fa))) return qfisolvep_all(Q, p, all);
   F = normforms(qfb_disc(Q), fa);
   if (!F) return NULL;
   if (!*Qr) *Qr = qfbredsl2(Q, rd);
