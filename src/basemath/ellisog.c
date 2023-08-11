@@ -1257,10 +1257,10 @@ stariter_easy(GEN E, GEN p)
   return R;
 }
 
+/* pr^h assumed principal */
 static GEN
-idealgen_minpoly(GEN bnf, GEN pr)
+idealgen_minpoly(GEN bnf, GEN pr, GEN h)
 {
-  GEN h = bnf_get_no(bnf);
   GEN e = isprincipalfact(bnf, NULL, mkvec(pr), mkvec(h), nf_GEN);
   return minpoly(basistoalg(bnf, gel(e,2)), 0);
 }
@@ -1270,8 +1270,7 @@ stariter(GEN p, long r)
 {
   GEN starl = deg1pol_shallow(gen_1, gen_m1, 0);
   long i;
-  for (i = 1; i <= r; i++)
-    starl = starlaw(starl, p);
+  for (i = 1; i <= r; i++) starl = starlaw(starl, p);
   return starl;
 }
 
@@ -1280,14 +1279,12 @@ stariter_hard(GEN E, GEN bnf, GEN pr)
 {
   GEN nf = bnf_get_nf(bnf);
   long k, d = nf_get_degree(nf), d2 = d>>1;
-  GEN cyc = bnf_get_cyc(bnf);
-  long h = lg(cyc)==1 ? 1 : itos(gel(cyc,1));
-  GEN pol = idealgen_minpoly(bnf,pr);
+  GEN h = cyc_get_expo(bnf_get_cyc(bnf)); /* could use order of pr in Cl_K */
+  GEN pol = idealgen_minpoly(bnf, pr, h);
   GEN S = startor(pol,12), P = gen_1, polchar;
-  for (k = 0; k <= d2; k++)
-    P = gmul(P, stariter(S,k));
+  for (k = 0; k <= d2; k++) P = gmul(P, stariter(S,k));
   polchar = ellnf_charpoly(E, pr);
-  return ZX_resultant(startor(polchar,12*h), P);
+  return ZX_resultant(startor(polchar,12*itou(h)), P);
 }
 
 /* Based on a GP script by Nicolas Billerey and Theorems 2.4 and 2.8 of
