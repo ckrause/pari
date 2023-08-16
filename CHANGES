@@ -28,6 +28,7 @@ BA  22- ellisomat/nf could miss isogenies of degree dividing the conductor
     25- 'path' broken when initial or trailing ':'
     26- snfrank([1],0) -> 1 [instead of 0].
     27- snfrank(vector of polynomials, 0) -> error
+    28- division of t_POLs with compatible domains Mod(1,2)/(2*x+1) -> Mod(1,2)
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output

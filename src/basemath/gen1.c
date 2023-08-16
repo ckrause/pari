@@ -239,11 +239,14 @@ Leading_is_neg(GEN x)
   return is_real_t(typ(x))? gsigne(x) < 0: 0;
 }
 
+static int
+transtype(GEN x) { return x != gen_1 && typ(x) != t_PADIC; }
+
 /* d a t_POL, n a coprime t_POL of same var or "scalar". Not memory clean */
 GEN
 gred_rfrac_simple(GEN n, GEN d)
 {
-  GEN c, cn, cd, z;
+  GEN _1n, _1d, c, cn, cd, z;
   long dd = degpol(d);
 
   if (dd <= 0)
@@ -254,6 +257,10 @@ gred_rfrac_simple(GEN n, GEN d)
     return n;
   }
   if (Leading_is_neg(d)) { d = gneg(d); n = gneg(n); }
+  _1n = Rg_get_1(n);
+  _1d = Rg_get_1(d);
+  if (transtype(_1n) && !gidentical(_1n, _1d)) d = gmul(d, _1n);
+  if (transtype(_1d) && !gidentical(_1n, _1d)) n = gmul(n, _1d);
   cd = content(d);
   while (typ(n) == t_POL && !degpol(n)) n = gel(n,2);
   cn = (typ(n) == t_POL && varn(n) == varn(d))? content(n): n;
@@ -333,7 +340,7 @@ fix_rfrac(GEN x, long d)
 static GEN
 gred_rfrac2(GEN n, GEN d)
 {
-  GEN y, z;
+  GEN y, z, _1n, _1d;
   long v, vd, vn;
 
   n = simplify_shallow(n);
@@ -350,6 +357,10 @@ gred_rfrac2(GEN n, GEN d)
   vn = varn(n);
   if (varncmp(vd, vn) < 0) return gred_rfrac_simple(n,d);
   if (varncmp(vd, vn) > 0) return RgX_Rg_div(n,d);
+  _1n = Rg_get_1(n);
+  _1d = Rg_get_1(d);
+  if (transtype(_1n) && !gidentical(_1n, _1d)) d = gmul(d, _1n);
+  if (transtype(_1d) && !gidentical(_1n, _1d)) n = gmul(n, _1d);
 
   /* now n and d are t_POLs in the same variable */
   v = RgX_valrem(n, &n) - RgX_valrem(d, &d);
@@ -2268,10 +2279,15 @@ static GEN
 div_scal_rfrac(GEN x, GEN y)
 {
   GEN y1 = gel(y,1), y2 = gel(y,2);
-  pari_sp av = avma;
   if (typ(y1) == t_POL && varn(y2) == varn(y1))
   {
-    if (degpol(y1)) return gerepileupto(av, gred_rfrac_simple(gmul(x, y2), y1));
+    if (degpol(y1))
+    {
+      pari_sp av = avma;
+      GEN _1 = Rg_get_1(x);
+      if (transtype(_1)) y1 = gmul(y1, _1);
+      return gerepileupto(av, gred_rfrac_simple(gmul(x, y2), y1));
+    }
     y1 = gel(y1,2);
   }
   return RgX_Rg_mul(y2, gdiv(x,y1));
@@ -2324,14 +2340,21 @@ static GEN
 div_scal_pol(GEN x, GEN y) {
   long ly = lg(y);
   pari_sp av;
+  GEN _1;
   if (ly == 3) return scalarpol(gdiv(x,gel(y,2)), varn(y));
   if (isrationalzero(x)) return zeropol(varn(y));
   av = avma;
+  _1 = Rg_get_1(x); if (transtype(_1)) y = gmul(y, _1);
   return gerepileupto(av, gred_rfrac_simple(x,y));
 }
 static GEN
 div_scal_ser(GEN x, GEN y)
-{ pari_sp av = avma; return gerepileupto(av, gmul(x, ser_inv(y))); }
+{
+  pari_sp av = avma;
+  GEN _1 = Rg_get_1(x);
+  if (transtype(_1)) y = gmul(y, _1);
+  return gerepileupto(av, gmul(x, ser_inv(y)));
+}
 static GEN
 div_scal_T(GEN x, GEN y, long ty) {
   switch(ty)
