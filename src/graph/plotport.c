@@ -1509,35 +1509,33 @@ plotrecthrawin(GEN fmt, PARI_plot *W, long ne, dblPointList *data, long flags)
   set_range(x.ysml, x.ybig, &ysml, &ybig);
   if (W)
   { /* actual output; else output to rectwindow: no labels */
-    const long se = NUMRECT-2;
-    long lm, rm, tm, bm;
     char YBIG[16], YSML[16], XSML[16], XBIG[16];
+    long lm = W->hunit-1, rm = W->hunit-1, tm = W->vunit-1;
+    long bm = W->vunit+W->fheight-1;
     /* left/right/top/bottom margin */
-    if (flags&PLOT_NOMINMAX)
-    {
-      YBIG[0]=0; YSML[0]=0; XSML[0]=0; XBIG[0]=0;
-    } else
+    if (!(flags&PLOT_NOMINMAX))
     {
       sprintf(YSML,"%.5g", ysml); sprintf(YBIG,"%.5g", ybig);
       sprintf(XSML,"%.5g", xsml); sprintf(XBIG,"%.5g", xbig);
+      /* left margin has y labels with hgap on both sides of text */
+      lm = maxss(strlen(YSML), strlen(YBIG)) * W->fwidth + 2*W->hunit-1;
     }
-    /* left margin has y labels with hgap on both sides of text */
-    lm = maxss(strlen(YSML),strlen(YBIG))*W->fwidth + 2*W->hunit-1;
-    rm = W->hunit-1;
-    tm = W->vunit-1;
-    bm = W->vunit+W->fheight-1;
-    w[0] = wx[0] = wy[0] = evaltyp(t_VECSMALL) | evallg(3);
-    w[1] = se; wx[1] = 0;  wy[1] = 0;
-    w[2] = ne; wx[2] = lm; wy[2] = tm;
+    w[0] = evaltyp(t_VECSMALL) | _evallg((flags&PLOT_NOMINMAX)? 2: 3);
+    wx[0] = wy[0] = w[0];
+    w[1] = ne; wx[1] = lm; wy[1] = tm;
    /* Window (width x height) is given in pixels, correct pixels are 0..n-1,
     * whereas rect functions work with windows whose pixel range is [0,n] */
-    initrect_i(se, W->width - 1, W->height - 1);
     initrect_i(ne, W->width - (lm+rm) - 1, W->height - (tm+bm) - 1);
-    /* draw labels on se */
-    _move(se,lm,0); plotstring(se, YBIG, RoSTdirRIGHT|RoSTdirHGAP|RoSTdirTOP);
-    _move(se,lm,W->height-bm); plotstring(se,YSML, RoSTdirRIGHT|RoSTdirHGAP|RoSTdirVGAP);
-    _move(se,lm,W->height-bm); plotstring(se, XSML, RoSTdirLEFT|RoSTdirTOP);
-    _move(se,W->width-rm-1, W->height-bm); plotstring(se, XBIG, RoSTdirRIGHT|RoSTdirTOP);
+    if (!(flags&PLOT_NOMINMAX))
+    { /* draw labels on se */
+      const long se = NUMRECT-2;
+      w[2] = se; wx[2] = 0;  wy[2] = 0;
+      initrect_i(se, W->width - 1, W->height - 1);
+      _move(se,lm,0); plotstring(se, YBIG, RoSTdirRIGHT|RoSTdirHGAP|RoSTdirTOP);
+      _move(se,lm,W->height-bm); plotstring(se,YSML, RoSTdirRIGHT|RoSTdirHGAP|RoSTdirVGAP);
+      _move(se,lm,W->height-bm); plotstring(se, XSML, RoSTdirLEFT|RoSTdirTOP);
+      _move(se,W->width-rm-1, W->height-bm); plotstring(se, XBIG, RoSTdirRIGHT|RoSTdirTOP);
+    }
   }
   if (!(flags & PLOT_NO_RESCALE)) plotscale0(ne, xsml, xbig, ysml, ybig);
   if (!(flags & PLOT_NO_FRAME))
@@ -1611,8 +1609,7 @@ plotrecthrawin(GEN fmt, PARI_plot *W, long ne, dblPointList *data, long flags)
   {
     GEN s = NULL;
     if (fmt) s = fmt_convert(fmt, w, wx, wy, W); else Draw(W, w,wx,wy);
-    plotkill(w[1]);
-    plotkill(w[2]);
+    for (i = 1; i < lg(w); i++) plotkill(w[i]);
     if (fmt) return s;
   }
   set_avma(av);
