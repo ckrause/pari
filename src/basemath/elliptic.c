@@ -1657,9 +1657,8 @@ twist2(GEN c4, GEN c6, GEN disc, long vg)
   return -8;
 }
 
-/* Return D such that E_D has minimal discriminant.
-   It also has minimal conductor in Z[1/2]
-*/
+/* Return D such that E_D has minimal discriminant. It also has minimal
+ * conductor in Z[1/2] */
 GEN
 ellminimaltwist(GEN e)
 {
