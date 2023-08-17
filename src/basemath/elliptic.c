@@ -720,13 +720,7 @@ ellinit_Q(GEN x, long prec)
 }
 
 static GEN
-nfVtoalg(GEN nf, GEN x)
-{
-  long i, l;
-  GEN y = cgetg_copy(x,&l);
-  for (i=1; i<l; i++) gel(y,i) = nftoalg(nf,gel(x,i));
-  return y;
-}
+nfVtoalg(GEN nf, GEN x) { pari_APPLY_same(nftoalg(nf,gel(x,i))); }
 
 static GEN
 ellinit_nf(GEN x, GEN p)
