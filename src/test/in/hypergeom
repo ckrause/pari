@@ -172,6 +172,10 @@ f(1.2, 1.2, 1.4, -0.3, 0.7)
 
 hypergeom([0,0],[1],2) \\ #2425
 
+hypergeom(,,4+O(2^10))
+hypergeom([1,1],[1],3+O(3^10))
+hypergeom([1,1],[1/3],1+O(3^10))
+
 \\ Errors, keep at end
 airy(O(x))
 hypergeom("","",O(x))
@@ -180,3 +184,5 @@ hypergeom([2,1],[2,-1],1)
 hypergeom([2,3],1,1)
 hypergeom([1/2,1/2,1/2],[1/3,1/3], 1 - 10^-6)
 hypergeom([1,2,3,4],[],1/2)
+hypergeom(,,2+O(2^10))
+hypergeom([1,1/3],[1],3+O(3^10))

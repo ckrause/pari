@@ -1100,11 +1100,59 @@ hypergeom_arg(GEN x)
   return (typ(x) == t_VEC)? x: mkvec(x);
 }
 
+
+static GEN
+vpoch_mul(GEN v, long k)
+{
+  long i, l = lg(v);
+  GEN p;
+  if (l == 1) return gen_1;
+  p = gmael(v, 1, k);
+  for (i = 2; i < l; i++) p = gmul(p, gmael(v, i, k));
+  return p;
+}
+static GEN
+vp(GEN a, GEN p, GEN dft)
+{
+  long v = gvaluation(a, p);
+  return v < 0? stoi(v): dft;
+}
+static GEN
+Qp_hypergeom(GEN N, GEN D, GEN z)
+{
+  GEN vN, vD, r, S = gen_1, R = gen_1, p = gel(z, 2), dft = ginv(subis(p, 1));
+  long l, i, prec = precp(z) + valp(z) + 1;
+  pari_sp av;
+
+  r = gsub(stoi(valp(z)), dft);
+  l = lg(N);
+  for (i = 1; i < l; i++) r = gadd(r, vp(gel(N,i), p, dft));
+  l = lg(D);
+  for (i = 1; i < l; i++) r = gsub(r, vp(gel(D,i), p, dft));
+  if (gsigne(r) <= 0) pari_err(e_MISC, "divergent p-adic hypergeometric sum");
+  l = itou(gceil(gdivsg(prec, r)));
+  vN = RgV_vpoch(N, l);
+  vD = RgV_vpoch(D, l); av = avma;
+  for (i = 1; i <= l; i++)
+  {
+    GEN H = gdiv(vpoch_mul(vN, i), vpoch_mul(vD, i));
+    R = gmul(R, gdivgu(z,i));
+    S = gadd(S, gmul(R, H));
+    if (gc_needed(av,1))
+    {
+      if (DEBUGMEM>1) pari_warn(warnmem,"hypergeom, i = %ld / %ld", i,l);
+      gerepileall(av, 2, &R, &S);
+    }
+  }
+  return S;
+}
+
+/* assume is_scalar_t(typ(z)) */
 static GEN
 hypergeom_i(GEN N, GEN D, GEN z, long prec)
 {
   long nN, nD;
-  if (!is_scalar_t(typ(z))) pari_err_TYPE("hypergeom",z);
+  if (typ(z) == t_PADIC) return Qp_hypergeom(N, D, z);
   if (gequal0(z)) return gen_1;
   nN = lg(N) - 1;
   nD = lg(D) - 1;
@@ -1148,17 +1196,6 @@ RgV_z_add(GEN v, long k)
   return w;
 }
 static GEN
-vpoch_mul(GEN v, long k)
-{
-  long i, l = lg(v);
-  GEN p;
-  if (l == 1) return gen_1;
-  p = gmael(v, 1, k);
-  for (i = 2; i < l; i++) p = gmul(p, gmael(v, i, k));
-  return p;
-}
-
-static GEN
 serhypergeom(GEN N, GEN D, GEN y, long prec)
 {
   pari_sp av;
@@ -1172,6 +1209,7 @@ serhypergeom(GEN N, GEN D, GEN y, long prec)
   else
   {
     y0 = gel(y, 2);
+    if (!is_scalar_t(typ(y0))) pari_err_TYPE("hypergeom",y);
     y = serchop0(y);
     l = 3 + (l - 3) / valser(y);
     S = hypergeom(N, D, y0, prec);
