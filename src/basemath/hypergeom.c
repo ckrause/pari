@@ -357,14 +357,6 @@ vpoch(GEN a, long n)
   for (j = 1; j < n; j++) gel(v,j+1) = gmul(gel(v,j), gaddsg(j, a));
   return v;
 }
-static GEN
-RgV_vpoch(GEN N, long n)
-{
-  long i, l;
-  GEN v = cgetg_copy(N, &l);
-  for (i = 1; i < l; i++) gel(v,i) = vpoch(gel(N,i), n);
-  return v;
-}
 
 static GEN
 Npoch(GEN a, long n) { return gnorm(poch(a, n, LOWDEFAULTPREC)); }
@@ -1100,16 +1092,12 @@ hypergeom_arg(GEN x)
   return (typ(x) == t_VEC)? x: mkvec(x);
 }
 
-
+/* [x[i]+k, i=1..#v] */
 static GEN
-vpoch_mul(GEN v, long k)
+RgV_z_add(GEN x, long k)
 {
-  long i, l = lg(v);
-  GEN p;
-  if (l == 1) return gen_1;
-  p = gmael(v, 1, k);
-  for (i = 2; i < l; i++) p = gmul(p, gmael(v, i, k));
-  return p;
+  if (!k) return x;
+  pari_APPLY_same(gaddgs(gel(x,i), k));
 }
 static GEN
 vp(GEN a, GEN p, GEN dft)
@@ -1120,24 +1108,20 @@ vp(GEN a, GEN p, GEN dft)
 static GEN
 Qp_hypergeom(GEN N, GEN D, GEN z)
 {
-  GEN vN, vD, r, S = gen_1, R = gen_1, p = gel(z, 2), dft = ginv(subis(p, 1));
+  pari_sp av = avma;
+  GEN r, S = gen_1, R = gen_1, p = gel(z, 2), dft = ginv(subis(p, 1));
   long l, i, prec = precp(z) + valp(z) + 1;
-  pari_sp av;
 
   r = gsub(stoi(valp(z)), dft);
-  l = lg(N);
-  for (i = 1; i < l; i++) r = gadd(r, vp(gel(N,i), p, dft));
-  l = lg(D);
-  for (i = 1; i < l; i++) r = gsub(r, vp(gel(D,i), p, dft));
+  l = lg(N); for (i = 1; i < l; i++) r = gadd(r, vp(gel(N,i), p, dft));
+  l = lg(D); for (i = 1; i < l; i++) r = gsub(r, vp(gel(D,i), p, dft));
   if (gsigne(r) <= 0) pari_err(e_MISC, "divergent p-adic hypergeometric sum");
   l = itou(gceil(gdivsg(prec, r)));
-  vN = RgV_vpoch(N, l);
-  vD = RgV_vpoch(D, l); av = avma;
   for (i = 1; i <= l; i++)
   {
-    GEN H = gdiv(vpoch_mul(vN, i), vpoch_mul(vD, i));
-    R = gmul(R, gdivgu(z,i));
-    S = gadd(S, gmul(R, H));
+    GEN u = vecprod(RgV_z_add(N, i-1)), v = vecprod(RgV_z_add(D, i-1));
+    R = gmul(R, gmul(z, gdiv(u, gmulsg(i, v))));
+    S = gadd(S, R);
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"hypergeom, i = %ld / %ld", i,l);
@@ -1186,46 +1170,36 @@ hypergeom_i(GEN N, GEN D, GEN z, long prec)
   return NULL; /*LCOV_EXCL_LINE*/
 }
 
-/* [v[i]+k, i=1..#v]; no need to optimize for k = 0 */
-static GEN
-RgV_z_add(GEN v, long k)
-{
-  long i, l;
-  GEN w = cgetg_copy(v, &l);
-  for (i = 1; i < l; i++) gel(w,i) = gaddgs(gel(v,i), k);
-  return w;
-}
 static GEN
 serhypergeom(GEN N, GEN D, GEN y, long prec)
 {
-  pari_sp av;
-  GEN S, pn, vN, vD, y0 = NULL;
+  pari_sp av = avma;
+  GEN Di, Ni, S = gen_1, R = gen_1, y0 = NULL;
   long v, l, i;
   if (!signe(y)) return gadd(gen_1, y);
-  v = valser(y);
+  v = valser(y); l = lg(y);
   if (v < 0) pari_err_DOMAIN("hypergeom","valuation", "<", gen_0, y);
-  l = lg(y);
-  if (v) S = gen_1;
-  else
+  if (!v)
   {
     y0 = gel(y, 2);
     if (!is_scalar_t(typ(y0))) pari_err_TYPE("hypergeom",y);
-    y = serchop0(y);
-    l = 3 + (l - 3) / valser(y);
+    y = serchop0(y); l = 3 + (l - 3) / valser(y);
     S = hypergeom(N, D, y0, prec);
   }
-  vN = RgV_vpoch(N, l-1);
-  vD = RgV_vpoch(D, l-1); av = avma;
-  pn = y;
+  Ni = N; Di = D;
   for (i = 1; i < l; i++)
   {
-    GEN H = gdiv(vpoch_mul(vN, i), vpoch_mul(vD, i));
-    if (y0) H = gmul(H, hypergeom_i(RgV_z_add(N,i), RgV_z_add(D,i), y0,prec));
-    S = gadd(S, gmul(pn, H)); if (i + 1 < l) pn = gdivgu(gmul(pn, y), i + 1);
+    GEN u = vecprod(Ni), v = vecprod(Di), h = gdiv(u, gmulsg(i, v));
+    /* have to offset by 1 when y0 != NULL; keep Ni,Di to avoid recomputing
+     * in next loop */
+    Ni = RgV_z_add(N, i);
+    Di = RgV_z_add(D, i);
+    R = gmul(R, gmul(y, h));
+    S = gadd(S, y0? gmul(R, hypergeom_i(Ni, Di, y0, prec)): R);
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"hypergeom, i = %ld / %ld", i,l-1);
-      gerepileall(av, 2, &S, &pn);
+      gerepileall(av, 4, &S, &R, &Ni, &Di);
     }
   }
   return S;
