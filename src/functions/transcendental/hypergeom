@@ -4,10 +4,11 @@ C-Name: hypergeom
 Prototype: DGDGGp
 Help: hypergeom({N},{D},z): general hypergeometric function, where
  N and D are the vector of parameters in the numerator and denominator
- respectively, evaluated at the complex argument z.
+ respectively, evaluated at the argument z.
 Doc: general hypergeometric function, where \kbd{N} and \kbd{D} are
  the vector of parameters in the numerator and denominator respectively,
- evaluated at the complex argument $z$.
+ evaluated at the argument $z$, which may be complex, $p$-adic or a power
+ series.
 
  This function implements hypergeometric functions
  $$_pF_q((a_i)_{1\le i\le p},(b_j)_{1\le j\le q};z)
@@ -22,8 +23,9 @@ Doc: general hypergeometric function, where \kbd{N} and \kbd{D} are
  replaced by the element it contains. Whenever $p = 0$ or $q = 0$, an empty
  vector can be omitted. For instance hypergeom(,b,z) computes $_0F_1(;b;z)$.
 
- We distinguish three kinds of such functions according to their radius
- of convergence $R$:
+ The non-archimedean cases ($z$ a $p$-adic or power series) are handled
+ trivially. We now discuss the case of a complex $z$; we distinguish three
+ kinds of such functions according to their radius of convergence $R$:
 
  \item $q\ge p$: $R = \infty$.
 
@@ -31,7 +33,7 @@ Doc: general hypergeometric function, where \kbd{N} and \kbd{D} are
  can be analytically continued outside the disc of convergence.
 
  \item $q\le p-2$: $R=0$. By integral representations, one can make sense of
- the function in a suitable domain.
+ the function in a suitable domain, by analytic continuation.
 
  The list of implemented functions and their domain of validity in
  our implementation is as follows:
@@ -77,5 +79,4 @@ Doc: general hypergeometric function, where \kbd{N} and \kbd{D} are
  ? T1 + (a-1)^2/(a^2*(2*a-3)) * (T2-2*(a-1)*T3) \\
    - gamma(a)^2/((2*a-3)*gamma(2*a-2))
  %5 = -1.880790961315660013 E-37 \\ ~ 0
-
  @eprog\noindent This identity is due to Bercu.
