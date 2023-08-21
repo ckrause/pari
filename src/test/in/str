@@ -32,6 +32,9 @@ strsplit("aba", "a")
 strsplit("aa", "a")
 strjoin(["a", 1, "cc"], "/")
 strjoin(["a", 1, "cc"])
+strjoin([])
+strjoin(["a"])
+strjoin([1])
 strtime(12345678)
 
 \\ Errors, keep at end of file
