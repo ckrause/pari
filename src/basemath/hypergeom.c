@@ -1173,9 +1173,9 @@ hypergeom_i(GEN N, GEN D, GEN z, long prec)
 static GEN
 serhypergeom(GEN N, GEN D, GEN y, long prec)
 {
-  pari_sp av = avma;
   GEN Di, Ni, S = gen_1, R = gen_1, y0 = NULL;
   long v, l, i;
+  pari_sp av;
   if (!signe(y)) return gadd(gen_1, y);
   v = valser(y); l = lg(y);
   if (v < 0) pari_err_DOMAIN("hypergeom","valuation", "<", gen_0, y);
@@ -1186,15 +1186,14 @@ serhypergeom(GEN N, GEN D, GEN y, long prec)
     y = serchop0(y); l = 3 + (l - 3) / valser(y);
     S = hypergeom(N, D, y0, prec);
   }
-  Ni = N; Di = D;
+  av = avma; Ni = N; Di = D;
   for (i = 1; i < l; i++)
   {
-    GEN u = vecprod(Ni), v = vecprod(Di), h = gdiv(u, gmulsg(i, v));
+    R = gmul(R, gmul(y, gdiv(vecprod(Ni), gmulsg(i, vecprod(Di)))));
     /* have to offset by 1 when y0 != NULL; keep Ni,Di to avoid recomputing
      * in next loop */
     Ni = RgV_z_add(N, i);
     Di = RgV_z_add(D, i);
-    R = gmul(R, gmul(y, h));
     S = gadd(S, y0? gmul(R, hypergeom_i(Ni, Di, y0, prec)): R);
     if (gc_needed(av,1))
     {
