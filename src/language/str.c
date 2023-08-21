@@ -192,9 +192,15 @@ strjoin(GEN v, GEN p)
   long i, l;
   GEN w;
   if (!is_vec_t(typ(v))) pari_err_TYPE("strjoin",v);
+  if (p && typ(p) != t_STR) pari_err_TYPE("strjoin",p);
+  l = lg(v);
+  if (l == 1) return strtoGENstr("");
+  if (l == 2)
+  {
+    char *s = GENtostr_unquoted(gel(v,1));
+    return gerepileuptoleaf(av, strtoGENstr(s));
+  }
   if (!p) p = strtoGENstr("");
-  if (typ(p) != t_STR) pari_err_TYPE("strjoin",p);
-  l = lg(v); if (l == 1) return strtoGENstr("");
   w = cgetg(2*l - 2, t_VEC);
   gel(w, 1) = gel(v, 1);
   for (i = 2; i < l; i++)
