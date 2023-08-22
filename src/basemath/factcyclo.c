@@ -651,6 +651,7 @@ update_dfm(long *pd, long *pf, long *pm, long di, long fi)
   *pd = d1 / c; *pf = c * f1; *pm += d1 * d1 * f1;
   if (DEBUGLEVEL == 4) err_printf("(%ld,%ld), ",d1,f1);
 }
+/* assume ord(p mod f) > 1 */
 static ulong
 set_action(GEN fn, GEN p, long d, long f)
 {
@@ -687,7 +688,7 @@ set_action(GEN fn, GEN p, long d, long f)
     if (x > 1) maxdeg = max*x;
     if (DEBUGLEVEL == 4) err_printf("(%ld,%ld), ", D[i], F[i]);
   }
-  if (maxdeg == 1) return action;
+  /* maxdeg > 1 */
   if (up != 2 && use_newton_general(d, f, maxdeg))
   { /* does not decompose n */
     action |= (20 < d)? NEWTON_GENERAL_NEW: NEWTON_GENERAL;
