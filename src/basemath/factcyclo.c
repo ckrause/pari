@@ -656,7 +656,7 @@ set_action(GEN fn, GEN p, long d, long f)
 {
   GEN EL = gel(fn, 1), E = gel(fn, 2);
   long i, d0, f0, m0, m1, maxdeg, max, l = lg(EL);
-  ulong action = 0;
+  ulong action = 0, up = itou_or_0(p);
   GEN D = cgetg(l, t_VECSMALL), F = cgetg(l, t_VECSMALL);
 
   d += 10*(lgefint(p)-3);
@@ -688,15 +688,15 @@ set_action(GEN fn, GEN p, long d, long f)
     if (DEBUGLEVEL == 4) err_printf("(%ld,%ld), ", D[i], F[i]);
   }
   if (maxdeg == 1) return action;
-  if ((p[2] != 2 && use_newton_general(d, f, maxdeg)) ||
-      (p[2] == 2 && f <= 40))  /* does not decompose n */
+  if ((up != 2 && use_newton_general(d, f, maxdeg)) ||
+      (up == 2 && f <= 40))  /* does not decompose n */
   {
     action |= (20 < d)? NEWTON_GENERAL_NEW: NEWTON_GENERAL;
     return action;
   }
 
   if (d <= 20) action |= GENERAL;
-  else if (p[2] == 2) action &= ~GENERAL;
+  else if (up == 2) action &= ~GENERAL;
   else if (d <= 50) action |= GENERAL;
   else if (maxdeg <= 3*d) action &= ~GENERAL;
   else if (d <= 200) action |= GENERAL;
