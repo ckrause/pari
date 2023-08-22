@@ -688,9 +688,8 @@ set_action(GEN fn, GEN p, long d, long f)
     if (DEBUGLEVEL == 4) err_printf("(%ld,%ld), ", D[i], F[i]);
   }
   if (maxdeg == 1) return action;
-  if ((up != 2 && use_newton_general(d, f, maxdeg)) ||
-      (up == 2 && f <= 40))  /* does not decompose n */
-  {
+  if (up != 2 && use_newton_general(d, f, maxdeg))
+  { /* does not decompose n */
     action |= (20 < d)? NEWTON_GENERAL_NEW: NEWTON_GENERAL;
     return action;
   }
