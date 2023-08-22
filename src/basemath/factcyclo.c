@@ -572,22 +572,14 @@ set_R(GEN T, GEN F, GEN Rs, GEN p, long nf, long r, long s, long u)
 static GEN
 set_e0_e1(ulong el, ulong e, GEN p)
 {
-  ulong s, d0, e0, e1, f0, n, phin, g, up = (lgefint(p)==3)?p[2]:0;
-#ifdef DEBUG
-  ulong d;
-#endif
+  ulong s, d0, e0, e1, f0, n, phin, g, up = itou_or_0(p);
 
   if (el == 2)
   {
-    ulong pmod4 = up ? up&3 : p[2]&3;
+    ulong pmod4 = up ? up&3 : mod4(p);
     if (pmod4 == 3)  /* p+1 = 0 (mod 4) */
     {
       s = up ? vals(up+1) : vali(addiu(p, 1));
-#ifdef DEBUG
-      if (e == 1) d = 1;
-      else if (e <= s) d = 2;
-      else d = 1L<<(e-s);
-#endif
       if (e <= s+1) { e0 = e; e1 = 0;}
       else { e0 = s+1; e1= e-s-1;}
       d0 = e == 1? 1: 2;
@@ -595,9 +587,6 @@ set_e0_e1(ulong el, ulong e, GEN p)
     else  /* p-1 = 0 (mod 4) */
     {
       s = up ? vals(up-1) : vali(subiu(p, 1));
-#ifdef DEBUG
-      d = (e<=s)?1:1L<<(e-s);
-#endif
       if (e <= s) { e0 = e; e1 = 0; }
       else { e0 = s; e1 = e-s; }
       d0 = 1;
@@ -608,15 +597,8 @@ set_e0_e1(ulong el, ulong e, GEN p)
   {
     ulong pmodel = up ? up%el : umodiu(p, el);
     d0 = Fl_order(pmodel, el-1, el);
-#ifdef DEBUG
-    d = d0;
-#endif
     s = Z_lval(subiu(powiu(p, d0), 1), el);
-#ifdef DEBUG
-    if (s < e) d *= upowuu(el, e-s);
-#endif
-    if (e <= s) { e0 = e; e1 = 0; }
-    else {e0 = s; e1= e-s; }
+    if (e <= s) { e0 = e; e1 = 0; } else { e0 = s; e1 = e-s; }
     phin = (el-1)*upowuu(el, e0-1);
   }
   n = upowuu(el, e0); f0 = phin/d0;
