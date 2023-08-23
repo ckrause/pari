@@ -688,7 +688,7 @@ set_action(GEN fn, GEN p, long d, long f)
     if (x > 1) maxdeg = max*x;
     if (DEBUGLEVEL == 4) err_printf("(%ld,%ld), ", D[i], F[i]);
   }
-  /* maxdeg > 1 */
+  if (maxdeg == 1) return action;
   if (up != 2 && use_newton_general(d, f, maxdeg))
   { /* does not decompose n */
     action |= (20 < d)? NEWTON_GENERAL_NEW: NEWTON_GENERAL;
@@ -1283,18 +1283,14 @@ FpX_factcyclo_prime_power(long el, long e, GEN p, long m)
 static GEN
 FpX_factcyclo_fact(GEN fn, GEN p, ulong m, long ascent)
 {
-  GEN EL = gel(fn, 1), E = gel(fn, 2), v1, v2;
-  long l = lg(EL), i, j, n1, n2;
+  GEN EL = gel(fn, 1), E = gel(fn, 2), v1 = NULL;
+  long i, l = lg(EL), n1 = 1;
 
-  j = ascent? 1: l-1;
-  n1 = upowuu(EL[j], E[j]);
-  v1 = FpX_factcyclo_prime_power(EL[j], E[j], p, m);
-  for (i = 2; i < l; i++)
+  for (i = 1; i < l; i++)
   {
-    j = ascent? i: l-i;
-    n2 = upowuu(EL[j], E[j]);
-    v2 = FpX_factcyclo_prime_power(EL[j], E[j], p, m);
-    v1 = FpX_factcyclo_lift(n1, v1, n2, v2, p, m);
+    long j = ascent? i: l-i, n2 = upowuu(EL[j], E[j]);
+    GEN v2 = FpX_factcyclo_prime_power(EL[j], E[j], p, m);
+    v1 = v1? FpX_factcyclo_lift(n1, v1, n2, v2, p, m): v2;
     n1 *= n2;
   }
   return v1;
@@ -1383,9 +1379,7 @@ FpX_factcyclo_just_conductor(ulong n, GEN p, ulong m)
   if (action & GENERAL)
     return FpX_factcyclo_gen(gel(Data,2), n, p, m);
   else if (action & NEWTON_POWER)
-  {
     return FpX_factcyclo_prime_power_i(ucoeff(fn,1,1), ucoeff(fn,1,2), p, m);
-  }
   else if (action & NEWTON_GENERAL)
     return FpX_factcyclo_newton_general(Data);
   else if (action & NEWTON_GENERAL_NEW)

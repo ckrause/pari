@@ -62,6 +62,8 @@ factormod((x+1)^2, 10^20+39)
 }
 if(factorback(factormodcyclo(4879, 29))!=polcyclo(4879),error([29,4879]))
 if(factorback(factormodcyclo(15015, 2^64+375361))!=polcyclo(15015),error())
+if(factorback(factormodcyclo(15857, 2^64+5789871))!=polcyclo(15857),error())
+
 
 \\ errors, keep at end of file
 polrootsmod(x^3-1, 2^101-1)
