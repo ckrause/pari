@@ -607,7 +607,7 @@ set_e0_e1(ulong el, ulong e, GEN p)
 }
 
 /* return 1 if newton is fast, return 0 if gen is fast */
-static long
+static int
 use_newton(long d, long f)
 {
   if (2*d <= f) return 0;
@@ -622,26 +622,37 @@ use_newton(long d, long f)
   else return 1;
 }
 
-/* return 1 if newton_general is fast, return 0 otherwise */
-static long
-use_newton_general(long d, long f, long max_deg)
+/* return 1 if newton_general is fast, return 0 otherwise. Assume f > 40 */
+static int
+use_newton_general(long d, long f, long maxdeg)
 {
-  if (max_deg == 1) return 0;
-  else if (f <= 40) return 1;
-  else if (max_deg < 20) return 0;
+  if (maxdeg < 20) return 0;
   else if (f <= 50) return 1;
-  else if (max_deg < 30) return 0;
+  else if (maxdeg < 30) return 0;
   else if (f <= 60) return 1;
-  else if (max_deg < 40) return 0;
+  else if (maxdeg < 40) return 0;
   else if (f <= 70) return 1;
-  else if (max_deg < 50) return 0;
+  else if (maxdeg < 50) return 0;
   else if (f <= 80) return 1;
   else if (d < 200) return 0;
   else if (f <= 100) return 1;
   else if (d < 300) return 0;
   else if (f <= 120) return 1;
-  else if (6*max_deg < f*f) return 0;
+  else if (6*maxdeg < f*f) return 0;
   else return 1;
+}
+
+static int
+use_general(long d, long maxdeg)
+{
+  if (d <= 50) return 1;
+  else if (maxdeg <= 3*d) return 0;
+  else if (d <= 200) return 1;
+  else if (maxdeg <= 10*d) return 0;
+  else if (d <= 500) return 1;
+  else if (maxdeg <= 20*d) return 0;
+  else if (d <= 1000) return 1;
+  else return 0;
 }
 
 static void
@@ -676,6 +687,7 @@ set_action(GEN fn, GEN p, long d, long f)
   else if (d <= 40) action |= GENERAL;
   else if (f <= 40) action |= NEWTON_GENERAL_NEW;
   if (action) return action;
+  /* can assume that d > 40 and f > 40 */
 
   maxdeg = max = 1;
   for (i = 1; i < l; i++)
@@ -689,22 +701,15 @@ set_action(GEN fn, GEN p, long d, long f)
     if (DEBUGLEVEL == 4) err_printf("(%ld,%ld), ", D[i], F[i]);
   }
   if (maxdeg == 1) return action;
-  if (up != 2 && use_newton_general(d, f, maxdeg))
-  { /* does not decompose n */
-    action |= (20 < d)? NEWTON_GENERAL_NEW: NEWTON_GENERAL;
-    return action;
+  if (up != 2)
+  {
+    if (use_newton_general(d, f, maxdeg))
+    { /* does not decompose n */
+      action |= (20 < d)? NEWTON_GENERAL_NEW: NEWTON_GENERAL;
+      return action;
+    }
+    if (use_general(d, maxdeg)) action |= GENERAL;
   }
-
-  if (d <= 20) action |= GENERAL;
-  else if (up == 2) action &= ~GENERAL;
-  else if (d <= 50) action |= GENERAL;
-  else if (maxdeg <= 3*d) action &= ~GENERAL;
-  else if (d <= 200) action |= GENERAL;
-  else if (maxdeg <= 10*d) action &= ~GENERAL;
-  else if (d <= 500) action |= GENERAL;
-  else if (maxdeg <= 20*d) action &= ~GENERAL;
-  else if (d <= 1000) action |= GENERAL;
-  else action &= ~GENERAL;
   if (l < 4) return action; /* n has two factors */
 
   d0 = f0 = 1; m0 = 0;
