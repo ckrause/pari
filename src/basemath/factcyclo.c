@@ -1305,19 +1305,17 @@ static GEN
 Flv_FlvV_factorback(GEN g, GEN x, ulong q)
 { pari_APPLY_ulong(Flv_factorback(g, gel(x,i), q)) }
 
-/* return the structure and the generators of G/H. G=(Z/nZ)^, H=<p> */
+/* return the structure and the generators of G/H. G=(Z/nZ)^, H=<p>.
+ * For efficiency assume p mod n != 1 (trivial otherwise) */
 static GEN
 get_GH_gen(long n, long pmodn)
 {
-  GEN H = znstar_generate(n, mkvecsmall(pmodn)), gH = gel(H, 1);
   GEN G = znstar0(utoipos(n), 1), cycG = znstar_get_cyc(G);
-  long i, lgH = lg(gH);
-  GEN cycGH, gG, gGH, U, Ui;
+  GEN cycGH, gG, gGH, Ui, P;
   ulong expG;
-  GEN P = cgetg(lgH, t_MAT);
-  for (i = 1; i < lgH; i++) gel(P, i) = Zideallog(G, utoi(gH[i]));
-  cycGH = ZV_to_nv(ZM_snf_group(hnfmodid(P, cycG), &U, &Ui));
-  expG = itou(gel(cycG, 1));
+  P = hnfmodid(mkmat(Zideallog(G, utoi(pmodn))), cycG);
+  cycGH = ZV_to_nv(ZM_snf_group(P, NULL, &Ui));
+  expG = itou(cyc_get_expo(cycG));
   gG = ZV_to_Flv(znstar_get_gen(G), n);
   gGH = Flv_FlvV_factorback(gG, ZM_to_Flm(Ui, expG), n);
   return mkvec2(gGH, cycGH);
@@ -1348,19 +1346,12 @@ FpX_factcyclo_just_conductor_init(GEN *pData, ulong n, GEN p, ulong m)
   long phin = eulerphiu_fact(fn), pmodn = umodiu(p, n);
   long d = Fl_order(pmodn, phin, n), f = phin/d; /* d > 1 */
   ulong action = set_action(fn, p, d, f);
-  if (action & GENERAL)
-  {
+  if (action & ~NEWTON_POWER)
+  { /* needed for GENERAL* */
     GEN H = znstar_generate(n, mkvecsmall(pmodn));
     GH = znstar_cosets(n, phin, H); /* representatives of G/H */
     if (action & (NEWTON_GENERAL_NEW | NEWTON_GENERAL))
       GHgen = get_GH_gen(n, pmodn);  /* gen and order of G/H */
-  }
-  else if (action & NEWTON_POWER);
-  else if (action & (NEWTON_GENERAL_NEW | NEWTON_GENERAL))
-  {
-    GEN H = znstar_generate(n, mkvecsmall(pmodn));
-    GH = znstar_cosets(n, phin, H); /* representatives of G/H */
-    GHgen = get_GH_gen(n, pmodn);  /* gen and order of G/H */
   }
   *pData = mkvec5(GHgen, GH, fn, p, mkvecsmall4(n, d, f, m));
   if (DEBUGLEVEL >= 1)
