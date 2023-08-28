@@ -9,7 +9,8 @@ Doc: $\var{rnf}$ being a relative number
  $L$ expressed as a polynomial or polmod with polmod coefficients (or as a
  \typ{COL} on \kbd{nfinit(rnf).zk}), computes
  $x$ as an element of $K$ as a \typ{POLMOD} if $\fl = 0$ and as a \typ{COL}
- otherwise. If $x$ is not in $K$, a domain error occurs.
+ otherwise. If $x$ is not in $K$, a domain error occurs. Note that if $x$
+ is in fact rational, it is returned as a rational number, ignoring \fl.
  \bprog
  ? K = nfinit(y^2+1); L = rnfinit(K, x^2-y);
  ? L.pol
@@ -28,12 +29,13 @@ Doc: $\var{rnf}$ being a relative number
   *** rnfeltdown: domain error in rnfeltdown: element not in the base field
  ? rnfeltdown(L, Mod(y, x^2-y), 1) \\ as a t_COL
  %7 = [0, 1]~
- ? rnfeltdown(L, [0,1,0,0]~) \\ not allowed without absolute nf struct
+ ? rnfeltdown(L, [0,0,1,0]~) \\ not allowed without absolute nf struct
    *** rnfeltdown: incorrect type in rnfeltdown (t_COL).
  ? nfinit(L); \\ add absolute nf structure to L
- ? rnfeltdown(L, [0,1,0,0]~) \\ now OK
+ ? rnfeltdown(L, [0,0,1,0]~) \\ now OK
  %8 = Mod(y, y^2 + 1)
  @eprog\noindent If we had started with
- \kbd{L = rnfinit(K, x\pow2-y, 1)}, then the final would have worked directly.
+ \kbd{L = rnfinit(K, x\pow2-y, 1)}, then the final command would have worked
+ directly.
 Variant: Also available is
  \fun{GEN}{rnfeltdown}{GEN rnf, GEN x} ($\fl = 0$).

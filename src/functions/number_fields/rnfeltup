@@ -9,7 +9,8 @@ Doc: $\var{rnf}$ being a relative number field extension $L/K$ as output by
  \kbd{rnfinit} and $x$ being an element of $K$, computes $x$ as an element of
  the absolute extension $L/\Q$. As a \typ{POLMOD} modulo \kbd{\var{rnf}.pol}
  if $\fl = 0$ and as a \typ{COL} on the absolute field integer basis if
- $\fl = 1$.
+ $\fl = 1$. Note that if $x$
+ is in fact rational, it is returned as a rational number, ignoring \fl.
  \bprog
  ? K = nfinit(y^2+1); L = rnfinit(K, x^2-y);
  ? L.pol
@@ -24,6 +25,8 @@ Doc: $\var{rnf}$ being a relative number field extension $L/K$ as output by
  %6 = [0, 1, 0, 0]~
  ? rnfeltup(L, [1,2]~, 1)
  %7 = [1, 2, 0, 0]~
+ ? rnfeltup(L, [1,0]~) \\ rational
+ %8 = 1
  @eprog
 Variant: Also available is
  \fun{GEN}{rnfeltup}{GEN rnf, GEN x} ($\fl = 0$).
