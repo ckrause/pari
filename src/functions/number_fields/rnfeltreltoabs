@@ -19,4 +19,9 @@ Doc: $\var{rnf}$ being a relative
  %4 = Mod(x^2, x^4 + 1)
  ? rnfeltreltoabs(L, Mod(y,K.pol))
  %5 = Mod(x^2, x^4 + 1)
+ @eprog\noindent If the input is actually rational, then \kbd{rnfeltreltoabs}
+ returns it as a rational number instead of a \typ{POLMOD}:
+ \bprog
+ ? rnfeltreltoabs(L, Mod(2, K.pol))
+ %6 = 2
  @eprog

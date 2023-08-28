@@ -4,14 +4,19 @@ C-Name: rnfeltabstorel
 Prototype: GG
 Help: rnfeltabstorel(rnf,x): transforms the element x from absolute to
  relative representation.
-Doc: Let $\var{rnf}$ be a relative
- number field extension $L/K$ as output by \kbd{rnfinit} and let $x$ be an
- element of $L$ expressed as a polynomial modulo the absolute equation
- \kbd{\var{rnf}.pol}, or in terms of the absolute $\Z$-basis for $\Z_L$
- if \var{rnf} contains one (as in \kbd{rnfinit(nf,pol,1)}, or after
- a call to \kbd{nfinit(rnf)}).
- Computes $x$ as an element of the relative extension
- $L/K$ as a polmod with polmod coefficients.
+Doc: Let $\var{rnf}$ be a relative number field extension $L/K$ as output by
+ \kbd{rnfinit} and let $x$ be an
+ element of $L$ expressed either
+
+ \item as a polynomial modulo the absolute equation \kbd{\var{rnf}.pol},
+
+ \item or in terms of the absolute $\Z$-basis for $\Z_L$ if \var{rnf}
+ contains one (as in \kbd{rnfinit(nf,pol,1)}, or after a call to
+ \kbd{nfinit(rnf)}).
+
+ Computes $x$ as an element of the relative extension $L/K$ as a polmod with
+ polmod coefficients. If $x$ is actually rational, return it as a rational
+ number:
  \bprog
  ? K = nfinit(y^2+1); L = rnfinit(K, x^2-y);
  ? L.polabs
@@ -30,4 +35,6 @@ Doc: Let $\var{rnf}$ be a relative
  ? nfinit(L); \\ initialize now
  ? rnfeltabstorel(L, [0,0,0,1]~)
  %6 = Mod(Mod(y, y^2 + 1)*x, x^2 + Mod(-y, y^2 + 1))
+ ? rnfeltabstorel(L, [1,0,0,0]~)
+ %7 = 1
  @eprog
