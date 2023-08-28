@@ -158,7 +158,8 @@ Doc: finds number fields (up to isomorphism) with Galois group of Galois
  ? nflist([3,1], 3969) \\ C3 fields, using nTt label
  %10 = [x^3 - 21*x + 28, x^3 - 21*x - 35]
  ? P = nflist([8,12],t) \\ geometric 8T12 polynomial
- %11 = x^8 + (-t^2 - 803)*x^6 + (264*t^2 + 165528)*x^4 + (-2064*t^2 - 1724976)*x^2 + 4096*t^2
+ %11 = x^8 + (-t^2 - 803)*x^6 + (264*t^2 + 165528)*x^4
+       + (-2064*t^2 - 1724976)*x^2 + 4096*t^2
  ? polgalois(subst(P, t, 11))
  %12 = [24, 1, 12, "2A_4(8)=[2]A(4)=SL(2,3)"]
  ? nflist("S11")
