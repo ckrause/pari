@@ -1066,5 +1066,45 @@ Note also that
   gel(out, taskid) = mt_queue_get(&mt, &taskid, &pending);
 @eprog \noindent instead of our use of a temporary \kbd{done} would have
 undefined behaviour (\kbd{taskid} may be uninitialized in the left hand side).
+
+\chapter{Cross-compiling PARI for Windows from Linux}
+
+We use \kbd{mingw}. Please use the kit at
+
+\kbd{http://pari.math.u-bordeaux.fr/pub/pari/windows/paricrossmingwkit.tgz}
+
+\noindent This kit provides helper scripts and support binary to
+cross-compile PARI/GP for \kbd{mingw} and \kbd{mingw64} with \kbd{readline},
+\kbd{gmp} and \kbd{perl} support. To start:
+
+\item Install the cross-compiling environment. On Debian and Ubuntu this can
+be achieved by using the scripts \kbd{install32} and \kbd{install64}.
+
+\item In this directory, type
+\bprog
+. ./setup
+@eprog
+to set the environment variables, especially \kbd{PARIKIT}. This assumes a
+\kbd{bash} (or \kbd{zsh}) shell.
+
+\item The following commands can then be executed \emph{from the toplevel of
+a pari source tree}:
+
+\bprog
+mkwine32    : build the installer package (32-bit)
+mkwine64    : build the installer package (64-bit)
+mkwinebin32 : built the stand-alone GP binary (32-bit)
+mkwinebin64 : built the stand-alone GP binary (64-bit)
+@eprog
+
+\noindent For convenience, the following variants are available for the
+standalone binaries (both \kbd{mkwinebin32} and \kbd{mkwinebin64}), the
+default is \kbd{rl}:
+\bprog
+mkwinebin64 norl : disable readline
+mkwinebin64 rl   : only build readline
+mkwinebin64 all  : build both readline and noreadline version
+@eprog
+
 \vfill\eject
 \input index\end
