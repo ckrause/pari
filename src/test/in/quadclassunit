@@ -32,6 +32,7 @@ quadunitindex(28, 2^32)
 quadunitindex(8461,2)
 quadunit(74881)
 quadunit(511681)
+quadunitindex(76,3) \\ #2491
 
 default(echo,1);
 

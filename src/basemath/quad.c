@@ -238,7 +238,7 @@ static void
 quadunit_uvmod(GEN D, GEN d, GEN N, GEN *pu, GEN *pv)
 {
   GEN u1, u2, v1, v2, p, q, q1, u, v;
-  int m = mpodd(D);
+  int m = mpodd(D), first = 1;
   pari_sp av = avma;
   p = (mpodd(d) == m)? d: subiu(d, 1);
   u1 = negi(p); u2 = gen_2;
@@ -248,12 +248,13 @@ quadunit_uvmod(GEN D, GEN d, GEN N, GEN *pu, GEN *pv)
   {
     GEN r, A = dvmdii(addii(p, d), q, &r), p1 = p, t;
     p = subii(d, r);
-    if (equalii(p1, p) && signe(v2))
+    if (equalii(p1, p) && !first)
     { /* even period */
       u = addmulii(sqri(u2), D, sqri(v2));
       v = shifti(mulii(u2,v2), 1);
       break;
     }
+    first = 0;
     t = Fp_addmul(u1, A, u2, N); u1 = u2; u2 = t;
     t = Fp_addmul(v1, A, v2, N); v1 = v2; v2 = t;
     t = q; q = submulii(q1, A, subii(p, p1)); q1 = t;
