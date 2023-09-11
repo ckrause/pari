@@ -2252,6 +2252,9 @@ compilenode(long n, int mode, long flag)
       GEN vep = cgetg_copy(arg, &lgarg);
       GEN text=cgetg(3,t_VEC);
       gel(text,1)=strntoGENstr(tree[x].str,tree[x].len);
+      if (lgarg==2 && tree[x].str[0]!='~' && tree[x].f==Findarg)
+        /* This occurs for member functions */
+        gel(text,1)=shallowconcat(strntoGENstr("~",1),gel(text,1));
       gel(text,2)=strntoGENstr(tree[y].str,tree[y].len);
       getcodepos(&pos);
       dbgstart=tree[x].str+tree[x].len;
