@@ -2501,7 +2501,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
       {
         if (!fl)
         {
-          if (++try_elt > maxtry_ELEMENT) return 0;
+          if (++try_elt > maxtry_ELEMENT) goto END_Fincke_Pohst_ideal;
           p = (double)fp->x[k] + fp->z[k];
           if (fp->y[k] + p*p*fp->v[k] <= BOUND) break;
 
@@ -2511,7 +2511,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
           if (fp->y[k] + p*p*fp->v[k] <= BOUND) break;
         }
         fl = 0; inc[k] = 1;
-        if (++k > N) return 0;
+        if (++k > N) goto END_Fincke_Pohst_ideal;
       }
     } while (k > 1);
 
@@ -2519,7 +2519,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
     if (zv_content(fp->x) !=1) continue; /* not primitive */
     gx = ZM_zc_mul(ideal,fp->x);
     if (ZV_isscalar(gx)) continue;
-    if (++try_factor > maxtry_FACT) return 0;
+    if (++try_factor > maxtry_FACT) break;
 
     if (!Nrelid)
     {
@@ -2557,6 +2557,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
     if (cache->last >= cache->end) return 1; /* we have enough */
     if (++relid == Nrelid) break;
   }
+  END_Fincke_Pohst_ideal:
   return 0;
 }
 
