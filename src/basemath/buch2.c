@@ -30,8 +30,6 @@ static const long FAIL_DIVISOR = 32;
 static const long MINFAIL = 10;
 /* small_norm */
 static const long BNF_RELPID = 4;
-static const long BMULT = 8;
-static const long maxtry_ELEMENT = 1000*1000;
 static const long maxtry_FACT = 500;
 /* rnd_rel */
 static const long RND_REL_RELPID = 1;
@@ -81,6 +79,7 @@ typedef struct FB_t {
   GEN embperm; /* permutations of the complex embeddings */
   long MAXDEPSIZESFB; /* # trials before increasing subFB */
   long MAXDEPSFB; /* MAXDEPSIZESFB / DEPSFBDIV, # trials befor rotating subFB */
+  double ballvol;
 } FB_t;
 
 enum { sfb_CHANGE = 1, sfb_INCREASE = 2 };
@@ -646,6 +645,15 @@ nthideal(GRHcheck_t *S, GEN nf, long n)
   return gc_long(av, vecN[n]);
 }
 
+static double
+ballvol(long n)
+{
+  pari_sp av = avma;
+  long prec = DEFAULTPREC;
+  GEN z = divrr(sqrtr_abs(powru(mppi(prec),n)),ggamma(gdivgs(gaddgs(utoi(n),2),2),prec));
+  return gc_double(av, rtodbl(z));
+}
+
 /* Compute FB, LV, iLP + KC*. Reset perm
  * C2: bound for norm of tested prime ideals (includes be_honest())
  * C1: bound for p, such that P|p (NP <= C2) used to build relations */
@@ -715,6 +723,7 @@ FBgen(FB_t *F, GEN nf, long N, ulong C1, ulong C2, GRHcheck_t *S)
     }
   }
   F->perm = NULL; F->L_jid = NULL;
+  F->ballvol = ballvol(nf_get_degree(nf));
 }
 
 static int
@@ -2435,6 +2444,22 @@ step(GEN x, double *y, GEN inc, long k)
   }
 }
 
+static double
+Fincke_Pohst_bound(double bv, GEN r, long T)
+{
+  pari_sp av = avma;
+  long i, n = lg(r)-1, prec = DEFAULTPREC;
+  GEN zT = gsqr(gdivsg(T, dbltor(bv)));
+  GEN p = gmael(r,1,1), B = real_1(prec);
+  for (i = 2; i <= n; i++)
+  {
+    p = gmul(p, gmael(r,i,i));
+    B = sqrtnr(gmul(zT,p),i);
+    if (i==n || cmprr(B,gmael(r,i+1,i+1)) < 0) break;
+  }
+  return gc_double(av, rtodbl(B));
+}
+
 INLINE long
 Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
     GEN NI, FACT *fact, long Nrelid, FP_t *fp, RNDREL_t *rr, long prec,
@@ -2444,7 +2469,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
   const long N = nf_get_degree(nf), R1 = nf_get_r1(nf);
   GEN G = nf_get_G(nf), G0 = nf_get_roundG(nf), r, u, gx, inc, ideal;
   double BOUND, B1, B2;
-  long j, k, skipfirst, relid=0, try_elt=0, try_factor=0;
+  long j, k, skipfirst, relid=0, try_factor=0;
 
   inc = const_vecsmall(N, 1);
   u = ZM_lll(ZM_mul(G0, I), 0.99, LLL_IM);
@@ -2460,23 +2485,15 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
   }
   B1 = fp->v[1]; /* T2(ideal[1]) */
   B2 = fp->v[2] + B1 * fp->q[1][2] * fp->q[1][2]; /* T2(ideal[2]) */
-  if (ZV_isscalar(gel(ideal,1))) /* probable */
-  {
-    skipfirst = 1;
-    BOUND = maxdd(BMULT * B1, 2 * B2);
-  }
-  else
-  {
-    skipfirst = 0;
-    BOUND = mindd(BMULT * B1, 2 * B2);
-  }
+  skipfirst = ZV_isscalar(gel(ideal,1));
+  BOUND = maxdd(2*B2, Fincke_Pohst_bound(F->ballvol,r, 4*maxtry_FACT));
   /* BOUND at most BMULT fp->x smallest known vector */
   if (DEBUGLEVEL>1)
   {
     if (DEBUGLEVEL>3) err_printf("\n");
     err_printf("BOUND = %.4g\n",BOUND);
   }
-  BOUND *= 1 + 1e-6;
+
   k = N; fp->y[N] = fp->z[N] = 0; fp->x[N] = 0;
   for (av = avma;; set_avma(av), step(fp->x,fp->y,inc,k))
   {
@@ -2501,7 +2518,6 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
       {
         if (!fl)
         {
-          if (++try_elt > maxtry_ELEMENT) goto END_Fincke_Pohst_ideal;
           p = (double)fp->x[k] + fp->z[k];
           if (fp->y[k] + p*p*fp->v[k] <= BOUND) break;
 
@@ -3774,7 +3790,7 @@ Buchall_param(GEN P, double cbach, double cbach2, long Nrelid, long flag, long p
   PREC = maxss(PREC, nbits2prec((long)(LOGD2 * 0.02) + N*N));
   if (DEBUGLEVEL) err_printf("PREC = %ld\n", PREC);
   small_norm_prec = nbits2prec( BITS_IN_LONG +
-    (N/2. * ((N-1)/2.*log(4./3) + log(BMULT/(double)N))
+    (N/2. * ((N-1)/2.*log(4./3) + log(8/(double)N))
      + 2*log((double) LIMCMAX) + LOGD/2) / M_LN2 ); /*enough to compute norms*/
   if (small_norm_prec > PREC) PREC = small_norm_prec;
   if (!nf)
