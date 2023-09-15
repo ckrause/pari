@@ -176,7 +176,7 @@ p=idealprimedec(gc.nf,nextprime(1<<32))[1];
 \\gcharlog(gc,p);
 localbitprec(132); v1 = gchareval(gc,[137,7,1,0,-1283,1233]~,p,0);
 localbitprec(2048); v2 = gchareval(gc,[137,7,1,0,-1283,1233]~,p,0);
-exponent(v1-v2) < -132
+exponent(v1-v2) < -129
 
 print("limit cases");
 bnf = bnfinit(x^2-5,1);

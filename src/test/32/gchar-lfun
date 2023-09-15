@@ -45,9 +45,9 @@ c of infinity type (2,0)
 [1, []]
 [1, []]
 [[0, -1, -1]~]
-10611058327
 12381910021
 6703372087
+10611058327
 1
 1
 -230000000000
@@ -142,4 +142,4 @@ bad inputs
   ***   at top-level: lfuncreate([gc,[1,0,0,0,I]~])
   ***                 ^-----------------------------
   *** lfuncreate: sorry, lfun for gchar with imaginary norm component is not yet implemented.
-Total time spent: 8868
+Total time spent: 7770
