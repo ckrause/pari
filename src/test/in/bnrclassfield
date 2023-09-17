@@ -1,26 +1,26 @@
 default(parisize,"34M"); \\ overflows 32M
 count = 0;
 
-nfisprobisom(P,Q,n)=
+nfisprobisom(P,Q, n = 50)=
 {
-  forprime(p=2,oo,
-    my(FP=factormod(P,p,1),FQ=factormod(Q,p,1));
-    if(vecmax(FP[,2])>1 || vecmax(FQ[,2])>1, next());
-    if(FP[,1]!=FQ[,1], return(0));
-    n--;
-    if(!n,return(1)));
+  forprime (p = 2,oo,
+    my(FP = factormod(P,p,1)); if (vecmax(FP[,2]) > 1, next());
+    my(FQ = factormod(Q,p,1)); if (vecmax(FQ[,2]) > 1, next());
+    if(FP[,1] != FQ[,1], return(0));
+    n--; if(!n,return(1)));
 }
 check(K,f,sol,flag, expo = 32)=
 {
-  if (!sol || poldegree(f)!=poldegree(sol), return(0));
-  if (exponent(f) > exponent(sol) + expo, error(exponent(f)," > ",exponent(sol)," + ",expo));
+  if (!sol || poldegree(f) != poldegree(sol), return(0));
+  if (exponent(f) > exponent(sol) + expo,
+      error(exponent(f)," > ",exponent(sol)," + ",expo));
   if (flag != 2, sol = rnfequation(K,sol); f = rnfequation(K,f));
-  if (!nfisprobisom(sol,f,100),error("Non isomorphic: ",[f,sol]));
+  if (!nfisprobisom(sol,f), error("Non isomorphic: ",[f,sol]));
   1;
 }
 checkvec(K,f,~sol,flag, expo = 32)=
 {
-  for(j=1,#sol, if (check(K,f,sol[j],flag,expo), sol[j]=0; return(1)));
+  for (j=1,#sol, if (check(K,f,sol[j],flag,expo), sol[j]=0; return(1)));
   return(0);
 }
 do(nf,f = 1, H = 0, flag = 0, sol = 0, expo = 32) =
@@ -46,7 +46,8 @@ s=x^10+(-2*y-4)*x^9+(4*y-50)*x^8+(40*y-36)*x^7+(56*y+653)*x^6+(-242*y+1802)*x^5+
 do(y^2-y+30,,,1,s)
 s=[x^9-24*x^7+(-2*y+1)*x^6+495*x^5+(12*y-6)*x^4-30*x^3+(-18*y+9)*x^2+18*x+(2*y-1)];
 do(y^2-y+50,,,,s)
-do(y^2-y+58) \\10
+s=[x^2+3,x^2+7,x^3-3*x+9];
+do(y^2-y+58,,,,s) \\10
 
 s=x^12-2*x^11+(-4*y-5)*x^10+(8*y-28)*x^9+(9*y-308)*x^8+(100*y+482)*x^7+(-132*y+429)*x^6+(1082*y-294)*x^5+(-1617*y+15083)*x^4+(-1770*y+18798)*x^3+(-2764*y-60684)*x^2+(15996*y-16436)*x+(-2045*y-11529);
 do(y^2-y+58,,,1,s)

@@ -18,7 +18,7 @@
 9
 [1]
 10
-[x^2 + 3, x^2 + 7, x^3 - 3*x - 9]
+[1, 1, 1]
 11
 1
 12
@@ -301,4 +301,4 @@ bad inputs
   ***   at top-level: bnrclassfield(bnfinit(x))
   ***                 ^-------------------------
   *** bnrclassfield: incorrect priority in bnrclassfield: variable x = x
-Total time spent: 5456
+Total time spent: 4594
