@@ -645,13 +645,13 @@ nthideal(GRHcheck_t *S, GEN nf, long n)
   return gc_long(av, vecN[n]);
 }
 
+/* volume of unit ball in R^n: \pi^{n/2} / \Gamma(n/2 + 1) */
 static double
 ballvol(long n)
 {
-  pari_sp av = avma;
-  long prec = DEFAULTPREC;
-  GEN z = divrr(sqrtr_abs(powru(mppi(prec),n)),ggamma(gdivgs(gaddgs(utoi(n),2),2),prec));
-  return gc_double(av, rtodbl(z));
+  double v = odd(n)? 2: 1;
+  for (; n > 1; n -= 2) v *= (2 * M_PI) / n;
+  return v;
 }
 
 /* Compute FB, LV, iLP + KC*. Reset perm
