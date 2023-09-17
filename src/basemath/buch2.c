@@ -2445,17 +2445,16 @@ step(GEN x, double *y, GEN inc, long k)
 }
 
 static double
-Fincke_Pohst_bound(double bv, GEN r, long T)
+Fincke_Pohst_bound(double T, GEN r)
 {
   pari_sp av = avma;
-  long i, n = lg(r)-1, prec = DEFAULTPREC;
-  GEN zT = gsqr(gdivsg(T, dbltor(bv)));
-  GEN p = gmael(r,1,1), B = real_1(prec);
+  GEN zT = dbltor(T * T), p = gmael(r,1,1), B = real_1(DEFAULTPREC);
+  long i, n = lg(r)-1;
   for (i = 2; i <= n; i++)
   {
     p = gmul(p, gmael(r,i,i));
-    B = sqrtnr(gmul(zT,p),i);
-    if (i==n || cmprr(B,gmael(r,i+1,i+1)) < 0) break;
+    B = sqrtnr(gmul(zT,p), i);
+    if (i == n || cmprr(B, gmael(r,i+1,i+1)) < 0) break;
   }
   return gc_double(av, rtodbl(B));
 }
@@ -2486,8 +2485,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
   B1 = fp->v[1]; /* T2(ideal[1]) */
   B2 = fp->v[2] + B1 * fp->q[1][2] * fp->q[1][2]; /* T2(ideal[2]) */
   skipfirst = ZV_isscalar(gel(ideal,1));
-  BOUND = maxdd(2*B2, Fincke_Pohst_bound(F->ballvol,r, 4*maxtry_FACT));
-  /* BOUND at most BMULT fp->x smallest known vector */
+  BOUND = maxdd(2*B2, Fincke_Pohst_bound(4 * maxtry_FACT / F->ballvol, r));
   if (DEBUGLEVEL>1)
   {
     if (DEBUGLEVEL>3) err_printf("\n");
