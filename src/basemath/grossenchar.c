@@ -403,7 +403,7 @@ gcharinit(GEN bnf, GEN mod, long prec)
   long n, k, r1, r2, ns, nc, nu, nm, order;
   long evalprec = prec, nfprec, mprec, embprec;
 
-  prec = evalprec + 1; /* default 1 extra word */
+  prec = evalprec + EXTRAPREC64; /* default 64 extra bits */
 
   /* note on precision:
 
@@ -427,7 +427,7 @@ gcharinit(GEN bnf, GEN mod, long prec)
      If prec is not sufficient, we call gcharnewprec.
 
      To mitigate precision increase, we always initialize the structure
-     with one extra word.
+     with 64 extra bits.
 
      Final remark: a gchar struct may have inconsistent values
      for prec and nfprec, for example if it has been saved and loaded at
@@ -499,7 +499,7 @@ gcharinit(GEN bnf, GEN mod, long prec)
 
   if (DEBUGLEVEL>2) err_printf("start matrix m\n");
   m = cgetg(nm + 1, t_MAT);
-  mprec = 3 + nbits2extraprec(nm+10);
+  mprec = nbits2prec(nm+10) + EXTRAPREC64;
   embprec = mprec;
   for(;;)
   {
@@ -758,7 +758,7 @@ gcharmat_tinverse(GEN gc, GEN m, long prec)
       else targetmprec = 0;
     }
     mprec = maxss(precdbl(mprec), targetmprec);
-    if (mprec < 3) mprec = 3;
+    if (mprec < DEFAULTPREC) mprec = DEFAULTPREC;
     m = gcharmatnewprec_shallow(gc, mprec); /* m0 * u0 to higher prec */
   }
   /* clean rationals */
