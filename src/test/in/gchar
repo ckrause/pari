@@ -169,14 +169,15 @@ localbitprec(64);bitprecision(gcharnewprec(gc)[1])>=64
 localbitprec(764);bitprecision(gcharnewprec(gc)[1])>=764
 /* evaluate */
 p=idealprimedec(gc.nf,13)[1];
-localbitprec(64); v1 = gchareval(gc,[137,7,1,0,-1283,1233]~,p,0);
-localbitprec(2048); v2 = gchareval(gc,[137,7,1,0,-1283,1233]~,p,0);
-exponent(v1-v2) < -100
+chi = [137,7,1,0,-1283,1233]~;
+localbitprec(64); v1 = gchareval(gcharnewprec(gc),chi,p,0);
+localbitprec(128); v2 = gchareval(gcharnewprec(gc),chi,p,0);
+exponent(v1-v2) <= -64
 p=idealprimedec(gc.nf,nextprime(1<<32))[1];
 \\gcharlog(gc,p);
-localbitprec(132); v1 = gchareval(gc,[137,7,1,0,-1283,1233]~,p,0);
-localbitprec(2048); v2 = gchareval(gc,[137,7,1,0,-1283,1233]~,p,0);
-exponent(v1-v2) < -129
+localbitprec(132); v1 = gchareval(gcharnewprec(gc),chi,p,0);
+localbitprec(256); v2 = gchareval(gcharnewprec(gc),chi,p,0);
+exponent(v1-v2) <= -132
 
 print("limit cases");
 bnf = bnfinit(x^2-5,1);
@@ -221,22 +222,21 @@ logpr = gcharlog(gc,pr);
 ev1 = gchareval(gc,chi,pr,0);
 ev2 = logchi*logpr;
 ev2 -= round(real(ev2));
-exponent(ev1-ev2) < -100
+exponent(ev1-ev2) <= -128
 
 print("gchareval");
 bnf = bnfinit(x^2-5,1);
 gc = gcharinit(bnf,1);
 {pr =
 idealprimedec(bnf,4868320566074468416097809002841831981658439271775190047920287334713696332088188270302203142585474506572031649428572390977423717630750557541900820118557642144443115103994166347876446053933456365372443159385038281515406885479747287229391251928691579336473986380517198489368653247235220470411135182771495870761970425831248490802339741145177367606504253702366044757540837091578313318381751990985274838858471553879603486279186618215547339963941317895448200405735601843412836041079417187853293418139422395939702479069851901004480187793116104550625410950517848593134330788344046026982177143293369431992447318613826461691545456669249262035189314826400325163760162186599556491881653572410925778376382784596006650973201534577780715605881753754637909365503082172360234118525438866377677143768516149987111093650011641611864293773011677933805015609245095155892783139734857107226208996763683785018645448619606720812034222383494488841874984727092271722163949359822795927735020861595850675165350830336905890838102021)[1]};
-v1 = gchareval(gc,[16876547436542378657653465325489780897097678654765346543]~,pr,0);
-default(realbitprecision,1024)
-gc = gcharnewprec(gc);
-v2 = gchareval(gc,[16876547436542378657653465325489780897097678654765346543]~,pr,0);
-exponent(v1-v2) < -120
-default(realbitprecision,128)
+chi = [16876547436542378657653465325489780897097678654765346543]~;
+v1 = gchareval(gc,chi,pr,0);
+localbitprec(256); v2 = gchareval(gcharnewprec(gc),chi,pr,0);
+exponent(v1-v2) <= -128
 pr2 = idealprimedec(bnf,13)[1];
-round(exp(2*I*Pi*(gchareval(gc,[1,-1]~,pr2,0) - gchareval(gc,[1]~,pr2,0))))
-round(exp(2*Pi*(gchareval(gc,[1,-I]~,pr2,0) - gchareval(gc,[1]~,pr2,0))))
+chi = [1]~;
+round(exp(2*I*Pi*(gchareval(gc,[1,-1]~,pr2,0) - gchareval(gc,chi,pr2,0))))
+round(exp(2*Pi*(gchareval(gc,[1,-I]~,pr2,0) - gchareval(gc,chi,pr2,0))))
 
 print("gcharidentify 2");
 bnf = bnfinit(x^2-2,1);
@@ -245,7 +245,7 @@ pr = idealprimedec(bnf,7)[1];
 th = gchareval(gc,[5]~,pr,0);
 gcharidentify(gc,[pr],[th])
 chiw = gcharidentify(gc,[pr],[th+I*5/7]);
-exponent(gchareval(gc,chiw,pr,0)-th-I*5/7) < -100
+exponent(gchareval(gc,chiw,pr,0)-th-I*5/7) < -125
 
 print("gcharlocal");
 bnf = bnfinit(x^2-5,1);
@@ -352,7 +352,7 @@ pr = idealprimedec(bnf,2)[1];
 v = gcharlog(gc,pr);
 val1 = exp(2*I*Pi*f*v);
 val2 = gchareval(gc,chi,pr);
-exponent(val1-val2) < -100
+exponent(val1-val2) < -125
 
 print("doc gcharisalgebraic");
 bnf = bnfinit(x^4+1,1);
@@ -455,7 +455,7 @@ chi = [1]~;
 pr = idealprimedec(bnf,11)[1];
 a = gchareval(gc,chi,pr); round(10^10*a)
 b = gchareval(gc,chi,pr,0); round(10^10*b)
-exponent(a - exp(2*Pi*I*b)) < -100
+exponent(a - exp(2*Pi*I*b)) < -125
 
 
 print("prime sort bug");
@@ -478,7 +478,7 @@ vB = gchareval(gc,chi,B,0);
 vAB = gchareval(gc,chi,AB,0);
 v = vAB - vA - vB;
 v -= round(v);
-exponent(v) < -100
+exponent(v) < -125
 
 print("bestS fix");
 bnf = bnfinit(x^2+5,1);
