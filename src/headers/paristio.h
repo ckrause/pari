@@ -256,6 +256,14 @@ typedef struct
 
 typedef struct
 {
+  GEN a, b, s;
+  long i;
+  int (*cmp)(GEN,GEN);
+  struct parfor_iter iter;
+} parforstep_t;
+
+typedef struct
+{
   GEN x, W;
   long i, l;
   struct parfor_iter iter;

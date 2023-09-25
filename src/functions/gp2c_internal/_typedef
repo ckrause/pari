@@ -17,6 +17,7 @@ Description:
  (C!forvec_t)        forvec_t
  (C!forsubset_t)     forsubset_t
  (C!parfor_t)        parfor_t
+ (C!parforstep_t)    parforstep_t
  (C!parforeach_t)    parforeach_t
  (C!parforprime_t)   parforprime_t
  (C!parforvec_t)     parforvec_t
@@ -60,6 +61,7 @@ Description:
  (forsubset)    forsubset_t
  (forvec)       forvec_t
  (parfor)       parfor_t
+ (parforstep)   parforstep_t
  (parforeach)   parforeach_t
  (parforprime)  parforprime_t
  (parforvec)    parforvec_t

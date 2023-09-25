@@ -1949,6 +1949,129 @@ parfor0(GEN a, GEN b, GEN code, GEN code2)
   parfor(a, b, code, (void*)code2, code2 ? gp_evalvoid2: NULL);
 }
 
+static int negcmp(GEN x, GEN y) { return gcmp(y,x); }
+
+void
+parforstep(GEN a, GEN b, GEN s, GEN code, void *E, long call(void*, GEN, GEN))
+{
+  pari_sp av = avma;
+  long running, pending = 0;
+  long status = br_NONE;
+  GEN worker = snm_closure(is_entry("_parfor_worker"), mkvec(code));
+  GEN done, stop = NULL;
+  struct pari_mt pt;
+  long i, ss;
+  GEN v = NULL, lim;
+  int (*cmp)(GEN,GEN);
+
+  b = gcopy(b);
+  s = gcopy(s); av = avma;
+  switch(typ(s))
+  {
+    case t_VEC: case t_COL:
+    {
+      GEN vs = vecsum(s);
+      ss = gsigne(vs); v = s;
+      lim = gdiv(gmulgs(gadd(gsub(b,a),vs),lg(vs)-1),vs);
+      break;
+    }
+    case t_INTMOD:
+      if (typ(a) != t_INT) a = gceil(a);
+      a = addii(a, modii(subii(gel(s,2),a), gel(s,1)));
+      s = gel(s,1);
+    default: /* FALL THROUGH */
+      ss = gsigne(s);
+      lim = gdiv(gadd(gsub(b,a),s),s);
+  }
+  lim = ceil_safe(lim);
+  if (!ss || typ(lim)!=t_INT) pari_err_DOMAIN("parforstep","step","=",gen_0,s);
+  if (signe(lim)<=0) { set_avma(av); return; }
+  cmp = (ss > 0)? &gcmp: &negcmp;
+  i = 0;
+  a = mkvec(a);
+  mt_queue_start_lim(&pt, worker, 0);//itou_or_0(lim));
+  while ((running = (!stop && (!b || cmp(gel(a,1),b) <= 0))) || pending)
+  {
+    mt_queue_submit(&pt, 0, running ? a: NULL);
+    done = mt_queue_get(&pt, NULL, &pending);
+    if (call && done && (!stop || cmp(gel(done,1),stop) < 0))
+      if (call(E, gel(done,1), gel(done,2)))
+      {
+        status = br_status;
+        br_status = br_NONE;
+        stop = gel(done,1);
+      }
+    if (running)
+    {
+      if (v)
+      {
+        if (++i >= lg(v)) i = 1;
+        s = gel(v,i);
+      }
+      gel(a,1) = gadd(gel(a,1),s);
+    }
+  }
+  mt_queue_end(&pt);
+  br_status = status;
+  set_avma(av);
+}
+
+void
+parforstep0(GEN a, GEN b, GEN s, GEN code, GEN code2)
+{
+  parforstep(a, b, s, code, (void*)code2, code2 ? gp_evalvoid2: NULL);
+}
+
+void
+parforstep_init(parforstep_t *T, GEN a, GEN b, GEN s, GEN code)
+{
+  long ss;
+  if (typ(a) != t_INT) pari_err_TYPE("parfor",a);
+  switch(typ(s))
+  {
+    case t_VEC: case t_COL:
+      ss = gsigne(vecsum(s));
+      break;
+    case t_INTMOD:
+      if (typ(a) != t_INT) a = gceil(a);
+      a = addii(a, modii(subii(gel(s,2),a), gel(s,1)));
+      s = gel(s,1);
+    default: /* FALL THROUGH */
+      ss = gsigne(s);
+  }
+  T->cmp = (ss > 0)? &gcmp: &negcmp;
+  T->s = s;
+  T->i = 0;
+  T->b = b;
+  T->a = mkvec(a);
+  parforiter_init(&T->iter, code);
+}
+
+GEN
+parforstep_next(parforstep_t *T)
+{
+  long running;
+  while ((running=((!T->b || T->cmp(gel(T->a,1),T->b) <= 0))) || T->iter.pending)
+  {
+    GEN done = parforiter_next(&T->iter, running ? T->a: NULL);
+    if (running)
+    {
+      if (is_vec_t(typ(T->s)))
+      {
+        if (++(T->i) >= lg(T->s)) T->i = 1;
+        gel(T->a,1) = gadd(gel(T->a,1), gel(T->s,T->i));
+      }
+      else gel(T->a,1) = gadd(gel(T->a,1), T->s);
+    }
+    if (done) return done;
+  }
+  mt_queue_end(&T->iter.pt);
+  return NULL;
+}
+
+void
+parforstep_stop(parforstep_t *T) { parforiter_stop(&T->iter); }
+
 void
 parforprimestep_init(parforprime_t *T, GEN a, GEN b, GEN q, GEN code)
 {

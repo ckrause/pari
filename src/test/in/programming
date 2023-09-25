@@ -40,6 +40,9 @@ print1("parfor: ");W=vector(10);parfor(i=1,10,binomial(2*i,i),E,W[i]=E);print(W)
 print1("parforeach: ");W=vector(20);parforeach(primes([1,20]),i,binomial(2*i,i),E,W[i]=E);print(W);
 print1("parforprime: ");W=vector(20);parforprime(i=1,20,binomial(2*i,i),E,W[i]=E);print(W);
 print1("parforprimestep: ");W=vector(20);parforprimestep(i=1,20,Mod(1,3),binomial(2*i,i),E,W[i]=E);print(W);
+print1("parforstep: ");W=vector(100);parforstep(i=1,100,3,binomial(2*i,i),E,W[i]=E);print(W);
+print1("parforstep: ");W=vector(100);parforstep(i=1,100,Mod(1,3),binomial(2*i,i),E,W[i]=E);print(W);
+print1("parforstep: ");W=vector(100);parforstep(i=1,100,[4,-1],binomial(2*i,i),E,W[i]=E);print(W);
 print1("parforvec: ");W=vector(9);parforvec(v=[[0,2],[0,2]],fromdigits(v,3),E,W[E+1]=v);print(W);
 print1("parforvec: ");W=vector(9);parforvec(v=[[0,2],[0,2]],fromdigits(v,3),E,W[E+1]=v,1);print(W);
 print1("parforvec: ");W=vector(9);parforvec(v=[[0,2],[0,2]],fromdigits(v,3),E,W[E+1]=v,2);print(W);
