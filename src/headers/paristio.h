@@ -211,6 +211,7 @@ extern THREAD struct pari_mainstack *pari_mainstack;
 
 struct pari_global_state
 {
+  long debugvar;
   long bitprec;
   GEN primetab;
   GEN seadata;

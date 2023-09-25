@@ -92,7 +92,7 @@ char    *current_logfile, *current_psfile, *pari_datadir;
 long    gp_colors[c_LAST];
 int     disable_color;
 ulong   DEBUGLEVEL, DEBUGMEM;
-long    DEBUGVAR;
+THREAD  long    DEBUGVAR;
 ulong   pari_mt_nbthreads;
 long    precreal;
 ulong   precdl, pari_logstyle;
@@ -1143,6 +1143,7 @@ new_chunk_resize(size_t x)
 static void
 pari_thread_set_global(struct pari_global_state *gs)
 {
+  setdebugvar(gs->debugvar);
   push_localbitprec(gs->bitprec);
   pari_set_primetab(gs->primetab);
   pari_set_seadata(gs->seadata);
@@ -1152,6 +1153,7 @@ pari_thread_set_global(struct pari_global_state *gs)
 static void
 pari_thread_get_global(struct pari_global_state *gs)
 {
+  gs->debugvar = getdebugvar();
   gs->bitprec = get_localbitprec();
   gs->primetab = primetab;
   gs->seadata = pari_get_seadata();
