@@ -1783,7 +1783,9 @@ ggcd(GEN x, GEN y)
         case t_SER:
           z = ggcd(content(x), content(y));
           return monomialcopy(z, minss(valser(y),gval(x,vx)), vx);
-        case t_RFRAC: return cont_gcd_rfrac(y, x);
+        case t_RFRAC:
+          av = avma; z = gred_rfrac_simple(ggcd(gel(y,1), x), gel(y,2));
+          return gerepileupto(av, z);
       }
       break;
 
