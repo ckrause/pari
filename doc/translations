@@ -83,6 +83,7 @@ _===_           @Equality
 _!==_           @Equality
 _!              @!
 _#              @\#
+#_              @length
 ..              @Row and column vectors@2
 _.._            @Row and column vectors@2
 []              @Row and column vectors@2
