@@ -2899,12 +2899,12 @@ listput(GEN L, GEN x, long index)
   return gel(z,index);
 }
 
-GEN
+void
 listput0(GEN L, GEN x, long index)
 {
   if (typ(L) != t_LIST || list_typ(L) != t_LIST_RAW)
     pari_err_TYPE("listput",L);
-  return listput(L, x, index);
+  (void) listput(L, x, index);
 }
 
 GEN
@@ -2913,8 +2913,6 @@ listinsert(GEN L, GEN x, long index)
   long l, i;
   GEN z;
 
-  if (typ(L) != t_LIST || list_typ(L) != t_LIST_RAW)
-    pari_err_TYPE("listinsert",L);
   z = list_data(L); l = z? lg(z): 1;
   if (index <= 0) pari_err_COMPONENT("listinsert", "<=", gen_0, stoi(index));
   if (index > l) index = l;
@@ -2926,6 +2924,14 @@ listinsert(GEN L, GEN x, long index)
   gel(z,index) = gclone(x);
   BLOCK_SIGINT_END
   return gel(z,index);
+}
+
+void
+listinsert0(GEN L, GEN x, long index)
+{
+  if (typ(L) != t_LIST || list_typ(L) != t_LIST_RAW)
+    pari_err_TYPE("listinsert",L);
+  (void) listinsert(L, x, index);
 }
 
 void

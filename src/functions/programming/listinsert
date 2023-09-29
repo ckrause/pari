@@ -1,7 +1,7 @@
 Function: listinsert
 Section: programming/specific
-C-Name: listinsert
-Prototype: WGL
+C-Name: listinsert0
+Prototype: vWGL
 Help: listinsert(~L,x,n): insert x at index n in list L, shifting the
  remaining elements to the right.
 Description:
