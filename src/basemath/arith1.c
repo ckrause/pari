@@ -3329,6 +3329,23 @@ muls_interval(long a, long b)
 }
 
 GEN
+mpprimorial(long n)
+{
+  pari_sp av = avma;
+  if (n <= 12) switch(n)
+  {
+    case 0: case 1: return gen_1;
+    case 2: return gen_2;
+    case 3: case 4: return utoipos(6);
+    case 5: case 6: return utoipos(30);
+    case 7: case 8: case 9: case 10: return utoipos(210);
+    case 11: case 12: return utoipos(2310);
+    default: pari_err_DOMAIN("primorial", "argument","<",gen_0,stoi(n));
+  }
+  return gerepileuptoint(av, zv_prod_Z(primes_upto_zv(n)));
+}
+
+GEN
 mpfact(long n)
 {
   pari_sp av = avma;

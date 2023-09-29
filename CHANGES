@@ -77,6 +77,7 @@ BA  21- [libpari] RgV_F2v_extract_shallow
     25- [libpari] dbg_fill_stack() [#2361]
     26- allow erfc(t_SER)
     27- allow hypergeom(N,D,t_PADIC)
+BA  28- n#: primorial of n
 
   Removed
      1- [graphic] support for Qt4

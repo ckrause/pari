@@ -176,6 +176,7 @@ expr: KINTEGER %prec INT  {$$=newintnode(&@1);}
     | expr '~' {$$=newopcall(OPtrans,$1,-1,&@$);}
     | expr deriv %prec DERIV {$$=newopcall(OPderivn,$1, newnode(Fsmall,$2,-1,&@$),&@$);}
     | expr '!'  {$$=newopcall(OPfact,$1,-1,&@$);}
+    | expr '#'  {$$=newopcall(OPprim,$1,-1,&@$);}
     | expr matrix_index {$$=newnode(Fmatcoeff,$1,$2,&@$);}
     | memberid {$$=$1;}
     | expr ':' KENTRY   {$$=newnode(Ftag,$1,0,&@$);}
