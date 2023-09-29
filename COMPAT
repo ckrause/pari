@@ -6,7 +6,7 @@ This file lists the incompatible changes between Version 2.x and older versions
      negative integers.
    - default 'primelimit' is now 2^20 [instead of 500000]
    - lfunabelianrelinit. Removed: Use lfunfinit([bnr, subgroup]) instead.
-   - listput and listinsert no more return added element
+   - listput and listinsert no longer return the added element
 
 * Specific to the PARI library:
 ===============================

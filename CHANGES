@@ -44,7 +44,7 @@ BA   6- -ZX_compositum_disjoint: renamed to ZX_composedsum
      7- allow t_INTMOD Mod(m,N) as a Conrey label for the character m mod N
      8- nfroots: return a t_COL instead of a t_VEC (same as other 'roots' fun)
      9- qfbsolve: call qfbcornacchia when the argument is prime (and disc < 0)
-BA  10- listput and listinsert no more return added element
+BA  10- listput and listinsert no longer return the added element
 
   Added
      1- [libpari] nfeltembed_i
