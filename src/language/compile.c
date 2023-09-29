@@ -1778,7 +1778,7 @@ compilefunc(entree *ep, long n, int mode, long flag)
   if (j<=nb)
     compile_err("too many arguments",tree[arg[j]].str);
   op_push_loc(ret_op, (long) ep, str);
-  if ((ret_flag&FLnocopy) && !(flag&FLnocopy))
+  if (mode==Ggen && (ret_flag&FLnocopy) && !(flag&FLnocopy))
     op_push_loc(OCcopy,0,str);
   if (ret_typ==Ggen && nbpointers==0 && s_opcode.n>nbopcodes+128)
   {
