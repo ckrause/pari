@@ -68,7 +68,7 @@ Doc:
  equivalent negated forms: \kbd{!=} or \kbd{<>}; there is no negated form for
  \kbd{===}.
 
- Do not mistake \kbd{=} for \kbd{==}: it is the assignment statement.
+ Do not mistake \kbd{=} for \kbd{==}: the former is the assignment statement.
 
  \subseckbd{+$/$-} The expressions \kbd{+}$x$ and \kbd{-}$x$ refer
  to monadic operators: the first does nothing, the second negates $x$.
@@ -184,6 +184,17 @@ Doc:
 
  The library syntax is \fun{GEN}{gmod}{GEN x, GEN y}
  for $x$ \kbd{\%} $y$.
+
+ \subseckbd{!} The expression \kbd{$n!$} is the factorial of the
+ non-negative integer $n$.
+
+ The library syntax is \fun{GEN}{mpfact}{long n}
+
+ \subseckbd{\#} The expression \kbd{$n\#$} is the primorial of the
+ non-negative integer $n$, that is the product of all prime numbers less than
+ or equal to $x$.
+
+ The library syntax is \fun{GEN}{mpprimorial}{long n}
 
  \subseckbd{op=} When \kbd{op} is a binary arithmetic operator among
  \kbd{+}, \kbd{-}, \kbd{\%}, \kbd{/}, \kbd{\bs} or \kbd{\bs/}, the construct

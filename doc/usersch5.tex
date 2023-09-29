@@ -8910,6 +8910,9 @@ interval $[a,b]$, as a \typ{VECSMALL} of \kbd{ulongs}s.
 \fun{GEN}{primes_upto_zv}{ulong b} return the primes in the interval $[2,b]$,
 as a \typ{VECSMALL} of \kbd{ulongs}s.
 
+\fun{GEN}{mpprimorial}{long n} return $n\#$, the product of primes less than
+or equal to $n$. The integer $n$ must be non-negative.
+
 \subsubsec{Tests}
 
 \fun{int}{uisprime}{ulong p}, returns $1$ if \kbd{p} is a prime number and
