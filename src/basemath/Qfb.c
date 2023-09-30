@@ -848,6 +848,11 @@ redimag_av(pari_sp av, GEN q)
     if (lc == 3) return redimag_1(av, a, b, c, D);
     swap(a,c); b = negi(b); /* apply rho */
     REDB(a,&b,&c);
+    if (gc_needed(av, 2))
+    {
+      if (DEBUGMEM>1) pari_warn(warnmem,"redimag, lc = %ld", lc);
+      gerepileall(av, 3, &a,&b,&c);
+    }
   }
   if (cmp == 0 && signe(b) < 0) b = negi(b);
   return gerepilecopy(av, mkqfb(a, b, c, D));
