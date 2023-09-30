@@ -27,5 +27,5 @@ Doc: gives the result of a lexicographic comparison
  ? lex(2 - I, 1)
  %5 = 1
  ? lex(2 - I, 2)
- %6 = 2
+ %6 = -1
  @eprog
