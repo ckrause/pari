@@ -482,8 +482,8 @@ typedef struct {
 
 /* Code which wants to use readline needs to do the following:
 
-#include <readline.h>
-#include <paripriv.h>
+#include <readline/readline.h>
+#include <pari/paripriv.h>
 pari_rl_interface pari_rl;
 pari_use_readline(pari_rl);
 
