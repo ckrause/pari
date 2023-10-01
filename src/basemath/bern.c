@@ -250,6 +250,18 @@ bernpol(long k, long v)
   if (k < 0) pari_err_DOMAIN("bernpol", "index", "<", gen_0, stoi(k));
   return gerepileupto(av, bernpol_i(k, v));
 }
+GEN
+bernpol_eval(long k, GEN x)
+{
+  pari_sp av = avma;
+  GEN B;
+  if (!x) return bernpol(k, 0);
+  if (gequalX(x)) return bernpol(k, varn(x));
+  if (k < 0) pari_err_DOMAIN("bernpol", "index", "<", gen_0, stoi(k));
+  B = bernpol_i(k, fetch_var_higher());
+  return gerepileupto(av, poleval(B, x));
+}
+
 /* x := pol_x(v); return 1^e + ... + x^e = x^e + (B_{e+1}(x) - B_{e+1})/(e+1) */
 static GEN
 faulhaber(long e, long v)

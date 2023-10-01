@@ -78,6 +78,7 @@ BA  21- [libpari] RgV_F2v_extract_shallow
     26- allow erfc(t_SER)
     27- allow hypergeom(N,D,t_PADIC)
 BA  28- n#: primorial of n
+    29- allow bernpol(k, a) [ = B_k(a) ]
 
   Removed
      1- [graphic] support for Qt4

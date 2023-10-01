@@ -2742,6 +2742,7 @@ GEN     matsolvemod(GEN M, GEN D, GEN Y, long flag);
 
 GEN     bernfrac(long n);
 GEN     bernpol(long k, long v);
+GEN     bernpol_eval(long k, GEN x);
 GEN     bernreal(long n, long prec);
 GEN     bernvec(long nomb);
 void    constbern(long n);

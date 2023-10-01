@@ -25,6 +25,12 @@ x^2 - x + 1/6
 x^3 - 3/2*x^2 + 1/2*x
 x^4 - 2*x^3 + x^2 - 1/30
 x^5 - 5/2*x^4 + 5/3*x^3 - 1/6*x
+1
+1/2
+1/6
+0
+-1/30
+0
 [1, 1/6, -1/30, 1/42, -1/30, 5/66, -691/2730, 7/6, -3617/510, 43867/798, -17
 4611/330, 854513/138, -236364091/2730, 8553103/6, -23749461029/870, 86158412
 76005/14322, -7709321041217/510, 2577687858367/6, -26315271553053477373/1919
@@ -95,6 +101,9 @@ x^4 + 26*x^3 + 66*x^2 + 26*x + 1
   ***   at top-level: bernpol(-1)
   ***                 ^-----------
   *** bernpol: domain error in bernpol: index < 0
+  ***   at top-level: bernpol(-1,1)
+  ***                 ^-------------
+  *** bernpol: domain error in bernpol: index < 0
   ***   at top-level: eulerfrac(-1)
   ***                 ^-------------
   *** eulerfrac: domain error in eulerfrac: index < 0
@@ -107,4 +116,4 @@ x^4 + 26*x^3 + 66*x^2 + 26*x + 1
   ***   at top-level: eulerianpol(-1)
   ***                 ^---------------
   *** eulerianpol: domain error in eulerianpol: index < 0
-Total time spent: 25094
+Total time spent: 8758
