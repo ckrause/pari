@@ -157,7 +157,13 @@ Qfb0(GEN a, GEN b, GEN c)
     { b = gel(a,2); c = gel(a,3); a = gel(a,1); }
     else if (typ(a) == t_POL && degpol(a) == 2)
     { b = gel(a,3); c = gel(a,2); a = gel(a,4); }
-    else pari_err_TYPE("Qfb",a);
+    else if (typ(a) == t_MAT && lg(a)==3 && lgcols(a)==3)
+    {
+      b = gadd(gcoeff(a,2,1), gcoeff(a,1,2));
+      c = gcoeff(a,2,2); a = gcoeff(a,1,1);
+    }
+    else
+      pari_err_TYPE("Qfb",a);
   }
   else if (!c)
     pari_err_TYPE("Qfb",b);
