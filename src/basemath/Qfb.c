@@ -177,473 +177,11 @@ Qfb0(GEN a, GEN b, GEN c)
   return q;
 }
 
-/* composition */
-static void
-qfb_sqr(GEN z, GEN x)
-{
-  GEN c, d1, x2, v1, v2, c3, m, p1, r;
-
-  d1 = bezout(gel(x,2),gel(x,1),&x2, NULL); /* usually 1 */
-  c = gel(x,3);
-  m = mulii(c,x2);
-  if (equali1(d1))
-    v1 = v2 = gel(x,1);
-  else
-  {
-    v1 = diviiexact(gel(x,1),d1);
-    v2 = mulii(v1, gcdii(d1,c)); /* = v1 iff x primitive */
-    c = mulii(c, d1);
-  }
-  togglesign(m);
-  r = modii(m,v2);
-  p1 = mulii(r, v1);
-  c3 = addii(c, mulii(r,addii(gel(x,2),p1)));
-  gel(z,1) = mulii(v1,v2);
-  gel(z,2) = addii(gel(x,2), shifti(p1,1));
-  gel(z,3) = diviiexact(c3,v2);
-}
-/* z <- x * y */
-static void
-qfb_comp(GEN z, GEN x, GEN y)
-{
-  GEN n, c, d, y1, v1, v2, c3, m, p1, r;
-
-  if (x == y) { qfb_sqr(z,x); return; }
-  n = shifti(subii(gel(y,2),gel(x,2)), -1);
-  v1 = gel(x,1);
-  v2 = gel(y,1);
-  c  = gel(y,3);
-  d = bezout(v2,v1,&y1,NULL);
-  if (equali1(d))
-    m = mulii(y1,n);
-  else
-  {
-    GEN s = subii(gel(y,2), n);
-    GEN x2, y2, d1 = bezout(s,d,&x2,&y2); /* x2 s + y2 (x1 v1 + y1 v2) = d1 */
-    if (!equali1(d1))
-    {
-      v1 = diviiexact(v1,d1);
-      v2 = diviiexact(v2,d1); /* gcd = 1 iff x or y primitive */
-      v1 = mulii(v1, gcdii(c,gcdii(gel(x,3),gcdii(d1,n))));
-      c = mulii(c, d1);
-    }
-    m = addii(mulii(mulii(y1,y2),n), mulii(gel(y,3),x2));
-  }
-  togglesign(m);
-  r = modii(m, v1);
-  p1 = mulii(r, v2);
-  c3 = addii(c, mulii(r,addii(gel(y,2),p1)));
-  gel(z,1) = mulii(v1,v2);
-  gel(z,2) = addii(gel(y,2), shifti(p1,1));
-  gel(z,3) = diviiexact(c3,v1);
-}
-
-/* not meant to be efficient */
-static GEN
-qfb_comp_gen(GEN x, GEN y)
-{
-  GEN d1 = qfb_disc(x), d2 = qfb_disc(y);
-  GEN a1 = gel(x,1), b1 = gel(x,2), c1 = gel(x,3), n1;
-  GEN a2 = gel(y,1), b2 = gel(y,2), c2 = gel(y,3), n2;
-  GEN cx = content(x), cy = content(y), A, B, C, D, U, m, m2;
-
-  if (!is_pm1(cx))
-  {
-    a1 = diviiexact(a1, cx); b1 = diviiexact(b1, cx);
-    c1 = diviiexact(c1, cx); d1 = diviiexact(d1, sqri(cx));
-  }
-  if (!is_pm1(cy))
-  {
-    a2 = diviiexact(a2, cy); c2 = diviiexact(c2, cy);
-    b2 = diviiexact(b2, cy); d2 = diviiexact(d2, sqri(cy));
-  }
-  D = gcdii(d1, d2); if (signe(d1) < 0) setsigne(D, -1);
-  if (!Z_issquareall(diviiexact(d1, D), &n1) ||
-      !Z_issquareall(diviiexact(d2, D), &n2)) return NULL;
-  A = mulii(a1, n2);
-  B = mulii(a2, n1);
-  C = shifti(addii(mulii(b1, n2), mulii(b2, n1)), -1);
-  U = ZV_extgcd(mkvec3(A, B, C));
-  m = gel(U,1); U = gmael(U,2,3);
-  A = mulii(diviiexact(mulii(a1,b2),m), gel(U,1));
-  B = mulii(diviiexact(mulii(a2,b1),m), gel(U,2));
-  C = addii(mulii(b1,b2), mulii(D, mulii(n1,n2)));
-  C = mulii(diviiexact(shifti(C,-1), m), gel(U,3));
-  B = addii(A, addii(B, C));
-  m2 = sqri(m);
-  A = diviiexact(mulii(a1, a2), m2);
-  C = diviiexact(shifti(subii(sqri(B),D), -2), A);
-  cx = mulii(cx, cy);
-  if (!is_pm1(cx))
-  {
-    A = mulii(A, cx); B = mulii(B, cx);
-    C = mulii(C, cx); D = mulii(D, sqri(cx));
-  }
-  return mkqfb(A, B, C, D);
-}
-
-static GEN redimag_av(pari_sp av, GEN q);
-static GEN
-qficomp0(GEN x, GEN y, int raw)
-{
-  pari_sp av = avma;
-  GEN z = cgetg(5,t_QFB);
-  gel(z,4) = gel(x,4);
-  qfb_comp(z, x,y);
-  if (raw) return gerepilecopy(av,z);
-  return redimag_av(av, z);
-}
-static GEN redreal(GEN x);
-static GEN
-qfrcomp0(GEN x, GEN y, int raw)
-{
-  pari_sp av = avma;
-  GEN dx = NULL, dy = NULL;
-  GEN z = cgetg(5,t_QFB);
-  if (typ(x)==t_VEC) { dx = gel(x,2); x = gel(x,1); }
-  if (typ(y)==t_VEC) { dy = gel(y,2); y = gel(y,1); }
-  gel(z,4) = gel(x,4);
-  qfb_comp(z, x,y);
-  if (dx) z = mkvec2(z, dy? addrr(dx, dy): dx); else if (dy) z = mkvec2(z, dy);
-  if (!raw) z = redreal(z);
-  return gerepilecopy(av, z);
-}
-/* same discriminant, no distance, no checks */
-GEN
-qfbcomp_i(GEN x, GEN y)
-{ return qfb_is_qfi(x)? qficomp0(x,y,0): qfrcomp0(x,y,0); }
-GEN
-qfbcomp(GEN x, GEN y)
-{
-  GEN qx = check_qfbext("qfbcomp", x);
-  GEN qy = check_qfbext("qfbcomp", y);
-  if (!equalii(gel(qx,4),gel(qy,4)))
-  {
-    pari_sp av = avma;
-    GEN z = qfb_comp_gen(qx, qy);
-    if (typ(x) == t_VEC || typ(y) == t_VEC)
-      pari_err_IMPL("Shanks's distance in general composition");
-    if (!z) pari_err_OP("*",x,y);
-    return gerepileupto(av, qfbred(z));
-  }
-  return qfb_is_qfi(qx)? qficomp0(x,y,0): qfrcomp0(x,y,0);
-}
-/* same discriminant, no distance, no checks */
-GEN
-qfbcompraw_i(GEN x, GEN y)
-{ return qfb_is_qfi(x)? qficomp0(x,y,1): qfrcomp0(x,y,1); }
-GEN
-qfbcompraw(GEN x, GEN y)
-{
-  GEN qx = check_qfbext("qfbcompraw", x);
-  GEN qy = check_qfbext("qfbcompraw", y);
-  if (!equalii(gel(qx,4),gel(qy,4)))
-  {
-    pari_sp av = avma;
-    GEN z = qfb_comp_gen(qx, qy);
-    if (typ(x) == t_VEC || typ(y) == t_VEC)
-      pari_err_IMPL("Shanks's distance in general composition");
-    if (!z) pari_err_OP("qfbcompraw",x,y);
-    return gerepilecopy(av, z);
-  }
-  if (!equalii(gel(qx,4),gel(qy,4))) pari_err_OP("qfbcompraw",x,y);
-  return qfb_is_qfi(qx)? qficomp0(x,y,1): qfrcomp0(x,y,1);
-}
-
-static GEN
-qfisqr0(GEN x, long raw)
-{
-  pari_sp av = avma;
-  GEN z = cgetg(5,t_QFB);
-  gel(z,4) = gel(x,4);
-  qfb_sqr(z,x);
-  if (raw) return gerepilecopy(av,z);
-  return redimag_av(av, z);
-}
-static GEN
-qfrsqr0(GEN x, long raw)
-{
-  pari_sp av = avma;
-  GEN dx = NULL, z = cgetg(5,t_QFB);
-  if (typ(x) == t_VEC) { dx = gel(x,2); x = gel(x,1); }
-  gel(z,4) = gel(x,4); qfb_sqr(z,x);
-  if (dx) z = mkvec2(z, shiftr(dx,1));
-  if (!raw) z = redreal(z);
-  return gerepilecopy(av, z);
-}
-/* same discriminant, no distance, no checks */
-GEN
-qfbsqr_i(GEN x)
-{ return qfb_is_qfi(x)? qfisqr0(x,0): qfrsqr0(x,0); }
-GEN
-qfbsqr(GEN x)
-{
-  GEN qx = check_qfbext("qfbsqr", x);
-  return qfb_is_qfi(qx)? qfisqr0(x,0): qfrsqr0(x,0);
-}
-
-static GEN
-qfr_1_by_disc(GEN D)
-{
-  GEN y, r, s;
-  check_quaddisc_real(D, NULL, "qfr_1_by_disc");
-  y = cgetg(5,t_QFB);
-  s = sqrtremi(D, &r); togglesign(r); /* s^2 - r = D */
-  if (mpodd(r))
-  {
-    s = subiu(s,1);
-    r = subii(r, addiu(shifti(s, 1), 1));
-    r = shifti(r, -2); set_avma((pari_sp)y); s = icopy(s);
-  }
-  else
-  { r = shifti(r, -2); set_avma((pari_sp)s); }
-  gel(y,1) = gen_1;
-  gel(y,2) = s;
-  gel(y,3) = icopy(r);
-  gel(y,4) = icopy(D); return y;
-}
-
-static GEN
-qfr_disc(GEN x)
-{ return qfb_disc(typ(x)==t_VEC ? gel(x,1): x); }
-
-static GEN
-qfr_1(GEN x)
-{ return qfr_1_by_disc(qfr_disc(x)); }
-
-static void
-qfr_1_fill(GEN y, struct qfr_data *S)
-{
-  pari_sp av = avma;
-  GEN y2 = S->isqrtD;
-  gel(y,1) = gen_1;
-  if (mod2(S->D) != mod2(y2)) y2 = subiu(y,1);
-  gel(y,2) = y2; av = avma;
-  gel(y,3) = gerepileuptoint(av, shifti(subii(sqri(y2), S->D),-2));
-}
-static GEN
-qfr5_1(struct qfr_data *S, long prec)
-{
-  GEN y = cgetg(6, t_VEC);
-  qfr_1_fill(y, S);
-  gel(y,4) = gen_0;
-  gel(y,5) = real_1(prec); return y;
-}
-static GEN
-qfr3_1(struct qfr_data *S)
-{
-  GEN y = cgetg(4, t_VEC);
-  qfr_1_fill(y, S); return y;
-}
-
-/* Assume D < 0 is the discriminant of a t_QFB */
-static GEN
-qfi_1_by_disc(GEN D)
-{
-  GEN b,c, y = cgetg(5,t_QFB);
-  quadpoly_bc(D, mod2(D), &b,&c);
-  if (b == gen_m1) b = gen_1;
-  gel(y,1) = gen_1;
-  gel(y,2) = b;
-  gel(y,3) = c;
-  gel(y,4) = icopy(D); return y;
-}
-static GEN
-qfi_1(GEN x)
-{
-  if (typ(x) != t_QFB) pari_err_TYPE("qfi_1",x);
-  return qfi_1_by_disc(qfb_disc(x));
-}
-
-GEN
-qfb_1(GEN x) { return qfb_is_qfi(x) ? qfi_1(x): qfr_1(x); }
-
-static GEN
-_qfimul(void *E, GEN x, GEN y) { (void) E; return qficomp0(x,y,0); }
-static GEN
-_qfisqr(void *E, GEN x) { (void) E; return qficomp0(x,x,0); }
-static GEN
-_qfimulraw(void *E, GEN x, GEN y) { (void) E; return qficomp0(x,y,1); }
-static GEN
-_qfisqrraw(void *E, GEN x) { (void) E; return qficomp0(x,x,1); }
-
-static GEN
-qfipowraw(GEN x, long n)
-{
-  pari_sp av = avma;
-  GEN y;
-  if (!n) return qfi_1(x);
-  if (n== 1) return gcopy(x);
-  if (n==-1) { x = gcopy(x); togglesign(gel(x,2)); return x; }
-  if (n < 0) x = qfb_inv(x);
-  y = gen_powu(x, labs(n), NULL, &_qfisqrraw, &_qfimulraw);
-  return gerepilecopy(av,y);
-}
-
-static GEN
-qfipow(GEN x, GEN n)
-{
-  pari_sp av = avma;
-  GEN y;
-  long s = signe(n);
-  if (!s) return qfi_1(x);
-  if (s < 0) x = qfb_inv(x);
-  y = gen_pow(qfbred_i(x), n, NULL, &_qfisqr, &_qfimul);
-  return gerepilecopy(av,y);
-}
-
-static long
-parteucl(GEN L, GEN *d, GEN *v3, GEN *v, GEN *v2)
-{
-  long z;
-  *v = gen_0; *v2 = gen_1;
-  for (z=0; abscmpii(*v3,L) > 0; z++)
-  {
-    GEN t3, t2 = subii(*v, mulii(truedvmdii(*d,*v3,&t3),*v2));
-    *v = *v2; *d = *v3; *v2 = t2; *v3 = t3;
-  }
-  return z;
-}
-
-/* composition: Shanks' NUCOMP & NUDUPL */
-/* L = floor((|d|/4)^(1/4)) */
-GEN
-nucomp(GEN x, GEN y, GEN L)
-{
-  pari_sp av = avma;
-  long z;
-  GEN a, a1, a2, b2, b, d, d1, g, n, p1, q1, q2, s, u, u1, v, v2, v3, Q;
-
-  if (x==y) return nudupl(x,L);
-  if (!is_qfi(x)) pari_err_TYPE("nucomp",x);
-  if (!is_qfi(y)) pari_err_TYPE("nucomp",y);
-
-  if (abscmpii(gel(x,1),gel(y,1)) < 0) swap(x, y);
-  s = shifti(addii(gel(x,2),gel(y,2)), -1);
-  n = subii(gel(y,2), s);
-  a1 = gel(x,1);
-  a2 = gel(y,1); d = bezout(a2,a1,&u,&v);
-  if (equali1(d)) { a = negi(mulii(u,n)); d1 = d; }
-  else if (dvdii(s,d)) /* d | s */
-  {
-    a = negi(mulii(u,n)); d1 = d;
-    a1 = diviiexact(a1, d1);
-    a2 = diviiexact(a2, d1);
-    s = diviiexact(s, d1);
-  }
-  else
-  {
-    GEN p2, l;
-    d1 = bezout(s,d,&u1,NULL);
-    if (!equali1(d1))
-    {
-      a1 = diviiexact(a1,d1);
-      a2 = diviiexact(a2,d1);
-      s = diviiexact(s,d1);
-      d = diviiexact(d,d1);
-    }
-    p1 = remii(gel(x,3),d);
-    p2 = remii(gel(y,3),d);
-    l = modii(mulii(negi(u1), addii(mulii(u,p1),mulii(v,p2))), d);
-    a = subii(mulii(l,diviiexact(a1,d)), mulii(u,diviiexact(n,d)));
-  }
-  a = modii(a,a1); p1 = subii(a,a1); if (abscmpii(a,p1) > 0) a = p1;
-  d = a1; v3 = a; z = parteucl(L, &d,&v3, &v,&v2);
-  Q = cgetg(5,t_QFB);
-  if (!z) {
-    g = diviiexact(addii(mulii(v3,s),gel(y,3)), d);
-    b = a2;
-    b2 = gel(y,2);
-    v2 = d1;
-    gel(Q,1) = mulii(d,b);
-  } else {
-    GEN e, q3, q4;
-    if (z&1) { v3 = negi(v3); v2 = negi(v2); }
-    b = diviiexact(addii(mulii(a2,d), mulii(n,v)), a1);
-    e = diviiexact(addii(mulii(s,d),mulii(gel(y,3),v)), a1);
-    q3 = mulii(e,v2);
-    q4 = subii(q3,s);
-    b2 = addii(q3,q4);
-    g = diviiexact(q4,v);
-    if (!equali1(d1)) { v2 = mulii(d1,v2); v = mulii(d1,v); b2 = mulii(d1,b2); }
-    gel(Q,1) = addii(mulii(d,b), mulii(e,v));
-  }
-  q1 = mulii(b, v3);
-  q2 = addii(q1,n);
-  gel(Q,2) = addii(b2, z? addii(q1,q2): shifti(q1, 1));
-  gel(Q,3) = addii(mulii(v3,diviiexact(q2,d)), mulii(g,v2));
-  gel(Q,4) = gel(x,4);
-  return redimag_av(av, Q);
-}
-
-GEN
-nudupl(GEN x, GEN L)
-{
-  pari_sp av = avma;
-  long z;
-  GEN u, v, d, d1, p1, a, b, c, a2, b2, c2, Q, v2, v3, g;
-
-  if (!is_qfi(x)) pari_err_TYPE("nudupl",x);
-  a = gel(x,1);
-  b = gel(x,2);
-  d1 = bezout(b,a, &u,NULL);
-  if (!equali1(d1))
-  {
-    a = diviiexact(a, d1);
-    b = diviiexact(b, d1);
-  }
-  c = modii(negi(mulii(u,gel(x,3))), a);
-  p1 = subii(c,a); if (abscmpii(c,p1) > 0) c = p1;
-  d = a; v3 = c; z = parteucl(L, &d,&v3, &v,&v2);
-  a2 = sqri(d);
-  c2 = sqri(v3);
-  Q = cgetg(5,t_QFB);
-  if (!z) {
-    g = diviiexact(addii(mulii(v3,b),gel(x,3)), d);
-    b2 = gel(x,2);
-    v2 = d1;
-    gel(Q,1) = a2;
-  } else {
-    GEN e;
-    if (z&1) { v = negi(v); d = negi(d); }
-    e = diviiexact(addii(mulii(gel(x,3),v), mulii(b,d)), a);
-    g = diviiexact(subii(mulii(e,v2), b), v);
-    b2 = addii(mulii(e,v2), mulii(v,g));
-    if (!equali1(d1)) { b2 = mulii(d1,b2); v = mulii(d1,v); v2 = mulii(d1,v2); }
-    gel(Q,1) = addii(a2, mulii(e,v));
-  }
-  gel(Q,2) = addii(b2, subii(sqri(addii(d,v3)), addii(a2,c2)));
-  gel(Q,3) = addii(c2, mulii(g,v2));
-  gel(Q,4) = gel(x,4);
-  return redimag_av(av, Q);
-}
-
-static GEN
-mul_nucomp(void *l, GEN x, GEN y) { return nucomp(x, y, (GEN)l); }
-static GEN
-mul_nudupl(void *l, GEN x) { return nudupl(x, (GEN)l); }
-GEN
-nupow(GEN x, GEN n, GEN L)
-{
-  pari_sp av;
-  GEN y, D;
-
-  if (typ(n) != t_INT) pari_err_TYPE("nupow",n);
-  if (!is_qfi(x)) pari_err_TYPE("nupow",x);
-  if (gequal1(n)) return gcopy(x);
-  av = avma;
-  D = qfb_disc(x);
-  y = qfi_1_by_disc(D);
-  if (!signe(n)) return y;
-  if (!L) L = sqrtnint(absi_shallow(D), 4);
-  y = gen_pow_i(x, n, (void*)L, &mul_nudupl, &mul_nucomp);
-  if (signe(n) < 0
-  && !absequalii(gel(y,1),gel(y,2))
-  && !absequalii(gel(y,1),gel(y,3))) togglesign(gel(y,2));
-  return gerepilecopy(av, y);
-}
-
-/* Reduction */
+/***********************************************************************/
+/**                                                                   **/
+/**                         Reduction                                 **/
+/**                                                                   **/
+/***********************************************************************/
 
 /* assume a > 0. Write b = q*2a + r, with -a < r <= a */
 static GEN
@@ -1132,6 +670,539 @@ qfbred_i(GEN x) { return qfb_is_qfi(x)? redimag(x): redreal(x); }
 GEN
 qfbred(GEN x) { return qfbred0(x, 0, NULL, NULL); }
 
+static void
+_rhorealsl2(GEN *pa, GEN *pb, GEN *pc, GEN *pu1, GEN *pu2, GEN *pv1,
+            GEN *pv2, GEN d, GEN rd)
+{
+  GEN C = mpabs_shallow(*pc), t = addii(*pb, gmax_shallow(rd,C));
+  GEN r, q = truedvmdii(t, shifti(C,1), &r);
+  *pb = subii(t, addii(r, *pb));
+  *pa = *pc;
+  *pc = diviiexact(subii(sqri(*pb), d), shifti(*pa, 2));
+  if (signe(*pa) < 0) togglesign(q);
+  r = *pu1; *pu1 = *pv1; *pv1 = subii(mulii(q, *pv1), r);
+  r = *pu2; *pu2 = *pv2; *pv2 = subii(mulii(q, *pv2), r);
+}
+
+static GEN
+rhorealsl2(GEN A, GEN rd)
+{
+  GEN V = gel(A,1), M = gel(A,2);
+  GEN a = gel(V,1), b = gel(V,2), c = gel(V,3), d = qfb_disc(V);
+  GEN u1 = gcoeff(M,1,1), v1 = gcoeff(M,1,2);
+  GEN u2 = gcoeff(M,2,1), v2 = gcoeff(M,2,2);
+  _rhorealsl2(&a,&b,&c, &u1,&u2,&v1,&v2, d, rd);
+  return mkvec2(mkqfb(a,b,c,d), mkmat22(u1,v1,u2,v2));
+}
+
+static GEN
+redrealsl2(GEN V, GEN rd)
+{
+  pari_sp av = avma;
+  GEN u1 = gen_1, u2 = gen_0, v1 = gen_0, v2 = gen_1;
+  GEN a = gel(V,1), b = gel(V,2), c = gel(V,3), d = qfb_disc(V);
+  while (!ab_isreduced(a,b,rd))
+  {
+    _rhorealsl2(&a,&b,&c, &u1,&u2,&v1,&v2, d, rd);
+    if (gc_needed(av, 1))
+    {
+      if (DEBUGMEM>1) pari_warn(warnmem,"redrealsl2");
+      gerepileall(av, 7, &a,&b,&c,&u1,&u2,&v1,&v2);
+    }
+  }
+  return gerepilecopy(av, mkvec2(mkqfb(a,b,c,d), mkmat22(u1,v1,u2,v2)));
+}
+
+GEN
+qfbredsl2(GEN q, GEN isD)
+{
+  pari_sp av;
+  if (typ(q) != t_QFB) pari_err_TYPE("qfbredsl2",q);
+  if (qfb_is_qfi(q))
+  {
+    GEN v = cgetg(3,t_VEC);
+    if (isD) pari_err_TYPE("qfbredsl2", isD);
+    gel(v,1) = redimagsl2(q, &gel(v,2)); return v;
+  }
+  av = avma;
+  if (!isD) isD = sqrti(qfb_disc(q));
+  else if (typ(isD) != t_INT) pari_err_TYPE("qfbredsl2",isD);
+  return gerepileupto(av, redrealsl2(q, isD));
+}
+
+
+
+/***********************************************************************/
+/**                                                                   **/
+/**                         Composition                               **/
+/**                                                                   **/
+/***********************************************************************/
+
+static void
+qfb_sqr(GEN z, GEN x)
+{
+  GEN c, d1, x2, v1, v2, c3, m, p1, r;
+
+  d1 = bezout(gel(x,2),gel(x,1),&x2, NULL); /* usually 1 */
+  c = gel(x,3);
+  m = mulii(c,x2);
+  if (equali1(d1))
+    v1 = v2 = gel(x,1);
+  else
+  {
+    v1 = diviiexact(gel(x,1),d1);
+    v2 = mulii(v1, gcdii(d1,c)); /* = v1 iff x primitive */
+    c = mulii(c, d1);
+  }
+  togglesign(m);
+  r = modii(m,v2);
+  p1 = mulii(r, v1);
+  c3 = addii(c, mulii(r,addii(gel(x,2),p1)));
+  gel(z,1) = mulii(v1,v2);
+  gel(z,2) = addii(gel(x,2), shifti(p1,1));
+  gel(z,3) = diviiexact(c3,v2);
+}
+/* z <- x * y */
+static void
+qfb_comp(GEN z, GEN x, GEN y)
+{
+  GEN n, c, d, y1, v1, v2, c3, m, p1, r;
+
+  if (x == y) { qfb_sqr(z,x); return; }
+  n = shifti(subii(gel(y,2),gel(x,2)), -1);
+  v1 = gel(x,1);
+  v2 = gel(y,1);
+  c  = gel(y,3);
+  d = bezout(v2,v1,&y1,NULL);
+  if (equali1(d))
+    m = mulii(y1,n);
+  else
+  {
+    GEN s = subii(gel(y,2), n);
+    GEN x2, y2, d1 = bezout(s,d,&x2,&y2); /* x2 s + y2 (x1 v1 + y1 v2) = d1 */
+    if (!equali1(d1))
+    {
+      v1 = diviiexact(v1,d1);
+      v2 = diviiexact(v2,d1); /* gcd = 1 iff x or y primitive */
+      v1 = mulii(v1, gcdii(c,gcdii(gel(x,3),gcdii(d1,n))));
+      c = mulii(c, d1);
+    }
+    m = addii(mulii(mulii(y1,y2),n), mulii(gel(y,3),x2));
+  }
+  togglesign(m);
+  r = modii(m, v1);
+  p1 = mulii(r, v2);
+  c3 = addii(c, mulii(r,addii(gel(y,2),p1)));
+  gel(z,1) = mulii(v1,v2);
+  gel(z,2) = addii(gel(y,2), shifti(p1,1));
+  gel(z,3) = diviiexact(c3,v1);
+}
+
+/* not meant to be efficient */
+static GEN
+qfb_comp_gen(GEN x, GEN y)
+{
+  GEN d1 = qfb_disc(x), d2 = qfb_disc(y);
+  GEN a1 = gel(x,1), b1 = gel(x,2), c1 = gel(x,3), n1;
+  GEN a2 = gel(y,1), b2 = gel(y,2), c2 = gel(y,3), n2;
+  GEN cx = content(x), cy = content(y), A, B, C, D, U, m, m2;
+
+  if (!is_pm1(cx))
+  {
+    a1 = diviiexact(a1, cx); b1 = diviiexact(b1, cx);
+    c1 = diviiexact(c1, cx); d1 = diviiexact(d1, sqri(cx));
+  }
+  if (!is_pm1(cy))
+  {
+    a2 = diviiexact(a2, cy); c2 = diviiexact(c2, cy);
+    b2 = diviiexact(b2, cy); d2 = diviiexact(d2, sqri(cy));
+  }
+  D = gcdii(d1, d2); if (signe(d1) < 0) setsigne(D, -1);
+  if (!Z_issquareall(diviiexact(d1, D), &n1) ||
+      !Z_issquareall(diviiexact(d2, D), &n2)) return NULL;
+  A = mulii(a1, n2);
+  B = mulii(a2, n1);
+  C = shifti(addii(mulii(b1, n2), mulii(b2, n1)), -1);
+  U = ZV_extgcd(mkvec3(A, B, C));
+  m = gel(U,1); U = gmael(U,2,3);
+  A = mulii(diviiexact(mulii(a1,b2),m), gel(U,1));
+  B = mulii(diviiexact(mulii(a2,b1),m), gel(U,2));
+  C = addii(mulii(b1,b2), mulii(D, mulii(n1,n2)));
+  C = mulii(diviiexact(shifti(C,-1), m), gel(U,3));
+  B = addii(A, addii(B, C));
+  m2 = sqri(m);
+  A = diviiexact(mulii(a1, a2), m2);
+  C = diviiexact(shifti(subii(sqri(B),D), -2), A);
+  cx = mulii(cx, cy);
+  if (!is_pm1(cx))
+  {
+    A = mulii(A, cx); B = mulii(B, cx);
+    C = mulii(C, cx); D = mulii(D, sqri(cx));
+  }
+  return mkqfb(A, B, C, D);
+}
+
+static GEN redimag_av(pari_sp av, GEN q);
+static GEN
+qficomp0(GEN x, GEN y, int raw)
+{
+  pari_sp av = avma;
+  GEN z = cgetg(5,t_QFB);
+  gel(z,4) = gel(x,4);
+  qfb_comp(z, x,y);
+  if (raw) return gerepilecopy(av,z);
+  return redimag_av(av, z);
+}
+static GEN redreal(GEN x);
+static GEN
+qfrcomp0(GEN x, GEN y, int raw)
+{
+  pari_sp av = avma;
+  GEN dx = NULL, dy = NULL;
+  GEN z = cgetg(5,t_QFB);
+  if (typ(x)==t_VEC) { dx = gel(x,2); x = gel(x,1); }
+  if (typ(y)==t_VEC) { dy = gel(y,2); y = gel(y,1); }
+  gel(z,4) = gel(x,4);
+  qfb_comp(z, x,y);
+  if (dx) z = mkvec2(z, dy? addrr(dx, dy): dx); else if (dy) z = mkvec2(z, dy);
+  if (!raw) z = redreal(z);
+  return gerepilecopy(av, z);
+}
+/* same discriminant, no distance, no checks */
+GEN
+qfbcomp_i(GEN x, GEN y)
+{ return qfb_is_qfi(x)? qficomp0(x,y,0): qfrcomp0(x,y,0); }
+GEN
+qfbcomp(GEN x, GEN y)
+{
+  GEN qx = check_qfbext("qfbcomp", x);
+  GEN qy = check_qfbext("qfbcomp", y);
+  if (!equalii(gel(qx,4),gel(qy,4)))
+  {
+    pari_sp av = avma;
+    GEN z = qfb_comp_gen(qx, qy);
+    if (typ(x) == t_VEC || typ(y) == t_VEC)
+      pari_err_IMPL("Shanks's distance in general composition");
+    if (!z) pari_err_OP("*",x,y);
+    return gerepileupto(av, qfbred(z));
+  }
+  return qfb_is_qfi(qx)? qficomp0(x,y,0): qfrcomp0(x,y,0);
+}
+/* same discriminant, no distance, no checks */
+GEN
+qfbcompraw_i(GEN x, GEN y)
+{ return qfb_is_qfi(x)? qficomp0(x,y,1): qfrcomp0(x,y,1); }
+GEN
+qfbcompraw(GEN x, GEN y)
+{
+  GEN qx = check_qfbext("qfbcompraw", x);
+  GEN qy = check_qfbext("qfbcompraw", y);
+  if (!equalii(gel(qx,4),gel(qy,4)))
+  {
+    pari_sp av = avma;
+    GEN z = qfb_comp_gen(qx, qy);
+    if (typ(x) == t_VEC || typ(y) == t_VEC)
+      pari_err_IMPL("Shanks's distance in general composition");
+    if (!z) pari_err_OP("qfbcompraw",x,y);
+    return gerepilecopy(av, z);
+  }
+  if (!equalii(gel(qx,4),gel(qy,4))) pari_err_OP("qfbcompraw",x,y);
+  return qfb_is_qfi(qx)? qficomp0(x,y,1): qfrcomp0(x,y,1);
+}
+
+static GEN
+qfisqr0(GEN x, long raw)
+{
+  pari_sp av = avma;
+  GEN z = cgetg(5,t_QFB);
+  gel(z,4) = gel(x,4);
+  qfb_sqr(z,x);
+  if (raw) return gerepilecopy(av,z);
+  return redimag_av(av, z);
+}
+static GEN
+qfrsqr0(GEN x, long raw)
+{
+  pari_sp av = avma;
+  GEN dx = NULL, z = cgetg(5,t_QFB);
+  if (typ(x) == t_VEC) { dx = gel(x,2); x = gel(x,1); }
+  gel(z,4) = gel(x,4); qfb_sqr(z,x);
+  if (dx) z = mkvec2(z, shiftr(dx,1));
+  if (!raw) z = redreal(z);
+  return gerepilecopy(av, z);
+}
+/* same discriminant, no distance, no checks */
+GEN
+qfbsqr_i(GEN x)
+{ return qfb_is_qfi(x)? qfisqr0(x,0): qfrsqr0(x,0); }
+GEN
+qfbsqr(GEN x)
+{
+  GEN qx = check_qfbext("qfbsqr", x);
+  return qfb_is_qfi(qx)? qfisqr0(x,0): qfrsqr0(x,0);
+}
+
+static GEN
+qfr_1_by_disc(GEN D)
+{
+  GEN y, r, s;
+  check_quaddisc_real(D, NULL, "qfr_1_by_disc");
+  y = cgetg(5,t_QFB);
+  s = sqrtremi(D, &r); togglesign(r); /* s^2 - r = D */
+  if (mpodd(r))
+  {
+    s = subiu(s,1);
+    r = subii(r, addiu(shifti(s, 1), 1));
+    r = shifti(r, -2); set_avma((pari_sp)y); s = icopy(s);
+  }
+  else
+  { r = shifti(r, -2); set_avma((pari_sp)s); }
+  gel(y,1) = gen_1;
+  gel(y,2) = s;
+  gel(y,3) = icopy(r);
+  gel(y,4) = icopy(D); return y;
+}
+
+static GEN
+qfr_disc(GEN x)
+{ return qfb_disc(typ(x)==t_VEC ? gel(x,1): x); }
+
+static GEN
+qfr_1(GEN x)
+{ return qfr_1_by_disc(qfr_disc(x)); }
+
+static void
+qfr_1_fill(GEN y, struct qfr_data *S)
+{
+  pari_sp av = avma;
+  GEN y2 = S->isqrtD;
+  gel(y,1) = gen_1;
+  if (mod2(S->D) != mod2(y2)) y2 = subiu(y,1);
+  gel(y,2) = y2; av = avma;
+  gel(y,3) = gerepileuptoint(av, shifti(subii(sqri(y2), S->D),-2));
+}
+static GEN
+qfr5_1(struct qfr_data *S, long prec)
+{
+  GEN y = cgetg(6, t_VEC);
+  qfr_1_fill(y, S);
+  gel(y,4) = gen_0;
+  gel(y,5) = real_1(prec); return y;
+}
+static GEN
+qfr3_1(struct qfr_data *S)
+{
+  GEN y = cgetg(4, t_VEC);
+  qfr_1_fill(y, S); return y;
+}
+
+/* Assume D < 0 is the discriminant of a t_QFB */
+static GEN
+qfi_1_by_disc(GEN D)
+{
+  GEN b,c, y = cgetg(5,t_QFB);
+  quadpoly_bc(D, mod2(D), &b,&c);
+  if (b == gen_m1) b = gen_1;
+  gel(y,1) = gen_1;
+  gel(y,2) = b;
+  gel(y,3) = c;
+  gel(y,4) = icopy(D); return y;
+}
+static GEN
+qfi_1(GEN x)
+{
+  if (typ(x) != t_QFB) pari_err_TYPE("qfi_1",x);
+  return qfi_1_by_disc(qfb_disc(x));
+}
+
+GEN
+qfb_1(GEN x) { return qfb_is_qfi(x) ? qfi_1(x): qfr_1(x); }
+
+static GEN
+_qfimul(void *E, GEN x, GEN y) { (void) E; return qficomp0(x,y,0); }
+static GEN
+_qfisqr(void *E, GEN x) { (void) E; return qficomp0(x,x,0); }
+static GEN
+_qfimulraw(void *E, GEN x, GEN y) { (void) E; return qficomp0(x,y,1); }
+static GEN
+_qfisqrraw(void *E, GEN x) { (void) E; return qficomp0(x,x,1); }
+
+static GEN
+qfipowraw(GEN x, long n)
+{
+  pari_sp av = avma;
+  GEN y;
+  if (!n) return qfi_1(x);
+  if (n== 1) return gcopy(x);
+  if (n==-1) { x = gcopy(x); togglesign(gel(x,2)); return x; }
+  if (n < 0) x = qfb_inv(x);
+  y = gen_powu(x, labs(n), NULL, &_qfisqrraw, &_qfimulraw);
+  return gerepilecopy(av,y);
+}
+
+static GEN
+qfipow(GEN x, GEN n)
+{
+  pari_sp av = avma;
+  GEN y;
+  long s = signe(n);
+  if (!s) return qfi_1(x);
+  if (s < 0) x = qfb_inv(x);
+  y = gen_pow(qfbred_i(x), n, NULL, &_qfisqr, &_qfimul);
+  return gerepilecopy(av,y);
+}
+
+static long
+parteucl(GEN L, GEN *d, GEN *v3, GEN *v, GEN *v2)
+{
+  long z;
+  *v = gen_0; *v2 = gen_1;
+  for (z=0; abscmpii(*v3,L) > 0; z++)
+  {
+    GEN t3, t2 = subii(*v, mulii(truedvmdii(*d,*v3,&t3),*v2));
+    *v = *v2; *d = *v3; *v2 = t2; *v3 = t3;
+  }
+  return z;
+}
+
+/* composition: Shanks' NUCOMP & NUDUPL */
+/* L = floor((|d|/4)^(1/4)) */
+GEN
+nucomp(GEN x, GEN y, GEN L)
+{
+  pari_sp av = avma;
+  long z;
+  GEN a, a1, a2, b2, b, d, d1, g, n, p1, q1, q2, s, u, u1, v, v2, v3, Q;
+
+  if (x==y) return nudupl(x,L);
+  if (!is_qfi(x)) pari_err_TYPE("nucomp",x);
+  if (!is_qfi(y)) pari_err_TYPE("nucomp",y);
+
+  if (abscmpii(gel(x,1),gel(y,1)) < 0) swap(x, y);
+  s = shifti(addii(gel(x,2),gel(y,2)), -1);
+  n = subii(gel(y,2), s);
+  a1 = gel(x,1);
+  a2 = gel(y,1); d = bezout(a2,a1,&u,&v);
+  if (equali1(d)) { a = negi(mulii(u,n)); d1 = d; }
+  else if (dvdii(s,d)) /* d | s */
+  {
+    a = negi(mulii(u,n)); d1 = d;
+    a1 = diviiexact(a1, d1);
+    a2 = diviiexact(a2, d1);
+    s = diviiexact(s, d1);
+  }
+  else
+  {
+    GEN p2, l;
+    d1 = bezout(s,d,&u1,NULL);
+    if (!equali1(d1))
+    {
+      a1 = diviiexact(a1,d1);
+      a2 = diviiexact(a2,d1);
+      s = diviiexact(s,d1);
+      d = diviiexact(d,d1);
+    }
+    p1 = remii(gel(x,3),d);
+    p2 = remii(gel(y,3),d);
+    l = modii(mulii(negi(u1), addii(mulii(u,p1),mulii(v,p2))), d);
+    a = subii(mulii(l,diviiexact(a1,d)), mulii(u,diviiexact(n,d)));
+  }
+  a = modii(a,a1); p1 = subii(a,a1); if (abscmpii(a,p1) > 0) a = p1;
+  d = a1; v3 = a; z = parteucl(L, &d,&v3, &v,&v2);
+  Q = cgetg(5,t_QFB);
+  if (!z) {
+    g = diviiexact(addii(mulii(v3,s),gel(y,3)), d);
+    b = a2;
+    b2 = gel(y,2);
+    v2 = d1;
+    gel(Q,1) = mulii(d,b);
+  } else {
+    GEN e, q3, q4;
+    if (z&1) { v3 = negi(v3); v2 = negi(v2); }
+    b = diviiexact(addii(mulii(a2,d), mulii(n,v)), a1);
+    e = diviiexact(addii(mulii(s,d),mulii(gel(y,3),v)), a1);
+    q3 = mulii(e,v2);
+    q4 = subii(q3,s);
+    b2 = addii(q3,q4);
+    g = diviiexact(q4,v);
+    if (!equali1(d1)) { v2 = mulii(d1,v2); v = mulii(d1,v); b2 = mulii(d1,b2); }
+    gel(Q,1) = addii(mulii(d,b), mulii(e,v));
+  }
+  q1 = mulii(b, v3);
+  q2 = addii(q1,n);
+  gel(Q,2) = addii(b2, z? addii(q1,q2): shifti(q1, 1));
+  gel(Q,3) = addii(mulii(v3,diviiexact(q2,d)), mulii(g,v2));
+  gel(Q,4) = gel(x,4);
+  return redimag_av(av, Q);
+}
+
+GEN
+nudupl(GEN x, GEN L)
+{
+  pari_sp av = avma;
+  long z;
+  GEN u, v, d, d1, p1, a, b, c, a2, b2, c2, Q, v2, v3, g;
+
+  if (!is_qfi(x)) pari_err_TYPE("nudupl",x);
+  a = gel(x,1);
+  b = gel(x,2);
+  d1 = bezout(b,a, &u,NULL);
+  if (!equali1(d1))
+  {
+    a = diviiexact(a, d1);
+    b = diviiexact(b, d1);
+  }
+  c = modii(negi(mulii(u,gel(x,3))), a);
+  p1 = subii(c,a); if (abscmpii(c,p1) > 0) c = p1;
+  d = a; v3 = c; z = parteucl(L, &d,&v3, &v,&v2);
+  a2 = sqri(d);
+  c2 = sqri(v3);
+  Q = cgetg(5,t_QFB);
+  if (!z) {
+    g = diviiexact(addii(mulii(v3,b),gel(x,3)), d);
+    b2 = gel(x,2);
+    v2 = d1;
+    gel(Q,1) = a2;
+  } else {
+    GEN e;
+    if (z&1) { v = negi(v); d = negi(d); }
+    e = diviiexact(addii(mulii(gel(x,3),v), mulii(b,d)), a);
+    g = diviiexact(subii(mulii(e,v2), b), v);
+    b2 = addii(mulii(e,v2), mulii(v,g));
+    if (!equali1(d1)) { b2 = mulii(d1,b2); v = mulii(d1,v); v2 = mulii(d1,v2); }
+    gel(Q,1) = addii(a2, mulii(e,v));
+  }
+  gel(Q,2) = addii(b2, subii(sqri(addii(d,v3)), addii(a2,c2)));
+  gel(Q,3) = addii(c2, mulii(g,v2));
+  gel(Q,4) = gel(x,4);
+  return redimag_av(av, Q);
+}
+
+static GEN
+mul_nucomp(void *l, GEN x, GEN y) { return nucomp(x, y, (GEN)l); }
+static GEN
+mul_nudupl(void *l, GEN x) { return nudupl(x, (GEN)l); }
+GEN
+nupow(GEN x, GEN n, GEN L)
+{
+  pari_sp av;
+  GEN y, D;
+
+  if (typ(n) != t_INT) pari_err_TYPE("nupow",n);
+  if (!is_qfi(x)) pari_err_TYPE("nupow",x);
+  if (gequal1(n)) return gcopy(x);
+  av = avma;
+  D = qfb_disc(x);
+  y = qfi_1_by_disc(D);
+  if (!signe(n)) return y;
+  if (!L) L = sqrtnint(absi_shallow(D), 4);
+  y = gen_pow_i(x, n, (void*)L, &mul_nudupl, &mul_nucomp);
+  if (signe(n) < 0
+  && !absequalii(gel(y,1),gel(y,2))
+  && !absequalii(gel(y,1),gel(y,3))) togglesign(gel(y,2));
+  return gerepilecopy(av, y);
+}
+
 /* Not stack-clean */
 GEN
 qfr5_compraw(GEN x, GEN y)
@@ -1538,66 +1609,6 @@ qfisolvep(GEN Q, GEN p)
   pari_sp av = avma;
   GEN x = qfisolvep_all(Q, p, 0);
   return x? gerepilecopy(av, x): gc_const(av, gen_0);
-}
-
-static void
-_rhorealsl2(GEN *pa, GEN *pb, GEN *pc, GEN *pu1, GEN *pu2, GEN *pv1,
-            GEN *pv2, GEN d, GEN rd)
-{
-  GEN C = mpabs_shallow(*pc), t = addii(*pb, gmax_shallow(rd,C));
-  GEN r, q = truedvmdii(t, shifti(C,1), &r);
-  *pb = subii(t, addii(r, *pb));
-  *pa = *pc;
-  *pc = diviiexact(subii(sqri(*pb), d), shifti(*pa, 2));
-  if (signe(*pa) < 0) togglesign(q);
-  r = *pu1; *pu1 = *pv1; *pv1 = subii(mulii(q, *pv1), r);
-  r = *pu2; *pu2 = *pv2; *pv2 = subii(mulii(q, *pv2), r);
-}
-
-static GEN
-rhorealsl2(GEN A, GEN rd)
-{
-  GEN V = gel(A,1), M = gel(A,2);
-  GEN a = gel(V,1), b = gel(V,2), c = gel(V,3), d = qfb_disc(V);
-  GEN u1 = gcoeff(M,1,1), v1 = gcoeff(M,1,2);
-  GEN u2 = gcoeff(M,2,1), v2 = gcoeff(M,2,2);
-  _rhorealsl2(&a,&b,&c, &u1,&u2,&v1,&v2, d, rd);
-  return mkvec2(mkqfb(a,b,c,d), mkmat22(u1,v1,u2,v2));
-}
-
-static GEN
-redrealsl2(GEN V, GEN rd)
-{
-  pari_sp av = avma;
-  GEN u1 = gen_1, u2 = gen_0, v1 = gen_0, v2 = gen_1;
-  GEN a = gel(V,1), b = gel(V,2), c = gel(V,3), d = qfb_disc(V);
-  while (!ab_isreduced(a,b,rd))
-  {
-    _rhorealsl2(&a,&b,&c, &u1,&u2,&v1,&v2, d, rd);
-    if (gc_needed(av, 1))
-    {
-      if (DEBUGMEM>1) pari_warn(warnmem,"redrealsl2");
-      gerepileall(av, 7, &a,&b,&c,&u1,&u2,&v1,&v2);
-    }
-  }
-  return gerepilecopy(av, mkvec2(mkqfb(a,b,c,d), mkmat22(u1,v1,u2,v2)));
-}
-
-GEN
-qfbredsl2(GEN q, GEN isD)
-{
-  pari_sp av;
-  if (typ(q) != t_QFB) pari_err_TYPE("qfbredsl2",q);
-  if (qfb_is_qfi(q))
-  {
-    GEN v = cgetg(3,t_VEC);
-    if (isD) pari_err_TYPE("qfbredsl2", isD);
-    gel(v,1) = redimagsl2(q, &gel(v,2)); return v;
-  }
-  av = avma;
-  if (!isD) isD = sqrti(qfb_disc(q));
-  else if (typ(isD) != t_INT) pari_err_TYPE("qfbredsl2",isD);
-  return gerepileupto(av, redrealsl2(q, isD));
 }
 
 static GEN
