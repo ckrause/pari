@@ -1675,7 +1675,7 @@ qfbsolve_primitive_i(GEN Q, GEN rd, GEN *Qr, GEN fa, long all)
       gel(W,j++) = x;
     }
   if (j == 1) return NULL;
-  setlg(W,j); return W;
+  setlg(W,j); return lexsort(W);
 }
 
 static GEN
@@ -1711,7 +1711,7 @@ qfbsolve_all(GEN Q, GEN n, long all)
     }
   }
   if (j == 1) return cgetg(1, t_VEC);
-  setlg(W,j); return shallowconcat1(W);
+  setlg(W,j); return lexsort(shallowconcat1(W));
 }
 
 GEN
