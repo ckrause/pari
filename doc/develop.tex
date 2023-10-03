@@ -221,7 +221,12 @@ and
 assuming that $L$ is a \typ{LIST\_RAW}.
 
 \fun{GEN}{listput}{GEN list, GEN object, long index} as \kbd{listput0},
-assuming that $L$ is a \typ{LIST\_RAW}.
+assuming that $L$ is a \typ{LIST\_RAW}. Return the element as inserted
+in the list (a clone of \kbd{object}).
+
+\fun{GEN}{listinsert}{GEN list, GEN object, long index} as \kbd{listinsert0},
+assuming that $L$ is a \typ{LIST\_RAW}. Return the element as inserted
+in the list (a clone of \kbd{object}).
 
 \fun{GEN}{mapdomain}{GEN T} vector of keys of the map $T$.
 
