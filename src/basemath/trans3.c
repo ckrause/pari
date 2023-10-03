@@ -2840,8 +2840,8 @@ jell(GEN x, long prec)
 }
 
 static GEN
-to_form(GEN a, GEN w, GEN C)
-{ return mkvec3(a, w, diviiexact(C, a)); }
+to_form(GEN a, GEN w, GEN C, GEN D)
+{ return mkqfb(a, w, diviiexact(C, a), D); }
 static GEN
 form_to_quad(GEN f, GEN sqrtD)
 {
@@ -2865,11 +2865,11 @@ double_eta_quotient(GEN a, GEN w, GEN D, long p, long q, GEN pq, GEN sqrtD)
   GEN d, t, z, zp, zq, zpq, s_t, s_tp, s_tpq, s, sp, spq;
   long prec = realprec(sqrtD);
 
-  z = eta_form(to_form(a, w, C), sqrtD, &s_t, prec);
+  z = eta_form(to_form(a, w, C, D), sqrtD, &s_t, prec);
   s = gel(s_t, 1);
-  zp = eta_form(to_form(mului(p, a), w, C), sqrtD, &s_tp, prec);
+  zp = eta_form(to_form(mului(p, a), w, C, D), sqrtD, &s_tp, prec);
   sp = gel(s_tp, 1);
-  zpq = eta_form(to_form(mulii(pq, a), w, C), sqrtD, &s_tpq, prec);
+  zpq = eta_form(to_form(mulii(pq, a), w, C, D), sqrtD, &s_tpq, prec);
   spq = gel(s_tpq, 1);
   if (p == q) {
     z = gdiv(gsqr(zp), gmul(z, zpq));
@@ -2878,7 +2878,7 @@ double_eta_quotient(GEN a, GEN w, GEN D, long p, long q, GEN pq, GEN sqrtD)
     if (sp != gen_1) z = gmul(z, sp);
   } else {
     GEN s_tq, sq;
-    zq = eta_form(to_form(mului(q, a), w, C), sqrtD, &s_tq, prec);
+    zq = eta_form(to_form(mului(q, a), w, C, D), sqrtD, &s_tq, prec);
     sq = gel(s_tq, 1);
     z = gdiv(gmul(zp, zq), gmul(z, zpq));
     t = gsub(gadd(gel(s_tp,2), gel(s_tq,2)),

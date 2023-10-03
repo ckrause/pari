@@ -309,7 +309,7 @@ redimagsl2(GEN q, GEN *U)
   z = subii(z, b);
   v2 = addii(mulii(z, u2), mulii(c, u1)); v2 = diviiexact(v2, gel(q,3));
   *U = mkmat2(mkcol2(u1,v1), mkcol2(u2,v2));
-  Q = lg(q)==5 ? mkqfb(a,b,c,gel(q,4)): mkvec3(a,b,c);
+  Q = mkqfb(a,b,c,gel(q,4));
   return gc_all(av, 2, &Q, U);
 }
 
