@@ -602,7 +602,7 @@ qfr3_init(GEN x, struct qfr_data *S)
 #define qf_STEP 1
 
 static GEN
-redreal_basecase_i(GEN x, long flag, GEN isqrtD, GEN sqrtD)
+qfbred_real_basecase_i(GEN x, long flag, GEN isqrtD, GEN sqrtD)
 {
   struct qfr_data S;
   GEN d = NULL, y;
@@ -877,34 +877,6 @@ qfbredsl2_real(GEN Q, GEN isqrtD)
 }
 
 static GEN
-qfbred_real(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
-{
-  if (typ(Q)!=t_QFB || 2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= 16400)
-    return redreal_basecase_i(Q, flag, isqrtD, sqrtD);
-  else
-  {
-    GEN a = gel(Q,1), b = gel(Q,2), c = gel(Q,3), d = gel(Q,4);
-    GEN Qr, W, U, t = NULL;
-    long sa = signe(a), sb;
-    if (sa < 0) { a = negi(a); b = negi(b); c = negi(c); }
-    if (signe(c) < 0)
-    {
-      GEN at;
-      t  = addiu(truedivii(subii(isqrtD,b),shifti(a,1)),1);
-      at = mulii(a,t);
-      c = addii(subii(c, mulii(b, t)), mulii(at, t));
-      b = subii(b, shifti(at,1));
-    }
-    sb = signe(b);
-    Qr = pqfbred_rec(mkqfb(a, sb < 0 ? negi(b): b, c, d), 0, &U);
-    if (sa < 0)
-      Qr = mkqfb(negi(gel(Qr,1)), negi(gel(Qr,2)), negi(gel(Qr,3)), gel(Qr,4));
-    W = redreal_basecase_i(Qr, flag, isqrtD, sqrtD);
-    return gel(W,1);
-  }
-}
-
-static GEN
 qfbredsl2_imag(GEN Q)
 {
   pari_sp av = avma;
@@ -951,13 +923,35 @@ qfbredsl2(GEN q, GEN isD)
 }
 
 static GEN
-redreal_i(GEN x, long flag, GEN isqrtD, GEN sqrtD)
+qfbred_real_i(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
 {
-  return qfbred_real(x, flag, isqrtD, sqrtD);
+  if (typ(Q)!=t_QFB || 2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= 16400)
+    return qfbred_real_basecase_i(Q, flag, isqrtD, sqrtD);
+  else
+  {
+    GEN a = gel(Q,1), b = gel(Q,2), c = gel(Q,3), d = gel(Q,4);
+    GEN Qr, W, U, t = NULL;
+    long sa = signe(a), sb;
+    if (sa < 0) { a = negi(a); b = negi(b); c = negi(c); }
+    if (signe(c) < 0)
+    {
+      GEN at;
+      t  = addiu(truedivii(subii(isqrtD,b),shifti(a,1)),1);
+      at = mulii(a,t);
+      c = addii(subii(c, mulii(b, t)), mulii(at, t));
+      b = subii(b, shifti(at,1));
+    }
+    sb = signe(b);
+    Qr = pqfbred_rec(mkqfb(a, sb < 0 ? negi(b): b, c, d), 0, &U);
+    if (sa < 0)
+      Qr = mkqfb(negi(gel(Qr,1)), negi(gel(Qr,2)), negi(gel(Qr,3)), gel(Qr,4));
+    W = qfbred_real_basecase_i(Qr, flag, isqrtD, sqrtD);
+    return gel(W,1);
+  }
 }
 
 static GEN
-redreal(GEN x) { return redreal_i(x,0,NULL,NULL); }
+qfbred_real(GEN x) { return qfbred_real_i(x,0,NULL,NULL); }
 
 static GEN
 qfbred_imag_basecase_av(pari_sp av, GEN q)
@@ -1012,11 +1006,11 @@ qfbred0(GEN x, long flag, GEN isqrtD, GEN sqrtD)
   if (typ(x)==t_QFB) flag |= qf_NOD;
   else               flag &= ~qf_NOD;
   av = avma;
-  return gerepilecopy(av, redreal_i(x,flag,isqrtD,sqrtD));
+  return gerepilecopy(av, qfbred_real_i(x,flag,isqrtD,sqrtD));
 }
 /* t_QFB */
 GEN
-qfbred_i(GEN x) { return qfb_is_qfi(x)? qfbred_imag(x): redreal(x); }
+qfbred_i(GEN x) { return qfb_is_qfi(x)? qfbred_imag(x): qfbred_real(x); }
 GEN
 qfbred(GEN x) { return qfbred0(x, 0, NULL, NULL); }
 /***********************************************************************/
@@ -1150,7 +1144,7 @@ qfrcomp0(GEN x, GEN y, int raw)
   gel(z,4) = gel(x,4);
   qfb_comp(z, x,y);
   if (dx) z = mkvec2(z, dy? addrr(dx, dy): dx); else if (dy) z = mkvec2(z, dy);
-  if (!raw) z = redreal(z);
+  if (!raw) z = qfbred_real(z);
   return gerepilecopy(av, z);
 }
 /* same discriminant, no distance, no checks */
@@ -1213,7 +1207,7 @@ qfrsqr0(GEN x, long raw)
   if (typ(x) == t_VEC) { dx = gel(x,2); x = gel(x,1); }
   gel(z,4) = gel(x,4); qfb_sqr(z,x);
   if (dx) z = mkvec2(z, shiftr(dx,1));
-  if (!raw) z = redreal(z);
+  if (!raw) z = qfbred_real(z);
   return gerepilecopy(av, z);
 }
 /* same discriminant, no distance, no checks */
