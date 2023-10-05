@@ -374,37 +374,6 @@ redimag_1(pari_sp av, GEN a, GEN b, GEN c, GEN D)
 }
 
 static GEN
-redimag_av(pari_sp av, GEN q)
-{
-  GEN a = gel(q,1), b = gel(q,2), c = gel(q,3), D = gel(q,4);
-  long cmp, lc = lgefint(c);
-
-  if (lgefint(a) == 3 && lc == 3) return redimag_1(av, a, b, c, D);
-  cmp = abscmpii(a, b);
-  if (cmp < 0)
-    REDB(a,&b,&c);
-  else if (cmp == 0 && signe(b) < 0)
-    b = negi(b);
-  for(;;)
-  {
-    cmp = abscmpii(a, c); if (cmp <= 0) break;
-    lc = lgefint(a); /* lg(future c): we swap a & c next */
-    if (lc == 3) return redimag_1(av, a, b, c, D);
-    swap(a,c); b = negi(b); /* apply rho */
-    REDB(a,&b,&c);
-    if (gc_needed(av, 2))
-    {
-      if (DEBUGMEM>1) pari_warn(warnmem,"redimag, lc = %ld", lc);
-      gerepileall(av, 3, &a,&b,&c);
-    }
-  }
-  if (cmp == 0 && signe(b) < 0) b = negi(b);
-  return gerepilecopy(av, mkqfb(a, b, c, D));
-}
-static GEN
-redimag(GEN q) { return redimag_av(avma, q); }
-
-static GEN
 rhoimag(GEN x)
 {
   pari_sp av = avma;
@@ -633,7 +602,7 @@ qfr3_init(GEN x, struct qfr_data *S)
 #define qf_STEP 1
 
 static GEN
-redreal_i(GEN x, long flag, GEN isqrtD, GEN sqrtD)
+redreal_basecase_i(GEN x, long flag, GEN isqrtD, GEN sqrtD)
 {
   struct qfr_data S;
   GEN d = NULL, y;
@@ -650,25 +619,6 @@ redreal_i(GEN x, long flag, GEN isqrtD, GEN sqrtD)
   }
   return qfr5_to_qfr(y, qfb_disc(x), d);
 }
-static GEN
-redreal(GEN x) { return redreal_i(x,0,NULL,NULL); }
-
-GEN
-qfbred0(GEN x, long flag, GEN isqrtD, GEN sqrtD)
-{
-  pari_sp av;
-  GEN q = check_qfbext("qfbred",x);
-  if (qfb_is_qfi(q)) return (flag & qf_STEP)? rhoimag(x): redimag(x);
-  if (typ(x)==t_QFB) flag |= qf_NOD;
-  else               flag &= ~qf_NOD;
-  av = avma;
-  return gerepilecopy(av, redreal_i(x,flag,isqrtD,sqrtD));
-}
-/* t_QFB */
-GEN
-qfbred_i(GEN x) { return qfb_is_qfi(x)? redimag(x): redreal(x); }
-GEN
-qfbred(GEN x) { return qfbred0(x, 0, NULL, NULL); }
 
 static void
 _rhorealsl2(GEN *pa, GEN *pb, GEN *pc, GEN *pu1, GEN *pu2, GEN *pv1,
@@ -927,6 +877,34 @@ qfbredsl2_real(GEN Q, GEN isqrtD)
 }
 
 static GEN
+qfbred_real(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
+{
+  if (typ(Q)!=t_QFB || 2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= 16400)
+    return redreal_basecase_i(Q, flag, isqrtD, sqrtD);
+  else
+  {
+    GEN a = gel(Q,1), b = gel(Q,2), c = gel(Q,3), d = gel(Q,4);
+    GEN Qr, W, U, t = NULL;
+    long sa = signe(a), sb;
+    if (sa < 0) { a = negi(a); b = negi(b); c = negi(c); }
+    if (signe(c) < 0)
+    {
+      GEN at;
+      t  = addiu(truedivii(subii(isqrtD,b),shifti(a,1)),1);
+      at = mulii(a,t);
+      c = addii(subii(c, mulii(b, t)), mulii(at, t));
+      b = subii(b, shifti(at,1));
+    }
+    sb = signe(b);
+    Qr = pqfbred_rec(mkqfb(a, sb < 0 ? negi(b): b, c, d), 0, &U);
+    if (sa < 0)
+      Qr = mkqfb(negi(gel(Qr,1)), negi(gel(Qr,2)), negi(gel(Qr,3)), gel(Qr,4));
+    W = redreal_basecase_i(Qr, flag, isqrtD, sqrtD);
+    return gel(W,1);
+  }
+}
+
+static GEN
 qfbredsl2_imag(GEN Q)
 {
   pari_sp av = avma;
@@ -972,6 +950,75 @@ qfbredsl2(GEN q, GEN isD)
   return gerepileupto(av, qfbredsl2_real(q, isD));
 }
 
+static GEN
+redreal_i(GEN x, long flag, GEN isqrtD, GEN sqrtD)
+{
+  return qfbred_real(x, flag, isqrtD, sqrtD);
+}
+
+static GEN
+redreal(GEN x) { return redreal_i(x,0,NULL,NULL); }
+
+static GEN
+redimag_basecase_av(pari_sp av, GEN q)
+{
+  GEN a = gel(q,1), b = gel(q,2), c = gel(q,3), D = gel(q,4);
+  long cmp, lc = lgefint(c);
+
+  if (lgefint(a) == 3 && lc == 3) return redimag_1(av, a, b, c, D);
+  cmp = abscmpii(a, b);
+  if (cmp < 0)
+    REDB(a,&b,&c);
+  else if (cmp == 0 && signe(b) < 0)
+    b = negi(b);
+  for(;;)
+  {
+    cmp = abscmpii(a, c); if (cmp <= 0) break;
+    lc = lgefint(a); /* lg(future c): we swap a & c next */
+    if (lc == 3) return redimag_1(av, a, b, c, D);
+    swap(a,c); b = negi(b); /* apply rho */
+    REDB(a,&b,&c);
+    if (gc_needed(av, 2))
+    {
+      if (DEBUGMEM>1) pari_warn(warnmem,"redimag, lc = %ld", lc);
+      gerepileall(av, 3, &a,&b,&c);
+    }
+  }
+  if (cmp == 0 && signe(b) < 0) b = negi(b);
+  return gerepilecopy(av, mkqfb(a, b, c, D));
+}
+static GEN
+redimag_av(pari_sp av, GEN Q)
+{
+  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= 16400)
+    return redimag_basecase_av(av, Q);
+  else
+  {
+    long sb = signe(gel(Q,2));
+    GEN U, Qr = pqfbred_rec(sb < 0 ? mkqfb(gel(Q,1), negi(gel(Q,2)), gel(Q,3), gel(Q,4)): Q, 0, &U);
+    return redimag_basecase_av(av, Qr);
+  }
+}
+
+static GEN
+redimag(GEN q) { return redimag_av(avma, q); }
+
+GEN
+qfbred0(GEN x, long flag, GEN isqrtD, GEN sqrtD)
+{
+  pari_sp av;
+  GEN q = check_qfbext("qfbred",x);
+  if (qfb_is_qfi(q)) return (flag & qf_STEP)? rhoimag(x): redimag(x);
+  if (typ(x)==t_QFB) flag |= qf_NOD;
+  else               flag &= ~qf_NOD;
+  av = avma;
+  return gerepilecopy(av, redreal_i(x,flag,isqrtD,sqrtD));
+}
+/* t_QFB */
+GEN
+qfbred_i(GEN x) { return qfb_is_qfi(x)? redimag(x): redreal(x); }
+GEN
+qfbred(GEN x) { return qfbred0(x, 0, NULL, NULL); }
 /***********************************************************************/
 /**                                                                   **/
 /**                         Composition                               **/
