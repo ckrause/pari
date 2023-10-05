@@ -842,7 +842,6 @@ qfb_comp_gen(GEN x, GEN y)
   return mkqfb(A, B, C, D);
 }
 
-static GEN redimag_av(pari_sp av, GEN q);
 static GEN
 qficomp0(GEN x, GEN y, int raw)
 {
@@ -853,7 +852,6 @@ qficomp0(GEN x, GEN y, int raw)
   if (raw) return gerepilecopy(av,z);
   return redimag_av(av, z);
 }
-static GEN redreal(GEN x);
 static GEN
 qfrcomp0(GEN x, GEN y, int raw)
 {
