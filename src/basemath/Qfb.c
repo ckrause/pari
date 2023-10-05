@@ -322,26 +322,26 @@ setq(ulong a, ulong b, ulong c, long sb, GEN D)
 { retmkqfb(utoipos(a), sb==1? utoipos(b): utoineg(b), utoipos(c), icopy(D)); }
 /* 0 < a, c < 2^BIL, b = 0 */
 static GEN
-redimag_1_b0(ulong a, ulong c, GEN D)
+qfbred_imag_1_b0(ulong a, ulong c, GEN D)
 { return (a <= c)? setq_b0(a, c, D): setq_b0(c, a, D); }
 
 /* 0 < a, c < 2^BIL: single word affair */
 static GEN
-redimag_1(pari_sp av, GEN a, GEN b, GEN c, GEN D)
+qfbred_imag_1(pari_sp av, GEN a, GEN b, GEN c, GEN D)
 {
   ulong ua, ub, uc;
   long sb;
   for(;;)
   { /* at most twice */
     long lb = lgefint(b); /* <= 3 after first loop */
-    if (lb == 2) return redimag_1_b0(a[2],c[2], D);
+    if (lb == 2) return qfbred_imag_1_b0(a[2],c[2], D);
     if (lb == 3 && uel(b,2) <= (ulong)LONG_MAX) break;
     REDB(a,&b,&c);
     if (uel(a,2) <= uel(c,2))
     { /* lg(b) <= 3 but may be too large for itos */
       long s = signe(b);
       set_avma(av);
-      if (!s) return redimag_1_b0(a[2], c[2], D);
+      if (!s) return qfbred_imag_1_b0(a[2], c[2], D);
       if (a[2] == c[2]) s = 1;
       return setq(a[2], b[2], c[2], s, D);
     }
@@ -960,12 +960,12 @@ static GEN
 redreal(GEN x) { return redreal_i(x,0,NULL,NULL); }
 
 static GEN
-redimag_basecase_av(pari_sp av, GEN q)
+qfbred_imag_basecase_av(pari_sp av, GEN q)
 {
   GEN a = gel(q,1), b = gel(q,2), c = gel(q,3), D = gel(q,4);
   long cmp, lc = lgefint(c);
 
-  if (lgefint(a) == 3 && lc == 3) return redimag_1(av, a, b, c, D);
+  if (lgefint(a) == 3 && lc == 3) return qfbred_imag_1(av, a, b, c, D);
   cmp = abscmpii(a, b);
   if (cmp < 0)
     REDB(a,&b,&c);
@@ -975,12 +975,12 @@ redimag_basecase_av(pari_sp av, GEN q)
   {
     cmp = abscmpii(a, c); if (cmp <= 0) break;
     lc = lgefint(a); /* lg(future c): we swap a & c next */
-    if (lc == 3) return redimag_1(av, a, b, c, D);
+    if (lc == 3) return qfbred_imag_1(av, a, b, c, D);
     swap(a,c); b = negi(b); /* apply rho */
     REDB(a,&b,&c);
     if (gc_needed(av, 2))
     {
-      if (DEBUGMEM>1) pari_warn(warnmem,"redimag, lc = %ld", lc);
+      if (DEBUGMEM>1) pari_warn(warnmem,"qfbred_imag, lc = %ld", lc);
       gerepileall(av, 3, &a,&b,&c);
     }
   }
@@ -988,27 +988,27 @@ redimag_basecase_av(pari_sp av, GEN q)
   return gerepilecopy(av, mkqfb(a, b, c, D));
 }
 static GEN
-redimag_av(pari_sp av, GEN Q)
+qfbred_imag_av(pari_sp av, GEN Q)
 {
   if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= 16400)
-    return redimag_basecase_av(av, Q);
+    return qfbred_imag_basecase_av(av, Q);
   else
   {
     long sb = signe(gel(Q,2));
     GEN U, Qr = pqfbred_rec(sb < 0 ? mkqfb(gel(Q,1), negi(gel(Q,2)), gel(Q,3), gel(Q,4)): Q, 0, &U);
-    return redimag_basecase_av(av, Qr);
+    return qfbred_imag_basecase_av(av, Qr);
   }
 }
 
 static GEN
-redimag(GEN q) { return redimag_av(avma, q); }
+qfbred_imag(GEN q) { return qfbred_imag_av(avma, q); }
 
 GEN
 qfbred0(GEN x, long flag, GEN isqrtD, GEN sqrtD)
 {
   pari_sp av;
   GEN q = check_qfbext("qfbred",x);
-  if (qfb_is_qfi(q)) return (flag & qf_STEP)? rhoimag(x): redimag(x);
+  if (qfb_is_qfi(q)) return (flag & qf_STEP)? rhoimag(x): qfbred_imag(x);
   if (typ(x)==t_QFB) flag |= qf_NOD;
   else               flag &= ~qf_NOD;
   av = avma;
@@ -1016,7 +1016,7 @@ qfbred0(GEN x, long flag, GEN isqrtD, GEN sqrtD)
 }
 /* t_QFB */
 GEN
-qfbred_i(GEN x) { return qfb_is_qfi(x)? redimag(x): redreal(x); }
+qfbred_i(GEN x) { return qfb_is_qfi(x)? qfbred_imag(x): redreal(x); }
 GEN
 qfbred(GEN x) { return qfbred0(x, 0, NULL, NULL); }
 /***********************************************************************/
@@ -1137,7 +1137,7 @@ qficomp0(GEN x, GEN y, int raw)
   gel(z,4) = gel(x,4);
   qfb_comp(z, x,y);
   if (raw) return gerepilecopy(av,z);
-  return redimag_av(av, z);
+  return qfbred_imag_av(av, z);
 }
 static GEN
 qfrcomp0(GEN x, GEN y, int raw)
@@ -1203,7 +1203,7 @@ qfisqr0(GEN x, long raw)
   gel(z,4) = gel(x,4);
   qfb_sqr(z,x);
   if (raw) return gerepilecopy(av,z);
-  return redimag_av(av, z);
+  return qfbred_imag_av(av, z);
 }
 static GEN
 qfrsqr0(GEN x, long raw)
@@ -1418,7 +1418,7 @@ nucomp(GEN x, GEN y, GEN L)
   gel(Q,2) = addii(b2, z? addii(q1,q2): shifti(q1, 1));
   gel(Q,3) = addii(mulii(v3,diviiexact(q2,d)), mulii(g,v2));
   gel(Q,4) = gel(x,4);
-  return redimag_av(av, Q);
+  return qfbred_imag_av(av, Q);
 }
 
 GEN
@@ -1460,7 +1460,7 @@ nudupl(GEN x, GEN L)
   gel(Q,2) = addii(b2, subii(sqri(addii(d,v3)), addii(a2,c2)));
   gel(Q,3) = addii(c2, mulii(g,v2));
   gel(Q,4) = gel(x,4);
-  return redimag_av(av, Q);
+  return qfbred_imag_av(av, Q);
 }
 
 static GEN
