@@ -47,6 +47,36 @@ qfbpow(f,6)
 f*f
 f*f/f
 
+egcd(x,y)=
+{
+  my(k=2*y,Q=qfbred(Qfb(k^2*x^2+1,2*k^2*x*y,k^2*y^2)));
+  my([a,b,c]=Vec(Q),p,q,u,v,g);
+  if(!issquare(a,&p),error("gcd"));
+  g=y/p; q = -x/g;
+  issquare(c-k^2*g^2,&u);
+  if ((1+q*u)%p!=0,u=-u);
+  v=(1+q*u)/p;
+  [u,v,g];
+}
+print("test qfbred, large coefs");
+my([p,q] = [random(2^100000), random(2^100000)],[u,v,g] = egcd(p,q)); u*p+q*v==g
+
+egcdsl2(x,y)=
+{
+  my(k=2*y,[Q,U]=qfbredsl2(Qfb(k^2*x^2+1,2*k^2*x*y,k^2*y^2)));
+  my([a,b,c]=Vec(Q),p,q,u,v,g);
+  if(!issquare(a,&p),error("gcd"));
+  if (sign(U[1,1])!=sign(p),p=-p);
+  g=y/p; q = -x/g;
+  issquare(c-k^2*g^2,&u);
+  if ((1+q*u)%p!=0,u=-u);
+  v=(1+q*u)/p;
+  [p,u;q,v]==U;
+}
+print("test qfbredsl2, large coefs");
+my([p,q] = [random(2^100000), random(2^100000)]);egcdsl2(p,q)
+
+
 \\ Errors, keep at end of file
 qfbredsl2(q,1.);
 r=Qfb(5,7,1); i=Qfb(5,1,1); R=[r,0.];

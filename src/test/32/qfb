@@ -36,6 +36,10 @@ Qfb(18446744073709551629, 7562574061564804959, 775103267656920011)
 [Qfb(1244, 1271, -1685), 30.223630037811704843220530231053910691]
 [Qfb(-83, 3095, 1268), 9.4331465036326480252050895573872311672]
 [Qfb(-1757, 2109, 790), 5.0164695840555562190683281300124845079]
+test qfbred, large coefs
+1
+test qfbredsl2, large coefs
+1
   ***   at top-level: qfbredsl2(q,1.)
   ***                 ^---------------
   *** qfbredsl2: incorrect type in qfbredsl2 (t_REAL).
@@ -84,4 +88,4 @@ Qfb(18446744073709551629, 7562574061564804959, 775103267656920011)
   ***   at top-level: ...18,-18);g=Qfb(11,52,-41);qfbcomp([f,1.],g)
   ***                                             ^-----------------
   *** qfbcomp: sorry, Shanks's distance in general composition is not yet implemented.
-Total time spent: 1
+Total time spent: 166
