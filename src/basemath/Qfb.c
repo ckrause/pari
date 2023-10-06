@@ -432,35 +432,35 @@ qfr5_dist(GEN e, GEN d, long prec)
 }
 
 static void
-rho_get_BC(GEN *B, GEN *C, GEN b, GEN c, struct qfr_data *S)
+rho_get_BC(GEN *B, GEN *C, GEN a, GEN b, GEN c, struct qfr_data *S)
 {
-  GEN t, u;
+  GEN t, u, q;
   u = shifti(c,1);
   t = (abscmpii(S->isqrtD,c) >= 0)? S->isqrtD: c;
-  u = remii(addii_sign(t,1, b,signe(b)), u);
+  q = dvmdii(addii_sign(t,1, b,signe(b)), u, &u);
   *B = addii_sign(t, 1, u, -signe(u)); /* |t| - (|t|+b) % |2c| */
   if (*B == gen_0)
   { u = shifti(S->D, -2); setsigne(u, -1); }
   else
     u = shifti(addii_sign(sqri(*B),1, S->D,-1), -2);
-  *C = diviiexact(u, c); /* = (B^2-D)/4c */
+  *C = subii(a,mulii(q, subii(b, mulii(q,c))));
 }
 /* Not stack-clean */
 GEN
 qfr3_rho(GEN x, struct qfr_data *S)
 {
-  GEN B, C, b = gel(x,2), c = gel(x,3);
-  rho_get_BC(&B, &C, b, c, S);
+  GEN B, C, a = gel(x,1), b = gel(x,2), c = gel(x,3);
+  rho_get_BC(&B, &C, a, b, c, S);
   return mkvec3(c,B,C);
 }
+
 /* Not stack-clean */
 GEN
 qfr5_rho(GEN x, struct qfr_data *S)
 {
-  GEN B, C, y, b = gel(x,2), c = gel(x,3);
+  GEN B, C, a = gel(x,1), b = gel(x,2), c = gel(x,3), y;
   long sb = signe(b);
-
-  rho_get_BC(&B, &C, b, c, S);
+  rho_get_BC(&B, &C, a, b, c, S);
   y = mkvec5(c,B,C, gel(x,4), gel(x,5));
   if (sb) {
     GEN t = subii(sqri(b), S->D);
@@ -626,10 +626,11 @@ _rhorealsl2(GEN *pa, GEN *pb, GEN *pc, GEN *pu1, GEN *pu2, GEN *pv1,
 {
   GEN C = mpabs_shallow(*pc), t = addii(*pb, gmax_shallow(rd,C));
   GEN r, q = truedvmdii(t, shifti(C,1), &r);
-  *pb = subii(t, addii(r, *pb));
+  GEN a = *pa, b= *pb, c = *pc;
+  if (signe(c) < 0) togglesign(q);
   *pa = *pc;
-  *pc = diviiexact(subii(sqri(*pb), d), shifti(*pa, 2));
-  if (signe(*pa) < 0) togglesign(q);
+  *pb = subii(t, addii(r, *pb));
+  *pc = subii(a,mulii(q,subii(b, mulii(q,c))));
   r = *pu1; *pu1 = *pv1; *pv1 = subii(mulii(q, *pv1), r);
   r = *pu2; *pu2 = *pv2; *pv2 = subii(mulii(q, *pv2), r);
 }
