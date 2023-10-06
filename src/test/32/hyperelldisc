@@ -37,4 +37,10 @@
   ***   at top-level: hyperellchangecurve(x^0,[1,matid(2),0])
   ***                 ^---------------------------------------
   *** hyperellchangecurve: constant polynomial in hyperellchangecurve.
-Total time spent: 346
+  ***   at top-level: hyperellminimalmodel(15625*x^6+15626*x^3+1,,5)
+  ***                 ^----------------------------------------------
+  *** hyperellminimalmodel: incorrect type in hyperellminimalmodel (t_INT).
+  ***   at top-level: hyperellminimalmodel(15625*x^6+15626*x^3+1,,[x
+  ***                 ^----------------------------------------------
+  *** hyperellminimalmodel: incorrect type in hyperellminimalmodel (t_VEC).
+Total time spent: 475

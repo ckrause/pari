@@ -1155,6 +1155,8 @@ hyperellminimalmodel(GEN W, GEN *pM, GEN pr)
   GEN Wr, F, WM2, F2, W2, M2, Modd, Wf, ef, Mf, Hf;
   long d, g, v;
   check_hyperell_Q("hyperellminimalmodel",&W, &F);
+  if (pr && (!is_vec_t(typ(pr)) || !RgV_is_ZV(pr)))
+    pari_err_TYPE("hyperellminimalmodel",pr);
   d = degpol(F); g = ((d+1)>>1)-1; v = varn(F);
   Wr = hyperell_redQ(W);
   if (!pr || RgV_isin(pr, gen_2))
