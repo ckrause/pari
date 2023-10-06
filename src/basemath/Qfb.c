@@ -738,7 +738,7 @@ pqfbred_iter_1(GEN Q, ulong m, GEN U)
     if (gc_needed(av, 1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"pqfbred_iter_1, lc = %ld", expi(gel(Q,3)));
-      gerepileall(av, 2, &Q, &gel(U,1), &gel(U,2));
+      gerepileall(av, 3, &Q, &gel(U,1), &gel(U,2));
     }
   }
   return Q;
