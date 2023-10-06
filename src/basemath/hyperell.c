@@ -898,7 +898,7 @@ algo52(GEN W, GEN c, long *pt_lambda)
     /* 2 */
     if (2*mQ <= mP) { lambda = 2*mQ; break; }
     /* 3 */
-    if (mP%2 == 1) { lambda = mP; break; }
+    if (odd(mP)) { lambda = mP; break; }
     /* 4 */
     RgX_even_odd(FpX_red(ZX_shifti(Pc, -mP),gen_2),&H, &H1);
     if (signe(H1)) { lambda = mP; break; }
@@ -920,7 +920,7 @@ algo541(GEN F, GEN p, long ep, long g)
 static long
 test53(long lambda, long ep, long g)
 {
-  return (lambda <= g+1) || (g%2 && lambda<g+3 && ep==1);
+  return (lambda <= g+1) || (odd(g) && lambda<g+3 && ep==1);
 }
 
 static long
