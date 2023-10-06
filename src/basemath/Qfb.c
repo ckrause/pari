@@ -673,6 +673,8 @@ With thanks to Keegan Ryan
 BA20230927
 */
 
+#define QFBRED_LIMIT 9000
+
 /* pqfb: qf with positive coefficients */
 
 static int
@@ -687,12 +689,10 @@ pqfbred_1(GEN Q, ulong m, GEN U)
   GEN a = gel(Q,1), b = gel(Q,2), c = gel(Q,3), d = gel(Q,4);
   if (abscmpii(a, c) < 0)
   {
-    GEN t, at, r, r2;
-    r2 = addii(shifti(a, m + 2), d);
-    if (lti2n(r2, 2*m+2))
-      r = int2n(m+1);
-    else
-      r = sqrti(r2);
+    GEN t, at, r;
+    GEN r2 = addii(shifti(a, m + 2), d);
+    long e2 = expi(r2);
+    r = int2n(signe(r2) < 0 || e2 < 2*m+2 ? m+1 : e2>>1);
     t = truedivii(subii(b, r), shifti(a,1));
     if (signe(t)==0) pari_err_BUG("pqfbred_1");
     at = mulii(a,t);
@@ -702,12 +702,10 @@ pqfbred_1(GEN Q, ulong m, GEN U)
     gcoeff(U,2,2) = subii( gcoeff(U,2,2), mulii(gcoeff(U,2,1), t));
   } else
   {
-    GEN t, ct, r, r2;
-    r2 = addii(shifti(c, m + 2), d);
-    if (lti2n(r2, 2*m+2))
-      r = int2n(m+1);
-    else
-      r = sqrti(r2);
+    GEN t, ct, r;
+    GEN r2 = addii(shifti(c, m + 2), d);
+    long e2 = expi(r2);
+    r = int2n(signe(r2) < 0 || e2 < 2*m+2 ? m+1 : e2>>1);
     t = truedivii(subii(b, r), shifti(c,1));
     if (signe(t)==0) pari_err_BUG("pqfbred_1");
     ct = mulii(c, t);
@@ -777,7 +775,7 @@ pqfbred_rec(GEN Q, long m, GEN *pt_U)
   int going_to_r8 = 0;
   GEN U;
 
-  if (n < 50)
+  if (n < 170)
     return pqfbred_basecase(Q, m, pt_U);
 
   if (qfb_minexpi(Q) <= m + 2)
@@ -840,7 +838,7 @@ static GEN
 qfbredsl2_real(GEN Q, GEN isqrtD)
 {
   pari_sp av = avma;
-  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= 16400)
+  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= QFBRED_LIMIT)
     return qfbredsl2_real_basecase(Q, isqrtD);
   else
   {
@@ -882,7 +880,7 @@ qfbredsl2_imag(GEN Q)
 {
   pari_sp av = avma;
   GEN Qt, U;
-  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= 16400)
+  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= QFBRED_LIMIT)
     Qt = qfbredsl2_imag_basecase(Q, &U);
   else
   {
@@ -926,7 +924,7 @@ qfbredsl2(GEN q, GEN isD)
 static GEN
 qfbred_real_i(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
 {
-  if (typ(Q)!=t_QFB || 2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= 16400)
+  if (typ(Q)!=t_QFB || 2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= QFBRED_LIMIT)
     return qfbred_real_basecase_i(Q, flag, isqrtD, sqrtD);
   else
   {
@@ -985,7 +983,7 @@ qfbred_imag_basecase_av(pari_sp av, GEN q)
 static GEN
 qfbred_imag_av(pari_sp av, GEN Q)
 {
-  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= 16400)
+  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= QFBRED_LIMIT)
     return qfbred_imag_basecase_av(av, Q);
   else
   {
