@@ -544,16 +544,19 @@ GEN
 qfr3_red(GEN x, struct qfr_data *S)
 {
   pari_sp av = avma;
-  while (!qfr_isreduced(x, S->isqrtD))
+  GEN a = gel(x,1), b = gel(x,2), c = gel(x,3);
+  while (!ab_isreduced(a, b, S->isqrtD))
   {
-    x = qfr3_rho(x, S);
+    GEN B, C;
+    rho_get_BC(&B, &C, a, b, c, S);
+    a = c; b = B; c = C;
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"qfr3_red");
-      x = gerepilecopy(av, x);
+      gerepileall(av, 3, &a, &b, &c);
     }
   }
-  return x;
+  return mkvec3(a, b, c);
 }
 
 void
