@@ -439,7 +439,7 @@ rho_get_BC(GEN *B, GEN *C, GEN a, GEN b, GEN c, struct qfr_data *S)
   t = (abscmpii(S->isqrtD,c) >= 0)? S->isqrtD: c;
   q = dvmdii(addii_sign(t,1, b,signe(b)), u, &u);
   *B = addii_sign(t, 1, u, -signe(u)); /* |t| - (|t|+b) % |2c| */
-  *C = subii(a,mulii(q, subii(b, mulii(q,c))));
+  *C = subii(a, mulii(q, subii(b, mulii(q,c))));
 }
 /* Not stack-clean */
 GEN
@@ -447,7 +447,7 @@ qfr3_rho(GEN x, struct qfr_data *S)
 {
   GEN B, C, a = gel(x,1), b = gel(x,2), c = gel(x,3);
   rho_get_BC(&B, &C, a, b, c, S);
-  return mkvec3(c,B,C);
+  return mkvec3(c, B, C);
 }
 
 /* Not stack-clean */
@@ -457,7 +457,7 @@ qfr5_rho(GEN x, struct qfr_data *S)
   GEN B, C, a = gel(x,1), b = gel(x,2), c = gel(x,3), y;
   long sb = signe(b);
   rho_get_BC(&B, &C, a, b, c, S);
-  y = mkvec5(c,B,C, gel(x,4), gel(x,5));
+  y = mkvec5(c, B, C, gel(x,4), gel(x,5));
   if (sb) {
     GEN t = subii(sqri(b), S->D);
     if (sb < 0)
