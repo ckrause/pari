@@ -618,7 +618,7 @@ qfbred_real_basecase_i(GEN x, long flag, GEN isqrtD, GEN sqrtD)
 
 static void
 _rhorealsl2(GEN *pa, GEN *pb, GEN *pc, GEN *pu1, GEN *pu2, GEN *pv1,
-            GEN *pv2, GEN d, GEN rd)
+            GEN *pv2, GEN rd)
 {
   GEN C = mpabs_shallow(*pc), t = addii(*pb, gmax_shallow(rd,C));
   GEN r, q = truedvmdii(t, shifti(C,1), &r);
@@ -638,7 +638,7 @@ rhorealsl2(GEN A, GEN rd)
   GEN a = gel(V,1), b = gel(V,2), c = gel(V,3), d = qfb_disc(V);
   GEN u1 = gcoeff(M,1,1), v1 = gcoeff(M,1,2);
   GEN u2 = gcoeff(M,2,1), v2 = gcoeff(M,2,2);
-  _rhorealsl2(&a,&b,&c, &u1,&u2,&v1,&v2, d, rd);
+  _rhorealsl2(&a,&b,&c, &u1,&u2,&v1,&v2, rd);
   return mkvec2(mkqfb(a,b,c,d), mkmat22(u1,v1,u2,v2));
 }
 
@@ -650,7 +650,7 @@ qfbredsl2_real_basecase(GEN V, GEN rd)
   GEN a = gel(V,1), b = gel(V,2), c = gel(V,3), d = qfb_disc(V);
   while (!ab_isreduced(a,b,rd))
   {
-    _rhorealsl2(&a,&b,&c, &u1,&u2,&v1,&v2, d, rd);
+    _rhorealsl2(&a,&b,&c, &u1,&u2,&v1,&v2, rd);
     if (gc_needed(av, 1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"qfbredsl2");
