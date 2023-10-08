@@ -1880,6 +1880,25 @@ fplll(GEN *pG, GEN *pB, GEN *pU, GEN *pr, double DELTA, double ETA,
   *pG = G; *pB = B; *pU = U; return zeros; /* success */
 }
 
+/* do not support LLL_KER, LLL_ALL, LLL_KEEP_FIRST */
+static GEN
+ZM2_lll_norms(GEN x, long flag, GEN *pN)
+{
+  GEN a,b,c,d;
+  GEN G, U;
+  if (flag & LLL_GRAM)
+    G = x;
+  else
+    G = gram_matrix(x);
+  a = gcoeff(G,1,1); b = shifti(gcoeff(G,1,2),1); c = gcoeff(G,2,2);
+  d = qfb_disc3(a,b,c);
+  if (signe(d)>=0) return NULL;
+  G = redimagsl2(mkqfb(a,b,c,d),&U);
+  if (pN) (void) RgM_gram_schmidt(G, pN);
+  if (flag & LLL_INPLACE) return ZM2_mul(x,U);
+  return U;
+}
+
 /* Assume x a ZM, if pN != NULL, set it to Gram-Schmidt (squared) norms
  * The following modes are supported:
  * - flag & LLL_INPLACE: x a lattice basis, return x*U
@@ -1902,6 +1921,11 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
     if (flag & LLL_KER) return matid(n);
     if (flag & (LLL_INPLACE|LLL_IM)) return cgetg(1,t_MAT);
     retmkvec2(matid(n), cgetg(1,t_MAT));
+  }
+  if (n==2 && nbrows(x)==2  && (flag&LLL_IM) && !keepfirst)
+  {
+    U = ZM2_lll_norms(x, flag, pN);
+    if (U) return U;
   }
   x = gcopy(x);
   if (flag & LLL_GRAM)

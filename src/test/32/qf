@@ -24,8 +24,8 @@ Vecsmall([0, 0, 0, 133, 165, 638, 396, 4268])
   ***                 ^----------------------
   *** qfminim: precision too low in qfminim.
 10000000000000000.000
-[0, 1]~
 [1, 0]~
+[0, 1]~
 [1, -1]~
 [1, -1]~
 [0, 0, [;]]
@@ -78,4 +78,4 @@ Vecsmall([0, 0, 0, 133, 165, 638, 396, 4268])
   ***   at top-level: ...forqfvec(v,Q,N,if(qfeval(Q,v)>N,error(v)))
   ***                                             ^-----------------
   ***   precision too low in forqfvec.
-Total time spent: 9
+Total time spent: 7
