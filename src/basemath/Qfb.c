@@ -508,13 +508,11 @@ qfr3_to_qfr(GEN x, GEN d) { retmkqfb(gel(x,1), gel(x,2), gel(x,3), d); }
 static int
 ab_isreduced(GEN a, GEN b, GEN isqrtD)
 {
-  if (signe(b) > 0 && abscmpii(b, isqrtD) <= 0)
-  {
-    GEN t = addii_sign(isqrtD,1, shifti(a,1),-1);
-    long l = abscmpii(b, t); /* compare |b| and |floor(sqrt(D)) - |2a|| */
-    if (l > 0 || (l == 0 && signe(t) < 0)) return 1;
-  }
-  return 0;
+  GEN t;
+  if (signe(b) <= 0 || abscmpii(b, isqrtD) > 0) return 0;
+  t = addii_sign(isqrtD,1, shifti(a,1),-1); /* floor(sqrt(D)) - |2a| */
+  return signe(t) < 0 ? abscmpii(b, t) >= 0
+                      : abscmpii(b, t) > 0;
 }
 
 INLINE int
