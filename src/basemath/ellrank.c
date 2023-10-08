@@ -1607,7 +1607,7 @@ liftselmer_cover(GEN b, GEN expo, GEN LS2, GEN pol, GEN discF, GEN K)
   polprime = ZX_deriv(pol);
   q2 = Q_primpart(tracematrix(zc, b, pol));
   U = redquadric(b, q2, pol, QXQ_div(zc, polprime, pol));
-  q2 = qf_apply_RgM(q2, U);
+  q2 = qf_RgM_apply(q2, U);
   newb = RgV_RgM_mul(b, U);
   param = Q_primpart(qfparam(q2, qfsolve(q2), 1));
   param = RgM_to_RgXV_reverse(shallowtrans(param), 0);
@@ -1662,7 +1662,7 @@ liftselmer(GEN b, GEN expo, GEN sbase, GEN LS2, GEN pol, GEN discF, GEN K, long 
     q2 = Q_primpart(tracematrix(zc, b, pol));
     U = redquadric(b, q2, pol, QXQ_div(zc, polprime, pol));
     if (lg(U) < 4) continue;
-    q2 = qf_apply_RgM(q2, U);
+    q2 = qf_RgM_apply(q2, U);
     newb = RgV_RgM_mul(b, U);
 
     param = Q_primpart(qfparam(q2, qfsolve(q2), 1));

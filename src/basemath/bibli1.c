@@ -1131,7 +1131,7 @@ minim_lll(GEN a, GEN *u)
 {
   *u = lllgramint(a);
   if (lg(*u) != lg(a)) err_minim(a);
-  return qf_apply_ZM(a,*u);
+  return qf_ZM_apply(a,*u);
 }
 
 static void
@@ -1966,7 +1966,7 @@ fincke_pohst(GEN a, GEN B0, long stockmax, long PREC, FP_chk_fun *CHECK)
     }
     u = lllfp(a, 0.75, LLL_GRAM | LLL_IM);
     if (lg(u) != lg(a)) return gc_NULL(av);
-    r = qf_apply_RgM(a,u);
+    r = qf_RgM_apply(a,u);
     i = gprecision(r);
     if (i)
       prec = i;

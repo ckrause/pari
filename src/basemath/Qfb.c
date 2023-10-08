@@ -814,7 +814,7 @@ pqfbred_rec(GEN Q, long m, GEN *pt_U)
     }
     if (p > 0)
     {
-      GEN Q0U = qfb_apply_ZM(Q0,U);
+      GEN Q0U = qfb_ZM_apply(Q0,U);
       QR = mkqfb(addii(shifti(gel(QR,1), p), gel(Q0U,1)),
                  addii(shifti(gel(QR,2), p), gel(Q0U,2)),
                  addii(shifti(gel(QR,3), p), gel(Q0U,3)), d);

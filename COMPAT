@@ -19,7 +19,10 @@ This file lists the incompatible changes between Version 2.x and older versions
    - ec_bmodel, ec_phi2 now take a variable number (you can set it to 0).
    - quadclassnoF_fact and uquadclassnoF_fact now return h(D)/h(d),
      like quadclassnoF.
-   - -ZX_compositum_disjoint: renamed to ZX_composedsum
+   - ZX_compositum_disjoint: renamed to ZX_composedsum
+   - qfb_apply_ZM  renamed to qfb_ZM_apply,
+     qf_apply_RgM renamed to qf_RgM_apply,
+     qf_apply_ZM renamed to qf_ZM_apply
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.14 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - qfbredsl2(q, S): change format of S: was [D,isD], is now isD

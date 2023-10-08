@@ -13280,10 +13280,10 @@ vectors of compatible dimensions).
 \fun{GEN}{hqfeval}{GEN q, GEN x} evaluates the Hermitian form $q$
 (a Hermitian complex matrix) at $x$.
 
-\fun{GEN}{qf_apply_RgM}{GEN q, GEN M} $q$ is a symmetric $n\times n$ matrix,
+\fun{GEN}{qf_RgM_apply}{GEN q, GEN M} $q$ is a symmetric $n\times n$ matrix,
 $M$ an $n\times k$ matrix, return $M' q M$.
 
-\fun{GEN}{qf_apply_ZM}{GEN q, GEN M} as above assuming that both
+\fun{GEN}{qf_ZM_apply}{GEN q, GEN M} as above assuming that both
 $q$ and $M$ have integer entries.
 
 \newpage
@@ -13379,7 +13379,7 @@ Not stack-clean but suitable for \kbd{gerepileupto}.
 \fun{GEN}{qfb_disc3}{GEN x, GEN y, GEN z} returns $y^2 - 4xz$ assuming all
 inputs are \typ{INT}s. Not stack-clean.
 
-\fun{GEN}{qfb_apply_ZM}{GEN q, GEN g} returns $q \circ g$.
+\fun{GEN}{qfb_ZM_apply}{GEN q, GEN g} returns $q \circ g$.
 
 \fun{GEN}{qfbforms}{GEN D} given a discriminant $D < 0$, return the list
 of reduced forms of discriminant $D$ as \typ{VECSMALL} with 3 components.

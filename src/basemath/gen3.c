@@ -4234,7 +4234,7 @@ qfbevalb(GEN q, GEN z, GEN z2)
   return gerepileupto(av, gmul2n(A, -1));
 }
 GEN
-qfb_apply_ZM(GEN q, GEN M)
+qfb_ZM_apply(GEN q, GEN M)
 {
   pari_sp av = avma;
   GEN A, B, C, a = gel(q,1), b = gel(q,2), c = gel(q,3);
@@ -4269,7 +4269,7 @@ qfnorm0(GEN q, GEN x)
       {
         case t_VEC:
         case t_COL: return qfbeval(q,x);
-        case t_MAT: if (RgM_is_ZM(x)) return qfb_apply_ZM(q,x);
+        case t_MAT: if (RgM_is_ZM(x)) return qfb_ZM_apply(q,x);
         default: pari_err_TYPE("qfeval",x);
       }
     default: pari_err_TYPE("qfeval",q);
@@ -4277,7 +4277,7 @@ qfnorm0(GEN q, GEN x)
   switch(typ(x))
   {
     case t_VEC: case t_COL: break;
-    case t_MAT: return qf_apply_RgM(q, x);
+    case t_MAT: return qf_RgM_apply(q, x);
     default: pari_err_TYPE("qfeval",x);
   }
   return qfeval(q,x);
@@ -4359,19 +4359,19 @@ init_qf_apply(GEN q, GEN M, long *l)
   *l = lg(q);
   if (*l == 1) { if (k == 1) return; }
   else         { if (k != 1 && lgcols(M) == *l) return; }
-  pari_err_DIM("qf_apply_RgM");
+  pari_err_DIM("qf_RgM_apply");
 }
 /* Return X = M'.q.M, assuming q is a symmetric matrix and M is a
  * matrix of compatible dimensions. X_ij are X_ji identical, not copies */
 GEN
-qf_apply_RgM(GEN q, GEN M)
+qf_RgM_apply(GEN q, GEN M)
 {
   pari_sp av = avma;
   long l; init_qf_apply(q, M, &l); if (l == 1) return cgetg(1, t_MAT);
   return gerepileupto(av, RgM_transmultosym(M, RgM_mul(q, M)));
 }
 GEN
-qf_apply_ZM(GEN q, GEN M)
+qf_ZM_apply(GEN q, GEN M)
 {
   pari_sp av = avma;
   long l; init_qf_apply(q, M, &l); if (l == 1) return cgetg(1, t_MAT);

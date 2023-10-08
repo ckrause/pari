@@ -45,6 +45,9 @@ BA   6- -ZX_compositum_disjoint: renamed to ZX_composedsum
      8- nfroots: return a t_COL instead of a t_VEC (same as other 'roots' fun)
      9- qfbsolve: call qfbcornacchia when the argument is prime (and disc < 0)
 BA  10- listput and listinsert no longer return the added element
+BA  11- [libpari] rename qfb_apply_ZM -> qfb_ZM_apply,
+                         qf_apply_RgM -> qf_RgM_apply,
+                         qf_apply_ZM -> qf_ZM_apply
 
   Added
      1- [libpari] nfeltembed_i

@@ -1122,7 +1122,7 @@ gen_comb(long cdep, GEN A, GEN e, struct qfauto *qf, long lim)
     GEN trans, ccoef, cF, B, BI, sumveclist, sumvecbase;
     GEN list = scpvecs(&sumveclist, i, e, cdep, qf);
     GEN M = zm_to_ZM(sumveclist);
-    GEN T = lllgramint(qf_apply_ZM(A,M));
+    GEN T = lllgramint(qf_ZM_apply(A,M));
     if (lim && lg(T)-1>=lim) return NULL;
     B = ZM_mul(M,T);
     BI = RgM_inv(B);
@@ -1225,7 +1225,7 @@ qfisom_bestmat(GEN A, long *pt_max)
   if (lg(U) != lg(A1))
     pari_err_DOMAIN("qfisom","form","is not",
                     strtoGENstr("positive definite"), A1);
-  A2 = ZM_to_zm(qf_apply_ZM(A1, U));
+  A2 = ZM_to_zm(qf_ZM_apply(A1, U));
   max2 = zm_maxdiag(A2);
   if (max2 >= max) { *pt_max = max; return NULL; }
   *pt_max = max2; return mkvec2(ZM_to_zm(U), ZM_to_zm(ZM_inv(U,NULL)));

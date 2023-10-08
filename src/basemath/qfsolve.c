@@ -180,7 +180,7 @@ qflllgram_indef(GEN G, long base, int *fail)
   /* G = M~*D*M, D diagonal, DM=|D|*M, g =  M~*|D|*M */
   g = ZM_transmultosym(M,DM);
   S = lllgramint(Q_primpart(g));
-  R = qftriv(qf_apply_ZM(G,S), NULL, base);
+  R = qftriv(qf_ZM_apply(G,S), NULL, base);
   switch(typ(R))
   {
     case t_COL: return ZM_ZC_mul(S,R);
@@ -219,7 +219,7 @@ qflllgram_indefgoon(GEN G)
   U1 = gel(red,2);
   G2 = gel(red,1); /* G2[1,1] = 0 */
   U2 = gel(ZV_extgcd(row(G2,1)), 2);
-  G3 = qf_apply_ZM(G2,U2);
+  G3 = qf_ZM_apply(G2,U2);
   U = ZM_mul(U1,U2); /* qf_apply(G,U) = G3 */
   /* G3[1,] = [0,...,0,g], g^2 | det G */
   g = gcoeff(G3,1,n);
@@ -236,14 +236,14 @@ qflllgram_indefgoon(GEN G)
     gcoeff(U3,1,j) = gcoeff(B,1,j-1);
     gcoeff(U3,n,j) = gcoeff(B,2,j-1);
   }
-  G4 = qf_apply_ZM(G3,U3); /* the last column of G4 is reduced */
+  G4 = qf_ZM_apply(G3,U3); /* the last column of G4 is reduced */
   U = ZM_mul(U,U3);
   if (n == 3) return mkvec2(G4,U);
 
   red = qflllgram_indefgoon(matslice(G4,2,n-1,2,n-1));
   if (typ(red) == t_MAT) return mkvec2(G4,U);
   /* Let U5:=matconcat(diagonal[1,red[2],1])
-   * return [qf_apply_ZM(G5, U5), U*U5] */
+   * return [qf_ZM_apply(G5, U5), U*U5] */
   G5 = gel(red,1);
   U5 = gel(red,2);
   G6 = cgetg(n+1,t_MAT);
@@ -260,7 +260,7 @@ qflllgram_indefgoon(GEN G)
   return mkvec2(G6, shallowconcat1(U6));
 }
 
-/* qf_apply_ZM(G,H),  where H = matrix of \tau_{i,j}, i != j */
+/* qf_ZM_apply(G,H),  where H = matrix of \tau_{i,j}, i != j */
 static GEN
 qf_apply_tau(GEN G, long i, long j)
 {
@@ -292,10 +292,10 @@ qflllgram_indefgoon2(GEN G)
     b = diviiexact(b,d);
   }
   /* for U2 = [-u,-b,0;-v,a,0;0,0,1]
-   * G3 = qf_apply_ZM(G2,U2) has known last row (-d, 0, 0),
+   * G3 = qf_ZM_apply(G2,U2) has known last row (-d, 0, 0),
    * so apply to principal_minor(G3,2), instead */
   U2 = mkmat22(negi(u),negi(b),negi(v),a);
-  G3 = qf_apply_ZM(principal_minor(G2,2),U2);
+  G3 = qf_ZM_apply(principal_minor(G2,2),U2);
   r3 = gel(r,3);
   r = ZV_ZM_mul(mkvec2(gel(r,1),gel(r,2)),U2);
 
@@ -429,7 +429,7 @@ qfminimize_fact(GEN G, GEN P, GEN E, long loc)
         Ker = kermodp(G,p, &dimKer); /* dimKer <= vp */
         if (DEBUGLEVEL >= 4) err_printf("    dimKer = %ld\n",dimKer);
         if (dimKer == n) break;
-        G = qf_apply_ZM(G, Ker);
+        G = qf_ZM_apply(G, Ker);
         /* 1st case: dimKer < vp */
         /* then the kernel mod p contains a kernel mod p^2 */
         if (dimKer >= vp) break;
@@ -451,7 +451,7 @@ qfminimize_fact(GEN G, GEN P, GEN E, long loc)
           blocks4(G, dimKer,n, &A,&B,&C); A = ZsymM_Z_divexact(A, p);
           K2 = kermodp(A, p, &dimKer2);
           /* Write G = [pA,B;B~,C] and apply [K2/p,0;0,Id] by blocks */
-          A = qf_apply_ZM(A,K2); ZsymM_Z_divexact_partial(A, dimKer2, p);
+          A = qf_ZM_apply(A,K2); ZsymM_Z_divexact_partial(A, dimKer2, p);
           B = ZM_transmul(B,K2);
           for (j = 1; j <= dimKer2; j++) gel(B,j) = ZC_Z_divexact(gel(B,j), p);
           G = shallowmatconcat(mkmat22(A,shallowtrans(B),B,C));
@@ -515,7 +515,7 @@ qfminimize_fact(GEN G, GEN P, GEN E, long loc)
         sol = Q_primpart(sol);
         if (DEBUGLEVEL >= 4) err_printf("    sol = %Ps\n", sol);
         Ker = completebasis(vecextend(sol,n), 1);
-        G = qf_apply_ZM(G, Ker);
+        G = qf_ZM_apply(G, Ker);
         for (j = 1; j < n; j++)
           gcoeff(G,n,j) = gcoeff(G,j,n) = diviiexact(gcoeff(G,j,n), p);
         gcoeff(G,n,n) = diviiexact(gcoeff(G,n,n), sqri(p));
@@ -553,7 +553,7 @@ qfminimize_fact(GEN G, GEN P, GEN E, long loc)
   else
   { /* apply LLL to avoid coefficient explosion */
     GEN u = lllint(Q_primpart(U));
-    G = qf_apply_ZM(G, u);
+    G = qf_ZM_apply(G, u);
     U = QM_mul(U, u);
   }
   return mkvec4(G, U, faP, faE);
@@ -775,7 +775,7 @@ qftriv(GEN G, GEN R, long base)
       s = col_ei(n,i); gel(s,i-1) = gen_m1;
       if (!base) return s;
       H = matid(n); gel(H,i) = gel(H,1); gel(H,1) = s;
-      return mkvec2(qf_apply_ZM(G,H),H);
+      return mkvec2(qf_ZM_apply(G,H),H);
     }
   if (!R) return G; /* fail */
   /* case 3: a principal minor is 0 */
@@ -784,7 +784,7 @@ qftriv(GEN G, GEN R, long base)
   if (!base) return s;
   H = completebasis(s, 0);
   gel(H,n) = ZC_neg(gel(H,1)); gel(H,1) = s;
-  return mkvec2(qf_apply_ZM(G,H),H);
+  return mkvec2(qf_ZM_apply(G,H),H);
 }
 
 /* p a prime number, G 3x3 symmetric. Finds X!=0 such that X^t G X = 0 mod p.
@@ -1065,7 +1065,7 @@ qfparam(GEN G, GEN sol, long fl)
   sol = Q_primpart(sol); RgV_check_ZV(sol,"qfsolve");
   /* build U such that U[,3] = sol, and |det(U)| = 1 */
   U = completebasis(sol,1);
-  G1 = qf_apply_ZM(G,U); /* G1 has a 0 at the bottom right corner */
+  G1 = qf_ZM_apply(G,U); /* G1 has a 0 at the bottom right corner */
   a = shifti(gcoeff(G1,1,2),1);
   b = shifti(negi(gcoeff(G1,1,3)),1);
   c = shifti(negi(gcoeff(G1,2,3)),1);
