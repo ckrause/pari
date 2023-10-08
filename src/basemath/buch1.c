@@ -901,13 +901,6 @@ gcdreal(GEN a,GEN b)
 {
   if (!signe(a)) return mpabs_shallow(b);
   if (!signe(b)) return mpabs_shallow(a);
-  if (typ(a)==t_INT)
-  {
-    if (typ(b)==t_INT) return gcdii(a,b);
-    a = itor(a, lg(b));
-  }
-  else if (typ(b)==t_INT)
-    b = itor(b, lg(a));
   if (expo(a)<-5) return absr(b);
   if (expo(b)<-5) return absr(a);
   a = absr(a); b = absr(b);
