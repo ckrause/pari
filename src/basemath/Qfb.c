@@ -515,18 +515,12 @@ ab_isreduced(GEN a, GEN b, GEN isqrtD)
                       : abscmpii(b, t) > 0;
 }
 
-INLINE int
-qfr_isreduced(GEN x, GEN isqrtD)
-{
-  return ab_isreduced(gel(x,1),gel(x,2),isqrtD);
-}
-
 /* Not stack-clean */
 GEN
 qfr5_red(GEN x, struct qfr_data *S)
 {
   pari_sp av = avma;
-  while (!qfr_isreduced(x, S->isqrtD))
+  while (!ab_isreduced(gel(x,1), gel(x,2), S->isqrtD))
   {
     x = qfr5_rho(x, S);
     if (gc_needed(av,2))
