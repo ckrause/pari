@@ -466,7 +466,7 @@ qfr5_rho(GEN x, struct qfr_data *S)
       t = divri(sqrr(addir(b,S->sqrtD)), t);
     /* t = (b + sqrt(D)) / (b - sqrt(D)), evaluated stably */
     gel(y,5) = mulrr(t, gel(y,5)); fix_expo(y);
-  }
+  } else gel(y,5) = negr(gel(y,5));
   return y;
 }
 
