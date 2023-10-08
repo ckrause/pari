@@ -65,7 +65,7 @@ if(1,my(bnf=bnfinit(a^2-a-9), bnr=bnrinit(bnf,[2,[0,0]]));
   lfuncreate([bnr,matdiagonal(bnr.cyc)]))
 ];
 }
-
+\p36
 chk(s,i,a,b, laxist = 0) =
 { my (v, cvt = 0, B = getlocalbitprec());
   if (type(a)!="t_VEC", a=[a]; b=[b]; cvt=1);
