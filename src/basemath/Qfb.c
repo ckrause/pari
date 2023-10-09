@@ -675,7 +675,7 @@ lti2n(GEN a, long m)
 }
 
 static GEN
-pqfbred_1(GEN Q, ulong m, GEN U)
+pqfbred_1(GEN Q, long m, GEN U)
 {
   GEN a = gel(Q,1), b = gel(Q,2), c = gel(Q,3), d = gel(Q,4);
   if (abscmpii(a, c) < 0)
