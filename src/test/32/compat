@@ -3799,9 +3799,10 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: sqred(x) ===> qfgaussred(x)
 
-qfgaussred(q): square reduction of the (symmetric) matrix q (returns a square 
-matrix whose i-th diagonal term is the coefficient of the i-th square in which 
-the coefficient of the i-th variable is 1).
+qfgaussred(q,{flag=0}): square reduction of the symmetric matrix q. flag=0: 
+returns a square matrix A such that q(x) = sum_i A[i,i] (x[i] + sum_{j != i} 
+A[i,j] x[j])^2; flag=1 return [U,V] where U is a square matrix and V a vector 
+such that q = U~ * matdiagonal(V) * U
 
 
   ***   at top-level: srgcd()
@@ -4505,4 +4506,4 @@ New syntax: texprint(x) ===> printtex(x)
 printtex({str}*): outputs its string arguments in TeX format.
 
 
-Total time spent: 7
+Total time spent: 5

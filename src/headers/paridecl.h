@@ -1953,6 +1953,8 @@ GEN     matrixqz0(GEN x, GEN pp);
 GEN     minpoly(GEN x, long v);
 GEN     qfgaussred(GEN a);
 GEN     qfgaussred_positive(GEN a);
+GEN     qfgaussred0(GEN a, long flag);
+GEN     qfgaussred2(GEN a);
 GEN     qfsign(GEN a);
 
 /* alglin3.c */

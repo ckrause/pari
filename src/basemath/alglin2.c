@@ -1701,6 +1701,33 @@ GEN
 qfgaussred(GEN a) { return gaussred(a,0); }
 
 GEN
+qfgaussred2(GEN a)
+{
+  pari_sp av = avma;
+  GEN M = qfgaussred(a);
+  long i, l = lg(M);
+  GEN D = cgetg(l, t_VEC);
+  for (i = 1; i < l; i++)
+  {
+    gel(D,i) = gcoeff(M,i,i);
+    gcoeff(M,i,i) = gen_1;
+  }
+  return gerepilecopy(av, mkvec2(M,D));
+}
+
+GEN
+qfgaussred0(GEN a, long flag)
+{
+  switch (flag)
+  {
+    case 0: return qfgaussred(a);
+    case 1: return qfgaussred2(a);
+    default: pari_err_FLAG("qfgaussred");
+  }
+  return NULL; /* LCOV_EXCL_LINE */
+}
+
+GEN
 qfsign(GEN a) { return gaussred(a,1); }
 
 /* x -= s(y+u*x) */
