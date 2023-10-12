@@ -355,8 +355,8 @@ a1-a6, b2-b8, c4-c6 : coeff. of the curve.         ell\n\
 area : area                                        ell\n\
 bid  : big ideal                     bid,                     bnr\n\
 bnf  : big number field                                   bnf,bnr\n\
-clgp : class group                   bid,                 bnf,bnr\n\
-cyc  : cyclic decomposition (SNF)    bid,     clgp,ell,   bnf,bnr\n\
+clgp : class group              quad,bid,                 bnf,bnr\n\
+cyc  : cyclic decomposition     quad,bid,     clgp,ell,   bnf,bnr\n\
 diff, codiff: different and codifferent                nf,bnf,bnr\n\
 disc : discriminant                                ell,nf,bnf,bnr,rnf\n\
 e, f : inertia/residue  degree           prid\n\
@@ -369,13 +369,14 @@ j    : j-invariant                                 ell\n");
   pari_puts("\
 mod  : modulus                       bid,                     bnr,    gal\n\
 nf   : number field                                    nf,bnf,bnr,rnf\n\
-no   : number of elements            bid,     clgp,ell,   bnf,bnr\n\
+no   : number of elements       quad,bid,     clgp,ell,   bnf,bnr\n\
+normfu:                         quad\n\
 omega, eta: [w1,w2] and [eta1, eta2]               ell\n\
 orders: relative orders of generators                                 gal\n\
 p    : rational prime                    prid,     ell,nf,bnf,bnr,rnf,gal\n\
 pol  : defining polynomial                             nf,bnf,bnr,    gal\n\
 polabs: defining polynomial over Q                                rnf\n\
-reg  : regulator                                          bnf\n\
+reg  : regulator                quad,                     bnf\n\
 roots: roots                                       ell,nf,bnf,bnr,    gal\n\
 sign,r1,r2 : signature                                 nf,bnf,bnr\n\
 t2   : t2 matrix                                       nf,bnf,bnr\n\

@@ -4598,6 +4598,7 @@ GEN     member_j(GEN x);
 GEN     member_mod(GEN x);
 GEN     member_nf(GEN x);
 GEN     member_no(GEN clg);
+GEN     member_normfu(GEN x);
 GEN     member_omega(GEN x);
 GEN     member_orders(GEN x);
 GEN     member_p(GEN x);

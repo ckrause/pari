@@ -29,6 +29,9 @@ Doc: \idx{Buchmann-McCurley}'s sub-exponential algorithm for computing the
  default (note that once the regulator is known to a small accuracy it is
  trivial to compute it to very high accuracy, see the tutorial).
 
+ \item \kbd{$v$.normfu} (for positive $D$ only) return the norm of the fundamental unit
+  (either $1$ or $-1$).
+
  The $\fl$ is obsolete and should be left alone. In older versions,
  it supposedly computed the narrow class group when $D>0$, but this did not
  work at all; use the general function \tet{bnfnarrow}.
