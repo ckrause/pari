@@ -6,7 +6,8 @@ Help: quadclassunit(D,{flag=0},{tech=[]}): compute the structure of the
  class group and the regulator of the quadratic field of discriminant D.
  See manual for the optional technical parameters.
 Doc: \idx{Buchmann-McCurley}'s sub-exponential algorithm for computing the
- class group of a quadratic order of discriminant $D$.
+ class group of a quadratic order of discriminant $D$. By default, the
+ results are conditional on the GRH.
 
  This function should be used instead of \tet{qfbclassno} or
  \tet{quadregulator}
@@ -29,8 +30,9 @@ Doc: \idx{Buchmann-McCurley}'s sub-exponential algorithm for computing the
  default (note that once the regulator is known to a small accuracy it is
  trivial to compute it to very high accuracy, see the tutorial).
 
- \item \kbd{$v$.normfu} (for positive $D$ only) return the norm of the fundamental unit
-  (either $1$ or $-1$).
+ \item \kbd{$v$.normfu} (for positive $D$ only) return the norm of the
+ fundamental unit, either $1$ or $-1$. Note that a result of $-1$ is
+ unconditional and no longer depends on the GRH.
 
  The $\fl$ is obsolete and should be left alone. In older versions,
  it supposedly computed the narrow class group when $D>0$, but this did not
