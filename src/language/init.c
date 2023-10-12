@@ -122,7 +122,7 @@ void (*cb_pari_pre_recover)(long);
 void (*cb_pari_err_recover)(long);
 int (*cb_pari_break_loop)(int);
 int (*cb_pari_is_interactive)(void);
-void (*cb_pari_start_output)();
+void (*cb_pari_start_output)(void);
 
 const char * pari_library_path = NULL;
 
