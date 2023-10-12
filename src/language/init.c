@@ -123,6 +123,7 @@ void (*cb_pari_err_recover)(long);
 int (*cb_pari_break_loop)(int);
 int (*cb_pari_is_interactive)(void);
 void (*cb_pari_start_output)(void);
+void (*cb_pari_long_help)(const char *s, long num);
 
 const char * pari_library_path = NULL;
 
@@ -1263,6 +1264,7 @@ pari_init_opts(size_t parisize, ulong maxprime, ulong init_opts)
   cb_pari_is_interactive = NULL;
   cb_pari_start_output = NULL;
   cb_pari_sigint = dflt_sigint_fun;
+  cb_pari_long_help = NULL;
   if (init_opts&INIT_JMPm) cb_pari_err_recover = dflt_err_recover;
 
   pari_stackcheck_init(&u);

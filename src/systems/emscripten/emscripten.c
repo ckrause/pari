@@ -25,9 +25,10 @@ pari_emscripten_wget(const char *s)
 }
 
 void
-pari_emscripten_help(const char *s)
+pari_emscripten_help(const char *s, long n)
 {
   const char *url = "https://pari.math.u-bordeaux.fr/dochtml";
+  (void) n;
 #if ((PARI_VERSION_CODE>>PARI_VERSION_SHIFT)&1)
   pari_err(e_MISC,"Help: %s/help-stable/%s",url,s);
 #else

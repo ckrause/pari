@@ -360,6 +360,9 @@ available.
 \item $\fl = 1$: must return $0$ if the function did not change, and a
 nonzero result otherwise. May print a help message.
 
+\doc{cb_pari_long_help}{void (*cb_pari_long_help)(const char *s, long n)}
+It is called in place of the external help, to handle \kbd{??}.
+
 \subsec{Configuration variables}
 
 \tet{pari_library_path}: If set, It should be a path to the libpari library.

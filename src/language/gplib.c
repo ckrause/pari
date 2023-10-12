@@ -431,7 +431,7 @@ nl_read(char *s) { size_t l = strlen(s); return s[l-1] == '\n'; }
 
 /* query external help program for s. num < 0 [keyword] or chapter number */
 static void
-external_help(const char *s, int num)
+external_help(const char *s, long num)
 {
   long nbli = term_height()-3, li = 0;
   char buf[256], *str;
@@ -439,9 +439,7 @@ external_help(const char *s, int num)
   char *t, *help = GP_DATA->help;
   pariFILE *z;
   FILE *f;
-#ifdef __EMSCRIPTEN__
-  pari_emscripten_help(s);
-#endif
+  if (cb_pari_long_help) { cb_pari_long_help(s, num); return; }
 
   if (!has_ext_help()) pari_err(e_MISC,"no external help program");
   t = filter_quotes(s);

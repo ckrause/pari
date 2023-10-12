@@ -145,6 +145,7 @@ extern void (*cb_pari_err_recover)(long);
 extern int (*cb_pari_break_loop)(int);
 extern int (*cb_pari_is_interactive)(void);
 extern void (*cb_pari_start_output)(void);
+extern void (*cb_pari_long_help)(const char *s, long num);
 extern const char *pari_library_path;
 extern THREAD long *varpriority;
 
