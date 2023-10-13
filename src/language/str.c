@@ -210,3 +210,24 @@ strjoin(GEN v, GEN p)
   }
   return gerepileuptoleaf(av, shallowconcat1(w));
 }
+
+GEN
+pari_base64(const char *s)
+{
+  static const char *base64 =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  long i, j, ls = strlen(s), lt = ((ls+2)/3)*4;
+  long n = nchar2nlong(lt+1);
+  GEN g = cgetg(1+n, t_STR);
+  char *t = GSTR(g);
+  g[n] = 0L;
+  for(i=j=0; i < ls; i+=3, j+=4)
+  {
+    char s0 = s[i], s1 = i+1<ls ? s[i+1]: 0, s2 = i+2<ls ? s[i+2]: 0;
+    t[j] = base64[(s0 & 0xfc) >> 2];
+    t[j+1] = base64[((s0 & 0x3) << 4) + ((s1 & 0xf0) >> 4)];
+    t[j+2] = i+1<ls ? base64[((s1 & 0xf) << 2) + ((s2 & 0xc0) >> 6)]: '=';
+    t[j+3] = i+2<ls ? base64[s2 & 0x3f]: '=';
+  }
+  return g;
+}

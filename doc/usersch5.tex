@@ -14531,6 +14531,9 @@ not a malloc'ed string.
 \fun{GEN}{gvsprintf}{const char *fmt, va_list ap} variadic version of
 \tet{gsprintf}
 
+\fun{GEN}{pari_base64}{const char *s} convert the string to base64 (RFC4648
+"+/" with padding).
+
 \subsec{Dynamic strings}
 
 A \tet{pari_str} is a dynamic string which grows dynamically as needed.

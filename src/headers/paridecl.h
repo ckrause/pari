@@ -5454,11 +5454,12 @@ GEN     quadray(GEN bnf, GEN f, long prec);
 /* str.c */
 
 GEN     chartoGENstr(char c);
+GEN     pari_base64(const char *s);
 char*   pari_strdup(const char *s);
 char*   pari_strndup(const char *s, long n);
+GEN     pari_strchr(GEN g);
 char*   stack_strcat(const char *s, const char *t);
 char*   stack_strdup(const char *s);
-GEN     pari_strchr(GEN g);
 GEN     strjoin(GEN v, GEN p);
 GEN     strntoGENstr(const char *s, long n0);
 GEN     strsplit(GEN x, GEN p);
