@@ -75,13 +75,13 @@ pari_emscripten_get_plot(PARI_plot *T)
 {
   T->width   = plot_width;
   T->height  = plot_height;
-  T->hunit   = 3;   //
-  T->vunit   = 3;   //
-  T->fwidth  = 9;   // font width
-  T->fheight = 12;  //   and height
+  T->hunit   = 3;
+  T->vunit   = 3;
+  T->fwidth  = 9;
+  T->fheight = 12;
   gp_get_ploth_default_sizes(T);
-  T->dwidth  = 0;   // display width
-  T->dheight = 0;   //   and height
+  T->dwidth  = 0;
+  T->dheight = 0;
   T->draw = &emscripten_draw;
 }
 
