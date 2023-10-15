@@ -14,12 +14,12 @@ theorists, but has been put to good use in many other different fields, from
 topology or numerical analysis to physics.
 
 Although quite an amount of symbolic manipulation is possible, PARI does
-badly compared to systems like Axiom, Magma, Maple, Mathematica, Maxima, or
-Reduce on such tasks, e.g.~multivariate polynomials, formal integration,
+badly compared to systems like Magma, Maple, Mathematica, Maxima, or
+Sagemath on such tasks, e.g.~multivariate polynomials, formal integration,
 etc. On the other hand, the three main advantages of the system are its
 speed, the possibility of using directly data types which are familiar to
-mathematicians, and its extensive algebraic number theory module (from
-the above-mentioned systems, only Magma provides similar features).
+mathematicians, and its extensive algebraic number theory module (in
+the above-mentioned systems, Magma and Sagemath provide similar features).
 
 Non-mathematical strong points include the possibility to program either
 in high-level scripting languages or with the PARI library, a mature system
@@ -49,13 +49,14 @@ distributed separately and comes with its own manual. Chapter 2 describes the
 \kbd{GP} programming language and the \kbd{gp} calculator. Chapter 3
 describes all routines available in the calculator. Programming in library
 mode is explained in Chapters 4 and 5 in a separate booklet: \emph{User's
-Guide to the PARI library} (\kbd{libpari.dvi}.
+Guide to the PARI library} (\kbd{libpari.pdf}.
 
 A tutorial for \kbd{gp} is provided in the standard distribution: \emph{A
-tutorial for PARI/GP} (\kbd{tutorial.dvi}) and you should read this first.
+tutorial for PARI/GP} (\kbd{tutorial.pdf}) and you should read this first.
 You can then start over and read the more boring stuff which lies ahead. You
 can have a quick idea of what is available by looking at the \kbd{gp}
-reference card (\kbd{refcard.dvi} or \kbd{refcard.ps}). In case of need, you
+general reference card (\kbd{refcard.pdf}; other more specialized reference
+cards are available). In case of need, you
 can refer to the complete function description in Chapter 3.
 
 \subsectitle{How to get the latest version} Everything can be found on
@@ -101,6 +102,10 @@ UltraSparcs use the MicroSparc II version;
 
 \item the HPPA processors (both 32 and 64 bit);
 
+\item the MIPS processors (both 32 and 64 bit);
+
+\item the RISC-V 64 bit processors.
+
 A third version uses the GNU MP library to implement most of its
 multiprecision kernel. It improves significantly on the native one for large
 operands, say 100 decimal digits of accuracy or more. You \emph{should}
@@ -112,6 +117,30 @@ A historical version of the PARI/GP kernel, written in 1985, was specific to
 It ran on SUN-3/xx, Sony News, NeXT cubes and on 680x0 based Macs. It is no
 longer part of the PARI distribution; to run PARI with a 68k assembler
 micro-kernel, use the GMP kernel!
+
+\misctitle{Mathematical notations and conventions}
+
+\item Standard rings and fields. We denote $\Z$ the ring of integers, $\Q$ the
+field of rational numbers, $\R$ the field of real numbers and $\C$ the field of
+complex numbers (containing en element $i$ such that $i^2 = -1$). Given a prime
+number $p$, $v_p$ denotes the $p$-adic valuation $\Z_p$ is ring of $p$-adic
+integers, $\Q_p$ the field of $p$-adic numbers and $\C_p$ the $p$-adic
+completion of the algebraic closure of $\Q_p$. We write $|x|_p = p^{-v_p{x}}$
+for $x\in\C_p$.
+
+\item Intervals. We write $[a,b]$ for the closed interval $\{x\in \R\colon
+a\leq x\leq b\}$, $]a,b[$ for the open interval $\{x\in\R\colon a < x < b\}$
+and similarly $]a,b]$ and $[a,b[$ for half-open intervals.
+
+\item Linear Algebra. Let $K$ be some field and $m,n\leq 0$ be integers.
+Elements in the vector space $K^n$ are represented as \emph{column} vectors (of
+length $n$). Elements of the algebra $\Hom_K(K^n, K^m)$ are represented as $m
+\times n$ matrices; due to an unfortunate historical design decision, $m \times
+0$ matrices do not exist in PARI unless $m = 0$. If $M$ is an $m \times n$
+matrix, we use the notation $M^t$ to denote its transpose (an $n\times m$
+matrix). The (right) \emph{kernel} of a matrix $M$ is the vector space $\{v \in
+K^n\colon Mv = 0\}$. Similarly, the image of $M$ is the span of its columns.
+
 
 \section{The PARI types} \label{se:start}
 
