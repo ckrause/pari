@@ -1096,6 +1096,14 @@ closure_eval(GEN C)
       }
       break;
     }
+    case OCevalmnem:
+    {
+      entree *ep = (entree*) operand;
+      const char *flags = ep->code;
+      flags = strchr(flags, '\n'); /* Skip to the following '\n' */
+      st[sp-1] = eval_mnemonic(gel(st,sp-1), flags+1);
+      break;
+    }
     case OCstoi:
       gel(st,sp-1)=stoi(st[sp-1]);
       break;
@@ -2791,6 +2799,12 @@ closure_disassemble(GEN C)
     case OClock:
       pari_printf("lock\t\t%ld\n",operand);
       break;
+    case OCevalmnem:
+      {
+        entree *ep = (entree *)operand;
+        pari_printf("evalmnem\t%s\n",ep->name);
+        break;
+      }
     }
   }
 }
@@ -2870,6 +2884,7 @@ opcode_need_relink(op_code opcode)
   case OCcallint:
   case OCcallvoid:
   case OCcowvardyn:
+  case OCevalmnem:
     return 1;
   }
   return 0;

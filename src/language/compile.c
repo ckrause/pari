@@ -1343,7 +1343,6 @@ compilefunc(entree *ep, long n, int mode, long flag)
   Gtype ret_typ;
   char const *p,*q;
   char c;
-  const char *flags = NULL;
   const char *str;
   PPproto mod;
   GEN arg=listtogen(y,Flistarg);
@@ -1527,7 +1526,7 @@ compilefunc(entree *ep, long n, int mode, long flag)
         case 'M':
           if (tree[arg[j]].f!=Fsmall)
           {
-            if (!flags) flags = ep->code;
+            const char *flags = ep->code;
             flags = strchr(flags, '\n'); /* Skip to the following '\n' */
             if (!flags)
               compile_err("missing flag in string function signature",
@@ -1540,9 +1539,8 @@ compilefunc(entree *ep, long n, int mode, long flag)
               j++;
             } else
             {
-              compilenode(arg[j++],Ggen,0);
-              op_push(OCpushlong,(long)flags,n);
-              op_push(OCcallgen2,(long)is_entry("_eval_mnemonic"),n);
+              compilenode(arg[j++],Ggen,FLnocopy);
+              op_push(OCevalmnem,(long)ep,n);
             }
             break;
           }

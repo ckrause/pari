@@ -16,7 +16,7 @@ BEGINEXTERN
 
 typedef enum {Gvoid, Gsmall, Gvec, Gvar, Ggen, Gclosure, Gusmall} Gtype;
 
-typedef enum {OCexportvar='!',OCunexportvar,OCsetref,OClock,OCpackargs,
+typedef enum {OCexportvar='!',OCunexportvar,OCsetref,OClock,OCpackargs,OCevalmnem,
               OCbitprecreal='@',
               OCpushlong,OCpushgnil,OCpushgen,OCpushreal,OCpushstoi,OCpushvar,
               OCpop,
