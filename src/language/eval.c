@@ -1997,7 +1997,7 @@ parforstep(GEN a, GEN b, GEN s, GEN code, void *E, long call(void*, GEN, GEN))
   cmp = (ss > 0)? &gcmp: &negcmp;
   i = 0;
   a = mkvec(a);
-  mt_queue_start_lim(&pt, worker, 0);//itou_or_0(lim));
+  mt_queue_start_lim(&pt, worker, itou_or_0(lim));
   while ((running = (!stop && (!b || cmp(gel(a,1),b) <= 0))) || pending)
   {
     mt_queue_submit(&pt, 0, running ? a: NULL);
