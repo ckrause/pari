@@ -1978,8 +1978,8 @@ parforstep(GEN a, GEN b, GEN s, GEN code, void *E, long call(void*, GEN, GEN))
     case t_INTMOD:
       if (typ(a) != t_INT) a = gceil(a);
       a = addii(a, modii(subii(gel(s,2),a), gel(s,1)));
-      s = gel(s,1);
-    default: /* FALL THROUGH */
+      s = gel(s,1); /* FALL THROUGH */
+    default:
       ss = gsigne(s);
       lim = gdiv(gadd(gsub(b,a),s),s);
   }
