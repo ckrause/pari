@@ -91,7 +91,7 @@ d(9, 11), Mod(7, 11), Mod(3, 11), Mod(6, 11), Mod(1, 11)]
 [1]
   ***   at top-level: [1]^2
   ***                    ^--
-  *** _^s: incorrect type in gpow (t_VEC).
+  *** sqr: forbidden multiplication t_VEC (1 elts) * t_VEC (1 elts).
   ***   at top-level: [1]^1
   ***                    ^--
   *** _^s: incorrect type in gpow (t_VEC).

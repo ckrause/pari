@@ -1475,7 +1475,11 @@ compilefunc(entree *ep, long n, int mode, long flag)
     return;
   }
   else if (x==OPpow && nb==2 && tree[arg[2]].f==Fsmall)
-    ep=is_entry("_^s");
+  {
+    if(tree[arg[2]].x==2) { nb--; ep=is_entry("sqr"); }
+    else
+      ep=is_entry("_^s");
+  }
   else if (x==OPcat)
     compile_err("expected character: ',' or ')' instead of",
         tree[arg[1]].str+tree[arg[1]].len);
