@@ -1,5 +1,6 @@
 \e
 \p19
+default(parisize,"16M"); \\ Needed for --graphic=svg
 t=plothsizes();
 plotinit(0,t[1]-11,t[2]-11)
 plotscale(0,0,1000,0,1000);

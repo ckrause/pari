@@ -1,6 +1,8 @@
    echo = 1
 ? \p19
    realprecision = 19 significant digits
+? default(parisize,"16M");
+  ***   Warning: new stack size = 16000000 (15.259 Mbytes).
 ? t=plothsizes();
 ? plotinit(0,t[1]-11,t[2]-11)
 ? plotscale(0,0,1000,0,1000);
@@ -239,4 +241,4 @@
   ***                                     ^--------------
   ***   nonexistent component in graphcolormap: index > 9
 ? print("Total time spent: ",gettime);
-Total time spent: 70
+Total time spent: 90
