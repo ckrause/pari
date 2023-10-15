@@ -43,3 +43,9 @@ Help: return x^n where n is a small integer
 Section: programming/internals
 C-Name: gpowgs
 Prototype: GL
+
+Function: _inv
+Help: return x^-1 where n is a small integer
+Section: programming/internals
+C-Name: ginv
+Prototype: G

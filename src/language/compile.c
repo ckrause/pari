@@ -1474,11 +1474,23 @@ compilefunc(entree *ep, long n, int mode, long flag)
     compilevec(y, mode, OCcol);
     return;
   }
-  else if (x==OPpow && nb==2 && tree[arg[2]].f==Fsmall)
+  else if (x==OPpow && nb==2)
   {
-    if(tree[arg[2]].x==2) { nb--; ep=is_entry("sqr"); }
-    else
-      ep=is_entry("_^s");
+    long a = arg[2];
+    if (tree[a].f==Fsmall)
+    {
+      if(tree[a].x==2) { nb--; ep=is_entry("sqr"); }
+      else ep=is_entry("_^s");
+    }
+    else if (tree[a].f == Ffunction && tree[a].x == OPn)
+    {
+      long ay = tree[a].y;
+      if (tree[ay].f==Fsmall)
+      {
+        if (tree[ay].x==1) {nb--; ep=is_entry("_inv"); }
+        else ep=is_entry("_^s");
+      }
+    }
   }
   else if (x==OPcat)
     compile_err("expected character: ',' or ')' instead of",

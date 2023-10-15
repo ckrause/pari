@@ -17,7 +17,7 @@ Vecsmall([3, 2, 1])
 O(2)
   ***   at top-level: O(2)^-2
   ***                     ^---
-  *** _^_: impossible inverse in powps: O(2).
+  *** _^s: impossible inverse in powps: O(2).
 4
 9/4
 1/2*I
