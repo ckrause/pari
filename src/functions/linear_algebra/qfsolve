@@ -2,10 +2,10 @@ Function: qfsolve
 Section: linear_algebra
 C-Name: qfsolve
 Prototype: G
-Help: qfsolve(G): solve over Q the quadratic equation X^t G X = 0, where
+Help: qfsolve(G): solve over Q the quadratic equation X~ G X = 0, where
  G is a symmetric matrix.
 Doc: Given a square symmetric matrix $G$ of dimension $n \geq 1$, solve over
- $\Q$ the quadratic equation $X^tGX = 0$. The matrix $G$ must have rational
+ $\Q$ the quadratic equation ${^t}X G X = 0$. The matrix $G$ must have rational
  coefficients. The solution might be a single nonzero column vector
  (\typ{COL}) or a matrix (whose columns generate a totally isotropic
  subspace).
