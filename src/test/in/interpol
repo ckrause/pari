@@ -57,3 +57,12 @@ test([x, x + 1], [0, 1], z + 1)
 172.98741734512381337317617661926866615,
 173.28085540159446122341219189646960445];
 exponent(polinterpolate(L, L) - x)}
+
+polfromroots([1..10])
+polfromroots([1..10],y)
+polfromroots([1..10]*Mod(1,11))
+polfromroots([1..10]*Mod(1,11),y)
+T=(a^2-3*a+6)*Mod(1,13);polfromroots(vector(12,i,Mod(a,T)^i))
+
+/* ERROR */
+polfromroots([1,x,x^2])

@@ -1,0 +1,9 @@
+Function: polfromroots
+Section: polynomials
+C-Name: polfromroots
+Prototype: GDn
+Help: polfromroots(a,{v=x}): return the monic polynomial in variable v
+ whose roots are the component of the vector a with multiplicities.
+Doc: return the monic polynomialin variable \kbd{v} whose roots are the
+ component of the vector $a$ with multiplicities, that is
+ $\prod_{i=1}^n {x-a_i}$.

@@ -1072,6 +1072,46 @@ normalized_to_RgX(GEN L)
   gel(z,i) = gen_1; return z;
 }
 
+static GEN
+roots_to_pol_FpV(GEN x, long v, GEN p)
+{
+  pari_sp av = avma;
+  GEN r;
+  if (lgefint(p) == 3)
+  {
+    ulong pp = uel(p, 2);
+    r = Flx_to_ZX_inplace(Flv_roots_to_pol(RgV_to_Flv(x, pp), pp, v<<VARNSHIFT));
+  }
+  else
+    r = FpV_roots_to_pol(RgV_to_FpV(x, p), p, v);
+  return gerepileupto(av, FpX_to_mod(r, p));
+}
+
+static GEN
+roots_to_pol_FqV(GEN x, long v, GEN pol, GEN p)
+{
+  pari_sp av = avma;
+  GEN r, T = RgX_to_FpX(pol, p);
+  if (signe(T)==0) pari_err_OP("/", x, pol);
+  r = FqV_roots_to_pol(RgC_to_FqC(x, T, p), T, p, v);
+  return gerepileupto(av, FpXQX_to_mod(r, pol, p));
+}
+
+static GEN
+roots_to_pol_fast(GEN x, long v)
+{
+  GEN p, pol;
+  long pa;
+  long t = RgV_type(x, &p,&pol,&pa);
+  switch(t)
+  {
+    case t_INTMOD: return roots_to_pol_FpV(x, v, p);
+    case code(t_POLMOD, t_INTMOD):
+                   return roots_to_pol_FqV(x, v, pol, p);
+    default:       return NULL;
+  }
+}
+
 /* compute prod (x - a[i]) */
 GEN
 roots_to_pol(GEN a, long v)
@@ -1080,6 +1120,8 @@ roots_to_pol(GEN a, long v)
   long i, k, lx = lg(a);
   GEN L;
   if (lx == 1) return pol_1(v);
+  L = roots_to_pol_fast(a, v);
+  if (L) return L;
   L = cgetg(lx, t_VEC);
   for (k=1,i=1; i<lx-1; i+=2)
   {
@@ -1121,6 +1163,16 @@ roots_to_pol_r1(GEN a, long v, long r1)
   }
   setlg(L, k); L = gen_product(L, NULL, normalized_mul);
   return gerepileupto(av, normalized_to_RgX(L));
+}
+
+GEN
+polfromroots(GEN a, long v)
+{
+  if (!is_vec_t(typ(a)))
+    pari_err_TYPE("polfromroots",a);
+  if (v < 0) v = 0;
+  if (varncmp(gvar(a), v) <= 0) pari_err_PRIORITY("polfromroots",a,"<=",v);
+  return roots_to_pol(a, v);
 }
 
 /*******************************************************************/

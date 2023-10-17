@@ -5148,6 +5148,7 @@ GEN     glcm0(GEN x, GEN y);
 GEN     newtonpoly(GEN x, GEN p);
 GEN     nfrootsQ(GEN x);
 GEN     poldisc0(GEN x, long v);
+GEN     polfromroots(GEN a, long v);
 long    polisirreducible(GEN x);
 GEN     polresultant0(GEN x, GEN y,long v,long flag);
 GEN     polsym(GEN x, long n);

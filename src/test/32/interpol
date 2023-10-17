@@ -42,4 +42,21 @@ Mod(1, 2)
 [z - x, z]
 [z + (-x + 1), z]
 -53
-Total time spent: 1
+x^10 - 55*x^9 + 1320*x^8 - 18150*x^7 + 157773*x^6 - 902055*x^5 + 3416930*x^4
+ - 8409500*x^3 + 12753576*x^2 - 10628640*x + 3628800
+y^10 - 55*y^9 + 1320*y^8 - 18150*y^7 + 157773*y^6 - 902055*y^5 + 3416930*y^4
+ - 8409500*y^3 + 12753576*y^2 - 10628640*y + 3628800
+Mod(1, 11)*x^10 + Mod(10, 11)
+Mod(1, 11)*y^10 + Mod(10, 11)
+Mod(1, 13)*x^12 + Mod(Mod(10, 13)*a + Mod(8, 13), Mod(0, 13))*x^11 + Mod(Mod
+(8, 13)*a + Mod(11, 13), Mod(0, 13))*x^10 + Mod(Mod(2, 13)*a + Mod(6, 13), M
+od(0, 13))*x^9 + Mod(Mod(8, 13)*a + Mod(12, 13), Mod(0, 13))*x^8 + Mod(Mod(9
+, 13)*a + Mod(8, 13), Mod(0, 13))*x^7 + Mod(11, 13)*x^6 + Mod(Mod(5, 13)*a, 
+Mod(0, 13))*x^5 + Mod(Mod(7, 13)*a + Mod(11, 13), Mod(0, 13))*x^4 + Mod(Mod(
+11, 13)*a + Mod(8, 13), Mod(0, 13))*x^3 + Mod(Mod(7, 13)*a + Mod(9, 13), Mod
+(0, 13))*x^2 + Mod(Mod(3, 13)*a + Mod(6, 13), Mod(0, 13))*x + Mod(Mod(3, 13)
+*a + Mod(1, 13), Mod(0, 13))
+  ***   at top-level: polfromroots([1,x,x^2])
+  ***                 ^-----------------------
+  *** polfromroots: incorrect priority in polfromroots: variable x <= x
+Total time spent: 0

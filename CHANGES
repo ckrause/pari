@@ -84,6 +84,7 @@ BA  28- n#: primorial of n
     29- allow bernpol(k, a) [ = B_k(a) ]
 BA  30- allow Qfb(a*x^2+b*x+c) and Qfb([a,b0;b1,c])
 BA  31- New GP function parforstep
+BA  32- New GP function polfromroots
 
   Removed
      1- [graphic] support for Qt4
