@@ -2304,10 +2304,10 @@ New syntax: lll(x) ===> qflll(x)
 qflll(x,{flag=0}): LLL reduction of the vectors forming the matrix x (gives the 
 unimodular transformation matrix T such that x*T is LLL-reduced). flag is 
 optional, and can be 0: default, 1: assumes x is integral, 2: assumes x is 
-integral, returns a partially reduced basis, 4: assumes x is integral, returns 
-[K,T] where K is the integer kernel of x and T the LLL reduced image, 5: same 
-as 4 but x may have polynomial coefficients, 8: same as 0 but x may have 
-polynomial coefficients.
+integral, returns a partially reduced basis, 3: assumes x is integral, in place 
+(return x*T), 4: assumes x is integral, returns [K,T] where K is the integer 
+kernel of x and T the LLL reduced image, 5: same as 4 but x may have polynomial 
+coefficients, 8: same as 0 but x may have polynomial coefficients.
 
 
   ***   at top-level: lll1()
@@ -2328,10 +2328,10 @@ New syntax: lllgen(x) ===> qflll(x,8)
 qflll(x,{flag=0}): LLL reduction of the vectors forming the matrix x (gives the 
 unimodular transformation matrix T such that x*T is LLL-reduced). flag is 
 optional, and can be 0: default, 1: assumes x is integral, 2: assumes x is 
-integral, returns a partially reduced basis, 4: assumes x is integral, returns 
-[K,T] where K is the integer kernel of x and T the LLL reduced image, 5: same 
-as 4 but x may have polynomial coefficients, 8: same as 0 but x may have 
-polynomial coefficients.
+integral, returns a partially reduced basis, 3: assumes x is integral, in place 
+(return x*T), 4: assumes x is integral, returns [K,T] where K is the integer 
+kernel of x and T the LLL reduced image, 5: same as 4 but x may have polynomial 
+coefficients, 8: same as 0 but x may have polynomial coefficients.
 
 
   ***   at top-level: lllgram()
@@ -2427,10 +2427,10 @@ New syntax: lllint(x) ===> qflll(x,1)
 qflll(x,{flag=0}): LLL reduction of the vectors forming the matrix x (gives the 
 unimodular transformation matrix T such that x*T is LLL-reduced). flag is 
 optional, and can be 0: default, 1: assumes x is integral, 2: assumes x is 
-integral, returns a partially reduced basis, 4: assumes x is integral, returns 
-[K,T] where K is the integer kernel of x and T the LLL reduced image, 5: same 
-as 4 but x may have polynomial coefficients, 8: same as 0 but x may have 
-polynomial coefficients.
+integral, returns a partially reduced basis, 3: assumes x is integral, in place 
+(return x*T), 4: assumes x is integral, returns [K,T] where K is the integer 
+kernel of x and T the LLL reduced image, 5: same as 4 but x may have polynomial 
+coefficients, 8: same as 0 but x may have polynomial coefficients.
 
 
   ***   at top-level: lllintpartial()
@@ -2443,10 +2443,10 @@ New syntax: lllintpartial(x) ===> qflll(x,2)
 qflll(x,{flag=0}): LLL reduction of the vectors forming the matrix x (gives the 
 unimodular transformation matrix T such that x*T is LLL-reduced). flag is 
 optional, and can be 0: default, 1: assumes x is integral, 2: assumes x is 
-integral, returns a partially reduced basis, 4: assumes x is integral, returns 
-[K,T] where K is the integer kernel of x and T the LLL reduced image, 5: same 
-as 4 but x may have polynomial coefficients, 8: same as 0 but x may have 
-polynomial coefficients.
+integral, returns a partially reduced basis, 3: assumes x is integral, in place 
+(return x*T), 4: assumes x is integral, returns [K,T] where K is the integer 
+kernel of x and T the LLL reduced image, 5: same as 4 but x may have polynomial 
+coefficients, 8: same as 0 but x may have polynomial coefficients.
 
 
   ***   at top-level: lllkerim()
@@ -2459,10 +2459,10 @@ New syntax: lllkerim(x) ===> qflll(x,4)
 qflll(x,{flag=0}): LLL reduction of the vectors forming the matrix x (gives the 
 unimodular transformation matrix T such that x*T is LLL-reduced). flag is 
 optional, and can be 0: default, 1: assumes x is integral, 2: assumes x is 
-integral, returns a partially reduced basis, 4: assumes x is integral, returns 
-[K,T] where K is the integer kernel of x and T the LLL reduced image, 5: same 
-as 4 but x may have polynomial coefficients, 8: same as 0 but x may have 
-polynomial coefficients.
+integral, returns a partially reduced basis, 3: assumes x is integral, in place 
+(return x*T), 4: assumes x is integral, returns [K,T] where K is the integer 
+kernel of x and T the LLL reduced image, 5: same as 4 but x may have polynomial 
+coefficients, 8: same as 0 but x may have polynomial coefficients.
 
 
   ***   at top-level: lllkerimgen()
@@ -2475,10 +2475,10 @@ New syntax: lllkerimgen(x) ===> qflll(x,5)
 qflll(x,{flag=0}): LLL reduction of the vectors forming the matrix x (gives the 
 unimodular transformation matrix T such that x*T is LLL-reduced). flag is 
 optional, and can be 0: default, 1: assumes x is integral, 2: assumes x is 
-integral, returns a partially reduced basis, 4: assumes x is integral, returns 
-[K,T] where K is the integer kernel of x and T the LLL reduced image, 5: same 
-as 4 but x may have polynomial coefficients, 8: same as 0 but x may have 
-polynomial coefficients.
+integral, returns a partially reduced basis, 3: assumes x is integral, in place 
+(return x*T), 4: assumes x is integral, returns [K,T] where K is the integer 
+kernel of x and T the LLL reduced image, 5: same as 4 but x may have polynomial 
+coefficients, 8: same as 0 but x may have polynomial coefficients.
 
 
   ***   at top-level: lllrat()
@@ -4506,4 +4506,4 @@ New syntax: texprint(x) ===> printtex(x)
 printtex({str}*): outputs its string arguments in TeX format.
 
 
-Total time spent: 5
+Total time spent: 6
