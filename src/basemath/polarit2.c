@@ -1094,7 +1094,7 @@ roots_to_pol_FqV(GEN x, long v, GEN pol, GEN p)
   GEN r, T = RgX_to_FpX(pol, p);
   if (signe(T)==0) pari_err_OP("/", x, pol);
   r = FqV_roots_to_pol(RgC_to_FqC(x, T, p), T, p, v);
-  return gerepileupto(av, FpXQX_to_mod(r, pol, p));
+  return gerepileupto(av, FpXQX_to_mod(r, T, p));
 }
 
 static GEN
