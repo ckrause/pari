@@ -128,11 +128,25 @@ mf=mfinit([16,6]); B = mfbasis(mf); F = mflinear([B[7],B[8]],[4,7]);
 mfconductor(mf,F)
 V=mftonew(mf,F);
 for (i=1,#V,v=V[i];print([v[1],v[2],mfcoefs(v[3],9)]))
+mfisequal(F,mflinear([mfbd(v[3],v[2])|v<-V],vector(#V,k,1)))
 
 mf=mfinit([96,6],1);#mf[3]
 F=mflinear([mf[3][1],mf[3][2]],[4,7]);
 V=mftonew(mf,F);
 for (i=1,#V,v=V[i];print([v[1],v[2],mfcoefs(v[3],9)]))
+mfisequal(F,mflinear([mfbd(v[3],v[2])|v<-V],vector(#V,k,1)))
+
+checkmftonew(S,f) = {
+  my(V = mftonew(S,f));
+  mfisequal(f,mflinear([mfbd(v[3],v[2])|v<-V],vector(#V,i,1)));
+}
+checkmftonew(mfinit([22,2],1),mfbd(mfbasis([11,2],0)[1],2))
+checkspace(SN) = [checkmftonew(SN,f)|f<-mfbasis(SN)];
+checkspace(mfinit([22,2],1))
+checkspace(mfinit([48,2],1))
+checkspace(mfinit([62,2],1))
+checkspace(mfinit([36,4],1))
+
 mfconductor(mf,F)
 #mfinit([96,6],2)[3]
 #mfinit([96,6],3)[2]

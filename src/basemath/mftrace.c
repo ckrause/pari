@@ -4415,9 +4415,22 @@ mftonew_i(GEN mf, GEN L, long *plevel)
       GEN f = gcoeff(Aclos,i,j), C, NK;
       long d;
       if (lg(f) == 1) continue;
-      NK = mf_get_NK(gel(f,1));
       d = D[j];
       C = gcoeff(Acoef,i,j);
+      NK = mf_get_NK(gel(f, 1));
+      if (d > 1)
+      {
+          if (lg(f) > 2)
+              pari_err_BUG("should be only one form");
+          f = gel(f, 1);
+          if (mf_get_type(f) == t_MF_BD)
+          {
+              if(itou(gel(f,3)) != d)
+                  pari_err_BUG("inconsistent multiplier");
+              f = gel(f,2);
+          }
+          f = mkvec(f);
+      }
       level = ulcm(level, M*d);
       gel(res,t++) = mkvec3(gM, utoipos(d), mflinear_i(NK,f,C));
     }
