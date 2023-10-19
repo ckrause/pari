@@ -32,6 +32,7 @@ BA  22- ellisomat/nf could miss isogenies of degree dividing the conductor
     29- strjoin([1]) -> memory corruption
     30- qfbclassno(684) -> oo loop [#2491]
     31- gcd(x-1,(x-1)/x) -> 1/x
+PMo 32- mftonew was wrong on oldspace -> remove mfbd layer
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output
