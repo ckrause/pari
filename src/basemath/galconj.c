@@ -1063,7 +1063,11 @@ galoisvecpermtopol(GEN gal, GEN vec, GEN mod, GEN mod2)
   GEN M = gal_get_invvdm(gal);
   GEN P = cgetg(l, t_MAT);
   for (i=1; i<l; i++)
-    gel(P, i) = vecpermute(L,gel(vec,i));
+  {
+    GEN p = gel(vec,i);
+    if (typ(p) != t_VECSMALL) pari_err_TYPE("galoispermtopol", vec);
+    gel(P, i) = vecpermute(L, p);
+  }
   P = RgM_to_RgXV(FpM_center(FpM_mul(M, P, mod), mod, mod2), v);
   return gdiv(P, gal_get_den(gal));
 }

@@ -152,4 +152,7 @@ x^2 - x - 16
 0
 58
 [108, 15]
-Total time spent: 2606
+  ***   at top-level: galoispermtopol(G,[4,3,6,5,1,2])
+  ***                 ^--------------------------------
+  *** galoispermtopol: incorrect type in galoispermtopol (t_VEC).
+Total time spent: 2739
