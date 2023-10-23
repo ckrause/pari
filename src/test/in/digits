@@ -23,7 +23,6 @@ binary(0.)
 binary(0.005)
 binary(1.1)
 binary([0,1])
-binary(I)
 vector(10, i, sumdigits(123456789, i+1))
 digits(2^128+3, 2^64)
 digits(999999999999999,4294967295)
@@ -37,6 +36,21 @@ digits(O(3^4))
 digits(1+O(3^4))
 digits(1234+O(3^4))
 
+test(B)=
+{
+  for(n=-1000,1000,
+    my(D=digits(n,B));
+    if((#D && (vecmax(D)>=abs(B) || vecmin(D)<0)) || fromdigits(D,B)!=if(B<0,n,abs(n)), error("digits:",[n,B,D])));
+}
+test(2);
+test(3);
+test(4);
+test(7);
+test(-2);
+test(-3);
+test(-4);
+test(-7);
+
 0x12345
 0x1234567890ABCDEF987654321
 0x0000000000000000012345
@@ -47,4 +61,5 @@ x->x+0x1234
 x->x+0b1011
 
 \\ Errors
+binary(I)
 digits(2+O(3),2)

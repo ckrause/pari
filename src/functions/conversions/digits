@@ -4,9 +4,12 @@ C-Name: digits
 Prototype: GDG
 Help: digits(x,{b}): gives the vector formed by the digits of x in base b.
 Doc:
- outputs the vector of the digits of $|x|$ in base $b$, where $x$ and $b$ are
+ outputs the vector of the digits of $x$ in base $b$, where $x$ and $b$ are
  integers ($b = 10$ by default), from most significant down to least
- significant. For $x\ge1$, the number of digits is
+ significant, the digits being the the integers $0$, $1$, \dots $|b|-1$.
+ If $b>0$ and $x<0$, return the digits of $|x|$.
+
+ For $x\ge1$ and $b>0$, the number of digits is
  $\kbd{logint}(x,b) + 1$. See \kbd{fromdigits} for the reverse operation.
 
  We also allow $x$ an integral $p$-adic in which case $b$ should be omitted
@@ -23,8 +26,10 @@ Doc:
  \bprog
  ? digits(0)
  %3 = []
+ ? digits(10,-2) \\ base -2
+ %4 = [1, 1, 1, 1, 0]  \\ 10 = -2 + 4  - 8  + 16
  ? 1105 + O(5^5)
- %4 = 5 + 4*5^2 + 3*5^3 + O(5^5)
+ %5 = 5 + 4*5^2 + 3*5^3 + O(5^5)
  ? digits(%)
- %5 = [0, 1, 4, 3]
+ %6 = [0, 1, 4, 3]
  @eprog

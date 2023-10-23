@@ -146,17 +146,14 @@ digits_dacsmall(GEN x, GEN vB, long l, ulong* z)
 
 /* x t_INT */
 static GEN
-digits_i(GEN x, GEN B)
+digits_pos(GEN x, GEN B)
 {
-  pari_sp av = avma;
   long lz;
   GEN z;
-  B = check_basis(B);
-  if (signe(B) < 0) pari_err_DOMAIN("digits","B","<",gen_0,B);
-  if (!signe(x))       {set_avma(av); return cgetg(1,t_VEC); }
-  if (abscmpii(x,B)<0) {set_avma(av); retmkvec(absi(x)); }
+  if (abscmpii(x,B)<0) retmkvec(absi(x));
   if (Z_ispow2(B))
   {
+    pari_sp av = avma;
     long k = expi(B);
     if (k == 1) return binaire(x);
     if (k >= BITS_IN_LONG) return binary_2k(x, k);
@@ -168,11 +165,12 @@ digits_i(GEN x, GEN B)
   lz = logint(x,B) + 1;
   if (lgefint(B) > 3)
   {
-    z = gerepileupto(av, gen_digits_i(x, B, lz, NULL, &Z_ring, _dvmdii));
+    z = gen_digits_i(x, B, lz, NULL, &Z_ring, _dvmdii);
     vecreverse_inplace(z); return z;
   }
   else
   {
+    pari_sp av = avma;
     GEN vB = get_vB(B, lz, NULL, &Z_ring);
     (void)new_chunk(3*lz); /* HACK */
     z = zero_zv(lz);
@@ -180,6 +178,40 @@ digits_i(GEN x, GEN B)
     set_avma(av); return Flv_to_ZV(z);
   }
 }
+
+static GEN
+digits_neg(GEN n, GEN B)
+{
+  GEN V = digits_pos(n,B);
+  long i, l = lg(V), carry = 0, s = signe(n)==-1;
+  for (i = 1; i < l; i++)
+  {
+    GEN u = odd(i+s) ? addsi(carry, gel(V, l-i)): subsi(carry,gel(V, l-i));
+    if   (signe(u) < 0) { u = addii(u, B); carry=1; }
+    else
+      if (cmpii(u, B) >= 0) { u = subii(u, B); carry=-1; }
+    else
+      carry = 0;
+    gel(V,l-i) = u;
+  }
+  if (carry > 0)
+    V = vec_prepend(V, stoi(carry));
+  else if (carry < 0)
+    V = shallowconcat(mkvec2(gen_1,addsi(carry, B)),V);
+  return V;
+}
+
+/* x t_INT */
+static GEN
+digits_i(GEN x, GEN B)
+{
+  pari_sp av = avma;
+  B = check_basis(B);
+  if (!signe(x))       {set_avma(av); return cgetg(1,t_VEC); }
+  if (signe(B) > 0) return gerepilecopy(av, digits_pos(x, B));
+  return gerepilecopy(av, digits_neg(x, negi(B)));
+}
+
 GEN
 digits(GEN x, GEN B)
 {
@@ -364,6 +396,7 @@ sumdigits0(GEN x, GEN B)
   if (!B) return sumdigits(x);
   if (typ(x) != t_INT) pari_err_TYPE("sumdigits", x);
   B = check_basis(B);
+  if (signe(B)<0) return gerepileuptoint(av, ZV_sum(digits_neg(x,negi(B))));
   if (Z_ispow2(B))
   {
     long k = expi(B);
