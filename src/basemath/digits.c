@@ -125,7 +125,7 @@ check_basis(GEN B)
 {
   if (!B) return utoipos(10);
   if (typ(B)!=t_INT) pari_err_TYPE("digits",B);
-  if (abscmpiu(B,2)<0) pari_err_DOMAIN("digits","B","<",gen_2,B);
+  if (abscmpiu(B,2)<0) pari_err_DOMAIN("digits","abs(B)","<",gen_2,B);
   return B;
 }
 

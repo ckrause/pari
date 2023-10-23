@@ -30,6 +30,10 @@ sumdigits(2^128+3, 2^64)
 sumdigits(-3,3)
 sumdigits(-3,10)
 sumdigits(-3,2)
+digits(5,-2)
+sumdigits(5,-2)
+digits(-5,-2)
+sumdigits(-5,-2)
 
 digits(O(2^4))
 digits(O(3^4))
@@ -63,3 +67,5 @@ x->x+0b1011
 \\ Errors
 binary(I)
 digits(2+O(3),2)
+digits(10,-1)
+digits(10,1)

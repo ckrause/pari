@@ -45,6 +45,10 @@
 1
 3
 2
+[1, 0, 1]
+2
+[1, 1, 1, 1]
+4
 []
 []
 [1]
@@ -63,4 +67,10 @@
   ***   at top-level: digits(2+O(3),2)
   ***                 ^----------------
   *** digits: incorrect type in digits (t_PADIC).
-Total time spent: 51
+  ***   at top-level: digits(10,-1)
+  ***                 ^-------------
+  *** digits: domain error in digits: abs(B) < 2
+  ***   at top-level: digits(10,1)
+  ***                 ^------------
+  *** digits: domain error in digits: abs(B) < 2
+Total time spent: 63
