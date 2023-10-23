@@ -60,10 +60,7 @@ member_p(GEN x)
 {
   long t; GEN y = get_nf(x,&t);
   if (y)
-  {
-    if (t == typ_RNF) return rnf_get_ramified_primes(x);
     return nf_get_ramified_primes(y);
-  }
   switch(t)
   {
     case typ_GAL: return gal_get_p(x);
@@ -76,6 +73,7 @@ member_p(GEN x)
     }
     case typ_MODPR: x = get_prid(x);
     case typ_PRID: return pr_get_p(x);
+    case typ_RNF: return rnf_get_ramified_primes(x);
   }
   switch(typ(x)) {
     case t_PADIC: return gel(x,2);
