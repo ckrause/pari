@@ -3482,7 +3482,7 @@ rnfallbase(GEN nf, GEN pol, GEN lim, GEN rnf, GEN *pD, GEN *pf, GEN *pDKP)
   if (lim)
   {
     GEN rnfeq, zknf, dzknf, U, vU, dA, A, MB, dB, BdB, vj, B, Tabs;
-    GEN D = idealhnf_shallow(nf, disc);
+    GEN D = idealhnf_shallow(nf, disc), extendP = NULL;
     long rU, m = nf_get_degree(nf), n = degpol(pol), N = n*m;
     nfmaxord_t S;
 
@@ -3512,6 +3512,20 @@ rnfallbase(GEN nf, GEN pol, GEN lim, GEN rnf, GEN *pD, GEN *pf, GEN *pDKP)
     }
     dzknf = gel(zknf,1);
     if (gequal1(dzknf)) dzknf = NULL;
+RESTART:
+    if (extendP)
+    {
+      GEN oldP = P;
+      long l = lg(extendP);
+      for (i = 2; i < l; i++)
+      {
+        GEN q = gel(extendP,i);
+        if (typ(q) == t_FRAC) P = ZV_cba_extend(P, gel(q,2));
+      }
+      if (ZV_equal(P, oldP))
+        pari_err(e_MISC, "rnfpseudobasis fails, try increasing B");
+      extendP = NULL;
+    }
     Tabs = gel(rnfeq,1);
     nfmaxord(&S, mkvec2(Tabs,P), 0);
     B = RgXV_unscale(S.basis, S.unscale);
@@ -3527,6 +3541,7 @@ rnfallbase(GEN nf, GEN pol, GEN lim, GEN rnf, GEN *pD, GEN *pf, GEN *pDKP)
     for (j = 2; j <= m; j++)
     {
       GEN t = gel(zknf,j);
+      if (!RgX_is_ZX(t)) { extendP = t; goto RESTART; }
       if (A) t = ZX_Z_mul(t, A);
       gel(U,j) = hnf_solve(MB, RgX_to_RgC(t, N));
     }
@@ -3538,7 +3553,11 @@ rnfallbase(GEN nf, GEN pol, GEN lim, GEN rnf, GEN *pD, GEN *pf, GEN *pDKP)
       for (j = 2; j <= m; j++)
       {
         GEN t = ZX_rem(ZX_mul(b, gel(zknf,j)), Tabs);
-        if (dzknf) t = gdiv(t, dzknf);
+        if (dzknf)
+        {
+          t = RgX_Rg_div(t, dzknf);
+          if (!RgX_is_ZX(t)) { extendP = t; goto RESTART; }
+        }
         gel(U,j) = hnf_solve(MB, RgX_to_RgC(t, N));
       }
     }
