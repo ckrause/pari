@@ -3152,4 +3152,5 @@ maxord flag
 1
 1
 1
-Total time spent: 2154
+  *** nfinit: Warning: nonmonic polynomial. Result of the form [nf,c].
+Total time spent: 2367
