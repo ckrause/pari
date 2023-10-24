@@ -2259,9 +2259,10 @@ mpexpm1(GEN x)
   }
   if (sx > 0) return exp1r_abs(x);
   /* compute exp(x) * (1 - exp(-x)) */
-  av = avma; y = exp1r_abs(x);
-  z = addsr(1, y); setsigne(z, -1);
-  return gerepileupto(av, divrr(y, z));
+  av = avma; y = exp1r_abs(x); /* > 0 */
+  if (expo(y) >= -bit_accuracy(l)) { z = addsr(1, y); y = divrr(y, z); }
+  setsigne(y, -1);
+  return gerepileuptoleaf(av, y);
 }
 
 static GEN serexp(GEN x, long prec);
