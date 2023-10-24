@@ -6,6 +6,23 @@ print("contains nfabs: ", algsplittingfield(A)[12][1] != 0);
 A[1][12][1] = 0;
 A
 
+qamt(a,b) =
+{
+  my(m_i,m_j,m_k);
+  m_i = [0,a,0,0;
+         1,0,0,0;
+         0,0,0,a;
+         0,0,1,0];
+  m_j = [0, 0,b, 0;
+         0, 0,0,-b;
+         1, 0,0, 0;
+         0,-1,0, 0];
+  m_k = [0, 0,0,-a*b;
+         0, 0,b,   0;
+         0,-a,0,   0;
+         1, 0,0,   0];
+  [matid(4), m_i, m_j, m_k]
+};
 
 do(name, test) = {
  setrand(1);
@@ -941,7 +958,7 @@ all() = gusuite("all", ()->{
 all();
 
 nf = nfinit(y^2-2);
-al = alginit(nf, [-3,-5], x,1);
+al = alginit(nf, [-3,-5], x,3);
 print("maxorder assoc: ", algisassociative(al[9]));
 al0 = alginit(nf, [-3,-5], x,0);
 print("natorder assoc: ", algisassociative(al0[9]));
@@ -1266,19 +1283,7 @@ algtype(A)
 
 nf = nfinit(y^3-5);
 a = y; b = y^2;
-{m_i = [0,a,0,0;
-       1,0,0,0;
-       0,0,0,a;
-       0,0,1,0];}
-{m_j = [0, 0,b, 0;
-       0, 0,0,-b;
-       1, 0,0, 0;
-       0,-1,0, 0];}
-{m_k = [0, 0,0,-a*b;
-       0, 0,b,   0;
-       0,-a,0,   0;
-       1, 0,0,   0];}
-mt = [matid(4), m_i, m_j, m_k];
+mt = qamt(a,b);
 A = alginit(nf,mt,'x);
 algrelmultable(A)
 algsplittingfield(A).pol
@@ -2886,3 +2891,43 @@ al = algtableinit([Mat(1)]);
 al2 = algtensor(al,al);
 al = algtableinit([Mat(1)],2);
 al2 = algtensor(al,al);
+
+print("maxord flag");
+setrand(1);
+p = randomprime(10^60);
+q = randomprime(10^60);
+D = p*q;
+Q = nfinit(y);
+alg = alginit(Q, [-1,-D],,0);
+alghasse(alg,idealprimedec(Q,2)[1])
+alg = alginit(Q, [-D,-1],,0);
+alghassef(alg)
+algindex(alg)
+algramifiedplaces(alg)
+nb = 100;
+Lpr = [idealprimedec(Q,p)[1] | p <- primes(nb)];
+Lh = [1/2 | pr <- Lpr];
+alg = alginit(Q,[2,[Lpr,Lh],[0]],,0);
+algbasis(alg) == matid(4)
+alg = alginit(Q,[2,[Lpr,Lh],[0]],,1);
+algdisc(alg) == - 2^4 * vecprod(primes(nb))^2
+nf = nfinit(y^2+y+1);
+al1 = alginit(nf,[p,-1]);
+P = x^3-q;
+rnf = rnfinit(nf,P);
+al2 = alginit(rnf, [y*x,-1]);
+\\al = algtensor(al1,al2,0); \\too long: 5s ; find a replacement test
+mt = qamt(-D,-1);
+al = alginit(Q,mt,,0);
+r = randomprime(2^20);
+alg = alginit(Q, [-1,-D*r^2],,0);
+algbasis(alg) == matid(4)
+alg = alginit(Q, [-1,-D*r^2],,1);
+algbasis(alg) != matid(4)
+algdisc(alg)%r != 0
+p = randomprime([2^21,2^25]);
+q = randomprime([2^21,2^25]);
+alg = alginit(Q, [-1,-p*q^2],,2);
+algbasis(alg) == matid(4)
+algdisc(alg)%q == 0
+alghasse(alg, idealprimedec(Q,q)[1]) == 0

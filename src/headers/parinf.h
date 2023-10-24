@@ -50,6 +50,12 @@ enum {
   al_MATRIX
 };
 
+/* flags for alginit */
+enum {
+  al_MAXORD = 1,
+  al_FACTOR = 2
+};
+
 /* models for elements of M_n(Hamilton quaternions) */
 enum {
   H_INVALID = 0,

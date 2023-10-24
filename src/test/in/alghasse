@@ -41,14 +41,14 @@ alcheckhasse(al) =
   return(h == Mod(0,n));
 }
 
-al_cyclotomic(p,b,mo=1) =
+al_cyclotomic(p,b,fl=3) =
 {
   my(Q,F,pc,r);
   Q = nfinit(y);
   pc = polcyclo(p,x);
   F = rnfinit(Q,pc);
   r = lift(znprimroot(p));
-  return(alginit(F, [Mod(Mod(1,y)*x^r,pc), b], 'x, mo));
+  return(alginit(F, [Mod(Mod(1,y)*x^r,pc), b], 'x, fl));
 }
 
 hasse0() = gusuite("hasse sum to 0", ()->{
@@ -57,8 +57,8 @@ hasse0() = gusuite("hasse sum to 0", ()->{
   do("cyclo unramified at infinity", ()->alcheckhasse(al_cyclotomic(3,2763764)));
   do("cyclo 5", ()->alcheckhasse(al_cyclotomic(5,7861623)));
   do("cyclo 5 bis", ()->alcheckhasse(al_cyclotomic(5,6569846846546548798*25)));
-  do("cyclo 7 bis no mo", ()->alcheckhasse(al_cyclotomic(7,168656465154165487*7^3,0)));
-  do("cyclo 11 no mo", ()->alcheckhasse(al_cyclotomic(11,87165765,0)));
+  do("cyclo 7 bis no mo", ()->alcheckhasse(al_cyclotomic(7,168656465154165487*7^3,2)));
+  do("cyclo 11 no mo", ()->alcheckhasse(al_cyclotomic(11,87165765,2)));
   do("quat -1,-1 over Q", ()->alcheckhasse(alginit(nfinit(y),[-1,-1])));
   do("quat -1,-1 over Q(sqrt(2))", ()->alcheckhasse(alginit(nfinit(y^2-2),[-1,-1],x)));
   do("quat -1,-1 over Q(sqrt(60))", ()->alcheckhasse(alginit(nfinit(y^2-60),[-1,-1],x)));

@@ -1,9 +1,10 @@
 Function: alginit
 Section: algebras
 C-Name: alginit
-Prototype: GGDnD1,L,
-Help: alginit(B, C, {v}, {maxord = 1}): initializes the central simple algebra
- defined by data B, C. If maxord = 1, compute a maximal order.
+Prototype: GGDnD3,L,
+Help: alginit(B, C, {v}, {flag = 3}): initializes the central simple algebra
+ defined by data B, C. Binary digits of the flag mean 1: compute a maximal
+ order; 2: fully factor the discriminant instead of using a lazy factorisation.
 Doc: initializes the central simple algebra defined by data $B$, $C$ and
  variable $v$, as follows.
 
@@ -103,9 +104,18 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
  representing~$\R$. If $B$ is a \typ{COMPLEX} and $C = 0$, returns an algebra
  structure representing~$\C$.
 
- In all cases over a number field, this function computes a maximal order for
- the algebra by default, which may require a lot of time. Setting $maxord = 0$
- prevents this computation.
+ In all cases over a number field, this function factors various discriminants
+ and computes a maximal order for the algebra by default, which may require a
+ lot of time. This can be controlled by the flag, whose binary digits mean:
+
+  \item $1$: compute a maximal order.
+
+  \item $2$: fully factor the discriminants instead of using a lazy
+ factorisation. If this flag digit is set to~$0$, the local Hasse invariants are
+ not computed.
+
+ If only a partial factorisation is known, the computed order is only guaranteed
+ to be maximal at the known prime factors.
 
  The pari object representing such an algebra $A$ is a \typ{VEC} with the
  following data:

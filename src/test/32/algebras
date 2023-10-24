@@ -3131,4 +3131,25 @@ rnf/gchar confusion (#2473)
   ***   at top-level: al2=algtensor(al,al)
   ***                     ^----------------
   *** algtensor: sorry, tensor of noncyclic algebras is not yet implemented.
-Total time spent: 1114
+maxord flag
+  ***   at top-level: alghasse(alg,idealprimedec(Q,2)[1])
+  ***                 ^-----------------------------------
+  *** alghasse: Hasse invariants were not computed for this algebra.
+  ***   at top-level: alghassef(alg)
+  ***                 ^--------------
+  *** alghassef: Hasse invariants were not computed for this algebra.
+  ***   at top-level: algindex(alg)
+  ***                 ^-------------
+  *** algindex: Hasse invariants were not computed for this algebra.
+  ***   at top-level: algramifiedplaces(alg)
+  ***                 ^----------------------
+  *** algramifiedplaces: Hasse invariants were not computed for this algebra.
+1
+1
+1
+1
+1
+1
+1
+1
+Total time spent: 2154

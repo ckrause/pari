@@ -314,10 +314,14 @@ GEN
 alg_get_hasse_f(GEN al)
 {
   long ta = alg_type(al);
+  GEN hf;
   if (ta != al_CYCLIC && ta != al_CSA)
     pari_err_TYPE("alg_get_hasse_f [use alginit]",al);
   if (ta == al_CSA) pari_err_IMPL("computation of Hasse invariants over table CSA");
-  return gel(al,5);
+  hf = gel(al,5);
+  if (typ(hf) == t_INT) /* could be computed on the fly */
+    pari_err(e_MISC, "Hasse invariants were not computed for this algebra");
+  return hf;
 }
 GEN
 alghassef(GEN al) { checkalg(al); return alg_get_hasse_f(al); }
@@ -466,10 +470,10 @@ If al is given by a multiplication table (al_TABLE), only the * fields are prese
 /* assumes same center and same variable */
 /* currently only works for coprime degrees */
 GEN
-algtensor(GEN al1, GEN al2, long maxord) {
+algtensor(GEN al1, GEN al2, long flag) {
   pari_sp av = avma;
   long v, k, d1, d2;
-  GEN nf, P1, P2, aut1, aut2, b1, b2, C, rnf, aut, b, x1, x2, al;
+  GEN nf, P1, P2, aut1, aut2, b1, b2, C, rnf, aut, b, x1, x2, al, rnfpol;
 
   checkalg(al1);
   checkalg(al2);
@@ -493,13 +497,16 @@ algtensor(GEN al1, GEN al2, long maxord) {
   if (d2==1) return gcopy(al1);
 
   C = nfcompositum(nf, P1, P2, 3);
-  rnf = rnfinit(nf,gel(C,1));
+  rnfpol = gel(C,1);
+  if (!(flag & al_FACTOR)) rnfpol = mkvec2(rnfpol, stoi(1<<20));
+  rnf = rnfinit(nf, rnfpol);
+  /* TODO use integral basis of P1 and P2 to get that of C */
   x1 = gel(C,2);
   x2 = gel(C,3);
   k = itos(gel(C,4));
   aut = gadd(gsubst(aut2,v,x2),gmulsg(k,gsubst(aut1,v,x1)));
   b = nfmul(nf,nfpow_u(nf,b1,d2),nfpow_u(nf,b2,d1));
-  al = alg_cyclic(rnf,aut,b,maxord);
+  al = alg_cyclic(rnf, aut, b, flag);
   return gerepilecopy(av,al);
 }
 
@@ -3868,7 +3875,7 @@ nfgwkummer(GEN nf, GEN Lpr, GEN Ld, GEN pl, long var)
   const long n = (lg(Ld)==1)? 2: vecsmall_max(Ld);
   ulong ell;
   long i, l = lg(Lpr), v = uisprimepower(n, &ell);
-  GEN E = cgetg(l, t_COL), y = cgetg(l, t_VEC);
+  GEN E = cgetg(l, t_COL), y = cgetg(l, t_VEC), fa;
 
   for (i = 1; i < l; i++)
   {
@@ -3885,8 +3892,7 @@ nfgwkummer(GEN nf, GEN Lpr, GEN Ld, GEN pl, long var)
       gel(y, i) = localextdegell(nf, pr, gel(E,i), Ld[i], n);
     }
   }
-  /* TODO use a factoredextchinese to ease computations afterwards ? */
-  y = idealchinese(nf, mkvec2(mkmat2(Lpr,E), pl), y);
+  y = factoredextchinese(nf, mkmat2(shallowtrans(Lpr),E), y, pl, &fa);
   return gsub(gpowgs(pol_x(var),n), basistoalg(nf, y));
 }
 
@@ -4285,7 +4291,7 @@ hassereduce(GEN hf)
 
 /* rnf complete */
 static GEN
-alg_complete0(GEN rnf, GEN aut, GEN hf, GEN hi, long maxord)
+alg_complete0(GEN rnf, GEN aut, GEN hf, GEN hi, long flag)
 {
   pari_sp av = avma;
   GEN nf, pl, pl2, cnd, prcnd, cnds, y, Lpr, auts, b, fa, data, hfe;
@@ -4355,16 +4361,16 @@ alg_complete0(GEN rnf, GEN aut, GEN hf, GEN hi, long maxord)
   gel(al,8) = matid(D); /* TODO modify 7, 8 et 9 once LLL added */
   gel(al,9) = algnatmultable(al,D);
   gel(al,11)= algtracebasis(al);
-  if (maxord) al = alg_maximal_primes(al, prV_primes(Lpr));
+  if (flag & al_MAXORD) al = alg_maximal_primes(al, prV_primes(Lpr));
   return gerepilecopy(av, al);
 }
 
 GEN
-alg_complete(GEN rnf, GEN aut, GEN hf, GEN hi, long maxord)
+alg_complete(GEN rnf, GEN aut, GEN hf, GEN hi, long flag)
 {
   long n = rnf_get_degree(rnf);
   rnfcomplete(rnf);
-  return alg_complete0(rnf,aut,hasseconvert(hf,n),hasseconvert(hi,n), maxord);
+  return alg_complete0(rnf, aut, hasseconvert(hf,n), hasseconvert(hi,n), flag);
 }
 
 void
@@ -4488,7 +4494,7 @@ extraprime(GEN P)
 
 /* true nf */
 GEN
-alg_hasse(GEN nf, long n, GEN hf, GEN hi, long var, long maxord)
+alg_hasse(GEN nf, long n, GEN hf, GEN hi, long var, long flag)
 {
   pari_sp av = avma;
   GEN primary, al = gen_0, al2, rnf, hil, hfl, Ld, pl, pol, Lpr, aut, Lpr2, Ld2;
@@ -4540,12 +4546,12 @@ alg_hasse(GEN nf, long n, GEN hf, GEN hi, long var, long maxord)
       dbg_printf(2)("alg_hasse: computing automorphism\n");
       aut = rnfcycaut(rnf);
       dbg_printf(2)("alg_hasse: calling alg_complete\n");
-      al2 = alg_complete0(rnf,aut,hfl,hil,maxord);
+      al2 = alg_complete0(rnf, aut, hfl, hil, flag);
     }
-    else al2 = alg_matrix(nf, lk, var, maxord);
+    else al2 = alg_matrix(nf, lk, var, flag);
 
     if (i==1) al = al2;
-    else      al = algtensor(al,al2,maxord);
+    else      al = algtensor(al,al2,flag);
   }
   return gerepilecopy(av,al);
 }
@@ -4574,7 +4580,7 @@ subcycloindep(GEN nf, long n, long v, GEN *pr)
 }
 
 GEN
-alg_matrix(GEN nf, long n, long v, long maxord)
+alg_matrix(GEN nf, long n, long v, long flag)
 {
   pari_sp av = avma;
   GEN pol, gal, rnf, cyclo, g, r, aut;
@@ -4586,14 +4592,14 @@ alg_matrix(GEN nf, long n, long v, long maxord)
   gal = galoisinit(cyclo, NULL);
   g = genefrob(cyclo,gal,r);
   aut = galoispermtopol(gal,g);
-  return gerepileupto(av, alg_cyclic(rnf, aut, gen_1, maxord));
+  return gerepileupto(av, alg_cyclic(rnf, aut, gen_1, flag));
 }
 
 GEN
-alg_hilbert(GEN nf, GEN a, GEN b, long v, long maxord)
+alg_hilbert(GEN nf, GEN a, GEN b, long v, long flag)
 {
   pari_sp av = avma;
-  GEN rnf, aut;
+  GEN rnf, aut, rnfpol;
   dbg_printf(1)("alg_hilbert\n");
   if (!isint1(Q_denom(a)))
     pari_err_DOMAIN("alg_hilbert", "denominator(a)", "!=", gen_1,a);
@@ -4601,9 +4607,11 @@ alg_hilbert(GEN nf, GEN a, GEN b, long v, long maxord)
     pari_err_DOMAIN("alg_hilbert", "denominator(b)", "!=", gen_1,b);
 
   if (v < 0) v = 0;
-  rnf = rnfinit(nf, deg2pol_shallow(gen_1, gen_0, gneg(a), v));
+  rnfpol = deg2pol_shallow(gen_1, gen_0, gneg(a), v);
+  if (!(flag & al_FACTOR)) rnfpol = mkvec2(rnfpol, stoi(1<<20));
+  rnf = rnfinit(nf, rnfpol);
   aut = gneg(pol_x(v));
-  return gerepileupto(av, alg_cyclic(rnf, aut, b, maxord));
+  return gerepileupto(av, alg_cyclic(rnf, aut, b, flag));
 }
 
 /* return a structure representing the algebra of real numbers */
@@ -4663,7 +4671,7 @@ mk_H()
 }
 
 GEN
-alginit(GEN A, GEN B, long v, long maxord)
+alginit(GEN A, GEN B, long v, long flag)
 {
   long w;
   if (typ(A) == t_COMPLEX) return mk_C();
@@ -4682,25 +4690,25 @@ alginit(GEN A, GEN B, long v, long maxord)
       switch(typ(B))
       {
         long nB;
-        case t_INT: return alg_matrix(A, itos(B), v, maxord);
+        case t_INT: return alg_matrix(A, itos(B), v, flag);
         case t_VEC:
           nB = lg(B)-1;
-          if (nB && typ(gel(B,1)) == t_MAT) return alg_csa_table(A,B,v,maxord);
+          if (nB && typ(gel(B,1)) == t_MAT) return alg_csa_table(A,B,v,flag);
           switch(nB)
           {
-            case 2: return alg_hilbert(A, gel(B,1), gel(B,2), v, maxord);
+            case 2: return alg_hilbert(A, gel(B,1), gel(B,2), v, flag);
             case 3:
               if (typ(gel(B,1))!=t_INT)
                   pari_err_TYPE("alginit [degree should be an integer]", gel(B,1));
               return alg_hasse(A, itos(gel(B,1)), gel(B,2), gel(B,3), v,
-                                                                      maxord);
+                                                                      flag);
           }
       }
       pari_err_TYPE("alginit", B); break;
 
     case typ_RNF:
       if (typ(B) != t_VEC || lg(B) != 3) pari_err_TYPE("alginit", B);
-      return alg_cyclic(A, gel(B,1), gel(B,2), maxord);
+      return alg_cyclic(A, gel(B,1), gel(B,2), flag);
   }
   pari_err_TYPE("alginit", A);
   return NULL;/*LCOV_EXCL_LINE*/
@@ -4720,10 +4728,21 @@ algnatmultable(GEN al, long D)
   return res;
 }
 
+static int normfact_is_partial(GEN nf, GEN x, GEN fax)
+{
+  long i;
+  GEN nfx;
+  nfx = RgM_shallowcopy(fax);
+  for (i=1; i<lg(gel(nfx,1)); i++)
+    gcoeff(nfx,i,1) = idealnorm(nf, gcoeff(nfx,i,1));
+  nfx = factorback(nfx);
+  return !gequal(idealnorm(nf, x), nfx);
+}
 /* no garbage collection */
 static void
-algcomputehasse(GEN al)
+algcomputehasse(GEN al, long flag)
 {
+  int partialfact;
   long r1, k, n, m, m1, m2, m3, i, m23, m123;
   GEN rnf, nf, b, fab, disc2, cnd, fad, auts, pr, pl, perm, y, hi, PH, H, L;
 
@@ -4748,8 +4767,17 @@ algcomputehasse(GEN al)
     hi = cgetg(r1+1, t_VECSMALL);
     for (k = 1; k<=r1; k++) hi[k] = (s[k] && pl[k]) ? (n/2) : 0;
   }
+  gel(al,4) = hi;
 
-  fab = idealfactor(nf, b);
+  partialfact = 0;
+  if (flag & al_FACTOR)
+    fab = idealfactor(nf, b);
+  else {
+    fab = idealfactor_limit(nf, b, 1<<20);
+    /* does not report whether factorisation was partial; check it */
+    partialfact = normfact_is_partial(nf, b, fab);
+  }
+
   disc2 = rnf_get_idealdisc(rnf);
   L = nfmakecoprime(nf, &disc2, gel(fab,1));
   m = lg(L)-1;
@@ -4760,7 +4788,28 @@ algcomputehasse(GEN al)
   m3 = m - m1;
 
   /* disc2 : factor of disc coprime to b */
-  fad = idealfactor(nf, disc2);
+  if (flag & al_FACTOR)
+    fad = idealfactor(nf, disc2);
+  else {
+    fad = idealfactor_limit(nf, disc2, 1<<20);
+    partialfact = partialfact || normfact_is_partial(nf, disc2, fad);
+  }
+
+  /* if factorisation is partial, do not compute Hasse invariants */
+  /* we could compute their sum at composite factors */
+  if (partialfact)
+  {
+    if (!(flag & al_MAXORD))
+    {
+      gel(al,5) = gen_0;
+      return;
+    }
+    /* but transmit list of factors found for computation of maximal order */
+    PH = prV_primes(shallowconcat(gel(fab,1), gel(fad,1)));
+    gel(al,5) = mkvec2(PH, gen_0);;
+    return;
+  }
+
   /* m2 : number of prime factors of disc not dividing b */
   m2 = nbrows(fad);
   m23 = m2+m3;
@@ -4795,10 +4844,9 @@ algcomputehasse(GEN al)
   }
   gel(cnd,2) = gdiventgs(gel(cnd,2), eulerphiu(n));
   for (k=1; k<=m23; k++) H[k+m1] = localhasse(rnf, cnd, pl, auts, b, k);
-  gel(al,4) = hi;
   perm = gen_indexsort(PH, (void*)&cmp_prime_ideal, &cmp_nodata);
   gel(al,5) = mkvec2(vecpermute(PH,perm),vecsmallpermute(H,perm));
-  checkhasse(nf,alg_get_hasse_f(al),alg_get_hasse_i(al),n);
+  checkhasse(nf, alg_get_hasse_f(al), alg_get_hasse_i(al), n);
 }
 
 static GEN
@@ -4815,7 +4863,7 @@ alg_maximal_primes(GEN al, GEN P)
 }
 
 GEN
-alg_cyclic(GEN rnf, GEN aut, GEN b, long maxord)
+alg_cyclic(GEN rnf, GEN aut, GEN b, long flag)
 {
   pari_sp av = avma;
   GEN al, nf;
@@ -4842,11 +4890,14 @@ alg_cyclic(GEN rnf, GEN aut, GEN b, long maxord)
   gel(al,9) = algnatmultable(al,D);
   gel(al,11)= algtracebasis(al);
 
-  algcomputehasse(al);
+  algcomputehasse(al, flag);
 
-  if (maxord) {
+  if (flag & al_MAXORD) {
     GEN hf = alg_get_hasse_f(al), pr = gel(hf,1);
-    al = alg_maximal_primes(al, prV_primes(pr));
+    if (typ(gel(hf,2)) == t_INT) /* factorisation was partial */
+      gel(al,5) = gen_0;
+    else pr = prV_primes(pr);
+    al = alg_maximal_primes(al, pr);
   }
   return gerepilecopy(av, al);
 }
@@ -4905,7 +4956,7 @@ frobeniusform(GEN al, GEN x)
 }
 
 static void
-computesplitting(GEN al, long d, long v)
+computesplitting(GEN al, long d, long v, long flag)
 {
   GEN subf, x, pol, polabs, basis, P, Pi, nf = alg_get_center(al), rnf, Lbasis, Lbasisinv, Q, pows;
   long i, n = nf_get_degree(nf), nd = n*d, N = alg_get_absdim(al), j, j2;
@@ -4922,6 +4973,7 @@ computesplitting(GEN al, long d, long v)
   /* construct rnf of splitting field */
   pol = nffactor(nf,polabs);
   pol = gcoeff(pol,1,1);
+  if (!(flag & al_FACTOR)) pol = mkvec2(pol, stoi(1<<20));
   gel(al,1) = rnf = rnfinit(nf, pol);
   /* since pol is irreducible over Q, we have k=0 in rnf. */
   if (!gequal0(rnf_get_k(rnf)))
@@ -4946,7 +4998,7 @@ computesplitting(GEN al, long d, long v)
 
 /* assumes that mt defines a central simple algebra over nf */
 GEN
-alg_csa_table(GEN nf, GEN mt0, long v, long maxord)
+alg_csa_table(GEN nf, GEN mt0, long v, long flag)
 {
   pari_sp av = avma;
   GEN al, mt;
@@ -4966,14 +5018,14 @@ alg_csa_table(GEN nf, GEN mt0, long v, long maxord)
   gmael(al,1,1) = gpowgs(pol_x(0), d); /* placeholder before splitting field */
   gel(al,2) = mt;
   gel(al,3) = gen_0; /* placeholder */
-  gel(al,4) = gel(al,5) = gen_0; /* TODO Hasse invariants */
+  gel(al,4) = gel(al,5) = gen_0; /* TODO Hasse invariants if flag&al_FACTOR */
   gel(al,5) = gel(al,6) = gen_0; /* placeholder */
   gel(al,7) = matid(D);
   gel(al,8) = matid(D);
   gel(al,9) = algnatmultable(al,D);
   gel(al,11)= algtracebasis(al);
-  if (maxord) al = alg_maximal(al);
-  computesplitting(al, d, v);
+  if (flag & al_MAXORD) al = alg_maximal(al);
+  computesplitting(al, d, v, flag);
   return gerepilecopy(av, al);
 }
 
