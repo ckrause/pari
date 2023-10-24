@@ -90,6 +90,7 @@ BA  30- allow Qfb(a*x^2+b*x+c) and Qfb([a,b0;b1,c])
 BA  31- New GP function parforstep
 BA  32- New GP function polfromroots
 BA  33- digits: support for negative bases but positive digits.
+AP  34- alginit: new flag value for lazy factorization
 
   Removed
      1- [graphic] support for Qt4
