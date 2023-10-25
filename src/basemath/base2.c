@@ -3516,12 +3516,16 @@ RESTART:
     if (extendP)
     {
       GEN oldP = P;
-      long l = lg(extendP);
-      for (i = 2; i < l; i++)
+      if (typ(extendP)==t_POL)
       {
-        GEN q = gel(extendP,i);
-        if (typ(q) == t_FRAC) P = ZV_cba_extend(P, gel(q,2));
-      }
+        long l = lg(extendP);
+        for (i = 2; i < l; i++)
+        {
+          GEN q = gel(extendP,i);
+          if (typ(q) == t_FRAC) P = ZV_cba_extend(P, gel(q,2));
+        }
+      } else /*t_FRAC*/
+        P = ZV_cba_extend(P, gel(extendP,2));
       if (ZV_equal(P, oldP))
         pari_err(e_MISC, "rnfpseudobasis fails, try increasing B");
       extendP = NULL;
@@ -3538,6 +3542,7 @@ RESTART:
     gel(U,1) = col_ei(N, 1);
     A = dB? (dzknf? gdiv(dB,dzknf): dB): NULL;
     if (A && gequal1(A)) A = NULL;
+    if (A && typ(A)!=t_INT) { extendP = A; goto RESTART; }
     for (j = 2; j <= m; j++)
     {
       GEN t = gel(zknf,j);
