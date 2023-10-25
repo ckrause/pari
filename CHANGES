@@ -91,6 +91,7 @@ BA  31- New GP function parforstep
 BA  32- New GP function polfromroots
 BA  33- digits: support for negative bases but positive digits.
 AP  34- alginit: new flag value for lazy factorization
+BA  35- [libpari] F2xqXV_prod, F2xqV_roots_to_pol
 
   Removed
      1- [graphic] support for Qt4

@@ -7283,6 +7283,9 @@ $s^2 \equiv x\pmod{T(x)}$, computes $b \equiv a(s)\pmod{T}$ so that $b^2=a$.
 \fun{GEN}{F2xq_autpow}{GEN a, long n, GEN T} computes $\sigma^n(X)$ assuming
 $a=\sigma(X)$ where $\sigma$ is an automorphism of the algebra $\F_2[X]/T(X)$.
 
+\fun{GEN}{F2xqV_roots_to_pol}{GEN V, GEN T, long v} as
+\kbd{FqV\_roots\_to\_pol} returning an \kbd{F2xqX} in variable $v$.
+
 \subsec{\kbd{F2xn}} See \kbd{FpXn} operations.
 
 \fun{GEN}{F2xn_red}{GEN a, long n}
@@ -7434,6 +7437,8 @@ accessors are defined:
 \fun{GEN}{F2xqX_resultant}{GEN x, GEN y, GEN T}
 
 \fun{GEN}{F2xqX_disc}{GEN x, GEN T}
+
+\fun{GEN}{F2xqXV_prod}{GEN V, GEN T}
 
 \fun{long}{F2xqX_ispower}{GEN f, ulong k, GEN T, GEN *pt}
 

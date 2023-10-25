@@ -2207,6 +2207,27 @@ GEN
 F2xqX_powu(GEN x, ulong n, GEN T)
 { return gen_powu(x, n, (void*)T, &_F2xqX_sqr, &_F2xqX_mul); }
 
+GEN
+F2xqXV_prod(GEN V, GEN T)
+{
+  return gen_product(V, (void*)T, &_F2xqX_mul);
+}
+
+static GEN
+F2xqV_roots_to_deg1(GEN x, GEN T, long v)
+{
+  long sv = get_Flx_var(T);
+  pari_APPLY_same(deg1pol_shallow(pol1_F2x(sv),gel(x,i), v))
+}
+
+GEN
+F2xqV_roots_to_pol(GEN V, GEN T, long v)
+{
+  pari_sp ltop = avma;
+  GEN W = F2xqV_roots_to_deg1(V, T, v);
+  return gerepileupto(ltop, F2xqXV_prod(W, T));
+}
+
 static GEN
 F2xqX_divrem_basecase(GEN x, GEN y, GEN T, GEN *pr)
 {
