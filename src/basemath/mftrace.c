@@ -4420,14 +4420,13 @@ mftonew_i(GEN mf, GEN L, long *plevel)
       NK = mf_get_NK(gel(f, 1));
       if (d > 1)
       {
-          if (lg(f) > 2)
-              pari_err_BUG("should be only one form");
+          if (lg(f) > 2) pari_err_BUG("should be only one form");
           f = gel(f, 1);
           if (mf_get_type(f) == t_MF_BD)
           {
-              if(!equalis(gel(f,3), d))
-                  pari_err_BUG("inconsistent multiplier");
-              f = gel(f,2);
+            if (!equaliu(gel(f,3), d))
+              pari_err_BUG("inconsistent multiplier");
+            f = gel(f, 2);
           }
           f = mkvec(f);
       }
