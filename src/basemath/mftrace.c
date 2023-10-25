@@ -4425,7 +4425,7 @@ mftonew_i(GEN mf, GEN L, long *plevel)
           f = gel(f, 1);
           if (mf_get_type(f) == t_MF_BD)
           {
-              if(itou(gel(f,3)) != d)
+              if(!equalis(gel(f,3), d))
                   pari_err_BUG("inconsistent multiplier");
               f = gel(f,2);
           }
