@@ -3541,8 +3541,11 @@ RESTART:
     gel(vU,1) = U = cgetg(m+1, t_MAT);
     gel(U,1) = col_ei(N, 1);
     A = dB? (dzknf? gdiv(dB,dzknf): dB): NULL;
-    if (A && gequal1(A)) A = NULL;
-    if (A && typ(A)!=t_INT) { extendP = A; goto RESTART; }
+    if (A)
+    {
+      if (typ(A) != t_INT) { extendP = A; goto RESTART; }
+      if (equali1(A)) A = NULL;
+    }
     for (j = 2; j <= m; j++)
     {
       GEN t = gel(zknf,j);
