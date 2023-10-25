@@ -1106,6 +1106,7 @@ roots_to_pol_fast(GEN x, long v)
   switch(t)
   {
     case t_INTMOD: return roots_to_pol_FpV(x, v, p);
+    case t_FFELT:  return FFV_roots_to_pol(x, pol, v);
     case code(t_POLMOD, t_INTMOD):
                    return roots_to_pol_FqV(x, v, pol, p);
     default:       return NULL;

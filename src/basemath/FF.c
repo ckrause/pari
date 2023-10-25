@@ -2479,3 +2479,24 @@ FFM_mul(GEN M, GEN N, GEN ff)
 {
   return FFM_FFM_wrap(M, N, ff, FqM_mul, FlxqM_mul, F2xqM_mul);
 }
+
+GEN
+FFV_roots_to_pol(GEN V, GEN ff, long v)
+{
+  pari_sp av = avma;
+  ulong pp;
+  GEN P, T, p;
+  long w = fetch_var_higher();
+  _getFF(ff,&T,&p,&pp); V = FFC_to_raw(V, ff);
+  switch(ff[1])
+  {
+  case t_FF_FpXQ: P = FqV_roots_to_pol(V, T, p, w); break;
+  case t_FF_F2xq: P = F2xqV_roots_to_pol(V, T, w); break;
+  default:        P = FlxqV_roots_to_pol(V, T, pp, w); break;
+  }
+  if (!P) return gc_NULL(av);
+  P = raw_to_FFX(P, ff);
+  setvarn(P, v);
+  delete_var();
+  return gerepilecopy(av, P);
+}

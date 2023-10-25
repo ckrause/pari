@@ -62,7 +62,9 @@ polfromroots([1..10])
 polfromroots([1..10],y)
 polfromroots([1..10]*Mod(1,11))
 polfromroots([1..10]*Mod(1,11),y)
-T=(a^2-3*a+6)*Mod(1,13);polfromroots(vector(12,i,Mod(a,T)^i))
+T=(a^2-3*a+6)*Mod(1,13);polfromroots(vector(168,i,Mod(a,T)^i))
+w=ffprimroot(ffgen([13,2],'w));polfromroots(vector(168,i,w^i))
+w=ffprimroot(ffgen([2,7],'w));polfromroots(vector(127,i,w^i),u)
 
 /* ERROR */
 polfromroots([1,x,x^2])

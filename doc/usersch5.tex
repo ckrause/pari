@@ -13793,6 +13793,10 @@ field of $a$.
 but return \kbd{NULL} if the remainder is of degree greater or equal to $1$,
 the constant coefficient otherwise.
 
+\fun{GEN}{FFV_roots_to_pol}{GEN V, GEN ff, long v}
+\kbd{V} being a vector over the finite field given by \kbd{ff} (\typ{FFELT}),
+returns the monic \typ{POL} $\prod_i (\kbd{pol\_x[v]} - \kbd{V[i]})$.
+
 \subsec{FFM}
 
 \fun{GEN}{FFM_FFC_gauss}{GEN M, GEN C, GEN ff} given a matrix \kbd{M}
