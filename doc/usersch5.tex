@@ -9139,6 +9139,9 @@ of~\kbd{x} ($0$ for the empty vector).
 \fun{long}{ZV_max_lg}{GEN x} returns the effective length of the longest
 entry in $x$.
 
+\fun{long}{ZV_max_expi}{GEN x} returns the number of bits of the largest
+entry in $x$.
+
 \fun{int}{ZV_dvd}{GEN x, GEN y} assuming $x$, $y$ are two \kbd{ZV}s of the same
 length, return $1$ if $y[i]$ divides $x[i]$ for all $i$ and $0$ otherwise.
 Error if one of the $y[i]$ is $0$.
@@ -9295,6 +9298,9 @@ other words the $\Q$-basis vectors are made integral and primitive.
 \fun{GEN}{ZM_indeximage}{GEN x} returns \kbd{gel(ZM\_indexrank(x), 2)}.
 
 \fun{long}{ZM_max_lg}{GEN x} returns the effective length of the longest
+entry in $x$.
+
+\fun{long}{ZM_max_expi}{GEN x} returns the number of bits of the largest
 entry in $x$.
 
 \fun{GEN}{ZM_inv}{GEN M, GEN *pd} if \kbd{M} is a \kbd{ZM}, return

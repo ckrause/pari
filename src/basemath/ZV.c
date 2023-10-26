@@ -66,6 +66,31 @@ ZM_max_lg(GEN x)
   return ZM_max_lg_i(x, n, lgcols(x));
 }
 
+static long
+ZV_max_expi_i(GEN x, long m)
+{
+  long i, prec = 2;
+  for (i = 1; i < m; i++) prec = maxss(prec, expi(gel(x,i)));
+  return prec;
+}
+long
+ZV_max_expi(GEN x) { return ZV_max_expi_i(x, lg(x)); }
+
+static long
+ZM_max_expi_i(GEN x, long n, long m)
+{
+  long j, prec = 2;
+  for (j = 1; j < n; j++) prec = maxss(prec, ZV_max_expi_i(gel(x,j), m));
+  return prec;
+}
+long
+ZM_max_expi(GEN x)
+{
+  long n = lg(x);
+  if (n == 1) return 2;
+  return ZM_max_expi_i(x, n, lgcols(x));
+}
+
 GEN
 ZM_supnorm(GEN x)
 {
