@@ -41,4 +41,4 @@ Doc: Solve the equation $x^2 + dy^2 = n$ in integers $x$ and $y$, where
  time = 251 ms.
  @eprog\noindent We used \kbd{Mat([p,1])} to indicate that $p^1$
  was the integer factorization of $p$, i.e., that $p$ is prime. Without it,
- \kbd{qfbsolve} further attempts to factor $p$ and waste a little time.
+ \kbd{qfbsolve} attempts to factor $p$ and wastes a little time.
