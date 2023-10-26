@@ -17,6 +17,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #define DEBUGLEVEL DEBUGLEVEL_qflll
 
+static int
+RgM_is_square_mat(GEN x) { long l = lg(x); return l == 1 || l == lgcols(x); }
+
 static double
 pari_rint(double a)
 {
@@ -2119,14 +2122,12 @@ lllgramallgen(GEN x, long flag)
   return lll_finish(h,k-1,flag);
 }
 
-static int
-RgM_square(GEN x) { long l = lg(x); return l == 1 || l == lgcols(x); }
 static GEN
 lllallgen(GEN x, long flag)
 {
   pari_sp av = avma;
   if (!(flag & LLL_GRAM)) x = gram_matrix(x);
-  else if (!RgM_square(x)) pari_err_DIM("qflllgram");
+  else if (!RgM_is_square_mat(x)) pari_err_DIM("qflllgram");
   return gerepilecopy(av, lllgramallgen(x, flag));
 }
 GEN
@@ -2147,11 +2148,11 @@ GEN
 lllkerim(GEN x) { return lllall(x, LLL_ALL); }
 GEN
 lllgramint(GEN x)
-{ if (!RgM_square(x)) pari_err_DIM("qflllgram");
+{ if (!RgM_is_square_mat(x)) pari_err_DIM("qflllgram");
   return lllall(x, LLL_IM | LLL_GRAM); }
 GEN
 lllgramkerim(GEN x)
-{ if (!RgM_square(x)) pari_err_DIM("qflllgram");
+{ if (!RgM_is_square_mat(x)) pari_err_DIM("qflllgram");
   return lllall(x, LLL_ALL | LLL_GRAM); }
 
 GEN
@@ -2161,7 +2162,7 @@ lllfp(GEN x, double D, long flag)
   pari_sp av = avma;
   GEN h;
   if (n <= 1) return lll_trivial(x,flag);
-  if ((flag & LLL_GRAM) && !RgM_square(x)) pari_err_DIM("qflllgram");
+  if ((flag & LLL_GRAM) && !RgM_is_square_mat(x)) pari_err_DIM("qflllgram");
   h = ZM_lll(RgM_rescale_to_int(x), D, flag);
   return gerepilecopy(av, h);
 }
