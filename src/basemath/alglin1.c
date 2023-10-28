@@ -2749,6 +2749,13 @@ RgM_solve(GEN a, GEN b)
 }
 
 GEN
+RgM_div(GEN a, GEN b)
+{
+  pari_sp av = avma;
+  return gerepilecopy(av, shallowtrans(RgM_solve(shallowtrans(b),shallowtrans(a))));
+}
+
+GEN
 RgM_inv(GEN a)
 {
   GEN b = RgM_inv_fast(a);

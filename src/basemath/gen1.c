@@ -2554,9 +2554,9 @@ gdiv(GEN x, GEN y)
     case t_QFB: av = avma; return gerepileupto(av, qfbcomp(x, ginv(y)));
 
     case t_MAT:
-      av = avma; p1 = RgM_inv(y);
+      p1 = RgM_div(x,y);
       if (!p1) pari_err_INV("gdiv",y);
-      return gerepileupto(av, RgM_mul(x, p1));
+      return p1;
 
     default: pari_err_TYPE2("/",x,y);
   }

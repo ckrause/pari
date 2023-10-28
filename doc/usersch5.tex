@@ -9567,6 +9567,9 @@ is \kbd{RgX\_to\_RgC}$(T, \kbd{lg}(x)-1)$.
 
 \fun{GEN}{RgM_mul}{GEN x, GEN y} returns $x\times y$.
 
+\fun{GEN}{RgM_div}{GEN a, GEN b} returns $ab^-1$ or \kbd{NULL} if this turns
+out to be impossible.
+
 \fun{GEN}{RgM_ZM_mul}{GEN x, GEN y} returns $x\times y$ assuming that $y$ is
 a \kbd{ZM}.
 

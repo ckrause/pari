@@ -1860,6 +1860,7 @@ GEN     RgM_Hadamard(GEN a);
 GEN     RgM_RgC_invimage(GEN A, GEN B);
 GEN     RgM_diagonal(GEN m);
 GEN     RgM_diagonal_shallow(GEN m);
+GEN     RgM_div(GEN a, GEN b);
 GEN     RgM_inv(GEN a);
 GEN     RgM_inv_upper(GEN a);
 GEN     RgM_invimage(GEN A, GEN B);
