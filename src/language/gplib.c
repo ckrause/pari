@@ -600,7 +600,7 @@ help(const char *s0, int flag)
     }
     if (!strncmp(s, "refcard-", 8)) t += 8;
     else if (!strncmp(s, "tutorial-", 9)) t += 9;
-    cut_trailing_garbage(t);
+    if (strncmp(s, "se:", 3)) cut_trailing_garbage(t);
   }
 
   if (long_help && (n = ok_external_help(&s))) { external_help(s,n); return; }
