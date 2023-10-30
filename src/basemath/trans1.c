@@ -2189,7 +2189,6 @@ exp1r_abs(GEN x)
   B = b/3 + BITS_IN_LONG + (BITS_IN_LONG*BITS_IN_LONG)/ b;
   d = a/2.; m = (long)(d + sqrt(d*d + B)); /* >= 0 */
   if (m < (-a) * 0.1) m = 0; /* not worth it */
-  L = l + nbits2extraprec(m);
  /* Multiplication is quadratic in this range (l is small, otherwise we
   * use logAGM + Newton). Set Y = 2^(-e-a) x, compute truncated series
   * sum_{k <= n} Y^k/k!: this costs roughly
@@ -2207,11 +2206,13 @@ exp1r_abs(GEN x)
   *   log n! ~ (n + 1/2) log(n+1) - (n+1) + log(2Pi)/2,
   * error bounded by 1/6(n+1) <= 1/12. Finally, we want
   * n (-1/log(2) -log_2 |Y| + log_2(n+1)) >= b  */
-  b += m;
   d = m-dbllog2(x)-1/M_LN2; /* ~ -log_2 Y - 1/log(2) */
-  n = (long)(b / d);
-  if (n > 1)
-    n = (long)(b / (d + log2((double)n+1))); /* log~constant in small ranges */
+  while (d <= 0) { d++; m++; } /* d < 0 can occur from expm1 */
+  L = l + nbits2extraprec(m);
+  b += m;
+  n = (long)(b / d); /* > 0 */
+  if (n == 1)
+    n = (long)(b / (d + log2((double)n+1))); /* log ~ const in small ranges */
   while (n*(d+log2((double)n+1)) < b) n++; /* expect few corrections */
 
   X = rtor(x,L); shiftr_inplace(X, -m); setsigne(X, 1);
@@ -2234,10 +2235,14 @@ exp1r_abs(GEN x)
     setprec(X,L); p2 = mulrr(X,p2);
   }
 
-  for (i=1; i<=m; i++)
+  B = bit_accuracy(L);
+  for (i = 1; i <= m; i++)
   {
     if (realprec(p2) > L) setprec(p2,L);
-    p2 = mulrr(p2, addsr(2,p2));
+    if (expo(p2) < -B)
+      shiftr_inplace(p2, 1); /* 2 + p2 ~ 2 and may blow up accuracy */
+    else
+      p2 = mulrr(p2, addsr(2,p2));
   }
   affrr_fixlg(p2,y); return gc_const(av,y);
 }

@@ -34,7 +34,8 @@ BA  22- ellisomat/nf could miss isogenies of degree dividing the conductor
     31- gcd(x-1,(x-1)/x) -> 1/x
 PMo 32- mftonew was wrong on oldspace -> remove mfbd layer
 BA  33- rnf.p did not work
-    34- expm1(tiny negative t_REAL) -> stack overflow
+    34- expm1(tiny negative t_REAL) -> stack overflow [#2494]
+    35- expm1(huge t_REAL) -> junk [#2494]
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output
