@@ -2348,7 +2348,7 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
     if (is_lower) L = RgM_flip(B);
   }
   if(DEBUGLEVEL>=4) timer_start(&T);
-  if (n > 2 && RgM_is_square_mat(x)) /*n==2 can happen if rank < 2 or keepfirst */
+  if (n > 2 && nbrows(x) >= n)
   {
     GEN R = B ? is_upper ? B : is_lower ? L : get_gramschmidt(B) : get_gaussred(G);
     if (R)
