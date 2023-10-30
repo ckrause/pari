@@ -293,13 +293,13 @@ ZM_flatter(GEN M, long flag)
 }
 
 static GEN
-flattergram_i(GEN M, long keepfirst, long *pt_s)
+flattergram_i(GEN M, long flag, long *pt_s)
 {
   pari_sp ltop = avma;
   GEN R, T;
   R = qfgaussred_positive_dynprec(M);
   *pt_s = drop(R);
-  T =  lllfp(R, 0.99, LLL_IM| LLL_UPPER| LLL_NOCERTIFY);
+  T =  lllfp(R, 0.99, LLL_IM| LLL_UPPER| LLL_NOCERTIFY | (flag&LLL_KEEP_FIRST));
   return gerepilecopy(ltop, T);
 }
 
