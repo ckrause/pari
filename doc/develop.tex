@@ -996,7 +996,7 @@ nodes. This can be used to change the state of all MPI child nodes, e.g.,
 in \tet{gpinstall} run in the main thread, which allows all nodes to use the
 new function.
 
-\fun{void}{pari_mt_init}{void} \label{pari_mt_init}
+\fun{void}{pari_mt_init}{void}
 when using MPI, it is often necessary to run initialization code on the child
 nodes after PARI is initialized. This is done by calling successively:
 
@@ -1010,7 +1010,7 @@ Note that under MPI, this function returns on the master node but enters
 slave mode on the child nodes. Thus it is no longer possible to run
 initialization code on the child nodes.
 
-\fun{void}{pari_mt_close}{void} \label{pari_mt_close}
+\fun{void}{pari_mt_close}{void}
 when using MPI, calling \tet{pari_close} terminates the MPI execution
 environment and it will not be possible to restart it. If this is
 undesirable, call \tet{pari_close_opts} with the flag \tet{INIT_noIMTm}
