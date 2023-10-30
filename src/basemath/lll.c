@@ -341,7 +341,7 @@ ZM_flattergram(GEN M, long flag)
     if (DEBUGLEVEL >= 3)
       timer_printf(&ti, "FLATTERGRAM, dim %ld step %ld, slope=%0.10g", n, i, ((double)s)/n);
     if (gc_needed(btop, 1))
-      gerepileall(btop, 3, &M, &T, &s);
+      gerepileall(btop, 2, &M, &T);
   }
   if (DEBUGLEVEL >= 3)
     timer_printf(&ti, "FLATTERGRAM, dim %ld, slope=%0.10g", n, ((double)s)/n);
