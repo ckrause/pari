@@ -134,11 +134,11 @@ idealchinese(Q, [F,[1]], [0])
 idealchinese(Q, [F,[0]], [0])
 
 K = nfinit(x^3 - 2);
-A = [46875, 30966, 9573; 0, 3, 0; 0, 0, 3];
+A = idealhnf(K, 46875, 3*x-15909);
 idealispower(K, A, 3, &B)
 B
 idealispower(K, A/6, 3)
-A = [9375, 2841, 198; 0, 3, 0; 0, 0, 3];
+A = idealhnf(K, 9375, 3*x+2841);
 idealispower(K, A, 3)
 idealispower(K, A, 1)
 idealispower(K, x, 2)
