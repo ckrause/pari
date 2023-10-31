@@ -265,7 +265,6 @@ x^3 - 2
 [x, x]
 [x^3 - 2, x^3 - 2]
 [x]
-[x^3 + 48*x + (26*a - 13)]
 bad inputs
   ***   at top-level: bnrclassfield(y^2+6,Mat(2))
   ***                 ^---------------------------
@@ -300,4 +299,4 @@ bad inputs
   ***   at top-level: bnrclassfield(bnfinit(x))
   ***                 ^-------------------------
   *** bnrclassfield: incorrect priority in bnrclassfield: variable x = x
-Total time spent: 5559
+Total time spent: 3552
