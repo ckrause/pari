@@ -2251,7 +2251,7 @@ GEN
 mpexpm1(GEN x)
 {
   const long s = 6;
-  long l, sx = signe(x);
+  long B, l, sx = signe(x);
   GEN y, z;
   pari_sp av;
   if (!sx) return real_0_bit(expo(x));
@@ -2263,9 +2263,11 @@ mpexpm1(GEN x)
     return subrs(mpexp(x), 1);
   }
   if (sx > 0) return exp1r_abs(x);
+  B = bit_accuracy(l);
+  if (cmpsr(-B, x) > 0) return real_m1(l);
   /* compute exp(x) * (1 - exp(-x)) */
   av = avma; y = exp1r_abs(x); /* > 0 */
-  if (expo(y) >= -bit_accuracy(l)) { z = addsr(1, y); y = divrr(y, z); }
+  if (expo(y) >= -B) { z = addsr(1, y); y = divrr(y, z); }
   setsigne(y, -1);
   return gerepileuptoleaf(av, y);
 }
