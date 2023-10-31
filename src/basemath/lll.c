@@ -129,6 +129,12 @@ gsisinv(GEN M)
   return 1;
 }
 
+INLINE long
+nbits2prec64(long n)
+{
+  return nbits2prec(((n+63)>>6)<<6);
+}
+
 static GEN
 qfgaussred_positive_dynprec(GEN M)
 {
@@ -139,7 +145,7 @@ qfgaussred_positive_dynprec(GEN M)
   while (1)
   {
     long mbitprec;
-    prec = nbits2prec(bitprec);
+    prec = nbits2prec64(bitprec);
     L = qfgaussred_positive(RgM_gtofp(M, prec));
     if (!L)
     {
@@ -168,7 +174,7 @@ static GEN
 gramschmidt_upper(GEN M)
 {
   long bitprec = 3*(lg(M)-1) + 30 + 2*drop(M);
-  return RgM_gtofp(M, nbits2prec(bitprec));
+  return RgM_gtofp(M, nbits2prec64(bitprec));
 }
 
 static GEN
@@ -180,7 +186,7 @@ gramschmidt_dynprec(GEN M)
   while (1)
   {
     GEN B, Q, L;
-    long prec = nbits2prec(bitprec), mbitprec;
+    long prec = nbits2prec64(bitprec), mbitprec;
     if (!QR_init(RgM_gtofp(M, prec), &B, &Q, &L, prec) || !gsisinv(L))
     {
       bitprec *= 2;
@@ -2274,7 +2280,7 @@ get_gramschmidt(GEN M)
 {
   GEN B, Q, L;
   long l = lg(M), bitprec = 3*(l-1) + 30;
-  long prec = nbits2prec(bitprec);
+  long prec = nbits2prec64(bitprec);
   if (!QR_init(RgM_gtofp(M, prec), &B, &Q, &L, prec) || !gsisinv(L)) return NULL;
   return L;
 }
@@ -2284,7 +2290,7 @@ get_gaussred(GEN M)
 {
   pari_sp ltop = avma;
   long i, j, lM = lg(M);
-  long bitprec = 3*(lM-1) + 30, prec = nbits2prec(bitprec);
+  long bitprec = 3*(lM-1) + 30, prec = nbits2prec64(bitprec);
   GEN R, L = qfgaussred_positive(RgM_gtofp(M, prec));
   if (!L) return NULL;
   R = cgetg(lM, t_MAT);
