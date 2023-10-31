@@ -1494,9 +1494,9 @@ RgXV_cxeval(GEN x, GEN r, GEN ri)
 { pari_APPLY_same(RgX_cxeval(gel(x,i), r, ri)) }
 
 static GEN
-redquadric(GEN base, GEN q2, GEN pol, GEN zc)
+redquadric(GEN base, GEN pol, GEN zc)
 {
-  long i, l, prec = nbits2prec(2*gexpo(q2)) + 1;
+  long i, l, prec = nbits2prec(2*gexpo(pol)+2*gexpo(zc)) + 1;
   GEN s = NULL, R = roots(pol, prec);
   l = lg(R);
   for (i = 1; i < l; ++i)
@@ -1606,7 +1606,7 @@ liftselmer_cover(GEN b, GEN expo, GEN LS2, GEN pol, GEN discF, GEN K)
   tttheta = RgX_shift_shallow(pol, -1);
   polprime = ZX_deriv(pol);
   q2 = Q_primpart(tracematrix(zc, b, pol));
-  U = redquadric(b, q2, pol, QXQ_div(zc, polprime, pol));
+  U = redquadric(b, pol, QXQ_div(zc, polprime, pol));
   q2 = qf_RgM_apply(q2, U);
   newb = RgV_RgM_mul(b, U);
   param = Q_primpart(qfparam(q2, qfsolve(q2), 1));
@@ -1660,7 +1660,7 @@ liftselmer(GEN b, GEN expo, GEN sbase, GEN LS2, GEN pol, GEN discF, GEN K, long 
       zc = QXQ_mul(z, QXQ_sqr(r, pol), pol);
     }
     q2 = Q_primpart(tracematrix(zc, b, pol));
-    U = redquadric(b, q2, pol, QXQ_div(zc, polprime, pol));
+    U = redquadric(b, pol, QXQ_div(zc, polprime, pol));
     if (lg(U) < 4) continue;
     q2 = qf_RgM_apply(q2, U);
     newb = RgV_RgM_mul(b, U);
