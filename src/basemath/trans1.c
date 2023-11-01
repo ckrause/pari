@@ -3233,7 +3233,7 @@ glog(GEN x, long prec)
       a = gel(x,1);
       b = gel(x,2);
       e1 = expi(subii(a,b)); e2 = expi(b);
-      if (e2 > e1) prec += nbits2nlong(e2 - e1);
+      if (e2 > e1) prec += nbits2extraprec(e2 - e1);
       x = fractor(x, prec);
       return gerepileupto(av, glog(x, prec));
     }
