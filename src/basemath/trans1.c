@@ -2235,7 +2235,7 @@ exp1r_abs(GEN x)
     setprec(X,L); p2 = mulrr(X,p2);
   }
 
-  B = bit_accuracy(L);
+  B = prec2nbits(L);
   for (i = 1; i <= m; i++)
   {
     if (realprec(p2) > L) setprec(p2,L);
@@ -2263,7 +2263,7 @@ mpexpm1(GEN x)
     return subrs(mpexp(x), 1);
   }
   if (sx > 0) return exp1r_abs(x);
-  B = bit_accuracy(l);
+  B = prec2nbits(l);
   if (cmpsr(-B, x) > 0) return real_m1(l);
   /* compute exp(x) * (1 - exp(-x)) */
   av = avma; y = exp1r_abs(x); /* > 0 */
@@ -3918,7 +3918,7 @@ tan_huge_im(GEN ix, long prec)
 {
   long b, p = precision(ix);
   if (!p) p = prec;
-  b = bit_accuracy(p);
+  b = prec2nbits(p);
   return (gexpo(ix) > b || fabs(gtodouble(ix)) > (M_LN2 / 2) * b);
 }
 /* \pm I */

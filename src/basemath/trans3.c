@@ -440,7 +440,7 @@ static GEN
 _kbessel(long n, GEN x, long m, long prec)
 {
   GEN p1, p2, s, H;
-  long k, M = m + n, exact = (M <= bit_accuracy(prec));
+  long k, M = m + n, exact = (M <= prec2nbits(prec));
   pari_sp av;
 
   H = cgetg(M+2,t_VEC); gel(H,1) = gen_0;
@@ -3237,7 +3237,7 @@ cxEk(GEN tau, long k, long prec)
   long n, b, l = precision(tau);
 
   if (l) prec = l;
-  b = bit_accuracy(prec);
+  b = prec2nbits(prec);
   /* sum n^(k-1) x^n <= x(1 + (k!-1)x) / (1-x)^k (cf Eulerian polynomials)
    * S = \sum_{n > 0} n^(k-1) |q^n/(1-q^n)| <= x(1+(k!-1)x) / (1-x)^(k+1),
    * where x = |q| = exp(-2Pi Im(tau)) < 1. Neglegt 2/zeta(1-k) * S if

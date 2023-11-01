@@ -1840,7 +1840,7 @@ isprincipalall(GEN bnf, GEN x, long *pprec, long flag)
   col = NULL;
   SUnits = bnf_get_sunits(bnf);
   if (lg(R) == 1
-      || abscmpiu(gel(R,vecindexmax(R)), 4 * bit_accuracy(*pprec)) < 0)
+      || abscmpiu(gel(R,vecindexmax(R)), 4 * prec2nbits(*pprec)) < 0)
   { /* q = N (x / prod gj^ej) = N(alpha), denom(alpha) | d */
     GEN d, q = gdiv(ZM_det_triangular(x), get_norm_fact(gen, R, &d));
     col = xar? nf_cxlog(nf, xar, *pprec): NULL;

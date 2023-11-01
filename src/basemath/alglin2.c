@@ -835,7 +835,7 @@ static GEN
 RgM_hess(GEN x0, long prec)
 {
   pari_sp av = avma;
-  long lx = lg(x0), bit = prec? 8 - bit_accuracy(prec): 0, m, i, j;
+  long lx = lg(x0), bit = prec? 8 - prec2nbits(prec): 0, m, i, j;
   GEN x = bit? RgM_shallowcopy(x0): x0;
 
   for (m=2; m<lx-1; m++)

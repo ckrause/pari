@@ -1854,7 +1854,7 @@ cleanup_vga(GEN vga, long prec)
   GEN ind;
   long bitprec, i, l;
   if (!prec) return vga; /* already exact */
-  bitprec = bit_accuracy(prec);
+  bitprec = prec2nbits(prec);
   vga = shallowcopy(vga); l = lg(vga);
   for (i = 1; i < l; i++)
   {

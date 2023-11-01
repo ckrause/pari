@@ -7619,7 +7619,7 @@ START:
       }
       if (m > LIM) { LIM <<= 1; goto START; }
       C = mulcxpowIs(gdiv(v,conj_i(v)), 2*m - k);
-      C0 = grndtoi(C, &e); if (e < 5-bit_accuracy(precision(C))) C = C0;
+      C0 = grndtoi(C, &e); if (e < 5-prec2nbits(precision(C))) C = C0;
       gel(z,j) = C;
     }
   }

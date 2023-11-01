@@ -947,7 +947,7 @@ rdiviiz(GEN x, GEN y, GEN z)
   }
   else
   {
-    long b = bit_accuracy(prec) + expi(y) - expi(x) + 1;
+    long b = prec2nbits(prec) + expi(y) - expi(x) + 1;
     GEN q = divii(b > 0? shifti(x, b): x, y);
     affir(q, z); if (b > 0) shiftr_inplace(z, -b);
   }

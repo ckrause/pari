@@ -999,7 +999,7 @@ static GEN
 lngamma1(GEN z, long prec)
 { /* sum_{i > l} |z|^(i-1) = |z|^l / (1-|z|) < 2^-B
    * for l > (B+1) / |log2(|z|)| */
-  long i, l = ceil((bit_accuracy(prec) + 1) / - dbllog2(z));
+  long i, l = ceil((prec2nbits(prec) + 1) / - dbllog2(z));
   GEN s, vz;
 
   if (l <= 1) return gmul(negeuler(prec), z);
@@ -1104,7 +1104,7 @@ gamma_use_1(double s, double t, long prec, long *plim, long *pN)
   if (d < 1e-16) return 1;
   gamma_optim(s, t, prec, plim, pN);
   if (d >= 0.5) return 0;
-  k = bit_accuracy(prec) / -log2(dnorm(a, t)); /* 2k = lngamma1 bound */
+  k = prec2nbits(prec) / -log2(dnorm(a, t)); /* 2k = lngamma1 bound */
   return (t ? k: 1.5*k) < *plim + *pN;
 }
 static GEN
@@ -1313,7 +1313,7 @@ cxgamma(GEN s0, int dolog, long prec)
 static long
 gamma2_n(long prec)
 {
-  long b = bit_accuracy(prec);
+  long b = prec2nbits(prec);
   if (b <=  64) return 1450;
   if (b <= 128) return 1930;
   if (b <= 192) return 2750;
@@ -1722,7 +1722,7 @@ gammafrac24(GEN a, GEN b, long prec)
       m = A / B;
       x = A % B; /* = A - m*B */
       if (x < 0) { x += B; m--; } /* now 0 < x < B, A/B = x/B + m */
-      bit = bit_accuracy(prec);
+      bit = prec2nbits(prec);
       /* Depending on B and prec, we must experimentally replace the 0.5
        * by 0.4 to 2.0 for optimal value. Play safe. */
       if (labs(m) > 0.5 * bit * sqrt(bit) / log(bit)) return NULL;
@@ -1833,7 +1833,7 @@ mpfactr_basecase(long n, long prec)
 static long
 mpfactr_n(long prec)
 {
-  long b = bit_accuracy(prec);
+  long b = prec2nbits(prec);
   if (b <=  64) return 1930;
   if (b <= 128) return 2650;
   if (b <= 192) return 3300;
@@ -1873,7 +1873,7 @@ mpfactr(long n, long prec)
 static ulong
 lngamma_n(long prec)
 {
-  long b = bit_accuracy(prec);
+  long b = prec2nbits(prec);
   double N;
   if (b <=  64) return 1450UL;
   if (b <= 128) return 2010UL;
