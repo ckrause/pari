@@ -2,11 +2,12 @@ default(parisize,"10M"); \\ 8M not sufficient in 64bit
 rnfpolredbest(nfinit(quadpoly(5,y)),x^7-14*x^5+56*x^3-56*x+22)
 \\ rnfpolred(nfinit(quadpoly(1996,y)),quadray(1996,1))
 \\ rnfpolred(nfinit(quadpoly(904,y)),quadray(904,1))
-K=nfinit(quadpoly(29,y)); T=quadray(29,17)
+K=bnfinit(quadpoly(29,y)); T=quadray(29,17)
 rnfpolredabs(K,T)
-rnfpolredbest(K,T)
-rnfpolredabs(K,[T,100],16)
-rnfpolredbest(K,[T,100])
+chk(K,T)=[rnfconductor(K,T,2),norm(poldisc(T))];
+chk(K,rnfpolredbest(K,T))
+chk(K,rnfpolredabs(K,[T,100],16))
+chk(K,rnfpolredbest(K,[T,100]))
 K=nfinit(y^3-y-1); T=x^3-x-1;
 rnfpolredabs(K,T)
 rnfpolredabs(K,T,2)
