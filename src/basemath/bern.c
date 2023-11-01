@@ -86,7 +86,7 @@ bernset(GEN *y, long m, long n)
   t = cgetg(r+1, t_VEC); b = int2n(p); /* fixed point */
   for (j = 3; j <= r; j += 2)
   {
-    GEN z = cgeti(prec);
+    GEN z = cgeti(nbits2lg(p));
     pari_sp av2 = avma;
     affii(divii(b, powuu(j, N)), z);
     gel(t,j) = z; set_avma(av2);
@@ -485,7 +485,7 @@ eulerset(GEN *y, long m, long n)
   t = cgetg(r+1, t_VEC); b = int2n(p); /* fixed point */
   for (j = 3; j <= r; j += 2)
   {
-    GEN z = cgeti(prec);
+    GEN z = cgeti(nbits2lg(p));
     pari_sp av2 = avma;
     affii(divii(b, powuu(j, N+1)), z);
     gel(t,j) = z; set_avma(av2);
