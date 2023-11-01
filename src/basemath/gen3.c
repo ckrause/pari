@@ -137,7 +137,7 @@ gvar2(GEN x)
 /*                                                                 */
 /*******************************************************************/
 static long
-prec0(long e) { return (e < 0)? nbits2prec(-e): 3; }
+prec0(long e) { return (e < 0)? nbits2prec(-e): LOWDEFAULTPREC; }
 static long
 precREAL(GEN x) { return signe(x) ? realprec(x): prec0(expo(x)); }
 /* x t_REAL, y an exact noncomplex type. Return precision(|x| + |y|) */
