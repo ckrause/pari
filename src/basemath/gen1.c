@@ -1095,7 +1095,7 @@ gadd(GEN x, GEN y)
           av=avma; z=addir(gel(y,1),mulir(gel(y,2),x)); tetpil=avma;
           return gerepile(av,tetpil,divri(z,gel(y,2)));
         case t_COMPLEX: return addRc(x, y);
-        case t_QUAD: return gequal0(y)? rcopy(x): addqf(y, x, lg(x));
+        case t_QUAD: return gequal0(y)? rcopy(x): addqf(y, x, realprec(x));
 
         default: pari_err_TYPE2("+",x,y);
       }
