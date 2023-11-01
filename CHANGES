@@ -102,6 +102,7 @@ BA  39- [libpari] RgM_Cholesky
 BA  40- [libpari] hash_keys_GEN
     41- support kB or KB, MB, GB and TB as units for memory sizes (2^10,
         2^20, 2^30 and 2^40 bytes)
+BA  42- [libpari] lg2prec, prec2lg
 
   Removed
      1- [graphic] support for Qt4

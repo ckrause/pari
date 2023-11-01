@@ -575,6 +575,12 @@ decimal digits.
 \fun{long}{nbits2lg}{long x} converts a number of bits to a length
 in code words. Currently  an alias for \kbd{nbits2nlong}.
 
+\fun{long}{prec2lg}{long x} return the length of a \typ{REAL} of precision
+\kbd{x}.
+
+\fun{long}{lg2prec}{long x} return the maximal precision of a \typ{REAL}
+of length \kbd{x}.
+
 \fun{long}{nbits2prec}{long x} converts a number of bits to a number of
 codewords. This is equal to 2 + \kbd{nbits2nlong(x)}.
 
