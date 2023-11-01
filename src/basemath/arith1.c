@@ -3831,7 +3831,7 @@ bestappr_real(GEN x, GEN k)
       break;
     }
     d = nbits2prec(expo(x) + 1);
-    if (d > lg(x)) { p1 = p0; q1 = q0; break; } /* original x was ~ 0 */
+    if (d > realprec(x)) { p1 = p0; q1 = q0; break; } /* original x was ~ 0 */
 
     a = truncr(x); /* truncr(x) will NOT raise e_PREC */
     p = addii(mulii(a,p0), p1); p1=p0; p0=p;
