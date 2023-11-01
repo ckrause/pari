@@ -2130,7 +2130,7 @@ CM_factor(GEN E, GEN Q)
       return NULL; /*-Wall*/
   }
   /* disc Q = v^2 D, D < 0 fundamental */
-  w = ellR_omega(E, DEFAULTPREC + nbits2nlong(expi(D)));
+  w = ellR_omega(E, DEFAULTPREC + nbits2extraprec(expi(D)));
   tau = gdiv(gel(w,2), gel(w,1));
   prec = precision(tau);
   /* disc tau = -4 k^2 (Im tau)^2 for some integral k

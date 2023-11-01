@@ -1933,7 +1933,7 @@ glngamma(GEN x, long prec)
       if (e > 3)
       {
         x = mkfrac(c,b);
-        if (lgefint(b) >= prec) x = fractor(x,prec + nbits2nlong(e));
+        if (lgefint(b) >= prec) x = fractor(x,prec + nbits2extraprec(e));
         y = lngamma1(x, prec);
       }
       else
