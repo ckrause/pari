@@ -685,8 +685,7 @@ gprec_w(GEN x, long pr)
     case t_REAL:
       if (signe(x)) return realprec(x) != pr? rtor(x,pr): x;
       i = -prec2nbits(pr);
-      if (i < expo(x)) return real_0_bit(i);
-      y = cgetr(2); y[1] = x[1]; return y;
+      return real_0_bit(minss(i,expo(x)));
     case t_COMPLEX:
       y = cgetg(3, t_COMPLEX);
       gel(y,1) = gprec_w(gel(x,1),pr);
@@ -714,8 +713,7 @@ gprec_wensure(GEN x, long pr)
     case t_REAL:
       if (signe(x)) return realprec(x) < pr? rtor(x,pr): x;
       i = -prec2nbits(pr);
-      if (i < expo(x)) return real_0_bit(i);
-      y = cgetr(2); y[1] = x[1]; return y;
+      return real_0_bit(minss(i,expo(x)));
     case t_COMPLEX:
       y = cgetg(3, t_COMPLEX);
       gel(y,1) = gprec_wensure(gel(x,1),pr);
