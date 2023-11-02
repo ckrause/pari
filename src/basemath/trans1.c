@@ -1143,7 +1143,7 @@ modlog2(GEN x, long *sh)
   q = d < 0 ? - (long) qd: (long) qd;
   *sh = q;
   if (q) {
-    long l = realprec(x) + 1;
+    long l = realprec(x) + EXTRAPRECWORD;
     x = subrr(rtor(x,l), mulsr(q, mplog2(l)));
     if (!signe(x)) return NULL;
   }
