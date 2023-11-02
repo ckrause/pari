@@ -3005,10 +3005,10 @@ logr_abs(GEN X)
   }
   if (k == l) return EX? mulsr(EX, mplog2(l)): real_0(l);
   a = prec2nbits(k) + bfffo(u); /* ~ -log2 |1-x| */
-  L = l+1;
+  L = l+EXTRAPREC64;
   b = prec2nbits(L - (k-2)); /* take loss of accuracy into account */
-  if (b > 24*a*log2(L) &&
-      prec2nbits(l) > prec2nbits(LOGAGM_LIMIT)) return logagmr_abs(X);
+  if (prec2nbits(l) > prec2nbits(LOGAGM_LIMIT)
+      && b > 24*a*log2(L-2)) return logagmr_abs(X);
 
   z = cgetr(EX? l: l - (k-2));
 
@@ -3038,7 +3038,7 @@ logr_abs(GEN X)
   y = divrr(subrs(x,1), addrs(x,1)); /* = (x-1) / (x+1), close to 0 */
   y = logr_aux(y); /* log(1+y) - log(1-y) = log(x) */
   shiftr_inplace(y, m + 1);
-  if (EX) y = addrr(y, mulsr(EX, mplog2(l+1)));
+  if (EX) y = addrr(y, mulsr(EX, mplog2(l+EXTRAPREC64)));
   affrr_fixlg(y, z); return gc_const((pari_sp)z, z);
 }
 
