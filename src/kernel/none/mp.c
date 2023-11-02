@@ -759,7 +759,7 @@ divri(GEN x, GEN y)
     return z;
   }
   lx = lg(x); z = cgetg(lx, t_REAL); av = avma;
-  affrr(divrr(x, itor(y, lx+1)), z);
+  affrr(divrr(x, itor(y, lg2prec(lx+1))), z);
   return gc_const(av, z);
 }
 
@@ -2063,7 +2063,7 @@ sqrtremi(GEN N, GEN *r)
 GEN
 sqrtr_abs(GEN x)
 {
-  long l = realprec(x) - 2, e = expo(x), er = e>>1;
+  long l = lg(x) - 2, e = expo(x), er = e>>1;
   GEN b, c, res = cgetg(2 + l, t_REAL);
   res[1] = evalsigne(1) | evalexpo(er);
   if (e&1) {
@@ -2129,7 +2129,7 @@ sqrtr_abs(GEN x)
   GEN a, t, y = cgetg(l, t_REAL);
   pari_sp av, av0 = avma;
 
-  a = rtor(x, l+1);
+  a = rtor(x, lg2prec(l+1));
   t = cgetg(l+1, t_REAL);
   if (ex & 1) { /* odd exponent */
     a[1] = evalsigne(1) | _evalexpo(1);

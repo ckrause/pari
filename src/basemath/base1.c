@@ -1711,7 +1711,7 @@ prec_fix(long prec)
 {
 #ifndef LONG_IS_64BIT
   /* make sure that default accuracy is the same on 32/64bit */
-  if (odd(prec)) prec++;
+  if (odd(prec2lg(prec))) prec+=EXTRAPRECWORD;
 #endif
   return prec;
 }

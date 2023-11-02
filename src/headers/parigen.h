@@ -40,12 +40,12 @@ typedef long *GEN;
 #endif
 #define ULONG_MAX (~0x0UL)
 
-#define DEFAULTPREC    (2 + (long)(8/sizeof(long)))
-#define MEDDEFAULTPREC (2 + (long)(16/sizeof(long)))
-#define BIGDEFAULTPREC (2 + (long)(24/sizeof(long)))
-#define LOWDEFAULTPREC  3
-#define EXTRAPRECWORD   1
-#define EXTRAPREC64    ((long)(8/sizeof(long)))
+#define DEFAULTPREC    64
+#define MEDDEFAULTPREC 128
+#define BIGDEFAULTPREC 192
+#define LOWDEFAULTPREC  BITS_IN_LONG
+#define EXTRAPRECWORD   BITS_IN_LONG
+#define EXTRAPREC64     64
 #define HIGHBIT (1UL << (BITS_IN_LONG-1))
 #define BITS_IN_HALFULONG (BITS_IN_LONG>>1)
 
@@ -130,9 +130,9 @@ typedef long *GEN;
 #define setlgefint(x,s) (((ulong*)(x))[1]=\
                           (((ulong*)(x))[1]&(~LGBITS)) | (ulong)evallgefint(s))
 
-#define realprec(x)   ((long)(((ulong)((x)[0])) & LGBITS))
+#define realprec(x)   (((long)(((ulong)((x)[0])) & LGBITS)-2)<<TWOPOTBITS_IN_LONG)
 #define setprec(x,s)  (((ulong*)(x))[0]=\
-                      (((ulong*)(x))[0]&(~LGBITS)) | evallg(s))
+                      (((ulong*)(x))[0]&(~LGBITS)) | evallg(((s)>>TWOPOTBITS_IN_LONG)+2))
 #define incrprec(x)   ((x += EXTRAPREC64))
 
 #define expo(x)       ((long) ((((ulong)((x)[1])) & EXPOBITS) - HIGHEXPOBIT))

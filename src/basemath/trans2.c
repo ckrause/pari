@@ -71,7 +71,7 @@ mpatan(GEN x)
     y = Pi2n(-2, l+EXTRAPREC64); if (sx < 0) setsigne(y,-1);
     return y;
   }
-  if (l > AGM_ATAN_LIMIT)
+  if (l > lg2prec(AGM_ATAN_LIMIT))
   { av = avma; return gerepileuptoleaf(av, atan2_agm(gen_1, x, l)); }
 
   e = expo(x); inv = (e >= 0); /* = (|x| > 1 ) */
@@ -166,7 +166,7 @@ static GEN
 mpasin(GEN x) {
   pari_sp av = avma;
   GEN z, a = sqrtr(subsr(1, sqrr(x)));
-  if (realprec(x) > AGM_ATAN_LIMIT)
+  if (realprec(x) > lg2prec(AGM_ATAN_LIMIT))
     z = atan2_agm(a, x, realprec(x));
   else
     z = mpatan(divrr(x, a));
@@ -233,7 +233,7 @@ mpacos(GEN x)
 {
   pari_sp av = avma;
   GEN z, a = sqrtr(subsr(1, sqrr(x)));
-  if (realprec(x) > AGM_ATAN_LIMIT)
+  if (realprec(x) > lg2prec(AGM_ATAN_LIMIT))
     z = atan2_agm(x, a, realprec(x));
   else
   {

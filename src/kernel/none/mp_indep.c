@@ -157,7 +157,7 @@ INLINE GEN
 mul0r(GEN x)
 {
   long l = realprec(x), e = expo(x);
-  e = (l > 2)? -prec2nbits(l) + e: (e < 0? 2*e: 0);
+  e = (l > 0)? -prec2nbits(l) + e: (e < 0? 2*e: 0);
   return real_0_bit(e);
 }
 /* lg(x) > 2 */
@@ -437,12 +437,12 @@ mulir(GEN x, GEN y)
     if (lx < (lz>>1) || (lx < lz && lz > MULRR_MULII_LIMIT))
     { /* size mantissa of x < half size of mantissa z, or lx < lz so large
        * that mulrr will call mulii anyway: mulii */
-      x = itor(x, lx);
+      x = itor(x, lg2prec(lx));
       hi = muliispec_mirror(y+2, x+2, lz-2, lx-2);
       mulrrz_end(z, hi, lz, sx, expo(x)+expo(y), hi[lz]);
     }
     else /* dubious: complete x with 0s and call mulrr */
-      mulrrz_i(z, itor(x,lz), y, lz, 0, sx);
+      mulrrz_i(z, itor(x, lg2prec(lz)), y, lz, 0, sx);
     set_avma(av); return z;
   }
 }
@@ -566,7 +566,7 @@ divir(GEN x, GEN y)
     return z;
   }
   z = cgetg(ly, t_REAL); av = avma;
-  affrr(divrr(itor(x, ly+1), y), z);
+  affrr(divrr(itor(x, lg2prec(ly+1)), y), z);
   set_avma(av); return z;
 }
 
@@ -585,7 +585,7 @@ divur(ulong x, GEN y)
     return gerepileuptoleaf(av, mulur(x, z));
   }
   z = cgetg(ly, t_REAL); av = avma;
-  affrr(divrr(utor(x,ly+1), y), z);
+  affrr(divrr(utor(x,lg2prec(ly+1)), y), z);
   set_avma(av); return z;
 }
 
@@ -605,7 +605,7 @@ divsr(long x, GEN y)
     return gerepileuptoleaf(av, mulsr(x, z));
   }
   z = cgetg(ly, t_REAL); av = avma;
-  affrr(divrr(stor(x,ly+1), y), z);
+  affrr(divrr(stor(x,lg2prec(ly+1)), y), z);
   set_avma(av); return z;
 }
 
@@ -616,7 +616,7 @@ invr_basecase(GEN y)
   long ly = lg(y);
   GEN z = cgetg(ly, t_REAL);
   pari_sp av = avma;
-  affrr(divrr(real_1(ly+1), y), z);
+  affrr(divrr(real_1(lg2prec(ly+1)), y), z);
   set_avma(av); return z;
 }
 /* returns 1/b, Newton iteration */
@@ -636,7 +636,7 @@ invr(GEN b)
   for(i=0, p=1; i<s; i++) { p <<= 1; if (mask & 1) p--; mask >>= 1; }
   x = cgetg(l, t_REAL);
   a = rcopy(b); a[1] = _evalexpo(0) | evalsigne(1);
-  affrr(invr_basecase(rtor(a, p+2)), x);
+  affrr(invr_basecase(rtor(a, lg2prec(p+2))), x);
   while (mask > 1)
   {
     p <<= 1; if (mask & 1) p--;

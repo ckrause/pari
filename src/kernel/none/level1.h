@@ -231,15 +231,17 @@ cgetineg(long x)
 INLINE GEN
 cgetr_block(long x)
 {
-  GEN z = newblock((size_t)x);
-  z[0] = CLONEBIT | evaltyp(t_REAL) | evallg(x);
+  long l = nbits2lg(x);
+  GEN z = newblock((size_t)l);
+  z[0] = CLONEBIT | evaltyp(t_REAL) | evallg(l);
   return z;
 }
 INLINE GEN
 cgetr(long x)
 {
-  GEN z = new_chunk((size_t)x);
-  z[0] = evaltyp(t_REAL) | evallg(x);
+  long l = nbits2lg(x);
+  GEN z = new_chunk((size_t)l);
+  z[0] = evaltyp(t_REAL) | evallg(l);
   return z;
 }
 
@@ -428,17 +430,17 @@ real_1_bit(long bit) { return real_1(nbits2prec(bit)); }
 INLINE GEN
 real_1(long prec) {
   GEN x = cgetr(prec);
-  long i;
+  long i, l = lg(x);
   x[1] = evalsigne(1) | _evalexpo(0);
-  x[2] = (long)HIGHBIT; for (i=3; i<prec; i++) x[i] = 0;
+  x[2] = (long)HIGHBIT; for (i=3; i<l; i++) x[i] = 0;
   return x;
 }
 INLINE GEN
 real_m1(long prec) {
   GEN x = cgetr(prec);
-  long i;
+  long i, l = lg(x);
   x[1] = evalsigne(-1) | _evalexpo(0);
-  x[2] = (long)HIGHBIT; for (i=3; i<prec; i++) x[i] = 0;
+  x[2] = (long)HIGHBIT; for (i=3; i<l; i++) x[i] = 0;
   return x;
 }
 
@@ -934,20 +936,20 @@ rdivss(long x, long y, long prec)
 INLINE void
 rdiviiz(GEN x, GEN y, GEN z)
 {
-  long prec = realprec(z), lx = lgefint(x), ly = lgefint(y);
+  long lz = lg(z), lx = lgefint(x), ly = lgefint(y);
   if (lx == 2) { affur(0, z); return; }
   if (ly == 3)
   {
     affir(x, z); if (signe(y) < 0) togglesign(z);
     affrr(divru(z, y[2]), z);
   }
-  else if (lx > prec + 1 || ly > prec + 1)
+  else if (lx > lz + 1 || ly > lz + 1)
   {
     affir(x,z); affrr(divri(z, y), z);
   }
   else
   {
-    long b = prec2nbits(prec) + expi(y) - expi(x) + 1;
+    long b = prec2nbits(lg2prec(lz)) + expi(y) - expi(x) + 1;
     GEN q = divii(b > 0? shifti(x, b): x, y);
     affir(q, z); if (b > 0) shiftr_inplace(z, -b);
   }

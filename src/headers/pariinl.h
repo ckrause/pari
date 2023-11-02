@@ -1614,7 +1614,7 @@ trunc_safe(GEN x) { long e; return gcvtoi(x,&e); }
 INLINE long
 ndec2nlong(long x) { return 1 + (long)((x)*(LOG2_10/BITS_IN_LONG)); }
 INLINE long
-ndec2prec(long x) { return 2 + ndec2nlong(x); }
+ndec2prec(long x) { return ndec2nlong(x) << TWOPOTBITS_IN_LONG; }
 INLINE long
 ndec2nbits(long x) { return ndec2nlong(x) << TWOPOTBITS_IN_LONG; }
 /* Fast implementation of ceil(x / (8*sizeof(long))); typecast to (ulong)
@@ -1627,13 +1627,13 @@ nbits2nlong(long x) {
 
 INLINE long
 nbits2extraprec(long x) {
-  return (long)(((ulong)x+BITS_IN_LONG-1) >> TWOPOTBITS_IN_LONG);
+  return (((ulong)x+BITS_IN_LONG-1)>>TWOPOTBITS_IN_LONG) << TWOPOTBITS_IN_LONG;
 }
 
 /* Fast implementation of 2 + nbits2nlong(x) */
 INLINE long
 nbits2prec(long x) {
-  return (long)(((ulong)x+3*BITS_IN_LONG-1) >> TWOPOTBITS_IN_LONG);
+  return (((ulong)x+BITS_IN_LONG-1)>>TWOPOTBITS_IN_LONG) << TWOPOTBITS_IN_LONG;
 }
 INLINE long
 nbits2lg(long x) {
@@ -1652,21 +1652,21 @@ nchar2nlong(long x) {
   return (long)(((ulong)x+sizeof(long)-1) >> (TWOPOTBITS_IN_LONG-3L));
 }
 INLINE long
-prec2nbits(long x) { return (x-2) * BITS_IN_LONG; }
+prec2nbits(long x) { return x; }
 INLINE double
 bit_accuracy_mul(long x, double y) { return (x-2) * (BITS_IN_LONG*y); }
 INLINE double
-prec2nbits_mul(long x, double y) { return (x-2) * (BITS_IN_LONG*y); }
+prec2nbits_mul(long x, double y) { return x * y; }
 INLINE long
 bit_prec(GEN x) { return prec2nbits(realprec(x)); }
 INLINE long
-bit_accuracy(long x) { return prec2nbits(x); }
+bit_accuracy(long x) { return (x-2) * BITS_IN_LONG; }
 INLINE long
 prec2ndec(long x) { return (long)prec2nbits_mul(x, LOG10_2); }
 INLINE long
 nbits2ndec(long x) { return (long)(x * LOG10_2); }
 INLINE long
-precdbl(long x) {return (x - 1) << 1;}
+precdbl(long x) {return x << 1;}
 INLINE long
 divsBIL(long n) { return n >> TWOPOTBITS_IN_LONG; }
 INLINE long

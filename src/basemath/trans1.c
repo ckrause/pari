@@ -370,7 +370,7 @@ GEN
 trans_eval(const char *fun, GEN (*f)(GEN,long), GEN x, long prec)
 {
   pari_sp av = avma;
-  if (prec < 3) pari_err_BUG("trans_eval [prec < 3]");
+  if (prec < LOWDEFAULTPREC) pari_err_BUG("trans_eval [prec < 3]");
   switch(typ(x))
   {
     case t_INT:    x = f(itor(x,prec),prec); break;
@@ -391,7 +391,7 @@ trans_evalgen(const char *fun, void *E, GEN (*f)(void*,GEN,long),
               GEN x, long prec)
 {
   pari_sp av = avma;
-  if (prec < 3) pari_err_BUG("trans_eval [prec < 3]");
+  if (prec < LOWDEFAULTPREC) pari_err_BUG("trans_eval [prec < 3]");
   switch(typ(x))
   {
     case t_INT:    x = f(E, itor(x,prec),prec); break;
@@ -2257,7 +2257,7 @@ mpexpm1(GEN x)
   pari_sp av;
   if (!sx) return real_0_bit(expo(x));
   l = realprec(x);
-  if (l > maxss(EXPNEWTON_LIMIT, (1L<<s) + 2))
+  if (l > lg2prec(maxss(EXPNEWTON_LIMIT, (1L<<s) + 2)))
   {
     long e = expo(x);
     if (e < 0) x = rtor(x, l + nbits2extraprec(-e));
@@ -2342,7 +2342,7 @@ mpexp(GEN x)
   GEN a, t, z;
   ulong mask;
 
-  if (l <= maxss(EXPNEWTON_LIMIT, (1L<<s) + 2))
+  if (l <= lg2prec(maxss(EXPNEWTON_LIMIT, (1L<<s) + 2)))
   {
     if (!signe(x)) return mpexp0(x);
     return mpexp_basecase(x);
@@ -2986,7 +2986,7 @@ logr_aux(GEN y)
 GEN
 logr_abs(GEN X)
 {
-  long EX, L, m, k, a, b, l = realprec(X);
+  long EX, L, m, k, a, b, l = lg(X), p = realprec(X);
   GEN z, x, y;
   ulong u;
   double d;
@@ -3005,13 +3005,13 @@ logr_abs(GEN X)
     u &= ~HIGHBIT; /* u - HIGHBIT, assuming HIGHBIT set */
     while (!u && ++k < l) u = uel(X,k);
   }
-  if (k == l) return EX? mulsr(EX, mplog2(l)): real_0(l);
-  a = prec2nbits(k) + bfffo(u); /* ~ -log2 |1-x| */
-  L = l+EXTRAPRECWORD;
-  b = prec2nbits(L - (k-2)); /* take loss of accuracy into account */
-  if (l > LOGAGM_LIMIT && b > 24*a*log2(L-2)) return logagmr_abs(X);
+  if (k == l) return EX? mulsr(EX, mplog2(p)): real_0(p);
+  a = bit_accuracy(k) + bfffo(u); /* ~ -log2 |1-x| */
+  L = p+EXTRAPRECWORD;
+  b = prec2nbits(L - (bit_accuracy(k))); /* take loss of accuracy into account */
+  if (b > 24*a*log2(prec2lg(L)) && p > lg2prec(LOGAGM_LIMIT)) return logagmr_abs(X);
 
-  z = cgetr(EX? l: l - (k-2));
+  z = cgetr(EX? p: p - bit_accuracy(k));
 
  /* Multiplication is quadratic in this range (l is small, otherwise we
   * use AGM). Set Y = x^(1/2^m), y = (Y - 1) / (Y + 1) and compute truncated
@@ -3039,7 +3039,7 @@ logr_abs(GEN X)
   y = divrr(subrs(x,1), addrs(x,1)); /* = (x-1) / (x+1), close to 0 */
   y = logr_aux(y); /* log(1+y) - log(1-y) = log(x) */
   shiftr_inplace(y, m + 1);
-  if (EX) y = addrr(y, mulsr(EX, mplog2(l+EXTRAPRECWORD)));
+  if (EX) y = addrr(y, mulsr(EX, mplog2(p+EXTRAPRECWORD)));
   affrr_fixlg(y, z); return gc_const((pari_sp)z, z);
 }
 
@@ -3249,7 +3249,7 @@ glog(GEN x, long prec)
         a = isint1(a) ? gen_0: glog(a,prec);
         return gerepilecopy(av, mkcomplex(a, b));
       }
-      if (prec >= LOGAGMCX_LIMIT) return logagmcx(x, prec);
+      if (prec >= lg2prec(LOGAGMCX_LIMIT)) return logagmcx(x, prec);
       y = cgetg(3,t_COMPLEX);
       gel(y,2) = garg(x,prec);
       av = avma; p1 = glog(cxnorm(x),prec); tetpil = avma;
@@ -3275,7 +3275,7 @@ mplog1p(GEN x)
   ex = expo(x); if (ex >= -3) return glog(addrs(x,1), 0);
   a = -ex;
   b = realprec(x); L = b+1;
-  if (b > a*log2(L) && b > LOGAGM_LIMIT)
+  if (b > a*log2(L) && b > lg2prec(LOGAGM_LIMIT))
   {
     x = addrs(x,1); l = b + nbits2extraprec(a);
     if (realprec(x) < l) x = rtor(x,l);
@@ -3296,7 +3296,7 @@ cxlog1p(GEN x, long prec)
   long l;
   if (ismpzero(b)) return log1p_i(gel(x,1), prec);
   l = precision(x); if (l > prec) prec = l;
-  if (prec >= LOGAGMCX_LIMIT) return logagmcx(gaddgs(x,1), prec);
+  if (prec >= lg2prec(LOGAGMCX_LIMIT)) return logagmcx(gaddgs(x,1), prec);
   a = gel(x,1);
   z = cgetg(3,t_COMPLEX); av = avma;
   a = gadd(gadd(gmul2n(a,1), gsqr(a)), gsqr(b));

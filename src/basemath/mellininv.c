@@ -157,7 +157,7 @@ Kderivsmallinit(GEN ldata, GEN Vga, long m, long bit)
   LA = gammapoles(Vga, &dLA, bit); N = lg(LA)-1;
   prec2 = nbits2prec(dLA + bit * (1 + M_PI*d/C2));
 #if BITS_IN_LONG == 32
-  prec2 += prec2 & 1L;
+  prec2 += odd(prec2lg(prec2)) ? EXTRAPRECWORD: 0;
 #endif
   if (ldata) Vga = ldata_get_gammavec(ldata_newprec(ldata, prec2));
   L = cgetg(N+1, t_VECSMALL);

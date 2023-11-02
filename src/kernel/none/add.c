@@ -132,10 +132,10 @@ addir_sign(GEN x, long sx, GEN y, long sy)
   ly = lg(y);
   if (e > 0)
   {
-    l = ly - divsBIL(e);
-    if (l < 3) return rcopy_sign(y, sy);
+    l = lg2prec(ly - divsBIL(e));
+    if (l < LOWDEFAULTPREC) return rcopy_sign(y, sy);
   }
-  else l = ly + nbits2extraprec(-e);
+  else l = lg2prec(ly) + nbits2extraprec(-e);
   z = (GEN)avma;
   y = addrr_sign(itor(x,l), sx, y, sy);
   ly = lg(y); while (ly--) *--z = y[ly];
@@ -161,10 +161,10 @@ addsr_sign(long x, GEN y, long sy)
   ly = lg(y);
   if (e > 0)
   {
-    l = ly - divsBIL(e);
-    if (l < 3) return rcopy_sign(y, sy);
+    l = lg2prec(ly - divsBIL(e));
+    if (l < LOWDEFAULTPREC) return rcopy_sign(y, sy);
   }
-  else l = ly + nbits2extraprec(-e);
+  else l = lg2prec(ly) + nbits2extraprec(-e);
   z = (GEN)avma;
   y = addrr_sign(stor(x,l), sx, y, sy);
   ly = lg(y); while (ly--) *--z = y[ly];
@@ -195,7 +195,7 @@ addrr_sign(GEN x, long sx, GEN y, long sy)
       return real_0_bit(ex);
     }
     if (e >= 0) return real_0_bit(ey);
-    lz = nbits2prec(-e);
+    lz = nbits2lg(-e);
     lx = lg(x); if (lz > lx) lz = lx;
     z = cgetg(lz, t_REAL); while(--lz) z[lz] = x[lz];
     setsigne(z,sx); return z;
@@ -203,7 +203,7 @@ addrr_sign(GEN x, long sx, GEN y, long sy)
   if (!sx)
   {
     if (e <= 0) return real_0_bit(ex);
-    lz = nbits2prec(e);
+    lz = nbits2lg(e);
     ly = lg(y); if (lz > ly) lz = ly;
     z = cgetg(lz, t_REAL); while (--lz) z[lz] = y[lz];
     setsigne(z,sy); return z;
@@ -280,7 +280,7 @@ addrr_sign(GEN x, long sx, GEN y, long sy)
   else
   {
     i = 2; while (i < lx && x[i] == y[i]) i++;
-    if (i==lx) return real_0_bit(ey+1 - prec2nbits(lx));
+    if (i==lx) return real_0_bit(ey+1 - lg2prec(lx));
     f2 = (uel(y,i) > uel(x,i));
   }
   /* result is nonzero. f2 = (y > x) */
