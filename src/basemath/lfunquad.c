@@ -592,7 +592,7 @@ Lfeq(long D, long k)
     if (odd(kd) && !(k % d) && uisprime(Da)) den = kd * Da;
   }
   else if (Da == 4) den = 2;
-  z = Linv(D, k, den); prec = lg(z);
+  z = Linv(D, k, den); prec = realprec(z);
   z = mulrr(z, powrs(divru(Pi2n(1, prec), Da), k));
   if (Da != 4) { z = mulrr(z, sqrtr_abs(utor(Da,prec))); shiftr_inplace(z,-1); }
   res = divrr(mpfactr(k-1, prec), z);
