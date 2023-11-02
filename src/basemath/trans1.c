@@ -1199,7 +1199,7 @@ powcx(GEN x, GEN logx, GEN n, long prec)
       if (!xa) xa = real2n(sh, prec);
       else
       {
-        if (signe(xa) && realprec(xa) > prec) setlg(xa, prec);
+        if (signe(xa) && realprec(xa) > prec) setprec(xa, prec);
         xa = mpexp(xa); shiftr_inplace(xa, sh);
       }
   }
@@ -1218,7 +1218,7 @@ powcx(GEN x, GEN logx, GEN n, long prec)
     if (q) xb = subrr(xb, mulsr(q, Pi2n(-1,p))); /* x mod Pi/2  */
     sh = q & 3;
   }
-  if (signe(xb) && realprec(xb) > prec) setlg(xb, prec);
+  if (signe(xb) && realprec(xb) > prec) setprec(xb, prec);
   mpsincos(xb, &sxb, &cxb);
   return gmul(xa, mulcxpowIs(mkcomplex(cxb, sxb), sh));
 }
