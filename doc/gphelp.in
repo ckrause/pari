@@ -331,23 +331,18 @@ sub treat {
 #
 
 sub apropos_print_list {
-  $current = "";
-  @_ = sort(@_);
-  for (@_)
+  my ($raw, $L) = @_;
+  my ($pre) = ($raw? "": ($fromgp? "  ?? ": "  "));
+  my ($current) = "";
+  for (sort @{$L})
   {
     next if ($_ eq $current);
     $current = $_;
     if (/ /)
-    { print "$indent\"$_\"\n"; }
+    { print "$pre\"$_\"\n"; }
     else
-    { print "$indent$_\n"; }
+    { print "$pre$_\n"; }
   }
-}
-
-sub apropos_raw_print {
-  $indent = "";
-  &apropos_print_list(@sentence_list);
-  &apropos_print_list(@list);
 }
 
 sub apropos_final_print {
@@ -355,11 +350,14 @@ sub apropos_final_print {
   my($i,$nbcol,$current);
   my($cols) = ($ENV{'COLUMNS'} || 80) - 1;
 
-  if ($raw) { &apropos_raw_print(); return; }
+  if ($raw) {
+    &apropos_print_list(1, \@sentence_list);
+    &apropos_print_list(1, \@list); return;
+  }
   @list = sort(@list);
   for (@list)
   {
-    $i= length($_);
+    $i = length($_);
     $maxlen = $i if ($i > $maxlen);
   }
   $maxlen++; $nbcol = $cols / $maxlen;
@@ -372,19 +370,16 @@ sub apropos_final_print {
   {
     next if ($_ eq $current);
     $current = $_; print($_); $i++;
-    if ($i >= $nbcol)
-    {
-      $i=0; print "\n"; next;
-    }
+    if ($i >= $nbcol) { $i = 0; print "\n"; next; }
     print " " x ($maxlen - length($_));
   }
   print "\n" if ($i);
-  if ($#sentence_list > 0)
-  {
-    print "\nSee also:\n" if ($#list > 0);
-    $indent = "  ";
-    apropos_print_list(@sentence_list);
-  }
+  return if (!$#sentence_list);
+  if ($fromgp)
+  { print "\nAlso inspect the output of:\n" }
+  else
+  { print "\nSee also:\n" if ($#list > 0); }
+  apropos_print_list(0, \@sentence_list);
 }
 
 sub apropos_check {
