@@ -413,16 +413,17 @@ static GEN
 mpsinh(GEN x)
 {
   pari_sp av;
-  long ex = expo(x), lx;
+  long lx;
   GEN z, res;
 
-  if (!signe(x)) return mpsinh0(ex);
+  if (!signe(x)) return mpsinh0(expo(x));
   lx = realprec(x); res = cgetr(lx); av = avma;
-  if (ex < 1 - BITS_IN_LONG)
+  if (expo(x) + BITS_IN_LONG < 1)
   { /* y = e^x-1; e^x - e^(-x) = y(1 + 1/(y+1)) */
     GEN y = mpexpm1(x);
-    z = addrs(y,1); if (realprec(z) > lx+1) z = rtor(z,lx+1); /* e^x */
-    z = mulrr(y, addsr(1,invr(z)));
+    lx += EXTRAPRECWORD;
+    z = addrs(y, 1); if (realprec(z) > lx) z = rtor(z,lx); /* e^x */
+    z = mulrr(y, addsr(1, invr(z)));
   }
   else
   {
@@ -437,20 +438,22 @@ void
 mpsinhcosh(GEN x, GEN *s, GEN *c)
 {
   pari_sp av;
-  long lx, ex = expo(x);
+  long lx, ex;
   GEN z, zi, S, C;
   if (!signe(x))
   {
+    ex = expo(x);
     *c = mpcosh0(ex);
     *s = mpsinh0(ex); return;
   }
   lx = realprec(x);
   *c = cgetr(lx);
   *s = cgetr(lx); av = avma;
-  if (ex < 1 - BITS_IN_LONG)
+  if (expo(x) + BITS_IN_LONG < 1)
   { /* y = e^x-1; e^x - e^(-x) = y(1 + 1/(y+1)) */
     GEN y = mpexpm1(x);
-    z = addrs(y,1); if (realprec(z) > lx+1) z = rtor(z,lx+1); /* e^x */
+    lx += EXTRAPRECWORD;
+    z = addrs(y,1); if (realprec(z) > lx) z = rtor(z, lx); /* e^x */
     zi = invr(z); /* z = exp(x), zi = exp(-x) */
     S = mulrr(y, addsr(1,zi));
   }
@@ -506,9 +509,9 @@ mptanh(GEN x)
     y = real_1(lx);
   } else {
     pari_sp av = avma;
-    long ex = expo(x);
+    long e = expo(x) + BITS_IN_LONG;
     GEN t;
-    if (ex < 1 - BITS_IN_LONG) x = rtor(x, lx + nbits2extraprec(-ex)-EXTRAPRECWORD);
+    if (e < 0) x = rtor(x, lx + nbits2extraprec(-e));
     t = exp1r_abs(gmul2n(x,1)); /* exp(|2x|) - 1 */
     y = gerepileuptoleaf(av, divrr(t, addsr(2,t)));
   }
@@ -556,9 +559,9 @@ mpcotanh(GEN x)
     y = real_1(lx);
   } else {
     pari_sp av = avma;
-    long ex = expo(x);
+    long e = expo(x) + BITS_IN_LONG;
     GEN t;
-    if (ex < 1 - BITS_IN_LONG) x = rtor(x, lx + nbits2extraprec(-ex)-EXTRAPRECWORD);
+    if (e < 0) x = rtor(x, lx + nbits2extraprec(-e));
     t = exp1r_abs(gmul2n(x,1)); /* exp(|2x|) - 1 */
     y = gerepileuptoleaf(av, divrr(addsr(2,t), t));
   }
@@ -601,10 +604,10 @@ gcotanh(GEN x, long prec)
 static GEN
 mpasinh(GEN x)
 {
-  long lx = realprec(x), ex = expo(x);
+  long lx = realprec(x), e = expo(x) + BITS_IN_LONG;
   GEN z, res = cgetr(lx);
   pari_sp av = avma;
-  if (ex < 1 - BITS_IN_LONG) x = rtor(x, lx + nbits2extraprec(-ex)-EXTRAPRECWORD);
+  if (e < 0) x = rtor(x, lx + nbits2extraprec(-e));
   z = logr_abs( addrr_sign(x,1, sqrtr_abs( addrs(sqrr(x), 1) ), 1) );
   if (signe(x) < 0) togglesign(z);
   affrr(z, res); return gc_const(av, res);
