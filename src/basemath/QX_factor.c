@@ -80,7 +80,7 @@ two_factor_bound(GEN x)
 {
   long i, j, n = lg(x) - 3;
   pari_sp av = avma;
-  GEN *invbin, c, r = cgetr(3), z;
+  GEN *invbin, c, r = cgetr(LOWDEFAULTPREC), z;
 
   x += 2; invbin = (GEN*)new_chunk(n+1);
   z = real_1(LOWDEFAULTPREC); /* invbin[i] = 1 / binomial(n, i) */
