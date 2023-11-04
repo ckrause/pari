@@ -156,14 +156,14 @@ mulur_2(ulong x, GEN y, long s)
 INLINE GEN
 mul0r(GEN x)
 {
-  long l = lg(x), e = expo(x);
+  long l = realprec(x), e = expo(x);
   e = (l > 2)? -prec2nbits(l) + e: (e < 0? 2*e: 0);
   return real_0_bit(e);
 }
 /* lg(x) > 2 */
 INLINE GEN
 div0r(GEN x) {
-  long l = lg(x), e = expo(x);
+  long l = realprec(x), e = expo(x);
   return real_0_bit(-prec2nbits(l) - e);
 }
 
