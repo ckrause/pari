@@ -196,7 +196,7 @@ lambertW(GEN z, long k, long prec)
     }
     t = sqrtr(shiftr(t, 1));
     w = gprec_w(k == -1? subsr(-1, t) : subrs(t, 1), prec);
-    p = prec - 2; vp = NULL;
+    p = prec; vp = NULL;
   }
   else
   { /* away from -1/e: can reduce accuracy and self-correct */
