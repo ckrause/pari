@@ -45,4 +45,16 @@ Doc: let $m$ be a factorization matrix, i.e., a 2-column matrix whose
  [y 2]
 
  [z 1]
+ @eprog\noindent The following one-line functions will list elements
+ occurring exactly once (resp. more than once) in the vector or list $v$:
+ \bprog
+ unique(v) = [ x[1] | x <- matreduce(v)~, x[2] == 1 ];
+ duplicates(v) = [ x[1] | x <- matreduce(v)~, x[2] > 1 ];
+
+ ? v = [0,1,2,3,1,2];
+ ? unique(v)
+ %2 = [0, 3]
+
+ ? duplicates(v)
+ %3 = [1, 2]
  @eprog
