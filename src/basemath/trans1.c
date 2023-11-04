@@ -3007,8 +3007,7 @@ logr_abs(GEN X)
   a = prec2nbits(k) + bfffo(u); /* ~ -log2 |1-x| */
   L = l+EXTRAPRECWORD;
   b = prec2nbits(L - (k-2)); /* take loss of accuracy into account */
-  if (prec2nbits(l) > prec2nbits(LOGAGM_LIMIT)
-      && b > 24*a*log2(L-2)) return logagmr_abs(X);
+  if (l > LOGAGM_LIMIT && b > 24*a*log2(L-2)) return logagmr_abs(X);
 
   z = cgetr(EX? l: l - (k-2));
 
@@ -3274,7 +3273,7 @@ mplog1p(GEN x)
   ex = expo(x); if (ex >= -3) return glog(addrs(x,1), 0);
   a = -ex;
   b = realprec(x); L = b+1;
-  if (b > a*log2(L) && prec2nbits(b) > prec2nbits(LOGAGM_LIMIT))
+  if (b > a*log2(L) && b > LOGAGM_LIMIT)
   {
     x = addrs(x,1); l = b + nbits2extraprec(a);
     if (realprec(x) < l) x = rtor(x,l);
