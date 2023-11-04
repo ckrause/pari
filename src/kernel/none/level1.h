@@ -1353,7 +1353,7 @@ affsr(long x, GEN y)
 
   if (!x)
   {
-    y[1] = evalexpo(-prec2nbits(ly));
+    y[1] = evalexpo(-bit_accuracy(ly));
     return;
   }
   if (x < 0) {
@@ -1375,7 +1375,7 @@ affur(ulong x, GEN y)
 
   if (!x)
   {
-    y[1] = evalexpo(-prec2nbits(ly));
+    y[1] = evalexpo(-bit_accuracy(ly));
     return;
   }
   sh = bfffo(x);
