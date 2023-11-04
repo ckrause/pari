@@ -14,7 +14,7 @@ Doc: parallel evaluation of the elements of \kbd{x}, where \kbd{x} is a
  finite field):
  \bprog
  {
-   my(q = 2^30 + 3, m = 40 * q; p = 1 + m^2); \\ p, q are primes
+   my(q = 2^30 + 3, m = 40 * q, p = 1 + m^2); \\ p, q are primes
    my(E = ellinit([0,0,0,1,0] * Mod(1,p)));
    my([P, Q] = ellgenerators(E));
    \\ E(F_p) ~ Z/m P + Z/m Q and the order of the
