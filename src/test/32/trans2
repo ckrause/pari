@@ -188,4 +188,7 @@ zeta: [320, 320, 320]
   ***   at top-level: sinc(1/x)
   ***                 ^---------
   *** sinc: domain error in sinc: valuation < 0
-Total time spent: 16
+  ***   at top-level: atanh(1-2^(-if(sizebyte(0)==16,63,31)))
+  ***                 ^---------------------------------------
+  *** atanh: overflow in atanhuu.
+Total time spent: 15

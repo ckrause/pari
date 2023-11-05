@@ -131,3 +131,4 @@ z = 0x33bc6d3d39ebfccc8 / 2^56; tst(tan,z)
 \\ ERRORS keep at end of file
 sinc(2+O(3^2))
 sinc(1/x)
+atanh(1-2^(-if(sizebyte(0)==16,63,31)))

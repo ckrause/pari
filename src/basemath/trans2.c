@@ -781,6 +781,7 @@ atanhuu(ulong u, ulong v, long prec)
   struct abpq A;
   /* satisfies (2n+1) (v/u)^2n > 2^bitprec */
   nmax = (long)ceil(prec2nbits(prec) / (2*log2(d)));
+  if (nmax < 0) pari_err_OVERFLOW("atanhuu");
   abpq_init(&A, nmax);
   A.a[0] = A.b[0] = gen_1;
   A.p[0] = utoipos(u);
@@ -806,6 +807,7 @@ atanhui(ulong u, GEN v, long prec)
   struct abpq A;
   /* satisfies (2n+1) (v/u)^2n > 2^bitprec */
   nmax = (long)ceil(prec2nbits(prec) / (2*log2(d)));
+  if (nmax < 0) pari_err_OVERFLOW("atanhui");
   abpq_init(&A, nmax);
   A.a[0] = A.b[0] = gen_1;
   A.p[0] = utoipos(u);

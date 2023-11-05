@@ -13973,7 +13973,9 @@ solve $x  \log(x) - a  x = b$; if $b < 0$, assume $a \geq 1 + \log |b|$.
 
 \fun{GEN}{atanhuu}{ulong u, ulong v, long prec} computes \text{atanh}$(u/v)$
 using binary splitting, assuming $0 < u < v$. Not memory clean but suitable
-for \kbd{gerepileupto}.
+for \kbd{gerepileupto}. The complexity is $O(b / \log(v/u))$, where $b$ is
+\kbd{prec2nbits(prec)}, so becomes impractical when $v/u$ is too close to
+$1$.
 
 \fun{GEN}{atanhui}{ulong u, GEN v, long prec} computes \text{atanh}$(u/v)$
 using binary splitting, assuming $0 < u < v$. Not memory clean but suitable
