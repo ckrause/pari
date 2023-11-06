@@ -774,13 +774,13 @@ mpatanh(GEN x)
 GEN
 atanhuu(ulong u, ulong v, long prec)
 {
-  long i, nmax;
+  long i, nmax = -1;
   GEN u2 = sqru(u), v2 = sqru(v);
-  double d = ((double)v) / u;
+  double d = 2 * log2(((double)v) / u); /* can be 0 due to rounding */
   struct abpq_res R;
   struct abpq A;
   /* satisfies (2n+1) (v/u)^2n > 2^bitprec */
-  nmax = (long)ceil(prec2nbits(prec) / (2*log2(d)));
+  if (d) nmax = (long)ceil(prec2nbits(prec) / d);
   if (nmax < 0) pari_err_OVERFLOW("atanhuu");
   abpq_init(&A, nmax);
   A.a[0] = A.b[0] = gen_1;
@@ -800,13 +800,13 @@ atanhuu(ulong u, ulong v, long prec)
 GEN
 atanhui(ulong u, GEN v, long prec)
 {
-  long i, nmax;
+  long i, nmax = -1;
   GEN u2 = sqru(u), v2 = sqri(v);
-  double d = gtodouble(v) / u;
+  double d = 2 * log2(gtodouble(v) / u);
   struct abpq_res R;
   struct abpq A;
   /* satisfies (2n+1) (v/u)^2n > 2^bitprec */
-  nmax = (long)ceil(prec2nbits(prec) / (2*log2(d)));
+  if (d) nmax = (long)ceil(prec2nbits(prec) / d);
   if (nmax < 0) pari_err_OVERFLOW("atanhui");
   abpq_init(&A, nmax);
   A.a[0] = A.b[0] = gen_1;
@@ -852,13 +852,15 @@ gatanh(GEN x, long prec)
       return z;
     case t_FRAC:
     {
-      long ly, lz;
+      long ly, lz, e;
 
       y = gel(x,1); ly = lgefint(y);
       z = gel(x,2); lz = lgefint(z); if (ly > 3 && lz > 3) break;
       if (abscmpii(y, z) > 0) /* |y| > z; lz = 3 */
       {
         ulong u = z[2];
+        av = avma; e = expi((signe(y) < 0)? addii(y, z): subii(y, z));
+        set_avma(av); if (e < - prec2nbits(prec)) break;
         z = cgetg(3, t_COMPLEX); av = avma;
         a = ly == 3? atanhuu(u, y[2], prec): atanhui(u, y, prec);
         gel(z,1) = gerepileuptoleaf(av, a);
@@ -867,7 +869,8 @@ gatanh(GEN x, long prec)
       }
       else
       { /* |y| < z; ly = 3 */
-        av = avma;
+        av = avma; e = expi((signe(y) < 0)? addii(y, z): subii(y, z));
+        set_avma(av); if (e < - prec2nbits(prec)) break;
         a = lz == 3? atanhuu(y[2], z[2], prec): atanhui(y[2], z, prec);
         z = gerepileuptoleaf(av, a);
         if (signe(y) < 0) togglesign(z);
