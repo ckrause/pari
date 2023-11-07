@@ -139,7 +139,7 @@ static GEN
 mulur_2(ulong x, GEN y, long s)
 {
   long m, sh, i, lx = lg(y), e = expo(y);
-  GEN z = cgetr(lx);
+  GEN z = cgetg(lx, t_REAL);
   ulong garde;
   LOCAL_HIREMAINDER;
 
@@ -400,7 +400,7 @@ mulrr(GEN x, GEN y)
   lz = lg(x);
   ly = lg(y);
   if (lz > ly) { lz = ly; swap(x, y); flag = 1; } else flag = (lz != ly);
-  z = cgetr(lz);
+  z = cgetg(lz, t_REAL);
   mulrrz_i(z, x,y, lz,flag, sx);
   return z;
 }
@@ -412,7 +412,7 @@ sqrr(GEN x)
   GEN z;
 
   if (!sx) return real_0_bit(2*expo(x));
-  lz = lg(x); z = cgetr(lz);
+  lz = lg(x); z = cgetg(lz, t_REAL);
   sqrz_i(z, x, lz);
   return z;
 }
@@ -432,7 +432,7 @@ mulir(GEN x, GEN y)
   if (sy < 0) sx = -sx;
   {
     long lz = lg(y), lx = lgefint(x);
-    GEN hi, z = cgetr(lz);
+    GEN hi, z = cgetg(lz, t_REAL);
     pari_sp av = avma;
     if (lx < (lz>>1) || (lx < lz && lz > MULRR_MULII_LIMIT))
     { /* size mantissa of x < half size of mantissa z, or lx < lz so large
@@ -565,7 +565,7 @@ divir(GEN x, GEN y)
     if (signe(x) < 0) togglesign(z);
     return z;
   }
-  z = cgetr(ly); av = avma;
+  z = cgetg(ly, t_REAL); av = avma;
   affrr(divrr(itor(x, ly+1), y), z);
   set_avma(av); return z;
 }
@@ -584,7 +584,7 @@ divur(ulong x, GEN y)
     if (x == 1) return z;
     return gerepileuptoleaf(av, mulur(x, z));
   }
-  z = cgetr(ly); av = avma;
+  z = cgetg(ly, t_REAL); av = avma;
   affrr(divrr(utor(x,ly+1), y), z);
   set_avma(av); return z;
 }
@@ -604,7 +604,7 @@ divsr(long x, GEN y)
     if (x ==-1) { togglesign(z); return z; }
     return gerepileuptoleaf(av, mulsr(x, z));
   }
-  z = cgetr(ly); av = avma;
+  z = cgetg(ly, t_REAL); av = avma;
   affrr(divrr(stor(x,ly+1), y), z);
   set_avma(av); return z;
 }
@@ -614,7 +614,7 @@ static GEN
 invr_basecase(GEN y)
 {
   long ly = lg(y);
-  GEN z = cgetr(ly);
+  GEN z = cgetg(ly, t_REAL);
   pari_sp av = avma;
   affrr(divrr(real_1(ly+1), y), z);
   set_avma(av); return z;
@@ -634,7 +634,7 @@ invr(GEN b)
   }
   mask = quadratic_prec_mask(l-2);
   for(i=0, p=1; i<s; i++) { p <<= 1; if (mask & 1) p--; mask >>= 1; }
-  x = cgetr(l);
+  x = cgetg(l, t_REAL);
   a = rcopy(b); a[1] = _evalexpo(0) | evalsigne(1);
   affrr(invr_basecase(rtor(a, p+2)), x);
   while (mask > 1)
@@ -708,7 +708,7 @@ divru(GEN x, ulong y)
   }
   e = expo(x);
   lx = lg(x);
-  z = cgetr(lx);
+  z = cgetg(lx, t_REAL);
   if (lx == 3)
   {
     if (y <= uel(x,2))

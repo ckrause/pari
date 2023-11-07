@@ -656,7 +656,7 @@ divrr(GEN x, GEN y)
     }
     hiremainder = k; k = divll(l,y[2]);
     if (hiremainder > (uel(y,2) >> 1) && !++k) { k = HIGHBIT; e++; }
-    r = cgetr(3);
+    r = cgetg(3, t_REAL);
     r[1] = evalsigne(sx) | evalexpo(e);
     r[2] = k; return r;
   }
@@ -758,7 +758,7 @@ divri(GEN x, GEN y)
     if (s < 0) togglesign(z);
     return z;
   }
-  lx = lg(x); z = cgetr(lx); av = avma;
+  lx = lg(x); z = cgetg(lx, t_REAL); av = avma;
   affrr(divrr(x, itor(y, lx+1)), z);
   return gc_const(av, z);
 }
@@ -2064,7 +2064,7 @@ GEN
 sqrtr_abs(GEN x)
 {
   long l = realprec(x) - 2, e = expo(x), er = e>>1;
-  GEN b, c, res = cgetr(2 + l);
+  GEN b, c, res = cgetg(2 + l, t_REAL);
   res[1] = evalsigne(1) | evalexpo(er);
   if (e&1) {
     b = new_chunk(l << 1);
@@ -2126,11 +2126,11 @@ GEN
 sqrtr_abs(GEN x)
 {
   long l1, i, l = lg(x), ex = expo(x);
-  GEN a, t, y = cgetr(l);
+  GEN a, t, y = cgetg(l, t_REAL);
   pari_sp av, av0 = avma;
 
   a = rtor(x, l+1);
-  t = cgetr(l+1);
+  t = cgetg(l+1, t_REAL);
   if (ex & 1) { /* odd exponent */
     a[1] = evalsigne(1) | _evalexpo(1);
     t[2] = (long)sqrtu2((ulong*)a + 2);

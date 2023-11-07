@@ -640,7 +640,7 @@ divrr_with_gmp(GEN x, GEN y)
   long lx=RNLIMBS(x),ly=RNLIMBS(y);
   long lw=minss(lx,ly);
   long lly=minss(lw+1,ly);
-  GEN  w=cgetr(lw+2);
+  GEN  w = cgetg(lw+2, t_REAL);
   long lu=lw+lly;
   long llx=minss(lu,lx);
   mp_limb_t *u=(mp_limb_t *)new_chunk(lu);
@@ -676,7 +676,7 @@ divri_with_gmp(GEN x, GEN y)
 {
   long llx=RNLIMBS(x),ly=NLIMBS(y);
   long lly=minss(llx+1,ly);
-  GEN  w=cgetr(llx+2);
+  GEN  w = cgetg(llx+2, t_REAL);
   long lu=llx+lly, ld=ly-lly;
   mp_limb_t *u=(mp_limb_t *)new_chunk(lu);
   mp_limb_t *z=(mp_limb_t *)new_chunk(lly);
@@ -747,7 +747,7 @@ divrr(GEN x, GEN y)
     }
     hiremainder = k; k = divll(l,y[2]);
     if (hiremainder > (uel(y,2) >> 1) && !++k) { k = HIGHBIT; e++; }
-    r = cgetr(3);
+    r = cgetg(3, t_REAL);
     r[1] = evalsigne(sx) | evalexpo(e);
     r[2] = k; return r;
   }
@@ -1328,7 +1328,7 @@ sqrtr_abs(GEN a)
   mp_limb_t *b, *c;
   long l = RNLIMBS(a), e = expo(a), er = e>>1;
   long n;
-  res = cgetr(2 + l);
+  res = cgetg(2 + l, t_REAL);
   res[1] = evalsigne(1) | evalexpo(er);
   if (e&1)
   {

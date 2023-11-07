@@ -197,7 +197,7 @@ addrr_sign(GEN x, long sx, GEN y, long sy)
     if (e >= 0) return real_0_bit(ey);
     lz = nbits2prec(-e);
     lx = lg(x); if (lz > lx) lz = lx;
-    z = cgetr(lz); while(--lz) z[lz] = x[lz];
+    z = cgetg(lz, t_REAL); while(--lz) z[lz] = x[lz];
     setsigne(z,sx); return z;
   }
   if (!sx)
@@ -205,7 +205,7 @@ addrr_sign(GEN x, long sx, GEN y, long sy)
     if (e <= 0) return real_0_bit(ex);
     lz = nbits2prec(e);
     ly = lg(y); if (lz > ly) lz = ly;
-    z = cgetr(lz); while (--lz) z[lz] = y[lz];
+    z = cgetg(lz, t_REAL); while (--lz) z[lz] = y[lz];
     setsigne(z,sy); return z;
   }
 
@@ -230,7 +230,7 @@ addrr_sign(GEN x, long sx, GEN y, long sy)
       GEN p1 = x; x = new_chunk(lx + lz + 1);
       shift_right(x,p1,2,lx, 0,m);
       if (extend) uel(x,lx) = uel(p1,lx-1) << sh;
-      set_avma(av); /* HACK: cgetr(lz) will not overwrite x */
+      set_avma(av); /* HACK: cgetg(lz, t_REAL) will not overwrite x */
     }
   }
   else
@@ -247,16 +247,16 @@ addrr_sign(GEN x, long sx, GEN y, long sy)
     if (extend) {
       ulong garde = addll(x[lx], y[i]);
       if (m < 4) /* don't extend for few correct bits */
-        z = cgetr(--lz);
+        z = cgetg(--lz, t_REAL);
       else
       {
-        z = cgetr(lz);
+        z = cgetg(lz, t_REAL);
         z[i] = garde;
       }
     }
     else
     {
-      z = cgetr(lz);
+      z = cgetg(lz, t_REAL);
       z[i] = addll(x[j], y[i]); j--;
     }
     i--;
@@ -284,7 +284,7 @@ addrr_sign(GEN x, long sx, GEN y, long sy)
     f2 = (uel(y,i) > uel(x,i));
   }
   /* result is nonzero. f2 = (y > x) */
-  i = lz-1; z = cgetr(lz);
+  i = lz-1; z = cgetg(lz, t_REAL);
   if (f2)
   {
     j = lx-1;
