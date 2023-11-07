@@ -65,6 +65,30 @@ get_vmax(GEN r, long lb, long lbb)
   return vmax;
 }
 
+/* assume bmax <= sqrt(m), fast if amax <=sqrt(m) */
+static int
+Fp_ratlift_hgcd(GEN n, GEN m, GEN amax, GEN bmax, GEN *pa, GEN *pb)
+{
+  pari_sp av = avma;
+  GEN x, y, a, b;
+  GEN H = halfgcdii(n, m), M = gel(H,1), V = gel(H,2);
+  x = gel(V,1); a = gel(V,2); y = gcoeff(M,1,1); b = gcoeff(M,2,1);
+  while(abscmpii(b, bmax)<=0)
+  {
+    GEN q, r, u;
+    if (abscmpii(a, amax)<=0)
+    {
+      if (signe(b)<0)  { a = negi(a); b = negi(b); }
+      *pa =a; *pb = b;
+      gerepileall(av, 2, pb, pa); return 1;
+    }
+    q = dvmdii(x, a, &r); x = a; a = r;
+    u = subii(y, mulii(b, q));
+    y = b; b = u;
+  }
+  return gc_bool(av, 0);
+}
+
 /* Assume x,m,amax >= 0,bmax > 0 are t_INTs, 0 <= x < m, 2 amax * bmax < m */
 int
 Fp_ratlift(GEN x, GEN m, GEN amax, GEN bmax, GEN *a, GEN *b)
@@ -83,6 +107,9 @@ Fp_ratlift(GEN x, GEN m, GEN amax, GEN bmax, GEN *a, GEN *b)
 
   /* check whether a=x, b=1 is a solution */
   if (cmpii(x,amax) <= 0) { *a = icopy(x); *b = gen_1; return 1; }
+
+  if (amax == bmax || equalii(amax, bmax))
+    return Fp_ratlift_hgcd(x, m, amax, bmax, a, b);
 
   /* There is no special case for single-word numbers since this is
    * mainly meant to be used with large moduli. */
