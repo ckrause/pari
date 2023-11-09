@@ -75,6 +75,8 @@ localprec(100); gammamellininvinit([1/3*I,-1/3*I]); \\#2283
 localbitprec(220); gammamellininvinit(concat(vector(5,i,[0,1])));
 gammamellininvinit(vector(9,i,1));
 
+localbitprec(180);gammamellininvinit([-2,-2,-1,-1,0,0,1]); \\#2502
+
 \\ERRORS
 gammamellininvasymp([])
 gammamellininvinit([])

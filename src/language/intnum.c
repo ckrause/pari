@@ -1470,7 +1470,11 @@ QD(GEN M, long lim)
   e = zerovec(lim);
   c = zerovec(lim+1); gel(c, 1) = gel(M, 1);
   q = cgetg(lim+1, t_VEC);
-  for (k = 1; k <= lim; ++k) gel(q, k) = gdiv(gel(M, k+1), gel(M, k));
+  for (k = 1; k <= lim; ++k)
+  {
+    if (gequal0(gel(M, k))) return gc_NULL(av);
+    gel(q, k) = gdiv(gel(M, k+1), gel(M, k));
+  }
   for (j = 1; j <= lim2; ++j)
   {
     long l = lim - 2*j;
