@@ -596,7 +596,7 @@ ishankelspec(GEN Vga)
   }
   /* Heuristic: if 6 first terms in contfracinit don't fail, assume OK */
   M = Klargeinit(Vga, 7, &status, 0);
-  return !contfracinit(M, 6);
+  return !contfracinit_i(M, 6);
 }
 
 /* Initialize data for computing m-th derivative of inverse Mellin */
