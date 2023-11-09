@@ -568,9 +568,10 @@ gammamellininvasymp(GEN Vga, long nlim, long m)
 /* Does the continued fraction of the asymptotic expansion M at oo of inverse
  * Mellin transform attached to Vga have zero Hankel determinants ? */
 static long
-ishankelspec(GEN Vga, GEN M)
+ishankelspec(GEN Vga)
 {
   long status, i, d = lg(Vga)-1;
+  GEN M;
 
   if (d == 5 || d == 7)
   { /* known bad cases: a x 5 and a x 7 */
@@ -593,11 +594,9 @@ ishankelspec(GEN Vga, GEN M)
     }
     if (s0==d2 && (s1==d2 || sm1==d2)) return 1;
   }
-  status = 0;
-  /* Heuristic: if 6 first terms in contfracinit don't fail, assume it's OK */
-  pari_CATCH(e_INV) { status = 1; }
-  pari_TRY { contfracinit(M, minss(lg(M)-2,6)); }
-  pari_ENDCATCH; return status;
+  /* Heuristic: if 6 first terms in contfracinit don't fail, assume OK */
+  M = Klargeinit(Vga, 7, &status, 0);
+  return !contfracinit(M, 6);
 }
 
 /* Initialize data for computing m-th derivative of inverse Mellin */
@@ -627,7 +626,7 @@ gammamellininvinit(GEN Vga, long m, long bitprec)
   else
   {
     VS = Kderivsmallinit(ldata, Vga, m, bitprec);
-    if (status == 0 && ishankelspec(Vga, M)) status = 1;
+    if (status == 0 && ishankelspec(Vga)) status = 1;
     if (status == 1)
     { /* a Hankel determinant vanishes => contfracinit is undefined.
          So compute K(t) / (1 - 1/(pi^2*t)) instead of K(t)*/

@@ -859,6 +859,7 @@ ulong snextpr(ulong p, byteptr *d, long *rcn, long *q, int (*ispsp)(ulong));
 /* intnum.c */
 
 GEN     contfraceval_inv(GEN CF, GEN tinv, long nlim);
+GEN     contfracinit_i(GEN M, long n);
 
 /* mftrace.c */
 

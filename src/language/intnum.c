@@ -1476,7 +1476,11 @@ QD(GEN M, long lim)
     long l = lim - 2*j;
     gel(c, 2*j) = gneg(gel(q, 1));
     for (k = 0; k <= l; ++k)
-      gel(e, k+1) = gsub(gadd(gel(e, k+2), gel(q, k+2)), gel(q, k+1));
+    {
+      GEN E = gsub(gadd(gel(e, k+2), gel(q, k+2)), gel(q, k+1));
+      if (gequal0(E)) return gc_NULL(av);
+      gel(e, k+1) = E;
+    }
     for (k = 0; k < l; ++k)
       gel(q, k+1) = gdiv(gmul(gel(q, k+2), gel(e, k+2)), gel(e, k+1));
     gel(c, 2*j+1) = gneg(gel(e, 1));
@@ -1516,15 +1520,26 @@ GEN
 quodif(GEN M, long n)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, quodif_i(M, n));
+  GEN C = quodif_i(M, n);
+  if (!C) pari_err(e_MISC, "0 divisor in QD algorithm");
+  return gerepilecopy(av, C);
 }
 GEN
 contfracinit(GEN M, long n)
 {
   pari_sp av = avma;
   GEN C = quodif_i(M, n);
+  if (!C) pari_err(e_MISC, "0 divisor in QD algorithm");
   if (lg(C) < 3) { set_avma(av); retmkvec2(cgetg(1,t_VEC), cgetg(1,t_VEC)); }
   return gerepilecopy(av, contfrac_Euler(C));
+}
+GEN
+contfracinit_i(GEN M, long n)
+{
+  GEN C = quodif_i(M, n);
+  if (!C) return NULL;
+  if (lg(C) < 3) return mkvec2(cgetg(1,t_VEC), cgetg(1,t_VEC));
+  return contfrac_Euler(C);
 }
 
 /* Evaluate at 1/tinv the nlim first terms of the continued fraction output by
@@ -1622,6 +1637,7 @@ Pade(GEN M, GEN *pP, GEN *pQ)
   pari_sp av = avma;
   long n = lg(M)-2, i;
   GEN v = QD(M, n), P = pol_0(0), Q = pol_1(0);
+  if (!v) pari_err(e_MISC, "0 divisor in QD algorithm");
   /* evaluate continued fraction => Pade approximants */
   for (i = n-1; i >= 1; i--)
   { /* S = P/Q: S -> v[i]*x / (1+S) */
