@@ -770,19 +770,28 @@ mpatanh(GEN x)
   shiftr_inplace(z, -1); return gerepileuptoleaf(av, z);
 }
 
+static long
+get_nmax(double u, double v, long prec)
+{
+  double d = 2 * log2(((double)v) / u); /* can be 0 due to rounding */
+  long nmax = -1;
+  if (d)
+  {
+    d = ceil(prec2nbits(prec) / d);
+    if (dblexpo(d) < BITS_IN_LONG) nmax = (long)d;
+  }
+  return nmax;
+}
 /* atanh(u/v) using binary splitting, 0 < u < v */
 GEN
 atanhuu(ulong u, ulong v, long prec)
 {
-  long i, nmax = -1;
   GEN u2 = sqru(u), v2 = sqru(v);
-  double d = 2 * log2(((double)v) / u); /* can be 0 due to rounding */
+  long i, nmax = get_nmax((double)u, (double)v, prec);
   struct abpq_res R;
   struct abpq A;
-  /* satisfies (2n+1) (v/u)^2n > 2^bitprec */
-  if (d) nmax = (long)ceil(prec2nbits(prec) / d);
   if (nmax < 0) pari_err_OVERFLOW("atanhuu");
-  abpq_init(&A, nmax);
+  abpq_init(&A, nmax); /* nmax satisfies (2n+1) (v/u)^2n > 2^bitprec */
   A.a[0] = A.b[0] = gen_1;
   A.p[0] = utoipos(u);
   A.q[0] = utoipos(v);
@@ -800,13 +809,10 @@ atanhuu(ulong u, ulong v, long prec)
 GEN
 atanhui(ulong u, GEN v, long prec)
 {
-  long i, nmax = -1;
   GEN u2 = sqru(u), v2 = sqri(v);
-  double d = 2 * log2(gtodouble(v) / u);
+  long i, nmax = get_nmax((double)u, gtodouble(v), prec);
   struct abpq_res R;
   struct abpq A;
-  /* satisfies (2n+1) (v/u)^2n > 2^bitprec */
-  if (d) nmax = (long)ceil(prec2nbits(prec) / d);
   if (nmax < 0) pari_err_OVERFLOW("atanhui");
   abpq_init(&A, nmax);
   A.a[0] = A.b[0] = gen_1;
