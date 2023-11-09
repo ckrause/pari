@@ -1,4 +1,4 @@
-default(parisize,"24M"); \\ overflows 22M
+default(parisize,"28M"); \\ overflows 26M on aarch64
 
 do(G, lim)=
 { my(B = [1, 10^lim], field, D, v, T);
