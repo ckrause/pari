@@ -2364,7 +2364,10 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
       if ((is_upper && ZM_is_knapsack(B)) || (is_lower && ZM_is_knapsack(L)))
         thr = thsn[minss(n-3,numberof(thsn)-1)];
       else
+      {
         thr = thre[minss(n-3,numberof(thre)-1)];
+        if (n>=10) sz = spr;
+      }
       useflatter = sz >= thr;
     } else
       useflatter = ZM_rank(x)==n;
