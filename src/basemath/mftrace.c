@@ -6518,11 +6518,12 @@ get_bnrconreyN(GEN bnr, GEN znN)
 }
 /* con = NULL if D > 0 or if D < 0 and id != idcon. */
 static GEN
-mfdihedralcommon(GEN bnf, GEN id, GEN znN, GEN kroconreyN, long N, long D, GEN con)
+mfdihedralcommon(GEN bnf, GEN id, GEN znN, GEN kroconreyN, long vt,
+                 long N, long D, GEN con)
 {
   GEN bnr = dihan_bnr(bnf, id), cyc = ZV_to_zv( bnr_get_cyc(bnr) );
   GEN bnrconreyN, cycn, cycN, Lvchi, res, P, vT;
-  long j, ordmax, l, lc, deghecke, vt;
+  long j, ordmax, l, lc, deghecke;
 
   lc = lg(cyc); if (lc == 1) return NULL;
   cycn = cyc_normalize_zv(cyc);
@@ -6534,7 +6535,6 @@ mfdihedralcommon(GEN bnf, GEN id, GEN znN, GEN kroconreyN, long N, long D, GEN c
   cycN = ZV_to_zv(znstar_get_cyc(znN));
   ordmax = cyc[1];
   vT = const_vec(odd(ordmax)? ordmax << 1: ordmax, NULL);
-  vt = fetch_user_var("t");
   P = polcyclo(ordmax, vt);
   gel(vT,ordmax) = Qab_trace_init(ordmax, ordmax, P, P);
   deghecke = myeulerphiu(ordmax);
@@ -6570,7 +6570,7 @@ is_cond(long D, long n)
 /* Append to v all dihedral weight 1 forms coming from D, if fundamental.
  * level in [l1, l2] */
 static void
-append_dihedral(GEN v, long D, long l1, long l2)
+append_dihedral(GEN v, long D, long l1, long l2, long vt)
 {
   long Da = labs(D), no, i, numi, ct, min, max;
   GEN bnf, con, vI, resall, arch1, arch2;
@@ -6621,18 +6621,18 @@ append_dihedral(GEN v, long D, long l1, long l2)
       if (D < 0)
       {
         GEN conk = i == j ? con : NULL;
-        z = mfdihedralcommon(bnf, id, znN, kroconreyN, N, D, conk);
+        z = mfdihedralcommon(bnf, id, znN, kroconreyN, vt, N, D, conk);
         if (z) gel(resall, ct++) = z;
       }
       else
       {
         GEN ide;
         ide = mkvec2(id, arch1);
-        z = mfdihedralcommon(bnf, ide, znN, kroconreyN, N, D, NULL);
+        z = mfdihedralcommon(bnf, ide, znN, kroconreyN, vt, N, D, NULL);
         if (z) gel(resall, ct++) = z;
         if (gequal(idcon,id)) continue;
         ide = mkvec2(id, arch2);
-        z = mfdihedralcommon(bnf, ide, znN, kroconreyN, N, D, NULL);
+        z = mfdihedralcommon(bnf, ide, znN, kroconreyN, vt, N, D, NULL);
         if (z) gel(resall, ct++) = z;
       }
     }
@@ -6651,13 +6651,13 @@ static GEN
 mfdihedral(long N)
 {
   GEN D = mydivisorsu(N), res = vectrunc_init(2*N);
-  long j, l = lg(D);
+  long j, l = lg(D), vt = fetch_user_var("t");
   for (j = 2; j < l; j++)
   { /* skip d = 1 */
     long d = D[j];
     if (d == 2) continue;
-    append_dihedral(res, -d, N,N);
-    if (d >= 5 && D[l-j] >= 3) append_dihedral(res, d, N,N); /* Nf >= 3 */
+    append_dihedral(res, -d, N,N, vt);
+    if (d >= 5 && D[l-j] >= 3) append_dihedral(res, d, N,N, vt);/* Nf >= 3 */
   }
   if (lg(res) > 1) res = shallowconcat1(res);
   return res;
@@ -6667,11 +6667,11 @@ static GEN
 mfdihedralall(long N)
 {
   GEN res = vectrunc_init(2*N), z;
-  long D, ct, i;
+  long D, ct, i, vt = fetch_user_var("t");
 
-  for (D = -3; D >= -N; D--) append_dihedral(res, D, 1,N);
+  for (D = -3; D >= -N; D--) append_dihedral(res, D, 1,N, vt);
   /* Nf >= 3 (GTM 193, prop 3.3.18) */
-  for (D = N / 3; D >= 5; D--) append_dihedral(res, D, 1,N);
+  for (D = N / 3; D >= 5; D--) append_dihedral(res, D, 1,N, vt);
   ct = lg(res);
   if (ct > 1)
   { /* sort wrt N */
