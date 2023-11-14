@@ -3471,7 +3471,7 @@ GEN
 bnfinit0(GEN P, long flag, GEN data, long prec)
 {
   double c1 = 0., c2 = 0.;
-  long fl, relpid = BNF_RELPID;
+  long fl, relpid = degpol(P)==2 ? 0: BNF_RELPID;
 
   if (data)
   {
