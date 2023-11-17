@@ -841,10 +841,17 @@ static  GEN
 qfsolve_i(GEN G)
 {
   GEN M, signG, Min, U, G1, M1, G2, M2, solG2, P, E;
-  GEN solG1, sol, Q, d, dQ, detG2, fam2detG;
+  GEN solG1, sol, Q, d, dQ, detG2, fam2detG = NULL;
   long n, np, codim, dim;
   int fail;
 
+  if (typ(G) == t_VEC && lg(G)==3)
+  {
+    fam2detG = gel(G,2);
+    G = gel(G,1);
+    if (typ(fam2detG)!=t_MAT || !is_Z_factornon0(fam2detG))
+      pari_err_TYPE("qfsolve", fam2detG);
+  }
   if (typ(G) != t_MAT) pari_err_TYPE("qfsolve", G);
   n = lg(G)-1;
   if (n == 0) pari_err_DOMAIN("qfsolve", "dimension" , "=", gen_0, G);
@@ -888,7 +895,7 @@ qfsolve_i(GEN G)
   }
 
   /* factorization of the determinant */
-  fam2detG = absZ_factor(d);
+  if (!fam2detG) fam2detG = absZ_factor(d);
   P = gel(fam2detG,1);
   E = ZV_to_zv(gel(fam2detG,2));
   /* P,E = factor(|det(G)|) */
