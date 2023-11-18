@@ -900,7 +900,7 @@ Q_factor_limit(GEN x, ulong lim)
   if (typ(x) == t_INT) return Z_factor_limit(x, lim);
   a = Z_factor_limit(gel(x,1), lim);
   b = Z_factor_limit(gel(x,2), lim); gel(b,2) = ZC_neg(gel(b,2));
-  return gerepilecopy(av, merge_factor(a,b,(void*)&cmpii,cmp_nodata));
+  return gerepilecopy(av, ZM_merge_factor(a,b));
 }
 GEN
 Q_factor(GEN x)
@@ -910,7 +910,7 @@ Q_factor(GEN x)
   if (typ(x) == t_INT) return Z_factor(x);
   a = Z_factor(gel(x,1));
   b = Z_factor(gel(x,2)); gel(b,2) = ZC_neg(gel(b,2));
-  return gerepilecopy(av, merge_factor(a,b,(void*)&cmpii,cmp_nodata));
+  return gerepilecopy(av, ZM_merge_factor(a,b));
 }
 /* replace t_QUAD/t_COMPLEX coeffs by t_POLMOD in T */
 static GEN

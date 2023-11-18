@@ -2808,6 +2808,7 @@ GEN     RgV_polint(GEN X, GEN Y, long v);
 GEN     vec_reduce(GEN v, GEN *pE);
 GEN     RgXQ_reverse(GEN a, GEN T);
 GEN     ZC_union_shallow(GEN x, GEN y);
+GEN     ZM_merge_factor(GEN A, GEN B);
 GEN     ZV_indexsort(GEN L);
 long    ZV_search(GEN x, GEN y);
 GEN     ZV_sort(GEN L);

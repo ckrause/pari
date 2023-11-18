@@ -95,6 +95,7 @@ AP  34- alginit: new flag value for lazy factorization
 BA  35- [libpari] F2xqXV_prod, F2xqV_roots_to_pol, FFV_roots_to_pol
 BA  36- [libpari] RgM_div
 BA  37- [libpari] ZV_max_expi, ZM_max_expi
+BA  38- [libpari] ZM_merge_factor
 
   Removed
      1- [graphic] support for Qt4

@@ -396,7 +396,7 @@ quadunitindex_ii(GEN D, GEN N, GEN F, GEN y, GEN T)
   GEN P, E, a = Z_smoothen(H, gel(F,1), &P, &E), faH = mkmat2(P, E);
   struct uimod S;
 
-  if (a) faH = merge_factor(Z_factor(a), faH,(void*)&cmpii,cmp_nodata);
+  if (a) faH = ZM_merge_factor(Z_factor(a), faH);
   /* multiple of unit index, in [H, factor(H)] format */
   S.N = N; S.T = FpX_red(T, N);
   return gen_order(y, mkvec2(H,faH), (void*)&S, &ui_group);
@@ -914,7 +914,7 @@ classno(GEN x)
     a = gel(F,1);
     o = is_pm1(a)? find_order(E, fd, q, &fao): Shanks_order(E, fd, q, &fao);
     /* f^(d1 q) = 1 */
-    fao = merge_factor(fad1,fao, (void*)&cmpii, &cmp_nodata);
+    fao = ZM_merge_factor(fad1,fao);
     o = find_order(E, f, fao, &fao);
     gel(order_bound,i) = o;
     /* o = order of f, fao = factor(o) */

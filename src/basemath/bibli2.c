@@ -2103,6 +2103,13 @@ merge_factor(GEN fx, GEN fy, void *data, int (*cmp)(void *,GEN,GEN))
   setlg(M, m);
   setlg(E, m); return mkmat2(M, E);
 }
+
+GEN
+ZM_merge_factor(GEN A, GEN B)
+{
+  return merge_factor(A, B, (void*)&cmpii, cmp_nodata);
+}
+
 /* merge two sorted vectors, removing duplicates. Shallow */
 GEN
 merge_sort_uniq(GEN x, GEN y, void *data, int (*cmp)(void *,GEN,GEN))

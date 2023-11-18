@@ -12729,6 +12729,10 @@ let \kbd{fx} and \kbd{fy} be factorization matrices for $X$ and $Y$
 sorted with respect to the comparison function \kbd{cmp} (see
 \tet{sort_factor}), returns the factorization of $X * Y$.
 
+\fun{GEN}{ZM_merge_factor}{GEN fx, GEN fy}
+as \kbd{merge\_factor}, where \kbd{fx} and \kbd{fy} are factorization matrices of
+integers.
+
 \fun{long}{gen_search}{GEN v, GEN y, void *data, int
 (*cmp)(void*,GEN,GEN)}.\hfil\break
 Let $v$ be a vector sorted according to \kbd{cmp(data,a,b)}; look for an

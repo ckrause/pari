@@ -32,7 +32,7 @@ boundfact(GEN n, ulong lim)
       GEN a = Z_factor_limit(gel(n,1),lim);
       GEN b = Z_factor_limit(gel(n,2),lim);
       gel(b,2) = ZC_neg(gel(b,2));
-      return gerepilecopy(av, merge_factor(a,b,(void*)&cmpii,cmp_nodata));
+      return gerepilecopy(av, ZM_merge_factor(a,b));
     }
   }
   pari_err_TYPE("boundfact",n);
@@ -123,12 +123,12 @@ factor_pn_1_limit(GEN p, long n, ulong lim)
     {
       GEN f=factor_Aurifeuille_prime(p,d[i]);
       B = factorlim(f, lim);
-      A = merge_factor(A, B, (void*)&cmpii, cmp_nodata);
+      A = ZM_merge_factor(A, B);
       B = factorlim(diviiexact(polcyclo_eval(d[i],p), f), lim);
     }
     else
       B = factorlim(polcyclo_eval(d[i],p), lim);
-    A = merge_factor(A, B, (void*)&cmpii, cmp_nodata);
+    A = ZM_merge_factor(A, B);
   }
   return gerepilecopy(av, A);
 }
@@ -165,7 +165,7 @@ factor_eulerphi(GEN n)
     if (! is_pm1(q))
     {
       fa = Z_factor(q);
-      B = B? merge_factor(B, fa, (void*)&cmpii, cmp_nodata): fa;
+      B = B? ZM_merge_factor(B, fa): fa;
     }
     if (e > 1) {
       if (B) {
