@@ -401,9 +401,10 @@ prod_fm(GEN f, long i)
  * is integral and has minimal determinant.
  * In dimension 3 or 4, may return a prime p if the reduction at p is
  * impossible because of local nonsolvability.
- * P,E = factor(+/- det(G)), "prime" -1 is ignored. Destroy E. */
+ * P,E = factor(+/- det(G)), d = det(G) "prime" -1 is ignored,
+ * Either E or d should be NULL, but not both */
 static GEN
-qfminimize_fact(GEN G, GEN P, GEN E, long loc)
+qfminimize_fact(GEN G, GEN P, GEN E, GEN d, long loc)
 {
   GEN U = NULL, Ker = NULL, faE, faP;
   long n = lg(G)-1, lP = lg(P), i;
@@ -411,8 +412,10 @@ qfminimize_fact(GEN G, GEN P, GEN E, long loc)
   faE = vecsmalltrunc_init(lP);
   for (i = 1; i < lP; i++)
   {
+    long Ei, vp, wp;
     GEN p = gel(P,i);
-    long vp = E[i], wp = vp;
+    if (is_pm1(p)) continue;
+    Ei = E ? E[i]: Z_pval(d, p); vp = Ei; wp = vp;
     if (!vp) continue;
     if (DEBUGLEVEL >= 3) err_printf("qfminimize: for %Ps^%ld:", p,vp);
     while (vp)
@@ -423,7 +426,7 @@ qfminimize_fact(GEN G, GEN P, GEN E, long loc)
       while (vp) /* loop until vp <= n */
       {
         if (DEBUGLEVEL>=3 && vp <= wp)
-        { err_printf(" %ld%%", (E[i]-vp)*100/E[i]); wp -= E[i]/100; }
+        { err_printf(" %ld%%", (Ei-vp)*100/Ei); wp -= Ei/100; }
         /* The case vp = 1 can be minimized only if n is odd. */
         if (vp == 1 && !odd(n)) break;
         Ker = kermodp(G,p, &dimKer); /* dimKer <= vp */
@@ -594,7 +597,7 @@ qfminimize(GEN G)
   d = ZM_det(G);
   if (!signe(d)) pari_err_DOMAIN("qfminimize", "det" , "=", gen_0, gen_0);
   F = absZ_factor(d);
-  H = qfminimize_fact(G, gel(F,1),  ZV_to_zv(gel(F,2)), 0);
+  H = qfminimize_fact(G, gel(F,1), ZV_to_zv(gel(F,2)), NULL, 0);
   symmetric_non0_coeff(G, &i, &j);
   U = gel(H,2); H = gel(H,1);
   c = gdiv(gcoeff(H,i,j), RgV_dotproduct(gel(U,i), RgM_RgC_mul(G, gel(U,j))));
@@ -840,17 +843,22 @@ qfsolvemodp(GEN G, GEN p)
 static  GEN
 qfsolve_i(GEN G)
 {
-  GEN M, signG, Min, U, G1, M1, G2, M2, solG2, P, E;
-  GEN solG1, sol, Q, d, dQ, detG2, fam2detG = NULL;
+  GEN M, signG, Min, U, G1, M1, G2, M2, solG2, P = NULL, E = NULL;
+  GEN solG1, sol, Q, d, dQ, detG2;
   long n, np, codim, dim;
   int fail;
 
   if (typ(G) == t_VEC && lg(G)==3)
   {
-    fam2detG = gel(G,2);
+    P = gel(G,2);
     G = gel(G,1);
-    if (typ(fam2detG)!=t_MAT || !is_Z_factornon0(fam2detG))
-      pari_err_TYPE("qfsolve", fam2detG);
+    if (typ(P)==t_MAT)
+    {
+      if (!is_Z_factornon0(P)) pari_err_TYPE("qfsolve", P);
+      P = gel(P,1);
+    } else
+      if (!is_vec_t(typ(P)) || !RgV_is_ZVnon0(P))
+        pari_err_TYPE("qfsolve", P);
   }
   if (typ(G) != t_MAT) pari_err_TYPE("qfsolve", G);
   n = lg(G)-1;
@@ -895,13 +903,14 @@ qfsolve_i(GEN G)
   }
 
   /* factorization of the determinant */
-  if (!fam2detG) fam2detG = absZ_factor(d);
-  P = gel(fam2detG,1);
-  E = ZV_to_zv(gel(fam2detG,2));
-  /* P,E = factor(|det(G)|) */
+  if (!P)
+  {
+    GEN F = absZ_factor(d);
+    P = gel(F,1); E = ZV_to_zv(gel(F,2));
+  }
 
   /* Minimization and local solubility */
-  Min = qfminimize_fact(G, P, E, 1);
+  Min = qfminimize_fact(G, P, E, d, 1);
   if (typ(Min) == t_INT) return Min;
 
   M = QM_mul(M, gel(Min,2));
@@ -951,7 +960,7 @@ qfsolve_i(GEN G)
       signG[1]++;
     G1 = shallowmatconcat(diagonal_shallow(mkvec2(G,aux)));
     /* P,E = factor(|det G1|) */
-    Min = qfminimize_fact(G1, P, E, 1);
+    Min = qfminimize_fact(G1, P, E, NULL, 1);
     G1 = gel(Min,1);
     M1 = gel(Min,2);
     P = gel(Min,3);
@@ -1013,7 +1022,7 @@ qfsolve_i(GEN G)
     detG2 = mulii(d, ZM_det(Q));
     for (i = 1; i < lfactdP; i++) factdE[i] = Z_pval(detG2, gel(factdP,i));
     /* factdP,factdE = factor(|det G2|) */
-    Min = qfminimize_fact(G2, factdP,factdE,1);
+    Min = qfminimize_fact(G2, factdP, NULL, detG2, 1);
     M2 = gel(Min,2);
     G2 = gel(Min,1);
   }
