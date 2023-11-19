@@ -1270,7 +1270,7 @@ nf2selmer_quad(GEN nf, GEN S)
 {
   pari_sp ltop = avma;
   GEN D = nf_get_disc(nf), factD = nf_get_ramified_primes(nf);
-  GEN SlistQ = prV_primes(S), QS2gen, gen, Hlist, H, KerH, norms, LS2gen;
+  GEN SlistQ = prV_primes(S), QS2gen, gen, Hlist, H, KerH, LS2gen;
   GEN chpol, Q, kerval, S2, G, e, f, b, c, bad;
   long lS = lg(S), l, lHlist, i, j, k;
 
@@ -1288,20 +1288,18 @@ nf2selmer_quad(GEN nf, GEN S)
     gel(H, j) = Flv_to_F2v(v);
   }
   KerH = F2m_ker(H); l = lg(KerH);
-  norms = cgetg(l, t_VEC);
-  for (i = 1; i < l; i++)
-    gel(norms, i) = factorback2(QS2gen, F2c_to_ZC(gel(KerH, i)));
   LS2gen = cgetg(l, t_VEC);
   chpol = QXQ_charpoly(gel(nf_get_zk(nf), 2), nf_get_pol(nf), 0);
-  b = gdivgu(negi(gel(chpol, 3)), 2);
-  c = gel(chpol, 2);
-  Q = mkmat3(mkcol3(gen_1, b, gen_0),
+  b = negi(gel(chpol, 3));
+  c = shifti(gel(chpol, 2),1);
+  Q = mkmat3(mkcol3(gen_2, b, gen_0),
              mkcol3(b, c, gen_0),
              mkcol3(gen_0, gen_0, gen_0));
   for (k = 1; k < l; k++)
   {
     GEN sol;
-    gcoeff(Q, 3, 3) = negi(gel(norms, k));
+    GEN P = RgV_F2v_extract_shallow(QS2gen, gel(KerH, k));
+    gcoeff(Q, 3, 3) = mulis(ZV_prod(P), -2);
     sol = qfsolve(Q); /* must be solvable */
     sol = Q_primpart(mkcol2(gel(sol,1), gel(sol,2)));
     gel(LS2gen, k) = basistoalg(nf, sol);
