@@ -1495,17 +1495,23 @@ RgXV_cxeval(GEN x, GEN r, GEN ri)
 static GEN
 redquadric(GEN base, GEN pol, GEN zc)
 {
-  long i, l, prec = nbits2prec(2*gexpo(pol)+2*gexpo(zc)) + 1;
-  GEN s = NULL, R = roots(pol, prec);
-  l = lg(R);
-  for (i = 1; i < l; ++i)
+  pari_sp av = avma;
+  long prec = nbits2prec(gexpo(pol)+gexpo(zc)) + 1;
+  for (;;)
   {
-    GEN r = gel(R,i), ri = gexpo(r) > 1? ginv(r): NULL;
-    GEN b = RgXV_cxeval(base, r, ri), z = RgX_cxeval(zc, r, ri);
-    GEN M = RgC_RgV_mulrealsym(RgV_Rg_mul(b, gabs(z, prec)), gconj(b));
-    s = s? RgM_add(s, M): M;
+    GEN R = roots(pol, prec), s = NULL;
+    long i, l = lg(R);
+    for (i = 1; i < l; ++i)
+    {
+      GEN r = gel(R,i), ri = gexpo(r) > 1? ginv(r): NULL;
+      GEN b = RgXV_cxeval(base, r, ri), z = RgX_cxeval(zc, r, ri);
+      GEN M = RgC_RgV_mulrealsym(RgV_Rg_mul(b, gabs(z, prec)), gconj(b));
+      s = s? RgM_add(s, M): M;
+    }
+    s = RgM_Cholesky(s, prec);
+    if (s) return gerepileupto(av, lll(s));
+    prec = precdbl(prec); set_avma(av);
   }
-  return lllgram(s);
 }
 
 static GEN
