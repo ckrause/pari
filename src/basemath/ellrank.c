@@ -1783,7 +1783,7 @@ ell2selmer(GEN ell, GEN ell_K, GEN help, GEN K, GEN vbnf,
 {
   GEN KP, pol, vnf, vpol, vcrt, sbase, LS2, factLS2, sqrtLS2, signs;
   GEN selmer, helpLS2, LS2chars, helpchars, newselmer, factdisc, badprimes;
-  GEN helplist, listpoints, etors2, p, covers, disc, discF;
+  GEN helplist, listpoints, p, covers, disc, discF;
   long i, k, n, tors2, mwrank, dim, nbpoints, lfactdisc, t, u, sha2 = 0;
   forprime_t T;
 
@@ -1791,8 +1791,6 @@ ell2selmer(GEN ell, GEN ell_K, GEN help, GEN K, GEN vbnf,
   help = ellsearchtrivialpoints(ell_K, flag ? NULL:muluu(LIMTRIV,effort+1), help);
   help = elltwistpoints(help, ginv(K)); /* points on K Y^2 = pol(X) */
   n = lg(vbnf) - 1; tors2 = n - 1;
-  etors2 = vecslice(help,1, tors2);
-  gtoset_inplace(etors2);
   KP = gel(absZ_factor(K), 1);
   disc = ZX_disc(pol);
   factdisc = mkvec3(KP, mkcol(gen_2), gel(absZ_factor(disc), 1));
@@ -1857,10 +1855,10 @@ ell2selmer(GEN ell, GEN ell_K, GEN help, GEN K, GEN vbnf,
     dim = dim_selmer(p, pol, K, vnf, LS2, helpLS2,
                      &selmer,&LS2chars,&helpchars);
   }
-  helplist = gel(Flm_indexrank(helpchars,2), 2);
+  /* transpose the matrix to get the solution that contains 1..tors2*/
+  helplist = gel(Flm_indexrank(Flm_transpose(helpchars),2), 1);
   help = shallowextract(help, helplist);
   helpchars = shallowextract(helpchars, helplist);
-  helpLS2 = shallowextract(helpLS2, helplist);
   dim = lg(selmer)-1;
   if (DEBUGLEVEL) err_printf("Selmer rank: %ld\n", dim);
   newselmer = Flm_invimage(Flm_mul(LS2chars, selmer, 2), helpchars, 2);
@@ -1949,10 +1947,10 @@ ell2selmer(GEN ell, GEN ell_K, GEN help, GEN K, GEN vbnf,
   setlg(listpoints, nbpoints+1);
   mwrank = nbpoints - tors2;
   if (odd(dim - nbpoints)) mwrank++;
-  gtoset_inplace(listpoints);
-  listpoints = setminus(listpoints, etors2);
+  listpoints = vecslice(listpoints,tors2+1, nbpoints);
   listpoints = elltwistpoints(listpoints, K);
   listpoints = vecellabs(ellQ_genreduce(ell_K, listpoints, NULL, prec));
+  gtoset_inplace(listpoints);
   return mkvec4(utoi(mwrank), utoi(dim-tors2), utoi(sha2), listpoints);
 }
 
