@@ -1273,6 +1273,7 @@ nf2selmer_quad(GEN nf, GEN S)
   GEN SlistQ = prV_primes(S), QS2gen, gen, Hlist, H, KerH, LS2gen;
   GEN chpol, Q, kerval, S2, G, e, f, b, c, bad;
   long lS = lg(S), l, lHlist, i, j, k;
+  GEN nfa = nf_get_ramified_primes(nf);
 
   QS2gen = vec_prepend(SlistQ, gen_m1);
   bad = ZV_sort_uniq_shallow(shallowconcat(factD, SlistQ));
@@ -1297,10 +1298,10 @@ nf2selmer_quad(GEN nf, GEN S)
              mkcol3(gen_0, gen_0, gen_0));
   for (k = 1; k < l; k++)
   {
-    GEN sol;
     GEN P = RgV_F2v_extract_shallow(QS2gen, gel(KerH, k));
+    GEN F = ZV_sort_uniq_shallow(shallowconcat(nfa, P)), sol;
     gcoeff(Q, 3, 3) = mulis(ZV_prod(P), -2);
-    sol = qfsolve(Q); /* must be solvable */
+    sol = qfsolve(mkvec2(Q, F)); /* must be solvable */
     sol = Q_primpart(mkcol2(gel(sol,1), gel(sol,2)));
     gel(LS2gen, k) = basistoalg(nf, sol);
   }
@@ -1593,6 +1594,16 @@ liftselmerinit(GEN expo, GEN vnf, GEN sqrtLS2, GEN factLS2,
 }
 
 static GEN
+qf_disc_fact(GEN q, GEN L)
+{
+  GEN D = ZM_det(q), P, E;
+  GEN H = Z_smoothen(D, L, &P, &E);
+  if (H)
+    P = shallowconcat(P, gel(Z_factor(H),1));
+  return mkvec2(q, P);
+}
+
+static GEN
 liftselmer_cover(GEN b, GEN expo, GEN LS2, GEN pol, GEN discF, GEN K)
 {
   GEN P, Q, Q4, R, den, q0, q1, q2, xz, x, y, y2m, U, param, newb;
@@ -1607,7 +1618,7 @@ liftselmer_cover(GEN b, GEN expo, GEN LS2, GEN pol, GEN discF, GEN K)
   U = redquadric(b, pol, QXQ_div(zc, polprime, pol));
   q2 = qf_RgM_apply(q2, U);
   newb = RgV_RgM_mul(b, U);
-  param = Q_primpart(qfparam(q2, qfsolve(q2), 1));
+  param = Q_primpart(qfparam(q2, qfsolve(qf_disc_fact(q2,gel(discF,2))), 1));
   param = RgM_to_RgXV_reverse(shallowtrans(param), 0);
   q1 = RgM_neg(tracematrix(QXQ_mul(zc, ttheta, pol), newb, pol));
   q1 = Q_remove_denom(qfeval(q1, param), &den);
@@ -1662,8 +1673,7 @@ liftselmer(GEN b, GEN expo, GEN sbase, GEN LS2, GEN pol, GEN discF, GEN K, long 
     if (lg(U) < 4) continue;
     q2 = qf_RgM_apply(q2, U);
     newb = RgV_RgM_mul(b, U);
-
-    param = Q_primpart(qfparam(q2, qfsolve(q2), 1));
+    param = Q_primpart(qfparam(q2, qfsolve(qf_disc_fact(q2,gel(discF,2))), 1));
     param = RgM_to_RgXV_reverse(shallowtrans(param), 0);
     q1 = RgM_neg(tracematrix(QXQ_mul(zc, ttheta, pol), newb, pol));
     q1 = Q_remove_denom(qfeval(q1, param), &den);
