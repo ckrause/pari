@@ -1788,6 +1788,48 @@ get_row(GEN vnf, GEN K)
 }
 
 static GEN
+Z_factor_addprimes(GEN N, GEN P)
+{
+  GEN Pnew, Enew;
+  GEN H = Z_smoothen(N, P, &Pnew, &Enew);
+  return H ? shallowconcat(P, gel(Z_factor(H),1)): P;
+}
+
+static GEN
+vbnf_discfactors(GEN vbnf, GEN P)
+{
+  long n = lg(vbnf)-1;
+  switch (n)
+  {
+    case 1:
+    {
+      GEN nf = bnf_get_nf(gel(vbnf,1));
+      GEN L = shallowtrans(nf_get_ramified_primes(nf));
+      return Z_factor_addprimes(nf_get_index(nf), L);
+    }
+    case 2:
+    {
+      GEN nf = gel(vbnf,2), R;
+      GEN L = shallowtrans(nf_get_ramified_primes(nf));
+      L = Z_factor_addprimes(nf_get_index(nf), L);
+      R = absi(ZX_resultant(nf_get_pol(gel(vbnf,1)), nf_get_pol(nf)));
+      return Z_factor_addprimes(R, L);
+    }
+    case 3:
+    {
+      GEN P1 = nf_get_pol(gel(vbnf,1));
+      GEN P2 = nf_get_pol(gel(vbnf,2));
+      GEN P3 = nf_get_pol(gel(vbnf,3));
+      GEN L = gel(Z_factor(absi(ZX_resultant(P1,P2))),1);
+      L = Z_factor_addprimes(absi(ZX_resultant(P2,P3)),L);
+      return Z_factor_addprimes(absi(ZX_resultant(P3,P1)),L);
+    }
+    default: pari_err_BUG("vbnf_discfactors");
+      return NULL;/*LCOV_EXCL_LINE*/
+  }
+}
+
+static GEN
 ell2selmer(GEN ell, GEN ell_K, GEN help, GEN K, GEN vbnf,
            long effort, long flag, long prec)
 {
@@ -1803,7 +1845,7 @@ ell2selmer(GEN ell, GEN ell_K, GEN help, GEN K, GEN vbnf,
   n = lg(vbnf) - 1; tors2 = n - 1;
   KP = gel(absZ_factor(K), 1);
   disc = ZX_disc(pol);
-  factdisc = mkvec3(KP, mkcol(gen_2), gel(absZ_factor(disc), 1));
+  factdisc = mkvec3(KP, mkcol(gen_2), vbnf_discfactors(vbnf, pol));
   factdisc = ZV_sort_uniq_shallow(shallowconcat1(factdisc));
   discF = mkvec2(gmul(K,disc), factdisc);
   badprimes = cgetg(n+1, t_VEC);
