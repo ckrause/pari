@@ -311,7 +311,12 @@ abs(chi[1]) > 1000
 localprec(10); chi = gcharidentify(gc,[pr],[0.184760])
 bnf = bnfinit(x^2-2,1);
 gc = gcharinit(bnf,1); round(gc.cyc)
-gcharidentify(gc,[1,2],[[0,3.5-1/3*I],[0,-3.5-1/3*I]])
+loc1 = [0,3.5-1/3*I];
+loc2 = [0,-3.5-1/3*I];
+chi = gcharidentify(gc,[1,2],[loc1,loc2]);
+chi[#chi] == 1/3
+exponent(gcharlocal(gc,chi,1)-loc1) < 0
+exponent(gcharlocal(gc,chi,2)-loc2) < 0
 gc = gcharinit(x^5-7*x+1,5); chi = [1,2,-3,0,-1,3]~;
 Lv = [1,3,idealprimedec(gc.nf,13)[1],idealprimedec(gc.nf,23)[1],4];
 chi == gcharidentify(gc,Lv,[gcharlocal(gc,chi,v)|v<-Lv])
