@@ -1825,7 +1825,7 @@ ell2selmer(GEN ell, GEN ell_K, GEN help, GEN K, GEN vbnf,
 
     id = idealadd(nf, nf_get_index(nf), ZX_deriv(T));
     f = nf_pV_to_prV(nf, KP); settyp(f, t_COL);
-    f = mkvec3(gel(idealfactor(nf, Tinv), 1),
+    f = mkvec3(gel(idealfactor_partial(nf, Tinv, factdisc), 1),
                gel(idealfactor(nf, id), 1), f);
     gel(badprimes, k) = S = gtoset(shallowconcat1(f));
     if (n == 1)
