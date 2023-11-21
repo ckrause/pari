@@ -53,3 +53,6 @@ Q=
 }
 
 qfsolve(Q)
+
+\\ errors
+M=matdiagonal([1,1,1,-5^4*17]/5);F=factor(matdet(M));qfsolve([M,F])
