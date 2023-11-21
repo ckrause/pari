@@ -31,7 +31,7 @@ Doc: $\var{bnf}$ being a number field output by \kbd{bnfinit} (including
  ? chi = [1,1,-1,0]~; \\ @com a character
  ? gcharconductor(gc,chi)[1]
  % =
- [5 4 4 4]
+ [5 4 1 4]
  [0 1 0 0]
  [0 0 1 0]
  [0 0 0 1]

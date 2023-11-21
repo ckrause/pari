@@ -15,7 +15,7 @@ print("non trivial cm subfield");
 pol = rnfequation(polcyclo(5,'y),'x^2-'y-1);
 bnf = bnfinit(pol,1);
 gc = gcharinit(bnf,1);
-gcharalgebraic(gc)
+mathnf(gcharalgebraic(gc))
 /* TODO: better check for values */
 pr = idealprimedec(bnf,11)[1];
 \\c1 = [1,0,0,0,0,0,0,-8]~;
@@ -39,14 +39,20 @@ bestappr(log(abs(gchareval(gc,c2,pr)))/log(11))
 
 print("gcharalgebraic");
 gc = gcharinit(polcyclo(5),25);
-gcharalgebraic(gc)
+alg = gcharalgebraic(gc);
+matrank(alg)
+denominator(alg)
+alg[6,]==0
+matdet(mathnf(2*alg)[1..5,1..5]/2)==2
 gcharalgebraic(gc,[[2,3],[0,0]])
-gcharalgebraic(gc,[[-2,3],[1,0]])
+[chi] = gcharalgebraic(gc,[[-2,3],[1,0]]);
+chi[#chi] == -1/2
 gcharisalgebraic(gc,[0,0,1,0,0,0]~)
-gcharisalgebraic(gc,[0,0,1,0,1,0,-3/2]~,&pq)
+chi = gcharidentify(gc,[1,2],[[-1,0],[1,0]]);
+gcharisalgebraic(gc,concat(chi,-3/2),&pq)
 pq
 gc = gcharinit(x^2+1,1);
-[chi]=gcharalgebraic(gc,[[4,0]])
+[chi]=gcharalgebraic(gc,[[4,0]]); abs(chi)
 gcharisalgebraic(gc,chi,&pq)
 pq
 print("gcharisalgebraic r1>0");
@@ -95,7 +101,6 @@ gc = gcharinit(bnf,1);
 gc = gcharinit(bnf,3^4*117*1009);
 
 print("r2 = 8, clno = 16");
-\\ WARNING.... LONG
 pol = x^20 - 4*x^19 + 2*x^18 + 12*x^17 - 248*x^16 + 577*x^15 - 2210*x^14 + 4900*x^13 - 1187*x^12 + 7487*x^11 + 23396*x^10 - 53786*x^9 - 64916*x^8 - 97158*x^7 - 267387*x^6 + 221033*x^5 + 460138*x^4 + 9786*x^3 + 481572*x^2 + 115934*x - 511901;
 bnf = bnfinit(pol);
 {p5 = idealadd(bnf, 5,
@@ -128,8 +133,10 @@ gc = gcharinit(bnf,[[p5,1;p101,3],[0,1,0,1]]);
 print("gcharidentify");
 gc = gcharinit(x^2-5,1); om = Pi/log((1+sqrt(5))/2);
 lchiv = [[0,om-I],[0,-om-I]];
-gcharidentify(gc,[1,2],lchiv)
-gcharidentify(gc,[1,2],lchiv) \\ lchiv was altered, see 8c67726
+chi = gcharidentify(gc,[1,2],lchiv);
+abs(chi[1])
+chi[2]
+chi == gcharidentify(gc,[1,2],lchiv) \\ lchiv was altered, see 8c67726
 bnf = bnfinit(x^4 - x^3 + 3*x^2 + 2*x + 1, 1);
 gc = gcharinit(bnf, 1);
 round(gc.cyc)
@@ -152,12 +159,15 @@ gcharidentify(gc,[1],[[0,0]])
 
 /* bigger units, cm, etc. */
 gc = gcharinit(x^2 + 4625968752,1);
-gcharalgebraic(gc)
+mathnf(matconcat([gcharalgebraic(gc),matdiagonal(round(gc.cyc))]))
 pol = x^6 + 2854*x^4 + 2036329*x^2 + 513996528;
 gc = gcharinit(pol,7*13);
 round(gc.cyc)
-gcharalgebraic(gc)
-/* TODO better check of correctness */
+alg = gcharalgebraic(gc);
+matrank(alg)
+denominator(alg)
+alg[7..10,] == 0
+denominator(round([concat(vector(3,v,gcharlocal(gc,chi,v))) | chi <- Vec(alg)]*10^10)/10^10)
 
 /* big class number, precision */
 print("prec increase");
@@ -182,10 +192,10 @@ exponent(v1-v2) <= -132
 print("limit cases");
 bnf = bnfinit(x^2-5,1);
 gc = gcharinit(bnf,1);
-gcharalgebraic(gc)
+abs(gcharalgebraic(gc))
 bnf = bnfinit(x^2+1,1);
 gc = gcharinit(bnf,1);
-gcharalgebraic(gc)
+mathnf(gcharalgebraic(gc))
 gcharalgebraic(gc,[[2,0]])
 gc = gcharinit(x^4+x^2+x+1,1);
 gcharalgebraic(gc)
@@ -195,7 +205,7 @@ gcharalgebraic(gc,[[1,1],[1,1]])
 bnf = bnfinit(x^2-15,1);
 gc = gcharinit(bnf,1);
 gcharalgebraic(gc,[[0,0],[0,0]])
-gcharalgebraic(gc,[[1,0],[0,1]])
+gcharalgebraic(gc,[[1,0],[0,1]])[1][2..3]
 bnf = bnfinit(x^3-x-1,1);
 gc = gcharinit(bnf,1);
 gcharalgebraic(gc,[[1,0],[1,1]])
@@ -213,8 +223,11 @@ gcharisalgebraic(gc,[0,1,0,1/3]~)
 print("gcharduallog");
 bnf = bnfinit(polcompositum(x^2+1,x^2-2,2),1);
 gc = gcharinit(bnf,1);
-round(10^20*gcharduallog(gc,[1,1,0]~))
-round(10^20*gcharduallog(gc,[-1,0,1]~))
+chi1 = gcharidentify(gc, [1,2], [[-2,0],[2,0]]);
+chi2 = gcharidentify(gc, [1,2], [[8,0],[0,0]]);
+chi3 = gcharidentify(gc, [1,2], [[-5,0.9],[1,-0.9]]);
+round(10^20*gcharduallog(gc,chi1+chi2))
+round(10^20*gcharduallog(gc,-chi1+chi3))
 chi = [1,2,3,-2+I]~;
 pr = idealprimedec(bnf,2)[1];
 logchi = gcharduallog(gc,chi);
@@ -308,7 +321,8 @@ gc = gcharinit(bnf,1);
 pr = idealprimedec(bnf,11)[1];
 chi = gcharidentify(gc,[pr],[0.184760]);
 abs(chi[1]) > 1000
-localprec(10); chi = gcharidentify(gc,[pr],[0.184760])
+localprec(10); chi = gcharidentify(gc,[pr],[0.184760]);
+abs(chi[1]) < 1000
 bnf = bnfinit(x^2-2,1);
 gc = gcharinit(bnf,1); round(gc.cyc)
 loc1 = [0,3.5-1/3*I];
@@ -326,22 +340,35 @@ bnf = bnfinit(polcyclo(5),1);
 pr = idealprimedec(bnf,5)[1];
 gc = gcharinit(bnf,idealpow(bnf,pr,2));
 round(gc.cyc)
-chi = [1,1,-1,0]~;
+chi1 = gcharidentify(gc, [1,2], [[-1,0],[1,0]]);
+chi2 = gcharidentify(gc, [1,2], [[1,0],[1,0]]);
+chi3 = gcharidentify(gc, [1,2], [[1,-0.82],[0,0.82]]);
+chi = chi1 + chi2 - chi3;
 gcharconductor(gc,chi)[1]
 
 print("doc gcharalgebraic");
 bnf = bnfinit(x^4-2*x^3+23*x^2-22*x+6,1);
 gc = gcharinit(bnf,1);
 round(gc.cyc)
-gcharalgebraic(gc)
+alg = gcharalgebraic(gc);
+matrank(alg)
+denominator(alg)
+alg[4,] == 0
 gcharalgebraic(gc,[[1,1],[0,1]])
-gcharalgebraic(gc,[[1,1],[0,2]])
+[chi] = gcharalgebraic(gc,[[1,1],[0,2]]);
+chi[#chi]
 
 print("doc gcharconductor");
 bnf = bnfinit(x^2-5,1);
 gc = gcharinit(bnf,[(13*19)^2,[1,1]]);
 round(gc.cyc)
-chi = [0,0,1,1]~;
+pr1 = idealprimedec(bnf,149)[1];
+pr2 = idealprimedec(bnf,109)[1];
+pr3 = idealprimedec(bnf,29)[1];
+{chi = gcharidentify(gc,
+  [1,2,pr1,pr2,pr3],[[1,-0.000105],[0,0.000105],
+  0.2486947292,-0.1108103,0.34497])};
+\\chi = [0,0,1,1]~;
 gcharconductor(gc,chi)
 gcharconductor(gc,13*chi)
 gcharconductor(gc,13*19*chi)
@@ -352,7 +379,8 @@ bnf = bnfinit(x^3+4*x-1,1);
 gc = gcharinit(bnf,[1,[1]]);
 round(gc.cyc)
 chi = [0,1,0]~;
-f = gcharduallog(gc,chi)
+f = gcharduallog(gc,chi);
+type(f)
 pr = idealprimedec(bnf,2)[1];
 v = gcharlog(gc,pr);
 val1 = exp(2*I*Pi*f*v);
@@ -366,10 +394,14 @@ round(gc.cyc)
 chi1 = [0,0,1]~;
 gcharisalgebraic(gc,chi1)
 gcharlocal(gc,chi1,1)
-chi2 = [1,0,0,-3]~;
+chi_e1 = gcharidentify(gc, [1,2], [[-6,0],[2,0]]);
+chi2 = concat(chi_e1,-3);
+\\chi2 = [1,0,0,-3]~
 gcharisalgebraic(gc,chi2,&typ)
 typ
 gcharlocal(gc,chi2,1)
+
+print("doc gcharalgebraic part 2");
 bnf = bnfinit(x^4+15*x^2+45,1);
 gc = gcharinit(bnf,1);
 gc.cyc[1..-2]
@@ -419,7 +451,8 @@ print("doc gcharlocal");
 bnf = bnfinit(x^3-x-1);
 gc = gcharinit(bnf,1);
 round(gc.cyc)
-chi = [0,1,1/3]~;
+chi = concat(gcharidentify(gc,[1,2],[[0,-4.88],[6,2.44]]), 1/3);
+\\chi = [0,1,1/3]~;
 pr = idealprimedec(bnf,5)[1];
 gcharlocal(gc,chi,1)
 gcharlocal(gc,chi,2)
@@ -449,17 +482,20 @@ round(gc.cyc)
 chi = [1,1,0,-1]~;
 f = gcharduallog(gc,chi);
 pr = idealprimedec(bnf,5)[1];
-v = gcharlog(gc,pr)
-exp(2*I*Pi*f*v)
-gchareval(gc,chi,pr)
+v = gcharlog(gc,pr);
+type(v)
+exponent(exp(2*I*Pi*f*v) - gchareval(gc,chi,pr)) < -100
 
 print("doc gchareval");
 bnf = bnfinit(x^2-5);
 gc = gcharinit(bnf,1);
 chi = [1]~;
 pr = idealprimedec(bnf,11)[1];
-a = gchareval(gc,chi,pr); round(10^10*a)
-b = gchareval(gc,chi,pr,0); round(10^10*b)
+s = -sign(gchareval(gc,chi,pr,0));
+a = gchareval(gc,chi,pr);
+if(s<0, a=conj(a));
+round(10^10*a)
+b = s*gchareval(gc,chi,pr,0); round(10^10*b)
 exponent(a - exp(2*Pi*I*b)) < -125
 
 
@@ -511,7 +547,7 @@ gchareval(gc,chi,pr)
 round(10^6 * exp(2*Pi*I * (logchi * logx)))
 gcharlocal(gc,chi,1)
 round(10^6*gcharlocal(gc,chi,pr))
-gcharalgebraic(gc)
+abs(gcharalgebraic(gc))
 gcharalgebraic(gc,[[1,1]])
 gcharconductor(gc,chi)
 gcharisalgebraic(gc,chi,&pq)
@@ -527,7 +563,7 @@ gcharlocal(gc,chi,1)
 round(10^6*gcharlocal(gc,chi,pr))
 pr2 = idealprimedec(bnf,2)[1];
 round(10^6*gcharlocal(gc,chi,pr2))
-gcharalgebraic(gc)
+abs(gcharalgebraic(gc))
 gcharalgebraic(gc,[[1,0]])
 gcharconductor(gc,chi)
 gcharisalgebraic(gc,chi,&pq)

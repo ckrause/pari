@@ -30,15 +30,15 @@ Doc: \var{gc} being the structure returned by \kbd{gcharinit}, return a \typ{MAT
  % = [6, 0, 0, 0, 0.E-57]
  ? gcharalgebraic(gc)
  % =
- [1    0    0  0]
- [0    1    0  0]
- [0    0    1  0]
- [0    0    0  0]
- [0 -1/2 -1/2 -1]
+ [1 0    0  0]
+ [0 1    0  0]
+ [0 0    1  0]
+ [0 0    0  0]
+ [0 0 -1/2 -1]
  ? gcharalgebraic(gc,[[1,1],[0,1]])
  % = [] \\ @com $p_\tau+q_\tau$ must be constant for an algebraic character to exist
  ? chi = gcharalgebraic(gc,[[1,1],[0,2]])[1]
- % = [0, 1, 1, 0, -1]~
+ % = [0, 1, 2, 0, -1]~
  ? for(i=0,5,print(lfuneuler([gc,chi+[i,0,0,0,0]~],3)));
  \\@com all characters with this infinity type: multiply by finite order characters
  @eprog
