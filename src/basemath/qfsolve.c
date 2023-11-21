@@ -1020,7 +1020,6 @@ qfsolve_i(GEN G)
     G2 = shallowmatconcat(diagonal_shallow(mkvec2(G1,ZM_neg(Q))));
     /* Minimization of G2 */
     detG2 = mulii(d, ZM_det(Q));
-    for (i = 1; i < lfactdP; i++) factdE[i] = Z_pval(detG2, gel(factdP,i));
     /* factdP,factdE = factor(|det G2|) */
     Min = qfminimize_fact(G2, factdP, NULL, detG2, 1);
     M2 = gel(Min,2);
