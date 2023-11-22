@@ -1802,7 +1802,7 @@ Z_factor_addprimes(GEN N, GEN P)
 }
 
 static GEN
-vbnf_discfactors(GEN vbnf, GEN P)
+vbnf_discfactors(GEN vbnf)
 {
   long n = lg(vbnf)-1;
   switch (n)
@@ -1851,7 +1851,7 @@ ell2selmer(GEN ell, GEN ell_K, GEN help, GEN K, GEN vbnf,
   n = lg(vbnf) - 1; tors2 = n - 1;
   KP = gel(absZ_factor(K), 1);
   disc = ZX_disc(pol);
-  factdisc = mkvec3(KP, mkcol(gen_2), vbnf_discfactors(vbnf, pol));
+  factdisc = mkvec3(KP, mkcol(gen_2), vbnf_discfactors(vbnf));
   factdisc = ZV_sort_uniq_shallow(shallowconcat1(factdisc));
   discF = mkvec2(gmul(K,disc), factdisc);
   badprimes = cgetg(n+1, t_VEC);
