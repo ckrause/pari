@@ -136,17 +136,16 @@ nbits2prec64(long n)
 }
 
 static GEN
-qfgaussred_positive_dynprec(GEN M)
+RgM_Cholesky_dynprec(GEN M)
 {
   pari_sp ltop = avma;
-  GEN L, R;
-  long i, j, lM = lg(M);
+  GEN L;
   long minprec = 3*(lg(M)-1) + 30, bitprec = minprec, prec;
   while (1)
   {
     long mbitprec;
     prec = nbits2prec64(bitprec);
-    L = qfgaussred_positive(RgM_gtofp(M, prec));
+    L = RgM_Cholesky(RgM_gtofp(M, prec), prec);
     if (!L)
     {
       bitprec *= 2;
@@ -159,15 +158,7 @@ qfgaussred_positive_dynprec(GEN M)
     bitprec = mbitprec;
     set_avma(ltop);
   }
-  R = cgetg(lM, t_MAT);
-  for (j = 1; j < lM; ++j)
-  {
-    gel(R, j) = cgetg(lM, t_COL);
-    for (i = 1; i < lM; ++i)
-      gcoeff(R, i, j) = (i == j) ? gen_1 : gcoeff(L, i, j);
-  }
-  R = gmul(diagonal_shallow(gsqrt(RgM_diagonal_shallow(L), prec)), R);
-  return gerepilecopy(ltop, R);
+  return gerepilecopy(ltop, L);
 }
 
 static GEN
@@ -303,7 +294,7 @@ flattergram_i(GEN M, long flag, long *pt_s)
 {
   pari_sp ltop = avma;
   GEN R, T;
-  R = qfgaussred_positive_dynprec(M);
+  R = RgM_Cholesky_dynprec(M);
   *pt_s = drop(R);
   T =  lllfp(R, 0.99, LLL_IM| LLL_UPPER| LLL_NOCERTIFY | (flag&LLL_KEEP_FIRST));
   return gerepilecopy(ltop, T);
@@ -2291,16 +2282,8 @@ get_gaussred(GEN M)
   pari_sp ltop = avma;
   long i, j, lM = lg(M);
   long bitprec = 3*(lM-1) + 30, prec = nbits2prec64(bitprec);
-  GEN R, L = qfgaussred_positive(RgM_gtofp(M, prec));
-  if (!L) return NULL;
-  R = cgetg(lM, t_MAT);
-  for (j = 1; j < lM; ++j)
-  {
-    gel(R, j) = cgetg(lM, t_COL);
-    for (i = 1; i < lM; ++i)
-      gcoeff(R, i, j) = (i == j) ? gen_1 : gcoeff(L, i, j);
-  }
-  R = gmul(diagonal_shallow(gsqrt(RgM_diagonal_shallow(L), prec)), R);
+  GEN R = RgM_Cholesky(RgM_gtofp(M, prec), prec);
+  if (!R) return NULL;
   return gerepilecopy(ltop, R);
 }
 
