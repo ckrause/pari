@@ -9856,6 +9856,10 @@ $M$ is LLL-reduced, then
 $$|| y - Mx ||_2 \leq 2 (2/\sqrt{3})^n || y - MX ||_2$$
 for all $X \in \Z^n$.
 
+\fun{GEN}{RgM_Cholesky}{GEN M} given a square symmetric \typ{MAT} $M$, return $R$
+such that $^t{}R\*R = M$, or \kbd{NULL} is no solutions are found, if $M$ is not
+positive or was given with insufficient accuracy.
+
 \subsec{\kbd{ZG}}
 
 Let $G$ be a multiplicative group with neutral element $1_G$ whose

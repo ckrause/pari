@@ -1932,6 +1932,7 @@ GEN     QM_ImQ_hnf(GEN x);
 GEN     QM_ImQ_hnfall(GEN x, GEN *U, long remove);
 GEN     QM_charpoly_ZX(GEN M);
 GEN     QM_charpoly_ZX_bound(GEN M, long bit);
+GEN     RgM_Cholesky(GEN M, long prec);
 GEN     ZM_charpoly(GEN x);
 GEN     adj(GEN x);
 GEN     adjsafe(GEN x);
