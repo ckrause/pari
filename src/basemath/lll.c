@@ -2280,7 +2280,7 @@ static GEN
 get_gaussred(GEN M)
 {
   pari_sp ltop = avma;
-  long i, j, lM = lg(M);
+  long lM = lg(M);
   long bitprec = 3*(lM-1) + 30, prec = nbits2prec64(bitprec);
   GEN R = RgM_Cholesky(RgM_gtofp(M, prec), prec);
   if (!R) return NULL;
