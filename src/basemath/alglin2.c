@@ -1578,6 +1578,7 @@ qfgaussred_positive(GEN a)
 GEN
 RgM_Cholesky(GEN M, long prec)
 {
+  pari_sp av = avma;
   long i, j, lM = lg(M);
   GEN S, R, L = qfgaussred_positive(M);
   if (!L) return L;
@@ -1590,7 +1591,7 @@ RgM_Cholesky(GEN M, long prec)
     for (i = 1; i < lM; i++)
       gcoeff(R, i, j) = (i == j) ? gel(S,i): gmul(gel(S,i), gcoeff(L, i, j));
   }
-  return R;
+  return gerepilecopy(av, R);
 }
 
 /* Maximal pivot strategy: x is a suitable pivot if it is non zero and either
