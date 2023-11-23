@@ -290,6 +290,30 @@ ZM_flatter(GEN M, long flag)
 }
 
 static GEN
+ZM_flatter_rank(GEN M, long rank, long flag)
+{
+  pari_timer ti;
+  pari_sp ltop = avma;
+  GEN T;
+  long i, n = lg(M)-1;
+  if (rank == n)  return ZM_flatter(M, flag);
+  T = matid(n);
+  if (DEBUGLEVEL>=3) timer_start(&ti);
+  for (i = 1;; i++)
+  {
+    GEN S = ZM_flatter(vconcat(gshift(M,i),matid(n)), flag);
+    if (DEBUGLEVEL>=3)
+      timer_printf(&ti,"FLATTERRANK step %ld: %ld",i,expi(gnorml2(S)));
+    if (ZM_isidentity(S)) break;
+    T = ZM_mul(T, S);
+    M = ZM_mul(M, S);
+    if (gc_needed(ltop, 1))
+      gerepileall(ltop, 2, &M, &T);
+  }
+  return gerepilecopy(ltop, T);
+}
+
+static GEN
 flattergram_i(GEN M, long flag, long *pt_s)
 {
   pari_sp ltop = avma;
@@ -342,6 +366,30 @@ ZM_flattergram(GEN M, long flag)
   }
   if (DEBUGLEVEL >= 3)
     timer_printf(&ti, "FLATTERGRAM, dim %ld, slope=%0.10g", n, ((double)s)/n);
+  return gerepilecopy(ltop, T);
+}
+
+static GEN
+ZM_flattergram_rank(GEN M, long rank, long flag)
+{
+  pari_timer ti;
+  pari_sp ltop = avma;
+  GEN T;
+  long i, n = lg(M)-1;
+  if (rank == n)  return ZM_flattergram(M, flag);
+  T = matid(n);
+  if (DEBUGLEVEL>=3) timer_start(&ti);
+  for (i = 1;; i++)
+  {
+    GEN S = ZM_flattergram(RgM_Rg_add(gshift(M, i), gen_1), flag);
+    if (DEBUGLEVEL>=3)
+      timer_printf(&ti,"FLATTERGRAMRANK step %ld: %ld",i,expi(gnorml2(S)));
+    if (ZM_isidentity(S)) break;
+    T = ZM_mul(T, S);
+    M = ZM_mul(shallowtrans(S), ZM_mul(M, S));
+    if (gc_needed(ltop, 1))
+      gerepileall(ltop, 2, &M, &T);
+  }
   return gerepilecopy(ltop, T);
 }
 
@@ -2228,11 +2276,11 @@ ZM2_lll_norms(GEN x, long flag, GEN *pN)
 }
 
 static void
-fplll_flatter(GEN *pG, GEN *pB, GEN *pU, long flag)
+fplll_flatter(GEN *pG, GEN *pB, GEN *pU, long rank, long flag)
 {
   if (!*pG)
   {
-    GEN T = ZM_flatter(*pB, flag);
+    GEN T = ZM_flatter_rank(*pB, rank, flag);
     if (*pU)
     {
       *pU = ZM_mul(*pU, T);
@@ -2245,7 +2293,7 @@ fplll_flatter(GEN *pG, GEN *pB, GEN *pU, long flag)
     for (i = 1; i < l; i++)
       for(j = 1; j < i; j++)
         gmael(G,j,i) = gmael(G,i,j);
-    T = ZM_flattergram(*pG, flag);
+    T = ZM_flattergram_rank(G, rank, flag);
     if (*pU) *pU = ZM_mul(*pU, T);
     *pG = ZM_mul(shallowtrans(T), ZM_mul(*pG,T));
   }
@@ -2267,22 +2315,25 @@ spread(GEN R)
 }
 
 static GEN
-get_gramschmidt(GEN M)
+get_gramschmidt(GEN M, long rank)
 {
   GEN B, Q, L;
   long l = lg(M), bitprec = 3*(l-1) + 30;
   long prec = nbits2prec64(bitprec);
+  if (rank < l-1) M = vconcat(gshift(M,1), matid(l-1));
   if (!QR_init(RgM_gtofp(M, prec), &B, &Q, &L, prec) || !gsisinv(L)) return NULL;
   return L;
 }
 
 static GEN
-get_gaussred(GEN M)
+get_gaussred(GEN M, long rank)
 {
   pari_sp ltop = avma;
   long lM = lg(M);
   long bitprec = 3*(lM-1) + 30, prec = nbits2prec64(bitprec);
-  GEN R = RgM_Cholesky(RgM_gtofp(M, prec), prec);
+  GEN R;
+  if (rank < lM-1) M = RgM_Rg_add(gshift(M, 1), gen_1);
+  R = RgM_Cholesky(RgM_gtofp(M, prec), prec);
   if (!R) return NULL;
   return gerepilecopy(ltop, R);
 }
@@ -2300,7 +2351,7 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
   pari_sp av = avma;
   const double ETA = 0.51;
   const long keepfirst = flag & LLL_KEEP_FIRST;
-  long p, zeros = -1, n = lg(x)-1, is_upper, is_lower, useflatter = 0;
+  long p, zeros = -1, n = lg(x)-1, is_upper, is_lower, useflatter = 0, rank;
   GEN G, B, U, L = NULL;
   pari_timer T;
   long thre[]={31783,34393,20894,22525,13533,1928,672,671,
@@ -2327,6 +2378,7 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
     U = ZM2_lll_norms(x, flag, pN);
     if (U) return U;
   }
+  rank = ZM_rank(x);
   if (flag & LLL_GRAM)
   { G = x; B = NULL; U = matid(n); is_upper = 0; is_lower = 0; }
   else
@@ -2337,9 +2389,9 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
     if (is_lower) L = RgM_flip(B);
   }
   if(DEBUGLEVEL>=4) timer_start(&T);
-  if (n > 2 && nbrows(x) >= n)
+  if (n > 2)
   {
-    GEN R = B ? is_upper ? B : is_lower ? L : get_gramschmidt(B) : get_gaussred(G);
+    GEN R = B ? is_upper ? B : is_lower ? L : get_gramschmidt(B, rank) : get_gaussred(G, rank);
     if (R)
     {
       long spr = spread(R), sz = mpexpo(gsupnorm(R, DEFAULTPREC)), thr;
@@ -2353,18 +2405,18 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
       }
       useflatter = sz >= thr;
     } else
-      useflatter = ZM_rank(x)==n;
+      useflatter = 1;
   } else useflatter = 0;
   if (useflatter)
   {
     if (is_lower)
     {
-      fplll_flatter(&G, &L, &U, flag | LLL_UPPER);
+      fplll_flatter(&G, &L, &U, rank, flag | LLL_UPPER);
       B = RgM_flop(L);
       if (U) U = RgM_flop(U);
     }
     else
-      fplll_flatter(&G, &B, &U, flag | (is_upper? LLL_UPPER:0));
+      fplll_flatter(&G, &B, &U, rank, flag | (is_upper? LLL_UPPER:0));
     if (DEBUGLEVEL>=4  && !(flag & LLL_NOCERTIFY))
       timer_printf(&T, "FLATTER");
   }
