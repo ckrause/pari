@@ -1580,18 +1580,16 @@ RgM_Cholesky(GEN M, long prec)
 {
   pari_sp av = avma;
   long i, j, lM = lg(M);
-  GEN S, R, L = qfgaussred_positive(M);
-  if (!L) return L;
-  S = cgetg(lM, t_VEC);
-  for (i = 1; i < lM; i++) gel(S,i) = gsqrt(gcoeff(L,i,i), prec);
-  R = cgetg(lM, t_MAT);
-  for (j = 1; j < lM; j++)
+  GEN R, L = qfgaussred_positive(M);
+  if (!L) return gc_NULL(av);
+  R = cgetg(lM, t_MAT); for (j = 1; j < lM; j++) gel(R,j) = cgetg(lM, t_COL);
+  for (i = 1; i < lM; i++)
   {
-    gel(R, j) = cgetg(lM, t_COL);
-    for (i = 1; i < lM; i++)
-      gcoeff(R, i, j) = (i == j) ? gel(S,i): gmul(gel(S,i), gcoeff(L, i, j));
+    GEN r = gsqrt(gcoeff(L,i,i), prec);
+    for (j = 1; j < lM; j++)
+      gcoeff(R, i, j) = (i == j) ? r: gmul(r, gcoeff(L, i, j));
   }
-  return gerepilecopy(av, R);
+  return gerepileupto(av, R);
 }
 
 /* Maximal pivot strategy: x is a suitable pivot if it is non zero and either
