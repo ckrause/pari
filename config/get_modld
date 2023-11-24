@@ -10,6 +10,10 @@ cygwin|mingw) EXTRAMODLDFLAGS="-L$libdir $LDDYN -Wl,--enable-auto-import";;
 esac;
 LIBS=$__LIBS
 
+if test -n "$runpathprefix"; then
+  runpth=`./ldflags "$LDneedsWl" $runpathprefix"$libdir"`
+fi
+
 case $osname in
 darwin) MODLD=$CC;
         MODLDFLAGS="-bundle -undefined dynamic_lookup -L$libdir $LDDYN \$(CFLAGS) \$(DLCFLAGS)";;
@@ -20,6 +24,6 @@ darwin) MODLD=$CC;
 esac;
 
 modules_build=`echo "$CC -c -o %s.o $CFLAGS $DLCFLAGS -I\"$includedir\" %s.c \
-&& $MODLD -o %s.so $MODLDFLAGS %s.o $EXTRAMODLDFLAGS" | \
+&& $MODLD -o %s.so $MODLDFLAGS %s.o $runpth $EXTRAMODLDFLAGS" | \
                sed -e 's!\$(CFLAGS)'"!$CFLAGS!g" \
                    -e 's!\$(DLCFLAGS)'"!$DLCFLAGS!g"`
