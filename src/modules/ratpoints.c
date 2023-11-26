@@ -1409,9 +1409,9 @@ find_points_work(ratpoints_args *args,
    *         trailing coefficient is zero, |coeff. of x| = 1 */
   if (!(args->flags & RATPOINTS_NO_REVERSE))
   {
-    if (!odd(degree))
+    if (!odd(degree) && degree>0)
     {
-      if (signe(pel(c,0)) == 0)
+      if (signe(pel(c,0)) == 0 && signe(pel(c,1))!=0)
       { /* case 1 */
         long n;
         args->flags |= RATPOINTS_REVERSED;

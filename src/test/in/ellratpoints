@@ -42,6 +42,7 @@ checkhyp(-x^6+x^3+x+1,2*x^3)
 checkhyp((-x^6+x^3+x+1)/4,x^3)
 checkhyp((-x^6+x^3+x+1)/16,x^3/2)
 checkhyp(x^6+4*x+1/7)
+hyperellratpoints(9*x^2,3)
 hyperellratpoints(x^2+x+1,[5,10])
 P=780778196253125*x^4+406402229450000*x^3+76766809420000*x^2+5710274976000*x+95843046656;
 hyperellratpoints(P,[0,1])
