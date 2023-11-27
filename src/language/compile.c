@@ -1473,6 +1473,12 @@ compilefunc(entree *ep, long n, int mode, long flag)
     set_avma(ltop);
     compilevec(y, mode, OCcol);
     return;
+  } else if(x==OPlength && tree[y].f==Ffunction && tree[y].x==OPtrans)
+  {
+    arg[1] = tree[y].y;
+    lnc = first_safe_arg(arg,COsafelex|COsafedyn);
+    lnl = first_safe_arg(arg,COsafelex);
+    ep = is_entry("#_~");
   }
   else if (x==OPpow && nb==2)
   {

@@ -41,3 +41,6 @@ Doc: length of $x$; \kbd{\#}$x$ is a shortcut for \kbd{length}$(x)$.
  useless in other cases: it returns the number of non-code words in $x$, e.g.
  the effective length minus 2 for integers since the \typ{INT} type has two code
  words.
+Variant:
+ Also available is \fun{long}{gtranslength}{GEN x}
+ which return the length of \kbd{x~}, that is the number of lines of matrices.

@@ -112,6 +112,21 @@ glength(GEN x)
   return lg(x) - lontyp[tx];
 }
 
+long
+gtranslength(GEN x)
+{
+  switch(typ(x))
+  {
+    case t_VEC: case t_COL:
+      return lg(x)-1;
+    case t_MAT:
+      return lg(x)==1 ? 0: nbrows(x);
+    default:
+      pari_err_TYPE("trans",x);
+      return 0; /* LCOV_EXCL_LINE */
+  }
+}
+
 GEN
 matsize(GEN x)
 {

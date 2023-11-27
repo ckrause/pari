@@ -3871,6 +3871,7 @@ GEN     gneg_i(GEN x);
 int     gsigne(GEN x);
 GEN     gtolist(GEN x);
 long    gtolong(GEN x);
+long    gtranslength(GEN x);
 int     lexcmp(GEN x, GEN y);
 GEN     listinsert(GEN list, GEN object, long index);
 void    listinsert0(GEN list, GEN object, long index);
