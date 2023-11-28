@@ -117,6 +117,7 @@ zkst : structure of (Z_K/m)*         bid,                     bnr
 \t      : print the list of PARI types
 \u      : print the list of user-defined functions
 \um     : print the list of user-defined member functions
+\uv     : print the list of user-defined variables, excluding closures
 \v      : print current version of GP
 \w {nf} : write to a file
 \x {n}  : print complete inner structure of result
