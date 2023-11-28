@@ -171,6 +171,19 @@ ellisdivisible(e, [6,3], 2*7^64)
 ellisdivisible(e, [6,3], 5*7^64)
 ellisdivisible(e, [6,3], 5^64)
 
+e = ellinit([1,2,3,4,5]);
+e.omega
+E = ellchangecurve(e, [2,3,4,5]);
+E.omega
+ellisisom(e, E)
+
+nf=nfinit(w^2-5);
+e=ellinit([13051432067771989785714502010560*w-29183889307258811368264006524000,38378930075688840770085369672398433447789974880*w-85817896552951396873277345020781210730736734000],nf);
+e.omega
+E=ellchangecurve(e,[2+w,5+2*w,w-1,3]*Mod(1,nf.pol));
+E.omega
+ellisisom(e, E)
+
 e = ellinit([1.,2,3,4,5]);
 e.eta
 E = ellchangecurve(e, [2,3,4,5]);

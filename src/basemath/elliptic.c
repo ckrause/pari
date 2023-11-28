@@ -1419,6 +1419,92 @@ ellchangecurve(GEN e, GEN w)
   return gerepilecopy(av, E);
 }
 
+static GEN
+ellQ_isisom(GEN E, GEN F)
+{
+  pari_sp av = avma;
+  GEN j, u, r, s, t, u2, u3;
+  GEN Ea1, Ea2, Ea3, Ec4, Ec6, Fa1, Fa2, Fa3, Fc4, Fc6;
+  j = ell_get_j(E);
+  if (!gequal(j, ell_get_j(F))) return gen_0;
+  Ec4  = ell_get_c4(E); Ec6 = ell_get_c6(E);
+  Fc4  = ell_get_c4(F); Fc6 = ell_get_c6(F);
+  if (gequal0(j))
+  {
+    if (!ispower(gdiv(Ec6, Fc6), utoi(6), &u))
+      return gc_const(av, gen_0);
+  } else if(gequalgs(j, 1728))
+  {
+    if (!ispower(gdiv(Ec4, Fc4), utoi(4), &u))
+      return gc_const(av, gen_0);
+  } else
+  {
+    if (!issquareall(gdiv(gmul(Fc4, Ec6),gmul(Fc6,Ec4)),&u))
+      return gc_const(av, gen_0);
+  }
+  Ea1 = ell_get_a1(E); Ea2 = ell_get_a2(E); Ea3 = ell_get_a3(E);
+  Fa1 = ell_get_a1(F); Fa2 = ell_get_a2(F); Fa3 = ell_get_a3(F);
+  u2 = gsqr(u); u3 = gmul(u,u2);
+  s = gdivgs(gsub(gmul(u, Fa1), Ea1), 2);
+  r = gdivgs(gadd(gsub(gadd(gmul(u2, Fa2), gmul(s, Ea1)), Ea2), gsqr(s)), 3);
+  t = gdivgs(gsub(gsub(gmul(u3, Fa3), gmul(r, Ea1)), Ea3), 2);
+  return gerepilecopy(av, mkvec4(u,r,s,t));
+}
+
+static GEN
+ellnf_isisom(GEN nf, GEN E, GEN F)
+{
+  pari_sp av = avma;
+  GEN j, u, r, s, t, u2, u3;
+  GEN Ea1, Ea2, Ea3, Ec4, Ec6, Fa1, Fa2, Fa3, Fc4, Fc6;
+  j = basistoalg(nf, ell_get_j(E));
+  if (!gequal(j, basistoalg(nf, ell_get_j(F))))
+    return gc_const(av, gen_0);
+  Ec4  = ell_get_c4(E); Ec6 = ell_get_c6(E);
+  Fc4  = ell_get_c4(F); Fc6 = ell_get_c6(F);
+  if (gequal0(j))
+  {
+    if (!nfispower(nf, nfdiv(nf, Ec6, Fc6), 6, &u))
+      return gc_const(av, gen_0);
+  } else if(gequalgs(j, 1728))
+  {
+    if (!nfispower(nf, nfdiv(nf, Ec4, Fc4), 4, &u))
+      return gc_const(av, gen_0);
+  } else
+  {
+    if (!nfissquare(nf, nfdiv(nf, nfmul(nf, Fc4, Ec6), nfmul(nf, Fc6,Ec4)), &u))
+      return gc_const(av, gen_0);
+  }
+  Ea1 = ell_get_a1(E); Ea2 = ell_get_a2(E); Ea3 = ell_get_a3(E);
+  Fa1 = ell_get_a1(F); Fa2 = ell_get_a2(F); Fa3 = ell_get_a3(F);
+  u2 = nfsqr(nf,u); u3 = nfmul(nf,u,u2);
+  s = gdivgs(nfsub(nf, nfmul(nf, u, Fa1), Ea1),2);
+  r = gdivgs(nfadd(nf, nfsub(nf, nfadd(nf, nfmul(nf, u2, Fa2), nfmul(nf, s, Ea1)), Ea2), nfsqr(nf, s)), 3);
+  t = gdivgs(nfsub(nf, nfsub(nf, nfmul(nf, u3, Fa3), nfmul(nf, r, Ea1)), Ea3), 2);
+  u = basistoalg(nf, u); r = basistoalg(nf, r);
+  s = basistoalg(nf, s); t = basistoalg(nf, t);
+  return gerepilecopy(av, mkvec4(u,r,s,t));
+}
+
+GEN
+ellisisom(GEN E, GEN F)
+{
+  checkell(E); checkell(F);
+  if (ell_get_type(E)!=ell_get_type(F))
+    pari_err_TYPE("ellisisom", mkvec2(E,F));
+  switch(ell_get_type(E))
+  {
+    case t_ELL_Q:
+      return ellQ_isisom(E, F);
+    case t_ELL_NF:
+      if (gequal(ellnf_get_nf(E), ellnf_get_nf(F)))
+        return ellnf_isisom(ellnf_get_nf(E), E, F);
+    default: /*FALL THROUGH*/
+      pari_err_TYPE("ellisisom", mkvec2(E,F));
+      return NULL;/*LCOV_EXCL_LINE*/
+  }
+}
+
 /* v o= [1,r,0,0] */
 static void
 nf_compose_r(GEN nf, GEN *vtotal, GEN *e, GEN r)

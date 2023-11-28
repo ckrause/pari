@@ -1,0 +1,11 @@
+Function: ellisisom
+Section: elliptic_curves
+C-Name: ellisisom
+Prototype: GG
+Help: ellisisom(E,F): return 0 if the elliptic curves E and F defined over the
+ same number field are not isomorphic, otherwise return [u,r,s,t] suitable for
+ ellchangecurve.
+Doc:
+ return $0$ if the elliptic curves $E$ and $F$ defined over the same number
+ field are not isomorphic, otherwise return \kbd{[u,r,s,t]} suitable for
+ \kbd{ellchangecurve}.
