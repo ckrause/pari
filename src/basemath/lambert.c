@@ -446,10 +446,7 @@ glambertW_i(void *E, GEN y, long prec)
 }
 
 GEN
-glambertW(GEN y, long k, long prec)
-{
-  return glambertW_i((void*)k, y, prec);
-}
+glambertW(GEN y, long k, long prec) { return glambertW_i((void*)k, y, prec); }
 GEN
 mplambertW(GEN y, long prec) { return lambertW(y, 0, prec); }
 
