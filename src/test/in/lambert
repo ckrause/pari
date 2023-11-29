@@ -61,6 +61,8 @@ w=lambertw(3 + O(3^10))
 w*exp(w)-3
 a=2 + O(3^10); w=lambertw(a)
 w+log(w)-log(a)
+lambertw(2 + O(2^10))
+lambertw(1 + O(2^10))
 
 /* Errors at the end */
 lambertw(1/x)
