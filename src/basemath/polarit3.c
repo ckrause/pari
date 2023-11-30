@@ -2273,6 +2273,10 @@ static ulong
 ZXQX_resultant_bound(GEN nf, GEN A, GEN B)
 { return ZXQX_resultant_bound_i(nf, A, B, &RgX_RgXY_ResBound); }
 
+static GEN
+_ZXQ_powu(GEN x, ulong u, GEN T)
+{ return typ(x) == t_INT? powiu(x, u): ZXQ_powu(x, u, T); }
+
 /* Compute Res(A, B/dB) in Z[X]/T, assuming A,B in Z[X,Y], dB in Z or NULL (= 1)
  * If B=NULL, take B = A' and assume deg A > 1 */
 static GEN
@@ -2285,8 +2289,8 @@ ZXQX_resultant_all(GEN A, GEN B, GEN T, GEN dB, ulong bound)
   {
     long a = degpol(A), b = degpol(B);
     if (a < 0 || b < 0) return gen_0;
-    if (!a) return gpowgs(gel(A,2), b);
-    if (!b) return gpowgs(gel(B,2), a);
+    if (!a) return _ZXQ_powu(gel(A,2), b, T);
+    if (!b) return _ZXQ_powu(gel(B,2), a, T);
   } else
     if (!bound) B = RgX_deriv(A);
   if (!bound) bound = ZXQX_resultant_bound(nfinit(T, DEFAULTPREC), A, B);
