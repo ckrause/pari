@@ -2307,8 +2307,8 @@ nfX_resultant(GEN nf, GEN x, GEN y)
   pari_sp av = avma;
   GEN cx, cy, D, T = nf_get_pol(nf);
   ulong bound;
-  long d = degpol(x), v = varn(T);
-  if (d <= 1) return d == 1? pol_1(v): pol_0(v);
+  long dx = degpol(x), dy = degpol(y), v = varn(T);
+  if (dx < 0 || dy < 0) return pol_0(v);
   x = Q_primitive_part(x, &cx);
   y = Q_primitive_part(y, &cy);
   bound = ZXQX_resultant_bound(nf, x, y);

@@ -255,7 +255,7 @@ rnfeltdown(M,Mod(y, y^3 - 21)): Mod(y, y^3 - 21)
 rnfelttrace(L,Mod(y, y^3 - 21)): Mod(2*y, y^3 - 21)
 rnfelttrace(M,Mod(y, y^3 - 21)): Mod(y, y^3 - 21)
 rnfeltnorm(L,Mod(y, y^3 - 21)): Mod(y^2, y^3 - 21)
-rnfeltnorm(M,Mod(y, y^3 - 21)): 1
+rnfeltnorm(M,Mod(y, y^3 - 21)): Mod(y, y^3 - 21)
 rnfalgtobasis(L,Mod(1, x^6 - 21)): error("inconsistent moduli in rnfalgtobas
 is: x^6 - 21 != y^3 - 21")
 rnfalgtobasis(M,Mod(1, x^6 - 21)): error("inconsistent moduli in rnfalgtobas
@@ -379,7 +379,7 @@ rnfeltdown(M,y): Mod(y, y^3 - 21)
 rnfelttrace(L,y): Mod(2*y, y^3 - 21)
 rnfelttrace(M,y): Mod(y, y^3 - 21)
 rnfeltnorm(L,y): Mod(y^2, y^3 - 21)
-rnfeltnorm(M,y): 1
+rnfeltnorm(M,y): Mod(y, y^3 - 21)
 rnfalgtobasis(L,z): error("incorrect priority in rnfalgtobasis: variable z >
 = y")
 rnfalgtobasis(M,z): error("incorrect priority in rnfalgtobasis: variable z >
@@ -589,7 +589,7 @@ rnfeltdown(M,x^2): Mod(y^2, y^3 - 21)
 rnfelttrace(L,x^2): Mod(2*y, y^3 - 21)
 rnfelttrace(M,x^2): Mod(y^2, y^3 - 21)
 rnfeltnorm(L,x^2): Mod(y^2, y^3 - 21)
-rnfeltnorm(M,x^2): 1
+rnfeltnorm(M,x^2): Mod(y^2, y^3 - 21)
 1: x^2 - 4*x + 4
 2: x^2 - x + 1/4
 3: x^2 + Mod(-2*y, y^3 - 21)*x + Mod(y^2 - y, y^3 - 21)
@@ -706,7 +706,7 @@ rnfeltdown(M,y): Mod(y, y^3 - 21)
 rnfelttrace(L,y): -2
 rnfelttrace(M,y): Mod(y, y^3 - 21)
 rnfeltnorm(L,y): 1
-rnfeltnorm(M,y): 1
+rnfeltnorm(M,y): Mod(y, y^3 - 21)
 rnfalgtobasis(L,Mod(1/2*x + 1, x^2 + 1)): [1, 1/2]~
 rnfalgtobasis(M,Mod(1/2*x + 1, x^2 + 1)): error("inconsistent moduli in rnfa
 lgtobasis: x^2 + 1 != y^3 - 21")
@@ -832,7 +832,7 @@ rnfeltdown(M,x): Mod(-y, y^3 - 21)
 rnfelttrace(L,x): 0
 rnfelttrace(M,x): Mod(-y, y^3 - 21)
 rnfeltnorm(L,x): 1
-rnfeltnorm(M,x): 1
+rnfeltnorm(M,x): Mod(-y, y^3 - 21)
 rnfalgtobasis(L,[1]~): error("inconsistent dimensions in rnfalgtobasis.")
 rnfalgtobasis(M,[1]~): [1]~
 rnfbasistoalg(L,[1]~): error("inconsistent operation 'RgV_RgC_mul' t_VEC (2 
@@ -1350,4 +1350,4 @@ error("inconsistent dimensions in idealtwoelt.")
 4616746896704286594334662045803530653683643332613227600515985901534558021, -
 1756839977043712272060233380581107042236141123409211618384398509656714409036
 54196479376831010271529801027728469404407277067209]~]
-Total time spent: 1263
+Total time spent: 1259
