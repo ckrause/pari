@@ -1740,6 +1740,8 @@ cmp_epname(void *E, GEN e, GEN f)
   (void)E;
   return strcmp(((entree*)e)->name, ((entree*)f)->name);
 }
+/* if fun is set print only closures, else only non-closures
+ * if member is set print only member functions, else only non-members */
 static void
 print_all_user_obj(int fun, int member)
 {
@@ -1909,12 +1911,21 @@ escape(const char *tch, int ismain)
     case 's': dbg_pari_heap(); break;
     case 't': gentypes(); break;
     case 'u':
-      if (*s == 'v')
-        print_all_user_obj(0, 0);
-      else
-        print_all_user_obj(1, *s == 'm');
-      break;
-    case 'v': pari_print_version(); break;
+      switch(*s)
+      {
+        case 'v':
+          if (*++s) break;
+          print_all_user_obj(0, 0); return;
+        case 'm':
+          if (*++s) break;
+          print_all_user_obj(1, 1); return;
+        case '\0':
+          print_all_user_obj(1, 0); return;
+      }
+      pari_err(e_SYNTAX,"unexpected character", s,tch-1); break;
+    case 'v':
+      if (*s) pari_err(e_SYNTAX,"unexpected character", s,tch-1);
+      pari_print_version(); break;
     case 'y':
       s = get_sep(s);
       if (!*s) s = (GP_DATA->simplify)? "0": "1";
