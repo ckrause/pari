@@ -100,7 +100,9 @@ bnfisnorm(K,6, 0)
 K=bnfinit(y^3-21);
 bnfisnorm(K,2)
 bnfisnorm(K,6)
+
 L=rnfinit(K,x^2-y);
+M=rnfinit(K,x);
 
 v = [2,1/2,x+y,Mod(1,K.pol),Mod(1/2,K.pol),Mod(y,K.pol),Mod(1,L.polabs),Mod(1/2,L.polabs),Mod(x,L.polabs),Mod(x+y/2,L.pol),y,z,Mod(y+1/2,y^2+1),[1]~,[1,2]~,[1,y]~,[1,I]~, y+I,x^2];
 f=[rnfalgtobasis,rnfbasistoalg,rnfeltabstorel,rnfeltreltoabs,rnfeltup,rnfeltdown,rnfelttrace,rnfeltnorm];
@@ -108,8 +110,10 @@ f=[rnfalgtobasis,rnfbasistoalg,rnfeltabstorel,rnfeltreltoabs,rnfeltup,rnfeltdown
 test(L,v) =
 {
   for (i=1,#v,
-    for (j=1,#f, print([i,j], ": ", iferr(f[j](L,v[i]), E,E)))
-  );
+    for (j=1,#f,
+      print(f[j],"(L,",v[i]], "): ", iferr(f[j](L,v[i]), E,E));
+      print(f[j],"(M,",v[i]], "): ", iferr(f[j](M,v[i]), E,E))
+  ));
   my (K = L.nf);
   for (i=1,#v,
     print(i, ": ", iferr(rnfcharpoly(K,x^2-y,v[i]),E,E))
