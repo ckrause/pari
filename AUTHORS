@@ -1,9 +1,11 @@
 The PARI/GP project started around 1985 in the Laboratoire A2X (Universite
 Bordeaux 1, France)  and a first version was written by  Christian  Batut,
-Dominique Bernardi, Henri Cohen and Michel Olivier and maintained by Henri
-Cohen till 1995. Karim Belabas took over the maintainance between 1995 and
-2001,  the project has been jointly maintained by Bill Allombert and Karim
-Belabas since 2002.
+Dominique Bernardi,  Henri Cohen and Michel Olivier.  The project has been
+jointly maintained
+- by Henri Cohen till 1995,
+- by Karim Belabas from 1995 to 2002,
+- by Bill Allombert and Karim Belabas from 2002 to 2023,
+- by Bill Allombert and Aurel Page since 2023.
 
 A great number of people have contributed code  or data through  the  many
 stages which eventually resulted in the present version  of PARI/GP.  Even
@@ -16,6 +18,7 @@ Current lead developers:
 
   Bill ALLOMBERT (Bordeaux)
   Karim BELABAS (Bordeaux)
+  Aurel PAGE (Bordeaux)
 
 Major contributors (large modules written or rewritten from scratch):
 
@@ -27,15 +30,14 @@ Major contributors (large modules written or rewritten from scratch):
     finite fields, Lfun module, ratpoints port, ellrank port, fplll port.
   Jared ASUNCION: ECPP
   Christian BATUT: 68k multiprecision kernel, Linear algebra, lattices
-  Karim BELABAS: current project leader, native multiprecision kernel, modular
-    kernel, polynomial arithmetic, polynomial factorization (finite fields,
-    number fields), LLL, primality and compositeness tests, number fields,
-    polgalois, elliptic curves, qfsolve, transcendental
-    functions, install(), extension of the GP language (next/break/return,
-    local, op=, default()), gphelp, gphtml fork, Configure, readline, man
-    pages, documentation layout, reference card and user's manuals, the FAQ,
-    the http://pari.math.u-bordeaux.fr website, Lfun module, ModularForms
-    module, nflist, HGM package.
+  Karim BELABAS: native multiprecision kernel, modular kernel, polynomial
+    arithmetic, polynomial factorization (finite fields, number fields), LLL,
+    primality and compositeness tests, number fields, polgalois, elliptic
+    curves, qfsolve, transcendental functions, install(), extension of the GP
+    language (next/break/return, local, op=, default()), gphelp, gphtml fork,
+    Configure, readline, man pages, documentation layout, reference card and
+    user's manuals, the FAQ, the http://pari.math.u-bordeaux.fr website,
+    Lfun module, ModularForms module, nflist, HGM package.
   Dominique BERNARDI: the original gp interpreter, ECM, original
     elliptic curves implementation
   Peter BRUIN: asymptotically fast linear algebra over finite fields
@@ -67,8 +69,8 @@ Major contributors (large modules written or rewritten from scratch):
     documentation layout, AIX and Solaris support, first PARI web site.
   Michel OLIVIER: 68k multiprecision kernel, number fields, original polgalois
     and nfsubfields implementation
-  Aurel PAGE: Associative and central simple algebras module, linear algebra
-    over Z/NZ, Hecke characters
+  Aurel PAGE: current project leader. Associative and central simple algebras
+    module, linear algebra over Z/NZ, Hecke characters
   Thomas PAPANIKOlAOU: MPQS integration, Pari-Lidia project
   Xavier ROBLOT: MPQS integration, Stark, original nffactor, padicfields
   Denis SIMON: Norm equations, S-units, Hilbert symbols, original qfsolve
@@ -95,12 +97,12 @@ Package contributors:
 Other contributors: the 2 or 3 letter code refer to the CHANGES file. Please,
 kindly remind us if you have been forgotten!
 
-   = Karim Belabas (maintainer)
+   = Karim Belabas
 AE = Andreas Enge
 AF = Aurimas Fiseras
 AM = Alex V. Myltsev
 AMe= Anton Mellit
-AP = Aurel Page
+AP = Aurel Page (maintainer)
 AS = Andy Stubbs
 AW = Aleksander Wittlin
 BA = Bill Allombert
