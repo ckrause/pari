@@ -503,15 +503,18 @@ T = x^3-135*x-408;
 P1 = Mod([x/8-1,1/32*x^2 - 11/32*x - 19/4],T);
 P2 = Mod([2,5],T);
 P3 = Mod([0,y],y^2-15);
-P4 = Mod([t,2],t^3+t+11);
+P4 = [0,Mod(y,y^2-15)];
+P5 = Mod([t,2],t^3+t+11);
 elltrace(E,[0])
 elltrace(E,P1)
 elltrace(E,P2)
 elltrace(E,P3)
 elltrace(E,P4)
+elltrace(E,P5)
 
 E=ellinit([1,0]);
 elltrace(E,Mod([t,0],t^2+1))
+elltrace(E,[0,0]*Mod(1,t^3-2))
 
 E=ellinit([-13^2,0]);
 elltrace(E,[-10*x^3+10*x-13,-16*x^3+16*x-34]*Mod(1,x^4-x^3+2*x-1))

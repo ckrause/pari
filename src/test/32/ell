@@ -757,6 +757,8 @@ x^2 - 2
 [250922/185761, -347287135/80062991]
 [0]
 [0]
+[0]
+[0, 0]
 [0, 0]
 [11432100241/375584400, 1105240264347961/7278825672000]
 [Mod(1, 19), Mod(14, 19)]
@@ -816,4 +818,4 @@ x^2 - 2
   ***   at top-level: ellpointtoz(E3,[1,[0]])
   ***                 ^-----------------------
   *** ellpointtoz: incorrect type in ellpointtoz (t_VEC).
-Total time spent: 1261
+Total time spent: 1201

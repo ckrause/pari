@@ -7717,40 +7717,48 @@ GEN
 elltrace(GEN E, GEN P)
 {
   pari_sp av = avma;
-  GEN xP,yP, T, lxP, Q, LP, M, K, U,V,R, xQ,yQ;
+  GEN xP, yP, T = NULL, Q, LP, M, K, U,V,R, xQ,yQ;
   long v, n, i, j, d;
 
   checkell(E);
   checkellpt(P);
   if (ell_is_inf(P)) return gcopy(P); /* P == oo */
   /* More checks */
-  xP = gel(P,1); if (typ(xP)!=t_POLMOD) pari_err_TYPE("elltrace",xP);
-  yP = gel(P,2); if (typ(yP)!=t_POLMOD) pari_err_TYPE("elltrace",yP);
-  T = gel(xP,1); v = varn(T); n = degpol(T);
-  if (!gequal(gel(yP,1),T)) pari_err_MODULUS("elltrace",xP,yP);
+
+  xP = gel(P,1); yP = gel(P,2);
+  if (typ(xP)==t_POLMOD) { T = gel(xP,1); xP = gel(xP,2); }
+  if (typ(yP)==t_POLMOD)
+  {
+    if (T)
+    {
+      if (!gequal(gel(yP,1),T)) pari_err_MODULUS("elltrace",xP,yP);
+    }
+    else
+      T = gel(yP,1);
+    yP = gel(yP,2);
+  }
+  if (!T) pari_err_TYPE("elltrace",yP);
+  v = varn(T); n = degpol(T);
   /* Trivial cases */
   if (n == 1) { set_avma(av); return gcopy(P); }
-  lxP = to_RgX(gel(xP,2), v);
-  if (!degpol(lxP))
+  xP = to_RgX(xP, v);
+  yP = to_RgX(yP, v);
+  if (degpol(xP) <= 0)
   {
-    GEN lyP = to_RgX(gel(yP,2), v);
-    if (degpol(lyP)){ set_avma(av); retmkvec(gen_0); }
-    P = mkvec2(gel(lxP,2), gel(lyP,2));
+    if (degpol(yP) > 0) { set_avma(av); retmkvec(gen_0); }
+    P = mkvec2(constant_coeff(xP), constant_coeff(yP));
     return gerepileupto(av, ellmul(E, P, utoipos(n)));
   }
   /* Strategy: look for a function with divisor equal to
    *   [P_1] + ... + [P_n] + [-Tr(P)] - (n+1)[0]. */
   LP = cgetg(n+2,t_VEC); /* basis of the Riemann-Roch space evaluated at P */
-  gel(LP,1) = gen_1;
+  gel(LP,1) = pol_1(v);
   gel(LP,2) = xP;
   gel(LP,3) = yP;
-  for (i = 4; i <= n+1; i++) gel(LP,i) = gmul(gel(LP,i-2), xP);
+  for (i = 4; i <= n+1; i++) gel(LP,i) = RgXQ_mul(gel(LP,i-2), xP, T);
   M = cgetg(n+2,t_MAT); /* functions defined over K vanishing at P */
   for (j = 1; j <= n+1; j++)
-  {
-    GEN t = to_RgX(liftpol_shallow(gel(LP,j)), v);
-    for (i = 1; i <= n; i++) gel(M,j) = RgX_to_RgC(t, n);
-  }
+    for (i = 1; i <= n; i++) gel(M,j) = RgX_to_RgC(gel(LP,j), n);
   K = gel(ker(M),1);
   /* Coords on 1,x,y,x^2,xy,.. of function f of smallest degree vanishing at P
    * div f = [P_1] + ... + [P_d] + [-Tr(P)] - (d+1)[0]
@@ -7771,7 +7779,7 @@ elltrace(GEN E, GEN P)
   R = gmul(R, V);
   R = gsub(R, gsqr(U));
   /* Discard Galois orbit of P */
-  R = RgX_div(R, minpoly(xP,0));
+  R = RgX_div(R, RgXQ_minpoly(xP,T, 0));
   /* What is left is either constant -> return oo, or deg 1 -> nontrivial trace. */
   if(degpol(R)==0) { set_avma(av); retmkvec(gen_0); }
   /* Recover the trace */
