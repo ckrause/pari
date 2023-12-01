@@ -4766,7 +4766,7 @@ GEN   mftwist(GEN F, GEN D);
 GEN   mfvecembed(GEN E, GEN v);
 GEN   mfvectomat(GEN vF, long lim, long d);
 
-/* mp.c */
+/* mpker.c */
 
 ulong   Fl_inv(ulong x, ulong p);
 ulong   Fl_invsafe(ulong x, ulong p);
