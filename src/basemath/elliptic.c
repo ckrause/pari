@@ -1279,6 +1279,45 @@ ch_Rg(GEN E, GEN e, GEN w)
 }
 
 static GEN
+ch_NF(GEN E, GEN e, GEN w)
+{
+  long prec = ellR_get_prec(E);
+  GEN S, v = NULL, p = ellnf_get_nf(E);
+  if (base_ring(E, &p, &prec) != t_VEC) return ellinit(E, p, prec);
+  if ((S = obj_check(e, NF_MINIMALMODEL)))
+  {
+    if (lg(S) == 2)
+    { /* model was minimal */
+      if (!is_trivial_change(w)) /* no longer minimal */
+        S = mkvec3(gel(S,1), ellchangeinvert(w), e);
+      (void)obj_insert_shallow(E, NF_MINIMALMODEL, S);
+    }
+    else
+    {
+      v = gel(S,2);
+      if (gequal(v, w) || (is_trivial_change(v) && is_trivial_change(w)))
+        S = mkvec(gel(S,1)); /* now minimal */
+      else
+      {
+        w = ellchangeinvert(w);
+        gcomposev(&w, v); v = w;
+        S = leafcopy(S); /* don't modify S in place: would corrupt e */
+        gel(S,2) = v;
+      }
+      (void)obj_insert_shallow(E, NF_MINIMALMODEL, S);
+    }
+  }
+  if ((S = obj_check(e, NF_GLOBALRED)))
+    S = obj_insert_shallow(E, NF_GLOBALRED, S);
+  if ((S = obj_check(e, NF_ROOTNO)))
+    S = obj_insert_shallow(E, NF_ROOTNO, S);
+  if ((S = obj_check(e, NF_NF)))
+    S = obj_insert_shallow(E, NF_NF, S);
+  return E;
+}
+
+
+static GEN
 ch_Q(GEN E, GEN e, GEN w)
 {
   long prec = ellR_get_prec(E);
@@ -1374,6 +1413,7 @@ ellchangecurve(GEN e, GEN w)
       case t_ELL_Fq: E = ch_Fq(E,e,w); break;
       case t_ELL_Q:  E = ch_Q(E,e,w);  break;
       case t_ELL_Rg: E = ch_Rg(E,e,w); break;
+      case t_ELL_NF: E = ch_NF(E,e,w); break;
     }
   }
   return gerepilecopy(av, E);
