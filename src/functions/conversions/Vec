@@ -59,7 +59,7 @@ Doc: transforms the object $x$ into a row vector. The dimension of the
  takes positive valuations into account:
  \bprog
  ? serVec(s) = Vec(s, -serprec(s,variable(s)));
- ? Vec(x^2 + 3*x^3 + O(x^5))
+ ? serVec(x^2 + 3*x^3 + O(x^5))
  %2 = [0, 0, 1, 3, 0]
  @eprog (That function is not intended for series of negative valuation.)
 
