@@ -2310,15 +2310,18 @@ nfX_resultant(GEN nf, GEN x, GEN y)
 {
   pari_sp av = avma;
   GEN cx, cy, D, T = nf_get_pol(nf);
-  ulong bound;
-  long dx = degpol(x), dy = degpol(y), v = varn(T);
-  if (dx < 0 || dy < 0) return pol_0(v);
-  x = Q_primitive_part(x, &cx);
-  y = Q_primitive_part(y, &cy);
-  bound = ZXQX_resultant_bound(nf, x, y);
-  D = ZXQX_resultant_all(x, y, T, NULL, bound);
-  if (cx) D = gmul(D, gpowgs(cx, degpol(y)));
-  if (cy) D = gmul(D, gpowgs(cy, degpol(x)));
+  long dx = degpol(x), dy = degpol(y);
+  if (dx < 0 || dy < 0) return gen_0;
+  x = Q_primitive_part(x, &cx); if (cx) cx = gpowgs(cx, dy);
+  y = Q_primitive_part(y, &cy); if (cy) cy = gpowgs(cy, dx);
+  if (!dx)      D = _ZXQ_powu(gel(x,2), dy, T);
+  else if (!dy) D = _ZXQ_powu(gel(y,2), dx, T);
+  else
+  {
+    ulong bound = ZXQX_resultant_bound(nf, x, y);
+    D = ZXQX_resultant_all(x, y, T, NULL, bound);
+  }
+  cx = mul_content(cx, cy); if (cx) D = gmul(D, cx);
   return gerepileupto(av, D);
 }
 
