@@ -98,4 +98,4 @@ csmall([2, 5]), Vecsmall([5, 6]), Vecsmall([6, 4])]]
   ***   at top-level: N=24;G0=mspolygon(N);msfarey(G0,g->a=g[1,1]%N;
   ***                                      ^-------------------------
   *** msfarey: msfarey: H is not a subgroup of PSL_2(Z).
-Total time spent: 94
+Total time spent: 76

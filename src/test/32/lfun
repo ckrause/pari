@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 16000000 (16.00 MB).
+  ***   Warning: new stack size = 16000000 (15.259 Mbytes).
 [688, 201]
 371
 1:-0.33333333333333333333333333333333333333
@@ -390,4 +390,4 @@ O(x^2)
   ***   at top-level: lfuncheckfeq(1,I)
   ***                 ^-----------------
   *** lfuncheckfeq: domain error in lfunthetaneed: arg t > 0.7853981633974482790
-Total time spent: 5411
+Total time spent: 4071

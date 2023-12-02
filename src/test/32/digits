@@ -73,4 +73,4 @@
   ***   at top-level: digits(10,1)
   ***                 ^------------
   *** digits: domain error in digits: abs(B) < 2
-Total time spent: 65
+Total time spent: 63

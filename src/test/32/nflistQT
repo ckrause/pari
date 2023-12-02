@@ -21,4 +21,4 @@ x^3 + 9*t*x^2 - x - t
   ***   at top-level: nflist([18,100000])
   ***                 ^-------------------
   *** nflist: incorrect group 18Tk with k = 100000 not in [1,983].
-Total time spent: 1335
+Total time spent: 1062

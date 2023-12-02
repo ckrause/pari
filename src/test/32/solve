@@ -26,10 +26,10 @@
   ***   at top-level: solve(x=-oo,0,exp(x)-2)
   ***                                     ^---
   *** _-_: the PARI stack overflows !
-  current stack size: 8000000 (8.00 MB)
+  current stack size: 8000000 (7.629 Mbytes)
   [hint] set 'parisizemax' to a nonzero value in your GPRC
 
   ***   at top-level: solve(x=2,oo,exp(x)-2)
   ***                              ^---------
   *** exp: overflow in expo().
-Total time spent: 165
+Total time spent: 287

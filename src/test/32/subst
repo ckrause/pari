@@ -93,4 +93,4 @@ Mod(-a, a^2 - 2)
 0
 O(y) + (1 - y + O(y^2))*x + O(x^2)
 Mod(0, 2)*t^90 + O(t^91)
-Total time spent: 1
+Total time spent: 0

@@ -656,4 +656,4 @@ INFINITY
   ***   at top-level: Pol(O(17^-1),v0)/Pol([Mod(9,23),O(23^-3)],v0)
   ***                                 ^-----------------------------
   *** _/_: inconsistent  t_PADIC , t_INTMOD.
-Total time spent: 16
+Total time spent: 11

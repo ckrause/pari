@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 72000000 (72.00 MB).
+  ***   Warning: new stack size = 72000000 (68.665 Mbytes).
 1000000000000001 [4, 4, 2, 2, 2]
 1000000000000005 [2, 2, 2, 2]
 1000000000000009 [2, 2]
@@ -693,4 +693,4 @@ Mod(11196455778304025936, 18446744073709551557) + Mod(15094424487818408561,
   ***                 ^----------------
   *** quadunitnorm: incorrect type in quadunitnorm (t_REAL).
 ? print("Total time spent: ",gettime);
-Total time spent: 6663
+Total time spent: 5363

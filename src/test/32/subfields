@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 32000000 (32.00 MB).
+  ***   Warning: new stack size = 32000000 (30.518 Mbytes).
 1:[1, 2, 3, 3, 3, 6]
 2:[1, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4, 8]
 3:[1, 2, 2, 2, 4, 4, 4, 8]
@@ -316,4 +316,4 @@ a^3 - 93312, -a^4 + 18*a], [a^6 + 108, a]]
   ***   at top-level: nfsubfields([x^2-5,[z-x,1;z+x,1]])
   ***                 ^----------------------------------
   *** nfsubfields: incorrect priority in nfsubfields_fa: variable x <= x
-Total time spent: 12170
+Total time spent: 11314

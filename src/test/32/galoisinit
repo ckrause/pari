@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 16000000 (16.00 MB).
+  ***   Warning: new stack size = 16000000 (15.259 Mbytes).
 [2, 1]
 [16, 10]
 [20, 3]
@@ -155,4 +155,4 @@ x^2 - x - 16
   ***   at top-level: galoispermtopol(G,[4,3,6,5,1,2])
   ***                 ^--------------------------------
   *** galoispermtopol: incorrect type in galoispermtopol (t_VEC).
-Total time spent: 2853
+Total time spent: 2739

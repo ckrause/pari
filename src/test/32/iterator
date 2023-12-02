@@ -202,4 +202,4 @@
   ***   at top-level: foreach(x^2+1,x,)
   ***                 ^-----------------
   *** foreach: incorrect type in foreach (t_POL).
-Total time spent: 2344
+Total time spent: 2098

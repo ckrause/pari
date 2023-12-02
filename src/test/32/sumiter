@@ -40,4 +40,4 @@
 0.99999999999999999999999999999999999999
 ? if(getheap()!=HEAP,getheap())
 ? print("Total time spent: ",gettime);
-Total time spent: 6
+Total time spent: 15

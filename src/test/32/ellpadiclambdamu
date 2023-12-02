@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 12000000 (12.00 MB).
+  ***   Warning: new stack size = 12000000 (11.444 Mbytes).
 [[8, 4], [0, 0]]
 [[2, 4], [0, 0]]
 [[8, 4], [0, 0]]
@@ -65,4 +65,4 @@
   ***   in function lambdamu: ellpadiclambdamu(e,p,d,i)
   ***                         ^-------------------------
   *** ellpadiclambdamu: incorrect type in ellpadiclambdamu (t_VEC).
-Total time spent: 713
+Total time spent: 843

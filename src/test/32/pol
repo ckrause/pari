@@ -132,4 +132,4 @@ E-38*I, 26.466020671197515570740051488474260276 + 0.E-38*I, 27.0934735492647
   ***   at top-level: poltomonic(Pol(0))
   ***                 ^------------------
   *** poltomonic: zero polynomial in poltomonic.
-Total time spent: 10
+Total time spent: 7

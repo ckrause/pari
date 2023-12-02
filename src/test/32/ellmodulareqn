@@ -11,4 +11,4 @@
   ***   at top-level: ellmodulareqn(2,y,x)
   ***                 ^--------------------
   *** ellmodulareqn: incorrect priority in ellmodulareqn: variable y >= x
-Total time spent: 28
+Total time spent: 38

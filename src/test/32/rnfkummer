@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 40000000 (40.00 MB).
+  ***   Warning: new stack size = 40000000 (38.147 Mbytes).
 1
 1
 2
@@ -46,4 +46,4 @@ x^3 + Mod(-3837*y^2 + 258*y - 107823, y^3 + 28*y + 2)*x + Mod(366568*y^2 - 2
   ***   at top-level: rnfkummer(bnfinit(x^2+23))
   ***                 ^--------------------------
   *** rnfkummer: incorrect priority in bnrclassfield: variable x = x
-Total time spent: 5004
+Total time spent: 6645

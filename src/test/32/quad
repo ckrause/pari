@@ -56,4 +56,4 @@ w
   ***   at top-level: floor(Mod(0,3)*quadgen(5))
   ***                 ^--------------------------
   *** floor: incorrect type in gfloor (t_QUAD).
-Total time spent: 0
+Total time spent: 1

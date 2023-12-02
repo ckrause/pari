@@ -154,4 +154,4 @@ x^-1 + O(x^0)
   ***   at top-level: psi(O(x))
   ***                 ^---------
   *** psi: domain error in psi: argument = 0
-Total time spent: 12
+Total time spent: 30

@@ -55,4 +55,4 @@
   ***   at top-level: dirpowerssum('x,1)
   ***                 ^------------------
   *** dirpowerssum: incorrect type in dirpowerssum (t_POL).
-Total time spent: 13
+Total time spent: 21

@@ -176,4 +176,4 @@ O(x)
   ***   at top-level: padicappr(x^2+1,1/3+O(3))
   ***                 ^-------------------------
   *** padicappr: domain error in padicappr: v(a) < 0
-Total time spent: 5
+Total time spent: 9

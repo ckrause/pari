@@ -38,4 +38,4 @@ Mod(-x + 1, x^2 - 2)
 Mod(-2*x + 1, 4*x^2 - 2)
 Mod(3*x + 1, x^3 - 2)
 "t_FRAC"
-Total time spent: 4
+Total time spent: 2

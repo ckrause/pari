@@ -90,4 +90,4 @@
   ***   at top-level: znchar([znstar(100,1),[1,2,3]])
   ***                 ^-------------------------------
   *** znchar: incorrect type in znchar (t_VEC).
-Total time spent: 1
+Total time spent: 0

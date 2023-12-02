@@ -642,4 +642,4 @@ x^2 - 686
   ***   at top-level: hyperellcharpoly((256*a^5+5)*ffgen(5^2))
   ***                 ^----------------------------------------
   *** hyperellcharpoly: domain error in hyperellpadicfrobenius: H is singular at 5
-Total time spent: 1751
+Total time spent: 2568

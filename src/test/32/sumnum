@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 40000000 (40.00 MB).
+  ***   Warning: new stack size = 40000000 (38.147 Mbytes).
 +oo
 +oo
 +oo
@@ -119,4 +119,4 @@
   ***   at top-level: intnumosc(x=0,besselj(0,x)^2,Pi)
   ***                                       ^----------
   ***   sumnumsidi diverges.
-Total time spent: 2402
+Total time spent: 3527

@@ -101,4 +101,4 @@ x^10 + 5*x^9 + 15*x^8 + 30*x^7 + 45*x^6 + Mod(2*y + 51, y^2 - 5)*x^5 + Mod(5
   ***   at top-level: nfcompositum(bnfinit(x),x^3-2,x^3-1)
   ***                 ^------------------------------------
   *** nfcompositum: incorrect priority in polcompositum: variable x >= x
-Total time spent: 772
+Total time spent: 602

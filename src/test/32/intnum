@@ -1,5 +1,5 @@
 ? allocatemem(20*10^6);
-  ***   Warning: new stack size = 20000000 (20.00 MB).
+  ***   Warning: new stack size = 20000000 (19.073 Mbytes).
 ? check(a,b)=my(t=abs((a-b)/b));if(t,ceil(log(t)/log(10)),-oo);
 ? \p96
    realprecision = 96 significant digits
@@ -214,4 +214,4 @@
   ***                                             ^--
   ***   sorry, intfuncinit with hard endpoint behavior is not yet implemented.
 ? print("Total time spent: ",gettime);
-Total time spent: 1005
+Total time spent: 2544

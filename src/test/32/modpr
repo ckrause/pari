@@ -192,4 +192,4 @@ y
   ***   at top-level: nfmodpr(Kerr,[y,2;y^2/9,3],Perr)
   ***                 ^--------------------------------
   *** nfmodpr: impossible inverse in Rg_to_ff: Mod(0, 3).
-Total time spent: 132
+Total time spent: 84

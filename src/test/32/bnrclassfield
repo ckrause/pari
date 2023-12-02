@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 34000000 (34.00 MB).
+  ***   Warning: new stack size = 34000000 (32.425 Mbytes).
 1
 [x^2 - 2]
 2
@@ -298,4 +298,4 @@ bad inputs
   ***   at top-level: bnrclassfield(bnfinit(x))
   ***                 ^-------------------------
   *** bnrclassfield: incorrect priority in bnrclassfield: variable x = x
-Total time spent: 3912
+Total time spent: 4748

@@ -18,4 +18,4 @@ a
   ***   at top-level: matpermanent(matrix(2,3))
   ***                 ^-------------------------
   *** matpermanent: inconsistent dimensions in matpermanent.
-Total time spent: 1174
+Total time spent: 2132

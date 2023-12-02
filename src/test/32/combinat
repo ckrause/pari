@@ -68,4 +68,4 @@ all([5, 4, 3, 1, 2]), Vecsmall([5, 4, 3, 2, 1])]
   *** permtonum: incorrect type in permtonum (t_INT).
 0
 Vecsmall([])
-Total time spent: 2
+Total time spent: 4

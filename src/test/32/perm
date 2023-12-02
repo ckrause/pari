@@ -36,4 +36,4 @@
   ***   at top-level: permcycles(Vecsmall([1,2,1]))
   ***                 ^-----------------------------
   *** permcycles: incorrect type in permcycles (t_VECSMALL).
-Total time spent: 0
+Total time spent: 1

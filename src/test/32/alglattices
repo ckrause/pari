@@ -162,4 +162,4 @@ bad inputs
   ***   at top-level: alglatmul(al,lat1,[matdiagonal([1,1,0,1,1,1,1,
   ***                 ^----------------------------------------------
   *** alglatmul: incorrect type in checklat [please apply alglathnf()] (t_VEC).
-Total time spent: 1006
+Total time spent: 1266

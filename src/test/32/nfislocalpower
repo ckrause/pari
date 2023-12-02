@@ -19,4 +19,4 @@
   ***   at top-level: nfislocalpower(K,"","",0)
   ***                 ^-------------------------
   *** nfislocalpower: incorrect type in checkprid (t_STR).
-Total time spent: 5
+Total time spent: 9
