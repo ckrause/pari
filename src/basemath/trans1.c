@@ -2228,7 +2228,8 @@ exp1r_abs(GEN x)
     { /* compute X^(n-1)/n! + ... + X/2 + 1 */
       GEN p1, p3;
       setprec(X,l1); p3 = divru(X,i);
-      l1 += dvmdsBIL(s - expo(p3), &s); if (l1>L) l1=L;
+      l1 += nbits2extraprec(dvmdsBIL(s - expo(p3), &s)<<TWOPOTBITS_IN_LONG);
+      if (l1>L) l1=L;
       setprec(unr,l1); p1 = addrr_sign(unr,1, i == n? p3: mulrr(p3,p2),1);
       setprec(p2,l1); affrr(p1,p2); /* p2 <- 1 + (X/i)*p2 */
     }
@@ -2970,7 +2971,8 @@ logr_aux(GEN y)
       setprec(y2, l1); T = mulrr(S,y2);
       if (k == 1) break;
 
-      l1 += dvmdsBIL(s + incs, &s); if (l1>L) l1=L;
+      l1 += nbits2extraprec(dvmdsBIL(s + incs, &s)<<TWOPOTBITS_IN_LONG);
+      if (l1>L) l1=L;
       setprec(S, l1);
       setprec(unr,l1);
       affrr(addrr(divru(unr, k), T), S); set_avma(av);
@@ -3437,7 +3439,8 @@ mpcosm1(GEN x, long *ptmod8)
     {
       GEN t;
       setprec(x2,l1); t = divrunextu(x2, 2*i-1);
-      l1 += dvmdsBIL(s - expo(t), &s); if (l1 > L) l1 = L;
+      l1 += nbits2extraprec(dvmdsBIL(s - expo(t), &s)<<TWOPOTBITS_IN_LONG);
+      if (l1 > L) l1 = L;
       if (i != n) t = mulrr(t,u);
       setprec(un,l1); t = addrr_sign(un,1, t,-signe(t));
       setprec(u,l1); affrr(t,u); set_avma(av);

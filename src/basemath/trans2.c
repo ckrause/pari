@@ -119,7 +119,8 @@ mpatan(GEN x)
   for (i = n; i > 1; i--) /* n >= 1. i = 1 done outside for efficiency */
   {
     setprec(p3,l1); p5 = mulrr(p4,p3);
-    l1 += dvmdsBIL(s - e, &s); if (l1 > l2) l1 = l2;
+    l1 += nbits2extraprec(dvmdsBIL(s - e, &s)<<TWOPOTBITS_IN_LONG);
+    if (l1 > l2) l1 = l2;
     setprec(unr,l1); p5 = subrr(divru(unr,2*i-1), p5);
     setprec(p4,l1); affrr(p5,p4); set_avma(av);
   }
