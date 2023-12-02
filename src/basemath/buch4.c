@@ -128,7 +128,7 @@ rnfisnorminit(GEN T, GEN R, int galois)
     GEN Ndiscrel = diviiexact(nf_get_disc(nfabs), powiu(nf_get_disc(nf), dR));
     Zfa_append(Ndiscrel, H, NULL);
   }
-  S = hash_keys(H); settyp(S,t_VEC);
+  S = hash_keys_GEN(H);
   gel(y,1) = bnf;
   gel(y,2) = bnfabs;
   gel(y,3) = R;
@@ -191,10 +191,9 @@ rnfisnorm(GEN T, GEN x, long flag)
   A = idealnumden(nf, x);
   fa_append(gel(A,1), H0,H2);
   fa_append(gel(A,2), H0,H2);
-  Sx = hash_keys(H2); L = lg(Sx);
+  Sx = hash_keys_GEN(H2); L = lg(Sx);
   if (L > 1)
   { /* new primes */
-    settyp(Sx, t_VEC);
     S1 = shallowconcat(S1, nf_pV_to_prV(nf, Sx));
     S2 = shallowconcat(S2, nf_pV_to_prV(rel, Sx));
   }

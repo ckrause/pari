@@ -186,6 +186,21 @@ hash_keys(hashtable *h)
   }
   return v;
 }
+
+GEN
+hash_keys_GEN(hashtable *h)
+{
+  long k = 1;
+  ulong i;
+  GEN v = cgetg(h->nb+1, t_VEC);
+  for (i = 0; i < h->len; i++)
+  {
+    hashentry *e = h->table[i];
+    while (e) { gel(v,k++) = (GEN)e->key; e = e->next; }
+  }
+  return v;
+}
+
 GEN
 hash_values(hashtable *h)
 {

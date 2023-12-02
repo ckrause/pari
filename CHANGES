@@ -99,6 +99,7 @@ BA  36- [libpari] RgM_div
 BA  37- [libpari] ZV_max_expi, ZM_max_expi
 BA  38- [libpari] ZM_merge_factor
 BA  39- [libpari] RgM_Cholesky
+BA  40- [libpari] hash_keys_GEN
 
   Removed
      1- [graphic] support for Qt4

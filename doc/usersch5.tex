@@ -15245,6 +15245,9 @@ attached to $k$ and $v$ is not reclaimed.
 \fun{GEN}{hash_keys}{hashtable *h} return in a \typ{VECSMALL} the keys
 stored in hashtable $h$.
 
+\fun{GEN}{hash_keys_GEN}{hashtable *h} return in a \typ{VEC} the keys
+stored in hashtable $h$ (which are assumed to be \kbd{GEN}s).
+
 \fun{GEN}{hash_values}{hashtable *h} return in a \typ{VECSMALL}
 the values stored in hashtable $h$.
 

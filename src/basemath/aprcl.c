@@ -1095,9 +1095,6 @@ set_add(hashtable *H, void *d)
   ulong h = H->hash(d);
   if (!hash_search2(H, d, h)) hash_insert2(H, d, NULL, h);
 }
-static GEN
-GEN_hash_keys(hashtable *H)
-{ GEN v = hash_keys(H); settyp(v, t_VEC); return ZV_sort(v); }
 static void
 add(hashtable *H, GEN t1, GEN t2, GEN a, GEN b, GEN r, GEN s)
 {
@@ -1206,5 +1203,5 @@ divisorslenstra(GEN N, GEN r, GEN s)
       c = modii(subii(c0, mulii(q,c1)), s); c0 = c1; c1 = c;
     }
   }
-  return gerepileupto(av, GEN_hash_keys(H));
+  return gerepileupto(av, ZV_sort(hash_keys_GEN(H)));
 }

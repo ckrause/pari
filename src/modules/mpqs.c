@@ -1362,7 +1362,7 @@ mpqs_solve_linear_system(mpqs_handle_t *h, hashtable *frel)
 {
   mpqs_FB_entry_t *FB = h->FB;
   pari_sp av = avma;
-  GEN rels = hash_keys(frel), N = h->N, r, c, res, ei, M, Ker;
+  GEN rels = hash_keys_GEN(frel), N = h->N, r, c, res, ei, M, Ker;
   long i, j, nrows, rlast, rnext, rmax, rank;
 
   M = rels_to_F2Ms(rels);

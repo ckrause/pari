@@ -4154,6 +4154,7 @@ void    hash_insert(hashtable *h, void *k, void *v);
 void    hash_insert_long(hashtable *h, void *k, long v);
 void    hash_insert2(hashtable *h, void *k, void *v, ulong hash);
 GEN     hash_keys(hashtable *h);
+GEN     hash_keys_GEN(hashtable *h);
 GEN     hash_values(hashtable *h);
 hashentry *hash_search(hashtable *h, void *k);
 hashentry *hash_search2(hashtable *h, void *k, ulong hash);
