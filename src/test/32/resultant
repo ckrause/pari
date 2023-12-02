@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 20000000 (19.073 Mbytes).
+  ***   Warning: new stack size = 20000000 (20.00 MB).
 1127614608
 911045
 -23334121
@@ -446,4 +446,4 @@ y^2
 8*x^5 + 19*x^4 - x^3 - 2*x^2
 x^12 + 20*x^11 + 154*x^10 + 558*x^9 + 916*x^8 + 473*x^7 - 75*x^6 - 64*x^5 + 
 19*x^4 + x^3 - 2*x^2
-Total time spent: 2932
+Total time spent: 3759

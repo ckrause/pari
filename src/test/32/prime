@@ -35,4 +35,4 @@
   ***   at top-level: precprime(x)
   ***                 ^------------
   *** precprime: incorrect type in nextprime (t_POL).
-Total time spent: 446
+Total time spent: 465

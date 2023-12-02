@@ -224,4 +224,4 @@ Vecsmall([3, 1, 3, 1])
   ***   at top-level: polylogmult(1,[],-1)
   ***                 ^--------------------
   *** polylogmult: incorrect type in polylogmult (t_INT).
-Total time spent: 98
+Total time spent: 68

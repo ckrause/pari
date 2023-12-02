@@ -741,4 +741,4 @@ x - 80, 0], [3, [5, [Mod(0, 3), Mod(0, 3)]], ["[III*-III*-0] pages 162-177",
 2, 0], [3, [5, [Mod(0, 3), Mod(0, 3)]], ["[IV*-IV*-0] pages 160-175", [3, 3]
 ]]]
 ? print("Total time spent: ",gettime);
-Total time spent: 49
+Total time spent: 70

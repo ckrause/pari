@@ -150,4 +150,4 @@ dim=8
   ***   at top-level: ...]/5);F=factor(matdet(M));qfsolve([M,F])
   ***                                             ^--------------
   *** qfsolve: sorry, qfsolve, dim >= 10 is not yet implemented.
-Total time spent: 1627
+Total time spent: 2278

@@ -12,4 +12,4 @@
   ***   at top-level: zncoppersmith(x/2,10,5,5)
   ***                 ^-------------------------
   *** zncoppersmith: incorrect type in zncoppersmith (t_POL).
-Total time spent: 68
+Total time spent: 79

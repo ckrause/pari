@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 64000000 (61.035 Mbytes).
+  ***   Warning: new stack size = 64000000 (64.00 MB).
 
 [  "Factors" 0 0 0 0]
 
@@ -1666,4 +1666,4 @@ od(0, t^16 + 1), Mod(3/8*t^11, t^16 + 1), Mod(0, t^16 + 1)]
   *** mffromqf: incorrect type in mffromqf [not a spherical t_POL] (t_POL).
 [0, 1, 2, 0, 2, -1, 0, -2, 0, 0, -2, -1, 0, 4, -4, 0, -4, 2, 0, 0, -2]
 [0, 1, 2, 0, 2, -1, 0, -2, 0, 0, -2, -1, 0, 4, -4, 0, -4, 2, 0, 0, -2]
-Total time spent: 16036
+Total time spent: 14559

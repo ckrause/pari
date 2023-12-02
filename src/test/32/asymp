@@ -45,4 +45,4 @@
   ***   at top-level: limitnum(n->1,-1)
   ***                 ^-----------------
   *** limitnum: domain error in limitnum: alpha <= 0
-Total time spent: 159
+Total time spent: 73

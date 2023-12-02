@@ -1074,8 +1074,7 @@ parivstack_resize(ulong newsize)
   paristack_setsize(pari_mainstack->rsize, newsize);
   s = pari_mainstack->vsize ? pari_mainstack->vsize : pari_mainstack->rsize;
   if (DEBUGMEM)
-    pari_warn(warner,"new maximum stack size = %lu (%.3f Mbytes)",
-              s, s/1048576.);
+    pari_warn(warner,"new maximum stack size = %lu (%.2f MB)", s, s/1000000.);
   pari_init_errcatch();
   cb_pari_err_recover(-1);
 }
@@ -1090,7 +1089,7 @@ paristack_newrsize(ulong newsize)
   evalstate_reset();
   s = pari_mainstack->rsize;
   if (DEBUGMEM)
-    pari_warn(warner,"new stack size = %lu (%.3f Mbytes)", s, s/1048576.);
+    pari_warn(warner,"new stack size = %lu (%.2f MB)", s, s/1000000.);
   pari_init_errcatch();
   cb_pari_err_recover(-1);
 }
@@ -1818,16 +1817,16 @@ pari_err2str(GEN e)
       if (vsize)
       {
         sprintf(buf, "the %s stack overflows !\n"
-            "  current stack size: %lu (%.3f Mbytes)\n"
+            "  current stack size: %lu (%.2f MB)\n"
             "  [hint] you can increase '%s' using default()\n",
-            stack, (ulong)vsize, (double)vsize/1048576., var);
+            stack, (ulong)vsize, (double)vsize/1000000., var);
       }
       else
       {
         sprintf(buf, "the %s stack overflows !\n"
-            "  current stack size: %lu (%.3f Mbytes)\n"
+            "  current stack size: %lu (%.2f MB)\n"
             "  [hint] set '%s' to a nonzero value in your GPRC\n",
-            stack, (ulong)rsize, (double)rsize/1048576., var);
+            stack, (ulong)rsize, (double)rsize/1000000., var);
       }
       return buf;
     }

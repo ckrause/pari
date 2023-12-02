@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 46000000 (43.869 Mbytes).
+  ***   Warning: new stack size = 46000000 (46.00 MB).
 [3, [0, []], [13, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]], [100, 20, 2, 2],
  479, 743]
 [18446744073709551629, [0, []], [0, []], [100, 20, 2, 2], 479, 1471]
@@ -89,4 +89,4 @@
   ***   at top-level: subcyclopclgp([7],5,64)
   ***                 ^-----------------------
   *** subcyclopclgp: invalid flag in subcyclopclgp.
-Total time spent: 5008
+Total time spent: 4368

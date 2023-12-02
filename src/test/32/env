@@ -1,6 +1,9 @@
 "/root"
 1
-"XXX, YYY, XXX"
-"XXX"
+  *** strexpand: Warning: undefined environment variable: AAA.
+  *** strexpand: Warning: undefined environment variable: BBB.
+  *** strexpand: Warning: undefined environment variable: AAA.
+", , "
+0
 0
 Total time spent: 0

@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 18000000 (17.166 Mbytes).
+  ***   Warning: new stack size = 18000000 (18.00 MB).
 Mod(1, 2)
 Mod(3, 4)
 Mod(5, 9223372036854775837)
@@ -285,4 +285,4 @@ x^2
   ***   at top-level: znconreylog(G,[1]~)
   ***                 ^-------------------
   *** znconreylog: incorrect type in znconreylog (t_COL).
-Total time spent: 1872
+Total time spent: 1434

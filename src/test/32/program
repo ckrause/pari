@@ -100,4 +100,4 @@ give a value for s? printtex((x+y)^3/(x-y)^2)
 400 1.6324242855329314481714056192369470068
 ? if(getheap()!=HEAP,getheap())
 ? print("Total time spent: ",gettime);
-Total time spent: 5
+Total time spent: 4

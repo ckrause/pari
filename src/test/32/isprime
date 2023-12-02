@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 62000000 (59.128 Mbytes).
+  ***   Warning: new stack size = 62000000 (62.00 MB).
 1
 1
 1
@@ -426,4 +426,4 @@ T=0x279D8007CF22A87E6AAA30
   ***   at top-level: primecertexport([],1)
   ***                 ^---------------------
   *** primecertexport: incorrect type in primecertexport - invalid certificate (t_VEC).
-Total time spent: 10418
+Total time spent: 11126

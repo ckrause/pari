@@ -41,4 +41,4 @@ List([])
   ***   at top-level: vecsort(Vecsmall(1),1)
   ***                 ^----------------------
   *** vecsort: incorrect type in sort_function (t_VECSMALL).
-Total time spent: 1
+Total time spent: 0

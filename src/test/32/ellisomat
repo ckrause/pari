@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 14000000 (13.351 Mbytes).
+  ***   Warning: new stack size = 14000000 (14.00 MB).
 -32768:[1, 11; 11, 1]:[0, 0]
 -121:[1, 11; 11, 1]:[0, 0]
 -24729001:[1, 11; 11, 1]:[0, 0]
@@ -282,4 +282,4 @@ ll([1]), [Vecsmall([64, -1])], [0, 0, 0, 0, 0, 0, 0, 0]], [1, 0, 1, -1, 0, 1
   ***   at top-level: ellisomat(ellinit([-824740032823875,9115932407
   ***                 ^----------------------------------------------
   *** ellisomat: incorrect priority in ellisomat: variable y <= y
-Total time spent: 3038
+Total time spent: 3020

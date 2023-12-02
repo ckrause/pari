@@ -12,4 +12,4 @@
   ***   at top-level: nfeltembed(nf,y,[1,2,4])
   ***                 ^------------------------
   *** nfeltembed: inconsistent variables in nf_to_scalar_or_basis, y != x.
-Total time spent: 0
+Total time spent: 1

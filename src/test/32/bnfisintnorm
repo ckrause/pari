@@ -768,4 +768,4 @@
 ? bnfisintnorm(bnfinit('y^2+93),54647)
 []
 ? print("Total time spent: ",gettime);
-Total time spent: 588
+Total time spent: 321

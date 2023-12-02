@@ -29,4 +29,4 @@ x/(x^2 - 2*x + 1)
   ***   at top-level: polylog(3,"",0)
   ***                 ^---------------
   *** polylog: incorrect type in polylog (t_STR).
-Total time spent: 3
+Total time spent: 1

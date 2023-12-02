@@ -100,4 +100,4 @@ error("not an n-th power residue in gsqrtn: Mod(3, 19).")
   ***   at top-level: sqrtnint(-quadgen(5),3)
   ***                 ^-----------------------
   *** sqrtnint: domain error in sqrtnint: argument < 0
-Total time spent: 85
+Total time spent: 75

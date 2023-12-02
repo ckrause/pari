@@ -47,4 +47,4 @@ I
   ***   at top-level: localprec('x)
   ***                 ^-------------
   *** localprec: incorrect type in localprec (t_POL).
-Total time spent: 2
+Total time spent: 1

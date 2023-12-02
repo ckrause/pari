@@ -35,4 +35,4 @@
   ***   at top-level: logint(-1/2,2)
   ***                 ^--------------
   *** logint: domain error in logint: x < 1
-Total time spent: 1
+Total time spent: 0

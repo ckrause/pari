@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 12000000 (11.444 Mbytes).
+  ***   Warning: new stack size = 12000000 (12.00 MB).
 x^7 + Mod(7*y - 7, y^2 - y - 1)*x^6 + Mod(-21*y + 28, y^2 - y - 1)*x^5 - 35*
 x^4 + Mod(35*y - 49, y^2 - y - 1)*x^3 + Mod(-7*y + 84, y^2 - y - 1)*x^2 + Mo
 d(-14*y + 21, y^2 - y - 1)*x + Mod(-y - 43, y^2 - y - 1)
@@ -82,4 +82,4 @@ y^2 + Mod(t^3, t^4 + t^3 + t^2 + t + 1)*y + Mod(8*t^2 - 46*t + 8, t^4 + t^3
   ***   at top-level: polredbest(x^6+30*x^5+133*x^4-2340*x^3-12284*x
   ***                 ^----------------------------------------------
   *** polredbest: not an irreducible polynomial in set_LLL_basis: x^6 + 30*x^5 + 133*x^4 - 2340*x^3 - 12284*x^2 + 29519*x - 3856.
-Total time spent: 5153
+Total time spent: 4717

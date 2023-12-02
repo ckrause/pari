@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 12000000 (11.444 Mbytes).
+  ***   Warning: new stack size = 12000000 (12.00 MB).
 Suite: all
 Suite: hasse sum to 0
 cyclo construction: [[x^2 + x + 1, [1], [3, -3], 1, [3], [], [[1, x], [1, 1]
@@ -178,4 +178,4 @@ degree bug
 infinite loop in GW
 inefficiency in backtrackfacto
 bug: alg_complete at ramified primes
-Total time spent: 1990
+Total time spent: 1637

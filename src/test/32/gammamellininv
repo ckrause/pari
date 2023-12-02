@@ -23,4 +23,4 @@
   ***   at top-level: gammamellininvinit(x,-2)
   ***                 ^------------------------
   *** gammamellininvinit: domain error in gammamellininvinit: derivation order < 0
-Total time spent: 1870
+Total time spent: 2186

@@ -162,4 +162,4 @@ Vecsmall([1])
   ***   at top-level: forperm(-1,q,)
   ***                 ^--------------
   ***   domain error in forperm: a < 0
-Total time spent: 1
+Total time spent: 0

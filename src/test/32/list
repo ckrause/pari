@@ -51,4 +51,4 @@ List([3, 2, 3, 4])
   ***   at top-level: listinsert(~L,1,1)
   ***                 ^------------------
   *** listinsert: incorrect type in listinsert (t_POL).
-Total time spent: 45
+Total time spent: 41

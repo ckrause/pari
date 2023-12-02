@@ -221,4 +221,4 @@ Mod(0, 1)*v1 + O(v1^2)
   ***   at top-level: O(y)/O(x)
   ***                     ^-----
   *** _/_: impossible inverse in RgXn_inv: 0.
-Total time spent: 9
+Total time spent: 10

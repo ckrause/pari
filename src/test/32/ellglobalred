@@ -22,4 +22,4 @@ error("incorrect type in ellsearch (t_COMPLEX).")
   ***   at top-level: ellidentify(ellinit([1,1],nfinit('a^2-5)))
   ***                 ^------------------------------------------
   *** ellidentify: incorrect type in checkell over Q (t_VEC).
-Total time spent: 1107
+Total time spent: 1095

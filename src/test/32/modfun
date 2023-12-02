@@ -49,4 +49,4 @@ O(x^68)
   ***   at top-level: eta(1/2)
   ***                 ^--------
   *** eta: domain error in modular function: Im(argument) <= 0
-Total time spent: 0
+Total time spent: 1

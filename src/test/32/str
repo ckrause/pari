@@ -51,4 +51,4 @@ Vecsmall([104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33])
   ***   at top-level: strjoin([],1)
   ***                 ^-------------
   *** strjoin: incorrect type in strjoin (t_INT).
-Total time spent: 0
+Total time spent: 1

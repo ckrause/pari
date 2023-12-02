@@ -37,4 +37,4 @@ LA
   ***   at top-level: pollaguerre(0,,1,1)
   ***                 ^-------------------
   *** pollaguerre: domain error in pollaguerre: degree < 0
-Total time spent: 88
+Total time spent: 54

@@ -131,4 +131,4 @@ O(3^10)
   ***   at top-level: lambertw(mie+x+O(x^2))
   ***                 ^----------------------
   *** lambertw: odd valuation at branch point.
-Total time spent: 1310
+Total time spent: 1337

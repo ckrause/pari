@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 8000000 (7.629 Mbytes).
+  ***   Warning: new stack size = 8000000 (8.00 MB).
   ***   at top-level: poliscyclo(1)
   ***                 ^-------------
   *** poliscyclo: incorrect type in poliscyclo (t_INT).
@@ -59,4 +59,4 @@
 )
 1 + 2^4 + 2^5 + 2^6 + 2^7 + 2^12 + 2^13 + 2^14 + 2^15 + 2^20 + 2^21 + 2^22 +
  O(2^23)
-Total time spent: 7
+Total time spent: 12

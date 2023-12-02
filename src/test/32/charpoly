@@ -212,4 +212,4 @@ x + 3.5251905160916583918731318966948840204 E-9
   ***   at top-level: minpoly(Mod(y,x),'y)
   ***                 ^--------------------
   *** minpoly: incorrect priority in minpoly: variable x < y
-Total time spent: 53
+Total time spent: 58

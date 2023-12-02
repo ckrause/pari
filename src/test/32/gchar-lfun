@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 78000000 (74.387 Mbytes).
+  ***   Warning: new stack size = 78000000 (78.00 MB).
 Watkins 6.3
 [[5, 0, 2, 2; 0, 5, 4, 2; 0, 0, 1, 0; 0, 0, 0, 1], []]
 [[5, 4, 1, 4; 0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1], []]
@@ -142,4 +142,4 @@ bad inputs
   ***   at top-level: lfuncreate([gc,[1,0,0,0,I]~])
   ***                 ^-----------------------------
   *** lfuncreate: sorry, lfun for gchar with imaginary norm component is not yet implemented.
-Total time spent: 12299
+Total time spent: 10548

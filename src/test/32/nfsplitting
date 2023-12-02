@@ -73,4 +73,4 @@ x^42 + 48020*x^28 + 96001584*x^14 + 52706752
   ***   at top-level: galoissplittinginit(x^2)
   ***                 ^------------------------
   *** galoissplittinginit: not an irreducible polynomial in nfsplitting: x^2.
-Total time spent: 172
+Total time spent: 253

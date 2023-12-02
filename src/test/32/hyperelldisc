@@ -43,4 +43,4 @@
   ***   at top-level: hyperellminimalmodel(15625*x^6+15626*x^3+1,,[x
   ***                 ^----------------------------------------------
   *** hyperellminimalmodel: incorrect type in hyperellminimalmodel (t_VEC).
-Total time spent: 475
+Total time spent: 380

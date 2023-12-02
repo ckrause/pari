@@ -59,4 +59,4 @@ bad input
   ***   at top-level: algsplit(algtableinit(mt,2))
   ***                 ^----------------------------
   *** algsplit: the algebra must be simple (alg_finite_csa_split 3).
-Total time spent: 708
+Total time spent: 573

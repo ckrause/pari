@@ -182,4 +182,4 @@ error("incorrect type in bitwise negation (t_COMPLEX).")
   ***                 ^------------
   *** bitneg: domain error in bitwise negation: exponent < -1
 340282366920938463463374607431768211454
-Total time spent: 0
+Total time spent: 1

@@ -39,4 +39,4 @@ normlp
   ***   at top-level: normlp(-1,-oo)
   ***                 ^--------------
   *** normlp: domain error in normlp: p <= 0
-Total time spent: 1
+Total time spent: 0

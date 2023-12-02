@@ -24,4 +24,4 @@
   ***   at top-level: fftinv([],[])
   ***                 ^-------------
   *** fftinv: inconsistent dimensions in fft.
-Total time spent: 33
+Total time spent: 38

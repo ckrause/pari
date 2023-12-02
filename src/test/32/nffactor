@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 16000000 (15.259 Mbytes).
+  ***   Warning: new stack size = 16000000 (16.00 MB).
 [x^72 - 291*x^70 + 168*x^69 + 40380*x^68 - 48588*x^67 - 3528919*x^66 + 66721
 20*x^65 + 215657160*x^64 - 575538144*x^63 - 9642387423*x^62 + 34735086786*x^
 61 + 318475831783*x^60 - 1543992152304*x^59 - 7526047084203*x^58 + 517099213
@@ -779,4 +779,4 @@ y - 1473852319020386314)]~
   ***   at top-level: polhensellift(x^2+x+1,[x+a,x+a+1],2,10)
   ***                 ^---------------------------------------
   *** polhensellift: incorrect type in polhensellift [not in Z[X]] (t_POL).
-Total time spent: 9192
+Total time spent: 5610

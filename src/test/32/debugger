@@ -89,7 +89,7 @@ break> break
   *** _/_: impossible inverse in gdiv: 0.
   ***   Break loop: type 'break' to go back to GP prompt
 break> allocatemem(10^7)
-  ***   Warning: new stack size = 10000000 (9.537 Mbytes).
+  ***   Warning: new stack size = 10000000 (10.00 MB).
 ? for(i=1,10,if(i==2,1/0));
   ***   at top-level: for(i=1,10,if(i==2,1/0))
   ***                                     ^----

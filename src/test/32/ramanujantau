@@ -1,4 +1,4 @@
-  ***   Warning: new stack size = 10000000 (9.537 Mbytes).
+  ***   Warning: new stack size = 10000000 (10.00 MB).
 1
 -804352952075176386846143824455748
 -13315918075567401218116415546424460893941774043543776
@@ -13,4 +13,4 @@
   ***   at top-level: ramanujantau(x)
   ***                 ^---------------
   *** ramanujantau: incorrect type in ramanujantau (t_POL).
-Total time spent: 2774
+Total time spent: 2839

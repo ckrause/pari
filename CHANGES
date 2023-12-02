@@ -55,6 +55,8 @@ BA  11- [libpari] rename qfb_apply_ZM -> qfb_ZM_apply,
                          qf_apply_RgM -> qf_RgM_apply,
                          qf_apply_ZM -> qf_ZM_apply
     12- rnfinit(nf, [T,lim]); try to fix maximal order if wrong [#2494]
+    13- use MB (10^6 bytes) instead of historical non-standard Mbytes
+        (for 2^20 bytes or 1 MiB) in diagnostics
 
   Added
      1- [libpari] nfeltembed_i

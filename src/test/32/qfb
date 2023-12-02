@@ -88,4 +88,4 @@ test qfbredsl2, large coefs
   ***   at top-level: ...18,-18);g=Qfb(11,52,-41);qfbcomp([f,1.],g)
   ***                                             ^-----------------
   *** qfbcomp: sorry, Shanks's distance in general composition is not yet implemented.
-Total time spent: 166
+Total time spent: 179
