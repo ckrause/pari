@@ -391,6 +391,7 @@ vnormpol2(GEN v)
   return P;
 }
 
+/* return an 'extraprec' */
 static long
 precFtaylor(GEN N, GEN D, GEN z, long *pmi)
 {
@@ -429,7 +430,7 @@ precFtaylor(GEN N, GEN D, GEN z, long *pmi)
   }
   /* make up for exponential decrease in exp() */
   if (gsigne(real_i(z)) < 0) wma -= gtodouble(real_i(z)) / M_LN2;
-  *pmi = mi; return ceil(wma/BITS_IN_LONG) + 1;
+  *pmi = mi; return nbits2extraprec(wma+BITS_IN_LONG);
 }
 
 static GEN
