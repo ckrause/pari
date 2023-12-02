@@ -1822,7 +1822,7 @@ pari_err2str(GEN e)
       sprintf(hint,"set '%s' to a nonzero value in your GPRC", var);
     }
     sprintf(buf, "the %s stack overflows !\n"
-                 "  current stack size: %lu (%.3f MB)\n  [hint] %s\n",
+                 "  current stack size: %lu (%.3f Mbytes)\n  [hint] %s\n",
                  what, (ulong)s, (double)s/1048576., hint);
     return buf;
   }
