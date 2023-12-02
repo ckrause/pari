@@ -1807,30 +1807,25 @@ pari_err2str(GEN e)
                         gel(e,2), gdisplay(gel(e,3)));
   case e_STACK:
   case e_STACKTHREAD:
+  {
+    const char *what = numerr == e_STACK? "PARI": "thread";
+    const char *var = numerr == e_STACK? "parisizemax": "threadsizemax";
+    size_t s = numerr == e_STACK? pari_mainstack->vsize: GP_DATA->threadsizemax;
+    char *hint = (char *) pari_malloc(512*sizeof(char));
+    char *buf = (char *) pari_malloc(512*sizeof(char));
+    if (s)
+      sprintf(hint,"you can increase '%s' using default()", var);
+    else
     {
-      const char *stack = numerr == e_STACK? "PARI": "thread";
-      const char *var = numerr == e_STACK? "parisizemax": "threadsizemax";
-      size_t rsize = numerr == e_STACKTHREAD && GP_DATA->threadsize ?
-                                GP_DATA->threadsize: pari_mainstack->rsize;
-      size_t vsize = numerr == e_STACK? pari_mainstack->vsize:
-                                        GP_DATA->threadsizemax;
-      char *buf = (char *) pari_malloc(512*sizeof(char));
-      if (vsize)
-      {
-        sprintf(buf, "the %s stack overflows !\n"
-            "  current stack size: %lu (%.3f Mbytes)\n"
-            "  [hint] you can increase '%s' using default()\n",
-            stack, (ulong)vsize, (double)vsize/1048576., var);
-      }
-      else
-      {
-        sprintf(buf, "the %s stack overflows !\n"
-            "  current stack size: %lu (%.3f Mbytes)\n"
-            "  [hint] set '%s' to a nonzero value in your GPRC\n",
-            stack, (ulong)rsize, (double)rsize/1048576., var);
-      }
-      return buf;
+      s = (numerr != e_STACK || !GP_DATA->threadsize)? pari_mainstack->rsize
+                                                     : GP_DATA->threadsize;
+      sprintf(hint,"set '%s' to a nonzero value in your GPRC", var);
     }
+    sprintf(buf, "the %s stack overflows !\n"
+                 "  current stack size: %lu (%.3f MB)\n  [hint] %s\n",
+                 what, (ulong)s, (double)s/1048576., hint);
+    return buf;
+  }
   case e_SYNTAX:
     return pari_strdup(GSTR(gel(e,2)));
   case e_TYPE:
