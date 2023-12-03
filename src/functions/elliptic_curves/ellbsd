@@ -7,9 +7,10 @@ Help: ellbsd(E): E being an elliptic curve over a number field,
  lfun(E,1,r)/r! = c*R*S where r is the rank, R is the regulator and S is the
  cardinal of the Tate-Shafarevich group.
 Doc:
- The object $E$ being an elliptic curve over a number field, returns a real
- number $c$ such that the BSD conjecture predicts that
- $L_{E}^{(r)}(1)/r! = c\*R\*S$ where $r$ is the rank, $R$ the regulator and
+ $E$ being an elliptic curve over a number field, returns a real
+ number $c$ such that the Birch and Swinnerton-Dyer conjecture predicts
+ that % {} for gphelp -d
+ $L_E^{(r)}(1)/r!{} = c\*R\*S$, where $r$ is the rank, $R$ the regulator and
  $S$ the cardinal of the Tate-Shafarevich group.
 
  \bprog
