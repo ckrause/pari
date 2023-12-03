@@ -673,7 +673,7 @@ gprec(GEN x, long d)
   return gerepilecopy(av, gprec_w(x, ndec2prec(d)));
 }
 
-/* not GC-safe; precision given in word length (including codewords) */
+/* not GC-safe */
 GEN
 gprec_w(GEN x, long pr)
 {
@@ -701,7 +701,7 @@ gprec_w(GEN x, long pr)
   }
   return y;
 }
-/* not GC-safe; precision given in word length (including codewords) */
+/* not GC-safe */
 GEN
 gprec_wensure(GEN x, long pr)
 {
@@ -730,8 +730,7 @@ gprec_wensure(GEN x, long pr)
   return y;
 }
 
-/* not GC-safe; precision given in word length (including codewords),
- * truncate mantissa to precision 'pr' but never increase it */
+/* not GC-safe; truncate mantissa to precision 'pr' but never increase it */
 GEN
 gprec_wtrunc(GEN x, long pr)
 {

@@ -11753,18 +11753,18 @@ changed to $l$ digits. The precision change is done recursively on all
 components of $x$. Digits means \emph{decimal}, $p$-adic and $X$-adic digits
 for \typ{REAL}, \typ{SER}, \typ{PADIC} components, respectively.
 
-\fun{GEN}{gprec_w}{GEN x, long l} returns a shallow copy of $x$ whose
-\typ{REAL} components have their precision changed to $l$ \emph{words}. This
-is often more useful than \kbd{gprec}.
+\fun{GEN}{gprec_w}{GEN x, long prec} returns a shallow copy of $x$ whose
+\typ{REAL} components have their precision changed to \kbd{prec} bits.
+This is often more useful than \kbd{gprec}.
 
-\fun{GEN}{gprec_wtrunc}{GEN x, long l} returns a shallow copy of $x$ whose
-\typ{REAL} components have their precision \emph{truncated} to $l$
-\emph{words}. Contrary to \kbd{gprec\_w}, this function may never increase
+\fun{GEN}{gprec_wtrunc}{GEN x, long prec} returns a shallow copy of $x$ whose
+\typ{REAL} components have their precision \emph{truncated} to \kbd{prec}
+bits. Contrary to \kbd{gprec\_w}, this function may never increase
 the precision of~$x$.
 
-\fun{GEN}{gprec_wensure}{GEN x, long l} returns a shallow copy of $x$ whose
-\typ{REAL} components have their precision \emph{increased} to at least $l$
-\emph{words}. Contrary to \kbd{gprec\_w}, this function may never decrease
+\fun{GEN}{gprec_wensure}{GEN x, long prec} returns a shallow copy of $x$ whose
+\typ{REAL} components have their precision \emph{increased} to at least $prec$
+bits. Contrary to \kbd{gprec\_w}, this function may never decrease
 the precision of~$x$.
 
 The following functions are obsolete and kept for backward compatibility only:
