@@ -493,11 +493,11 @@ of type $t$ and length $l$. Sets $z[0]$.
 \fun{GEN}{cgeti}{long l} allocates a \typ{INT} of length $l$ (including the
 2 codewords). Sets $z[0]$ only.
 
-\fun{GEN}{cgetr}{long l} allocates a \typ{REAL} of length $l$ (including the
-2 codewords). Sets $z[0]$ only.
+\fun{GEN}{cgetr}{long prec} allocates a \typ{REAL} of precision \kbd{prec}.
+Sets $z[0]$ only.
 
 \fun{GEN}{cgetc}{long prec} allocates a \typ{COMPLEX} whose real and
-imaginary parts are \typ{REAL}s of length \kbd{prec}.
+imaginary parts are \typ{REAL}s of precision \kbd{prec}.
 
 \fun{GEN}{cgetg_copy}{GEN x, long *lx} fast version of \kbd{cgetg}:
 allocate a \kbd{GEN} with the same type and length as $x$, setting \kbd{*lx}
@@ -585,8 +585,7 @@ of length \kbd{x}.
 codewords. This is equal to 2 + \kbd{nbits2nlong(x)}.
 
 \fun{long}{nbits2extraprec}{long x} converts a number of bits to the mantissa
-length of a \typ{REAL} in codewords. This is currently an alias to
-\kbd{nbits2nlong(x)}.
+length of a \typ{REAL} in codewords.
 
 \fun{long}{nchar2nlong}{long x} converts a number of bytes to number of
 words. Returns the smallest word count containing $x$ bytes, i.e
@@ -599,13 +598,12 @@ of significant bits; returns $(x - 2)\B$.
 \kbd{prec2nbits}$(x)\times y$.
 
 \fun{long}{bit_accuracy}{long x} converts a length into a number
-of significant bits; currently an alias for \kbd{prec2nbits}.
+of significant bits;
 
 \fun{double}{bit_accuracy_mul}{long x, double y} returns
 \kbd{bit\_accuracy}$(x)\times y$.
 
-\fun{long}{realprec}{GEN x} length of a \typ{REAL} in words; currently an alias
-for \kbd{lg}.
+\fun{long}{realprec}{GEN x} precision of a \typ{REAL} in bits.
 
 \fun{long}{bit_prec}{GEN x} length of a \typ{REAL} in bits.
 

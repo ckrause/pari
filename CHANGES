@@ -55,6 +55,7 @@ BA  11- [libpari] rename qfb_apply_ZM -> qfb_ZM_apply,
                          qf_apply_RgM -> qf_RgM_apply,
                          qf_apply_ZM -> qf_ZM_apply
     12- rnfinit(nf, [T,lim]); try to fix maximal order if wrong [#2494]
+BA  13- [libpari] change prec to be a number of bits, instead of lg
 
   Added
      1- [libpari] nfeltembed_i

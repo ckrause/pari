@@ -786,10 +786,10 @@ use \kbd{cgetg} to create space to hold them.
 
 \fun{GEN}{cgeti}{long length}
 
-\fun{GEN}{cgetr}{long length}
+\fun{GEN}{cgetr}{long prec}
 
 \noindent should be used instead of \kbd{cgetg(length, t\_INT)} and
-\kbd{cgetg(length, t\_REAL)} respectively. Finally
+\kbd{cgetg(prec2lg(prec), t\_REAL)} respectively. Finally
 
 \fun{GEN}{cgetc}{long prec}
 

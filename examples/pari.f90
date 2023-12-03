@@ -89,7 +89,7 @@ PROGRAM prog
   type(C_PTR)         :: p
   integer(kind=C_LONG) :: i
   integer(kind=C_LONG) :: av
-  integer(kind=C_LONG) :: prec = 20 ! 18 words
+  integer(kind=C_LONG) :: prec = 18*BITS_IN_LONG ! 18 words
   CALL pari_init(10000000_8,2_8)
   av = get_avma()
   do i=1_8,10_8
