@@ -2807,12 +2807,20 @@ Available defaults are described in the reference guide,
 Just be aware that typing \kbd{default} by itself will list all of them, as
 well as their current values (see \b{d}).
 
-\misctitle{Note} The suffixes \kbd{k}, \kbd{M} or \kbd{G} can be appended to
-a \var{value} which is a numeric argument, with the effect of multiplying it
-by $10^3$, $10^6$ and $10^9$ respectively. Case is not taken into account
-there, so for instance \kbd{30k} and \kbd{30K} both stand for $30000$. This
-is mostly useful to modify or set the defaults \kbd{parisize} and
-\kbd{parisizemax} which typically involve a lot of trailing zeroes.
+\misctitle{Note} The suffixes \kbd{k}, \kbd{M}, \kbd{G} or \kbd{T} can be
+appended to a \var{value} which is a numeric argument, with the effect of
+multiplying it by $10^3$, $10^6$ and $10^9$ respectively. Case is not taken
+into account there, so for instance \kbd{30k} and \kbd{30K} both stand for
+$30000$. This is mostly useful to modify or set the defaults \kbd{parisize}
+and \kbd{parisizemax} which typically involve a lot of trailing zeroes.
+
+The suffixes \kbd{kB} or \kbd{KB}, \kbd{MB}, \kbd{GB}, \kbd{TB} can be
+appended to a \var{value} which is a numeric argument representing a memory
+size, with the usual meaning of counting in units of $2^{10}$, $2^{20}$,
+$2^{30}$ and $2^{40}$ bytes respectively. This allows to specify defaults
+such as \kbd{parisize} or \kbd{parisizemax} in customary units, such as
+gigabytes (or more properly gibibytes). For instance, \kbd{1k} represents
+$1000$ bytes and \kbd{1kB} represents $1024$ bytes.
 
 \misctitle{(somewhat technical) Note} As we saw in \secref{se:strings},
 the second argument to \kbd{default} is subject to string context

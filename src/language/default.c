@@ -46,7 +46,7 @@ get_sep(const char *t)
 
 /* "atoul" + optional [kmg] suffix */
 static ulong
-my_int(char *s)
+my_int(char *s, int size)
 {
   ulong n = 0;
   char *p = s;
@@ -58,18 +58,34 @@ my_int(char *s)
     n += *p++ - '0';
     if (n < m) pari_err(e_SYNTAX,"integer too large",s,s);
   }
-  if (n)
+  if (n && *p)
   {
+    long i = 0;
+    ulong pow[] = {0, 1000UL, 1000000UL, 1000000000UL
+#ifdef LONG_IS_64BIT
+     , 1000000000000UL
+#endif
+    };
     switch(*p)
     {
-      case 'k': case 'K': n = umuluu_or_0(n,1000UL);       p++; break;
-      case 'm': case 'M': n = umuluu_or_0(n,1000000UL);    p++; break;
-      case 'g': case 'G': n = umuluu_or_0(n,1000000000UL); p++; break;
+      case 'k': case 'K': p++; i = 1; break;
+      case 'm': case 'M': p++; i = 2; break;
+      case 'g': case 'G': p++; i = 3; break;
 #ifdef LONG_IS_64BIT
-      case 't': case 'T': n = umuluu_or_0(n,1000000000000UL); p++; break;
+      case 't': case 'T': p++; i = 4; break;
 #endif
     }
-    if (!n) pari_err(e_SYNTAX,"integer too large",s,s);
+    if (i)
+    {
+      if (*p == 'B' && p[-1] != 'm' && p[-1] != 'g' && size)
+      {
+        p++;
+        n = umuluu_or_0(n, 1UL << (10*i));
+      }
+      else
+        n = umuluu_or_0(n, pow[i]);
+      if (!n) pari_err(e_SYNTAX,"integer too large",s,s);
+    }
   }
   if (*p) pari_err(e_SYNTAX,"I was expecting an integer here", s, s);
   return n;
@@ -86,18 +102,18 @@ get_int(const char *s, long dflt)
   if (*p == '-') { minus = 1; p++; }
   if (!isdigit((unsigned char)*p)) return gc_long(av, dflt);
 
-  n = (long)my_int(p);
+  n = (long)my_int(p, 0);
   if (n < 0) pari_err(e_SYNTAX,"integer too large",s,s);
   return gc_long(av, minus? -n: n);
 }
 
-ulong
-get_uint(const char *s)
+static ulong
+get_uint(const char *s, int size)
 {
   pari_sp av = avma;
   char *p = get_sep(s);
   if (*p == '-') pari_err(e_SYNTAX,"arguments must be positive integers",s,s);
-  return gc_ulong(av, my_int(p));
+  return gc_ulong(av, my_int(p, size));
 }
 
 #if defined(__EMX__) || defined(_WIN32) || defined(__CYGWIN32__)
@@ -231,11 +247,12 @@ sd_toggle(const char *v, long flag, const char *s, int *ptn)
 }
 
 static void
-sd_ulong_init(const char *v, const char *s, ulong *ptn, ulong Min, ulong Max)
+sd_ulong_init(const char *v, const char *s, ulong *ptn, ulong Min, ulong Max,
+              int size)
 {
   if (v)
   {
-    ulong n = get_uint(v);
+    ulong n = get_uint(v, size);
     if (n > Max || n < Min)
     {
       char *buf = stack_malloc(strlen(s) + 2 * 20 + 40);
@@ -246,30 +263,44 @@ sd_ulong_init(const char *v, const char *s, ulong *ptn, ulong Min, ulong Max)
     *ptn = n;
   }
 }
-
+static GEN
+sd_res(const char *v, long flag, const char *s, ulong n, ulong oldn,
+       const char **msg)
+{
+  switch(flag)
+  {
+    case d_RETURN:
+      return utoi(n);
+    case d_ACKNOWLEDGE:
+      if (!v || n != oldn) {
+        if (!msg)         /* no specific message */
+          pari_printf("   %s = %lu\n", s, n);
+        else if (!msg[1]) /* single message, always printed */
+          pari_printf("   %s = %lu %s\n", s, n, msg[0]);
+        else              /* print (new)-n-th message */
+          pari_printf("   %s = %lu %s\n", s, n, msg[n]);
+      }
+      break;
+  }
+  return gnil;
+}
 /* msg is NULL or NULL-terminated array with msg[0] != NULL. */
 GEN
 sd_ulong(const char *v, long flag, const char *s, ulong *ptn, ulong Min, ulong Max,
          const char **msg)
 {
   ulong n = *ptn;
-  sd_ulong_init(v, s, ptn, Min, Max);
-  switch(flag)
-  {
-    case d_RETURN:
-      return utoi(*ptn);
-    case d_ACKNOWLEDGE:
-      if (!v || *ptn != n) {
-        if (!msg)         /* no specific message */
-          pari_printf("   %s = %lu\n", s, *ptn);
-        else if (!msg[1]) /* single message, always printed */
-          pari_printf("   %s = %lu %s\n", s, *ptn, msg[0]);
-        else              /* print (new)-n-th message */
-          pari_printf("   %s = %lu %s\n", s, *ptn, msg[*ptn]);
-      }
-      break;
-  }
-  return gnil;
+  sd_ulong_init(v, s, ptn, Min, Max, 0);
+  return sd_res(v, flag, s, *ptn, n, msg);
+}
+
+static GEN
+sd_size(const char *v, long flag, const char *s, ulong *ptn, ulong Min, ulong Max,
+         const char **msg)
+{
+  ulong n = *ptn;
+  sd_ulong_init(v, s, ptn, Min, Max, 1);
+  return sd_res(v, flag, s, *ptn, n, msg);
 }
 
 static void
@@ -321,7 +352,7 @@ sd_realprecision(const char *v, long flag)
   {
     ulong newnb = fmt->sigd;
     long prec;
-    sd_ulong_init(v, "realprecision", &newnb, 1, prec2ndec(LGBITS));
+    sd_ulong_init(v, "realprecision", &newnb, 1, prec2ndec(LGBITS), 0);
     if (fmt->sigd == (long)newnb) return gnil;
     if (fmt->sigd >= 0) fmt->sigd = newnb;
     prec = ndec2nbits(newnb);
@@ -350,7 +381,7 @@ sd_realbitprecision(const char *v, long flag)
   {
     ulong newnb = precreal;
     long n;
-    sd_ulong_init(v, "realbitprecision", &newnb, 1, prec2nbits(LGBITS));
+    sd_ulong_init(v, "realbitprecision", &newnb, 1, prec2nbits(LGBITS), 0);
     if ((long)newnb == precreal) return gnil;
     n = nbits2ndec(newnb);
     if (!n) n = 1;
@@ -546,8 +577,7 @@ sd_histsize(const char *s, long flag)
 {
   gp_hist *H = GP_DATA->hist;
   ulong n = H->size;
-  GEN r = sd_ulong(s,flag,"histsize",&n, 1,
-                     (LONG_MAX / sizeof(long)) - 1,NULL);
+  GEN r = sd_ulong(s,flag,"histsize",&n, 1, (LONG_MAX / sizeof(long)) - 1,NULL);
   if (n != H->size)
   {
     const ulong total = H->total;
@@ -672,7 +702,7 @@ GEN
 sd_parisizemax(const char *v, long flag)
 {
   ulong size = pari_mainstack->vsize, n = size;
-  GEN r = sd_ulong(v,flag,"parisizemax",&n, 0,LONG_MAX,NULL);
+  GEN r = sd_size(v,flag,"parisizemax",&n, 0,LONG_MAX,NULL);
   if (n != size) {
     if (flag == d_INITRC)
       paristack_setsize(pari_mainstack->rsize, n);
@@ -686,7 +716,7 @@ GEN
 sd_parisize(const char *v, long flag)
 {
   ulong rsize = pari_mainstack->rsize, n = rsize;
-  GEN r = sd_ulong(v,flag,"parisize",&n, 10000,LONG_MAX,NULL);
+  GEN r = sd_size(v,flag,"parisize",&n, 10000,LONG_MAX,NULL);
   if (n != rsize) {
     if (flag == d_INITRC)
       paristack_setsize(n, pari_mainstack->vsize);
@@ -700,7 +730,7 @@ GEN
 sd_threadsizemax(const char *v, long flag)
 {
   ulong size = GP_DATA->threadsizemax, n = size;
-  GEN r = sd_ulong(v,flag,"threadsizemax",&n, 0,LONG_MAX,NULL);
+  GEN r = sd_size(v,flag,"threadsizemax",&n, 0,LONG_MAX,NULL);
   if (n != size)
     GP_DATA->threadsizemax = n;
   return r;
@@ -710,7 +740,7 @@ GEN
 sd_threadsize(const char *v, long flag)
 {
   ulong size = GP_DATA->threadsize, n = size;
-  GEN r = sd_ulong(v,flag,"threadsize",&n, 0,LONG_MAX,NULL);
+  GEN r = sd_size(v,flag,"threadsize",&n, 0,LONG_MAX,NULL);
   if (n != size)
     GP_DATA->threadsize = n;
   return r;

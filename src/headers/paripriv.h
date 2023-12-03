@@ -337,7 +337,6 @@ void gen_relink(GEN x, hashtable *table);
 entree* do_alias(entree *ep);
 char* get_sep(const char *t);
 long get_int(const char *s, long dflt);
-ulong get_uint(const char *s);
 void gp_initrc(pari_stack *p_A);
 
 void pari_sigint(const char *s);
