@@ -1630,7 +1630,6 @@ nbits2extraprec(long x) {
   return (((ulong)x+BITS_IN_LONG-1)>>TWOPOTBITS_IN_LONG) << TWOPOTBITS_IN_LONG;
 }
 
-/* Fast implementation of 2 + nbits2nlong(x) */
 INLINE long
 nbits2prec(long x) {
   return (((ulong)x+BITS_IN_LONG-1)>>TWOPOTBITS_IN_LONG) << TWOPOTBITS_IN_LONG;
