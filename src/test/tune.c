@@ -79,7 +79,7 @@ rand_INT(long n)
 }
 /* real, n words */
 static GEN
-rand_REAL(long n) { return gmul2n(itor(rand_INT(n), n+2),-BITS_IN_LONG*n); }
+rand_REAL(long n) { return gmul2n(itor(rand_INT(n), bit_accuracy(n+2)),-BITS_IN_LONG*n); }
 
 static GEN
 rand_FpX(long n)
