@@ -254,7 +254,7 @@ sqrz_i(GEN z, GEN x, long lz)
   LOCAL_HIREMAINDER;
   LOCAL_OVERFLOW;
 
-  if (lz > SQRR_SQRI_LIMIT)
+  if (lz > prec2lg(SQRR_SQRI_LIMIT))
   {
     pari_sp av = avma;
     GEN hi = sqrispec_mirror(x+2, lz-2);
@@ -348,7 +348,7 @@ mulrrz_i(GEN z, GEN x, GEN y, long lz, long flag, long sz)
   LOCAL_OVERFLOW;
 
   if (x == y) { sqrz_i(z,x,lz); return; }
-  if (lz > MULRR_MULII_LIMIT) { mulrrz_int(z,x,y,lz,flag,sz); return; }
+  if (lz > prec2lg(MULRR_MULII_LIMIT)) { mulrrz_int(z,x,y,lz,flag,sz); return; }
   if (lz == 3) { mulrrz_3(z,x,y,flag,sz); return; }
   ez = expo(x) + expo(y);
   if (flag) { (void)mulll(x[2],y[lz]); garde = hiremainder; } else garde = 0;
@@ -434,7 +434,7 @@ mulir(GEN x, GEN y)
     long lz = lg(y), lx = lgefint(x);
     GEN hi, z = cgetg(lz, t_REAL);
     pari_sp av = avma;
-    if (lx < (lz>>1) || (lx < lz && lz > MULRR_MULII_LIMIT))
+    if (lx < (lz>>1) || (lx < lz && lz > prec2lg(MULRR_MULII_LIMIT)))
     { /* size mantissa of x < half size of mantissa z, or lx < lz so large
        * that mulrr will call mulii anyway: mulii */
       x = itor(x, lg2prec(lx));
@@ -579,7 +579,7 @@ divur(ulong x, GEN y)
 
   if (ly == 2) pari_err_INV("divur",y);
   if (!x) return div0r(y);
-  if (ly > INVNEWTON_LIMIT) {
+  if (ly > prec2lg(INVNEWTON_LIMIT)) {
     av = avma; z = invr(y);
     if (x == 1) return z;
     return gerepileuptoleaf(av, mulur(x, z));
@@ -598,7 +598,7 @@ divsr(long x, GEN y)
 
   if (ly == 2) pari_err_INV("divsr",y);
   if (!x) return div0r(y);
-  if (ly > INVNEWTON_LIMIT) {
+  if (ly > prec2lg(INVNEWTON_LIMIT)) {
     av = avma; z = invr(y);
     if (x == 1) return z;
     if (x ==-1) { togglesign(z); return z; }
@@ -628,7 +628,7 @@ invr(GEN b)
   GEN x, a;
   ulong mask;
 
-  if (l <= maxss(INVNEWTON_LIMIT, (1L<<s) + 2)) {
+  if (l <= maxss(prec2lg(INVNEWTON_LIMIT), (1L<<s) + 2)) {
     if (l == 2) pari_err_INV("invr",b);
     return invr_basecase(b);
   }

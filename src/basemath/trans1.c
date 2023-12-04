@@ -2257,7 +2257,7 @@ mpexpm1(GEN x)
   pari_sp av;
   if (!sx) return real_0_bit(expo(x));
   l = realprec(x);
-  if (l > lg2prec(maxss(EXPNEWTON_LIMIT, (1L<<s) + 2)))
+  if (l > maxss(EXPNEWTON_LIMIT, BITS_IN_LONG<<s))
   {
     long e = expo(x);
     if (e < 0) x = rtor(x, l + nbits2extraprec(-e));
@@ -2342,7 +2342,7 @@ mpexp(GEN x)
   GEN a, t, z;
   ulong mask;
 
-  if (l <= lg2prec(maxss(EXPNEWTON_LIMIT, (1L<<s) + 2)))
+  if (l <= maxss(EXPNEWTON_LIMIT, (BITS_IN_LONG<<s) + 2))
   {
     if (!signe(x)) return mpexp0(x);
     return mpexp_basecase(x);
@@ -3009,7 +3009,7 @@ logr_abs(GEN X)
   a = bit_accuracy(k) + bfffo(u); /* ~ -log2 |1-x| */
   L = p+EXTRAPRECWORD;
   b = prec2nbits(L - (bit_accuracy(k))); /* take loss of accuracy into account */
-  if (b > 24*a*log2(prec2lg(L)) && p > lg2prec(LOGAGM_LIMIT)) return logagmr_abs(X);
+  if (b > 24*a*log2(prec2lg(L)) && p > LOGAGM_LIMIT) return logagmr_abs(X);
 
   z = cgetr(EX? p: p - bit_accuracy(k));
 
@@ -3249,7 +3249,7 @@ glog(GEN x, long prec)
         a = isint1(a) ? gen_0: glog(a,prec);
         return gerepilecopy(av, mkcomplex(a, b));
       }
-      if (prec >= lg2prec(LOGAGMCX_LIMIT)) return logagmcx(x, prec);
+      if (prec >= LOGAGMCX_LIMIT) return logagmcx(x, prec);
       y = cgetg(3,t_COMPLEX);
       gel(y,2) = garg(x,prec);
       av = avma; p1 = glog(cxnorm(x),prec); tetpil = avma;
@@ -3275,7 +3275,7 @@ mplog1p(GEN x)
   ex = expo(x); if (ex >= -3) return glog(addrs(x,1), 0);
   a = -ex;
   b = realprec(x); L = b+1;
-  if (b > a*log2(L) && b > lg2prec(LOGAGM_LIMIT))
+  if (b > a*log2(L) && b > LOGAGM_LIMIT)
   {
     x = addrs(x,1); l = b + nbits2extraprec(a);
     if (realprec(x) < l) x = rtor(x,l);
@@ -3296,7 +3296,7 @@ cxlog1p(GEN x, long prec)
   long l;
   if (ismpzero(b)) return log1p_i(gel(x,1), prec);
   l = precision(x); if (l > prec) prec = l;
-  if (prec >= lg2prec(LOGAGMCX_LIMIT)) return logagmcx(gaddgs(x,1), prec);
+  if (prec >= LOGAGMCX_LIMIT) return logagmcx(gaddgs(x,1), prec);
   a = gel(x,1);
   z = cgetg(3,t_COMPLEX); av = avma;
   a = gadd(gadd(gmul2n(a,1), gsqr(a)), gsqr(b));

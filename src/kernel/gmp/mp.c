@@ -752,7 +752,7 @@ divrr(GEN x, GEN y)
     r[2] = k; return r;
   }
 
-  if (ly>=DIVRR_GMP_LIMIT)
+  if (ly >= prec2lg(DIVRR_GMP_LIMIT))
     return divrr_with_gmp(x,y);
 
   lr = minss(lx,ly); r = new_chunk(lr);

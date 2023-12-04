@@ -1,7 +1,7 @@
 #ifdef LONG_IS_64BIT
-#define __AGM_ATAN_LIMIT                 56
+#define __AGM_ATAN_LIMIT                 3584
 #define __DIVRR_GMP_LIMIT                -1
-#define __EXPNEWTON_LIMIT                66
+#define __EXPNEWTON_LIMIT                4224
 #define __EXTGCD_HALFGCD_LIMIT           70
 #define __F2x_MUL_KARATSUBA_LIMIT        11
 #define __F2x_MUL_MULII_LIMIT            662
@@ -60,22 +60,22 @@
 #define __GCD_HALFGCD_LIMIT              9
 #define __HALFGCD_LIMIT                  85
 #define __INVMOD_GMP_LIMIT               -1
-#define __INVNEWTON_LIMIT                550
-#define __LOGAGMCX_LIMIT                 13
-#define __LOGAGM_LIMIT                   16
+#define __INVNEWTON_LIMIT                35200
+#define __LOGAGMCX_LIMIT                 832
+#define __LOGAGM_LIMIT                   1024
 #define __MULII_FFT_LIMIT                1441
 #define __MULII_KARATSUBA_LIMIT          23
-#define __MULRR_MULII_LIMIT              210
+#define __MULRR_MULII_LIMIT              13440
 #define __RgX_MUL_LIMIT                  9
 #define __RgX_SQR_LIMIT                  35
 #define __SQRI_FFT_LIMIT                 1651
 #define __SQRI_KARATSUBA_LIMIT           36
-#define __SQRR_SQRI_LIMIT                54
+#define __SQRR_SQRI_LIMIT                3456
 #define __ZM2_MUL_LIMIT                  13
 #else
-#define __AGM_ATAN_LIMIT                 159
+#define __AGM_ATAN_LIMIT                 5088
 #define __DIVRR_GMP_LIMIT                -1
-#define __EXPNEWTON_LIMIT                66
+#define __EXPNEWTON_LIMIT                2112
 #define __EXTGCD_HALFGCD_LIMIT           83
 #define __F2x_MUL_KARATSUBA_LIMIT        13
 #define __F2x_MUL_MULII_LIMIT            6265
@@ -134,16 +134,16 @@
 #define __GCD_HALFGCD_LIMIT              13
 #define __HALFGCD_LIMIT                  79
 #define __INVMOD_GMP_LIMIT               -1
-#define __INVNEWTON_LIMIT                66
-#define __LOGAGMCX_LIMIT                 58
-#define __LOGAGM_LIMIT                   55
+#define __INVNEWTON_LIMIT                2112
+#define __LOGAGMCX_LIMIT                 1856
+#define __LOGAGM_LIMIT                   1760
 #define __MULII_FFT_LIMIT                1386
 #define __MULII_KARATSUBA_LIMIT          18
-#define __MULRR_MULII_LIMIT              422
+#define __MULRR_MULII_LIMIT              13504
 #define __RgX_MUL_LIMIT                  5
 #define __RgX_SQR_LIMIT                  26
 #define __SQRI_FFT_LIMIT                 1469
 #define __SQRI_KARATSUBA_LIMIT           27
-#define __SQRR_SQRI_LIMIT                20
+#define __SQRR_SQRI_LIMIT                640
 #define __ZM2_MUL_LIMIT                  13
 #endif

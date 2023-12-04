@@ -685,8 +685,11 @@ diag(const char *format, ...)
   va_end(ap);
 }
 void
-print_define(const char *name, long value)
-{ printf("#define __%-30s %ld\n", name, value); }
+print_define(tune_param *param, long value)
+{
+  if (param->type==t_REAL && value > 0) value = bit_accuracy(value);
+  printf("#define __%-30s %ld\n", param->name, value);
+}
 
 long
 analyze_dat(int final)
@@ -734,7 +737,7 @@ Test(tune_param *param, long linear)
   pari_sp av=avma;
   long good = -1, bad = param->min_size;
 
-  if (param->kernel == AVOID) { print_define(param->name, -1); return; }
+  if (param->kernel == AVOID) { print_define(param, -1); return; }
 
 #define DEFAULT(x,n)  if (! (param->x))  param->x = (n);
   DEFAULT(step_factor, Step_Factor);
@@ -844,7 +847,7 @@ Test(tune_param *param, long linear)
   thresh = dat[analyze_dat(1)].size;
   if (option_trace >= 1)
     diag("Total time: %gs\n", (double)timer_delay(&T)/1000.);
-  print_define(param->name, thresh);
+  print_define(param, thresh);
   *(param->var) = thresh; /* set to optimal value for next tests */
   if (param->var_disable) *(param->var_disable) = save_var_disable;
   if (param->var_enable) *(param->var_enable) = s.var_enable_min;
