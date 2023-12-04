@@ -293,7 +293,7 @@ can be changed by typing \kbd{\b{ps} $n$} or \kbd{default(seriesprecision,
 $n$)} where $n$ is the number of terms that you want in your power series
 and is $16$ by default. Converting a polynomial or rational function to a
 power series will yield 16 significant terms: so $x$ gets converted to $x +
-O(x^{17})$; this is completely analogous to \kbd{realprecision} when an eact
+O(x^{17})$; this is completely analogous to \kbd{realprecision} when an exact
 integer or rational number is converted to a floating point real number.
 Then we take the exponential of this new object and, since it has positive
 valuation, we can actually deduce $17$ significant terms from the given $16$.
@@ -394,7 +394,7 @@ if you type \kbd{type(\%)} instead of \kbd{type(n)} the answer is
 \typ{INT}, adding to the confusion.
 
 3) As already stated, power series expansions are always implicitly around
-$\kbd{x} = 0$. When we wante them around $\kbd{x} = \kbd{a}$, we replace
+$\kbd{x} = 0$. When we want them around $\kbd{x} = \kbd{a}$, we replace
 \kbd{x} by \kbd{z + a} in the function we want to expand. For complicated
 functions, it may be simpler to use the substitution function \kbd{subst}.
 For example, if \kbd{p~= 1 / (x\pow 4 + 3*x\pow 3 + 5*x\pow 2 - 6*x + 7)},
