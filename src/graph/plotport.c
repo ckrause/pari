@@ -524,8 +524,10 @@ rectbox0(long ne, double gx2, double gy2, long relative, long filled)
   {  xx = gx2; yy = gy2; }
   x2 = xx*RXscale(e) + RXshift(e);
   y2 = yy*RYscale(e) + RYshift(e);
-  xmin = maxdd(mindd(x1,x2),0); xmax = mindd(maxdd(x1,x2),RXsize(e));
-  ymin = maxdd(mindd(y1,y2),0); ymax = mindd(maxdd(y1,y2),RYsize(e));
+  xmin = maxdd(mindd(mindd(x1,x2),RXsize(e)),0);
+  xmax = maxdd(mindd(maxdd(x1,x2),RXsize(e)),0);
+  ymin = maxdd(mindd(mindd(y1,y2),RYsize(e)),0);
+  ymax = maxdd(mindd(maxdd(y1,y2),RYsize(e)),0);
 
   RoType(z) = filled ? ROt_FBX: ROt_BX;
   RoBXx1(z) = xmin; RoBXy1(z) = ymin;

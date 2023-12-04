@@ -38,6 +38,7 @@ BA  33- rnf.p did not work
     35- expm1(huge t_REAL) -> junk [#2494]
 BA  36- hyperellratpoints(9*x^2,3) -> SEGV
     37- lambertw for 2-adics (also fix documentation)
+BA  38- plotbox, plotrbox did not clip properly
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output
