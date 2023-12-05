@@ -223,7 +223,7 @@ zetamult_Zagier(GEN avec, long bit, long prec)
   ze= cgetg(s + 1, t_VEC);
   b = cgetg(l + 1, t_VEC);
   for (r = 1; r <= s; r++) gel(ze,r) = cgetr(prec);
-  for (r = 1; r <= l; r++) { gel(b,r) = cgetr(prec); affur(0,gel(b,r)); }
+  for (r = 1; r <= l; r++) gel(b,r) = utor(0, prec);
   affur(1, gel(b,1)); av = avma;
   for (r = 1, h = -1; r <= t; r++)
   {
@@ -724,8 +724,7 @@ zetamult_interpolate(GEN s, GEN t, long prec)
     return zetamult_interpolate2_i(vecsmall_reverse(avec), t, prec);
   v = allstar(avec); l = lg(v); la = lg(avec);
   V = cgetg(la, t_VEC);
-  for (i = 1; i < la; i++)
-  { gel(V,i) = cgetr(prec + EXTRAPREC64); affur(0, gel(V,i)); }
+  for (i = 1; i < la; i++) gel(V,i) = utor(0, prec + EXTRAPREC64);
   av2 = avma;
   for (i = 1; i < l; i++, set_avma(av2))
   {
