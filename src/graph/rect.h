@@ -82,6 +82,8 @@ struct plot_eng {
   void (*sc)(void *data, long col);
   void (*pt)(void *data, long x, long y);
   void (*ln)(void *data, long x1, long y1, long x2, long y2);
+  void (*ac)(void *data, long x, long y, long w, long h);
+  void (*fa)(void *data, long x, long y, long w, long h);
   void (*bx)(void *data, long x, long y, long w, long h);
   void (*fb)(void *data, long x, long y, long w, long h);
   void (*mp)(void *data, long n, struct plot_points *points);
@@ -93,6 +95,7 @@ struct plot_eng {
 #define RoMV(rop) ((RectObj1P*)rop)
 #define RoPT(rop) ((RectObj1P*)rop)
 #define RoLN(rop) ((RectObj2P*)rop)
+#define RoAC(rop) ((RectObj2P*)rop)
 #define RoBX(rop) ((RectObj2P*)rop)
 #define RoMP(rop) ((RectObjMP*)rop)
 #define RoML(rop) ((RectObjMP*)rop)
@@ -124,6 +127,10 @@ struct plot_eng {
 #define RoLNy1(rop) (RoLN(rop)->y1)
 #define RoLNx2(rop) (RoLN(rop)->x2)
 #define RoLNy2(rop) (RoLN(rop)->y2)
+#define RoACx1(rop) (RoAC(rop)->x1)
+#define RoACy1(rop) (RoAC(rop)->y1)
+#define RoACx2(rop) (RoAC(rop)->x2)
+#define RoACy2(rop) (RoAC(rop)->y2)
 #define RoBXx1(rop) (RoBX(rop)->x1)
 #define RoBXy1(rop) (RoBX(rop)->y1)
 #define RoBXx2(rop) (RoBX(rop)->x2)

@@ -22,16 +22,30 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 static void SetForeground(void *data, long col)
 {
-  HPEN hOldPen;
-  int r, g, b; long_to_rgb(col, &r, &g, &b);
+  int r, g, b;
+  long_to_rgb(col, &r, &g, &b);
+  SelectObject((HDC)data, GetStockObject(DC_PEN));
   SetDCPenColor((HDC)data,RGB(r,g,b));
-  hOldPen = SelectObject((HDC)data, CreatePen(PS_SOLID, 1, RGB(r,g,b)));
-  if( hOldPen ) DeleteObject(hOldPen);
+  SelectObject((HDC)data, GetStockObject(DC_BRUSH));
+  SetDCBrushColor((HDC)data,RGB(r,g,b));
 }
 
 static void DrawPoint(void *data, long x, long y)
 {
+  SelectObject((HDC)data, GetStockObject(DC_BRUSH));
   Ellipse((HDC)data,x-1,y-1,x+1,y+1);
+}
+
+static void DrawArc(void *data, long x, long y, long w, long h)
+{
+  SelectObject((HDC)data, GetStockObject(HOLLOW_BRUSH));
+  Ellipse((HDC)data,x,y,x+w,y+h);
+}
+
+static void FillArc(void *data, long x, long y, long w, long h)
+{
+  SelectObject((HDC)data, GetStockObject(DC_BRUSH));
+  Ellipse((HDC)data,x,y,x+w,y+h);
 }
 
 static void DrawLine(void *data, long x1, long y1, long x2, long y2)
@@ -42,23 +56,14 @@ static void DrawLine(void *data, long x1, long y1, long x2, long y2)
 
 static void DrawRectangle(void *data, long x, long y, long w, long h)
 {
-  DrawLine(data, x,y,x+w,y);
-  DrawLine(data, x,y,x,y+h);
-  DrawLine(data, x+w,y,x+w,y+h);
-  DrawLine(data, x,y+h,x+w,y+h);
+  SelectObject((HDC)data, GetStockObject(HOLLOW_BRUSH));
+  Rectangle((HDC)data,x,y,x+w,y+h);
 }
 
 static void FillRectangle(void *data, long x, long y, long w, long h)
 {
-  RECT rc;
-  COLORREF color;
-  HBRUSH brush;
-  rc.left = x; rc.right  = x+w;
-  rc.top  = y; rc.bottom = y+h;
-  color = GetDCPenColor((HDC) data);
-  brush = CreateSolidBrush(color);
-  FillRect((HDC)data, &rc, brush);
-  DeleteObject(brush);
+  SelectObject((HDC)data, GetStockObject(DC_BRUSH));
+  Rectangle((HDC)data,x,y,x+w,y+h);
 }
 
 static void DrawPoints(void *data, long nb, struct plot_points *p)
@@ -102,6 +107,8 @@ draw(PARI_plot *T, GEN w, GEN x, GEN y)
   plotWin32.sc=&SetForeground;
   plotWin32.pt=&DrawPoint;
   plotWin32.ln=&DrawLine;
+  plotWin32.ac=&DrawArc;
+  plotWin32.fa=&FillArc;
   plotWin32.bx=&DrawRectangle;
   plotWin32.fb=&FillRectangle;
   plotWin32.mp=&DrawPoints;

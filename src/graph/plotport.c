@@ -40,6 +40,8 @@ enum {
   ROt_MV = 1, /* Move */
   ROt_PT,  /* Point */
   ROt_LN,  /* Line */
+  ROt_AC,  /* Arc */
+  ROt_FAC, /* Filled Arc */
   ROt_BX,  /* Box */
   ROt_FBX, /* Filled Box */
   ROt_MP,  /* Multiple point */
@@ -544,6 +546,37 @@ plotbox(long ne, GEN gx2, GEN gy2, long f)
 void
 plotrbox(long ne, GEN gx2, GEN gy2, long f)
 { rectbox0(ne, gtodouble(gx2), gtodouble(gy2), 1, f); }
+
+static void
+rectarc0(long ne, double gx2, double gy2, long relative, long filled)
+{
+  double xx, yy, x1, y1, x2, y2, xmin, ymin, xmax, ymax;
+  PariRect *e = check_rect_init(ne);
+  RectObj *z = (RectObj*) pari_malloc(sizeof(RectObj2P));
+
+  x1 = RXcursor(e)*RXscale(e) + RXshift(e);
+  y1 = RYcursor(e)*RYscale(e) + RYshift(e);
+  if (relative)
+  { xx = RXcursor(e)+gx2; yy = RYcursor(e)+gy2; }
+  else
+  {  xx = gx2; yy = gy2; }
+  x2 = xx*RXscale(e) + RXshift(e);
+  y2 = yy*RYscale(e) + RYshift(e);
+  xmin = maxdd(mindd(mindd(x1,x2),RXsize(e)),0);
+  xmax = maxdd(mindd(maxdd(x1,x2),RXsize(e)),0);
+  ymin = maxdd(mindd(mindd(y1,y2),RYsize(e)),0);
+  ymax = maxdd(mindd(maxdd(y1,y2),RYsize(e)),0);
+
+  RoType(z) = filled ? ROt_FAC: ROt_AC;
+  RoACx1(z) = xmin; RoACy1(z) = ymin;
+  RoACx2(z) = xmax; RoACy2(z) = ymax;
+  Rchain(e, z);
+  RoCol(z) = current_color[ne];
+}
+
+void
+plotell(long ne, GEN gx2, GEN gy2, long f)
+{ rectarc0(ne, gtodouble(gx2), gtodouble(gy2), 0, f); }
 
 static void
 freeobj(RectObj *z) {
@@ -1855,6 +1888,22 @@ gen_draw(struct plot_eng *eng, GEN w, GEN x, GEN y, double xs, double ys)
         eng->ln(data, DTOL((RoLNx1(R)+x0)*xs), DTOL((RoLNy1(R)+y0)*ys),
                       DTOL((RoLNx2(R)+x0)*xs), DTOL((RoLNy2(R)+y0)*ys));
         break;
+      case ROt_AC:
+        eng->sc(data,col);
+        eng->ac(data,
+                DTOL((RoBXx1(R)+x0)*xs),
+                DTOL((RoBXy1(R)+y0)*ys),
+                DTOL((RoBXx2(R)-RoBXx1(R))*xs),
+                DTOL((RoBXy2(R)-RoBXy1(R))*ys));
+        break;
+      case ROt_FAC:
+        eng->sc(data,col);
+        eng->fa(data,
+                DTOL((RoBXx1(R)+x0)*xs),
+                DTOL((RoBXy1(R)+y0)*ys),
+                DTOL((RoBXx2(R)-RoBXx1(R))*xs),
+                DTOL((RoBXy2(R)-RoBXy1(R))*ys));
+        break;
       case ROt_BX:
         eng->sc(data,col);
         eng->bx(data,
@@ -1967,6 +2016,27 @@ svg_line(void *data, long x1, long y1, long x2, long y2)
 }
 
 static void
+svg_ell(void *data, long x, long y, long w, long h)
+{
+  pari_str *S = data_str(data);
+  float sx = svg_rescale(x), sy = svg_rescale(y), sw = svg_rescale(w), sh = svg_rescale(h);
+  str_printf(S, "<ellipse cx='%.2f' cy='%.2f' rx='%.2f' ry='%.2f' ",
+    sx+sw/2, sy+sh/2, sw/2, sh/2);
+  str_printf(S, "style='fill:none;stroke:%s;'/>", data_hexcolor(data));
+}
+
+static void
+svg_fillell(void *data, long x, long y, long w, long h)
+{
+  pari_str *S = data_str(data);
+  const char * color = data_hexcolor(data);
+  float sx = svg_rescale(x), sy = svg_rescale(y), sw = svg_rescale(w), sh = svg_rescale(h);
+  str_printf(S, "<ellipse cx='%.2f' cy='%.2f' rx='%.2f' ry='%.2f' ",
+    sx+sw/2, sy+sh/2, sw/2, sh/2);
+  str_printf(S, "style='fill:%s;stroke:%s;'/>", color, color);
+}
+
+static void
 svg_rect(void *data, long x, long y, long w, long h)
 {
   pari_str *S = data_str(data);
@@ -2073,6 +2143,8 @@ rect2svg(GEN w, GEN x, GEN y, PARI_plot *T)
   pl.sc = &svg_color;
   pl.pt = &svg_point;
   pl.ln = &svg_line;
+  pl.ac = &svg_ell;
+  pl.fa = &svg_fillell;
   pl.bx = &svg_rect;
   pl.fb = &svg_fillrect;
   pl.mp = &svg_points;
@@ -2114,6 +2186,22 @@ ps_line(void *data, long x1, long y1, long x2, long y2)
   pari_str *S = (pari_str*)data;
   str_printf(S,"%ld %ld m %ld %ld l\n",y1,x1,y2,x2);
   str_printf(S,"stroke\n");
+}
+
+static void
+ps_arc(void *data, long x, long y, long w, long h)
+{
+  pari_str *S = (pari_str*)data;
+  str_printf(S,"matrix currentmatrix %ld %ld translate %ld %ld scale 1 0 moveto 0 0 1 0 360 arc closepath setmatrix currentlinejoin 0 setlinejoin stroke setlinejoin\n",
+         y+h/2,x+w/2,h/2,w/2);
+}
+
+static void
+ps_fillarc(void *data, long x, long y, long w, long h)
+{
+  pari_str *S = (pari_str*)data;
+  str_printf(S,"matrix currentmatrix %ld %ld translate %ld %ld scale 1 0 moveto 0 0 1 0 360 arc closepath setmatrix currentlinejoin 0 setlinejoin fill setlinejoin\n",
+         y+h/2,x+w/2,h/2,w/2);
 }
 
 static void
@@ -2204,6 +2292,8 @@ PS_SCALE, PS_SCALE, DTOL(T->fheight * xs));
   pl.sc = &ps_sc;
   pl.pt = &ps_point;
   pl.ln = &ps_line;
+  pl.ac = &ps_arc;
+  pl.fa = &ps_fillarc;
   pl.bx = &ps_rect;
   pl.fb = &ps_fillrect;
   pl.mp = &ps_points;

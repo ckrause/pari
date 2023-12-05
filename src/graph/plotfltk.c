@@ -64,6 +64,12 @@ DrawPoint(void *data, long x, long y)
 static void
 DrawLine(void *data, long x1, long y1, long x2, long y2)
 { (void)data; fl_line(x1,y1, x2,y2); }
+static void
+DrawArc(void *data, long x, long y, long w, long h)
+{ (void)data; fl_arc(x,y,w,h,0,360); }
+static void
+FillArc(void *data, long x, long y, long w, long h)
+{ (void)data; fl_pie(x,y,w,h,0,360); }
 
 static void
 DrawRectangle(void *data, long x, long y, long w, long h)
@@ -106,6 +112,8 @@ Plotter::draw()
   pl.sc = &SetForeground;
   pl.pt = &DrawPoint;
   pl.ln = &DrawLine;
+  pl.ac = &DrawArc;
+  pl.fa = &FillArc;
   pl.bx = &DrawRectangle;
   pl.fb = &FillRectangle;
   pl.mp = &DrawPoints;

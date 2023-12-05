@@ -99,6 +99,18 @@ static void DrawLine(void *data, long x1, long y1, long x2, long y2)
   XDrawLine(dx->display,dx->win,dx->gc, x1,y1, x2,y2);
 }
 
+static void DrawArc(void *data, long x, long y, long w, long h)
+{
+  struct data_x *dx = (struct data_x *) data;
+  XDrawArc(dx->display,dx->win,dx->gc, x,y, w,h, 0, 64*360);
+}
+
+static void FillArc(void *data, long x, long y, long w, long h)
+{
+  struct data_x *dx = (struct data_x *) data;
+  XFillArc(dx->display,dx->win,dx->gc, x,y, w,h, 0, 64*360);
+}
+
 static void DrawRectangle(void *data, long x, long y, long w, long h)
 {
   struct data_x *dx = (struct data_x *) data;
@@ -229,6 +241,8 @@ draw(PARI_plot *T, GEN w, GEN x, GEN y)
   plotX.sc = &SetForeground;
   plotX.pt = &DrawPoint;
   plotX.ln = &DrawLine;
+  plotX.ac = &DrawArc;
+  plotX.fa = &FillArc;
   plotX.bx = &DrawRectangle;
   plotX.fb = &FillRectangle;
   plotX.mp = &DrawPoints;
