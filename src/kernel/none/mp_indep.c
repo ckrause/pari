@@ -574,18 +574,18 @@ GEN
 divur(ulong x, GEN y)
 {
   pari_sp av;
-  long ly = lg(y);
+  long p = realprec(y);
   GEN z;
 
-  if (ly == 2) pari_err_INV("divur",y);
+  if (p == 0) pari_err_INV("divur",y);
   if (!x) return div0r(y);
-  if (ly > prec2lg(INVNEWTON_LIMIT)) {
+  if (p > INVNEWTON_LIMIT) {
     av = avma; z = invr(y);
     if (x == 1) return z;
     return gerepileuptoleaf(av, mulur(x, z));
   }
-  z = cgetg(ly, t_REAL); av = avma;
-  affrr(divrr(utor(x,lg2prec(ly+1)), y), z);
+  z = cgetr(p); av = avma;
+  affrr(divrr(utor(x, p + BITS_IN_LONG), y), z);
   set_avma(av); return z;
 }
 
@@ -593,19 +593,19 @@ GEN
 divsr(long x, GEN y)
 {
   pari_sp av;
-  long ly = lg(y);
+  long p = realprec(y);
   GEN z;
 
-  if (ly == 2) pari_err_INV("divsr",y);
+  if (p == 0) pari_err_INV("divsr",y);
   if (!x) return div0r(y);
-  if (ly > prec2lg(INVNEWTON_LIMIT)) {
+  if (p > INVNEWTON_LIMIT) {
     av = avma; z = invr(y);
     if (x == 1) return z;
     if (x ==-1) { togglesign(z); return z; }
     return gerepileuptoleaf(av, mulsr(x, z));
   }
-  z = cgetg(ly, t_REAL); av = avma;
-  affrr(divrr(stor(x,lg2prec(ly+1)), y), z);
+  z = cgetr(p); av = avma;
+  affrr(divrr(stor(x,p + BITS_IN_LONG), y), z);
   set_avma(av); return z;
 }
 
@@ -613,10 +613,10 @@ divsr(long x, GEN y)
 static GEN
 invr_basecase(GEN y)
 {
-  long ly = lg(y);
-  GEN z = cgetg(ly, t_REAL);
+  long p = realprec(y);
+  GEN z = cgetr(p);
   pari_sp av = avma;
-  affrr(divrr(real_1(lg2prec(ly+1)), y), z);
+  affrr(divrr(real_1(p + BITS_IN_LONG), y), z);
   set_avma(av); return z;
 }
 /* returns 1/b, Newton iteration */
