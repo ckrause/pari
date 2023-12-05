@@ -121,7 +121,7 @@ numbpart(GEN n)
   bitprec = (long)(rtodbl(est)/M_LN2) + 32;
   prec = nbits2prec(bitprec);
   pinit(n, &C, &D, prec);
-  sum = cgetr (prec); affsr(0, sum);
+  sum = utor(0, prec);
   /* Because N < 10^16 and q < sqrt(N), q fits into a long
    * In fact q < 2 LONG_MAX / 3 */
   av = avma; togglesign(est);
