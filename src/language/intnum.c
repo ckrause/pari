@@ -255,7 +255,7 @@ GEN
 intnumgaussinit(long N, long prec)
 {
   pari_sp av;
-  long N2, j, k, l, bit;
+  long N2, j, k, l, lV, bit;
   GEN res, V, W, F, S;
   double d;
 
@@ -263,21 +263,26 @@ intnumgaussinit(long N, long prec)
   bit = prec2nbits(prec);
   if (N <= 0) { N = bit >> 2; if (odd(N)) N++; }
   if (N == 1) retmkvec2(mkvec(gen_0), mkvec(gen_2));
+  l = prec2lg(prec);
   res = cgetg(3, t_VEC);
   if (N == 2)
   {
-    GEN z = cgetr(prec);
+    GEN z = cgetg(l, t_REAL);
     gel(res,1) = mkvec(z);
     gel(res,2) = mkvec(gen_1);
     av = avma; affrr(divru(sqrtr(utor(3,prec)), 3), z);
     return gc_const(av, res);
   }
-  N2 = N >> 1; l = (N+3)>> 1;
-  gel(res,1) = V = cgetg(l, t_VEC);
-  gel(res,2) = W = cgetg(l, t_VEC);
-  gel(V,1) = odd(N)? gen_0: cgetr(prec);
-  gel(W,1) = cgetr(prec);
-  for (k = 2; k < l; k++) { gel(V,k) = cgetr(prec); gel(W,k) = cgetr(prec); }
+  N2 = N >> 1; lV = (N+3)>> 1;
+  gel(res,1) = V = cgetg(lV, t_VEC);
+  gel(res,2) = W = cgetg(lV, t_VEC);
+  gel(V,1) = odd(N)? gen_0: cgetg(l, t_REAL);
+  gel(W,1) = cgetg(l, t_REAL);
+  for (k = 2; k < lV; k++)
+  {
+    gel(V,k) = cgetg(l, t_REAL);
+    gel(W,k) = cgetg(l, t_REAL);
+  }
   av = avma; S = vecpowuu(N, 2); F = sqrr(mpfactr(N-1, prec));
   if (!odd(N)) k = 1;
   else
@@ -465,7 +470,7 @@ static GEN
 inittanhsinh(long m, long prec)
 {
   GEN e, ei, ek, eik, pi = mppi(prec);
-  long k, nt = -1;
+  long k, l, nt = -1;
   intdata D;
 
   intinit_start(&D, m, 1.86, prec);
@@ -473,12 +478,13 @@ inittanhsinh(long m, long prec)
   D.tabw0 = Pi2n(-1,prec);
   e = mpexp(D.h); ek = mulrr(pi, e);
   ei = invr(e); eik = mulrr(pi, ei);
+  l = prec2lg(prec);
   for (k = 1; k < D.l; k++)
   {
     GEN xp, wp, ct, st, z;
     pari_sp av;
-    gel(D.tabxp,k) = cgetr(prec);
-    gel(D.tabwp,k) = cgetr(prec); av = avma;
+    gel(D.tabxp,k) = cgetg(l, t_REAL);
+    gel(D.tabwp,k) = cgetg(l, t_REAL); av = avma;
     ct = divr2_ip(addrr(ek, eik)); /* Pi ch(kh) */
     st = subrr(ek, ct); /* Pi sh(kh) */
     z = invr( addrs(mpexp(st), 1) );
@@ -498,18 +504,19 @@ initsinhsinh(long m, long prec)
 {
   pari_sp av;
   GEN et, ct, st, ex;
-  long k, nt = -1;
+  long k, l, nt = -1;
   intdata D;
 
   intinit_start(&D, m, 0.666, prec);
   D.tabx0 = real_0(prec);
   D.tabw0 = real_1(prec);
   et = ex = mpexp(D.h);
+  l = prec2lg(prec);
   for (k = 1; k < D.l; k++)
   {
     GEN xp, wp, ext, exu;
-    gel(D.tabxp,k) = cgetr(prec);
-    gel(D.tabwp,k) = cgetr(prec); av = avma;
+    gel(D.tabxp,k) = cgetg(l, t_REAL);
+    gel(D.tabwp,k) = cgetg(l, t_REAL); av = avma;
     ct = divr2_ip(addrr(et, invr(et)));
     st = subrr(et, ct);
     ext = mpexp(st);
@@ -529,17 +536,18 @@ initsinh(long m, long prec)
 {
   pari_sp av;
   GEN et, ex, eti, xp, wp;
-  long k, nt = -1;
+  long k, l, nt = -1;
   intdata D;
 
   intinit_start(&D, m, 1.0, prec);
   D.tabx0 = real_0(prec);
   D.tabw0 = real2n(1, prec);
   et = ex = mpexp(D.h);
+  l = prec2lg(prec);
   for (k = 1; k < D.l; k++)
   {
-    gel(D.tabxp,k) = cgetr(prec);
-    gel(D.tabwp,k) = cgetr(prec); av = avma;
+    gel(D.tabxp,k) = cgetg(l, t_REAL);
+    gel(D.tabwp,k) = cgetg(l, t_REAL); av = avma;
     eti = invr(et);
     xp = subrr(et, eti);
     wp = addrr(et, eti);
@@ -584,20 +592,21 @@ initexpexp(long m, long prec)
 {
   pari_sp av;
   GEN et, ex;
-  long k, nt = -1;
+  long k, l, nt = -1;
   intdata D;
 
   intinit_start(&D, m, 1.76, prec);
   D.tabx0 = mpexp(real_m1(prec));
   D.tabw0 = gmul2n(D.tabx0, 1);
   et = ex = mpexp(negr(D.h));
+  l = prec2lg(prec);
   for (k = 1; k < D.l; k++)
   {
     GEN xp, xm, wp, wm, eti, kh;
-    gel(D.tabxp,k) = cgetr(prec);
-    gel(D.tabwp,k) = cgetr(prec);
-    gel(D.tabxm,k) = cgetr(prec);
-    gel(D.tabwm,k) = cgetr(prec); av = avma;
+    gel(D.tabxp,k) = cgetg(l, t_REAL);
+    gel(D.tabwp,k) = cgetg(l, t_REAL);
+    gel(D.tabxm,k) = cgetg(l, t_REAL);
+    gel(D.tabwm,k) = cgetg(l, t_REAL); av = avma;
     eti = invr(et); kh = mulur(k,D.h);
     xp = mpexp(subrr(kh, et));
     xm = mpexp(negr(addrr(kh, eti)));
@@ -618,7 +627,7 @@ initnumsine(long m, long prec)
 {
   pari_sp av;
   GEN invh, et, eti, ex, pi = mppi(prec);
-  long exh, k, nt = -1;
+  long exh, k, l, nt = -1;
   intdata D;
 
   intinit_start(&D, m, 0.666, prec);
@@ -627,13 +636,14 @@ initnumsine(long m, long prec)
   D.tabw0 = gmul2n(D.tabx0,-1);
   exh = expo(invh); /*  expo(1/h) */
   et = ex = mpexp(D.h);
+  l = prec2lg(prec);
   for (k = 1; k < D.l; k++)
   {
     GEN xp,xm, wp,wm, ct,st, extp,extp1,extp2, extm,extm1,extm2, kct, kpi;
-    gel(D.tabxp,k) = cgetr(prec);
-    gel(D.tabwp,k) = cgetr(prec);
-    gel(D.tabxm,k) = cgetr(prec);
-    gel(D.tabwm,k) = cgetr(prec); av = avma;
+    gel(D.tabxp,k) = cgetg(l, t_REAL);
+    gel(D.tabwp,k) = cgetg(l, t_REAL);
+    gel(D.tabxm,k) = cgetg(l, t_REAL);
+    gel(D.tabwm,k) = cgetg(l, t_REAL); av = avma;
     eti = invr(et); /* exp(-kh) */
     ct = divr2_ip(addrr(et, eti)); /* ch(kh) */
     st = divr2_ip(subrr(et, eti)); /* sh(kh) */
