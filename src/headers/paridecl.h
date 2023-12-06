@@ -4383,7 +4383,6 @@ GEN     intnumgaussinit(long n, long prec);
 GEN     intnuminit(GEN a, GEN b, long m, long prec);
 GEN     intnumosc(void *E, GEN (*f)(void*, GEN), GEN a, GEN H, long flag, GEN tab, long prec);
 GEN     intnumromb(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long flag, long prec);
-GEN     intnumromb_bitprec(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long flag, long bit);
 GEN     prodeulerrat(GEN F, GEN s, long a, long prec);
 GEN     prodnumrat(GEN F, long a, long prec);
 GEN     quodif(GEN M, long n);

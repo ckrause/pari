@@ -1,6 +1,6 @@
 Function: intnumromb
 Section: sums
-C-Name: intnumromb0_bitprec
+C-Name: intnumromb0
 Prototype: V=GGED0,L,b
 Help: intnumromb(X=a,b,expr,{flag=0}): numerical integration of expr (smooth in
  ]a,b[) from a to b with respect to X. flag is optional and mean 0: default.
@@ -49,8 +49,6 @@ Doc: numerical integration of \var{expr} (smooth in $]a,b[$), with respect to
  set infinity equal to 10 for example, and certainly not to \kbd{1e1000}.
  %\syn{NO}
 
- The library syntax is \fun{GEN}{intnumromb_bitprec}{void *E, GEN (*eval)(void*,GEN), GEN a, GEN b, long flag, long bitprec}, where \kbd{eval}$(x, E)$ returns the value of the
+ The library syntax is \fun{GEN}{intnumromb}{void *E, GEN (*eval)(void*,GEN), GEN a, GEN b, long flag, long bitprec}, where \kbd{eval}$(x, E)$ returns the value of the
  function at $x$. You may store any additional information required by
- \kbd{eval} in $E$, or set it to \kbd{NULL}. The historical variant
- \tet{intnumromb}, where \kbd{prec} is expressed in words, not bits, is
- obsolete and should no longer be used.
+ \kbd{eval} in $E$, or set it to \kbd{NULL}.

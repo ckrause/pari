@@ -183,7 +183,7 @@ rombint(void *E, GEN (*eval)(void*, GEN), GEN a, GEN b, long bit)
 }
 
 GEN
-intnumromb_bitprec(void *E, GEN (*f)(void *, GEN), GEN a,GEN b, long fl, long B)
+intnumromb(void *E, GEN (*f)(void *, GEN), GEN a,GEN b, long fl, long B)
 {
   pari_sp av = avma;
   GEN z;
@@ -198,11 +198,8 @@ intnumromb_bitprec(void *E, GEN (*f)(void *, GEN), GEN a,GEN b, long fl, long B)
   return gerepileupto(av, z);
 }
 GEN
-intnumromb(void *E, GEN (*f)(void *, GEN), GEN a, GEN b, long flag, long prec)
-{ return intnumromb_bitprec(E,f,a,b,flag,prec2nbits(prec));}
-GEN
-intnumromb0_bitprec(GEN a, GEN b, GEN code, long flag, long bit)
-{ EXPR_WRAP(code, intnumromb_bitprec(EXPR_ARG, a, b, flag, bit)); }
+intnumromb0(GEN a, GEN b, GEN code, long flag, long bit)
+{ EXPR_WRAP(code, intnumromb(EXPR_ARG, a, b, flag, bit)); }
 
 /********************************************************************/
 /**             NUMERICAL INTEGRATION (Gauss-Legendre)             **/

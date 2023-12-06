@@ -108,6 +108,7 @@ BA  42- [libpari] lg2prec, prec2lg
 
   Removed
      1- [graphic] support for Qt4
+     2- [libpari] suminf_bitprec, intnumromb_bitprec: use suminf, intnumromb
 
 Done for version 2.16.0 (released 25/02/2023):
   Fixed
