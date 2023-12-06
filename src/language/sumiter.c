@@ -822,7 +822,7 @@ sum_init(GEN x0, GEN t)
 }
 
 GEN
-suminf_bitprec(void *E, GEN (*eval)(void *, GEN), GEN a, long bit)
+suminf(void *E, GEN (*eval)(void *, GEN), GEN a, long bit)
 {
   long fl = 0, G = bit + 1;
   pari_sp av0 = avma, av;
@@ -850,11 +850,8 @@ suminf_bitprec(void *E, GEN (*eval)(void *, GEN), GEN a, long bit)
   return gerepileupto(av0, gsub(x, _1));
 }
 GEN
-suminf(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
-{ return suminf_bitprec(E, eval, a, prec2nbits(prec)); }
-GEN
-suminf0_bitprec(GEN a, GEN code, long bit)
-{ EXPR_WRAP(code, suminf_bitprec(EXPR_ARG, a, bit)); }
+suminf0(GEN a, GEN code, long bit)
+{ EXPR_WRAP(code, suminf(EXPR_ARG, a, bit)); }
 
 GEN
 sumdivexpr(GEN num, GEN code)

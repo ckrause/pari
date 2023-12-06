@@ -1,6 +1,6 @@
 Function: suminf
 Section: sums
-C-Name: suminf0_bitprec
+C-Name: suminf0
 Prototype: V=GEb
 Help: suminf(X=a,expr): naive summation (X goes from a to infinity) of real or
  complex expression expr.
@@ -56,6 +56,4 @@ Doc: Naive summation of expression \var{expr}, the formal parameter $X$
  %6 = -4003
  @eprog
 
- \synt{suminf_bitprec}{void *E, GEN (*eval)(void*,GEN), GEN a, long prec}.
- The historical variant \fun{GEN}{suminf}{\dots, long prec}, where \kbd{prec} is
- expressed in words, not bits, is obsolete and should no longer be used.
+ \synt{suminf}{void *E, GEN (*eval)(void*,GEN), GEN a, long prec}.

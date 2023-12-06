@@ -134,7 +134,7 @@ GEN  somme(GEN a, GEN b, GEN code, GEN x);
 GEN  sumalt0(GEN a, GEN code,long flag, long prec);
 GEN  sumdivexpr(GEN num, GEN code);
 GEN  sumdivmultexpr0(GEN num, GEN code);
-GEN  suminf0_bitprec(GEN a, GEN code, long bit);
+GEN  suminf0(GEN a, GEN code, long bit);
 GEN  sumnum0(GEN a, GEN code, GEN tab, long prec);
 GEN  sumnumap0(GEN a, GEN code, GEN tab, long prec);
 GEN  sumnumlagrange0(GEN a, GEN code, GEN tab, long prec);

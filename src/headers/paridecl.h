@@ -5505,7 +5505,6 @@ GEN     sumalt2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
 GEN     sumpos(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
 GEN     sumpos2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
 GEN     suminf(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
-GEN     suminf_bitprec(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
 GEN     sumdivmultexpr(void *D, GEN (*fun)(void*, GEN), GEN num);
 GEN     zbrent(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long prec);
 
