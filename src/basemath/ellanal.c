@@ -384,7 +384,7 @@ ellL1_der(GEN e, GEN vec, struct lcritical *C, GEN t, long der, long prec)
 }
 
 GEN
-ellL1_bitprec(GEN E, long r, long bitprec)
+ellL1(GEN E, long r, long bitprec)
 {
   pari_sp av = avma;
   struct lcritical C;
@@ -401,10 +401,7 @@ ellL1_bitprec(GEN E, long r, long bitprec)
 }
 
 GEN
-ellL1(GEN E, long r, long prec) { return ellL1_bitprec(E, r, prec2nbits(prec)); }
-
-GEN
-ellanalyticrank_bitprec(GEN E, GEN eps, long bitprec)
+ellanalyticrank(GEN E, GEN eps, long bitprec)
 {
   pari_sp av = avma, av2;
   long prec = nbits2prec(bitprec);
@@ -435,12 +432,6 @@ ellanalyticrank_bitprec(GEN E, GEN eps, long bitprec)
       return gerepilecopy(av, mkvec2(stoi(rk), Lrk));
     set_avma(av2);
   }
-}
-
-GEN
-ellanalyticrank(GEN E, GEN eps, long prec)
-{
-  return ellanalyticrank_bitprec(E, eps, prec2nbits(prec));
 }
 
 /*        Heegner point computation
@@ -911,7 +902,7 @@ static GEN
 ltwist1(GEN E, GEN d, long bitprec)
 {
   pari_sp av = avma;
-  GEN Ed = elltwist(E, d), z = ellL1_bitprec(Ed, 0, bitprec);
+  GEN Ed = elltwist(E, d), z = ellL1(Ed, 0, bitprec);
   obj_free(Ed); return gerepileuptoleaf(av, z);
 }
 
@@ -1363,7 +1354,7 @@ ellheegner(GEN E)
     GEN hnaive, l1;
     long bitneeded;
     if (DEBUGLEVEL) timer_start(&ti);
-    l1 = ellL1_bitprec(E, 1, bitprec);
+    l1 = ellL1(E, 1, bitprec);
     if (DEBUGLEVEL) timer_printf(&ti,"ellL1");
     if (expo(l1) < 1 - bitprec/2)
       pari_err_DOMAIN("ellheegner", "analytic rank",">",gen_1,E);

@@ -27,6 +27,7 @@ This file lists the incompatible changes between Version 2.x and older versions
      of bits (but must be multiple of BITS_IN_LONG)
    - suminf_bitprec: use suminf instead (with same arguments)
      intnumromb_bitprec: use intnumromb instead (with same arguments)
+     ellL1_bitprec, ellanalyticrank_bitprec: use ellL1, ellanalyticrank
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.14 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - qfbredsl2(q, S): change format of S: was [D,isD], is now isD
    - elltwist now returns an ellinit, and accepts the same input formats
