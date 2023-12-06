@@ -198,18 +198,19 @@ GEN
 compile_str(const char *s) { return pari_compile_str(gp_filter(s)); }
 
 GEN
-gp_read_str_bitprec(const char *s, long bitprec)
+gp_read_str_prec(const char *s, long prec)
 {
   GEN x;
-  push_localbitprec(bitprec);
+  push_localbitprec(prec);
   x = gp_read_str(s);
   pop_localprec();
   return x;
 }
 
+/* Deprecated, keep for backward compatibility */
 GEN
-gp_read_str_prec(const char *s, long prec)
-{ return gp_read_str_bitprec(s, prec2nbits(prec)); }
+gp_read_str_bitprec(const char *s, long bitprec)
+{ return gp_read_str_prec(s, bitprec); }
 
 /* valid return type */
 static int
