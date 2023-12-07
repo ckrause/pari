@@ -55,6 +55,10 @@ v
 
 ellminimalmodel(ellinit([a^4,(a+2)^6], K))
 
+bnf=bnfinit(x^2-323);
+E=ellinit([-((41+x)/23)^2,((25*x+1)/7)^2],bnf);
+F=ellminimalmodel(E,&urst); lift(urst)
+
 p=2*10^10+89; q=10^10+19;
 P=nfbasistoalg(K, bnfisprincipal(K, idealprimedec(K,p)[1])[2]);
 Q=nfbasistoalg(K, bnfisprincipal(K, idealprimedec(K,q)[1])[2]);

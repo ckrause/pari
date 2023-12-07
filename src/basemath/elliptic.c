@@ -1282,30 +1282,28 @@ static GEN
 ch_NF(GEN E, GEN e, GEN w)
 {
   long prec = ellR_get_prec(E);
-  GEN S, v = NULL, p = ellnf_get_nf(E);
+  GEN S, p = ellnf_get_nf(E);
   if (base_ring(E, &p, &prec) != t_VEC) return ellinit(E, p, prec);
   if ((S = obj_check(e, NF_MINIMALMODEL)))
   {
-    if (lg(S) == 2)
+    if (lg(S) == 1)
     { /* model was minimal */
       if (!is_trivial_change(w)) /* no longer minimal */
-        S = mkvec3(gel(S,1), ellchangeinvert(w), e);
-      (void)obj_insert_shallow(E, NF_MINIMALMODEL, S);
+        S = mkvec2(ellchangeinvert(w), e);
     }
-    else
+    else if (lg(S)==3)
     {
-      v = gel(S,2);
+      GEN v = gel(S,1);
       if (gequal(v, w) || (is_trivial_change(v) && is_trivial_change(w)))
-        S = mkvec(gel(S,1)); /* now minimal */
+        S = cgetg(1,t_VEC); /* now minimal */
       else
       {
         w = ellchangeinvert(w);
-        gcomposev(&w, v); v = w;
-        S = leafcopy(S); /* don't modify S in place: would corrupt e */
-        gel(S,2) = v;
+        gcomposev(&w, v);
+        S = mkvec2(w, gel(S,2));
       }
-      (void)obj_insert_shallow(E, NF_MINIMALMODEL, S);
     }
+    (void)obj_insert_shallow(E, NF_MINIMALMODEL, S);
   }
   if ((S = obj_check(e, NF_GLOBALRED)))
     S = obj_insert_shallow(E, NF_GLOBALRED, S);
@@ -1321,7 +1319,7 @@ static GEN
 ch_Q(GEN E, GEN e, GEN w)
 {
   long prec = ellR_get_prec(E);
-  GEN S, v = NULL, p = NULL;
+  GEN S, p = NULL;
   if (base_ring(E, &p, &prec) != t_FRAC) return ellinit(E, p, prec);
   ch_R(E, e, w);
   if ((S = obj_check(e, Q_GROUPGEN)))
@@ -1332,22 +1330,21 @@ ch_Q(GEN E, GEN e, GEN w)
     { /* model was minimal */
       if (!is_trivial_change(w)) /* no longer minimal */
         S = mkvec3(gel(S,1), ellchangeinvert(w), e);
-      (void)obj_insert_shallow(E, Q_MINIMALMODEL, S);
     }
     else
     {
-      v = gel(S,2);
+      GEN v = gel(S,2);
       if (gequal(v, w) || (is_trivial_change(v) && is_trivial_change(w)))
         S = mkvec(gel(S,1)); /* now minimal */
       else
       {
         w = ellchangeinvert(w);
-        gcomposev(&w, v); v = w;
+        gcomposev(&w, v);
         S = leafcopy(S); /* don't modify S in place: would corrupt e */
-        gel(S,2) = v;
+        gel(S,2) = w;
       }
-      (void)obj_insert_shallow(E, Q_MINIMALMODEL, S);
     }
+    (void)obj_insert_shallow(E, Q_MINIMALMODEL, S);
   }
   if ((S = obj_check(e, Q_GLOBALRED)))
     S = obj_insert_shallow(E, Q_GLOBALRED, S);
