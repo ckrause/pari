@@ -4227,13 +4227,13 @@ nflocalred_p(GEN e, GEN P)
 static GEN
 nflocalred(GEN E, GEN pr)
 {
-  GEN p = pr_get_p(pr);
+  GEN p = pr_get_p(pr), q, v, nf = ellnf_get_nf(E);
+  long i;
   if (abscmpiu(p, 3) <= 0)
   {
-    long i, ap, vu;
-    GEN nf = ellnf_get_nf(E), e = ell_to_nfell10(E), D = ell_get_disc(E);
-    GEN q = nflocalred_23(nf,e,D,pr,&ap), v = gel(q,3), u = gel(v,1);
-    gel(q,3) = v;
+    long ap, vu;
+    GEN e = ell_to_nfell10(E), D = ell_get_disc(E), u;
+    q = nflocalred_23(nf,e,D,pr,&ap); v = gel(q,3); u = gel(v,1);
     /* do nothing if already minimal or equation was not pr-integral */
     vu = nfval(nf, u, pr);
     if (vu > 0)
@@ -4251,10 +4251,11 @@ nflocalred(GEN E, GEN pr)
         gel(v,4) = nfmul(nf, t, a);
       }
     }
-    for(i=1; i <= 4; i++) gel(v,i) = nftoalg(nf, gel(v,i));
-    return q;
-  }
-  return nflocalred_p(E,pr);
+  } else
+    q = nflocalred_p(E,pr);
+  v = gel(q,3);
+  for(i=1; i <= 4; i++) gel(v,i) = nftoalg(nf, gel(v,i));
+  return q;
 }
 
 static GEN
@@ -6700,6 +6701,12 @@ GEN
 ellpadicheight0(GEN e, GEN p, long n, GEN P, GEN Q)
 { return Q? ellheightpairing(e,p,n, P,Q): ellpadicheight(e,p,n, P); }
 
+/* Based on J.H. Silverman
+   Advanced Topics in the Arithmetic of Elliptic Curves
+   GTM 151, chap VI, p 478, exercise 6.7
+   Note that we use the BSD normalisation instead of Silverman one.
+*/
+
 static GEN
 ellnf_localheight(GEN e, GEN P, GEN pr)
 {
@@ -6736,8 +6743,10 @@ static GEN
 ellnf_height(GEN E, GEN P, long prec)
 {
   pari_sp av = avma;
-  GEN x, nf, disc, d, F, Ee, Pe, s;
+  GEN x, nf, disc, d, F, Ee, Pe, s, v;
   long i, n, l, r1;
+  E = ellintegralmodel_i(E, &v);
+  if (v) P = ellchangepoint(P, v);
   if (signe(ellorder(E, P, NULL))) return gen_0;
   x = gel(P,1);
   if (gequal0(ec_2divpol_evalx(E, x))) { set_avma(av); return gen_0; }

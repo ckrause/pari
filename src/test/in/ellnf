@@ -56,8 +56,12 @@ v
 ellminimalmodel(ellinit([a^4,(a+2)^6], K))
 
 bnf=bnfinit(x^2-323);
-E=ellinit([-((41+x)/23)^2,((25*x+1)/7)^2],bnf);
+
+E=ellinit([-629/900*x-124919/1200,17/100*x+104941/3600],bnf);
 F=ellminimalmodel(E,&urst); lift(urst)
+R=[-17/30*x-37/60,-3/10*x-17/60];
+ellisoncurve(E,R)
+for(i=1,3,print(i,":",ellheight(E,ellmul(E,R,i))/i^2))
 
 p=2*10^10+89; q=10^10+19;
 P=nfbasistoalg(K, bnfisprincipal(K, idealprimedec(K,p)[1])[2]);
