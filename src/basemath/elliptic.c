@@ -6710,19 +6710,20 @@ ellpadicheight0(GEN e, GEN p, long n, GEN P, GEN Q)
 static GEN
 ellnf_localheight(GEN e, GEN P, GEN pr)
 {
-  long v1, v2, vD, vu;
+  long v1, v2, vD, vu, vP, vQ;
   GEN nf = ellnf_get_nf(e);
   GEN lr = nflocalred(e,pr);
   GEN k = gel(lr, 2), urst = gel(lr, 3), u = gel(urst, 1);
   GEN E = ellchangecurve(e, urst);
   GEN Q = ellchangepoint(P, urst);
   GEN v;
+  vP = minss(0, nfval(nf, gel(P,1), pr)); /* v_p(den(x_P)) */
+  vQ = minss(0, nfval(nf, gel(Q,1), pr)); /* v_p(den(x_Q)) */
   vu = nfval(nf, u, pr);
   v1 = nfval(nf, ec_dFdx_evalQ(E, Q), pr);
   v2 = nfval(nf, ec_dmFdy_evalQ(E, Q), pr);
   vD = nfval(nf, ell_get_disc(E), pr); /* >= 0 */
-  if (v1<0)
-    vu = 0;
+  vu += (vQ-vP)>>1;
   if (v1<=0 || v2<=0)
     v = gen_0;
   else if (cmpis(k,5) >= 0)
