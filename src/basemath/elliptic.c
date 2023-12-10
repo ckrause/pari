@@ -6748,6 +6748,8 @@ ellnf_height(GEN E, GEN P, long prec)
   long i, n, l, r1;
   E = ellintegralmodel_i(E, &v);
   if (v) P = ellchangepoint(P, v);
+  if (!oncurve(E,P))
+    pari_err_DOMAIN("ellheight", "point", "not on", strtoGENstr("E"), P);
   if (signe(ellorder(E, P, NULL))) return gen_0;
   x = gel(P,1);
   if (gequal0(ec_2divpol_evalx(E, x))) { set_avma(av); return gen_0; }
@@ -6782,6 +6784,8 @@ ellQ_height(GEN e, GEN a, long prec)
   GEN v, S, b2, b4, b6, b8, a1, a2, a4, c4, D;
 
   if (!RgV_is_QV(a)) pari_err_TYPE("ellheight [not a rational point]",a);
+  if (!oncurve(e,a))
+    pari_err_DOMAIN("ellheight", "point", "not on", strtoGENstr("E"),a);
   if (ellorder_Q(e, a)) return gen_0;
   av = avma;
   if ((S = obj_check(e, Q_MINIMALMODEL)))
@@ -6799,8 +6803,6 @@ ellQ_height(GEN e, GEN a, long prec)
     e = ellminimalmodel_i(e, &v, NULL);
     a = ellchangepoint(a, v);
   }
-  if (!oncurve(e,a))
-    pari_err_DOMAIN("ellheight", "point", "not on", strtoGENstr("E"),a);
   psi2 = Q_numer(ec_dmFdy_evalQ(e,a));
   if (!signe(psi2)) { set_avma(av); return gen_0; }
   x = gel(a,1);
