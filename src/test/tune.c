@@ -278,22 +278,41 @@ dftmod(speed_param *s)
   return speed_endtime();                \
 }
 
+#define m_menable_REAL(s,var,min) (*(s->var)=bit_accuracy(minss(lg(s->x),s->min+2)))
+#define  m_enable_REAL(s,var) (*(s->var)=bit_accuracy(lg(s->x)-1))/* enable  asymptotically fastest */
+#define m_disable_REAL(s,var) (*(s->var)=bit_accuracy(lg(s->x)+1))/* disable asymptotically fastest */
+
 #define m_menable(s,var,min) (*(s->var)=minss(lg(s->x)-2,s->min))
 #define  m_enable(s,var) (*(s->var)=lg(s->x)-2)/* enable  asymptotically fastest */
 #define m_disable(s,var) (*(s->var)=lg(s->x)+1)/* disable asymptotically fastest */
 
 static void enable(speed_param *s)
 {
-  m_enable(s,var); s->enabled = 1;
-  if (s->var_disable) m_disable(s,var_disable);
-  if (s->var_enable) m_menable(s,var_enable,var_enable_min);
+  if (s->type==t_REAL)
+  {
+    m_enable_REAL(s,var); s->enabled = 1;
+    if (s->var_disable) m_disable_REAL(s,var_disable);
+    if (s->var_enable) m_menable_REAL(s,var_enable,var_enable_min);
+  } else
+  {
+    m_enable(s,var); s->enabled = 1;
+    if (s->var_disable) m_disable(s,var_disable);
+    if (s->var_enable) m_menable(s,var_enable,var_enable_min);
+  }
 }
 
 static void disable(speed_param *s)
 {
-  m_disable(s,var); s->enabled = 0;
-  if (s->var_disable) m_disable(s,var_disable);
-  if (s->var_enable) m_menable(s,var_enable,var_enable_min);
+  if (s->type==t_REAL)
+  {
+    m_disable_REAL(s,var); s->enabled = 0;
+    if (s->var_disable) m_disable_REAL(s,var_disable);
+    if (s->var_enable) m_menable_REAL(s,var_enable,var_enable_min);
+  } else {
+    m_disable(s,var); s->enabled = 0;
+    if (s->var_disable) m_disable(s,var_disable);
+    if (s->var_enable) m_menable(s,var_enable,var_enable_min);
+  }
 }
 
 static double speed_mulrr(speed_param *s)
