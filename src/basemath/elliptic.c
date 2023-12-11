@@ -6713,17 +6713,16 @@ ellnf_localheight(GEN e, GEN P, GEN pr)
   long v1, v2, vD, vu, vP, vQ;
   GEN nf = ellnf_get_nf(e);
   GEN lr = nflocalred(e,pr);
-  GEN k = gel(lr, 2), urst = gel(lr, 3), u = gel(urst, 1);
+  GEN k = gel(lr, 2), urst = gel(lr, 3);
   GEN E = ellchangecurve(e, urst);
   GEN Q = ellchangepoint(P, urst);
   GEN v;
   vP = minss(0, nfval(nf, gel(P,1), pr)); /* v_p(den(x_P)) */
   vQ = minss(0, nfval(nf, gel(Q,1), pr)); /* v_p(den(x_Q)) */
-  vu = nfval(nf, u, pr);
   v1 = nfval(nf, ec_dFdx_evalQ(E, Q), pr);
   v2 = nfval(nf, ec_dmFdy_evalQ(E, Q), pr);
   vD = nfval(nf, ell_get_disc(E), pr); /* >= 0 */
-  vu += (vQ-vP)>>1;
+  vu = (vQ-vP)>>1;
   if (v1<=0 || v2<=0)
     v = gen_0;
   else if (cmpis(k,5) >= 0)
@@ -6744,7 +6743,7 @@ static GEN
 ellnf_height(GEN E, GEN P, long prec)
 {
   pari_sp av = avma;
-  GEN x, nf, disc, d, F, Ee, Pe, s, v;
+  GEN x, nf, disc, d, F, Ee, Pe, s, v, u;
   long i, n, l, r1;
   E = ellintegralmodel_i(E, &v);
   if (v) P = ellchangepoint(P, v);
@@ -6755,12 +6754,13 @@ ellnf_height(GEN E, GEN P, long prec)
   if (gequal0(ec_2divpol_evalx(E, x))) { set_avma(av); return gen_0; }
   nf = ellnf_get_nf(E); r1 = nf_get_r1(nf);
   disc = ell_get_disc(E);
+  u = ellnf_minimalnormu(E);
   d = idealnorm(nf, gel(idealnumden(nf, x), 2));
   F = gel(idealfactor(nf, disc), 1);
   Ee = ellnfembed(E, prec);
   Pe = ellpointnfembed(E, P, prec);
   n = lg(Ee); l = lg(F);
-  s = gmul2n(glog(d, prec), -1);
+  s = gsub(gmul2n(glog(d, prec), -1), glog(u, prec));
   for (i=1; i<=r1; i++)
     s = gadd(s, ellheightoo(gel(Ee, i), gel(Pe, i), prec));
   for (   ; i<n; i++)
