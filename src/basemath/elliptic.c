@@ -6701,29 +6701,24 @@ GEN
 ellpadicheight0(GEN e, GEN p, long n, GEN P, GEN Q)
 { return Q? ellheightpairing(e,p,n, P,Q): ellpadicheight(e,p,n, P); }
 
-/* Based on J.H. Silverman
-   Advanced Topics in the Arithmetic of Elliptic Curves
-   GTM 151, chap VI, p 478, exercise 6.7
-   Note that we use the BSD normalisation instead of Silverman one.
-*/
-
+/* Based on J.H. Silverman, Advanced Topics in the Arithmetic of Elliptic
+ * Curves, GTM 151, chap VI, p 478, exercise 6.7
+ * Note that we use BSD normalization not Silverman's. */
+/* P an affine point on e */
 static GEN
 ellnf_localheight(GEN e, GEN P, GEN pr)
 {
-  long v1, v2, vD, vu, vP, vQ;
-  GEN nf = ellnf_get_nf(e);
-  GEN lr = nflocalred(e,pr);
-  GEN k = gel(lr, 2), urst = gel(lr, 3);
+  long v2, vD, vu, vP, vQ;
+  GEN lr = nflocalred(e,pr), k = gel(lr, 2), urst = gel(lr, 3);
   GEN E = ellchangecurve(e, urst);
-  GEN Q = ellchangepoint(P, urst);
-  GEN v;
+  GEN Q = ellchangepoint(P, urst), nf = ellnf_get_nf(e), v;
+
   vP = minss(0, nfval(nf, gel(P,1), pr)); /* v_p(den(x_P)) */
   vQ = minss(0, nfval(nf, gel(Q,1), pr)); /* v_p(den(x_Q)) */
-  v1 = nfval(nf, ec_dFdx_evalQ(E, Q), pr);
   v2 = nfval(nf, ec_dmFdy_evalQ(E, Q), pr);
   vD = nfval(nf, ell_get_disc(E), pr); /* >= 0 */
-  vu = (vQ-vP)>>1;
-  if (v1<=0 || v2<=0)
+  vu = (vQ-vP) >> 1;
+  if (v2 <= 0 || nfval(nf, ec_dFdx_evalQ(E, Q), pr) <= 0)
     v = gen_0;
   else if (cmpis(k,5) >= 0)
   {
@@ -6733,8 +6728,7 @@ ellnf_localheight(GEN e, GEN P, GEN pr)
   else
   {
     long v3 = nfval(nf, ec_3divpol_evalx(E, gel(Q,1)), pr);
-    v = (v2<LONG_MAX && v3>=3*v2) ? sstoQ(-v2,3):
-                                    sstoQ(-v3,8);
+    v = (v2 < LONG_MAX && v3 >= 3*v2)? sstoQ(-v2,3): sstoQ(-v3,8);
   }
   return gsubgs(v,vu);
 }
