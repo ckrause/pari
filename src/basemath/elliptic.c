@@ -6758,7 +6758,8 @@ ellnf_height(GEN E, GEN P, long prec)
   psi2 = gel(idealnumden(nf, ec_dmFdy_evalQ(E, P)),1);
   d = idealnorm(nf, gel(idealnumden(nf, x), 2));
   F = gel(idealfactor(nf, idealadd(nf, phi2, psi2)), 1);
-  F = gtoset(shallowconcat(F, gel(ellminimalprimes(E),1)));
+  F = shallowconcat(F, gel(ellminimalprimes(E), 1));
+  F = gen_sort_uniq(F, (void*)cmp_prime_ideal, &cmp_nodata);
   Ee = ellnfembed(E, prec);
   Pe = ellpointnfembed(E, P, prec);
   n = lg(Ee); l = lg(F);
