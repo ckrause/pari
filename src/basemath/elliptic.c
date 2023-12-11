@@ -6743,7 +6743,7 @@ static GEN
 ellnf_height(GEN E, GEN P, long prec)
 {
   pari_sp av = avma;
-  GEN x, nf, disc, d, F, Ee, Pe, s, v, u;
+  GEN x, nf, d, F, Ee, Pe, s, v, u, phi2, psi2;
   long i, n, l, r1;
   E = ellintegralmodel_i(E, &v);
   if (v) P = ellchangepoint(P, v);
@@ -6753,10 +6753,12 @@ ellnf_height(GEN E, GEN P, long prec)
   x = gel(P,1);
   if (gequal0(ec_2divpol_evalx(E, x))) { set_avma(av); return gen_0; }
   nf = ellnf_get_nf(E); r1 = nf_get_r1(nf);
-  disc = ell_get_disc(E);
   u = ellnf_minimalnormu(E);
+  phi2 = gel(idealnumden(nf, ec_dFdx_evalQ(E, P)), 1);
+  psi2 = gel(idealnumden(nf, ec_dmFdy_evalQ(E, P)),1);
   d = idealnorm(nf, gel(idealnumden(nf, x), 2));
-  F = gel(idealfactor(nf, disc), 1);
+  F = gel(idealfactor(nf, idealadd(nf, phi2, psi2)), 1);
+  F = gtoset(shallowconcat(F, gel(ellminimalprimes(E),1)));
   Ee = ellnfembed(E, prec);
   Pe = ellpointnfembed(E, P, prec);
   n = lg(Ee); l = lg(F);
