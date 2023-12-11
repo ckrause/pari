@@ -6780,8 +6780,8 @@ ellQ_height(GEN e, GEN a, long prec)
 {
   long i, lx, newell = 0;
   pari_sp av;
-  GEN Lp, x, y, z, phi2, psi2, psi3;
-  GEN v, S, b2, b4, b6, b8, a1, a2, a4, c4, D;
+  GEN Lp, x, z, phi2, psi2, psi3;
+  GEN v, S, c4, D;
 
   if (!RgV_is_QV(a)) pari_err_TYPE("ellheight [not a rational point]",a);
   if (!oncurve(e,a))
@@ -6806,21 +6806,9 @@ ellQ_height(GEN e, GEN a, long prec)
   psi2 = Q_numer(ec_dmFdy_evalQ(e,a));
   if (!signe(psi2)) { set_avma(av); return gen_0; }
   x = gel(a,1);
-  y = gel(a,2);
-  b2 = ell_get_b2(e);
-  b4 = ell_get_b4(e);
-  b6 = ell_get_b6(e);
-  b8 = ell_get_b8(e);
-  psi3 = Q_numer( /* b8 + 3x b6 + 3x^2 b4 + x^3 b2 + 3 x^4 */
-    poleval(mkvec5(b8, mului(3,b6), mului(3,b4), b2, utoipos(3)), x)
-  );
+  psi3 = Q_numer( ec_3divpol_evalx(e, x) );
   if (!signe(psi3)) { set_avma(av); return gen_0; }
-  a1 = ell_get_a1(e);
-  a2 = ell_get_a2(e);
-  a4 = ell_get_a4(e);
-  phi2 = Q_numer( /* a4 + 2a2 x + 3x^2 - y a1*/
-    poleval(mkvec3(gsub(a4,gmul(a1,y)), shifti(a2,1), utoipos(3)), x)
-  );
+  phi2 = Q_numer(ec_dFdx_evalQ(e, a));
   c4 = ell_get_c4(e);
   D = ell_get_disc(e);
   z = hoo_aux(e,a,Q_denom(x),prec);  /* hoo(a) + log(den(x))/2 */
