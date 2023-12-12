@@ -330,7 +330,7 @@ typedef struct gp_pointer
 static void
 change_compo(matcomp *c, GEN res)
 {
-  GEN p = c->parent, *pt = c->ptcell;
+  GEN p = c->parent, *pt = c->ptcell, po;
   long i, t;
 
   if (typ(p) == t_VECSMALL)
@@ -358,9 +358,9 @@ change_compo(matcomp *c, GEN res)
     if (lg(res) != lg(*pt)) pari_err_DIM("matrix col assignment");
   }
 
-  res = gclone(res);
-  gunclone_deep(*pt);
-  *pt = res;
+  po = *pt; /* Protect against SIGINT */
+  *pt = gclone(res);
+  gunclone_deep(po);
 }
 
 /***************************************************************************
