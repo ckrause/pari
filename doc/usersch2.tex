@@ -2872,10 +2872,10 @@ and in this case can contain whitespace, e.g. \kbd{"a b"} and are treated
 as ordinary character strings, see \secref{se:strings} for details.
 
 Whitespace (or spaces) between the metacommand and its arguments and within
-unquoted arguments is optional. (This can cause problems with \b{w},
+unquoted arguments is optional. This can cause problems with \b{w},
 when you insist on having a file name whose first character is a digit, and
 with \b{r} or \b{w}, if the file name itself contains a space. In such cases,
-just quote filenames or use the underlying \tet{read} or \tet{write} function).
+just quote filenames or use the underlying \tet{read} or \tet{write} function.
 
 \subseckbd{?$\{\var{command}\}$} The \kbd{gp} on-line help interface.
 If you type \kbd{?$n$} where $n$ is a number from 1 to 11, you will get the
@@ -2984,8 +2984,15 @@ of \kbd{gp} you can give more than one keyword as argument to \kbd{gphelp}.
 is ignored by \kbd{gp}.
 
 \subsec{\b{a} $\{n\}$} Prints the object number $n$ ($\%n$)
-in raw format. If the number $n$ is omitted, print the latest computed object
-($\%$). \label{se:history}
+in raw format (see \kbd{??output}). If the number $n$ is omitted, print the
+latest computed object ($\%$). \label{se:history}
+
+\subsec{\b{b} $\{n\}$} As \kbd{\b{a}} using ``beautified'' (prettymatrix)
+format (see \kbd{??output}).
+
+\subsec{\b{B} $\{n\}$} As \kbd{\b{b}} using an external prettyprinter (see
+\kbd{??output} and ??prettyprinter). If no prettyprinter is defined or
+available, this is identical to \b{b}.
 
 \subsec{\b{c}}\sidx{available commands} Prints the list of all available
 hardcoded functions under \kbd{gp}, not including operators written as special
@@ -2999,12 +3006,12 @@ previous section (shortcut for \kbd{default()}, see \secref{se:default}).
 \subsec{\b{e} $\{n\}$} Switches the \tet{echo} mode on (1) or off (0). If
 $n$ is explicitly given, set echo to $n$.
 
-\subsec{\b{g} $\{n\}$ $\{$feature$\}$} Sets the debugging level \tet{debug} to the
+\subsec{\b{g} $\{n\}$ $\{$\var{feature}$\}$} Sets the debugging level \tet{debug} to the
 nonnegative integer $n$. If \emph{feature} is present (such as \kbd{bnf} or
 \kbd{qflll}), only set the debugging level for that feature, as by using
 \kbd{setdebug}.
 
-\subsec{\b{g} feature $\{n\}$} Prints the debugging level for given
+\subsec{\b{g} \var{feature} $\{n\}$} Prints the debugging level for given
 \emph{feature} (such as \kbd{bnf} or \kbd{qflll}, see \kbd{setdebug}).
 If the nonnegative integer $n$ is present set the debugging level for
 that feature.
@@ -3017,21 +3024,22 @@ for \kbd{setdebug("io", $n$)}.
 to the nonnegative integer $n$.
 
 \subsec{\b{h} $\{m$\kbd{-}$n\}$} Outputs some debugging info about the
-hashtable. If the argument is a number $n$, outputs the contents of cell
-$n$. Ranges can be given in the form $m$\kbd{-}$n$ (from cell $m$ to cell
-$n$, \$ = last cell). If a function name is given instead of a number or
-range, outputs info on the internal structure of the hash cell this
-function occupies (a \kbd{struct entree} in C). If the range is reduced to
-a dash ('\kbd{-}'), outputs statistics about hash cell usage.
+hashtable of identifiers used by the GP parser. If the argument is a number
+$n$, outputs the contents of cell $n$. Ranges can be given in the form
+$m$\kbd{-}$n$ (from cell $m$ to cell $n$, \$ = last cell). If a function name
+is given instead of a number or range, outputs info on the internal structure
+of the hash cell this function occupies (a \kbd{struct entree} in C). If the
+range is reduced to a dash ('\kbd{-}'), outputs statistics about hash cell
+usage.
 
 \subsec{\b{l} $\{$\var{logfile}$\}$} Switches \tet{log} mode on and off.
 If a \var{logfile} argument is given, change the default logfile name to
 \var{logfile} and switch log mode on.
 
-\subsec{\b{m}} As \b{a}, but using prettymatrix format.
+\subsec{\b{m}} As \b{b}.
 
 \subsec{\b{o} $\{n\}$} Sets \tet{output} mode to $n$ ($0$: raw, $1$:
-prettymatrix, $3$: external prettyprint).
+prettymatrix, $3$: external prettyprint). See \kbd{??output}
 
 \subsec{\b{p} $\{n\}$} Sets \tet{realprecision} to $n$ decimal digits.
 Prints its current value if $n$ is omitted.
