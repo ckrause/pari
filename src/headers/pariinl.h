@@ -1661,9 +1661,9 @@ bit_prec(GEN x) { return realprec(x); }
 INLINE long
 bit_accuracy(long x) { return (x-2) * BITS_IN_LONG; }
 INLINE long
-prec2ndec(long x) { return (long)prec2nbits_mul(x, LOG10_2); }
+prec2ndec(long x) { return (long)(x * LOG10_2); }
 INLINE long
-nbits2ndec(long x) { return (long)(x * LOG10_2); }
+nbits2ndec(long x) { return prec2ndec(x); }
 INLINE long
 precdbl(long x) {return x << 1;}
 INLINE long
