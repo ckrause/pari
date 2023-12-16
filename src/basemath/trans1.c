@@ -1162,7 +1162,7 @@ powfrac(GEN x, GEN n, long prec)
     if (!equali1(a)) y = gmul(y, powgi(x, shifti(subiu(a,1), -1)));
     return y;
   }
-  if (D && (is_real_t(typ(x)) && gsigne(x) > 0))
+  if (D && is_real_t(typ(x) && gsigne(x) > 0))
   {
     GEN z;
     prec += nbits2extraprec(expi(a));
