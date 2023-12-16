@@ -1657,7 +1657,7 @@ bit_accuracy_mul(long x, double y) { return (x-2) * (BITS_IN_LONG*y); }
 INLINE double
 prec2nbits_mul(long x, double y) { return x * y; }
 INLINE long
-bit_prec(GEN x) { return prec2nbits(realprec(x)); }
+bit_prec(GEN x) { return realprec(x); }
 INLINE long
 bit_accuracy(long x) { return (x-2) * BITS_IN_LONG; }
 INLINE long
