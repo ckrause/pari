@@ -1164,7 +1164,7 @@ static void
 forqfvec_i(void *E, long (*fun)(void *, GEN, GEN, double), struct qfvec *qv, GEN BORNE)
 {
   GEN x, a = qv->a, r = qv->r, u = qv->u;
-  long n = lg(a), i, j, k;
+  long n = lg(a)-1, i, j, k;
   double p,BOUND,*v,*y,*z,**q;
   const double eps = 1e-10;
   if (!BORNE) BORNE = gen_0;
@@ -1174,9 +1174,8 @@ forqfvec_i(void *E, long (*fun)(void *, GEN, GEN, double), struct qfvec *qv, GEN
     if (typ(BORNE) != t_INT) pari_err_TYPE("minim0",BORNE);
     if (signe(BORNE) <= 0) return;
   }
-  if (n == 1) return;
-  minim_alloc(n, &q, &x, &y, &z, &v);
-  n--;
+  if (n == 0) return;
+  minim_alloc(n+1, &q, &x, &y, &z, &v);
   for (j=1; j<=n; j++)
   {
     v[j] = rtodbl(gcoeff(r,j,j));
@@ -1286,7 +1285,7 @@ static GEN
 minim0_dolll(GEN a, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
 {
   GEN x, u, r, L, gnorme;
-  long n = lg(a), i, j, k, s, maxrank, sBORNE;
+  long n = lg(a)-1, i, j, k, s, maxrank, sBORNE;
   pari_sp av = avma, av1;
   double p,maxnorm,BOUND,*v,*y,*z,**q;
   const double eps = 1e-10;
@@ -1324,27 +1323,26 @@ minim0_dolll(GEN a, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
       if (sBORNE <= 0) return cgetg(1, t_VECSMALL);
       L = zero_zv(sBORNE);
       if (flag == min_VECSMALL2) sBORNE <<= 1;
-      if (n == 1) return L;
+      if (n == 0) return L;
       break;
     case min_FIRST:
-      if (n == 1 || (!sBORNE && BORNE)) return cgetg(1,t_VEC);
+      if (n == 0 || (!sBORNE && BORNE)) return cgetg(1,t_VEC);
       L = NULL; /* gcc -Wall */
       break;
     case min_ALL:
-      if (n == 1 || (!sBORNE && BORNE))
+      if (n == 0 || (!sBORNE && BORNE))
         retmkvec3(gen_0, gen_0, cgetg(1, t_MAT));
       L = new_chunk(1+maxrank);
       break;
     default:
       return NULL;
   }
-  minim_alloc(n, &q, &x, &y, &z, &v);
+  minim_alloc(n+1, &q, &x, &y, &z, &v);
 
   forqfvec_init_dolll(&qv, &a, dolll);
   av1 = avma;
   r = qv.r;
   u = qv.u;
-  n--;
   for (j=1; j<=n; j++)
   {
     v[j] = rtodbl(gcoeff(r,j,j));
