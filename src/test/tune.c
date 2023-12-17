@@ -279,7 +279,7 @@ dftmod(speed_param *s)
 }
 
 #define m_menable_REAL(s,var,min) (*(s->var)=bit_accuracy(minss(lg(s->x),s->min+2)))
-#define  m_enable_REAL(s,var) (*(s->var)=bit_accuracy(lg(s->x)-1))/* enable  asymptotically fastest */
+#define  m_enable_REAL(s,var) (*(s->var)=bit_accuracy(lg(s->x)-2))/* enable  asymptotically fastest */
 #define m_disable_REAL(s,var) (*(s->var)=bit_accuracy(lg(s->x)+1))/* disable asymptotically fastest */
 
 #define m_menable(s,var,min) (*(s->var)=minss(lg(s->x)-2,s->min))
