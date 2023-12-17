@@ -1163,12 +1163,26 @@ powfrac(GEN x, GEN n, long prec)
     return y;
   }
   if (D && is_real_t(typ(x)) && gsigne(x) > 0)
-  {
-    GEN z;
-    prec += nbits2extraprec(expi(a));
-    if (typ(x) != t_REAL) x = gtofp(x, prec);
-    z = sqrtnr(x, D);
-    if (!equali1(a)) z = powgi(z, a);
+  { /* x^n = x^q * x^(r/D) */
+    GEN z, r, q = truedvmdis(a, D, &r);
+    if (typ(x) == t_REAL)
+    {
+      z = sqrtnr(x, D);
+      if (!equali1(r)) z = powgi(z, r);
+      if (signe(q)) z = gmul(z, powgi(x, q));
+    }
+    else
+    {
+      GEN X = x;
+      x = gtofp(x, prec + nbits2extraprec(expi(r)));
+      z = sqrtnr(x, D);
+      if (!equali1(r)) z = powgi(z, r);
+      if (signe(q))
+      {
+        long e = typ(X)==t_INT? expi(X): maxuu(expi(gel(X,1)), expi(gel(X,2)));
+        z = gmul(z, powgi(e > realprec(x)? x: X, q));
+      }
+    }
     return z;
   }
   return NULL;

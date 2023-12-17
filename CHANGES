@@ -40,6 +40,8 @@ BA  36- hyperellratpoints(9*x^2,3) -> SEGV
     37- lambertw for 2-adics (also fix documentation)
 BA  38- plotbox, plotrbox did not clip properly
 BA  39- ellheight for non-minimal curve over a number field -> wrong result
+    40- for x >= 0, x^(a/b) was using (x^(1/b))^a instead of x^q*x^(r/b),
+        with a = qb + r.
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output
