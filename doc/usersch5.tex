@@ -557,12 +557,12 @@ behavior is undefined at negative integers.
 of words. Returns $ 1 + \kbd{floor}(x \times \B \log_2 10)$.
 
 \fun{long}{ndec2prec}{long x} converts a number of decimal digits to a number
-of codewords. This is equal to 2 + \kbd{ndec2nlong(x)}.
+of bits.
 
 \fun{long}{ndec2nbits}{long x} convers a number of decimal digits to a
 number of bits.
 
-\fun{long}{prec2ndec}{long x} converts a number of codewords to a
+\fun{long}{prec2ndec}{long x} converts a number of bits to a
 number of decimal digits.
 
 \fun{long}{nbits2nlong}{long x} converts a number of bits to a number of
@@ -581,21 +581,18 @@ in code words. Currently  an alias for \kbd{nbits2nlong}.
 \fun{long}{lg2prec}{long x} return the maximal precision of a \typ{REAL}
 of length \kbd{x}.
 
-\fun{long}{nbits2prec}{long x} converts a number of bits to a number of
-codewords. This is equal to 2 + \kbd{nbits2nlong(x)}.
+\fun{long}{nbits2prec}{long x} convert $x$ to a valid precision.
 
-\fun{long}{nbits2extraprec}{long x} converts a number of bits to the mantissa
-length of a \typ{REAL} in codewords.
+\fun{long}{nbits2extraprec}{long x} convert $x$ to a valid precision.
 
 \fun{long}{nchar2nlong}{long x} converts a number of bytes to number of
 words. Returns the smallest word count containing $x$ bytes, i.e
 $\kbd{ceil}(x / \kbd{sizeof(long)})$.
 
-\fun{long}{prec2nbits}{long x} converts a \typ{REAL} length into a number
-of significant bits; returns $(x - 2)\B$.
+\fun{long}{prec2nbits}{long x} return $x$. For backward compatibility.
 
 \fun{double}{prec2nbits_mul}{long x, double y} returns
-\kbd{prec2nbits}$(x)\times y$.
+$x\times y$.
 
 \fun{long}{bit_accuracy}{long x} converts a length into a number
 of significant bits;
@@ -605,12 +602,9 @@ of significant bits;
 
 \fun{long}{realprec}{GEN x} precision of a \typ{REAL} in bits.
 
-\fun{long}{bit_prec}{GEN x} length of a \typ{REAL} in bits.
+\fun{long}{bit_prec}{GEN x} precision of a \typ{REAL} in bits.
 
-\fun{long}{precdbl}{long prec} given a length in words corresponding to a
-\typ{REAL} precision, return the length corresponding to doubling the
-precision. Due to the presence of 2 code words, this is
- $2(\kbd{prec} - 2) + 2$.
+\fun{long}{precdbl}{long x} return $2*x$.
 
 \subsec{Read type-dependent information}
 
