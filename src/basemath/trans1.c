@@ -1180,7 +1180,7 @@ powfrac(GEN x, GEN n, long prec)
       if (signe(q))
       {
         long e = typ(X)==t_INT? expi(X): maxuu(expi(gel(X,1)), expi(gel(X,2)));
-        z = gmul(z, powgi(e > realprec(x)? x: X, q));
+        z = gmul(z, powgi(cmpiu(muliu(q,e), realprec(x)) > 0? x: X, q));
       }
     }
     return z;
