@@ -29,10 +29,9 @@ RgX_check_ZX(GEN x, const char *s)
 long
 ZX_max_lg(GEN x)
 {
-  long i, prec = 0, lx = lg(x);
-
-  for (i=2; i<lx; i++) { long l = lgefint(gel(x,i)); if (l > prec) prec = l; }
-  return prec;
+  long i, l = 0, lx = lg(x);
+  for (i = 2; i < lx; i++) l = maxss(l, lgefint(gel(x,i)));
+  return l;
 }
 
 GEN
