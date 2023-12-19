@@ -2402,7 +2402,7 @@ rfrac_evalfp(GEN F, GEN x, long prec)
   GEN N = gel(F,1), D = gel(F,2), a, b = poleval(D, x);
   a = (typ(N) == t_POL && varn(N) == varn(D))? poleval(N, x): N;
   if (typ(a) != t_INT || typ(b) != t_INT ||
-      (lgefint(a) <= prec && lgefint(b) <= prec)) return gdiv(a, b);
+      (lg2prec(lgefint(a)) <= prec && lg2prec(lgefint(b)) <= prec)) return gdiv(a, b);
   return rdivii(a, b, prec + EXTRAPREC64);
 }
 

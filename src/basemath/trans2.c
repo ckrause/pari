@@ -949,8 +949,8 @@ _mul(void *data, GEN x, GEN y)
 {
   long prec = (long)data;
   /* switch to t_REAL ? */
-  if (typ(x) == t_INT && lgefint(x) > prec) x = itor(x, prec);
-  if (typ(y) == t_INT && lgefint(y) > prec) y = itor(y, prec);
+  if (typ(x) == t_INT && lg2prec(lgefint(x)) > prec) x = itor(x, prec);
+  if (typ(y) == t_INT && lg2prec(lgefint(y)) > prec) y = itor(y, prec);
   return mpmul(x, y);
 }
 static GEN
@@ -1796,7 +1796,7 @@ ggamma(GEN x, long prec)
       { /* 0 < x < 1/2 gamma would use funeq: adding 1 is cheaper. */
         if (expi(a) - expi(b) < -3) /* close to 0 */
         {
-          if (lgefint(b) >= prec) x = fractor(x,prec);
+          if (lg2prec(lgefint(b)) >= prec) x = fractor(x,prec);
           y = mpexp(lngamma1(x, prec));
         }
         else
@@ -1806,7 +1806,7 @@ ggamma(GEN x, long prec)
       if (expi(c) - expi(b) < -3)
       { /* x = 1 + c/b is close to 1 */
         x = mkfrac(c,b);
-        if (lgefint(b) >= prec) x = fractor(x,prec);
+        if (lg2prec(lgefint(b)) >= prec) x = fractor(x,prec);
         y = mpexp(lngamma1(x, prec));
       }
       else
@@ -1938,7 +1938,7 @@ glngamma(GEN x, long prec)
       { /* 0 < x < 1/2 gamma would use funeq: adding 1 is cheaper. */
         if (expi(a) - expi(b) < -3) /* close to 0 */
         {
-          if (lgefint(b) >= prec) x = fractor(x,prec);
+          if (lg2prec(lgefint(b)) >= prec) x = fractor(x,prec);
           y = lngamma1(x, prec);
         }
         else
@@ -1948,7 +1948,8 @@ glngamma(GEN x, long prec)
       if (e > 3)
       {
         x = mkfrac(c,b);
-        if (lgefint(b) >= prec) x = fractor(x,prec + nbits2extraprec(e));
+        if (lg2prec(lgefint(b)) >= prec)
+          x = fractor(x, prec + nbits2extraprec(e));
         y = lngamma1(x, prec);
       }
       else
