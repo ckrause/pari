@@ -3539,8 +3539,8 @@ Z_issmooth_fact(GEN m, ulong lim)
   long i = 1, l = expi(m)+1;
   forprime_t S;
   P = cgetg(l, t_VECSMALL);
-  E = cgetg(l, t_VECSMALL);
-  F = mkmat2(P,E);
+  E = cgetg(l, t_VECSMALL); F = mkmat2(P,E);
+  if (l == 1) return F; /* m == 1 */
   u_forprime_init(&S, 2, lim);
   while ((p = u_forprime_next_fast(&S)))
   {
