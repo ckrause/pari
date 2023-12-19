@@ -711,7 +711,7 @@ static GEN
 _rpowuu_sqr(void *data, GEN x)
 {
   sr_muldata *D = (sr_muldata *)data;
-  if (typ(x) == t_INT && lgefint(x) >= D->prec)
+  if (typ(x) == t_INT && lg2prec(lgefint(x)) >= D->prec)
   { /* switch to t_REAL */
     D->sqr   = &sqrr;
     D->mulug = &mulur; x = itor(x, D->prec);
