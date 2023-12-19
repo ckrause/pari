@@ -44,9 +44,9 @@ RgM_check_ZM(GEN A, const char *s)
 static long
 ZV_max_lg_i(GEN x, long m)
 {
-  long i, prec = 2;
-  for (i = 1; i < m; i++) prec = maxss(prec, lgefint(gel(x,i)));
-  return prec;
+  long i, l = 2;
+  for (i = 1; i < m; i++) l = maxss(l, lgefint(gel(x,i)));
+  return l;
 }
 long
 ZV_max_lg(GEN x) { return ZV_max_lg_i(x, lg(x)); }
@@ -54,9 +54,9 @@ ZV_max_lg(GEN x) { return ZV_max_lg_i(x, lg(x)); }
 static long
 ZM_max_lg_i(GEN x, long n, long m)
 {
-  long j, prec = 2;
-  for (j = 1; j < n; j++) prec = maxss(prec, ZV_max_lg_i(gel(x,j), m));
-  return prec;
+  long j, l = 2;
+  for (j = 1; j < n; j++) l = maxss(l, ZV_max_lg_i(gel(x,j), m));
+  return l;
 }
 long
 ZM_max_lg(GEN x)
