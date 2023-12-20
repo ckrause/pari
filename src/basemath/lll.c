@@ -268,7 +268,7 @@ ZM_flatter(GEN M, long flag)
     if (DEBUGLEVEL>=3 && (cert || timer_get(&ti) > 1000))
     {
       if (i==lti)
-        timer_printf(&ti, "FLATTER, dim %ld, steps %ld: \t slope=%0.10g", n, i, ((double)t)/n);
+        timer_printf(&ti, "FLATTER, dim %ld, step %ld: \t slope=%0.10g", n, i, ((double)t)/n);
       else
         timer_printf(&ti, "FLATTER, dim %ld, steps %ld-%ld: \t slope=%0.10g", n, lti,i,((double)t)/n);
       lti = i+1;
