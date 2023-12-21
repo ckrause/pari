@@ -56,13 +56,12 @@ BA   6- -ZX_compositum_disjoint: renamed to ZX_composedsum
      7- allow t_INTMOD Mod(m,N) as a Conrey label for the character m mod N
      8- nfroots: return a t_COL instead of a t_VEC (same as other 'roots' fun)
      9- qfbsolve: call qfbcornacchia when the argument is prime (and disc < 0)
-BA  10- listput and listinsert no longer return the added element
-BA  11- [libpari] rename qfb_apply_ZM -> qfb_ZM_apply,
+BA  10- [libpari] rename qfb_apply_ZM -> qfb_ZM_apply,
                          qf_apply_RgM -> qf_RgM_apply,
                          qf_apply_ZM -> qf_ZM_apply
-    12- rnfinit(nf, [T,lim]); try to fix maximal order if wrong [#2494]
-BA  13- [libpari] change prec to be a number of bits, instead of lg
-BA  14- [libpari] suminf_bitprec, intnumromb_bitprec: use suminf, intnumromb
+    11- rnfinit(nf, [T,lim]); try to fix maximal order if wrong [#2494]
+BA  12- [libpari] change prec to be a number of bits, instead of lg
+BA  13- [libpari] suminf_bitprec, intnumromb_bitprec: use suminf, intnumromb
         ellL1_bitprec, ellanalyticrank_bitprec: use ellL1, ellanalyticrank
 
   Added

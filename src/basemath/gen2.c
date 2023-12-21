@@ -2914,12 +2914,13 @@ listput(GEN L, GEN x, long index)
   return gel(z,index);
 }
 
-void
+GEN
 listput0(GEN L, GEN x, long index)
 {
   if (typ(L) != t_LIST || list_typ(L) != t_LIST_RAW)
     pari_err_TYPE("listput",L);
   (void) listput(L, x, index);
+  return x;
 }
 
 GEN
@@ -2941,12 +2942,13 @@ listinsert(GEN L, GEN x, long index)
   return gel(z,index);
 }
 
-void
+GEN
 listinsert0(GEN L, GEN x, long index)
 {
   if (typ(L) != t_LIST || list_typ(L) != t_LIST_RAW)
     pari_err_TYPE("listinsert",L);
   (void) listinsert(L, x, index);
+  return x;
 }
 
 void
