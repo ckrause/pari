@@ -29,7 +29,7 @@ static int
 isnegint2(GEN a, long *pa)
 {
   GEN b;
-  if (!gequal0(imag_i(a))) return 0;
+  if (!is_scalar_t(typ(a)) || !gequal0(imag_i(a))) return 0;
   a = real_i(a); if (gsigne(a) > 0) return 0;
   b = ground(a); if (!gequal(a, b)) return 0;
   if (pa) *pa = -itos(b);
