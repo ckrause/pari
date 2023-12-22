@@ -90,4 +90,7 @@
 2
 [0.025327233692927898289899330575272612041]~
 []~
-Total time spent: 63
+  ***   at top-level: polrootsreal(0.E25*x^2+0.E25*x+0.E25)
+  ***                 ^-------------------------------------
+  *** polrootsreal: zero polynomial in realroots.
+Total time spent: 54

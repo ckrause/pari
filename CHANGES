@@ -43,6 +43,7 @@ BA  39- ellheight for non-minimal curve over a number field -> wrong result
     40- for x >= 0, x^(a/b) was using (x^(1/b))^a instead of x^q*x^(r/b),
         with a = qb + r.
     41- hypergeom(t_POL parameters, z) -> type error [#2515]
+    42- polrootsreal(0E10*x + 0E10) -> SEGV [#2516]
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output

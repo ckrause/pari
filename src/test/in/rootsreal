@@ -90,3 +90,6 @@ polrootsreal(pol,[1/100,oo])
 
 pol=-x^4-2*x^3-x^2/3-x/100+1/1000;
 polrootsreal(pol,[1/10,oo])     \\ one extra root
+
+\\ ERRORS: KEEP AT END OF FILE
+polrootsreal(0.E25*x^2+0.E25*x+0.E25) \\ # 2516

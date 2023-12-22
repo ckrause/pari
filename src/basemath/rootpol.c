@@ -2587,12 +2587,12 @@ realroots(GEN P, GEN ab, long prec)
 
   ab = check_ab(ab);
   if (typ(P) != t_POL) return rootsdeg0(P);
+  if (!RgX_is_ZX(P)) P = RgX_rescale_to_int(P);
   switch(degpol(P))
   {
     case -1: return rootsdeg0(gen_0);
     case 0: return rootsdeg0(gel(P,2));
   }
-  if (!RgX_is_ZX(P)) P = RgX_rescale_to_int(P);
   v = ZX_valrem(Q_primpart(P), &P);
   fa = ZX_squff(P, &ex); l = lg(fa); sol = cgetg(l + 1, t_VEC);
   for (i = 1; i < l; i++)
