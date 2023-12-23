@@ -441,7 +441,7 @@ restore_vars(long nbmvar, long nblvar, long nblock)
   long j;
   for(j=1; j<=nbmvar; j++) freelex();
   for(j=1; j<=nblvar; j++) { s_lvars.n--; pop_val(lvars[s_lvars.n]); }
-  for(j=1; j<=nblock; j++) { s_locks.n--; gunclone(locks[s_locks.n]); }
+  for(j=1; j<=nblock; j++) { s_locks.n--; gunclone_deep(locks[s_locks.n]); }
 }
 
 INLINE void
