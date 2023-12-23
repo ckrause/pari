@@ -113,6 +113,7 @@ BA  40- [libpari] hash_keys_GEN
         2^20, 2^30 and 2^40 bytes)
 BA  42- [libpari] lg2prec, prec2lg
 BA  43- New GP function ellisisom
+BA  44- allow qfsolve([Q,F]) where F factorization of disc(Q)
 
   Removed
      1- [graphic] support for Qt4
