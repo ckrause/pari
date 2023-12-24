@@ -225,7 +225,7 @@ galmodp(long EVEN, GEN pol, GEN dpol, GEN TYP, long *gr, long **GR)
 
     p1 = gel(Flx_degfact(ZX_to_Flx(pol,p),p),1);
     l = lg(p1);
-    dtyp[0] = evaltyp(t_VECSMALL)|evallg(l);
+    dtyp[0] = evaltyp(t_VECSMALL)|_evallg(l);
     for (i=1; i<l; i++) dtyp[i] = p1[l-i]; /* decreasing order */
     n = RgV_isin(TYP, dtyp);
     if (!n) return 1; /* only for N=11 */

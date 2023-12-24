@@ -1472,7 +1472,7 @@ chk_reccoeff(void *data, GEN x)
   GEN v = gmul(d->U, x), z = gel(v,1);
 
   if (!gequal1(z)) return NULL;
-  *++v = evaltyp(t_COL) | evallg( lg(d->M) );
+  *++v = evaltyp(t_COL) | _evallg( lg(d->M) ); /* pop 1st elt */
   if (TestOne(gmul(d->M, v), d)) return v;
   return NULL;
 }
@@ -1564,7 +1564,7 @@ RecCoeff2(GEN nf,  RC_data *d,  long prec)
     long e;
     GEN v = lindep_bit(vec, bit), z = gel(v,1);
     if (!signe(z)) continue;
-    *++v = evaltyp(t_COL) | evallg(lM);
+    *++v = evaltyp(t_COL) | _evallg(lM); /* pop 1st elt */
     v = grndtoi(gdiv(v, z), &e);
     if (e > 0) break;
     if (TestOne(RgM_RgC_mul(M, v), d)) return v;

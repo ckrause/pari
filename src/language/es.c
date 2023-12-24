@@ -4388,7 +4388,7 @@ readbin(const char *name, FILE *f, int *vector)
   if (!check_magic(name,f)) return NULL;
   pari_stack_init(&s_obj, sizeof(GEN), (void**)&obj);
   /* HACK: push codeword so as to be able to treat s_obj.data as a t_VEC */
-  pari_stack_pushp(&s_obj, (void*) (evaltyp(t_VEC)|evallg(1)));
+  pari_stack_pushp(&s_obj, (void*) (evaltyp(t_VEC)|_evallg(1)));
   x = gnil;
   while ((y = readobj(f, &cy, H)))
   {

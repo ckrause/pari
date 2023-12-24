@@ -996,11 +996,11 @@ init_graphs(gp_data *D)
   c[2] = 5;
   D->graphcolors = c;
   c = (GEN)pari_malloc((N+1 + 4*N)*sizeof(long));
-  c[0] = evaltyp(t_VEC)|evallg(N+1);
+  c[0] = evaltyp(t_VEC)|_evallg(N+1);
   for (i = 1, s = c+N+1; i <= N; i++, s += 4)
   {
     GEN lp = s;
-    lp[0] = evaltyp(t_STR)|evallg(4);
+    lp[0] = evaltyp(t_STR)|_evallg(4);
     strcpy(GSTR(lp), cols[i]);
     gel(c,i) = lp;
   }
