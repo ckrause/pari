@@ -1874,7 +1874,7 @@ RgX_divrem_i(GEN x, GEN y, GEN *pr)
   lr=i+3; rem -= lr;
   if (avma==av1) { set_avma((pari_sp)rem); p1 = gcopy(p1); }
   else p1 = gerepileupto((pari_sp)rem,p1);
-  rem[0] = evaltyp(t_POL) | evallg(lr);
+  rem[0] = evaltyp(t_POL) | _evallg(lr);
   rem[1] = z[-1];
   rem += 2;
   gel(rem,i) = p1;
@@ -1970,7 +1970,7 @@ RgXQX_divrem(GEN x, GEN y, GEN T, GEN *pr)
     return gc_const((pari_sp)rem, z-2);
   }
   lr=i+3; rem -= lr;
-  rem[0] = evaltyp(t_POL) | evallg(lr);
+  rem[0] = evaltyp(t_POL) | _evallg(lr);
   rem[1] = z[-1];
   p1 = gerepile((pari_sp)rem,tetpil,p1);
   rem += 2; gel(rem,i) = p1;
@@ -2104,7 +2104,7 @@ RgXQX_pseudorem(GEN x, GEN y, GEN T)
   }
   if (dx < 0) return pol_0(vx);
   lx = dx+3; x -= 2;
-  x[0] = evaltyp(t_POL) | evallg(lx);
+  x[0] = evaltyp(t_POL) | _evallg(lx);
   x[1] = evalsigne(1) | evalvarn(vx);
   x = RgX_recip_i(x);
   if (p)
@@ -2190,7 +2190,7 @@ RgXQX_pseudodivrem(GEN x, GEN y, GEN T, GEN *ptr)
     {
       GEN X = x-2;
       if(DEBUGMEM>1) pari_warn(warnmem,"RgX_pseudodivrem dx=%ld >= %ld",dx,dy);
-      X[0] = evaltyp(t_POL)|evallg(dx+3); X[1] = z[1]; /* hack */
+      X[0] = evaltyp(t_POL)|_evallg(dx+3); X[1] = z[1]; /* hack */
       gerepileall(av2,2, &X, &z); x = X+2;
     }
   }
@@ -2200,7 +2200,7 @@ RgXQX_pseudodivrem(GEN x, GEN y, GEN T, GEN *ptr)
   else
   {
     lx = dx+3; x -= 2;
-    x[0] = evaltyp(t_POL) | evallg(lx);
+    x[0] = evaltyp(t_POL) | _evallg(lx);
     x[1] = evalsigne(1) | evalvarn(vx);
     x = RgX_recip_i(x);
   }

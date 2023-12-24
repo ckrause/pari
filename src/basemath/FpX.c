@@ -501,7 +501,7 @@ FpX_divrem_basecase(GEN x, GEN y, GEN p, GEN *pr)
     return gc_const((pari_sp)rem, z-2);
   }
   lr=i+3; rem -= lr;
-  rem[0] = evaltyp(t_POL) | evallg(lr);
+  rem[0] = evaltyp(t_POL) | _evallg(lr);
   rem[1] = z[-1];
   p1 = gerepileuptoint((pari_sp)rem, p1);
   rem += 2; gel(rem,i) = p1;

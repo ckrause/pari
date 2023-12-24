@@ -2175,7 +2175,7 @@ icopy_avma_canon(GEN x, pari_sp AVMA)
 {
   long i, lx = lgefint(x);
   GEN y = ((GEN)AVMA) - lx;
-  y[0] = evaltyp(t_INT)|evallg(lx); /* kills isclone */
+  y[0] = evaltyp(t_INT)|_evallg(lx); /* kills isclone */
   y[1] = x[1]; x = int_MSW(x);
   for (i=2; i<lx; i++, x = int_precW(x)) y[i] = *x;
   return y;
@@ -2206,7 +2206,7 @@ gcopy_av0_canon(GEN x, pari_sp *AVMA)
       GEN y = cgetlist_avma(AVMA), z = list_data(x);
       if (z) {
         list_data(y) = gcopy_av0_canon(z, AVMA);
-        y[1] = evaltyp(t)|evallg(lg(z)-1);
+        y[1] = evaltyp(t)|_evallg(lg(z)-1);
       } else {
         list_data(y) = NULL;
         y[1] = evaltyp(t);
@@ -2354,7 +2354,7 @@ gclone(GEN x)
   { /* non recursive types */
     case t_INT:
       lx = lgefint(x);
-      y[0] = evaltyp(t_INT)|evallg(lx);
+      y[0] = evaltyp(t_INT)|_evallg(lx);
       for (i=1; i<lx; i++) y[i] = x[i];
       break;
     case t_REAL:

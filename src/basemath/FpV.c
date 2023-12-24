@@ -999,7 +999,7 @@ FpM_FpC_mul_FpX(GEN x, GEN y, GEN p, long v)
     set_avma(av);
   }
   if (!i) { set_avma((pari_sp)(z + l+1)); return pol_0(v); }
-  z[0] = evaltyp(t_POL) | evallg(i+2);
+  z[0] = evaltyp(t_POL) | _evallg(i+2);
   z[1] = evalsigne(1) | evalvarn(v);
   for (; i; i--)
   {
