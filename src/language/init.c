@@ -142,17 +142,11 @@ static void pari_init_timer(void);
 static THREAD long next_block;
 static THREAD GEN cur_block; /* current block in block list */
 static THREAD GEN root_block; /* current block in block list */
-#ifdef DEBUG
-static THREAD long NUM;
-#endif
 
 static void
 pari_init_blocks(void)
 {
   next_block = 0; cur_block = NULL; root_block = NULL;
-#ifdef DEBUG
-  NUM = 0;
-#endif
 }
 
 static void
@@ -351,9 +345,6 @@ newblock(size_t n)
   bl_num(x)  = next_block++;
   if (cur_block) bl_next(cur_block) = x;
   root_block = blockinsert(x, root_block, &d);
-#ifdef DEBUG
-  err_printf("+ %ld\n", ++NUM);
-#endif
   if (DEBUGMEM > 2)
     err_printf("new block, size %6lu (no %ld): %08lx\n", n, next_block-1, x);
   return cur_block = x;
@@ -386,9 +377,6 @@ gunclone(GEN x)
     err_printf("killing block (no %ld): %08lx\n", bl_num(x), x);
   free((void*)bl_base(x)); /* pari_free not needed: we already block */
   BLOCK_SIGINT_END;
-#ifdef DEBUG
-  err_printf("- %ld\n", NUM--);
-#endif
 }
 
 static void
