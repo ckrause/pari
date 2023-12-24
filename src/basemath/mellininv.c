@@ -467,7 +467,7 @@ Klargeinit(GEN Vga, long nlimmax, long *status, long prec)
   if (Vgaeasytheta(Vga)) { *status = 2; return mkvec(gen_1); }
   /* d >= 2 */
   *status = 0;
-  if (prec) prec += nbits2extraprec((prec2nbits(prec) >> 1) + BITS_IN_LONG);
+  if (prec) prec += nbits2extraprec((prec >> 1) + BITS_IN_LONG);
   SMd = get_SMd(Vga);
   se = gsinh(RgX_to_ser(pol_x(0), d+2), 0); setvalser(se,0);
   se = gdeflate(se, 0, 2); /* se(x^2) = sinh(x)/x */

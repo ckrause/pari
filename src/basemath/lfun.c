@@ -2050,7 +2050,7 @@ ropm1(GEN w, long prec)
   GEN r;
   if (typ(w) == t_INT) return w;
   r = grndtoi(w, &e);
-  return (e < -prec2nbits(prec)/2)? r: w;
+  return (e < -prec/2)? r: w;
 }
 
 /* theta for t=1/sqrt(2) and t2==2t simultaneously, saving 25% of the work.
@@ -2413,7 +2413,7 @@ lfunzeros(GEN ldata, GEN lim, long divz, long bitprec)
     if (!r || gequal0(r))
     {
       ct = lfunorderzero(linit, -1, bitprec);
-      if (ct) T = real2n(-prec2nbits(prec) / (2*ct), prec);
+      if (ct) T = real2n(-prec / (2*ct), prec);
     }
   }
   if (s1 <= 0)

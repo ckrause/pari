@@ -5008,7 +5008,7 @@ eigen_err(int exact, GEN x, long flag, long prec)
 {
   pari_sp av = avma;
   GEN y;
-  if (RgM_is_symmetric_cx(x, prec2nbits(prec) - 10))
+  if (RgM_is_symmetric_cx(x, prec - 10))
   { /* approximately symmetric: recover */
     x = jacobi(x, prec); if (flag) return x;
     return gerepilecopy(av, gel(x,2));
@@ -5045,7 +5045,7 @@ mateigen(GEN x, long flag, long prec)
     return matid(1);
   }
 
-  ex = 16 - prec2nbits(prec);
+  ex = 16 - prec;
   T = charpoly(x,0);
   exact = RgX_is_QX(T);
   if (exact)

@@ -1703,7 +1703,7 @@ needed_bitprec(GEN x)
   for (i = 1; i < l; i++)
   {
     GEN c = gel(x,i);
-    long f = gexpo(c) - prec2nbits(gprecision(c));
+    long f = gexpo(c) - gprecision(c);
     if (f > e) e = f;
   }
   return e;
@@ -1840,7 +1840,7 @@ isprincipalall(GEN bnf, GEN x, long *pprec, long flag)
   col = NULL;
   SUnits = bnf_get_sunits(bnf);
   if (lg(R) == 1
-      || abscmpiu(gel(R,vecindexmax(R)), 4 * prec2nbits(*pprec)) < 0)
+      || abscmpiu(gel(R,vecindexmax(R)), 4 * (*pprec)) < 0)
   { /* q = N (x / prod gj^ej) = N(alpha), denom(alpha) | d */
     GEN d, q = gdiv(ZM_det_triangular(x), get_norm_fact(gen, R, &d));
     col = xar? nf_cxlog(nf, xar, *pprec): NULL;
@@ -3719,7 +3719,7 @@ matbotid(RELCACHE_t *cache)
 static long
 myprecdbl(long prec, GEN C)
 {
-  long p = prec2nbits(prec) < 1280? precdbl(prec): (long)(prec * 1.5);
+  long p = prec < 1280? precdbl(prec): (long)(prec * 1.5);
   if (C) p = maxss(p, minss(3*p, prec + nbits2extraprec(gexpo(C))));
   return p;
 }

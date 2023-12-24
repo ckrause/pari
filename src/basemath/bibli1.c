@@ -29,7 +29,7 @@ static int
 no_prec_pb(GEN x)
 {
   return (typ(x) != t_REAL || realprec(x) > DEFAULTPREC
-                           || expo(x) < prec2nbits(DEFAULTPREC)>>1);
+                           || expo(x) < DEFAULTPREC>>1);
 }
 /* Find a Householder transformation which, applied to x[k..#x], zeroes
  * x[k+1..#x]; fill L = (mu_{i,j}). Return 0 if precision problem [obtained

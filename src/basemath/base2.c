@@ -1949,7 +1949,7 @@ init_norm(norm_S *S, GEN nf, GEN p)
   long N = degpol(T), ex = gexpo(M) + gexpo(mului(8 * N, p));
 
   S->r1 = nf_get_r1(nf);
-  if (N * ex <= prec2nbits(gprecision(M)) - 20)
+  if (N * ex <= gprecision(M) - 20)
   { /* enough prec to use embed_norm */
     S->M = M;
     S->D = NULL;

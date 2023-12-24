@@ -884,7 +884,7 @@ init_get_B(long i1, long i2, GEN Delta2, GEN Lambda, GEN Deps5, baker_s *BS,
 
     t = gel(fu,2);
     delta = argsqr(t, BS->Pi);
-    if (Deps5) BS->inverrdelta = shiftr(gabs(t,prec), prec2nbits(prec)-1);
+    if (Deps5) BS->inverrdelta = shiftr(gabs(t,prec), prec-1);
 
     t = gmul(gsub(gel(ro,1), gel(ro,2)), gel(BS->NE,3));
     lambda = argsqr(t, BS->Pi);

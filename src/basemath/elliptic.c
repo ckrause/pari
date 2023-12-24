@@ -682,7 +682,7 @@ ellinit_Rg(GEN x, long s, long prec)
   if (!(y = initsmall(x, 4))) return NULL;
   if (s == 2) s = gsigne(ell_get_disc(y));
   gel(y,14) = mkvecsmall(t_ELL_Rg);
-  gel(y,15) = mkvec(mkvecsmall2(prec2nbits(prec), s));
+  gel(y,15) = mkvec(mkvecsmall2(prec, s));
   return y;
 }
 
@@ -715,7 +715,7 @@ ellinit_Q(GEN x, long prec)
   if (!(y = initsmall(x, 8))) return NULL;
   s = gsigne( ell_get_disc(y) );
   gel(y,14) = mkvecsmall(t_ELL_Q);
-  gel(y,15) = mkvec(mkvecsmall2(prec2nbits(prec), s));
+  gel(y,15) = mkvec(mkvecsmall2(prec, s));
   return y;
 }
 
@@ -1904,8 +1904,8 @@ oncurve(GEN e, GEN z)
   ex = pr? gexpo(RHS): gexpo(LHS); /* don't take exponent of exact 0 */
   if (!pr || (pl && pl < pr)) pr = pl; /* min among nonzero elts of {pl,pr} */
   expx = gexpo(x);
-  pr = (expx < ex - prec2nbits(pr) + 15
-     || expx < ellexpo(e) - prec2nbits(pr) + 5);
+  pr = (expx < ex - pr + 15
+     || expx < ellexpo(e) - pr + 5);
   return gc_bool(av,pr);
 }
 
@@ -2777,7 +2777,7 @@ reduce_z(GEN z, ellred_t *T)
       check_complex(Z, &(T->some_z_is_pure_imag), &(T->some_z_is_real));
   }
   p = precision(Z);
-  if (gequal0(Z) || (p && gexpo(Z) < 5 - prec2nbits(p))) Z = NULL; /*z in L*/
+  if (gequal0(Z) || (p && gexpo(Z) < 5 - p)) Z = NULL; /*z in L*/
   if (p && p < T->prec) T->prec = p;
   T->Z = Z;
 }
@@ -3009,7 +3009,7 @@ ellwpnum_all(GEN e, GEN z, long flall, long prec)
     if (yp) yp = gadd(yp, gmul(qn,ypadd));
 
     qn = gmul(q,qn);
-    if (gexpo(qn) <= - prec2nbits(prec) - 5 - toadd) break;
+    if (gexpo(qn) <= - prec - 5 - toadd) break;
     if (gc_needed(av1,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ellwp");
@@ -3196,7 +3196,7 @@ ellzeta(GEN w, GEN z, long prec0)
     {
       S = gadd(S, gdiv(qn, gmul(gsubgs(gmul(qn,u),1), gsub(u,qn))));
       qn = gmul(q,qn);
-      if (gexpo(qn) <= - prec2nbits(prec) - 5 - toadd) break;
+      if (gexpo(qn) <= - prec - 5 - toadd) break;
       if (gc_needed(av1,1))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"ellzeta");
@@ -3284,7 +3284,7 @@ ellsigma(GEN w, GEN z, long flag, long prec0)
      * if |u| = 1, will multiply by 2*I at the end ! */
     y = gadd(y, gmul(qn2, uinv? gsub(urn,urninv): imag_i(urn)));
     qn2 = gmul(qn,qn2);
-    if (gexpo(qn2) + n*toadd <= - prec2nbits(prec) - 5) break;
+    if (gexpo(qn2) + n*toadd <= - prec - 5) break;
     qn  = gmul(q,qn);
     urn = gmul(urn,u);
     if (uinv) urninv = gmul(urninv,uinv);
@@ -5532,7 +5532,7 @@ ellQ_factorback(GEN E, GEN A, GEN L, ulong l, GEN h, long prec)
     {
       GEN g;
       settyp(r,t_VEC); g = ellheight(E,r,prec);
-      if (signe(g) && expo(subrs(divrr(g,h),1))<-prec2nbits(prec)/2)
+      if (signe(g) && expo(subrs(divrr(g,h),1))<-prec/2)
         return gerepileupto(av, r);
     }
     if (hn && gcmpsg(expi(mod)>>2,hn) > 0) return gc_NULL(av);
@@ -5551,7 +5551,7 @@ ellQ_genreduce(GEN E, GEN G, GEN M, long prec)
   for (i = j = 1; i < l; i++)
   {
     GEN Li = gel(L, i), h = qfeval(M, Li);
-    if (expo(h) > -prec2nbits(prec)/2)
+    if (expo(h) > -prec/2)
       gel(V,j++) = ellQ_factorback(E, G, Li, 1, h, prec);
   }
   setlg(V, j); return gerepilecopy(av, V);
@@ -6593,7 +6593,7 @@ static GEN
 exphellagm(GEN e, GEN z, int flag, long prec)
 {
   GEN x_a, ab, a, b, e1, r, V = cgetg(1, t_VEC), x = gel(z,1);
-  long n, ex = 5-prec2nbits(prec), p = prec+EXTRAPREC64;
+  long n, ex = 5-prec, p = prec+EXTRAPREC64;
 
   if (typ(x) == t_REAL && realprec(x) < p) x = gprec_w(x, p);
   ab = ellR_ab(e, p);

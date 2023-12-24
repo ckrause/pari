@@ -1739,7 +1739,7 @@ eval_sign_embed(GEN z)
     long l = realprec(z);
     if (l <= LOWDEFAULTPREC
       || (l == LOWDEFAULTPREC + 1 && !z[l-1])) return -1; /* dubious, fail */
-    if (expo(z) < 16 - prec2nbits(l)) return -1; /* same */
+    if (expo(z) < 16 - l) return -1; /* same */
   }
   return (signe(z) < 1)? 1: 0;
 }
