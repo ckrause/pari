@@ -1504,7 +1504,7 @@ get_roots(GEN x, long r1, long prec)
     ru = (n+r1)>>1;
   }
   for (i=r1+1; i<=ru; i++) gel(z,i) = gel(z, (i<<1)-r1);
-  z[0]=evaltyp(t_VEC)|evallg(ru+1); return z;
+  z[0]=evaltyp(t_VEC)|_evallg(ru+1); return z;
 }
 
 GEN

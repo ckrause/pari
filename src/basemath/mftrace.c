@@ -7287,7 +7287,7 @@ van_embedall(GEN van, GEN vE, GEN gN, GEN gk)
 {
   GEN a0 = gel(van,1), vL;
   long i, lE = lg(vE), l = lg(van);
-  van++; van[0] = evaltyp(t_VEC) | evallg(l-1); /* remove a0 */
+  van++; van[0] = evaltyp(t_VEC) | _evallg(l-1); /* remove a0 */
   vL = cgetg(lE, t_VEC);
   for (i = 1; i < lE; i++)
   {

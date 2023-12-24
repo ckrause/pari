@@ -3117,7 +3117,7 @@ ldata_vecan(GEN van, long L, long prec)
     {
       GEN F = gel(an,1), E = gel(an,2), c = gel(an,3);
       an = mfcoefs(F,L,1) + 1; /* skip a_0 */
-      an[0] = evaltyp(t_VEC)|evallg(L+1);
+      an[0] = evaltyp(t_VEC)|_evallg(L+1);
       an = mfvecembed(E, an);
       if (!isint1(c)) an = RgV_Rg_mul(an,c);
       break;

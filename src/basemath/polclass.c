@@ -2095,7 +2095,7 @@ polclass0(long D, long inv, long vx, GEN *db)
     GEN v;
     if (!p) { del++; continue; }
     v = Flv_roots_to_pol(gel(H,i), p, vx); l = lg(v);
-    *++v = evaltyp(t_VECSMALL) | evallg(l-1); /* Flx_to_Flv inplace */
+    *++v = evaltyp(t_VECSMALL) | _evallg(l-1); /* Flx_to_Flv inplace */
     uel(plist, j) = p;
     gel(H, j++) = gerepileuptoleaf(av2, v);
   }

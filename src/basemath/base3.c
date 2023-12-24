@@ -2165,7 +2165,7 @@ vecsmall01_to_indices(GEN v)
   GEN p = new_chunk(l) + l;
   for (k=1, i=l-1; i; i--)
     if (v[i]) { *--p = i; k++; }
-  *--p = evallg(k) | evaltyp(t_VECSMALL);
+  *--p = _evallg(k) | evaltyp(t_VECSMALL);
   set_avma((pari_sp)p); return p;
 }
 GEN
@@ -2184,7 +2184,7 @@ vec01_to_indices(GEN v)
   p = new_chunk(l) + l;
   for (k=1, i=l-1; i; i--)
     if (signe(gel(v,i))) { *--p = i; k++; }
-  *--p = evallg(k) | evaltyp(t_VECSMALL);
+  *--p = _evallg(k) | evaltyp(t_VECSMALL);
   set_avma((pari_sp)p); return p;
 }
 GEN

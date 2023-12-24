@@ -716,7 +716,7 @@ genapply(void *E, GEN (*f)(void* E, GEN x), GEN x)
         else
         {
           y = cgetg(3, t_LIST);
-          y[1] = evaltyp(t)|evallg(lg(z)-1);
+          y[1] = evaltyp(t)|_evallg(lg(z)-1);
           switch(t)
           {
           case t_LIST_RAW:

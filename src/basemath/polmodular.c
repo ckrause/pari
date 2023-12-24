@@ -3712,7 +3712,7 @@ modpoly_pickD(disc_info Ds[MODPOLY_MAX_DCNT], long L, long inv,
       if (best_cost && cost > 2.2*best_cost) break;
       if (best_cost && cost >= 0.99*best_cost) continue;
 
-      Dinfo.GENcode0 = evaltyp(t_VECSMALL)|evallg(13);
+      Dinfo.GENcode0 = evaltyp(t_VECSMALL)|_evallg(13);
       Dinfo.inv = inv;
       Dinfo.L = L;
       Dinfo.D0 = D0;

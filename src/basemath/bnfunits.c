@@ -299,7 +299,7 @@ make_unit(GEN nf, GEN U, GEN *px)
   {
     w = sunit_famat_val(nf, S, x); /* x = S v */
     v = ZM_ZC_mul(A, w);
-    w += cH; w[0] = evaltyp(t_COL) | evallg(lg(A) - cH);
+    w += cH; w[0] = evaltyp(t_COL) | _evallg(lg(A) - cH);
   }
   else
   {
@@ -316,7 +316,7 @@ make_unit(GEN nf, GEN U, GEN *px)
     w = sunit_val(nf, S, x, N);
     if (!w) return NULL;
     v = ZM_zc_mul(A, w);
-    w += cH; w[0] = evaltyp(t_VECSMALL) | evallg(lg(A) - cH);
+    w += cH; w[0] = evaltyp(t_VECSMALL) | _evallg(lg(A) - cH);
     w = zc_to_ZC(w);
   }
   if (!is_pm1(den)) for (i = 1; i <= cH; i++)

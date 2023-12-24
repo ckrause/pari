@@ -1591,7 +1591,7 @@ FlxX_pseudorem(GEN x, GEN y, ulong p, ulong pi)
   }
   if (dx < 0) return zero_Flx(0);
   lx = dx+3; x -= 2;
-  x[0]=evaltyp(t_POL) | evallg(lx);
+  x[0]=evaltyp(t_POL) | _evallg(lx);
   x[1]=evalsigne(1) | evalvarn(vx);
   x = RgX_recip_i(x);
   if (dp)

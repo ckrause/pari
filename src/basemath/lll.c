@@ -442,7 +442,7 @@ static GEN
 vectail_inplace(GEN x, long k)
 {
   if (!k) return x;
-  x[k] = ((ulong)x[0] & ~LGBITS) | evallg(lg(x) - k);
+  x[k] = ((ulong)x[0] & ~LGBITS) | _evallg(lg(x) - k);
   return x + k;
 }
 

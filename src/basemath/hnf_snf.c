@@ -110,7 +110,7 @@ hnffinal(GEN matgen,GEN perm,GEN* ptdep,GEN* ptB,GEN* ptC)
   lig = nlze + lnz;
   /* H: lnz x lnz [disregarding initial 0 cols], U: col x col */
   H = ZM_hnflll(matgen, &U, 0);
-  H += (lg(H)-1 - lnz); H[0] = evaltyp(t_MAT) | evallg(lnz+1);
+  H += lg(H)-1 - lnz; H[0] = evaltyp(t_MAT) | _evallg(lnz+1);
   /* Only keep the part above the H (above the 0s is 0 since the dep rows
    * are dependent from the ones in matgen) */
   zc = col - lnz; /* # of 0 columns, correspond to units */
@@ -926,7 +926,7 @@ remove_0cols(long r, GEN *pA, GEN *pB, long remove)
 {
   GEN A = *pA, B = *pB;
   long l = lg(A);
-  A += r; A[0] = evaltyp(t_MAT) | evallg(l-r);
+  A += r; A[0] = evaltyp(t_MAT) | _evallg(l-r);
   if (B && remove == 2) { B += r; B[0] = A[0]; }
   *pA = A; *pB = B;
 }
@@ -1072,7 +1072,7 @@ ZpM_echelon(GEN x, long early_abort, GEN p, GEN pm)
   if (co > li)
   {
     x += co - li;
-    x[0] = evaltyp(t_MAT) | evallg(li);
+    x[0] = evaltyp(t_MAT) | _evallg(li);
   }
   return gerepilecopy(av0, x);
 }
@@ -1133,7 +1133,7 @@ zlm_echelon(GEN x, long early_abort, ulong p, ulong pm)
   if (co > li)
   {
     x += co - li;
-    x[0] = evaltyp(t_MAT) | evallg(li);
+    x[0] = evaltyp(t_MAT) | _evallg(li);
   }
   return gerepilecopy(av0, x);
 }
@@ -1291,7 +1291,7 @@ ZM_hnfmodall_i(GEN x, GEN D, long flag)
   else
   {
     x += co - li;
-    x[0] = evaltyp(t_MAT) | evallg(li); /* kill 0 columns */
+    x[0] = evaltyp(t_MAT) | _evallg(li); /* kill 0 columns */
     if (moddiag) x = shallowconcat(x, zerocol(nli));
   }
   if (moddiag)
@@ -1331,7 +1331,7 @@ ZM_hnfmodall_i(GEN x, GEN D, long flag)
     }
     D = optimal_D(x,D);
   }
-  x[0] = evaltyp(t_MAT) | evallg(li); /* kill 0 columns / discard accumulator */
+  x[0] = evaltyp(t_MAT) | _evallg(li); /* kill 0 columns, discard accumulator */
   if (flag & hnf_PART) return x;
 
   for (i = nli; i > 0; i--)
@@ -1424,7 +1424,7 @@ FpM_echelon(GEN x, GEN *pP, GEN p)
   /* rank = iP - 1 */
   setlg(P, iP); vecsmall_sort(P);
   if (co > iP) x += co - iP;
-  x[0] = evaltyp(t_MAT) | evallg(iP);
+  x[0] = evaltyp(t_MAT) | _evallg(iP);
   return x;
 }
 /* given x square of maximal rank with 1 or p on diagonal from hnfmodid

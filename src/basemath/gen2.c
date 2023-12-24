@@ -2719,7 +2719,7 @@ normalizeser(GEN x)
 
   i -= 2; y = x + i; lx -= i;
   y[1] = evalsigne(1) | evalvalser(vp+i) | evalvarn(vx);
-  y[0] = evaltyp(t_SER) | evallg(lx);
+  y[0] = evaltyp(t_SER) | _evallg(lx);
 
   stackdummy((pari_sp)y, (pari_sp)x);
   for (i = 2; i < lx; i++)
@@ -2749,7 +2749,7 @@ normalizepol_lg(GEN x, long lx)
     if (! gequal0(z) ) {
       if (!LX) LX = i+1;
       stackdummy((pari_sp)(x + lg(x)), (pari_sp)(x + LX));
-      x[0] = evaltyp(t_POL) | evallg(LX);
+      x[0] = evaltyp(t_POL) | _evallg(LX);
       setsigne(x,1); return x;
     } else if (!isexactzero(z)) {
       if (!LX) LX = i+1; /* to be kept as leading coeff */
@@ -2764,7 +2764,7 @@ normalizepol_lg(GEN x, long lx)
       LX = 2; /* Pol(0) */
   }
   stackdummy((pari_sp)(x + lg(x)), (pari_sp)(x + LX));
-  x[0] = evaltyp(t_POL) | evallg(LX);
+  x[0] = evaltyp(t_POL) | _evallg(LX);
   setsigne(x,0); return x;
 }
 
@@ -2965,7 +2965,7 @@ listpop(GEN L, long index)
   if (!index || index > l) index = l;
   BLOCK_SIGINT_START
   gunclone_deep( gel(z, index) );
-  z[0] = evaltyp(t_VEC) | evallg(l);
+  z[0] = evaltyp(t_VEC) | _evallg(l);
   for (i=index; i < l; i++) z[i] = z[i+1];
   BLOCK_SIGINT_END
 }

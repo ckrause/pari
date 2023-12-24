@@ -1516,8 +1516,8 @@ nfhnf0(GEN nf, GEN x, long flag)
     }
   }
   n -= def;
-  A += def; A[0] = evaltyp(t_MAT)|evallg(n+1);
-  I += def; I[0] = evaltyp(t_VEC)|evallg(n+1);
+  A += def; A[0] = evaltyp(t_MAT)|_evallg(n+1);
+  I += def; I[0] = evaltyp(t_VEC)|_evallg(n+1);
   idV_simplify(I);
   x = mkvec2(A,I);
   if (U) x = mkvec2(x,U);
@@ -1858,8 +1858,8 @@ nfhnfmod(GEN nf, GEN x, GEN D)
     }
   }
   def--; d0 = D;
-  A += def; A[0] = evaltyp(t_MAT)|evallg(li);
-  I += def; I[0] = evaltyp(t_VEC)|evallg(li);
+  A += def; A[0] = evaltyp(t_MAT)|_evallg(li);
+  I += def; I[0] = evaltyp(t_VEC)|_evallg(li);
   J = cgetg(li,t_VEC);
   for (i=li-1; i>=1; i--)
   {

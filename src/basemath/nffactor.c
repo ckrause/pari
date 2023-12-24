@@ -1643,7 +1643,7 @@ nf_DDF_roots(GEN pol, GEN polred, GEN nfpol, long fl, nflift_t *L)
     else if (fl == ROOTS_SPLIT) return cgetg(1, t_VEC);
   }
   if (DEBUGLEVEL > 3) err_printf(" done\n");
-  z[0] = evaltyp(t_VEC) | evallg(m);
+  z[0] = evaltyp(t_VEC) | _evallg(m);
   return z;
 }
 

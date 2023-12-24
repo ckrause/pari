@@ -666,7 +666,7 @@ ECM_alloc(struct ECM *E, long lN)
   const long bstpmax = 1024; /* max number of baby step table entries */
   long spc = (13 + 48) * E->nbc2 + bstpmax * 4;
   long len = spc + 385 + spc*lN;
-  long i, tw = evallg(lN) | evaltyp(t_INT);
+  long i, tw = _evallg(lN) | evaltyp(t_INT);
   GEN w, *X = (GEN*)new_chunk(len);
   /* hack for X[i] = cgeti(lN). X = current point in B1 phase */
   w = (GEN)(X + spc + 385);
