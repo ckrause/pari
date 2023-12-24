@@ -391,25 +391,27 @@ gunclone(GEN x)
 #endif
 }
 
+static void
+vec_gunclone_deep(GEN x)
+{
+  long i, l = lg(x);
+  for (i = 1; i < l; i++) gunclone_deep(gel(x,i));
+}
 /* Recursively look for clones in the container and kill them. Then kill
- * container if clone. SIGINT could be blocked until it returns */
+ * container if clone. */
 void
 gunclone_deep(GEN x)
 {
-  long i, lx;
   GEN v;
   if (isclone(x) && bl_refc(x) > 1) { --bl_refc(x); return; }
   BLOCK_SIGINT_START;
   switch(typ(x))
   {
     case t_VEC: case t_COL: case t_MAT:
-      lx = lg(x);
-      for (i=1;i<lx;i++) gunclone_deep(gel(x,i));
+      vec_gunclone_deep(x);
       break;
     case t_LIST:
-      v = list_data(x); lx = v? lg(v): 1;
-      for (i=1;i<lx;i++) gunclone_deep(gel(v,i));
-      if (v) killblock(v);
+      if ((v = list_data(x))) { vec_gunclone_deep(v); gunclone(v); }
       break;
   }
   if (isclone(x)) gunclone(x);
