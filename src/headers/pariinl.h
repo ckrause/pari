@@ -1499,7 +1499,7 @@ gtofp(GEN z, long prec)
       if (isintzero(a)) {
         GEN y = cgetg(3, t_COMPLEX);
         b = cxcompotor(b, prec);
-        gel(y,1) = real_0_bit(expo(b) - prec2nbits(prec));
+        gel(y,1) = real_0_bit(expo(b) - prec);
         gel(y,2) = b; return y;
       }
       return cxtofp(z, prec);

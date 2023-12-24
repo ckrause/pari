@@ -424,7 +424,7 @@ umuluu_le(ulong x, ulong y, ulong n)
 INLINE GEN
 real_0_bit(long bitprec) { GEN x=cgetg(2, t_REAL); x[1]=evalexpo(bitprec); return x; }
 INLINE GEN
-real_0(long prec) { return real_0_bit(-prec2nbits(prec)); }
+real_0(long prec) { return real_0_bit(-prec); }
 INLINE GEN
 real_1_bit(long bit) { return real_1(nbits2prec(bit)); }
 INLINE GEN
@@ -950,7 +950,7 @@ rdiviiz(GEN x, GEN y, GEN z)
   }
   else
   {
-    long b = prec2nbits(lg2prec(lz)) + expi(y) - expi(x) + 1;
+    long b = lg2prec(lz) + expi(y) - expi(x) + 1;
     GEN q = divii(b > 0? shifti(x, b): x, y);
     affir(q, z); if (b > 0) shiftr_inplace(z, -b);
   }
