@@ -215,7 +215,7 @@ setrealprecision(long n, long *prec)
 {
   GP_DATA->fmt->sigd = n;
   *prec = ndec2prec(n);
-  precreal = prec2nbits(*prec);
+  precreal = *prec;
   return n;
 }
 
@@ -381,7 +381,7 @@ sd_realbitprecision(const char *v, long flag)
   {
     ulong newnb = precreal;
     long n;
-    sd_ulong_init(v, "realbitprecision", &newnb, 1, prec2nbits(LGBITS), 0);
+    sd_ulong_init(v, "realbitprecision", &newnb, 1, LGBITS, 0);
     if ((long)newnb == precreal) return gnil;
     n = nbits2ndec(newnb);
     if (!n) n = 1;

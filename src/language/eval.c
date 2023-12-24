@@ -562,7 +562,7 @@ push_localbitprec(long p)
   precs[n] = p;
 }
 void
-push_localprec(long p) { push_localbitprec(prec2nbits(p)); }
+push_localprec(long p) { push_localbitprec(p); }
 
 void
 pop_localprec(void) { s_prec.n--; }
@@ -620,7 +620,7 @@ static GEN
 _bitprecision0(GEN x)
 {
   long a = gprecision(x);
-  return a? utoi(prec2nbits(a)): mkoo();
+  return a? utoi(a): mkoo();
 }
 GEN
 bitprecision0(GEN x, long n)
