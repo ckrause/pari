@@ -18,6 +18,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
  * mpinl.c, which includes this file and never needs to be changed */
 
 INLINE long
+nbits2lg(long x) {
+  return (long)(((ulong)x+3*BITS_IN_LONG-1) >> TWOPOTBITS_IN_LONG);
+}
+INLINE long
+lg2prec(long x){ return (x-2) * BITS_IN_LONG; }
+
+INLINE long
 evallg(long x)
 {
   if (x & ~LGBITS) pari_err_OVERFLOW("lg()");

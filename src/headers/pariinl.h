@@ -1634,17 +1634,11 @@ INLINE long
 nbits2prec(long x) {
   return (((ulong)x+BITS_IN_LONG-1)>>TWOPOTBITS_IN_LONG) << TWOPOTBITS_IN_LONG;
 }
-INLINE long
-nbits2lg(long x) {
-  return (long)(((ulong)x+3*BITS_IN_LONG-1) >> TWOPOTBITS_IN_LONG);
-}
+
 INLINE long
 prec2lg(long x) {
   return (long)(((ulong)x+3*BITS_IN_LONG-1) >> TWOPOTBITS_IN_LONG);
 }
-INLINE long
-lg2prec(long x){ return (x-2) * BITS_IN_LONG; }
-
 /* ceil(x / sizeof(long)) */
 INLINE long
 nchar2nlong(long x) {
