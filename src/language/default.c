@@ -214,8 +214,7 @@ long
 setrealprecision(long n, long *prec)
 {
   GP_DATA->fmt->sigd = n;
-  *prec = ndec2prec(n);
-  precreal = *prec;
+  *prec = precreal = ndec2prec(n);
   return n;
 }
 
