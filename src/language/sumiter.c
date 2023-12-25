@@ -943,7 +943,7 @@ prodinf(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
   if (typ(a) != t_INT) pari_err_TYPE("prodinf",a);
   a = setloop(a);
   av = avma;
-  fl=0; G = -prec2nbits(prec)-5;
+  fl=0; G = -prec-5;
   for(;;)
   {
     p1 = eval(E, a); if (gequal0(p1)) { x = p1; break; }
@@ -968,7 +968,7 @@ prodinf1(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
   if (typ(a) != t_INT) pari_err_TYPE("prodinf1",a);
   a = setloop(a);
   av = avma;
-  fl=0; G = -prec2nbits(prec)-5;
+  fl=0; G = -prec-5;
   for(;;)
   {
     p2 = eval(E, a); p1 = gaddgs(p2,1);
@@ -1238,7 +1238,7 @@ polzag(long n, long m)
 /*0.39322 > 1/log_2(3+sqrt(8))*/
 static ulong
 sumalt_N(long prec)
-{ return (ulong)(0.39322*(prec2nbits(prec) + 7)); }
+{ return (ulong)(0.39322*(prec + 7)); }
 
 GEN
 sumalt(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
@@ -1278,7 +1278,7 @@ sumalt2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
   GEN s, dn, pol;
 
   if (typ(a) != t_INT) pari_err_TYPE("sumalt",a);
-  N = (long)(0.307073*(prec2nbits(prec) + 5)); /*0.307073 > 1/log_2(\beta_B)*/
+  N = (long)(0.307073*(prec + 5)); /*0.307073 > 1/log_2(\beta_B)*/
   pol = ZX_div_by_X_1(polzag1(N,N>>1), &dn);
   a = setloop(a);
   N = degpol(pol);
@@ -1355,7 +1355,7 @@ static GEN
 sumpos_init(void *E, GEN (*f)(void *, GEN), GEN a, long N, long prec)
 {
   GEN S = cgetg(N+1,t_VEC);
-  long k, G = -prec2nbits(prec) - 5;
+  long k, G = -prec - 5;
   for (k=1; k<=N; k+=2) binsum(S,k, E,f, a,G,prec);
   return S;
 }
@@ -1398,7 +1398,7 @@ sumpos2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
 
   if (typ(a) != t_INT) pari_err_TYPE("sumpos2",a);
   a = subiu(a,1);
-  N = (ulong)(0.31*(prec2nbits(prec) + 5));
+  N = (ulong)(0.31*(prec + 5));
 
   if (odd(N)) N++; /* extra precision for free */
   S = sumpos_init(E, eval, a, N, prec);
@@ -1493,7 +1493,7 @@ zbrent(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long prec)
   if (gsigne(fa)*gsigne(fb) > 0)
     pari_err_DOMAIN("solve", "f(a)f(b)", ">", gen_0, mkvec2(fa, fb));
 SOLVE:
-  bit0 = -prec2nbits(prec); bit = 3+bit0; itmax = 1 - 2*bit0;
+  bit0 = -prec; bit = 3+bit0; itmax = 1 - 2*bit0;
   fc = fb; e = d = NULL;
   for (iter = 1; iter <= itmax; ++iter)
   { /* b = current best guess, a and c auxiliary points */
@@ -1565,7 +1565,7 @@ solvestep(void *E, GEN (*f)(void *,GEN), GEN a, GEN b, GEN step, long flag, long
   const long ITMAX = 10;
   pari_sp av = avma;
   GEN fa, a0, b0;
-  long sa0, it, bit = prec2nbits(prec) / 2, ct = 0, s = gcmp(a,b);
+  long sa0, it, bit = prec / 2, ct = 0, s = gcmp(a,b);
 
   if (!s) return gequal0(f(E, a)) ? gcopy(mkvec(a)): cgetg(1,t_VEC);
   if (s > 0) swap(a, b);
@@ -1802,7 +1802,7 @@ derivnumk(void *E, GEN (*eval)(void *, GEN, long), GEN x, GEN ind0, long prec)
   }
 
   p = precision(x);
-  fpr = p ? prec2nbits(p): prec2nbits(prec);
+  fpr = p ? p: prec;
   e = (fpr + 3*M*log2((double)M)) / (2*M);
   ex = gexpo(x);
   if (ex < 0) ex = 0; /* near 0 */
@@ -2072,9 +2072,8 @@ get_c(GEN a)
 static void
 limit_Nprec(struct limit *L, GEN alpha, long prec)
 {
-  long bit = prec2nbits(prec);
-  L->N = ceil(get_c(alpha) * bit);
-  L->prec = nbits2prec(bit + (long)ceil(get_accu(alpha) * L->N));
+  L->N = ceil(get_c(alpha) * prec);
+  L->prec = nbits2prec(prec + (long)ceil(get_accu(alpha) * L->N));
 }
 /* solve x - a log(x) = b; a, b >= 3 */
 static double
