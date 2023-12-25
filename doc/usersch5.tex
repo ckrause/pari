@@ -592,7 +592,7 @@ $\kbd{ceil}(x / \kbd{sizeof(long)})$.
 \fun{long}{prec2nbits}{long x} return $x$. For backward compatibility.
 
 \fun{double}{prec2nbits_mul}{long x, double y} returns
-$x\times y$.
+$x\times y$. For backward compatibility.
 
 \fun{long}{bit_accuracy}{long x} converts a length into a number
 of significant bits;
@@ -2402,12 +2402,9 @@ words of accuracy.
 words of accuracy.
 
 \fun{GEN}{real_0_bit}{long bit} create a \typ{REAL} equal to $0$ with
-exponent $-\kbd{bit}$.
+exponent $\kbd{bit}$.
 
-\fun{GEN}{real_0}{long prec} is a shorthand for
-\bprog
-  real_0_bit( -prec2nbits(prec) )
-@eprog
+\fun{GEN}{real_0}{long prec} is a shorthand for \kbd{real_0_bit(- prec)}.
 
 \fun{GEN}{int2n}{long n} creates a \typ{INT} equal to \kbd{1<<n} (i.e
 $2^n$ if $n \geq 0$, and $0$ otherwise).
