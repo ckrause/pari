@@ -50,8 +50,10 @@ Doc:
 
  [ -1 -1/2]
  @eprog
-Variant: See also \fun{GEN}{qfgaussred}{GEN a} (as \kbd{qfgaussred(a,0)}),
- \fun{GEN}{qfgaussred2}{GEN a} (as \kbd{qfgaussred0(a,1)}) and
- \fun{GEN}{qfgaussred_positive}{GEN q} (assumes that $q$ is
+Variant: See also the functions \fun{GEN}{qfgaussred}{GEN a}
+ (for \kbd{qfgaussred(a,0)}),
+ \fun{GEN}{qfgaussred2}{GEN a} (for \kbd{qfgaussred0(a,1)}). Finally,
+ the function
+ \fun{GEN}{qfgaussred_positive}{GEN q} assumes that $q$ is
  positive definite and is a little faster; returns \kbd{NULL} if a vector
- with negative norm occurs (non positive matrix or too many rounding errors)).
+ with negative norm occurs (non positive matrix or too many rounding errors).
