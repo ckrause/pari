@@ -446,11 +446,7 @@ Buchraymod_i(GEN bnf, GEN module, long flag, GEN MOD)
   bid = checkbid_i(module);
   if (!bid) bid = Idealstarmod(nf,module,nf_GEN|nf_INIT, MOD);
   cycbid = bid_get_cyc(bid);
-  if (MOD)
-  {
-    cyc = ZV_snfclean(ZV_snf_gcd(cyc, MOD));
-    cycbid = ZV_snf_gcd(cycbid, MOD);
-  }
+  if (MOD) cyc = ZV_snfclean(ZV_snf_gcd(cyc, MOD));
   Ri = lg(cycbid)-1;
   if (Ri || add_gen || do_init)
   {

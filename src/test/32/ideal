@@ -264,6 +264,8 @@ matrix(0,2)
 [1, -30]~
 [1, 30]~
 []
+[784, 784, 4, 4]
+[49, 49, 0, 0]~
   ***   at top-level: ideallist(x,-300)
   ***                 ^-----------------
   *** ideallist: incorrect type in checknf [please apply nfinit()] (t_POL).
@@ -333,4 +335,4 @@ matrix(0,2)
   ***   at top-level: idealred(K,[4,3,2,1;0,3,2,1;0,0,2,1;0,0,0,1])
   ***                 ^---------------------------------------------
   *** idealred: inconsistent dimensions in idealred.
-Total time spent: 78
+Total time spent: 98

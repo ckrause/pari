@@ -3381,6 +3381,7 @@ Idealstarmod_i(GEN nf, GEN ideal, long flag, GEN MOD)
     U = matid(lg(cyc)-1);
     if (flag & nf_GEN) u1 = U;
   }
+  if (MOD) cyc = ZV_snf_gcd(cyc, MOD);
   y = bid_grp(nf, u1, cyc, gen, x, sarch);
   if (!(flag & nf_INIT)) return y;
   U = split_U(U, sprk);
@@ -3500,7 +3501,6 @@ ideallog_units0(GEN bnf, GEN bid, GEN MOD)
   init_zlog_mod(&S, bid, MOD);
   if (!S.hU) return zeromat(0,lU);
   cyc = bid_get_cyc(bid);
-  if (MOD) cyc = ZV_snf_gcd(cyc, MOD);
   D = nfsign_fu(bnf, bid_get_archp(bid));
   y = cgetg(lU, t_MAT);
   if ((C = bnf_build_cheapfu(bnf)))
