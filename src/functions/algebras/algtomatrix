@@ -38,7 +38,7 @@ Doc: Given an element \var{x} in \var{al} (Hamilton quaternions if omitted),
  [-1 -1 0 -1]
 
  [ 2  0 0  1]
- ? algtomatrix(,[1,2,3,4]~) \\Hamilton quaternions
+ ? algtomatrix(,[1,2,3,4]~) \\ Hamilton quaternions
  %4 =
  [1 + 2*I -3 - 4*I]
 

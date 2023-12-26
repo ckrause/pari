@@ -9,7 +9,7 @@ Doc: Given an element $x$ in \var{al} (Hamilton quaternions if omitted),
  ? A = alginit(nfinit(y), [-1,-1]);
  ? algsqr(A,[1,0,2,0]~)
  %2 = [-3, 0, 4, 0]~
- ? algsqr(,[0,0,0,Pi]~) \\Hamilton quaternions
+ ? algsqr(,[0,0,0,Pi]~) \\ Hamilton quaternions
  %3 = [-9.8696044010, 0, 0, 0]~
  @eprog
 

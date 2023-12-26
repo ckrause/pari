@@ -24,7 +24,7 @@ Doc: Given an element \var{x} in \var{al} (Hamilton quaternions if omitted),
  %8 = 8
  ? algdegree(A)*nfelttrace(nf,t)
  %9 = 8
- ? algtrace(,[1.,2,3,4]~) \\Hamilton quaternions
+ ? algtrace(,[1.,2,3,4]~) \\ Hamilton quaternions
  %10 = 2.0000000000
  ? algtrace(,[1.,2,3,4]~,0)
  %11 = 4.0000000000

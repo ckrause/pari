@@ -16,7 +16,7 @@ Doc: If \var{al} is a table algebra output by \tet{algtableinit} or if~$abs=1$,
  %3 = 4
  ? algdim(A,1)
  %4 = 12
- ? C = alginit(I,0); \\complex numbers as a real algebra
+ ? C = alginit(I,0); \\ complex numbers as a real algebra
  ? algdim(C,1)
  %6 = 2
  @eprog

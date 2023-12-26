@@ -19,7 +19,7 @@ Doc: Given a central simple algebra \var{al} output by \tet{alginit} and a prime
  %5 = 1/2
  ? alghasse(A, idealprimedec(nf,5)[1])
  %6 = 0
- ? H = alginit(1.,1/2); \\Hamilton quaternion algebra
+ ? H = alginit(1.,1/2); \\ Hamilton quaternion algebra
  ? alghasse(H)
  %8 = 1/2
  @eprog

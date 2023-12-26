@@ -9,7 +9,7 @@ Doc: Given two elements $x$ and $y$ in \var{al} (Hamilton quaternions if
  ? A = alginit(nfinit(y), [-1,-1]);
  ? algmul(A,[1,1,0,0]~,[0,0,2,1]~)
  % = [2, 3, 5, -4]~
- ? algmul(,[1,2,3,4]~,sqrt(I)) \\Hamilton quaternions
+ ? algmul(,[1,2,3,4]~,sqrt(I)) \\ Hamilton quaternions
  % = [-0.7071067811, 2.1213203435, 4.9497474683, 0.7071067811]~
  @eprog
 

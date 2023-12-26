@@ -10,7 +10,7 @@ Doc: Given an element $x$ in \var{al} (Hamilton quaternions if omitted),
  ? A = alginit(nfinit(y), [-1,-1]);
  ? alginv(A,[1,1,0,0]~)
  %2 = [1/2, 1/2, 0, 0]~
- ? alginv(,[1,0,Pi,sqrt(2)]~) \\Hamilton quaternions
+ ? alginv(,[1,0,Pi,sqrt(2)]~) \\ Hamilton quaternions
  %3 = [0.0777024661, 0, -0.2441094967, -0.1098878814]~
  @eprog
 

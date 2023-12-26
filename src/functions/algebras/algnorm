@@ -23,7 +23,7 @@ Doc: Given an element \var{x} in \var{al} (Hamilton quaternions if omitted),
  %8 = 16
  ? nfeltnorm(nf,n)^algdegree(B)
  %9 = 16
- ? algnorm(,[0,sqrt(3),0,sqrt(2)]~) \\Hamilton quaternions
+ ? algnorm(,[0,sqrt(3),0,sqrt(2)]~) \\ Hamilton quaternions
  %10 = 5.0000000000
 
  @eprog

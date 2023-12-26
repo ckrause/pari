@@ -40,7 +40,7 @@ Doc: Let \kbd{pol} be an irreducible integral polynomial defining a number
  \item In cases $A_5$ and $A_5(6)$, $\fl$ is currently ignored.
 
   \bprog
-  ? pol=x^6 - 3*x^5 + 7*x^4 - 9*x^3 + 7*x^2 - 3*x + 1; \\Galois closure D_6
+  ? pol = x^6-3*x^5+7*x^4-9*x^3+7*x^2-3*x+1; \\ Galois closure D_6
   ? nfresolvent(pol)
   %2 = x^3 + x - 1
   ? nfresolvent(pol,1)

@@ -18,6 +18,6 @@ Doc: Given an element $b$ in \var{al} (Hamilton quaternions if omitted) and a
  ? mb = algtomatrix(al,b,1);
  ? algpoleval(al,pol,[b,mb])==0
  %7 = 1
- ? algpoleval(,polcyclo(8),[1,0,0,1]~/sqrt(2)) \\Hamilton quaternions
+ ? algpoleval(,polcyclo(8),[1,0,0,1]~/sqrt(2)) \\ Hamilton quaternions
  %8 = [0.E-38, 0, 0, 0.E-38]~
  @eprog
