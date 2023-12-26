@@ -2790,8 +2790,8 @@ sprkinit(GEN nf, GEN pr, long k, GEN x, GEN MOD)
   modpr = nf_to_Fq_init(nf, &pr,&T,&p);
   if (MOD)
   {
-    GEN A = subiu(powiu(p,f), 1), d = gcdii(A, MOD), fa = Z_factor(d);
-    ord0 = mkvec2(A, fa); /* true order, factorization of order in G/G^MOD */
+    GEN o = subiu(powiu(p,f), 1), d = gcdii(o, MOD), fa = Z_factor(d);
+    ord0 = mkvec2(o, fa); /* true order, factorization of order in G/G^MOD */
     Ld = gel(fa,1);
     if (lg(Ld) > 1 && equaliu(gel(Ld,1),2)) Ld = vecslice(Ld,2,lg(Ld)-1);
   }
