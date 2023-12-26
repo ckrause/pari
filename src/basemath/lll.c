@@ -197,8 +197,8 @@ sizered(GEN T1, GEN T3, GEN R1, GEN R2)
 {
   pari_sp ltop = avma;
   long e;
-  return gerepileupto(ltop, gmul(ZM_neg(T1), grndtoi(gmul(ZM_inv(T1,NULL),
-            gmul(RgM_mul(RgM_inv_upper(R1), R2), T3)), &e)));
+  return gerepileupto(ltop, ZM_mul(ZM_neg(T1), grndtoi(gmul(ZM_inv(T1,NULL),
+         RgM_mul(RgM_mul(RgM_inv_upper(R1), R2), T3)), &e)));
 }
 
 static GEN
