@@ -1,5 +1,5 @@
 Function: ellzeta
-Section: elliptic_{c}urves
+Section: elliptic_curves
 C-Name: ellzeta
 Prototype: GDGp
 Help: ellzeta(w,{z='x}): computes the value at z of the Weierstrass Zeta
