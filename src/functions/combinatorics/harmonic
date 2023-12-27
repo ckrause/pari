@@ -5,9 +5,9 @@ Prototype: UDG
 Help: harmonic(n,{r = 1}): generalized harmonic number of index n in power r.
 Doc: generalized harmonic number of index $n \geq 0$ in power $r$, as a rational
  number. If $r = 1$ (or omitted), this is the harmonic number
- $$ H_n = \sum_{i = 1}^n \dfrac{1}{i}.$$
+ $$ H_n = \sum_{i = 1}^{n} \dfrac{1}{i}.$$
  In general, this is
- $$ H_{n,r} = \sum_{i = 1}^n \dfrac{1}{i^r}.$$
+ $$ H_{n,r} = \sum_{i = 1}^{n} \dfrac{1}{i^{r}}.$$
  The function runs in time $\tilde{O}(r n)$, essentially linear in the
  size of the output.
  \bprog

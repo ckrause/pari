@@ -27,9 +27,9 @@ Doc: truncates $x$ and sets $e$ to the number of
 
  Note a very special use of \kbd{truncate}: when applied to a power series, it
  transforms it into a polynomial or a rational function with denominator
- a power of $X$, by chopping away the $O(X^k)$. Similarly, when applied to
+ a power of $X$, by chopping away the $O(X^{k})$. Similarly, when applied to
  a $p$-adic number, it transforms it into an integer or a rational number
- by chopping away the $O(p^k)$.
+ by chopping away the $O(p^{k})$.
 
 Variant: The following functions are also available: \fun{GEN}{gtrunc}{GEN x}
  and \fun{GEN}{gcvtoi}{GEN x, long *e}.

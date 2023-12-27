@@ -19,4 +19,4 @@ Doc: gives the integer formed by the elements of $x$ seen as the digits of a
  @eprog\noindent This function works with $x$ a \typ{VECSMALL}; and
  also with $b < 0$ or $x[i]$ not an actual digit in base $b$ (i.e.,
  $x[i] < 0$ or $x[i] \geq b$): if $x$ has length $n$, we return
- $\sum_{i=1}^n x[i] b^{n-i}$.
+ $\sum_{i=1}^{n} x[i] b^{n-i}$.

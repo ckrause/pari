@@ -16,7 +16,7 @@ Doc: \kbd{gp} precomputes a list of
 
  The maximal value for practical purposes is $436273289$ (the largest prime
  such that all prime gaps below the threshold are < 255), but values beyond
- $10^8$, allowing to iterate over primes up to $10^{16}$, do not seem useful.
+ $10^{8}$, allowing to iterate over primes up to $10^{16}$, do not seem useful.
 
  The default can be set to a higher value, up to $2^{64}-2049$ on
  a 64-bit machine ! But the precomputed prime table will be truncated at the

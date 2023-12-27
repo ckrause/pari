@@ -10,7 +10,7 @@ Description:
  (gen, small):gen               gbittest($1, $2)
 Doc:
  outputs the $n^{\text{th}}$ bit of $x$ starting
- from the right (i.e.~the coefficient of $2^n$ in the binary expansion of $x$).
+ from the right (i.e.~the coefficient of $2^{n}$ in the binary expansion of $x$).
  The result is 0 or 1. For $x\ge1$, the highest 1-bit is at $n =
  \kbd{logint}(x)$ (and bigger $n$ gives $0$).
  \bprog

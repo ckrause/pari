@@ -25,7 +25,7 @@ Doc: \idx{binomial coefficient} $\binom{n}{k}$.
  becomes valid for all integers $n$ and $k$, and
  the binomial theorem
  holds for all complex numbers $a$, $b$, $n$ with $|b| < |a|$:
- $$ (a + b)^n = \sum_{k\geq 0} \binom{n}{k} a^{n-k} b^k\,. $$
+ $$ (a + b)^{n} = \sum_{k\geq 0} \binom{n}{k} a^{n-k} b^{k}\,. $$
  Beware that this extension is incompatible with another traditional
  extension ($\binom{n}{k} := 0$ if $k < 0$); to enforce the latter, use
  \bprog

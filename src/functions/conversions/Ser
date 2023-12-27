@@ -23,7 +23,7 @@ Doc: transforms the object $s$ into a power series with main variable $v$
  ? Ser(T, 'x, 11)
  %5 = 1 - x^10 + O(x^11)
  @eprog\noindent The function is more or less equivalent with multiplication by
- $1 + O(v^d)$ in theses cases, only faster.
+ $1 + O(v^{d})$ in theses cases, only faster.
 
  For the remaining types, vectors and power series, we first explain what
  occurs if $d$ is omitted. In this case, the function uses exactly the amount

@@ -25,9 +25,9 @@ Doc: If $x$ is in $\R$, rounds $x$ to the nearest integer (rounding to
  \misctitle{Important remark} Contrary to the other truncation functions,
  this function operates on every coefficient at every level of a PARI object.
  For example
- $$\text{truncate}\left(\dfrac{2.4*X^2-1.7}{X}\right)=2.4*X,$$
+ $$\text{truncate}\left(\dfrac{2.4*X^{2}-1.7}{X}\right)=2.4*X,$$
  whereas
- $$\text{round}\left(\dfrac{2.4*X^2-1.7}{X}\right)=\dfrac{2*X^2-2}{X}.$$
+ $$\text{round}\left(\dfrac{2.4*X^{2}-1.7}{X}\right)=\dfrac{2*X^{2}-2}{X}.$$
  An important use of \kbd{round} is to get exact results after an approximate
  computation, when theory tells you that the coefficients must be integers.
 

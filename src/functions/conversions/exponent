@@ -5,9 +5,9 @@ Prototype: G
 Help: exponent(x): binary exponent of x
 Doc: When $x$ is a \typ{REAL}, the result is the binary exponent $e$ of $x$.
  For a nonzero $x$, this is the unique integer $e$ such that
- $2^e \leq |x| < 2^{e+1}$. For a real $0$, this returns the PARI exponent $e$
+ $2^{e} \leq |x| < 2^{e+1}$. For a real $0$, this returns the PARI exponent $e$
  attached to $x$ (which may represent any floating-point number less than
- $2^e$ in absolute value).
+ $2^{e}$ in absolute value).
  \bprog
  ? exponent(Pi)
  %1 = 1
