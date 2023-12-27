@@ -4,12 +4,12 @@ C-Name: ellpadiclog
 Prototype: GGLG
 Help: ellpadiclog(E,p,n,P): returns the logarithm of P (in the kernel of
  reduction) to relative p-adic precision p^n.
-Doc: Given $E$ defined over $K = \Q$ or $\Q_p$ and $P = [x,y]$ on $E(K)$ in the
+Doc: Given $E$ defined over $K = \Q$ or $\Q_{p}$ and $P = [x,y]$ on $E(K)$ in the
  kernel of reduction mod $p$, let $t(P) = -x/y$ be the formal group
- parameter; this function returns $L(t)$, where $L$ denotes the formal
- logarithm (mapping the formal group of $E$  to the additive formal group)
- attached to the canonical invariant differential:
- $dL = dx/(2y + a_1x + a_3)$.
+ parameter; this function returns $L(t)$ to relative $p$-adic precision
+ $p^{n}$, where $L$ denotes the formal logarithm (mapping the formal group
+ of $E$  to the additive formal group) attached to the canonical invariant
+ differential: $dL = dx/(2y + a_{1}x + a_{3})$.
  \bprog
  ? E = ellinit([0,0,1,-4,2]); P = [-2,1];
  ? ellpadiclog(E,2,10,P)

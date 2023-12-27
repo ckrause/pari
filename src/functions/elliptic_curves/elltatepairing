@@ -8,4 +8,4 @@ Doc: Let $E$ be an elliptic curve defined over a finite field $k$
  and $m \geq 1$ be an integer. This function computes the (nonreduced) Tate
  pairing of the points $P$ and $Q$ on $E$, where $P$ is an $m$-torsion point.
  More precisely, let $f_{m,P}$ denote a Miller function with divisor $m[P] -
- m[O_E]$; the algorithm returns $f_{m,P}(Q) \in k^*/(k^*)^m$.
+ m[O_E]$; the algorithm returns $f_{m,P}(Q) \in k^{*}/(k^{*})^{m}$.

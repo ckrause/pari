@@ -11,7 +11,7 @@ Doc:Let $\omega := dx / (2y+a_1x+a_3)$ be the invariant differential form
  and $\eta := x(t)\omega$. Return $n$ terms (\tet{seriesprecision} by default)
  of $f(t),g(t)$ two power series in the formal parameter $t=-x/y$ such that
  $\omega = f(t) dt$, $\eta = g(t) dt$:
-  $$f(t) = 1+a_1 t + (a_1^2 + a_2) t^2 + \dots,\quad
+  $$f(t) = 1+a_1 t + (a_1^{2} + a_2) t^{2} + \dots,\quad
     g(t) = t^{-2} +\dots $$
   \bprog
   ? E = ellinit([-1,1/4]); [f,g] = ellformaldifferential(E,7,'t);

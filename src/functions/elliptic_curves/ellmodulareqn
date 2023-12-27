@@ -26,8 +26,8 @@ Doc: given a prime $N < 500$, return a vector $[P,t]$ where $P(x,y)$
  \item for Atkin type: $f \mid W_N = f$;
 
  \item for canonical type: let $s = 12/\gcd(12,N-1)$, then
- $f \mid W_N = N^s / f$. In this case, $f$ has a simple definition:
- $f(\tau) = N^s \* \big(\eta(N\*\tau) / \eta(\tau) \big)^{2\*s}$,
+ $f \mid W_N = N^{s} / f$. In this case, $f$ has a simple definition:
+ $f(\tau) = N^{s} \* \big(\eta(N\*\tau) / \eta(\tau) \big)^{2\*s}$,
  where $\eta$ is Dedekind's eta function.
 
  The following GP function returns values of the classical modular polynomial

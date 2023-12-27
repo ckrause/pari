@@ -7,8 +7,8 @@ Help: ellchangepointinv(x,v): change data on point or vector of points x on an
 Doc:
  changes the coordinates of the point or vector of points $x$ using
  the inverse of the isomorphism attached to \kbd{v=[u,r,s,t]},
- i.e.~if $x'$ and $y'$ are the old coordinates, then $x=u^2x'+r$,
- $y=u^3y'+su^2x'+t$ (inverse of \kbd{ellchangepoint}).
+ i.e.~if $x'$ and $y'$ are the old coordinates, then $x=u^{2}x'+r$,
+ $y=u^{3}y'+su^{2}x'+t$ (inverse of \kbd{ellchangepoint}).
  \bprog
  ? E0 = ellinit([1,1]); P0 = [0,1]; v = [1,2,3,4];
  ? E = ellchangecurve(E0, v);

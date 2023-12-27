@@ -8,9 +8,9 @@ Help: ellsigma(L,{z='x},{flag=0}): computes the value at z of the Weierstrass
 Doc: Computes the value at $z$ of the Weierstrass $\sigma$ function attached to
  the lattice $L$ as given by \tet{ellperiods}$(,1)$: including quasi-periods
  is useful, otherwise there are recomputed from scratch for each new $z$.
- $$ \sigma(z, L) = z \prod_{\omega\in L^*} \left(1 -
- \dfrac{z}{\omega}\right)e^{\dfrac{z}{\omega} + \dfrac{z^2}{2\omega^2}}.$$
- It is also possible to directly input $L = [\omega_1,\omega_2]$,
+ $$ \sigma(z, L) = z \prod_{\omega\in L^{*}} \left(1 - \dfrac{z}{\omega}\right)
+    e^{\dfrac{z}{\omega} + \dfrac{z^{2}}{2\omega^{2}}}.$$
+ It is also possible to directly input $L = [\omega_{1},\omega_{2}]$,
  or an elliptic curve $E$ as given by \kbd{ellinit} ($L = \kbd{E.omega}$).
  \bprog
  ? w = ellperiods([1,I], 1);

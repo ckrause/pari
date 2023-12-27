@@ -14,7 +14,7 @@ Doc: Let $E$ be an \kbd{ell} structure over a number field $K$. This function
  Else return the (nonprincipal) Weierstrass class of $E$, i.e. the class of
  $\prod \goth{p}^{(v_{\goth{p}}{\Delta} - \delta_{\goth{p}}) / 12}$ where
  $\Delta = \kbd{E.disc}$ is the model's discriminant and
- $\goth{p} ^ \delta_{\goth{p}}$ is the local minimal discriminant.
+ $\goth{p} ^ {\delta_{\goth{p}}}$ is the local minimal discriminant.
  This function requires either that $E$ be defined
  over the rational field $\Q$ (with domain $D = 1$ in \kbd{ellinit}),
  in which case a global minimal model always exists, or over a number

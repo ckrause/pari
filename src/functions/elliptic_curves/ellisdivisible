@@ -24,7 +24,7 @@ Doc: given $E/K$ a number field and $P$ in $E(K)$
  @eprog\noindent We use a fast multimodular algorithm over $\Q$ whose
  complexity is essentially independent of $n$ (polynomial in $\log n$).
  Over number fields, we compute roots of division polynomials and the
- algebraic complexity of the underlying algorithm is in $O(p^4)$, where $p$ is
+ algebraic complexity of the underlying algorithm is in $O(p^{4})$, where $p$ is
  the largest prime divisor of $n$. The integer $n \geq 0$ may be given as
  \kbd{ellxn(E,n)}, if many points need to be tested; this provides a modest
  speedup over number fields but is likely to slow down the algorithm over

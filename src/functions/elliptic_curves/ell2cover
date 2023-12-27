@@ -8,8 +8,8 @@ Help: ell2cover(E): if E is an elliptic curve over Q, return a basis of the set
  k = Q(x)[y] / (y^2-R(x)).
 Doc: if $E$ is an elliptic curve over $\Q$, return a basis of the set of
  everywhere locally soluble $2$-covers of the curve $E$.
- For each cover a pair $[R,P]$ is returned where $y^2-R(x)$ is a quartic curve
- and $P$ is a point on $E(k)$, where $k = \Q(x)[y] / (y^2-R(x))$.
+ For each cover a pair $[R,P]$ is returned where $y^{2}-R(x)$ is a quartic curve
+ and $P$ is a point on $E(k)$, where $k = \Q(x)[y] / (y^{2}-R(x))$.
  $E$ can also be given as the output of \kbd{ellrankinit(E)},
  or as a pair $[e, f]$, where $e$ is an elliptic curve given by
  \kbd{ellrankinit} and $f$ is a quadratic twist of $e$. We then look for

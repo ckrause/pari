@@ -9,8 +9,9 @@ Help: ellrank(E,{effort=0},{points}): if E is an elliptic curve over Q,
  independent, non-torsion rational points on the curve. E can also be given as
  the output of ellrankinit(E).
 Doc: if $E$ is an elliptic curve over $\Q$, attempts to compute the
- Mordell-Weil group attached to the curve. The output is $[r_1,r_2,s,L]$, where
- $r_1 \le\text{rank}(E) \le r_2$, $s$ gives informations on the
+ Mordell-Weil group attached to the curve. The output is $[r_{1},r_{2},s,L]$,
+ where
+ $r_{1} \le\text{rank}(E) \le r_{2}$, $s$ gives informations on the
  Tate-Shafarevic group (see below), and $L$ is a list of independent,
  non-torsion rational points on the curve. $E$ can also be given as the output
  of \kbd{ellrankinit(E)}.
@@ -42,26 +43,26 @@ Doc: if $E$ is an elliptic curve over $\Q$, attempts to compute the
 
  \misctitle{Technical explanation}
  The algorithm, which computes the $2$-descent and the $2$-part of the Cassels
- pairings has an intrinsic limitation: We can never have $r = R$ when
+ pairings has an intrinsic limitation: $r = R$ never holds when
  the Tate-Shafarevic group $G$ has $4$-torsion. Thus, in this case we cannot
- determine the rank precisely.
- More precisely, the algorithm computes (exactly) three quantities:
+ determine the rank precisely. The algorithm computes unconditionally three
+ quantities:
 
- \item the rank of the $2$-Selmer group ($C$).
+ \item the rank $C$ of the $2$-Selmer group.
 
- \item the rank of the $2$-torsion subgroup ($T$).
+ \item the rank $T$ of the $2$-torsion subgroup.
 
- \item the rank of $G[2]/2G[4]$ ($s$) (even).
+ \item the (even) rank $s$ of $G[2]/2G[4]$.
 
  The following quantities are also relevant:
 
- \item the rank of the free part of $E(\Q)$ ($R$)
+ \item the rank $R$ of the free part of $E(\Q)$.
 
- \item the rank of $G[2]$ ($S$) (conjecturally even).
+ \item the rank $S$ of $G[2]$ (conjecturally even).
 
  Then, the following formula holds: $C = T + R + S$.
- It always holds that $s \le S$ and $r_1 \le R \le r_2$.
- $r_2$ is defined by $r_2 = C - T - s$.
+ It always holds that $s \le S$ and $r_{1} \le R \le r_{2}$.
+ $r_{2}$ is defined by $r_{2} = C - T - s$.
 
  When the conductor of $E$ is small, the BSD conjecture can be used
  to find the true rank:
@@ -79,7 +80,8 @@ Doc: if $E$ is an elliptic curve over $\Q$, attempts to compute the
  %6 = 16.0000000000000000000000000000000000000
  @eprog
  We find that the rank is $0$ and the cardinal of the Tate-Shafarevich group
- is $16$ (assuming BSD!). Moreover, since $s=0$, it is isomorphic to $(\Z/4\Z)^2$.
+ is $16$ (assuming BSD!). Moreover, since $s=0$, it is isomorphic to
+ $(\Z/4\Z)^{2}$.
 
  When the rank is $1$ and the conductor is small, \kbd{ellheegner} can be used
  to find the point.

@@ -26,8 +26,8 @@ Doc: If $E'$ is an elliptic curve over $\Q$, let $L_{E'}$ be the
  the lattices $L_{E'}$ in $L_f$. The function also accepts the output of
  \kbd{ellisomat}, i.e. the isogeny class. If the optional argument \kbd{ms}
  is present, it contains the output of \kbd{msfromell(vE, 0)}, i.e. the new
- modular symbol space $M$ of level $N$ and a vector of triples $[x^+,x^-, L]$
- attached to each curve $E'$.
+ modular symbol space $M$ of level $N$ and a vector of triples
+ $[x^{+},x^{-}, L]$ attached to each curve $E'$.
 
  In particular, the strong Weil curve amongst the curves isogenous to $E$
  is the one whose Smith invariants are $[c,c]$, where $c$ is the Manin
@@ -51,5 +51,5 @@ Doc: If $E'$ is an elliptic curve over $\Q$, let $L_{E'}$ be the
  [1/5, -1/2, -1/2]~
  [1, -5/2, -5/2]~
  [1/25, -1/10, -1/10]~
- @eprog\noindent The last example prints the modular symbols $x^+$ in $M^+$
- attached to the curves \kbd{11a1}, \kbd{11a2} and \kbd{11a3}.
+ @eprog\noindent The last example prints the modular symbols $x^{+}$
+ in $M^{+}$ attached to the curves \kbd{11a1}, \kbd{11a2} and \kbd{11a3}.

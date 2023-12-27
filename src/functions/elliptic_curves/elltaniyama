@@ -19,4 +19,4 @@ Doc:
 
  The algorithm assumes that $E$ is a \emph{strong} \idx{Weil curve}
  and that the Manin constant is equal to 1: in fact, $f(x) = \sum_{n > 0}
- \kbd{ellak}(E, n) x^n$.
+ \kbd{ellak}(E, n) x^{n}$.

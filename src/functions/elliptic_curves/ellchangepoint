@@ -7,8 +7,8 @@ Help: ellchangepoint(x,v): change data on point or vector of points x on an
 Doc:
  changes the coordinates of the point or
  vector of points $x$ using the vector \kbd{v=[u,r,s,t]}, i.e.~if $x'$ and
- $y'$ are the new coordinates, then $x=u^2x'+r$, $y=u^3y'+su^2x'+t$ (see also
- \kbd{ellchangecurve}).
+ $y'$ are the new coordinates, then $x=u^{2}x'+r$, $y=u^{3}y'+su^{2}x'+t$
+ (see also \kbd{ellchangecurve}).
  \bprog
  ? E0 = ellinit([1,1]); P0 = [0,1]; v = [1,2,3,4];
  ? E = ellchangecurve(E0, v);

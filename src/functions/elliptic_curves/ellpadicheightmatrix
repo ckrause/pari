@@ -5,8 +5,8 @@ Prototype: GGLG
 Help: ellpadicheightmatrix(E,p,n,Q): gives the height-pairing matrix for vector
  of points Q on elliptic curve E.
 Doc: $Q$ being a vector of points, this function returns the ``Gram matrix''
- $[F,G]$ of the cyclotomic $p$-adic height $h_E$ with respect to
- the basis $(\omega, \eta)$ of $D=H^1_{dR}(E) \otimes_\Q \Q_p$
+ $[F,G]$ of the cyclotomic $p$-adic height $h_{E}$ with respect to
+ the basis $(\omega, \eta)$ of $D=H^{1}_{dR}(E) \otimes_{\Q} \Q_{p}$
  given to $n$ $p$-adic digits. In other words, if
  \kbd{ellpadicheight}$(E,p,n, Q[i],Q[j]) = [f,g]$, corresponding to
  $f \omega + g \eta$ in $D$, then $F[i,j] = f$ and $G[i,j] = g$.

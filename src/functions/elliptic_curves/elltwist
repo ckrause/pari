@@ -25,7 +25,7 @@ Doc: returns an \kbd{ell} structure (as given by \kbd{ellinit}) for the twist
  ? elltwist([a4,a6], -3)[1..5]
  %2 = [0, 0, 0, 9*a4, -27*a6]
  @eprog
- Twist by the Artin-Schreier extension given by $x^2+x+T$ in
+ Twist by the Artin-Schreier extension given by $x^{2}+x+T$ in
  characteristic $2$:
  \bprog
  ? lift(elltwist([a1,a2,a3,a4,a6]*Mod(1,2), x^2+x+T)[1..5])

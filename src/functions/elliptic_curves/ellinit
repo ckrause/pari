@@ -13,13 +13,13 @@ Doc:
  initialize an \tet{ell} structure, attached to the elliptic curve $E$.
  $E$ is either
 
- \item a $5$-component vector $[a_1,a_2,a_3,a_4,a_6]$ defining the elliptic
+ \item a $5$-component vector $[a_{1},a_{2},a_{3},a_{4},a_{6}]$ defining the elliptic
  curve with Weierstrass equation
- $$ Y^2 + a_1 XY + a_3 Y = X^3 + a_2 X^2 + a_4 X + a_6, $$
+ $$ Y^{2} + a_{1} XY + a_{3} Y = X^{3} + a_{2} X^{2} + a_{4} X + a_{6}, $$
 
- \item a $2$-component vector $[a_4,a_6]$ defining the elliptic
+ \item a $2$-component vector $[a_{4},a_{6}]$ defining the elliptic
  curve with short Weierstrass equation
- $$ Y^2 = X^3 + a_4 X + a_6, $$
+ $$ Y^{2} = X^{3} + a_{4} X + a_{6}, $$
 
  \item a single-component vector $[j]$ giving the $j$-invariant for the curve,
  with the same coefficients as given by \kbd{ellfromj}.
@@ -33,15 +33,15 @@ Doc:
  \item the \typ{INT} $1$ (default): the field of rational numbers $\Q$.
 
  \item a \typ{INT} $p$, where $p$ is a prime number: the prime finite field
- $\F_p$.
+ $\F_{p}$.
 
  \item an \typ{INTMOD} \kbd{Mod(a, p)}, where $p$ is a prime number: the
- prime finite field $\F_p$.
+ prime finite field $\F_{p}$.
 
  \item a \typ{FFELT}, as returned by \tet{ffgen}: the corresponding finite
- field $\F_q$.
+ field $\F_{q}$.
 
- \item a \typ{PADIC}, $O(p^n)$: the field $\Q_p$, where $p$-adic quantities
+ \item a \typ{PADIC}, $O(p^{n})$: the field $\Q_{p}$, where $p$-adic quantities
  will be computed to a relative accuracy of $n$ digits. We advise to input a
  model defined over $\Q$ for such curves. In any case, if you input an
  approximate model with \typ{PADIC} coefficients, it will be replaced by a lift
@@ -90,7 +90,8 @@ Doc:
  The result of \tet{ellinit} is an \tev{ell} structure. It contains at least
  the following information in its components:
  %
- $$ a_1,a_2,a_3,a_4,a_6,b_2,b_4,b_6,b_8,c_4,c_6,\Delta,j.$$
+ $$ a_{1},a_{2},a_{3},a_{4},a_{6},b_{2},b_{4},b_{6},b_{8},c_{4},c_{6},
+   \Delta,j.$$
  %
  All are accessible via member functions. In particular, the discriminant is
  \kbd{$E$.disc}, and the $j$-invariant is \kbd{$E$.j}.
