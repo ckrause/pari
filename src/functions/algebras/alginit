@@ -15,7 +15,7 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
  $M_n(K)$, giving the left multiplication by the basis elements~$e_i$, in the
  given basis.
  Assumes that $e_1= 1$, that the multiplication table is integral, and that
- $(\bigoplus_{i=1}^nK e_i,C)$ describes a central simple algebra over $K$.
+ $(\bigoplus_{i=1}^{n}K e_{i},C)$ describes a central simple algebra over $K$.
  \bprog
  { mi = [0,-1,0, 0;
           1, 0,0, 0;
@@ -36,22 +36,23 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
  \item (cyclic algebra) $B$ is an \kbd{rnf} structure attached to a cyclic
  number field extension $L/K$ of degree $d$, $C$ is a \typ{VEC}
  \kbd{[sigma,b]} with 2 components: \kbd{sigma} is a \typ{POLMOD} representing
- an automorphism generating $\text{Gal}(L/K)$, $b$ is an element in $K^*$. This
- represents the cyclic algebra~$(L/K,\sigma,b)$. Currently the element $b$ has
- to be integral.
+ an automorphism generating $\text{Gal}(L/K)$, $b$ is an element in $K^{*}$.
+ This represents the cyclic algebra~$(L/K,\sigma,b)$. Currently the element
+ $b$ has to be integral.
  \bprog
   ? Q = nfinit(y); T = polcyclo(5, 'x); F = rnfinit(Q, T);
   ? A = alginit(F, [Mod(x^2,T), 3]);
  @eprog defines the cyclic algebra $(L/\Q, \sigma, 3)$, where
- $L = \Q(\zeta_5)$ and $\sigma:\zeta\mapsto\zeta^2$ generates
+ $L = \Q(\zeta_5)$ and $\sigma:\zeta\mapsto\zeta^{2}$ generates
  $\text{Gal}(L/\Q)$.
 
  \item (quaternion algebra, special case of the above) $B$ is an \kbd{nf}
  structure attached to a number field $K$, $C = [a,b]$ is a vector
- containing two elements of $K^*$ with $a$ not a square in $K$, returns the quaternion algebra $(a,b)_K$.
+ containing two elements of $K^{*}$ with $a$ not a square in $K$, returns the
+ quaternion algebra $(a,b)_K$.
  The variable $v$ (\kbd{'x} by default) must have higher priority than the
  variable of $K$\kbd{.pol} and is used to represent elements in the splitting
- field $L = K[x]/(x^2-a)$.
+ field $L = K[x]/(x^{2}-a)$.
  \bprog
   ? Q = nfinit(y); A = alginit(Q, [-1,-1]);  \\@com $(-1,-1)_\Q$
  @eprog
@@ -143,7 +144,7 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
   \item The absolute traces of the elements of the basis of ${\cal O}_0$.
 
   \item If $A$ was constructed as a cyclic algebra~$(L/K,\sigma,b)$ of degree
- $d$, a \typ{VEC} $[\sigma,\sigma^2,\dots,\sigma^{d-1}]$. The function
+ $d$, a \typ{VEC} $[\sigma,\sigma^{2},\dots,\sigma^{d-1}]$. The function
  \kbd{algaut} returns $\sigma$.
 
   \item If $A$ was constructed as a cyclic algebra~$(L/K,\sigma,b)$, the

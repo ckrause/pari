@@ -4,7 +4,7 @@ C-Name: algpow
 Prototype: DGGG
 Help: algpow({al},x,n): element x^n in al (Hamilton quaternions if omitted).
 Doc: Given an element $x$ in \var{al} (Hamilton quaternions if omitted) and an
- integer $n$, computes the power $x^n$ in the algebra \var{al}.
+ integer $n$, computes the power $x^{n}$ in the algebra \var{al}.
  \bprog
  ? A = alginit(nfinit(y), [-1,-1]);
  ? algpow(A,[1,1,0,0]~,7)

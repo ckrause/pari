@@ -5,8 +5,8 @@ Prototype: GDn
 Help: algsplit(al,{v='x}): computes an isomorphism between al and M_d(F_q).
 Doc: If \var{al} is a table algebra over~$\F_p$ output by \tet{algtableinit}
  that represents a simple algebra, computes an isomorphism between \var{al} and
- a matrix algebra~$M_d(\F_{p^n})$ where~$N = nd^2$ is the dimension of~\var{al}.
- Returns a \typ{VEC}~$[map,mapi]$, where:
+ a matrix algebra~$M_d(\F_{p^{n}})$ where~$N = nd^{2}$ is the dimension
+ of~\var{al}. Returns a \typ{VEC}~$[map,mapi]$, where:
 
  \item \var{map} is a \typ{VEC} of~$N$ matrices of size~$d\times d$ with
  \typ{FFELT} coefficients using the variable~\var{v}, representing the image of
