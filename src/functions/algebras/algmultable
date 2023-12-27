@@ -5,12 +5,12 @@ Prototype: mG
 Help: algmultable(al): multiplication table of al over its prime subfield.
 Doc:
  returns a multiplication table of \var{al} over its
- prime subfield ($\Q$ or $\F_p$) or over~$\R$ for real algebras, as a \typ{VEC}
- of \typ{MAT}: the left multiplication tables of basis elements. If \var{al} was
- output by \tet{algtableinit}, returns the multiplication table used to define
- \var{al}.
+ prime subfield ($\Q$ or $\F_{p}$) or over~$\R$ for real algebras, as a
+ \typ{VEC} of \typ{MAT}: the left multiplication tables of basis elements.
+ If \var{al} was output by \tet{algtableinit}, returns the multiplication
+ table used to define \var{al}.
  If \var{al} was output by \tet{alginit}, returns the multiplication table of
- the order~${\cal O}_0$ stored in \var{al}.
+ the order~${\cal O}_{0}$ stored in \var{al}.
  \bprog
  ? A = alginit(nfinit(y), [-1,-1]);
  ? M = algmultable(A);

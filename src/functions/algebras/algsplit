@@ -3,9 +3,9 @@ Section: algebras
 C-Name: algsplit
 Prototype: GDn
 Help: algsplit(al,{v='x}): computes an isomorphism between al and M_d(F_q).
-Doc: If \var{al} is a table algebra over~$\F_p$ output by \tet{algtableinit}
+Doc: If \var{al} is a table algebra over~$\F_{p}$ output by \tet{algtableinit}
  that represents a simple algebra, computes an isomorphism between \var{al} and
- a matrix algebra~$M_d(\F_{p^{n}})$ where~$N = nd^{2}$ is the dimension
+ a matrix algebra~$M_{d}(\F_{p^{n}})$ where~$N = nd^{2}$ is the dimension
  of~\var{al}. Returns a \typ{VEC}~$[map,mapi]$, where:
 
  \item \var{map} is a \typ{VEC} of~$N$ matrices of size~$d\times d$ with
@@ -14,12 +14,12 @@ Doc: If \var{al} is a table algebra over~$\F_p$ output by \tet{algtableinit}
 
  \item \var{mapi} is an~$N\times N$ matrix with \typ{INT} coefficients,
   representing the image in \var{al} by the inverse isomorphism of the
-  basis~$(b_i)$ of~$M_d(\F_p[\alpha])$ (where~$\alpha$ has degree~$n$
-  over~$\F_p$) defined as follows:
+  basis~$(b_{i})$ of~$M_{d}(\F_{p}[\alpha])$ (where~$\alpha$ has degree~$n$
+  over~$\F_{p}$) defined as follows:
   let~$E_{i,j}$ be the matrix having all coefficients~$0$ except the~$(i,j)$-th
   coefficient equal to~$1$, and define
-  $$b_{i_3+n(i_2+di_1)+1} = E_{i_1+1,i_2+1} \alpha^{i_3},$$
-  where~$0\le i_1,i_2<d$ and~$0\le i_3<n$.
+  $$b_{i_{3}+n(i_{2}+di_{1})+1} = E_{i_{1}+1,i_{2}+1} \alpha^{i_{3}},$$
+  where~$0\le i_{1},i_{2}<d$ and~$0\le i_{3}<n$.
 
  Example:
  \bprog

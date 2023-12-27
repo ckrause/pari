@@ -14,7 +14,7 @@ Doc:
  \emph{simple} if it has no nontrivial two-sided ideals.
 
  We provide functions to handle associative algebras of finite
- dimension over~$\Q$ or~$\F_p$. We represent them by the left multiplication
+ dimension over~$\Q$ or~$\F_{p}$. We represent them by the left multiplication
  table on a basis over the prime subfield; the function \kbd{algtableinit}
  creates the object representing an associative algebra. We also provide
  functions to handle central simple algebras over a number field $K$. We
@@ -28,7 +28,7 @@ Doc:
  isomorphic to a direct product of simple algebras. The
  dimension of a CSA over its center $K$ is always a
  square $d^{2}$ and the integer $d$ is called the \emph{degree} of the
- algebra over~$K$. A CSA over a field~$K$ is always isomorphic to~$M_k(D)$
+ algebra over~$K$. A CSA over a field~$K$ is always isomorphic to~$M_{k}(D)$
  for some integer~$k$ and some central division algebra~$D$ of degree~$e$:
  the integer~$e$ is the \emph{index} of the algebra.
 
@@ -38,8 +38,8 @@ Doc:
  $\bigoplus_{i=0}^{d-1}x^{i}L$ with $x^{d}=b$ and $\ell x=x\sigma(\ell)$ for
  all~$\ell\in L$. The algebra $(L/K,\sigma,b)$ is a central simple $K$-algebra
  of degree~$d$, and it is an $L$-vector space. Left multiplication is
- $L$-linear and induces a $K$-algebra isomorphism $(L/K,\sigma,b)\otimes_K L\to
- M_d(L)$.
+ $L$-linear and induces a $K$-algebra isomorphism
+ $(L/K,\sigma,b)\otimes_{K} L\to M_{d}(L)$.
 
  Let $K$ be a nonarchimedean local field with uniformizer $\pi$, and let
  $L/K$ be the unique unramified extension of degree $d$. Then every central
@@ -52,7 +52,7 @@ Doc:
  by~$i^{2}=j^{2}=-1$ and $ji=-ij$, which is also the cyclic
  algebra~$(\C/\R,z\mapsto \bar{z},-1)$.
  Every central simple algebra $A$ of degree $d$ over $\R$ is isomorphic
- to~$M_d(\R)$ or $M_{d/2}({\bf H})$. We define the \emph{Hasse invariant}
+ to~$M_{d}(\R)$ or $M_{d/2}({\bf H})$. We define the \emph{Hasse invariant}
  of~$A$ to be~$0\in\Q/\Z$ in the first case and~$1/2\in\Q/\Z$ in the second
  case.
 
@@ -61,24 +61,25 @@ Doc:
  Let~$A$ be an algebra of finite dimension over~$\Q$. An \emph{order}
  in~$A$ is a finitely generated $\Z$-submodule~${\cal O}$ such
  that~$\Q{\cal O} = A$, that is also a subring with unit.
- By default the data computed by~\kbd{alginit} contains a~$\Z$-basis of a maximal
- order~${\cal O}_0$. We define natural
+ By default the data computed by~\kbd{alginit} contains a~$\Z$-basis of a
+ maximal order~${\cal O}_{0}$. We define natural
  orders in central simple algebras defined by a cyclic algebra or by a
  multiplication table over the center. Let~$A = (L/K,\sigma,b) =
  \bigoplus_{i=0}^{d-1}x^{i}L$ be a cyclic algebra over a number field~$K$ of
- degree~$n$ with ring of integers~$\Z_K$. Let~$\Z_L$ be the ring of integers
+ degree~$n$ with ring of integers~$\Z_{K}$. Let~$\Z_{L}$ be the ring of integers
  of~$L$, and assume that~$b$ is integral. Then the submodule~${\cal O} =
- \bigoplus_{i=0}^{d-1}x^{i}\Z_L$ is an order in~$A$, called the
- \emph{natural order}. Let~$\omega_0,\dots,\omega_{nd-1}$ be a~$\Z$-basis
- of~$\Z_L$. The \emph{natural basis} of~${\cal O}$ is~$b_0,\dots,b_{nd^{2}-1}$
- where~$b_i = x^{i/(nd)}\omega_{(i \mod nd)}$. Now let~$A$ be a central simple
+ \bigoplus_{i=0}^{d-1}x^{i}\Z_{L}$ is an order in~$A$, called the
+ \emph{natural order}. Let~$\omega_{0},\dots,\omega_{nd-1}$ be a~$\Z$-basis
+ of~$\Z_{L}$. The \emph{natural basis} of~${\cal O}$
+ is~$b_{0},\dots,b_{nd^{2}-1}$
+ where~$b_{i} = x^{i/(nd)}\omega_{(i \mod nd)}$. Now let~$A$ be a central simple
  algebra of degree~$d$ over a number field~$K$ of degree~$n$ with ring of
- integers~$\Z_K$. Let~$e_0,\dots,e_{d^{2}-1}$ be a basis of~$A$ over~$K$ and
- assume that the left multiplication table of~$A$ on~$(e_i)$ is integral. Then
- the submodule~${\cal O} = \bigoplus_{i=0}^{d^{2}-1}\Z_K e_i$ is an order
- in~$A$, called the \emph{natural order}. Let~$\omega_0,\dots,\omega_{n-1}$ be
- a~$\Z$-basis of~$\Z_K$. The \emph{natural basis} of~${\cal O}$
- is~$b_0,\dots,b_{nd^{2}-1}$ where~$b_i = \omega_{(i \mod n)}e_{i/n}$.
+ integers~$\Z_{K}$. Let~$e_{0},\dots,e_{d^{2}-1}$ be a basis of~$A$ over~$K$ and
+ assume that the left multiplication table of~$A$ on~$(e_{i})$ is integral. Then
+ the submodule~${\cal O} = \bigoplus_{i=0}^{d^{2}-1}\Z_{K} e_{i}$ is an order
+ in~$A$, called the \emph{natural order}. Let~$\omega_{0},\dots,\omega_{n-1}$ be
+ a~$\Z$-basis of~$\Z_{K}$. The \emph{natural basis} of~${\cal O}$
+ is~$b_{0},\dots,b_{nd^{2}-1}$ where~$b_{i} = \omega_{(i \mod n)}e_{i/n}$.
 
  \subsec{Lattices in algebras} %GPHELPskip
 
@@ -87,7 +88,7 @@ Doc:
  representing~$J = tI$, where
 
  \item $I$ is an integral nonsingular upper-triangular matrix representing a
- sublattice of~${\cal O}_0$ expressed on the integral basis, and
+ sublattice of~${\cal O}_{0}$ expressed on the integral basis, and
 
  \item $t\in\Q_{>0}$ is a \typ{INT} or \typ{FRAC}.
 
@@ -102,17 +103,17 @@ Doc:
  in two ways, called the \emph{algebraic representation} and the \emph{basis
  representation}, and you can convert betweeen the two with the functions
  \kbd{algalgtobasis} and \kbd{algbasistoalg}. In every central simple algebra
- object, we store a~$\Z$-basis of an order~${\cal O}_0$, and the basis
+ object, we store a~$\Z$-basis of an order~${\cal O}_{0}$, and the basis
  representation is simply a \typ{COL} with coefficients in~$\Q$ expressing the
  element in that basis. If no maximal order was computed by~\kbd{alginit},
- then~${\cal O}_0$ is the natural order. If a maximal order was computed,
- then~${\cal O}_0$ is a maximal order containing the natural order. For a cyclic
+ then~${\cal O}_{0}$ is the natural order. If a maximal order was computed,
+ then~${\cal O}_{0}$ is a maximal order containing the natural order. For a cyclic
  algebra~$A = (L/K,\sigma,b)$, the algebraic representation is a \typ{COL} with
  coefficients in~$L$ representing the element in the decomposition~$A =
  \bigoplus_{i=0}^{d-1}x^{i}L$. For a central simple algebra defined by a
- multiplication table over its center~$K$ on a basis~$(e_i)$, the algebraic
+ multiplication table over its center~$K$ on a basis~$(e_{i})$, the algebraic
  representation is a \typ{COL} with coefficients in~$K$ representing the element
- on the basis~$(e_i)$.
+ on the basis~$(e_{i})$.
 
  \misctitle{Warning} The coefficients in the decomposition~$A =
  \bigoplus_{i=0}^{d-1}x^{i}L$ are not the same as those in the decomposition~$A

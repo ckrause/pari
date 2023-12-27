@@ -4,8 +4,8 @@ C-Name: eulervec
 Prototype: L
 Help: eulervec(n): returns a vector containing
  the nonzero Euler numbers E_0, E_2, ..., E_{2n}.
-Doc: returns a vector containing the nonzero \idx{Euler numbers} $E_0$,
- $E_2$,\dots, $E_{2n}$:
+Doc: returns a vector containing the nonzero \idx{Euler numbers} $E_{0}$,
+ $E_{2}$,\dots, $E_{2n}$:
  \bprog
  ? eulervec(5) \\ E_0, E_2..., E_10
  %1 = [1, -1, 5, -61, 1385, -50521]

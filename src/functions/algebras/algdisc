@@ -4,8 +4,9 @@ C-Name: algdisc
 Prototype: G
 Help: algdisc(al): discriminant of the stored order of the algebra al.
 Doc: Given a central simple algebra \var{al} output by \tet{alginit}, computes
- the discriminant of the order ${\cal O}_0$ stored in \var{al}, that is the
- determinant of the trace form $\rm{Tr} : {\cal O}_0\times {\cal O}_0 \to \Z$.
+ the discriminant of the order ${\cal O}_{0}$ stored in \var{al}, that is the
+ determinant of the trace form $\rm{Tr} : {\cal O}_{0}\times {\cal O}_{0}
+ \to \Z$.
  \bprog
  ? nf = nfinit(y^2-5);
  ? A = alginit(nf, [-3,1-y]);

@@ -7,7 +7,7 @@ Help: binomial(n,{k}): binomial coefficient n*(n-1)...*(n-k+1)/k! defined for
  vector [binomial(n,0),...,binomial(n,n)].
 Doc: \idx{binomial coefficient} $\binom{n}{k}$.
  Here $k$ must be an integer, but $n$ can be any PARI object. For nonnegative
- $k$, $\binom{n}{k} = (n)_k / k!$ is polynomial in $n$, where $(n)_k =
+ $k$, $\binom{n}{k} = (n)_{k} / k!$ is polynomial in $n$, where $(n)_{k} =
  n(n-1)\dots(n-k+1)$ is the Pochammer symbol.
  \bprog
  ? binomial(4,2)

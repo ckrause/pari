@@ -5,7 +5,7 @@ Prototype: GDGD&
 Help: alggroupcenter(gal,{p=0},{&cc}): constructs the center of the group
  algebra of gal over Q (resp. Fp), and sets cc to the conjugacy classes of gal.
 Doc: initializes the center~$Z(K[G])$ of the group algebra~$K[G]$ over~$K=\Q$
- ($p = 0$ or omitted) or~$\F_p$ where~$G$ is the underlying group of the
+ ($p = 0$ or omitted) or~$\F_{p}$ where~$G$ is the underlying group of the
  \kbd{galoisinit} structure~\var{gal}. The input~\var{gal} is also allowed to
  be a \typ{VEC} of permutations that is closed under products.
  Sets~\var{cc} to a \typ{VEC}~$[\var{elts},\var{conjclass},\var{rep},\var{flag}]$

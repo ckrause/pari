@@ -8,8 +8,8 @@ Doc: Given an element \var{x} in \var{al} (Hamilton quaternions if omitted),
  returns the image of \var{x} under a homomorphism to a matrix algebra. If
  \var{al} is a table algebra output by \kbd{algtableinit} or if~$abs=1$, returns
  the left multiplication table on the integral basis; if \var{al} is a central
- simple algebra and~$abs=0$, returns~$\phi(x)$ where~$\phi : A\otimes_K L \to
- M_d(L)$ (where $d$ is the degree of the algebra and $L$ is an extension of $L$
+ simple algebra and~$abs=0$, returns~$\phi(x)$ where~$\phi : A\otimes_{K} L \to
+ M_{d}(L)$ (where $d$ is the degree of the algebra and $L$ is an extension of $L$
  with~$[L:K]=d$) is an isomorphism stored in~\var{al}. Also accepts a square
  matrix with coefficients in~\var{al}.
 

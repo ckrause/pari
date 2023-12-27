@@ -10,7 +10,7 @@ Description:
 Doc:
  bitwise \tet{and}
  \sidx{bitwise and}of two integers $x$ and $y$, that is the integer
- $$\sum_i (x_{i}~\kbd{and}~y_{i}) 2^{i}$$
+ $$\sum_{i} (x_{i}~\kbd{and}~y_{i}) 2^{i}$$
 
  Negative numbers behave $2$-adically, i.e.~the result is the $2$-adic limit
  of \kbd{bitand}$(x_{n},y_{n})$, where $x_{n}$ and $y_{n}$ are nonnegative

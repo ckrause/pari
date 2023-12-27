@@ -14,7 +14,7 @@ Description:
  (gen, var):gen        lift0($1, $2)
 Doc:
  if $v$ is omitted, lifts intmods from $\Z/n\Z$ in $\Z$,
- $p$-adics from $\Q_p$ to $\Q$ (as \tet{truncate}), and polmods to
+ $p$-adics from $\Q_{p}$ to $\Q$ (as \tet{truncate}), and polmods to
  polynomials. Otherwise, lifts only polmods whose modulus has main
  variable~$v$. \typ{FFELT} are not lifted, nor are List elements: you may
  convert the latter to vectors first, or use \kbd{apply(lift,L)}. More

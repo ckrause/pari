@@ -7,11 +7,10 @@ Help: algindex(al,{pl}): the index of the central simple algebra al. If pl is
  r1+r2, and in that case return the local index at the place pl instead.
 Doc: Returns the index of the central simple algebra~$A$ over~$K$ (as output by
  alginit), that is the degree~$e$ of the unique central division algebra~$D$
- over $K$ such that~$A$ is isomorphic to some matrix algebra~$M_k(D)$. If
+ over $K$ such that~$A$ is isomorphic to some matrix algebra~$M_{k}(D)$. If
  \var{pl} is set, it should be a prime ideal of~$K$ or an integer between~$1$
- and~$r_1+r_2$, and in that case return the local index at the place \var{pl}
- instead.
-
+ and~$r_{1}+r_{2}$, and in that case return the local index at the place
+ \var{pl} instead.
  \bprog
  ? nf = nfinit(y^2-5);
  ? A = alginit(nf, [-1,y]);

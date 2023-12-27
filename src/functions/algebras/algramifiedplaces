@@ -8,7 +8,7 @@ Help: algramifiedplaces(al): vector of the places of the center of al that
 Doc: Given a central simple algebra \var{al} output by \tet{alginit}, returns a
  \typ{VEC} containing the list of places of the center of \var{al} that are
  ramified in \var{al}. Each place is described as an integer between~$1$
- and~$r_1$ or as a prime ideal.
+ and~$r_{1}$ or as a prime ideal.
 
  \bprog
  ? nf = nfinit(y^2-5);

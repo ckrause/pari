@@ -6,7 +6,7 @@ Help: algtrace({al},x,{abs=0}): (reduced) trace of x.
 Doc: Given an element \var{x} in \var{al} (Hamilton quaternions if omitted),
  computes its trace. If \var{al} is a table algebra output by \tet{algtableinit}
  or if $abs=1$, returns the absolute trace of \var{x}, which is an element of
- $\F_p$, $\Q$ or~$\R$; if \var{al} is omitted or the output of \tet{alginit} and
+ $\F_{p}$, $\Q$ or~$\R$; if \var{al} is omitted or the output of \tet{alginit} and
  $abs=0$ (default), returns the reduced trace of \var{x}, which is an element of
  the center of \var{al}.
  \bprog

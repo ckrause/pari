@@ -11,10 +11,10 @@ Doc: \idx{Stirling number} of the first kind $s(n,k)$ ($\fl=1$, default) or
  number of permutations of $n$ symbols with exactly $k$ cycles; the latter is
  the number of ways of partitioning a set of $n$ elements into $k$ nonempty
  subsets. Note that if all $s(n,k)$ are needed, it is much faster to compute
- $$\sum_k s(n,k) x^{k} = x(x-1)\dots(x-n+1).$$
+ $$\sum_{k} s(n,k) x^{k} = x(x-1)\dots(x-n+1).$$
  Similarly, if a large number of $S(n,k)$ are needed for the same $k$,
  one should use
- $$\sum_n S(n,k) x^{n} = \dfrac{x^{k}}{(1-x)\dots(1-kx)}.$$
+ $$\sum_{n} S(n,k) x^{n} = \dfrac{x^{k}}{(1-x)\dots(1-kx)}.$$
  (Should be implemented using a divide and conquer product.) Here are
  simple variants for $n$ fixed:
  \bprog

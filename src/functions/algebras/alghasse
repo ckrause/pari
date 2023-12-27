@@ -5,7 +5,7 @@ Prototype: GDG
 Help: alghasse(al,{pl}): the hasse invariant of the central simple algebra al at
  the place pl.
 Doc: Given a central simple algebra \var{al} output by \tet{alginit} and a prime
- ideal or an integer between $1$ and $r_1+r_2$, returns a \typ{FRAC} $h$ : the
+ ideal or an integer between $1$ and $r_{1}+r_{2}$, returns a \typ{FRAC} $h$ : the
  local Hasse invariant of \var{al} at the place specified by \var{pl}.
  If \var{al} is an algebra over $\R$, returns the Hasse invariant of \var{al}
  \bprog

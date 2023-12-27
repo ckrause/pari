@@ -4,8 +4,8 @@ C-Name: alghassef
 Prototype: mG
 Help: alghassef(al): the hasse invariant of the central simple algebra al at finite places.
 Doc: Given a central simple algebra \var{al} output by \tet{alginit}, returns
- a \typ{VEC} $[\kbd{PR}, h_f]$ describing the local Hasse invariants at the
- finite places of the center: \kbd{PR} is a \typ{VEC} of primes and $h_f$ is a
+ a \typ{VEC} $[\kbd{PR}, h_{f}]$ describing the local Hasse invariants at the
+ finite places of the center: \kbd{PR} is a \typ{VEC} of primes and $h_{f}$ is a
  \typ{VECSMALL} of integers modulo the degree $d$ of \var{al}. The Hasse
  invariant of~\var{al} at the primes outside~\kbd{PR} is~$0$, but~\kbd{PR} can
  include primes at which the Hasse invariant is~$0$.

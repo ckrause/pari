@@ -3,9 +3,9 @@ Section: combinatorics
 C-Name: eulerfrac
 Prototype: L
 Help: eulerfrac(n): Euler number E_n, as a rational number.
-Doc: Euler number\sidx{Euler numbers} $E_n$,
- where $E_0=1$, $E_1=0$, $E_2=-1$, \dots, are integers such that
- $$ \dfrac{1}{\cosh t} = \sum_{n\geq 0} \dfrac{E_n}{n!} t^{n}. $$
+Doc: Euler number\sidx{Euler numbers} $E_{n}$,
+ where $E_{0}=1$, $E_{1}=0$, $E_{2}=-1$, \dots, are integers such that
+ $$ \dfrac{1}{\cosh t} = \sum_{n\geq 0} \dfrac{E_{n}}{n!} t^{n}. $$
  The argument $n$ should be a nonnegative integer.
  \bprog
  ? vector(10,i,eulerfrac(i))

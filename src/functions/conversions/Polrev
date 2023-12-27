@@ -10,7 +10,7 @@ Doc:
  transform the object $t$ into a polynomial
  with main variable $v$. If $t$ is a scalar, this gives a constant polynomial.
  If $t$ is a power series, the effect is identical to \kbd{truncate}, i.e.~it
- chops off the $O(X^k)$.
+ chops off the $O(X^{k})$.
 
  The main use of this function is when $t$ is a vector: it creates the
  polynomial whose coefficients are given by $t$, with $t[1]$ being the

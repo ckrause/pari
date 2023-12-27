@@ -8,7 +8,7 @@ Description:
  (vec):vec        liftint($1)
  (gen):gen        liftint($1)
 Doc: recursively lift all components of $x$ from $\Z/n\Z$ to $\Z$ and
- from $\Q_p$ to $\Q$ (as \tet{truncate}).
+ from $\Q_{p}$ to $\Q$ (as \tet{truncate}).
  \typ{FFELT} are not lifted, nor are List elements: you may
  convert the latter to vectors first, or use \kbd{apply(liftint,L)}. More
  generally, components for which such lifts are meaningless (e.g. character

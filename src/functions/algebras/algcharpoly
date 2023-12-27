@@ -8,7 +8,7 @@ Doc: Given an element $b$ in \var{al} (Hamilton quaternions if omitted), returns
  its characteristic polynomial as a polynomial in the variable $v$. If \var{al}
  is a table algebra output by \tet{algtableinit} or if $abs=1$, returns the
  absolute characteristic polynomial of \var{b}, which is an element of
- $\F_p[v]$, $\Q[v]$ or~$\R[v]$; if \var{al} is omitted or a central simple
+ $\F_{p}[v]$, $\Q[v]$ or~$\R[v]$; if \var{al} is omitted or a central simple
  algebra output by \tet{alginit} and $abs=0$, returns the reduced characteristic
  polynomial of \var{b}, which is an element of~$K[v]$ where~$K$ is the center of
  \var{al}.
