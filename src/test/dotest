@@ -1,6 +1,7 @@
 #!/bin/sh
 
 trap exit 2
+unset COLUMNS
 bitlen=$1; shift
 exe_suff=$1; shift
 testlist=$@
