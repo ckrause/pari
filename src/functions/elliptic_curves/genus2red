@@ -10,9 +10,9 @@ Help: genus2red(PQ,{p}): let PQ be a polynomial P, resp. a vector [P,Q] of
 Doc: Let $PQ$ be a polynomial $P$, resp. a vector $[P,Q]$ of polynomials, with
  rational coefficients.
  Determines the reduction at $p > 2$ of the (proper, smooth) genus~2
- curve $C/\Q$, defined by the hyperelliptic equation $y^2 = P(x)$, resp.
- $y^2 + Q(x)*y = P(x)$.
- (The special fiber $X_p$ of the minimal regular model $X$ of $C$ over $\Z$.)
+ curve $C/\Q$, defined by the hyperelliptic equation $y^{2} = P(x)$, resp.
+ $y^{2} + Q(x)*y = P(x)$.
+ (The special fiber $X_{p}$ of the minimal regular model $X$ of $C$ over $\Z$.)
 
  If $p$ is omitted, determines the reduction type for all (odd) prime
  divisors of the discriminant.
@@ -22,9 +22,10 @@ Doc: Let $PQ$ be a polynomial $P$, resp. a vector $[P,Q]$ of polynomials, with
  \url{http://www.math.u-bordeaux.fr/~liu/G2R/}.
 
  \misctitle{CAVEAT} The function interface may change: for the
- time being, it returns $[N,\var{FaN}, [Pm, Qm], V]$
+ time being, it returns $[N,\var{FaN}, [P_{m}, Q_{m}], V]$
  where $N$ is either the local conductor at $p$ or the
- global conductor, \var{FaN} is its factorization, $y^2 +Qm*y= Pm$ defines a
+ global conductor, \var{FaN} is its factorization, $y^{2} +Q_{m}\*y= P_{m}$
+ defines a
  minimal model over $\Z$ and $V$ describes the reduction type at the
  various considered~$p$. Unfortunately, the program is not complete for
  $p = 2$, and we may return the odd part of the conductor only: this is the

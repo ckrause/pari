@@ -15,8 +15,8 @@ Doc:
  If $pr$ is given, it must be a list of primes and
  the discriminant is then only garanteed minimal at the elements of $pr$.
  $C$ can be given either by a squarefree polynomial $P$ such that
- $C: y^2 = P(x)$ or by a vector $[P,Q]$ such that
- $C: y^2 + Q(x)\*y = P(x)$ and $Q^2+4\*P$ is squarefree.
+ $C: y^{2} = P(x)$ or by a vector $[P,Q]$ such that
+ $C: y^{2} + Q(x)\*y = P(x)$ and $Q^{2}+4\*P$ is squarefree.
  \bprog
  ? W = [x^6+216*x^3+324,0];
  ? D = hyperelldisc(W)

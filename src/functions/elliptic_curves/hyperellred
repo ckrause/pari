@@ -21,8 +21,8 @@ Doc:
    Y = (y + H(x)) / (c*x + d)^{g+1}.
  $$
  $C$ can be given either by a squarefree polynomial $P$ such that
- $C: y^2 = P(x)$ or by a vector $[P,Q]$ such that
- $C: y^2 + Q(x)\*y = P(x)$ and $Q^2+4\*P$ is squarefree.
+ $C: y^{2} = P(x)$ or by a vector $[P,Q]$ such that
+ $C: y^{2} + Q(x)\*y = P(x)$ and $Q^{2}+4\*P$ is squarefree.
  \bprog
  ? P = 1001*x^4 + 3704*x^3 + 5136*x^2 + 3163*x + 730;
  ? hyperellred(P, &m)
@@ -33,4 +33,5 @@ Doc:
 
 Variant:
  Also available is
- \fun{GEN}{ZX_hyperellred}{GEN P, GEN *M} where $C: y^2 = P(x)$ and *M is set to \kbd{[a,b;c,d]}
+ \fun{GEN}{ZX_hyperellred}{GEN P, GEN *M} where $C: y^{2} = P(x)$ and *M is
+ set to \kbd{[a,b;c,d]}

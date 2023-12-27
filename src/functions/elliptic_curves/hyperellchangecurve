@@ -20,5 +20,5 @@ Doc:
  $$
 
  $C$ can be given either by a squarefree polynomial $P$ such that
- $C: y^2 = P(x)$ or by a vector $[P,Q]$ such that
- $C: y^2 + Q(x)\*y = P(x)$ and $Q^2+4\*P$ is squarefree.
+ $C: y^{2} = P(x)$ or by a vector $[P,Q]$ such that
+ $C: y^{2} + Q(x)\*y = P(x)$ and $Q^{2}+4\*P$ is squarefree.

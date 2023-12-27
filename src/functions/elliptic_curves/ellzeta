@@ -7,8 +7,8 @@ Help: ellzeta(w,{z='x}): computes the value at z of the Weierstrass Zeta
 Doc: Computes the value at $z$ of the Weierstrass $\zeta$ function attached to
  the lattice $w$ as given by \tet{ellperiods}$(,1)$: including quasi-periods
  is useful, otherwise there are recomputed from scratch for each new $z$.
- $$ \zeta(z, L) = \dfrac{1}{z} + z^2\sum_{\omega\in L^*}
- \dfrac{1}{\omega^2(z-\omega)}.$$
+ $$ \zeta(z, L) = \dfrac{1}{z} + z^{2}\sum_{\omega\in L^{*}}
+ \dfrac{1}{\omega^{2}(z-\omega)}.$$
  It is also possible to directly input $w = [\omega_{1},\omega_{2}]$,
  or an elliptic curve $E$ as given by \kbd{ellinit} ($w = \kbd{E.omega}$).
  The quasi-periods of $\zeta$, such that

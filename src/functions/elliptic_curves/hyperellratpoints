@@ -14,8 +14,8 @@ Doc: $X$ being a nonsingular hyperelliptic curve given by an rational model,
  height less than $h$.a  If $\fl=1$, stop as soon as a point is found; return
  either an empty vector or a vector containing a single point.
 
- $X$ is given either by a squarefree polynomial $P$ such that $X: y^2=P(x)$
- or by a vector $[P,Q]$ such that $X: y^2+Q(x)\*y=P(x)$ and $Q^2+4\*P$ is
+ $X$ is given either by a squarefree polynomial $P$ such that $X: y^{2}=P(x)$
+ or by a vector $[P,Q]$ such that $X: y^{2}+Q(x)\*y=P(x)$ and $Q^{2}+4\*P$ is
  squarefree.
 
  \noindent The parameter $h$ can be
@@ -26,5 +26,5 @@ Doc: $X$ being a nonsingular hyperelliptic curve given by an rational model,
  \item a vector $[N,D]$ with $D\leq N$: find the points $[n/d,y]$ with
  $|n| \leq N$, $d \leq D$.
 
- \item a vector $[N,[D_1,D_2]]$ with $D_1<D_2\leq N$  find the points
- $[n/d,y]$ with $|n| \leq N$ and $D_1 \leq d \leq D_2$.
+ \item a vector $[N,[D_{1},D_{2}]]$ with $D_{1}<D_{2}\leq N$  find the points
+ $[n/d,y]$ with $|n| \leq N$ and $D_{1} \leq d \leq D_{2}$.
