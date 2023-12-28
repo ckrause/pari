@@ -22,6 +22,6 @@ Doc: replace the ``variable'' $y$ by the argument $z$ in the ``polynomial''
  %3 = (-4*y - 6)*x + (y^2 + 3*y - 3)
  @eprog
 Variant: Further, \fun{GEN}{gdeflate}{GEN T, long v, long d} attempts to
- write $T(x)$ in the form $t(x^d)$, where $x=$\kbd{pol\_x}$(v)$, and returns
+ write $T(x)$ in the form $t(x^{d})$, where $x=$\kbd{pol\_x}$(v)$, and returns
  \kbd{NULL} if the substitution fails (for instance in the example \kbd{\%2}
  above).

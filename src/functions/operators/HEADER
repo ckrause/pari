@@ -211,7 +211,7 @@ Doc:
  \subseckbd{\pow} The expression $x\hbox{\kbd{\pow}}n$ is \idx{powering}.
 
  \item If the exponent $n$ is an integer, then exact operations are performed
- using binary (left-shift) powering techniques. By definition, $x^0$ is
+ using binary (left-shift) powering techniques. By definition, $x^{0}$ is
  (an empty product interpreted as) an exact $1$ in the underlying prime
  ring:
  \bprog
@@ -226,14 +226,14 @@ Doc:
  ? Mod(x,x^2)^0
  %5 = Mod(1, x^2)
  @eprog\noindent
- If $x$ is a $p$-adic number, its precision will increase if $v_p(n) > 0$ and
+ If $x$ is a $p$-adic number, its precision will increase if $v_{p}(n) > 0$ and
  $n \neq 0$. Powering a binary quadratic form (type \typ{QFB}) returns a
  representative of the class, which is reduced if the input was.
  (In particular, \kbd{x \pow 1} returns $x$ itself, whether it is reduced or
  not.)
 
  PARI rewrites the multiplication $x * x$ of two \emph{identical}
- objects as $x^2$. Here, identical means the operands are reference the same
+ objects as $x^{2}$. Here, identical means the operands are reference the same
  chunk of memory; no equality test is performed. This is no longer true when
  more than two arguments are involved.
  \bprog
@@ -261,7 +261,7 @@ Doc:
  @eprog\noindent Note that even though $-1$ is an exact cube root of $-1$,
  it is not $\exp(\log(-1)/3)$; the latter is returned.
 
- Otherwise return a solution $y$ of $y^q = x^p$ if it exists; beware that
+ Otherwise return a solution $y$ of $y^{q} = x^{p}$ if it exists; beware that
  this is defined up to $q$-th roots of 1 in the base field. Intmods modulo
  composite numbers are not supported.
  \bprog
@@ -352,7 +352,7 @@ Doc:
  first computed to $38$ decimal digits, then multiplied by $s$, which has a
  huge imaginary part amplifying the error.
 
- In this case, $x \mapsto x^n$ is treated as a transcendental function and
+ In this case, $x \mapsto x^{n}$ is treated as a transcendental function and
  and in particular acts
  componentwise on vector or matrices, even square matrices ! (See
  \secref{se:trans}.) If $x$ is $0$ and $n$ is an inexact $0$, this will raise
