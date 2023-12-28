@@ -19,7 +19,7 @@ Doc: Naive summation of expression \var{expr}, the formal parameter $X$
  correct bits but the \tet{sumalt} function should be used instead since its
  complexity is polynomial in $b$, instead of exponential. More generally,
  \kbd{sumpos} should be used if the terms have a constant sign and
- \kbd{sumnum} if the function is $C^\infty$.
+ \kbd{sumnum} if the function is $C^{\infty}$.
 
  \bprog
  ? \pb25

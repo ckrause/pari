@@ -10,31 +10,31 @@ Description:
   (gen,gen,?0):gen:prec sumalt(${2 cookie}, ${2 wrapper}, $1, $prec)
   (gen,gen,1):gen:prec sumalt2(${2 cookie}, ${2 wrapper}, $1, $prec)
 Doc: numerical summation of the series \var{expr}, which should be an
- \idx{alternating series} $(-1)^k a_k$, the formal variable $X$ starting at
+ \idx{alternating series} $(-1)^{k} a_{k}$, the formal variable $X$ starting at
  $a$. Use an algorithm of Cohen, Villegas and Zagier (\emph{Experiment. Math.}
  {\bf 9} (2000), no.~1, 3--12).
 
- If $\fl=0$, assuming that the $a_k$ are the moments of a positive
+ If $\fl=0$, assuming that the $a_{k}$ are the moments of a positive
  measure on $[0,1]$, the relative error is $O(3+\sqrt8)^{-n}$ after using
- $a_k$ for $k\leq n$. If \kbd{realprecision} is $p$, we thus set
+ $a_{k}$ for $k\leq n$. If \kbd{realprecision} is $p$, we thus set
  $n = \log(10)p/\log(3+\sqrt8)\approx 1.3 p$; besides the time needed to
- compute the $a_k$, $k\leq n$, the algorithm overhead is negligible: time
- $O(p^2)$ and space $O(p)$.
+ compute the $a_{k}$, $k\leq n$, the algorithm overhead is negligible: time
+ $O(p^{2})$ and space $O(p)$.
 
  If $\fl=1$, use a variant with more complicated polynomials, see
- \tet{polzagier}. If the $a_k$ are the moments of $w(x)dx$ where $w$
- (or only $xw(x^2)$) is a smooth function extending analytically to the whole
- complex plane, convergence is in $O(14.4^{-n})$. If $xw(x^2)$ extends
+ \tet{polzagier}. If the $a_{k}$ are the moments of $w(x)dx$ where $w$
+ (or only $xw(x^{2})$) is a smooth function extending analytically to the whole
+ complex plane, convergence is in $O(14.4^{-n})$. If $xw(x^{2})$ extends
  analytically to a smaller region, we still have exponential convergence,
- with worse constants. Usually faster when the computation of $a_k$ is
+ with worse constants. Usually faster when the computation of $a_{k}$ is
  expensive. If \kbd{realprecision} is $p$, we thus set
  $n = \log(10)p/\log(14.4)\approx 0.86 p$; besides the time needed to
- compute the $a_k$, $k\leq n$, the algorithm overhead is \emph{not}
- negligible: time $O(p^3)$ and space $O(p^2)$. Thus, even if the analytic
+ compute the $a_{k}$, $k\leq n$, the algorithm overhead is \emph{not}
+ negligible: time $O(p^{3})$ and space $O(p^{2})$. Thus, even if the analytic
  conditions for rigorous use are met, this variant is only worthwile if the
- $a_k$ are hard to compute, at least $O(p^2)$ individually on average:
+ $a_{k}$ are hard to compute, at least $O(p^{2})$ individually on average:
  otherwise we gain a small constant factor (1.5, say) in the number of
- needed $a_k$ at the expense of a large overhead.
+ needed $a_{k}$ at the expense of a large overhead.
 
  The conditions for rigorous use are hard to check but the routine is best used
  heuristically: even divergent alternating series can sometimes be summed by

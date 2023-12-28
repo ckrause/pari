@@ -11,7 +11,7 @@ Doc: numerical integration from $a$ to $\infty$ of oscillating
  quasi-periodic function \var{expr} of half-period $H$, meaning that we
  at least expect the distance between the function's consecutive zeros to be
  close to $H$: the sine or cosine functions ($H = \pi$) are paradigmatic
- examples, but the Bessel $J_\nu$ or $Y_\nu$ functions ($H = \pi/2$) can
+ examples, but the Bessel $J_{\nu}$ or $Y_{\nu}$ functions ($H = \pi/2$) can
  also be handled. The integral from $a$ to $\infty$ is computed
  by summing the integral between two consecutive multiples of $H$;
  \fl determines the summation algorithm used: either $0$ (Sidi extrapolation,

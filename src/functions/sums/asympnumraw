@@ -7,8 +7,8 @@ Help: asympnumraw(expr,N,{alpha = 1}): N+1 first terms of asymptotic expansion
 Doc: Return the $N+1$ first terms of asymptotic expansion of \var{expr},
  corresponding to a sequence $u(n)$, as floating point numbers. Assume
  that the expansion has the shape
- $$u(n) \approx \sum_{i \geq 0} a_i n^{-i\alpha}$$
- and return approximation of $[a_0, a_1,\dots, a_N]$.
+ $$u(n) \approx \sum_{i \geq 0} a_{i} n^{-i\alpha}$$
+ and return approximation of $[a_{0}, a_{1},\dots, a_{N}]$.
  The algorithm is heuristic and performs repeated calls to limitnum, with
  \kbd{alpha} as in \kbd{limitnum}. As in \kbd{limitnum}, $u(n)$ may be
  given either by a closure $n\mapsto u(n)$ or as a closure $N\mapsto

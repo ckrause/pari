@@ -10,7 +10,7 @@ Doc: initialize tables for $n$-point Gauss-Legendre integration of
  \kbd{realbitprecision}, suitable for analytic functions on $[-1,1]$.
  The error is bounded by
  $$
-    \dfrac{(b-a)^{2n+1} (n!)^4}{(2n+1)!(2n)!} \dfrac{f^{(2n)}}{(2n)!} (\xi) ,
+    \dfrac{(b-a)^{2n+1} (n!)^{4}}{(2n+1)!(2n)!} \dfrac{f^{(2n)}}{(2n)!} (\xi) ,
     \qquad a < \xi < b.
  $$
  If $r$ denotes the distance of the nearest pole to the interval $[a,b]$,
@@ -22,10 +22,10 @@ Doc: initialize tables for $n$-point Gauss-Legendre integration of
  increased as well.
 
  Specifically, the function returns a pair of vectors $[x,w]$, where $x$
- contains the nonnegative roots of the $n$-th Legendre polynomial $P_n$ and
+ contains the nonnegative roots of the $n$-th Legendre polynomial $P_{n}$ and
  $w$ the corresponding Gaussian integration weights
- $Q_n(x_j)/P'_n(x_j) = 2 / ((1-x_j^2)P'_n(x_j))^2$  such that
- $$ \int_{-1}^{1} f(t)\, dt \approx w_j f(x_j)\;. $$
+ $Q_{n}(x_{j})/P'_{n}(x_{j}) = 2 / ((1-x_{j}^{2})P'_{n}(x_{j}))^{2}$  such that
+ $$ \int_{-1}^{1} f(t)\, dt \approx \sum_{j} w_{j} f(x_{j})\;. $$
 
  \bprog
  ? T = intnumgaussinit();

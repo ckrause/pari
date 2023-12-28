@@ -7,8 +7,8 @@ Help: asympnum(expr,{alpha = 1}): asymptotic expansion of expr
  as in limitnum.
 Doc: Asymptotic expansion of \var{expr}, corresponding to a sequence $u(n)$,
  assuming it has the shape
- $$u(n) \approx \sum_{i \geq 0} a_i n^{-i\alpha}$$
- with rational coefficients $a_i$ with reasonable height; the algorithm
+ $$u(n) \approx \sum_{i \geq 0} a_{i} n^{-i\alpha}$$
+ with rational coefficients $a_{i}$ with reasonable height; the algorithm
  is heuristic and performs repeated calls to limitnum, with
  \kbd{alpha} as in \kbd{limitnum}. As in \kbd{limitnum}, $u(n)$ may be
  given either by a closure $n\mapsto u(n)$ or as a closure $N\mapsto
@@ -29,7 +29,7 @@ Doc: Asymptotic expansion of \var{expr}, corresponding to a sequence $u(n)$,
  ? l = limitnum(f)
  ? asympnum(n->f(n) / l) \\ failure again !!!
  %6 = []
- @eprog\noindent We treat again the example of the Motzkin numbers $M_n$ given
+ @eprog\noindent We treat again the example of the Motzkin numbers $M_{n}$ given
  in \kbd{limitnum}:
  \bprog
  \\ [M_k, M_{k*2}, ..., M_{k*N}] / (3^n / n^(3/2))

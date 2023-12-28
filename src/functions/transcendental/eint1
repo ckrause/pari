@@ -4,7 +4,7 @@ C-Name: veceint1
 Prototype: GDGp
 Help: eint1(x,{n}): exponential integral E1(x). If n is present and x > 0,
  computes the vector of the first n values of the exponential integral E1(n x).
-Doc: exponential integral $\int_x^\infty \dfrac{e^{-t}}{t}\,dt =
+Doc: exponential integral $\int_{x}^{\infty} \dfrac{e^{-t}}{t}\,dt =
  \kbd{incgam}(0, x)$, where the latter expression extends the function
  definition from real $x > 0$ to all complex $x \neq 0$.
 

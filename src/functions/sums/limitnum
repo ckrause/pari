@@ -5,12 +5,12 @@ Prototype: GDGp
 Help: limitnum(expr,{alpha=1}): numerical limit of sequence expr
  using Lagrange-Zagier extrapolation; assume u(n) ~ sum a_i n^(-alpha*i).
 Doc: Lagrange-Zagier numerical extrapolation of \var{expr}, corresponding to
- a sequence $u_n$, either given by a closure \kbd{n->u(n)}. I.e., assuming
- that $u_n$ tends to a finite limit $\ell$, try to determine $\ell$.
+ a sequence $u_{n}$, either given by a closure \kbd{n->u(n)}. I.e., assuming
+ that $u_{n}$ tends to a finite limit $\ell$, try to determine $\ell$.
 
- The routine assume that $u_n$ has an asymptotic expansion in $n^{-\alpha}$ :
- $$u_n = \ell + \sum_{i\geq 1} a_i n^{-i\alpha}$$
- for some $a_i$. It is purely numerical and heuristic, thus may or may not
+ The routine assume that $u_{n}$ has an asymptotic expansion in $n^{-\alpha}$ :
+ $$u_{n} = \ell + \sum_{i\geq 1} a_{i} n^{-i\alpha}$$
+ for some $a_{i}$. It is purely numerical and heuristic, thus may or may not
  work on your examples. The expression will be evaluated for $n = 1, 2,
  \dots, N$ for an $N = O(B)$ at a bit accuracy bounded by $1.612 B$.
 
@@ -24,7 +24,7 @@ Doc: Lagrange-Zagier numerical extrapolation of \var{expr}, corresponding to
  ? limitnum(n -> 2^(4*n+1)*(n!)^4 / (2*n)! /(2*n+1)! ) - Pi
  %3 = 0.E -37
  @eprog\noindent
- It is not mandatory to specify $\alpha$ when the $u_n$ have an asymptotic
+ It is not mandatory to specify $\alpha$ when the $u_{n}$ have an asymptotic
  expansion in $n^{-1}$. However, if the series in $n^{-1}$ is lacunary,
  specifying $\alpha$ allows faster computation:
  \bprog
@@ -36,7 +36,7 @@ Doc: Lagrange-Zagier numerical extrapolation of \var{expr}, corresponding to
  time = 27,271 ms.
  %5 = 0.E-1001 \\ still perfect, 4 times faster
  @eprog\noindent
- When $u_n$ has an asymptotic expansion in $n^{-\alpha}$ with $\alpha$ not an
+ When $u_{n}$ has an asymptotic expansion in $n^{-\alpha}$ with $\alpha$ not an
  integer, leaving $\alpha$ unspecified will bring an inexact limit. Giving a
  satisfying optional argument improves precision; the program runs faster when
  the optional argument gives non lacunary series.
@@ -52,7 +52,8 @@ Doc: Lagrange-Zagier numerical extrapolation of \var{expr}, corresponding to
  time = 105 ms.
  %8 = 0.E-57
  @eprog\noindent
- Alternatively, $u_n$ may be given by a closure $N\mapsto [u_1,\dots, u_N]$
+ Alternatively, $u_{n}$ may be given by a closure
+ $N\mapsto [u_{1},\dots, u_{N}]$
  which can often be programmed in a more efficient way, for instance
  when $u_{n+1}$ is a simple function of the preceding terms:
  \bprog
@@ -69,7 +70,7 @@ Doc: Lagrange-Zagier numerical extrapolation of \var{expr}, corresponding to
  time = 106 ms.
  %11 = 0.E-2003
  @eprog\noindent All sums and recursions can be handled in the same way.
- In the above it is essential that $u_n$ be defined as a closure because
+ In the above it is essential that $u_{n}$ be defined as a closure because
  it must be evaluated at a higher precision than the one expected for the
  limit. Make sure that the closure does not depend on a global variable which
  would be computed at a priori fixed accuracy. For instance, precomputing
@@ -77,7 +78,7 @@ Doc: Lagrange-Zagier numerical extrapolation of \var{expr}, corresponding to
  because the resulting vector of values will use the accuracy of \kbd{v1}
  instead of the ambient accuracy at which \kbd{limitnum} will call it.
 
- Alternatively, and more clumsily, $u_n$ may be given by a vector of values:
+ Alternatively, and more clumsily, $u_{n}$ may be given by a vector of values:
  it must be long and precise enough for the extrapolation
  to make sense. Let $B$ be the current \kbd{realbitprecision}, the vector
  length must be at least $1.102 B$ and the values computed with bit accuracy
@@ -104,7 +105,7 @@ Doc: Lagrange-Zagier numerical extrapolation of \var{expr}, corresponding to
  @eprog
 
  Because of the above problems, the preferred format is thus a closure,
- given either a single value or the vector of values $[u_1,\dots,u_N]$. The
+ given either a single value or the vector of values $[u_{1},\dots,u_{N}]$. The
  function distinguishes between the two formats by evaluating the closure
  at $N\neq 1$ and $1$ and checking whether it yields vectors of respective
  length $N$ and $1$ or not.
@@ -125,13 +126,13 @@ Doc: Lagrange-Zagier numerical extrapolation of \var{expr}, corresponding to
 
  We conclude with a complicated example. Since the function is heuristic,
  it is advisable to check whether it produces the same limit for
- $u_n, u_{2n}, \dots u_{km}$ for a suitable small multiplier $k$.
+ $u_{n}, u_{2n}, \dots u_{km}$ for a suitable small multiplier $k$.
  The following function implements the recursion for the Motzkin numbers
- $M_n$ which count the number of ways to draw non intersecting chords between
+ $M_{n}$ which count the number of ways to draw non intersecting chords between
  $n$ points on a circle:
- $$ M_n = M_{n-1} + \sum_{i < n-1} M_i M_{n-2-i}
-        = ((n+1)M_{n-1}+(3n-3)M_{n-2}) / (n+2).$$
- It is known that $M_n \sim \dfrac{3^{n+1}}{\sqrt{12\pi n^3}}$.
+ $$ M_{n} = M_{n-1} + \sum_{i < n-1} M_{i} M_{n-2-i}
+          = ((n+1)M_{n-1}+(3n-3)M_{n-2}) / (n+2).$$
+ It is known that $M_{n} \sim \dfrac{3^{n+1}}{\sqrt{12\pi n^{3}}}$.
  \bprog
  \\ [M_k, M_{k*2}, ..., M_{k*N}] / (3^n / n^(3/2))
  vM(N, k = 1) =

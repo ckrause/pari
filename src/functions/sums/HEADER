@@ -62,31 +62,31 @@ Doc:
  \kbd{intnumosc} for the remainder.
 
  For maximal efficiency, abscissas and integration
- weights can be precomputed, respectively using \tet{intnuminit} ($O(b^2)$)
- or \tet{intnumgaussinit} ($O(b^3)$).
+ weights can be precomputed, respectively using \tet{intnuminit} ($O(b^{2})$)
+ or \tet{intnumgaussinit} ($O(b^{3})$).
 
  \misctitle{Numerical summation}\sidx{numerical summation}
 
  Many numerical summation methods are available to approximate
- $\sum_{n\geq n_0} f(n)$ at accuracy $2^{-b}$: the overall best choice should
+ $\sum_{n\geq n_{0}} f(n)$ at accuracy $2^{-b}$: the overall best choice should
  be \tet{sumnum}, which uses Euler-MacLaurin (and $O(b\log b)$ function
- evaluations); initialization time (\tet{sumnuminit}) is $O(b^3)$.
+ evaluations); initialization time (\tet{sumnuminit}) is $O(b^{3})$.
  Also available are
 
  \item Abel-Plana summation (\tet{sumnumap}),
- also $O(b\log b)$ function evaluations and $O(b^3)$ initialization
+ also $O(b\log b)$ function evaluations and $O(b^{3})$ initialization
  (\tet{sumnumapinit}) with a larger implied constant;
 
  \item Lagrange summation (\tet{sumnumlagrange}) uses $O(b)$ evaluations
  but more brittle and the asymptotic behaviour of $f$ must be correctly
- indicated. Initialization (\tet{sumnumlagrangeinit}) can vary from $O(b^2)$
- to $O(b^3)$ depending on the asymptotic behaviour.
+ indicated. Initialization (\tet{sumnumlagrangeinit}) can vary from $O(b^{2})$
+ to $O(b^{3})$ depending on the asymptotic behaviour.
 
  \item Sidi summation (\tet{sumnumsidi}) uses $O(b)$ evaluations and should
  be more robust than Lagrange summation. No initialization is needed.
 
  \item Monien summation (\tet{sumnummonien}) uses $O(b/\log b)$ evaluations
- but is even more brittle than Lagrange and also has a $O(b^3)$ initialization
+ but is even more brittle than Lagrange and also has a $O(b^{3})$ initialization
  (\kbd{summonieninit}).
 
  \item To sum rational functions, use \tet{sumnumrat}.

@@ -10,7 +10,7 @@ Doc: product of expression
  is to force the type of the operations being performed. For example if it is
  set equal to the integer 1, operations will start being done exactly. If it
  is set equal to the real $1.$, they will be done using real numbers having
- the default precision. If it is set equal to the power series $1+O(X^k)$ for
+ the default precision. If it is set equal to the power series $1+O(X^{k})$ for
  a certain $k$, they will be done using power series of precision at most $k$.
  These are the three most common initializations.
 

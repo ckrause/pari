@@ -41,17 +41,17 @@ Doc: numerical integration
  We shall see in a moment how to avoid that last problem, after describing
  the last \emph{optional} argument \var{tab}.
 
- \misctitle{The \var{tab} argument} The routine uses weights $w_i$, which are
+ \misctitle{The \var{tab} argument} The routine uses weights $w_{i}$, which are
  mostly independent of the function
- being integrated, evaluated at many sampling points $x_i$ and
- approximates the integral by $\sum w_i f(x_i)$. If \var{tab} is
+ being integrated, evaluated at many sampling points $x_{i}$ and
+ approximates the integral by $\sum w_{i} f(x_{i})$. If \var{tab} is
 
  \item a nonnegative integer $m$, we multiply the number of sampling points
- by $2^m$, hopefully increasing accuracy. Note that the running time
- increases roughly by a factor $2^m$. One may try consecutive values of $m$
+ by $2^{m}$, hopefully increasing accuracy. Note that the running time
+ increases roughly by a factor $2^{m}$. One may try consecutive values of $m$
  until they give the same value up to an accepted error.
 
- \item a set of integration tables containing precomputed $x_i$ and $w_i$
+ \item a set of integration tables containing precomputed $x_{i}$ and $w_{i}$
  as output by \tet{intnuminit}. This is useful if several integrations of
  the same type are performed (on the same kind of interval and functions,
  for a given accuracy): we skip a precomputation of $O(D\log D)$
@@ -183,7 +183,7 @@ Doc: numerical integration
  ? bestappr( intnum(t=0,X + O(X^17), exp(t)) )- exp(X) + 1
  %5 = O(X^17)
  @eprog\noindent The valuation of the limit cannot be negative
- since $\int_0^{1/X}(1+t^2)^{-1}\, dt = \pi/2 - \kbd{sign}(X)+O(X^2)$.
+ since $\int_{0}^{1/X}(1+t^{2})^{-1}\, dt = \pi/2 - \kbd{sign}(X)+O(X^{2})$.
 
  Polynomials and rational functions are also allowed and
  converted to power series using current \kbd{seriesprecision}:
@@ -219,7 +219,7 @@ Doc: numerical integration
 
  \misctitle{Apparent singularities} In many cases, apparent singularities
  can be ignored. For instance, if $f(x) = 1
- /(\exp(x)-1) - \exp(-x)/x$, then $\int_0^\infty f(x)\,dx=\gamma$, Euler's
+ /(\exp(x)-1) - \exp(-x)/x$, then $\int_{0}^{\infty} f(x)\,dx=\gamma$, Euler's
  constant \kbd{Euler}. But
 
  \bprog
@@ -280,8 +280,8 @@ Doc: numerical integration
  We may use the above linearization and compute two oscillating integrals with
  endpoints \kbd{[oo, -I]} and \kbd{[oo, -3*I]} respectively, or
  notice the obvious change of variable, and reduce to the single integral
- ${1\over 2}\int_0^\infty \sin(x)/x\,dx$. We finish with some more complicated
- examples:
+ ${1\over 2}\int_{0}^{\infty} \sin(x)/x\,dx$. We finish with some more
+ complicated examples:
 
  \bprog
  ? intnum(x = 0, [oo,-I], (1-cos(x))/x^2) - Pi/2
@@ -308,7 +308,7 @@ Doc: numerical integration
  %1 = -2.0000000000...
  @eprog\noindent
  Note the formula
- $$ \int_0^\infty \sin(x)/x^s\,dx = \cos(\pi s/2) \Gamma(1-s)\;, $$
+ $$ \int_{0}^{\infty} \sin(x)x^{-s}\,dx = \cos(\pi s/2) \Gamma(1-s)\;, $$
  a priori valid only for $0 < \Re(s) < 2$, but the right hand side provides an
  analytic continuation which may be evaluated at $s = -2$\dots
 
@@ -318,8 +318,8 @@ Doc: numerical integration
  important to use a suitable \kbd{intnuminit} to precompute data for the
  \emph{internal} integrations at least!
 
- For example, to compute the double integral on the unit disc $x^2+y^2\le1$
- of the function $x^2+y^2$, we can write
+ For example, to compute the double integral on the unit disc $x^{2}+y^{2}\le1$
+ of the function $x^{2}+y^{2}$, we can write
  \bprog
  ? tab = intnuminit(-1,1);
  ? intnum(x=-1,1, intnum(y=-sqrt(1-x^2),sqrt(1-x^2), x^2+y^2, tab),tab) - Pi/2

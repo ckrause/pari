@@ -11,7 +11,7 @@ Description:
   (gen,gen,?gen):gen:prec sumnum(${2 cookie}, ${2 wrapper}, $1, $3, $prec)
 Doc: Numerical summation of $f(n)$ at high accuracy using Euler-MacLaurin,
  the variable $n$ taking values from $a$ to $+\infty$, where $f$ is assumed to
- have positive values and is a $C^\infty$ function; \kbd{a} must be an integer
+ have positive values and is a $C^{\infty}$ function; \kbd{a} must be an integer
  and \kbd{tab}, if given, is the output of \kbd{sumnuminit}. The latter
  precomputes abscissas and weights, speeding up the computation; it also allows
  to specify the behavior at infinity via \kbd{sumnuminit([+oo, asymp])}.
@@ -150,7 +150,7 @@ Doc: Numerical summation of $f(n)$ at high accuracy using Euler-MacLaurin,
  @eprog\noindent As \kbd{sumnum(n=1, print(n))} shows, we evaluate $f(n)$ for
  $n > 1e233$ and our implementation of $f$ suffers from massive cancellation
  since we are summing two terms of the order of $O(1)$ for a result in
- $O(1/n^2)$. You can either rewrite your sum so that individual terms are
+ $O(1/n^{2})$. You can either rewrite your sum so that individual terms are
  evaluated without cancellation or locally replace $f(n)$ by an accurate
  asymptotic expansion:
  \bprog
