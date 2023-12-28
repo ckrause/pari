@@ -14,7 +14,7 @@ Doc: This function is \emph{deprecated}, use \tet{polredbest} instead.
 
  All $T$ accepted by \tet{nfinit} are also allowed here;
  in particular, the format \kbd{[T, listP]} is recommended, e.g. with
- $\kbd{listP} = 10^5$ or a vector containing all ramified primes. Otherwise,
+ $\kbd{listP} = 10^{5}$ or a vector containing all ramified primes. Otherwise,
  the maximal order of $\Q[x]/(T)$ must be computed.
 
  The following binary digits of $\fl$ are significant:

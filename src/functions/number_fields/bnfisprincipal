@@ -13,13 +13,13 @@ Doc: $\var{bnf}$ being the \sidx{principal ideal}
  number field data output by \kbd{bnfinit}, and $x$ being an ideal, this
  function tests whether the ideal is principal or not. The result is more
  complete than a simple true/false answer and solves a general discrete
- logarithm problem. Assume the class group is $\oplus (\Z/d_i\Z)g_i$
- (where the generators $g_i$ and their orders $d_i$ are respectively given by
- \kbd{bnf.gen} and \kbd{bnf.cyc}). The routine returns a row vector $[e,t]$,
- where $e$ is a vector of exponents $0 \leq e_i < d_i$, and $t$ is a number
- field element such that
- $$ x = (t) \prod_i  g_i^{e_i}.$$
- For \emph{given} $g_i$ (i.e. for a given \kbd{bnf}), the $e_i$ are unique,
+ logarithm problem. Assume the class group is $\oplus (\Z/d_{i}\Z)g_{i}$
+ (where the generators $g_{i}$ and their orders $d_{i}$ are respectively
+ given by \kbd{bnf.gen} and \kbd{bnf.cyc}). The routine returns a row vector
+ $[e,t]$, where $e$ is a vector of exponents $0 \leq e_{i} < d_{i}$, and $t$
+ is a number field element such that
+ $$ x = (t) \prod_{i}  g_{i}^{e_{i}}.$$
+ For \emph{given} $g_{i}$ (i.e. for a given \kbd{bnf}), the $e_{i}$ are unique,
  and $t$ is unique modulo units.
 
  In particular, $x$ is principal if and only if $e$ is the zero vector. Note
@@ -63,11 +63,11 @@ Doc: $\var{bnf}$ being the \sidx{principal ideal}
  \item $4$: Return $t$ in factored form (compact representation),
  as a small product of $S$-units for a small set of finite places $S$,
  possibly with huge exponents. This kind of result can be cheaply mapped to
- $K^*/(K^*)^\ell$ or to $\C$ or $\Q_p$ to bounded accuracy and this is usually
- enough for applications. Explicitly expanding such a compact representation
- is possible using \kbd{nffactorback} but may be \emph{very} costly.
- The algorithm is guaranteed to succeed if the \kbd{bnf} was computed using
- \kbd{bnfinit(,1)}. If not, the algorithm may fail to compute a huge
+ $K^{*}/(K^{*})^{\ell}$ or to $\C$ or $\Q_{p}$ to bounded accuracy and this
+ is usually enough for applications. Explicitly expanding such a compact
+ representation is possible using \kbd{nffactorback} but may be \emph{very}
+ costly. The algorithm is guaranteed to succeed if the \kbd{bnf} was computed
+ using \kbd{bnfinit(,1)}. If not, the algorithm may fail to compute a huge
  generator in this case (and replace it by \kbd{[]\til}). This is orders of
  magnitude faster than flag $2$ when the generators are indeed large.
 

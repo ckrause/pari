@@ -8,7 +8,7 @@ Doc: let $\var{rnf}$ be a relative
  number field extension $L/K$ as output by \kbd{rnfinit} and let $x$ be an
  ideal of the absolute extension $L/\Q$. Returns the relative pseudo-matrix in
  HNF giving the ideal $x$ considered as an ideal of the relative extension
- $L/K$, i.e.~as a $\Z_K$-module.
+ $L/K$, i.e.~as a $\Z_{K}$-module.
 
  Let \kbd{Labs} be an (absolute) \kbd{nf} structure attached to $L$,
  obtained via \kbd{Labs = nfinit(rnf))}. Then \kbd{rnf} ``knows'' about

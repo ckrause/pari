@@ -11,7 +11,7 @@ Help: nfgrunwaldwang(nf,Lpr,Ld,pl,{v='x}): a polynomial in the variable v
 Doc: Given \var{nf} a number field in \var{nf} or \var{bnf} format,
  a \typ{VEC} \var{Lpr} of primes of \var{nf} and a \typ{VEC} \var{Ld} of
  positive integers of the same length, a \typ{VECSMALL} \var{pl} of length
- $r_1$ the number of real places of \var{nf}, computes a polynomial with
+ $r_{1}$ the number of real places of \var{nf}, computes a polynomial with
  coefficients in \var{nf} defining a cyclic extension of \var{nf} of
  minimal degree satisfying certain local conditions:
 
@@ -31,7 +31,7 @@ Doc: Given \var{nf} a number field in \var{nf} or \var{bnf} format,
 
  \misctitle{Warning} If the number field \var{nf} does not contain the $n$-th
  roots of unity where $n$ is the degree of the extension to be computed,
- the function triggers the computation of the \var{bnf} of $nf(\zeta_n)$,
+ the function triggers the computation of the \var{bnf} of $nf(\zeta_{n})$,
  which may be costly.
 
  \bprog

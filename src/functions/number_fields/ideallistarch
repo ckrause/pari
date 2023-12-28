@@ -29,7 +29,7 @@ Doc:
  %6 = [[168, [42, 2, 2]], [144, [6, 6, 2, 2]], [168, [42, 2, 2]]]
  @eprog
  Of course, the results above are obvious: adding $t$ places at infinity will
- add $t$ copies of $\Z/2\Z$ to $(\Z_K/f)^*$. The following application
+ add $t$ copies of $\Z/2\Z$ to $(\Z_{K}/f)^{*}$. The following application
  is more typical:
  \bprog
  ? L = ideallist(bnf, 100, 2);        \\@com units are required now

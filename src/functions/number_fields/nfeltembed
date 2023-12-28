@@ -8,10 +8,10 @@ Doc: given an element $x$ in the number field \var{nf}, return
  the (real or) complex embeddings of $x$ specified by optional argument
  \var{pl}, at the current \kbd{realprecision}:
 
- \item \var{pl} omitted: return the vector of embeddings at all $r_1+r_2$
+ \item \var{pl} omitted: return the vector of embeddings at all $r_{1}+r_{2}$
  places;
 
- \item \var{pl} an integer between $1$ and $r_1+r_2$: return the
+ \item \var{pl} an integer between $1$ and $r_{1}+r_{2}$: return the
  $i$-th embedding of $x$, attached to the $i$-th root of \kbd{nf.pol},
  i.e. \kbd{nf.roots$[i]$};
 

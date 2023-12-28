@@ -12,7 +12,7 @@ Doc: \var{bnr} being as output by \kbd{bnrinit}, returns a relative equation
  for the class field corresponding to the congruence group defined by
  $(\var{bnr},\var{subgp})$ (the full ray class field if \var{subgp} is
  omitted). The subgroup can also be a \typ{INT}~$n$,
- meaning~$n \cdot \text{Cl}_f$. The function also handles a vector of
+ meaning~$n \cdot \text{Cl}_{f}$. The function also handles a vector of
  subgroup, e.g, from \tet{subgrouplist} and returns the vector of individual
  results in this case.
 
@@ -37,9 +37,9 @@ Doc: \var{bnr} being as output by \kbd{bnrinit}, returns a relative equation
        [x^2 + (-105*y - 105)]]
  ? #bnrclassfield(bnr,subgrouplist(bnr,[2],1)) \\ all quadratic extensions
  %7 = 15
- @eprog\noindent When the subgroup contains $n \text{Cl}_f$, where $n$ is fixed,
- it is advised to directly compute the \kbd{bnr} modulo $n$ to avoid expensive
- discrete logarithms:
+ @eprog\noindent When the subgroup contains $n \text{Cl}_{f}$, where $n$ is
+ fixed, it is advised to directly compute the \kbd{bnr} modulo $n$ to avoid
+ expensive discrete logarithms:
  \bprog
  ? bnf = bnfinit(y^2-5); p = 1594287814679644276013;
  ? bnr = bnrinit(bnf,p); \\ very slow

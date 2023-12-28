@@ -14,7 +14,7 @@ Doc: Let $K$ be the number field defined by \var{nf} and assume that $K/\Q$ is
 
  \item \kbd{g[1]} is the decomposition group of $\goth{P}$,
 
- \item \kbd{g[2]} is $G_0(\goth{P})$, the inertia group of $\goth{P}$,
+ \item \kbd{g[2]} is $G_{0}(\goth{P})$, the inertia group of $\goth{P}$,
 
  and for $i\geq 2$,
 

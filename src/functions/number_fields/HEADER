@@ -10,7 +10,8 @@ Doc:
 
  \subsec{Number field structures} %GPHELPskip
 
- Let $K = \Q[X] / (T)$ a number field, $\Z_K$ its ring of integers, $T\in\Z[X]$
+ Let $K = \Q[X] / (T)$ a number field, $\Z_{K}$ its ring of integers,
+ $T\in\Z[X]$
  is monic. Three basic number field structures can be attached to $K$ in
  GP:
 
@@ -28,7 +29,7 @@ Doc:
  \item $\tev{bnr}$ denotes a ``ray number field'', i.e.~a data structure
  output by \kbd{bnrinit}, corresponding to the ray class group structure of
  the field, for some modulus $f$. It contains a \var{bnf}, the modulus
- $f$, the ray class group $\Cl_f(K)$ and data attached to
+ $f$, the ray class group $\Cl_{f}(K)$ and data attached to
  the discrete logarithm problem therein.
 
  \subsec{Algebraic numbers and ideals} %GPHELPskip
@@ -85,25 +86,25 @@ Doc:
 
  A finite abelian group $G$ in user-readable format is given by its Smith
  Normal Form as a pair $[h,d]$ or triple $[h,d,g]$.
- Here $h$ is the cardinality of $G$, $(d_i)$ is the vector of elementary
- divisors, and $(g_i)$ is a vector of generators. In short,
- $G = \oplus_{i\leq n} (\Z/d_i\Z) g_i$, with $d_n \mid \dots \mid d_2 \mid d_1$
- and $\prod d_i = h$. This information can also be retrieved as
+ Here $h$ is the cardinality of $G$, $(d_{i})$ is the vector of elementary
+ divisors, and $(g_{i})$ is a vector of generators. In short,
+ $G = \oplus_{i\leq n} (\Z/d_{i}\Z) g_{i}$, with
+ $d_{n} \mid \dots \mid d_{2} \mid d_{1}$
+ and $\prod_{i} d_{i} = h$. This information can also be retrieved as
  $G.\kbd{no}$, $G.\kbd{cyc}$ and $G.\kbd{gen}$.
 
- \item a \tev{character} on the abelian group
- $\oplus (\Z/d_j\Z) g_j$
- is given by a row vector $\chi = [a_1,\ldots,a_n]$ such that
- $\chi(\prod g_j^{n_j}) = \exp(2\pi i\sum a_j n_j / d_j)$.
+ \item a \tev{character} on the abelian group $\oplus (\Z/d_{j}\Z) g_{j}$
+ is given by a row vector $\chi = [a_{1},\ldots,a_{n}]$ such that
+ $\chi(\prod_{j} g_{j}^{n_{j}}) = \exp(2\pi i\sum_{j} a_{j} n_{j} / d_{j})$.
 
  \item given such a structure, a \tev{subgroup} $H$ is input as a square
  matrix in HNF, whose columns express generators of $H$ on the given generators
- $g_i$. Note that the determinant of that matrix is equal to the index $(G:H)$.
+ $g_{i}$. Note that the determinant of that matrix is equal to the index $(G:H)$.
 
  \subsec{Relative extensions} %GPHELPskip
 
  We now have a look at data structures attached to relative extensions
- of number fields $L/K$, and to projective $\Z_K$-modules. When defining a
+ of number fields $L/K$, and to projective $\Z_{K}$-modules. When defining a
  relative extension $L/K$, the $\var{nf}$ attached to the base field $K$
  must be defined by a variable having a lower priority (see
  \secref{se:priority}) than the variable defining the extension. For example,
@@ -117,33 +118,35 @@ Doc:
  attached to be base field $K$ is \kbd{rnf.nf}.
 
  \item A \emph{relative matrix} is an $m\times n$ matrix whose entries are
- elements of $K$, in any form. Its $m$ columns $A_j$ represent elements
- in $K^n$.
+ elements of $K$, in any form. Its $m$ columns $A_{j}$ represent elements
+ in $K^{n}$.
 
  \item An \tev{ideal list} is a row vector of fractional ideals of the number
  field $\var{nf}$.
 
  \item A \tev{pseudo-matrix} is a 2-component row vector $(A,I)$ where $A$
  is a relative $m\times n$ matrix and $I$ an ideal list of length $n$. If $I =
- \{\goth{a}_1,\dots, \goth{a}_n\}$ and the columns of $A$ are $(A_1,\dots,
- A_n)$, this data defines the torsion-free (projective) $\Z_K$-module
- $\goth{a}_1 A_1\oplus \goth{a}_n A_n$.
+ \{\goth{a}_{1},\dots, \goth{a}_{n}\}$ and the columns of $A$ are $(A_{1},\dots,
+ A_{n})$, this data defines the torsion-free (projective) $\Z_{K}$-module
+ $\goth{a}_{1} A_{1}\oplus \goth{a}_{n} A_{n}$.
 
  \item An \tev{integral pseudo-matrix} is a 3-component row vector $(A,I,J)$
  where $A = (a_{i,j})$ is an $m\times n$ relative matrix and $I =
- (\goth{b}_1,\dots, \goth{b}_m)$, $J = (\goth{a}_1,\dots, \goth{a}_n)$ are ideal
- lists, such that $a_{i,j} \in \goth{b}_i \goth{a}_j^{-1}$ for all $i,j$. This
- data defines two abstract projective $\Z_K$-modules
- $N = \goth{a}_1\omega_1\oplus \cdots\oplus \goth{a}_n\omega_n $ in $K^n$,
- $P = \goth{b}_1\eta_1\oplus \cdots\oplus \goth{b}_m\eta_m$ in $K^m$, and a
- $\Z_K$-linear map $f:N\to P$ given by
- $$ f(\sum \alpha_j\omega_j) = \sum_i \Big(a_{i,j}\alpha_j\Big) \eta_i.$$
- This data defines the $\Z_K$-module $M = P/f(N)$.
+ (\goth{b}_{1},\dots, \goth{b}_{m})$, $J = (\goth{a}_{1},\dots, \goth{a}_{n})$ are ideal
+ lists, such that $a_{i,j} \in \goth{b}_{i} \goth{a}_{j}^{-1}$ for all $i,j$. This
+ data defines two abstract projective $\Z_{K}$-modules
+ $N = \goth{a}_{1}\omega_{1}\oplus \cdots\oplus \goth{a}_{n}\omega_{n}$
+ in $K^{n}$,
+ $P = \goth{b}_{1}\eta_{1}\oplus \cdots\oplus \goth{b}_{m}\eta_{m}$ in $K^{m}$,
+ and a $\Z_{K}$-linear map $f:N\to P$ given by
+ $$ f(\sum_{j} \alpha_{j}\omega_{j}) = \sum_{i} \Big(a_{i,j}\alpha_{j}\Big)
+ \eta_{i}.$$
+ This data defines the $\Z_{K}$-module $M = P/f(N)$.
 
- \item Any \emph{projective} $\Z_K$-module\varsidx{projective module} $M$
- of finite type in $K^m$ can be given by a pseudo matrix $(A,I)$.
+ \item Any \emph{projective} $\Z_{K}$-module\varsidx{projective module} $M$
+ of finite type in $K^{m}$ can be given by a pseudo matrix $(A,I)$.
 
- \item An arbitrary $\Z_K$ module of finite type in $K^m$, with nontrivial
+ \item An arbitrary $\Z_{K}$ module of finite type in $K^{m}$, with nontrivial
  torsion, is given by an integral pseudo-matrix $(A,I,J)$
 
  \misctitle{Algebraic numbers in relative extension}
@@ -184,7 +187,7 @@ Doc:
  \misctitle{Pseudo-bases, determinant} %GPHELPskip
 
  \item The pair $(A,I)$ is a \tev{pseudo-basis} of the module it
- generates if the $\goth{a}_j$ are nonzero, and the $A_j$ are $K$-linearly
+ generates if the $\goth{a}_{j}$ are nonzero, and the $A_{j}$ are $K$-linearly
  independent. We call $n$ the \emph{size} of the pseudo-basis. If $A$ is a
  relative matrix, the latter condition means it is square with nonzero
  determinant; we say that it is in Hermite Normal
@@ -192,9 +195,9 @@ Doc:
  elements of the diagonal are equal to 1.
 
  \item For instance, the relative integer basis \kbd{rnf.zk} is a pseudo-basis
- $(A,I)$ of $\Z_L$, where $A = \kbd{rnf.zk[1]}$ is a vector of elements of $L$,
+ $(A,I)$ of $\Z_{L}$, where $A = \kbd{rnf.zk[1]}$ is a vector of elements of $L$,
  which are $K$-linearly independent. Most \var{rnf} routines return and handle
- $\Z_K$-modules contained in $L$ (e.g.~$\Z_L$-ideals) via a pseudo-basis
+ $\Z_{K}$-modules contained in $L$ (e.g.~$\Z_{L}$-ideals) via a pseudo-basis
  $(A',I')$, where $A'$ is a relative matrix representing a vector of elements of
  $L$ in terms of the fixed basis \kbd{rnf.zk[1]}
 
@@ -208,7 +211,7 @@ Doc:
  A $\tev{modulus}$, in the sense of class field theory, is a divisor supported
  on the real and finite places of $K$. In PARI terms, this means either an
  ordinary ideal $I$ as above (no Archimedean component), or a pair $[I,a]$,
- where $a$ is a vector with $r_1$ $\{0,1\}$-components, corresponding to the
+ where $a$ is a vector with $r_{1}$ $\{0,1\}$-components, corresponding to the
  infinite part of the divisor. More precisely, the $i$-th component of $a$
  corresponds to the real embedding attached to the $i$-th real root of
  \kbd{K.roots}. (That ordering is not canonical, but well defined once a
@@ -217,7 +220,7 @@ Doc:
  places at infinity, and nowhere else.
 
  A \tev{bid} or ``big ideal'' is a structure output by \kbd{idealstar}
- needed to compute in $(\Z_K/I)^*$, where $I$ is a modulus in the above sense.
+ needed to compute in $(\Z_{K}/I)^{*}$, where $I$ is a modulus in the above sense.
  It is a finite abelian group as described above, supplemented by
  technical data needed to solve discrete log problems.
 
@@ -241,7 +244,7 @@ Doc:
  \item \emph{subgroup} a subgroup of the ray class group modulo $\goth{f}$ of
  $K$. As described above, this is input as a square matrix expressing
  generators of a subgroup of the ray class group \kbd{\var{bnr}.clgp} on the
- given generators. We also allow a \typ{INT} $n$ for $n \cdot \text{Cl}_f$.
+ given generators. We also allow a \typ{INT} $n$ for $n \cdot \text{Cl}_{f}$.
 
  \item \emph{character} is a character $\chi$ of the ray class group modulo
  $\goth{f}$, representing the subgroup $\text{Ker} \chi$.
@@ -338,7 +341,7 @@ Doc:
 
  \+\tet{sign} &(\var{bnr},& \var{bnf},& \var{nf}&)&: & signature $[r1,r2]$.\cr
 
- \+\tet{t2}   &(\var{bnr},& \var{bnf},& \var{nf}&)&: & the $T_2$ matrix (see
+ \+\tet{t2}   &(\var{bnr},& \var{bnf},& \var{nf}&)&: & the $T_{2}$ matrix (see
  \kbd{nfinit}).\cr
 
  \+\tet{tu}   &(          & \var{bnf}&&)&: & a generator for the torsion
@@ -347,7 +350,7 @@ Doc:
  \+\tet{zk}   &(\var{bnr},& \var{bnf},& \var{nf}&)&: & integral basis, i.e.~a
  $\Z$-basis of the maximal order.\cr
 
- \+\tet{zkst}   &(\var{bnr}&&&)&: & structure of $(\Z_K/m)^*$.\cr
+ \+\tet{zkst}   &(\var{bnr}&&&)&: & structure of $(\Z_{K}/m)^{*}$.\cr
 
  The member functions \kbd{.codiff}, \kbd{.t2} and \kbd{.zk} perform a
  computation and are relatively expensive in large degree: move them out of
@@ -369,7 +372,7 @@ Doc:
  call to the functions concerning class groups of general number fields
  (i.e.~excluding \kbd{quadclassunit}) involves a polynomial $P$ and a
  technical vector
- $$\var{tech} = [c_1, c_2, \var{nrpid} ],$$
+ $$\var{tech} = [c_{1}, c_{2}, \var{nrpid} ],$$
  where the parameters are to be understood as follows:
 
  $P$ is the defining polynomial for the number field, which must be in
@@ -392,25 +395,25 @@ Doc:
  parameters in the C code (there are many more than just those three).
  We nevertheless describe it for completeness.
 
- The numbers $c_1 \leq c_2$ are nonnegative real numbers. By default they are
- chosen so that the result is correct under GRH. For $i = 1,2$, let
- $B_i = c_i(\log |d_K|)^2$, and denote by $S(B)$ the set of maximal ideals of
- $K$ whose norm is less than $B$. We want $S(B_1)$ to generate $\Cl(K)$ and hope
- that $S(B_2)$ can be \emph{proven} to generate $\Cl(K)$.
+ The numbers $c_{1} \leq c_{2}$ are nonnegative real numbers. By default they
+ are chosen so that the result is correct under GRH. For $i = 1,2$, let
+ $B_{i} = c_{i}(\log |d_{K}|)^{2}$, and denote by $S(B)$ the set of maximal
+ ideals of $K$ whose norm is less than $B$. We want $S(B_{1})$ to generate
+ $\Cl(K)$ and hope that $S(B_{2})$ can be \emph{proven} to generate $\Cl(K)$.
 
- More precisely, $S(B_1)$ is a factorbase used to compute a tentative
+ More precisely, $S(B_{1})$ is a factorbase used to compute a tentative
  $\Cl(K)$ by generators and relations. We then check explicitly, using
- essentially \kbd{bnfisprincipal}, that the elements of $S(B_2)$ belong to the
- span of $S(B_1)$. Under the assumption that $S(B_2)$ generates $\Cl(K)$, we
- are done. User-supplied $c_i$ are only used to compute initial guesses for
- the bounds $B_i$, and the algorithm increases them until one can \emph{prove}
- under GRH that $S(B_2)$ generates $\Cl(K)$. A uniform result of Greni\'e
+ essentially \kbd{bnfisprincipal}, that the elements of $S(B_{2})$ belong to the
+ span of $S(B_{1})$. Under the assumption that $S(B_{2})$ generates $\Cl(K)$, we
+ are done. User-supplied $c_{i}$ are only used to compute initial guesses for
+ the bounds $B_{i}$, and the algorithm increases them until one can \emph{prove}
+ under GRH that $S(B_{2})$ generates $\Cl(K)$. A uniform result of Greni\'e
  and Molteni says
- that $c_2 = 4$ is always suitable, but this bound is very pessimistic and a
+ that $c_{2} = 4$ is always suitable, but this bound is very pessimistic and a
  direct algorithm due to Belabas-Diaz-Friedman, improved by Greni\'e and
  Molteni, is used to check the condition, assuming GRH. The default values
- are $c_1 = c_2 = 0$. When $c_1$ is equal to $0$ the algorithm takes it equal
- to $c_2$.
+ are $c_{1} = c_{2} = 0$. When $c_{1}$ is equal to $0$ the algorithm takes it
+ equal to $c_{2}$.
 
  $\var{nrpid}$ is the maximal number of small norm relations attached to each
  ideal in the factor base. Set it to $0$ to disable the search for small norm
@@ -432,8 +435,8 @@ Doc:
  still need to send at least an empty vector, coded as \kbd{NULL}). However,
  should you choose to set some of them, they \emph{must} be given in the
  requested order. For example, if you want to specify a given value of
- \var{nrpid}, you must give some values as well for $c_1$ and $c_2$, and provide
- a vector $[c_1,c_2,\var{nrpid}]$.
+ \var{nrpid}, you must give some values as well for $c_{1}$ and $c_{2}$,
+ and provide a vector $[c_{1},c_{2},\var{nrpid}]$.
 
  Note also that you can use an $\var{nf}$ instead of $P$, which avoids
  recomputing the integral basis and analogous quantities.
@@ -445,15 +448,15 @@ Doc:
  they generalize classical Hecke characters on ray class groups obtained through
  the $\var{bnr}$ structure.
 
- Let $K$ be a number field, $\A^\times$ its group of id\`eles.
+ Let $K$ be a number field, $\A^{\times}$ its group of id\`eles.
  Every Grossencharacter
  $$
-    \chi \colon \A^\times/K^\times \to \C^\times
+    \chi \colon \A^{\times}/K^{\times} \to \C^{\times}
  $$
- can be uniquely written~$\chi = \chi_0 \|\cdot \|^s$ for some~$s\in\C$
- and some character~$\chi_0$ of the compact
- group~$\A^\times/(K^\times\cdot\R_{>0})$,
- where~$\|a\| = \prod_v |a_v|_v$ is the id\`ele norm.
+ can be uniquely written~$\chi = \chi_{0} \|\cdot \|^{s}$ for some~$s\in\C$
+ and some character~$\chi_{0}$ of the compact
+ group~$\A^{\times}/(K^{\times}\cdot\R_{>0})$,
+ where~$\|a\| = \prod_{v} |a_{v}|_{v}$ is the id\`ele norm.
 
  Let~$\goth{m}$ be a modulus
  (an integral ideal and a finite set of real places). Let $U(\goth{m})$ be the
@@ -462,12 +465,14 @@ Doc:
  The Hecke Grossencharacters defined modulo $\goth{m}$ are the characters of
  the id\`ele class group
  $$
-  C_K(\goth{m}) = \A^\times/(K^\times\cdot U(\goth{m})),
+  C_{K}(\goth{m}) = \A^{\times}/(K^{\times}\cdot U(\goth{m})),
  $$
  that is, combinations of an archimedean
- character $\chi_\infty$ on the connected component $K_\infty^{\times \circ}$
- and a ray class group character $\chi_f$ satisfying a compatibility condition
- $\chi_\infty(a)\chi_f(a)=1$ for all units $a$ congruent to 1 modulo $\goth{m}$.
+ character $\chi_{\infty}$ on the connected component
+ $K_{\infty}^{\times \circ}$
+ and a ray class group character $\chi_{f}$ satisfying a compatibility
+ condition $\chi_{\infty}(a)\chi_{f}(a)=1$ for all units $a$ congruent to 1
+ modulo $\goth{m}$.
 
  \varsidx{gchar} %
  \item \var{gc} denotes a structure allowing to compute with Hecke

@@ -7,9 +7,9 @@ Help: nfeltsign(nf,x,{pl}): signs of real embeddings of x at places given
 Doc: given an element $x$ in the number field \var{nf}, returns the signs of
  the real embeddings of $x$ specified by optional argument \var{pl}:
 
- \item \var{pl} omitted: return the vector of signs at all $r_1$ real places;
+ \item \var{pl} omitted: return the vector of signs at all $r_{1}$ real places;
 
- \item \var{pl} an integer between $1$ and $r_1$: return the sign of the
+ \item \var{pl} an integer between $1$ and $r_{1}$: return the sign of the
  $i$-th embedding of $x$, attached to the $i$-th real root of \kbd{nf.pol},
  i.e. \kbd{nf.roots$[i]$};
 

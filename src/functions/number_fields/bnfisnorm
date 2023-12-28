@@ -21,7 +21,7 @@ Doc: tries to tell whether the
  the ideals of norm less than $\fl$. And if $\fl<0$ the ideals dividing $\fl$.
 
  Assuming \idx{GRH}, the answer is guaranteed (i.e.~$x$ is a norm iff $b=1$),
- if $S$ contains all primes less than $4\log(\disc(\var{Bnf}))^2$, where
+ if $S$ contains all primes less than $4\log(\disc(\var{Bnf}))^{2}$, where
  $\var{Bnf}$ is the Galois closure of $\var{bnf}$.
 
  See also \tet{bnfisintnorm}.

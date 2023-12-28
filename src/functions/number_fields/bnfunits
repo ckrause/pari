@@ -11,7 +11,8 @@ Doc: return the fundamental units of the number field
  bnf output by bnfinit; if $S$ is present and is a list of prime ideals,
  compute fundamental $S$-units instead. The first component of the result
  contains independent integral $S$-units generators: first nonunits, then
- $r_1+r_2-1$ fundamental units, then the torsion unit. The result may be used
+ $r_{1}+r_{2}-1$ fundamental units, then the torsion unit. The result may be
+ used
  as an optional argument to bnfisunit. The units are given in compact form:
  no expensive computation is attempted if the \var{bnf} does not already
  contain units.

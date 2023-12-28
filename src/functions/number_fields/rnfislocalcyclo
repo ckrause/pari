@@ -8,7 +8,7 @@ Help: rnfislocalcyclo(rnf): true(1) if the l-extension attached to rnf
 Doc: Let \var{rnf} be a relative number field extension $L/K$ as output
  by \kbd{rnfinit} whose degree $[L:K]$ is a power of a prime $\ell$.
  Return $1$ if the $\ell$-extension is locally cyclotomic (locally contained in
- the cyclotomic $\Z_\ell$-extension of $K_v$ at all places $v | \ell$), and
+ the cyclotomic $\Z_{\ell}$-extension of $K_{v}$ at all places $v | \ell$), and
  $0$ if not.
  \bprog
  ? K = nfinit(y^2 + y + 1);

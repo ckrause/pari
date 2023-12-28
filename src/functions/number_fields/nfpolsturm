@@ -8,9 +8,9 @@ Doc: given a polynomial $T$ with coefficients in the number field \var{nf},
  returns the number of real roots of the $s(T)$ where $s$ runs through
  the real embeddings of the field specified by optional argument \var{pl}:
 
- \item \var{pl} omitted: all $r_1$ real places;
+ \item \var{pl} omitted: all $r_{1}$ real places;
 
- \item \var{pl} an integer between $1$ and $r_1$: the embedding attached to
+ \item \var{pl} an integer between $1$ and $r_{1}$: the embedding attached to
  the $i$-th real root of \kbd{nf.pol}, i.e. \kbd{nf.roots$[i]$};
 
  \item \var{pl} a vector or \typ{VECSMALL}: the embeddings

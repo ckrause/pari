@@ -29,17 +29,18 @@ Doc: $\var{bnf}$ being as output by \kbd{bnfinit} (with units), computes a
  of $L$, and $D$ is the factorization of its absolute discriminant. We set $d
  = r = D = 0$ if $m$ is not the finite part of a conductor.
 
- \item If \var{arch} was omitted, all $t = 2^{r_1}$ possible values are taken
+ \item If \var{arch} was omitted, all $t = 2^{r_{1}}$ possible values are taken
  and a component of $w$ has the form
- $[m, [[d_1,r_1,D_1], \dots, [d_t,r_t,D_t]]]$,
+ $[m, [[d_{1},r_{1},D_{1}], \dots, [d_{t},r_{t},D_{t}]]]$,
  where $m$ is the finite part of the conductor as above, and
- $[d_i,r_i,D_i]$ are the invariants of the ray class field of conductor
- $[m,v_i]$, where $v_i$ is the $i$-th Archimedean component, ordered by
- inverse lexicographic order; so $v_1 = [0,\dots,0]$, $v_2 = [1,0\dots,0]$,
- etc. Again, we set $d_i = r_i = D_i = 0$ if $[m,v_i]$ is not a conductor.
+ $[d_{i},r_{i},D_{i}]$ are the invariants of the ray class field of conductor
+ $[m,v_{i}]$, where $v_{i}$ is the $i$-th Archimedean component, ordered by
+ inverse lexicographic order; so $v_{1} = [0,\dots,0]$, $v_{2} = [1,0\dots,0]$,
+ etc. Again, we set $d_{i} = r_{i} = D_{i} = 0$ if $[m,v_{i}]$
+ is not a conductor.
 
  Finally, each prime ideal $pr = [p,\alpha,e,f,\beta]$ in the prime
- factorization $m$ is coded as the integer $p\cdot n^2+(f-1)\cdot n+(j-1)$,
+ factorization $m$ is coded as the integer $p\cdot n^{2}+(f-1)\cdot n+(j-1)$,
  where $n$ is the degree of the base field and $j$ is such that
 
  \kbd{pr = idealprimedec(\var{nf},p)[j]}.

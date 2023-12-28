@@ -5,12 +5,12 @@ Prototype: GGUD0,U,
 Help: idealredmodpower(nf,x,n,{B=primelimit}): return b such that x * b^n = v
  is small.
 Doc: let \var{nf} be a number field, $x$ an ideal in \var{nf} and $n > 0$ be a
- positive integer. Return a number field element $b$ such that $x b^n = v$
+ positive integer. Return a number field element $b$ such that $x b^{n} = v$
  is small. If $x$ is integral, then $v$ is also integral.
 
  More precisely, \kbd{idealnumden} reduces the problem to $x$ integral. Then,
  factoring out the prime ideals dividing a rational prime $p \leq B$,
- we rewrite $x = I J^n$ where the ideals $I$ and $J$ are both integral and
+ we rewrite $x = I J^{n}$ where the ideals $I$ and $J$ are both integral and
  $I$ is $B$-smooth. Then we return a small element $b$ in $J^{-1}$.
 
  The bound $B$ avoids a costly complete factorization of $x$; as soon as the

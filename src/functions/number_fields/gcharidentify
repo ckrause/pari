@@ -8,13 +8,13 @@ Help: gcharidentify(gc,Lv,Lchiv): returns a Grossencharacter chi belonging to gc
 Doc: \var{gc} being a Grossencharacter group as output by \kbd{gcharinit}, $Lv$
  being \typ{VEC} of places~$v$ encoded by a \typ{INT} (infinite place) or a prime
  ideal structure representing a prime not dividing the modulus of~$gc$ (finite
- place), and $Lchiv$ being a \typ{VEC} of local characters~$\chi_v$ encoded
+ place), and $Lchiv$ being a \typ{VEC} of local characters~$\chi_{v}$ encoded
  by~$[k,\varphi]$ with~$k$ a \typ{INT} and $\varphi$ a \typ{REAL} or
- \typ{COMPLEX} representing~$x\mapsto \text{sign}(x)^k|x|^{i\varphi}$ (real
- place) or~$z\mapsto (z/|z|)^k|z|^{2i\varphi}$(complex place) or by a \typ{REAL}
+ \typ{COMPLEX} representing~$x\mapsto \text{sign}(x)^{k}|x|^{i\varphi}$ (real
+ place) or~$z\mapsto (z/|z|)^{k}|z|^{2i\varphi}$(complex place) or by a \typ{REAL}
  or \typ{COMPLEX}~$\theta$ representing~$\goth{p} \mapsto \exp(2i\pi \theta)$
  (finite place), returns a Grossencharacter~$\psi$ belonging to~$g$ such
- that~$\psi_v \approx \chi_v$ for all~$v$.
+ that~$\psi_{v} \approx \chi_{v}$ for all~$v$.
  At finite places, in place of a scalar one can provide a \typ{VEC} whose
  last component is $\theta$, as output by \kbd{gcharlocal}.
  To ensure proper identification, it is recommended to provide all infinite

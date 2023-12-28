@@ -18,7 +18,7 @@ Doc: given an element $x$ in
  \kbd{idealval(\var{nf},x,\var{pr})}, since $x$ is then converted to a
  principal ideal.
 
- If the $y$ argument is present, sets $y = x \tau^v$, where $\tau$ is a
+ If the $y$ argument is present, sets $y = x \tau^{v}$, where $\tau$ is a
  fixed ``anti-uniformizer'' for \var{pr}: its valuation at \var{pr} is $-1$;
  its valuation is $0$ at other prime ideals dividing \kbd{\var{pr}.p} and
  nonnegative at all other primes. In other words $y$ is the part of $x$
@@ -27,13 +27,13 @@ Doc: given an element $x$ in
  ? nfeltval(nf, x+1, P, &y); y
  %4 = [0, 1]~
  @eprog
- For instance if $x = \prod_i x_i^{e_i}$ is known to be coprime to \var{pr},
- where the $x_i$ are algebraic integers and $e_i\in\Z$ then,
- if $v_i = \kbd{nfeltval}(\var{nf}, x_i, \var{pr}, \&y_i)$, we still
- have $x = \prod_i y_i^{e_i}$, where the $y_i$ are still algebraic integers
- but now all of them are coprime to \var{pr}. They can then be mapped to
- the residue field of \var{pr} more efficiently than if the product had
- been expanded beforehand: we can reduce mod \var{pr} after each ring
+ For instance if $x = \prod_{i} x_{i}^{e_{i}}$ is known to be coprime to
+ \var{pr}, where the $x_{i}$ are algebraic integers and $e_{i}\in\Z$ then,
+ if $v_{i} = \kbd{nfeltval}(\var{nf}, x_{i}, \var{pr}, \&y_{i})$, we still
+ have $x = \prod_{i} y_{i}^{e_{i}}$, where the $y_{i}$ are still algebraic
+ integers but now all of them are coprime to \var{pr}. They can then be
+ mapped to the residue field of \var{pr} more efficiently than if the product
+ had been expanded beforehand: we can reduce mod \var{pr} after each ring
  operation.
 Variant: Also available are
  \fun{long}{nfvalrem}{GEN nf, GEN x, GEN pr, GEN *y = NULL}, which returns

@@ -5,7 +5,8 @@ Prototype: G
 Help: bnfsignunit(bnf): matrix of signs of the real embeddings of the system
  of fundamental units found by bnfinit.
 Doc: $\var{bnf}$ being as output by
- \kbd{bnfinit}, this computes an $r_1\times(r_1+r_2-1)$ matrix having $\pm1$
+ \kbd{bnfinit}, this computes an $r_{1}\times(r_{1}+r_{2}-1)$ matrix having
+ $\pm1$
  components, giving the signs of the real embeddings of the fundamental units.
  The following functions compute generators for the totally positive units:
  \bprog

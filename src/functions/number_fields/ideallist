@@ -22,9 +22,9 @@ Doc: computes the list of all ideals of norm less or equal to \var{bound} in
  \item 2: if this bit is set, \var{nf} must be a \var{bnf} with units. Each
  component is of the form $[\var{bid},U]$, where \var{bid} is attached to
  an ideal $f$ and $U$ is a vector of discrete logarithms of the units in
- $(\Z_K/f)^*$. More precisely, $U$ gives the \kbd{ideallog}s with respect
- to \var{bid} of $(\zeta,u_1,\dots,u_r)$
- where $\zeta$ is the torsion unit generator \kbd{bnf.tu[2]} and $(u_i)$
+ $(\Z_{K}/f)^{*}$. More precisely, $U$ gives the \kbd{ideallog}s with respect
+ to \var{bid} of $(\zeta,u_{1},\dots,u_{r})$
+ where $\zeta$ is the torsion unit generator \kbd{bnf.tu[2]} and $(u_{i})$
  are the fundamental units in \kbd{bnf.fu}.
  This structure is technical, meant to be used in conjunction with
  \tet{bnrclassnolist} or \tet{bnrdisclist}.
@@ -53,7 +53,7 @@ Doc: computes the list of all ideals of norm less or equal to \var{bound} in
  %8 = [[5, 0; 0, 5], []]
  ? l[3].mod
  %9 = [[25, 7; 0, 1], []]
- @eprog\noindent where we ask for the structures of the $(\Z[i]/f)^*$ for all
+ @eprog\noindent where we ask for the structures of the $(\Z[i]/f)^{*}$ for all
  three ideals of norm $25$. In fact, for all moduli with finite part of norm
  $25$ and trivial Archimedean part, as the last 3 commands show. See
  \tet{ideallistarch} to treat general moduli.

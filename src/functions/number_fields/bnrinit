@@ -22,7 +22,7 @@ Doc: $\var{bnf}$ is as
  group modulo \kbd{cycmod}, which may save a lot of time when some maximal
  ideals in $f$ have a huge residue field. In applications, we are given
  a congruence subgroup $H$ and study the class field attached to
- $\text{Cl}_f/H$. If that finite Abelian group has an exponent which divides
+ $\text{Cl}_{f}/H$. If that finite Abelian group has an exponent which divides
  \kbd{cycmod}, then we have changed nothing theoretically, while trivializing
  expensive discrete logs in residue fields (since computations can be
  made modulo \kbd{cycmod}-th powers). This is useful in \kbd{bnrclassfield},
@@ -41,7 +41,7 @@ Doc: $\var{bnf}$ is as
  of the class group.
 
  They are also different from the members of the underlying \var{bid}, which
- refer to $(\Z_K/f)^*$; use \kbd{\var{bnr}.bid.\var{xxx}} to access these,
+ refer to $(\Z_{K}/f)^{*}$; use \kbd{\var{bnr}.bid.\var{xxx}} to access these,
  e.g.~\kbd{\var{bnr}.bid.no} to get $\phi(f)$.
 
  If $\fl=0$ (default), the generators of the ray class group are not

@@ -19,15 +19,15 @@ Doc: let \var{bnr} be the number field data output by \kbd{bnrinit} and
  if omitted). This function returns, for each \idx{character} $\chi$ of the ray
  class group which is trivial on $H$, the value at $s = 1$ (or $s = 0$) of the
  abelian $L$-function attached to $\chi$. For the value at $s = 0$, the
- function returns in fact for each $\chi$ a vector $[r_\chi, c_\chi]$ where
- $$L(s, \chi) = c \cdot s^r + O(s^{r + 1})$$
+ function returns in fact for each $\chi$ a vector $[r_{\chi}, c_{\chi}]$ where
+ $$L(s, \chi) = c \cdot s^{r} + O(s^{r + 1})$$
  \noindent near $0$.
 
  The argument \fl\ is optional, its binary digits
  mean 1: compute at $s = 0$ if unset or $s = 1$ if set, 2: compute the
  primitive $L$-function attached to $\chi$ if unset or the $L$-function
  with Euler factors at prime ideals dividing the modulus of \var{bnr} removed
- if set (that is $L_S(s, \chi)$, where $S$ is the
+ if set (that is $L_{S}(s, \chi)$, where $S$ is the
  set of infinite places of the number field together with the finite prime
  ideals dividing the modulus of \var{bnr}), 3: return also the character if
  set.
@@ -43,7 +43,7 @@ Doc: let \var{bnr} be the number field data output by \kbd{bnrinit} and
  bnr2 = bnrinit(K,2);
  bnrL1(bnr2,,2)
  @eprog\noindent
- returns the order and the first nonzero terms of $L_S(s, \chi)$ at $s = 0$
+ returns the order and the first nonzero terms of $L_{S}(s, \chi)$ at $s = 0$
  where $\chi$ runs through the characters of the class group of $K$ and $S$ is
  the set of infinite places of $K$ together with the finite prime $2$. Note
  that the ray class group modulo $2$ is in fact the class group, so

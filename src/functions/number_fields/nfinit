@@ -34,7 +34,7 @@ Doc: \var{pol} being a nonconstant irreducible polynomial in $\Q[X]$,
  $\var{nf}[3]$ contains the discriminant $d(K)$ (\kbd{\var{nf}.disc}) of $K$.
 
  $\var{nf}[4]$ contains the index of $\var{nf}[1]$ (\kbd{\var{nf}.index}),
- i.e.~$[\Z_K : \Z[\theta]]$, where $\theta$ is any root of $\var{nf}[1]$.
+ i.e.~$[\Z_{K} : \Z[\theta]]$, where $\theta$ is any root of $\var{nf}[1]$.
 
  $\var{nf}[5]$ is a vector containing 7 matrices $M$, $G$, \var{roundG}, $T$,
  \var{MD}, \var{TI}, \var{MDI} and a vector \var{vP} defined as follows:
@@ -43,17 +43,17 @@ Doc: \var{pol} being a nonconstant irreducible polynomial in $\Q[X]$,
  the numerical values of the conjugates of the elements of the integral
  basis.
 
- \quad\item $G$ is an $n\times n$ matrix such that $T2 = {}^t G G$,
- where $T2$ is the quadratic form $T_2(x) = \sum |\sigma(x)|^2$, $\sigma$
+ \quad\item $G$ is an $n\times n$ matrix such that $T2 = {}^{t} G G$,
+ where $T2$ is the quadratic form $T_{2}(x) = \sum |\sigma(x)|^{2}$, $\sigma$
  running over the embeddings of $K$ into $\C$.
 
  \quad\item \var{roundG} is a rescaled copy of $G$, rounded to nearest
  integers.
 
  \quad\item $T$ is the $n\times n$ matrix whose coefficients are
- $\text{Tr}(\omega_i\omega_j)$ where the $\omega_i$ are the elements of the
- integral basis. Note also that $\det(T)$ is equal to the discriminant of the
- field $K$. Also, when understood as an ideal, the matrix $T^{-1}$
+ $\text{Tr}(\omega_{i}\omega_{j})$ where the $\omega_{i}$ are the elements of
+ the integral basis. Note also that $\det(T)$ is equal to the discriminant of
+ the field $K$. Also, when understood as an ideal, the matrix $T^{-1}$
  generates the codifferent ideal.
 
  \quad\item The columns of $MD$ (\kbd{\var{nf}.diff}) express a $\Z$-basis
@@ -76,18 +76,18 @@ Doc: \var{pol} being a nonconstant irreducible polynomial in $\Q[X]$,
  embeddings of the number field into $\C$ (the first $r1$ components are real,
  the next $r2$ have positive imaginary part).
 
- $\var{nf}[7]$ is a $\Z$-basis for $d\Z_K$, where $d = [\Z_K:\Z(\theta)]$,
+ $\var{nf}[7]$ is a $\Z$-basis for $d\Z_{K}$, where $d = [\Z_{K}:\Z(\theta)]$,
  expressed on the powers of $\theta$. The multiplication by
  $d$ ensures that all polynomials have integral coefficients
- and $\var{nf}[7] / d$ (\kbd{\var{nf}.zk}) is an integral basis for $\Z_K$.
+ and $\var{nf}[7] / d$ (\kbd{\var{nf}.zk}) is an integral basis for $\Z_{K}$.
  Its first element is guaranteed to be $1$. This basis is LLL-reduced with
- respect to $T_2$ (strictly speaking, it is a permutation of such a basis, due
- to the condition that the first element be $1$).
+ respect to $T_{2}$ (strictly speaking, it is a permutation of such a basis,
+ due to the condition that the first element be $1$).
 
  $\var{nf}[8]$ is the $n\times n$ integral matrix expressing the power
  basis in terms of the integral basis, and finally
 
- $\var{nf}[9]$ is the $n\times n^2$ matrix giving the multiplication table
+ $\var{nf}[9]$ is the $n\times n^{2}$ matrix giving the multiplication table
  of the integral basis.
 
  If a non monic or non integral polynomial is input, \kbd{nfinit} will
@@ -118,7 +118,7 @@ Doc: \var{pol} being a nonconstant irreducible polynomial in $\Q[X]$,
  [3 5]
  ? idealfactor(nf, 2)
  %8 =
- [[2, [0, 0, -1]~, 3, 1, [0, 1, 0]~] 3]  \\ @com $\goth{p}_2^3$
+ [[2, [0, 0, -1]~, 3, 1, [0, 1, 0]~] 3]  \\ @com $\goth{p}_{2}^{3}$
  @eprog
 
  \misctitle{Huge discriminants, helping nfdisc}
@@ -150,7 +150,7 @@ Doc: \var{pol} being a nonconstant irreducible polynomial in $\Q[X]$,
  ? nfcertify(nf)
  %3 = []
  @eprog\noindent A priori, \kbd{nf.zk} defines an order which is only known
- to be maximal at all primes $\leq 10^3$ (no prime $\leq 10^3$ divides
+ to be maximal at all primes $\leq 10^{3}$ (no prime $\leq 10^{3}$ divides
  \kbd{nf.index}). The certification step proves the correctness of the
  computation. Had it failed, that particular \kbd{nf} structure could
  not have been trusted and may have caused routines using it to fail randomly.
@@ -161,7 +161,7 @@ Doc: \var{pol} being a nonconstant irreducible polynomial in $\Q[X]$,
  \medskip
  In order to explain the meaning of $\fl$, let $P =
  \kbd{polredbest}(\var{pol})$, a polynomial defining the same number field
- obtained using the LLL algorithm on the lattice $(\Z_K, T_2)$, which may be
+ obtained using the LLL algorithm on the lattice $(\Z_{K}, T_{2})$, which may be
  equal to \var{pol} but is usually different and simpler. Binary digits of
  $\fl$ mean:
 

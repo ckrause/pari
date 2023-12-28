@@ -25,7 +25,7 @@ Doc: given a polynomial $T$ with integer coefficients, return
  ? [D,faD] = nfdiscfactors([T, 10^3]); print(faD)
  [3, 3; 125007125141751093502187, 2]
  @eprog\noindent In the final example, we only get a partial factorization,
- which is only guaranteed correct at primes $\leq 10^3$.
+ which is only guaranteed correct at primes $\leq 10^{3}$.
 
  The function also accept number field structures, for instance as output by
  \kbd{nfinit}, and returns the field discriminant and its factorization:

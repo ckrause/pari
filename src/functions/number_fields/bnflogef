@@ -7,11 +7,11 @@ Help: bnflogef(nf,pr): return [e~, f~] the logarithmic ramification and
 Doc: let \var{nf} be a \var{nf} structure attached to a number field $F$
  and let \var{pr} be a \var{prid} structure attached to a
  maximal ideal $\goth{p} / p$. Return
- $[\tilde{e}(F_\goth{p} / \Q_p), \tilde{f}(F_\goth{p} / \Q_p)]$
- the logarithmic ramification and residue degrees. Let $\Q_p^c/\Q_p$ be the
- cyclotomic $\Z_p$-extension, then
- $\tilde{e} = [F_\goth{p} \colon F_\goth{p} \cap \Q_p^c]$ and
- $\tilde{f} = [F_\goth{p} \cap \Q_p^c \colon \Q_p]$. Note that
+ $[\tilde{e}(F_{\goth{p}} / \Q_{p}), \tilde{f}(F_{\goth{p}} / \Q_{p})]$
+ the logarithmic ramification and residue degrees. Let $\Q_{p}^{c}/\Q_{p}$
+ be the cyclotomic $\Z_{p}$-extension, then
+ $\tilde{e} = [F_{\goth{p}} \colon F_{\goth{p}} \cap \Q_{p}^{c}]$ and
+ $\tilde{f} = [F_{\goth{p}} \cap \Q_{p}^{c} \colon \Q_{p}]$. Note that
  $\tilde{e}\tilde{f} = e(\goth{p}/p) f(\goth{p}/p)$, where $e(\goth{p}/p)$ and $f(\goth{p}/p)$ denote the
  usual ramification and residue degrees.
  \bprog

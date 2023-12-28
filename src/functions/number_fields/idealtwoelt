@@ -10,7 +10,7 @@ Doc: computes a two-element representation of the ideal $x$ in the number
  ignored)
 
  \item When called as \kbd{idealtwoelt(nf,x)}, the result is a row vector
- $[a,\alpha]$ with two components such that $x=a\Z_K+\alpha\Z_K$ and $a$ is
+ $[a,\alpha]$ with two components such that $x=a\Z_{K}+\alpha\Z_{K}$ and $a$ is
  chosen to be the positive generator of $x\cap\Z$, unless $x$ was given as a
  principal ideal in which case we may choose $a = 0$. The algorithm
  uses a fast lazy factorization of $x\cap \Z$ and runs in randomized
@@ -38,7 +38,7 @@ Doc: computes a two-element representation of the ideal $x$ in the number
 
  \item When called as \kbd{idealtwoelt(nf,x,a)} with an explicit nonzero $a$
  supplied as third argument, the function assumes that $a \in x$ and returns
- $\alpha\in x$ such that $x = a\Z_K + \alpha\Z_K$. Note that we must factor
+ $\alpha\in x$ such that $x = a\Z_{K} + \alpha\Z_{K}$. Note that we must factor
  $a$ in this case, and the algorithm is generally slower than the
  default variant and gives larger generators:
  \bprog

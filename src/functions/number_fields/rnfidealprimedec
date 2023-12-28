@@ -10,7 +10,7 @@ Doc: let \var{rnf} be a relative number
  field extension $L/K$ as output by \kbd{rnfinit}, and \var{pr} a maximal
  ideal of $K$ (\var{prid}), this function completes the \var{rnf}
  with a \var{nf} structure attached to $L$ (see \secref{se:rnfinit})
- and returns the vector $S$ of prime ideals of $\Z_L$ above \var{pr}.
+ and returns the vector $S$ of prime ideals of $\Z_{L}$ above \var{pr}.
  \bprog
  ? K = nfinit(y^2+1); rnf = rnfinit(K, x^3+y+1);
  ? pr = idealprimedec(K, 2)[1];

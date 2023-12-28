@@ -17,7 +17,7 @@ Doc: Returns a two-component vector $[w,z]$ where $w$ is the number of roots of
  ? [lift(z^11), lift(z^2)]     \\ proves that the order of z is 22
  %4 = [-1, -x^9 - x^8 - x^7 - x^6 - x^5 - x^4 - x^3 - x^2 - x - 1]
  @eprog
- This function guesses the number $w$ as the gcd of the $\#k(v)^*$ for
+ This function guesses the number $w$ as the gcd of the $\#k(v)^{*}$ for
  unramified $v$ above odd primes, then computes the roots in \var{nf}
  of the $w$-th cyclotomic polynomial. The algorithm is polynomial time with
  respect to the field degree and the bitsize of the multiplication table in

@@ -12,7 +12,7 @@ Doc: Let $K$ be the number field defined by $nf$ and assume $K/\Q$ be a
  This function returns a permutation of \kbd{gal.group} which defines
  the Frobenius element $\Frob_{\goth{p}}$ attached to $\goth{p}$.
  If $p$ is the unique prime number in $\goth{p}$, then
- $\Frob(x)\equiv x^p\mod\goth{p}$ for all $x\in\Z_K$.
+ $\Frob(x)\equiv x^{p}\mod\goth{p}$ for all $x\in\Z_{K}$.
  \bprog
  ? nf = nfinit(polcyclo(31));
  ? gal = galoisinit(nf);

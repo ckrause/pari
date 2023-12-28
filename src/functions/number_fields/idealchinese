@@ -27,13 +27,13 @@ Doc: $x$ being a prime ideal factorization (i.e.~a 2-columns matrix whose first
  @eprog
 
  The argument $x$ may also be of the form $[x, s]$ where the first component
- is as above and $s$ is a vector of signs, with $r_1$ components
- $s_i$ in $\{-1,0,1\}$:
- if $\sigma_i$ denotes the $i$-th real embedding of the number field,
+ is as above and $s$ is a vector of signs, with $r_{1}$ components
+ $s_{i}$ in $\{-1,0,1\}$:
+ if $\sigma_{i}$ denotes the $i$-th real embedding of the number field,
  the element $b$ returned satisfies further
- $\kbd{sign}(\sigma_i(b)) = s_i$ for all $i$ such that $s_i = \pm1$.
- In other words, the sign is fixed to $s_i$ at the $i$-th embedding whenever
- $s_i$ is nonzero.
+ $\kbd{sign}(\sigma_{i}(b)) = s_{i}$ for all $i$ such that $s_{i} = \pm1$.
+ In other words, the sign is fixed to $s_{i}$ at the $i$-th embedding whenever
+ $s_{i}$ is nonzero.
  \bprog
  ? idealchinese(K, [x, [1,1]], y)
  %5 = [16, -3]~

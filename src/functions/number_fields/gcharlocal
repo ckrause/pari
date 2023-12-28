@@ -6,27 +6,28 @@ Help: gcharlocal(gc,chi,v,{&BID}): if v is a place, return the local character
  chi_v. If v is a prime dividing the modulus and the optional argument 'BID'
  is present, set BID to the corresponding idealstar structure.
 Doc: \kbd{gc} being a gchar structure initialised by \kbd{gcharinit}, returns
- the local component $\chi_v$, where $v$ is either an integer between~$1$
- and~$r_1+r_2$ encoding an infinite place, or a prime ideal structure encoding a
- finite place.
+ the local component $\chi_{v}$, where $v$ is either an integer between~$1$
+ and~$r_{1}+r_{2}$ encoding an infinite place, or a prime ideal structure
+ encoding a finite place.
 
- \item if~$v$ is a real place, $\chi_v(x) = {\rm sign}(x)^k
+ \item if~$v$ is a real place, $\chi_{v}(x) = {\rm sign}(x)^{k}
  |x|^{i\varphi}$ is encoded as~$[k,\varphi]$;
 
- \item if~$v$ is a complex place, $\chi_v(z) = (z/|z|)^k |z|^{2i\varphi}$ is
+ \item if~$v$ is a complex place, $\chi_{v}(z) = (z/|z|)^{k} |z|^{2i\varphi}$ is
  encoded as~$[k,\varphi]$;
 
  \item if~$v = \goth{p}$ is a finite place not dividing~\var{gc}\kbd{.mod},
- $\chi_v(\pi_v) = \exp(2i\pi \theta)$ is encoded as~$[\theta]$;
+ $\chi_{v}(\pi_{v}) = \exp(2i\pi \theta)$ is encoded as~$[\theta]$;
 
  \item if~$v = \goth{p}$ is a finite place dividing~\var{gc}\kbd{.mod},
  we can define a \var{bid} structure attached to the multiplicative group
- $G = (\Z_K/\goth{p}^k)^*$, where $\goth{p}^k$ divides exactly
+ $G = (\Z_{K}/\goth{p}^{k})^{*}$, where $\goth{p}^{k}$ divides exactly
  \var{gc}\kbd{.mod} (see \kbd{idealstar}).
- Then~$\chi_v$ is encoded as~$[c_1,\dots,c_n,\theta]$ where~$[c_1,\dots,c_n]$
- defines a character on $G$
- (see \kbd{gchareval}) and~$\chi_v(\pi_v) = \exp(2i\pi\theta)$. This \var{bid}
- structure only depends on \kbd{gc} and $v$ (and not on the character $\chi$);
+ Then~$\chi_{v}$ is encoded as~$[c_{1},\dots,c_{n},\theta]$
+ where~$[c_{1},\dots,c_{n}]$ defines a character on $G$
+ (see \kbd{gchareval}) and~$\chi_{v}(\pi_{v}) = \exp(2i\pi\theta)$.
+ This \var{bid} structure only depends on \kbd{gc} and $v$
+ (and not on the character $\chi$);
  it can be recovered through the optional argument \var{BID}.
  \bprog
  ? bnf = bnfinit(x^3-x-1);

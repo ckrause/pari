@@ -5,7 +5,7 @@ Prototype: GG
 Help: gcharduallog(gc,chi): return logarithm vector of character chi
  in R^n. We have gchareval(g,chi,x,0) = gcharduallog(g,chi)*gcharlog(g,x)
 Doc: Return internal logarithm vector of character \kbd{chi}
- as a \typ{VEC} in $\R^n$, so that for all \var{x},
+ as a \typ{VEC} in $\R^{n}$, so that for all \var{x},
  \kbd{gchareval}(\var{gc},\var{chi},\var{x},$0$) is equal to
  \kbd{gcharduallog}(\var{gc},\var{chi}) * \kbd{gcharlog}(\var{gc},\var{x}).
 
@@ -19,15 +19,15 @@ Doc: Return internal logarithm vector of character \kbd{chi}
  group character via its image on generators: $\theta$ encodes the
  image~$\exp(2i\pi\theta)$,
 
- \item the next $r_1+r_2$ components are in $\R$ and correspond to characters
+ \item the next $r_{1}+r_{2}$ components are in $\R$ and correspond to characters
  of $\R$ for each infinite place: $\varphi$ encodes~$x\mapsto |x|^{i\varphi}$ in
  the real case and~$z\mapsto |z|^{2i\varphi}$ in the complex case,
 
- \item the last $r_2$ components are in $\Z$ and correspond to characters of
- $\R/\Z$ for each complex place: $k$ encodes~$z\mapsto (z/|z|)^k$.
+ \item the last $r_{2}$ components are in $\Z$ and correspond to characters of
+ $\R/\Z$ for each complex place: $k$ encodes~$z\mapsto (z/|z|)^{k}$.
 
  \item the last component~$s$ is in~$\C$ and corresponds to a
- power~$\|\cdot\|^s$ of the ad\'elic norm.
+ power~$\|\cdot\|^{s}$ of the ad\'elic norm.
 
  See also \kbd{gcharlog}.
 

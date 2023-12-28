@@ -17,17 +17,18 @@ Doc: let $f$ and $g$ define number fields, where $f$ and $g$ are irreducible
  $g$. If not, the output is the integer 0; if it is, the output depends on
  the value of $\fl$:
 
- \item $\fl = 0$ (default): return a vector of polynomials $[a_1,\dots,a_n]$
+ \item $\fl = 0$ (default): return a vector of polynomials
+ $[a_{1},\dots,a_{n}]$
  with rational coefficients, representing all distinct embeddings: we have
- $g\mid f\circ a_i$ for all $i$.
+ $g\mid f\circ a_{i}$ for all $i$.
 
  \item $\fl = 1$: return a single polynomial $a$ representing a single
  embedding; this can be $n$ times faster than the default when the
  embeddings have huge coefficients.
 
- \item $\fl = 2$: return a vector of rational functions $[r_1,\dots,r_n]$
- whose denominators are coprime to $g$ and such that $r_i \% g$ is the
- polynomial $a_i$ from $\fl = 0$. This variant is always faster than $\fl = 0$
+ \item $\fl = 2$: return a vector of rational functions $[r_{1},\dots,r_{n}]$
+ whose denominators are coprime to $g$ and such that $r_{i} \% g$ is the
+ polynomial $a_{i}$ from $\fl = 0$. This variant is always faster than $\fl = 0$
  but produces results which are harder to use. If the denominators are hard to
  invert in $\Q[X]/(g)$, this may be even faster than $\fl = 1$.
  \bprog

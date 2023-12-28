@@ -17,11 +17,11 @@ Doc: computes the prime ideal
  The result is a vector of \tev{prid} structures, each representing one of the
  prime ideals above $p$ in the number field $\var{nf}$. The representation
  $\kbd{pr}=[p,a,e,f,\var{mb}]$ of a prime ideal means the following: $a$
- is an algebraic integer in the maximal order $\Z_K$ and the prime ideal is
- equal to $\goth{p} = p\Z_K + a\Z_K$;
+ is an algebraic integer in the maximal order $\Z_{K}$ and the prime ideal is
+ equal to $\goth{p} = p\Z_{K} + a\Z_{K}$;
  $e$ is the ramification index; $f$ is the residual index;
  finally, \var{mb} is the multiplication table attached to an algebraic
- integer $b$ such that $\goth{p}^{-1}=\Z_K+ b/ p\Z_K$, which is used
+ integer $b$ such that $\goth{p}^{-1}=\Z_{K}+ b/ p\Z_{K}$, which is used
  internally to compute valuations. In other words if $p$ is inert,
  then \var{mb} is the integer $1$, and otherwise it is a square \typ{MAT}
  whose $j$-th column is $b \cdot \kbd{nf.zk[j]}$.

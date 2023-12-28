@@ -17,6 +17,6 @@ Doc: quotient $x\cdot y^{-1}$ of the two ideals $x$ and $y$ in the number
  integral ideal. This can be much faster when the norm of the quotient is
  small even though the norms of $x$ and $y$ are large. More precisely,
  the algorithm cheaply removes all maximal ideals above rational
- primes such that $v_p(Nx) = v_p(Ny)$.
+ primes such that $v_{p}(Nx) = v_{p}(Ny)$.
 Variant: Also available are \fun{GEN}{idealdiv}{GEN nf, GEN x, GEN y}
  ($\fl=0$) and \fun{GEN}{idealdivexact}{GEN nf, GEN x, GEN y} ($\fl=1$).

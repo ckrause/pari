@@ -42,7 +42,7 @@ Doc: Let \var{nf} be a number field structure attached to the field $K$
 
  A compositum is often defined by a complicated polynomial, which it is
  advisable to reduce before further work. Here is an example involving
- the field $K(\zeta_5, 5^{1/10})$, $K=\Q(\sqrt{5})$:
+ the field $K(\zeta_{5}, 5^{1/10})$, $K=\Q(\sqrt{5})$:
  \bprog
  ? K = nfinit(y^2-5);
  ? L = nfcompositum(K, x^5 - y, polcyclo(5), 1); \\@com list of $[R,a,b,k]$

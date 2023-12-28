@@ -8,12 +8,11 @@ Doc: \var{gc} being the structure returned by \kbd{gcharinit} and \var{chi}
  a character on \var{gc}, return 1 if and only if \var{chi} is an algebraic
  (Weil type A0) character, so that its infinity type at every complex
  embedding~$\tau$ can be written
- $$
-  z \mapsto z^{-p_\tau}\bar{z}^{-q_\tau}
- $$
- for some pair of integers $(p_\tau,q_\tau)$.
+ $$ z \mapsto z^{-p_{\tau}}\bar{z}^{-q_{\tau}} $$
+ for some pair of integers $(p_{\tau},q_{\tau})$.
 
- If \var{type} is given, set it to the \typ{VEC} of exponents $[p_\tau,q_\tau]$.
+ If \var{type} is given, set it to the \typ{VEC} of exponents
+ $[p_{\tau},q_{\tau}]$.
 
  \bprog
  ? bnf = bnfinit(x^4+1,1);

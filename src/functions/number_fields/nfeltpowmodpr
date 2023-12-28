@@ -8,6 +8,6 @@ Doc: this function is obsolete, use \kbd{nfmodpr}.
 
  Given an element $x$ in \var{nf}, an integer $k$ and a prime ideal
  \var{pr} in \kbd{modpr} format
- (see \tet{nfmodprinit}), computes $x^k$ modulo the prime ideal \var{pr}.
+ (see \tet{nfmodprinit}), computes $x^{k}$ modulo the prime ideal \var{pr}.
 Variant: This function is normally useless in library mode. Project your
  inputs to the residue field using \kbd{nf\_to\_Fq}, then work there.

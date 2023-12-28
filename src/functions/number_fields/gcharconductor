@@ -8,12 +8,12 @@ Doc: returns the conductor of \kbd{chi}, as a modulus over \kbd{gc.bnf}. This is
  $U(\goth{m})\subset\text{ker}(\var{chi})$
  indicating the exact ramification of \var{chi}.
 
- \item for a real place $v$, $v\mid \goth{m}$ iff $\chi_v(-1)=-1$.
+ \item for a real place $v$, $v\mid \goth{m}$ iff $\chi_{v}(-1)=-1$.
 
- \item for a finite place~$\goth{p}$, the prime power~$\goth{p}^e$ divides
+ \item for a finite place~$\goth{p}$, the prime power~$\goth{p}^{e}$ divides
  exactly $\goth{m}$ if $e\ge 0$ is the smallest integer such that $\chi_{\goth{p}}
- (U_e)=1$ where~$U_0 = \Z_{\goth{p}}^\times$ and~$U_i =
- 1+\goth{p}^i\Z_{\goth{p}}$ for~$i>0$.
+ (U_{e})=1$ where~$U_{0} = \Z_{\goth{p}}^{\times}$ and~$U_{i} =
+ 1+\goth{p}^{i}\Z_{\goth{p}}$ for~$i>0$.
 
  \bprog
  ? bnf = bnfinit(x^2-5,1);

@@ -13,12 +13,10 @@ Doc: \var{gc} being the structure returned by \kbd{gcharinit}, return a \typ{MAT
  norm.
 
  If \var{type} is a \typ{VEC} of length $\var{gc}\kbd{.r1}+\var{gc}\kbd{.r2}$,
- containing a pair of integers $[p_\tau,q_\tau]$ for each complex
+ containing a pair of integers $[p_{\tau},q_{\tau}]$ for each complex
  embedding~$\tau$, return a \typ{VEC} containing a character whose infinity type
  at~$\tau$ is
- $$
-  z \mapsto z^{-p_\tau}\bar{z}^{-q_\tau}
- $$
+ $$ z \mapsto z^{-p_{\tau}}\bar{z}^{-q_{\tau}} $$
  if such a character exists, or empty otherwise.
  The full set of characters of that infinity type is obtained by multiplying by
  the group of finite order characters.
@@ -36,7 +34,7 @@ Doc: \var{gc} being the structure returned by \kbd{gcharinit}, return a \typ{MAT
  [0 0    0  0]
  [0 0 -1/2 -1]
  ? gcharalgebraic(gc,[[1,1],[0,1]])
- % = [] \\ @com $p_\tau+q_\tau$ must be constant for an algebraic character to exist
+ % = [] \\ @com $p_{\tau}+q_{\tau}$ must be constant for an algebraic character to exist
  ? chi = gcharalgebraic(gc,[[1,1],[0,2]])[1]
  % = [0, 1, 2, 0, -1]~
  ? for(i=0,5,print(lfuneuler([gc,chi+[i,0,0,0,0]~],3)));

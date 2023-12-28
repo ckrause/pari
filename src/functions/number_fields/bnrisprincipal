@@ -22,8 +22,8 @@ Doc: let \var{bnr} be the ray class group data output by
 
  \item $1$: If set returns a 2-component vector $[e,\alpha]$ where $e$
  is the vector of components of $x$ on the ray class group generators,
- $\alpha$ is an element congruent to $1~\text{mod}^* f$ such that
- $x = \alpha \prod_i g_i^{e_i}$. If unset, returns only $e$.
+ $\alpha$ is an element congruent to $1~\text{mod}^{*} f$ such that
+ $x = \alpha \prod_{i} g_{i}^{e_{i}}$. If unset, returns only $e$.
 
  \item $4$: If set, returns $[e,\alpha]$ where $\alpha$ is given in factored
  form (compact representation). This is orders of magnitude faster.
@@ -55,7 +55,7 @@ Doc: let \var{bnr} be the ray class group data output by
  only guaranteed property.
 
  Beware that, when \kbd{bnr} is generated using \kbd{bnrinit(, cycmod)}, the
- results are given in $\text{Cl}_f$ modulo \kbd{cycmod}-th powers:
+ results are given in $\text{Cl}_{f}$ modulo \kbd{cycmod}-th powers:
  \bprog
  ? bnr2 = bnrinit(K, bnr.mod,, 2);  \\ modulo squares
  ? bnr2.clgp

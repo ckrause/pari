@@ -23,8 +23,8 @@ Doc: transforms the prime ideal \var{pr} into \tet{modpr} format necessary
  ? K.index
  %7 = 125
  @eprog\noindent For clarity, we represent elements in the residue
- field $\F_5[t]/(T)$ as polynomials in the variable $t$. Whenever the
+ field $\F_{5}[t]/(T)$ as polynomials in the variable $t$. Whenever the
  underlying rational prime does not divide \kbd{K.index}, it is actually
  the case that $t$ is the reduction of $y$ in $\Q[y]/(\kbd{K.pol})$
- modulo an irreducible factor of \kbd{K.pol} over $\F_p$. In the above
+ modulo an irreducible factor of \kbd{K.pol} over $\F_{p}$. In the above
  example, $5$ divides the index and $t$ is actually the reduction of $y/5$.

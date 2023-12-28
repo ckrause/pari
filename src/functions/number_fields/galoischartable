@@ -32,7 +32,7 @@ Doc: Compute the character table of~$G$, where~$G$ is the underlying group of
 
  The integer $e$ divides the exponent of the group $G$ and is chosen as small
  as posible; for instance $e = 1$ when the characters are all defined over
- $\Q$, as is the case for $S_n$. Examples:
+ $\Q$, as is the case for $S_{n}$. Examples:
  \bprog
  ? K = nfsplitting(x^4+x+1);
  ? gal = galoisinit(K);

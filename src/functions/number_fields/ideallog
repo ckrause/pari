@@ -11,10 +11,10 @@ Doc: $\var{nf}$ is a number field,
  equal to 0 at all prime ideals in the support of $\kbd{D}$ and need not be
  integral. This function
  computes the discrete logarithm of $x$ on the generators given in
- \kbd{\var{bid}.gen}. In other words, if $g_i$ are these generators, of orders
- $d_i$ respectively, the result is a column vector of integers $(x_i)$ such
- that $0\le x_i<d_i$ and
- $$x \equiv \prod_i g_i^{x_i} \pmod{\ ^*D}\enspace.$$
+ \kbd{\var{bid}.gen}. In other words, if $g_{i}$ are these generators, of orders
+ $d_{i}$ respectively, the result is a column vector of integers $(x_{i})$ such
+ that $0\le x_{i}<d_{i}$ and
+ $$x \equiv \prod_{i} g_{i}^{x_{i}} \pmod{\ ^{*}D}\enspace.$$
  Note that when the support of \kbd{D} contains places at infinity, this
  congruence implies also sign conditions on the attached real embeddings.
  See \tet{znlog} for the limitations of the underlying discrete log algorithms.

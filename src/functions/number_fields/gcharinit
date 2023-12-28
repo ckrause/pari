@@ -15,7 +15,7 @@ Doc: $\var{bnf}$ being a number field output by \kbd{bnfinit} (including
  \kbd{.mod} the modulus, \kbd{.cyc} its elementary divisors.
 
  The internal representation uses a logarithm map on ideals
- ${\cal L}: I \to \R^n$,
+ ${\cal L}: I \to \R^{n}$,
  so that a Hecke Grossencharacter $\chi$ can be described by a $n$
  components vector $v$ via
  $\chi: a\in I \mapsto \exp(2i\pi v\cdot{{\cal L}(a)})$.
@@ -25,7 +25,7 @@ Doc: $\var{bnf}$ being a number field output by \kbd{bnfinit} (including
  \bprog
  ? bnf = bnfinit(polcyclo(5),1); \\ @com initialize number field $\Q(\zeta_5)$
  ? pr = idealprimedec(bnf,5)[1]; \\ @com prime $\goth{p}=(1-\zeta_5)$ above 5
- ? gc = gcharinit(bnf,idealpow(bnf,pr,2)); \\ @com characters of modulus dividing $\goth{p}^2$
+ ? gc = gcharinit(bnf,idealpow(bnf,pr,2)); \\ @com characters of modulus dividing $\goth{p}^{2}$
  ? gc.cyc \\ @com structure as an abelian group
  % = [0,0,0,0.E-57]
  ? chi = [1,1,-1,0]~; \\ @com a character
@@ -40,7 +40,7 @@ Doc: $\var{bnf}$ being a number field output by \kbd{bnfinit} (including
  Currently, \kbd{gc} is a row vector with 11 components:
 
  $\var{gc}[1]$ is a matrix whose rows describe a system of generators
- of the characters as vectors of $\R^n$, under the above description.
+ of the characters as vectors of $\R^{n}$, under the above description.
 
  $\var{gc}[2]$ contains the underlying number field \var{bnf}
  (\kbd{\var{gc}.bnf}).
@@ -48,7 +48,7 @@ Doc: $\var{bnf}$ being a number field output by \kbd{bnfinit} (including
  $\var{gc}[3]$ contains the underlying number field \var{nf}
  (\kbd{\var{gc}.nf}), possibly stored at higher precision than \var{bnf}.
 
- $\var{gc}[4]$ contains data for computing in $(\Z_K/f)^\times$.
+ $\var{gc}[4]$ contains data for computing in $(\Z_{K}/f)^{\times}$.
 
  $\var{gc}[5]$ is a vector $S$ of prime ideals which generate the class group.
 

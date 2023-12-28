@@ -20,7 +20,7 @@ Doc: \idx{field discriminant} of the number field defined by the integral,
  valuation of the field discriminant.
 
  In particular, if \kbd{listP} is $[p]$ for a prime $p$, we can
- return the $p$-adic discriminant of the maximal order of $\Z_p[X]/(T)$,
+ return the $p$-adic discriminant of the maximal order of $\Z_{p}[X]/(T)$,
  as a power of $p$, as follows:
  \bprog
  ? padicdisc(T,p) = p^valuation(nfdisc([T,[p]]), p);

@@ -5,8 +5,8 @@ Prototype: GGDG
 Help: idealhnf(nf,u,{v}): hermite normal form of the ideal u in the number
  field nf if v is omitted. If called as idealhnf(nf,u,v), the ideal
  is given as uZ_K + vZ_K in the number field K defined by nf.
-Doc: gives the \idx{Hermite normal form} of the ideal $u\Z_K+v\Z_K$, where $u$
- and $v$ are elements of the number field $K$ defined by \var{nf}.
+Doc: gives the \idx{Hermite normal form} of the ideal $u\Z_{K}+v\Z_{K}$,
+ where $u$ and $v$ are elements of the number field $K$ defined by \var{nf}.
  \bprog
  ? nf = nfinit(y^3 - 2);
  ? idealhnf(nf, 2, y+1)
@@ -32,11 +32,11 @@ Doc: gives the \idx{Hermite normal form} of the ideal $u\Z_K+v\Z_K$, where $u$
  useful to reduce general modules to the canonical form once in a while:
 
  \item if strictly less than $N = [K:\Q]$ generators are given, $u$
- is the $\Z_K$-module they generate,
+ is the $\Z_{K}$-module they generate,
 
  \item if $N$ or more are given, it is \emph{assumed} that they form a
  $\Z$-basis of the ideal, in particular that the matrix has maximal rank $N$.
- This acts as \kbd{mathnf} since the $\Z_K$-module structure is (taken for
+ This acts as \kbd{mathnf} since the $\Z_{K}$-module structure is (taken for
  granted hence) not taken into account in this case.
  \bprog
  ? idealhnf(nf, idealprimedec(nf,2)[1])
@@ -53,9 +53,9 @@ Doc: gives the \idx{Hermite normal form} of the ideal $u\Z_K+v\Z_K$, where $u$
  [0 1 0]
 
  [0 0 1]
- @eprog\noindent Finally, when $K$ is quadratic with discriminant $D_K$, we
- allow $u =$ \kbd{Qfb(a,b,c)}, provided $b^2 - 4ac = D_K$. As usual,
- this represents the ideal $a \Z + (1/2)(-b + \sqrt{D_K}) \Z$.
+ @eprog\noindent Finally, when $K$ is quadratic with discriminant $D_{K}$, we
+ allow $u =$ \kbd{Qfb(a,b,c)}, provided $b^{2} - 4ac = D_{K}$. As usual,
+ this represents the ideal $a \Z + (1/2)(-b + \sqrt{D_{K}}) \Z$.
  \bprog
  ? K = nfinit(x^2 - 60); K.disc
  %1 = 60

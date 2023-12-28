@@ -46,7 +46,7 @@ Doc: initializes a
  generators of principal ideals in factored form as well. Be warned that
  expanding such products explicitly can take a very long time, but they can
  easily be mapped to floating point or $\ell$-adic embeddings of bounded
- accuracy, or to $K^*/(K^*)^\ell$, and this is enough for applications. In
+ accuracy, or to $K^{*}/(K^{*})^{\ell}$, and this is enough for applications. In
  short, this flag should be used by default, unless you have a very good
  reason for it, for instance building massive tables of class numbers, and
  you do not care about units or the effect large units would have on your
@@ -68,17 +68,17 @@ Doc: initializes a
 
  $\var{bnf}[1]$ contains the matrix $W$, i.e.~the matrix in Hermite normal
  form giving relations for the class group on prime ideal generators
- $(\goth{p}_i)_{1\le i\le r}$.
+ $(\goth{p}_{i})_{1\le i\le r}$.
 
  $\var{bnf}[2]$ contains the matrix $B$, i.e.~the matrix containing the
- expressions of the prime ideal factorbase in terms of the $\goth{p}_i$.
+ expressions of the prime ideal factorbase in terms of the $\goth{p}_{i}$.
  It is an $r\times c$ matrix.
 
  $\var{bnf}[3]$ contains the complex logarithmic embeddings of the system of
- fundamental units which has been found. It is an $(r_1+r_2)\times(r_1+r_2-1)$
- matrix.
+ fundamental units which has been found. It is an
+ $(r_{1}+r_{2})\times(r_{1}+r_{2}-1)$ matrix.
 
- $\var{bnf}[4]$ contains the matrix $M''_C$ of Archimedean components of the
+ $\var{bnf}[4]$ contains the matrix $M''_{C}$ of Archimedean components of the
  relations of the matrix $(W|B)$.
 
  $\var{bnf}[5]$ contains the prime factor base, i.e.~the list of prime
@@ -104,13 +104,13 @@ Doc: initializes a
  $\var{bnf}[9]$ is a vector used in \tet{bnfisprincipal} only
  and obtained as follows. Let $D = U W V$ obtained by applying the
  \idx{Smith normal form} algorithm to the matrix $W$ (= $\var{bnf}[1]$) and
- let $U_r$ be the reduction of $U$ modulo $D$. The first elements of the
- factorbase are given (in terms of \kbd{bnf.gen}) by the columns of $U_r$,
- with Archimedean component $g_a$; let also $GD_a$ be the Archimedean
+ let $U_{r}$ be the reduction of $U$ modulo $D$. The first elements of the
+ factorbase are given (in terms of \kbd{bnf.gen}) by the columns of $U_{r}$,
+ with Archimedean component $g_{a}$; let also $GD_{a}$ be the Archimedean
  components of the generators of the (principal) ideals defined by the
- \kbd{bnf.gen[i]\pow bnf.cyc[i]}. Then $\var{bnf}[9]=[U_r, g_a, GD_a]$,
- followed by technical exact components which allow to recompute $g_a$ and
- $GD_a$ to higher accuracy.
+ \kbd{bnf.gen[i]\pow bnf.cyc[i]}. Then $\var{bnf}[9]=[U_{r}, g_{a}, GD_{a}]$,
+ followed by technical exact components which allow to recompute $g_{a}$ and
+ $GD_{a}$ to higher accuracy.
 
  $\var{bnf}[10]$ is by default unused and set equal to 0. This field is used
  to store further information about the field as it becomes available, which
