@@ -6,9 +6,9 @@ Help: substvec(x,v,w): in expression x, make a best effort to replace the
  variables v1,...,vn by the expression w1,...,wn.
 Doc: $v$ being a vector of monomials of degree 1 (variables),
  $w$ a vector of expressions of the same length, replace in the expression
- $x$ all occurrences of $v_i$ by $w_i$. The substitutions are done
- simultaneously; more precisely, the $v_i$ are first replaced by new
- variables in $x$, then these are replaced by the $w_i$:
+ $x$ all occurrences of $v_{i}$ by $w_{i}$. The substitutions are done
+ simultaneously; more precisely, the $v_{i}$ are first replaced by new
+ variables in $x$, then these are replaced by the $w_{i}$:
  \bprog
  ? substvec([x,y], [x,y], [y,x])
  %1 = [y, x]

@@ -8,7 +8,7 @@ Help: polrootsbound(T, {tau = 0.01}): return a sharp upper bound for the
 Doc: return a sharp upper bound $B$ for the modulus of
  the largest complex root of the polynomial $T$ with complex coefficients
  with relative error $\tau$. More precisely, we have $|z| \leq B$ for all roots
- and there exist one root such that $|z_0| \geq B \exp(-2\tau)$. Much faster
+ and there exist one root such that $|z_{0}| \geq B \exp(-2\tau)$. Much faster
  than either polroots or polrootsreal.
  \bprog
  ? T=poltchebi(500);

@@ -9,7 +9,7 @@ Doc: \idx{formal sum} of the polynomial expression $f$ with respect to the
  it is assumed that the base ring has characteristic zero. In other words,
  considering $f$ as a polynomial function in the variable $v$,
  returns $F$, a polynomial in $v$ vanishing at $0$, such that $F(b) - F(a)
- = sum_{v = a+1}^b f(v)$:
+ = sum_{v = a+1}^{b} f(v)$:
  \bprog
  ? sumformal(n)  \\ 1 + ... + n
  %1 = 1/2*n^2 + 1/2*n

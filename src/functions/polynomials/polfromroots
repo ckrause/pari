@@ -6,8 +6,7 @@ Help: polfromroots(a,{v=x}): return the monic polynomial in variable v
  whose roots are the component of the vector a with multiplicities.
 Doc: return the monic polynomial in variable \kbd{v} whose roots are the
  component of the vector $a$ with multiplicities, that is
- $\prod_{i=1}^n (x - a_i)$.
-
+ $\prod_{i} (x - a_{i})$.
  \bprog
  ? polfromroots([1,2,3])
  %1 = x^3 - 6*x^2 + 11*x - 6

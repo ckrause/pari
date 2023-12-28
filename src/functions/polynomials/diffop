@@ -20,15 +20,15 @@ Doc:
 
  \misctitle{Examples}
  This function can be used to differentiate formal expressions:
- if $E=\exp(X^2)$ then we have $E'=2*X*E$. We derivate $X*exp(X^2)$
+ if $E=\exp(X^{2})$ then we have $E'=2*X*E$. We derivate $X*exp(X^{2})$
  as follows:
  \bprog
  ? diffop(E*X,[X,E],[1,2*X*E])
  %1 = (2*X^2 + 1)*E
  @eprog
  Let \kbd{Sin} and \kbd{Cos} be two function such that
- $\kbd{Sin}^2+\kbd{Cos}^2=1$ and $\kbd{Cos}'=-\kbd{Sin}$. We can differentiate
- $\kbd{Sin}/\kbd{Cos}$ as follows,
+ $\kbd{Sin}^{2}+\kbd{Cos}^{2}=1$ and $\kbd{Cos}'=-\kbd{Sin}$.
+ We can differentiate $\kbd{Sin}/\kbd{Cos}$ as follows,
  PARI inferring the value of $\kbd{Sin}'$ from the equation:
  \bprog
  ? diffop(Mod('Sin/'Cos,'Sin^2+'Cos^2-1),['Cos],[-'Sin])

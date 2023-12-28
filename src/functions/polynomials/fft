@@ -8,7 +8,7 @@ Doc: Let $w=[1,z,\ldots,z^{N-1}]$ from some primitive $N$-roots of unity $z$
  where $N$ is a power of $2$, and $P$ be a polynomial $< N$,
  return the unnormalized discrete Fourier transform of $P$,
  $\{ P(w[i]), 1 \leq i \leq N\}$. Also allow $P$ to be a vector
- $[p_0,\dots,p_n]$ representing the polynomial $\sum p_i X^i$.
+ $[p_{0},\dots,p_{n}]$ representing the polynomial $\sum_{i} p_{i} X^{i}$.
  Composing \kbd{fft} and \kbd{fftinv} returns $N$ times the original input
  coefficients.
  \bprog

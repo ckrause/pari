@@ -32,7 +32,7 @@ Doc: real roots of the polynomial $T$ with real coefficients, multiple
  to converge and to give the roots to the required accuracy.
 
  \misctitle{Remark} If the polynomial $T$ is of the
- form $Q(x^h)$ for some $h\geq 2$ and \var{ab} is omitted, the routine will
+ form $Q(x^{h})$ for some $h\geq 2$ and \var{ab} is omitted, the routine will
  apply the algorithm to $Q$ (restricting to nonnegative roots when $h$ is
  even), then take $h$-th roots. On the other hand, if you want to specify
  \var{ab}, you should apply the routine to $Q$ yourself and a suitable

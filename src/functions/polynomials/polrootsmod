@@ -7,10 +7,10 @@ Help: polrootsmod(f,{D}): roots of the polynomial f over the finite field
 Doc: vector of roots of the polynomial $f$ over the finite field defined
  by the domain $D$ as follows:
 
- \item $D = p$ a prime: factor over $\F_p$;
+ \item $D = p$ a prime: factor over $\F_{p}$;
 
  \item $D = [T,p]$ for a prime $p$ and $T(y)$ an irreducible polynomial over
- $\F_p$: factor over $\F_p[y]/(T)$ (as usual the main variable of $T$
+ $\F_{p}$: factor over $\F_{p}[y]/(T)$ (as usual the main variable of $T$
  must have lower priority than the main variable of $f$);
 
  \item $D$ a \typ{FFELT}: factor over the attached field;

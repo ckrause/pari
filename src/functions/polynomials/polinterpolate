@@ -115,6 +115,6 @@ Doc: given the data vectors $X$ and $Y$ of the same length $n$
 
  \misctitle{Numerical stability} The interpolation is performed in
  a numerically stable way using $\prod_{j\neq i} (X[i] - X[j])$ instead of
- $Q'(X[i])$ with $Q = \prod_i (x - X[i])$. Centering the interpolation
+ $Q'(X[i])$ with $Q = \prod_{i} (x - X[i])$. Centering the interpolation
  points $X[i]$ around $0$, thereby reconstructing $P(x - m)$, for a suitable
  $m$ will further reduce the numerical error.
