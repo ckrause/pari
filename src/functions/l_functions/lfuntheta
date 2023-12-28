@@ -19,5 +19,5 @@ Doc: compute the value of the $m$-th derivative
  Its Mellin transform is equal to $\Lambda(s)-P(s)$, where $\Lambda(s)$
  is the completed $L$-function and the rational function $P(s)$ its polar part.
  In particular, if the $L$-function is the $L$-function of a modular form
- $f(\tau)=\sum_{n\ge0}a(n)q^n$ with $q=\exp(2\pi i\tau)$, we have
+ $f(\tau)=\sum_{n\ge0}a(n)q^{n}$ with $q=\exp(2\pi i\tau)$, we have
  $\Theta(t)=2(f(it/\sqrt{N})-a(0))$. Note that $a(0)=-L(f,0)$ in this case.

@@ -46,8 +46,8 @@ Doc:  Compute the conductor of the given $L$-function (if the structure
  unknown, which is uncommon.
 
  \item \kbd{setN} is a vector of possible conductors; for instance
- of the form \kbd{D1 * divisors(D2)}, where $D_1$ is the known part
- of the conductor and $D_2$ is a multiple of the contribution of the
+ of the form \kbd{D1 * divisors(D2)}, where $D_{1}$ is the known part
+ of the conductor and $D_{2}$ is a multiple of the contribution of the
  bad primes.
 
  In that case, \kbd{flag} is ignored and the routine uses \kbd{lfuncheckfeq}.

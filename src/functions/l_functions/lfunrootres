@@ -9,15 +9,15 @@ Help: lfunrootres(data): given the Ldata attached to an L-function (or the
  The output is a 3-component vector
   [[[a_1, r_1],...,[a_n, r_n],[[b_1, R_1],...[b_m,R_m]]~, w], where r_i is the
   polar part of L(s) at a_i, R_i is is the polar part of Lambda(s) at b_i,
-  or [0,0,r] if there is no pole, and w is the root number.
+  or [0,0,r] if there is no pole, and r is the root number.
 Doc: Given the \kbd{Ldata} attached to an $L$-function (or the output of
  \kbd{lfunthetainit}), compute the root number and the residues.
 
  The output is a 3-component vector
- $[[[a_1,r_1],\cdots,[a_n, r_n], [[b_1, R_1],\cdots,[b_m, R_m]]~, w]$,
- where $r_i$ is the
- polar part of $L(s)$ at $a_i$, $R_i$ is is the polar part of $\Lambda(s)$ at
- $b_i$ or $[0,0,r]$ if there is no pole,
+ $[[[a_{1},r_{1}],\cdots,[a_{n}, r_{n}], [[b_{1}, R_{1}],\cdots,[b_{m}, R_{m}]]~, w]$,
+ where $r_{i}$ is the
+ polar part of $L(s)$ at $a_{i}$, $R_{i}$ is is the polar part of $\Lambda(s)$ at
+ $b_{i}$ or $[0,0,r]$ if there is no pole,
  and $w$ is the root number. In the present implementation,
 
  \item either the polar part must be completely known (and is then arbitrary):

@@ -12,7 +12,7 @@ Help: lfunartin(nf,gal,rho,n): returns the Ldata structure attached to the
  the complex number exp(2*I*Pi/n).
 Doc: returns the \kbd{Ldata} structure attached to the
  Artin $L$-function provided by the representation $\rho$ of the Galois group
- of the extension $K/\Q$, defined over the cyclotomic field $\Q(\zeta_n)$,
+ of the extension $K/\Q$, defined over the cyclotomic field $\Q(\zeta_{n})$,
  where \var{nf} is the nfinit structure attached to $K$,
  \var{gal} is the galoisinit structure attached to $K/\Q$, and \var{rho} is
  given either
@@ -28,7 +28,7 @@ Doc: returns the \kbd{Ldata} structure attached to the
 
  In the following example we build the Artin $L$-functions attached to the two
  irreducible degree $2$ representations of the dihedral group $D_{10}$ defined
- over $\Q(\zeta_5)$, for the extension $H/\Q$ where $H$ is the Hilbert class
+ over $\Q(\zeta_{5})$, for the extension $H/\Q$ where $H$ is the Hilbert class
  field of $\Q(\sqrt{-47})$.
  We show numerically some identities involving Dedekind $\zeta$ functions and
  Hecke $L$ series.
@@ -74,7 +74,7 @@ Doc: returns the \kbd{Ldata} structure attached to the
  The first identity identifies the nontrivial abelian character with
  $(-47,\cdot)$; the second is the factorization of the regular representation of
  $D_{10}$; the third is the factorization of the natural representation of
- $D_{10}\subset S_5$; and the final four are the expressions of the degree $2$
+ $D_{10}\subset S_{5}$; and the final four are the expressions of the degree $2$
  representations as induced from degree $1$ representations.
 
 Function: _dirartin_worker

@@ -16,7 +16,7 @@ Doc: compute the L-function value $L(s)$, or if \kbd{D} is set, the
  are to be computed.
 
  The argument $s$ is also allowed to be a power series; for instance, if $s =
- \alpha + x + O(x^n)$, the function returns the Taylor expansion of order $n$
+ \alpha + x + O(x^{n})$, the function returns the Taylor expansion of order $n$
  around $\alpha$. The result is given with absolute error less than $2^{-B}$,
  where $B = \text{realbitprecision}$.
 

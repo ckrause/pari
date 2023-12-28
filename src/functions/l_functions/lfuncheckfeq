@@ -15,14 +15,14 @@ Doc: Given the data attached to an $L$-function (\kbd{Lmath}, \kbd{Ldata}
  \kbd{lfuncreate}, to detect mistakes.
 
  If the function has poles, the polar part must be specified. The routine
- returns a bit accuracy $b$ such that $|w - \hat{w}| < 2^b$, where $w$ is
+ returns a bit accuracy $b$ such that $|w - \hat{w}| < 2^{b}$, where $w$ is
  the root number contained in \kbd{data}, and
  $$\hat{w} = \theta(1/t) t^{-k} / \overline{\theta}(t)$$ is a computed value
  derived from the assumed functional equation.
  Of course, the expected result is a large negative value of the order of
  \kbd{realbitprecision}. But if $\overline{\theta}$ is very small
  at $t$, you should first increase \kbd{realbitprecision} by
- $-\log_2 |\overline{\theta}(t)|$, which is
+ $-\log_{2} |\overline{\theta}(t)|$, which is
  positive if $\theta$ is small, to get a meaningful result.
  Note that $t$ should be close to the unit disc for efficiency and such that
  $\overline{\theta}(t) \neq 0$. If the parameter $t$ is omitted, we check the
@@ -49,7 +49,8 @@ Doc: Given the data attached to an $L$-function (\kbd{Lmath}, \kbd{Ldata}
  @eprog
  \misctitle{The case of Dedekind zeta functions} Dedekind zeta function for
  a number field $K = \Q[X]/(T)$ is in general computed
- (assuming Artin conjecture) as $(\zeta_K/\zeta_k) \times$, where $k$ is a
+ (assuming Artin conjecture) as $(\zeta_{K}/\zeta_{k}) \times \zeta_{k}$,
+ where $k$ is a
  maximal subfield, applied recursively if possible. When $K/\Q$ is Galois,
  the zeta function is directly decomposed as a product of Artin
  $L$-functions.

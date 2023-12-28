@@ -11,13 +11,13 @@ Doc: estimate the cost of running
  \kbd{lfuninit(L,sdom,der)} at current bit precision, given by a vector
  $[t, b]$.
 
- \item If $L$ contains the root number, indicate that $t$ coefficients $a_n$
+ \item If $L$ contains the root number, indicate that $t$ coefficients $a_{n}$
  will be computed, as well as $t$ values of \tet{gammamellininv}, all at bit
  accuracy $b$. A subsequent call to \kbd{lfun} at $s$ evaluates a polynomial
  of degree $t$ at $\exp(h s)$ for some real parameter $h$, at the same bit
  accuracy $b$.
 
- \item If the root number is \emph{not} known, then more values of $a_n$ may
+ \item If the root number is \emph{not} known, then more values of $a_{n}$ may
  be needed in order to compute it, and the returned value of $t$ takes this
  into account (it may not be the exact value in this case but is always
  an upper bound). Fewer than $t$ \kbd{gammamellininv} will be needed, and
@@ -68,7 +68,7 @@ Doc: estimate the cost of running
  ? lfuncost(L)
  %14 = [826966, 3339]
  @eprog\noindent In the final example, the root number was unknown and
- extra coefficients $a_n$ were needed to compute it ($1171561$). Once the
+ extra coefficients $a_{n}$ were needed to compute it ($1171561$). Once the
  initialization is performed we obtain the lower value $t = 826966$, which
  corresponds to the number of \kbd{gammamellinv} computed and the actual
  degree of the polynomial to be evaluated to compute a value within the

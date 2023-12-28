@@ -8,19 +8,19 @@ Doc: Variant of the Hardy $Z$-function given by \kbd{L}, used for
  plotting or locating zeros of $L(k/2+it)$ on the critical line.
  The precise definition is as
  follows: let $k/2$ be the center of the critical strip, $d$ be the
- degree, $\kbd{Vga} = (\alpha_j)_{j\leq d}$ given the gamma factors,
+ degree, $\kbd{Vga} = (\alpha_{j})_{j\leq d}$ given the gamma factors,
  and $\varepsilon$ be the root number; we set
  $s = k/2+it = \rho e^{i\theta}$ and
- $2E = d(k/2-1) + \Re(\sum_{1\le j\le d}\alpha_j)$. Assume first that $\Lambda$
- is self-dual, then the computed function at $t$ is equal to
+ $2E = d(k/2-1) + \Re(\sum_{1\le j\le d}\alpha_{j})$. Assume first that
+ $\Lambda$ is self-dual, then the computed function at $t$ is equal to
  $$Z(t) = \varepsilon^{-1/2}\Lambda(s) \cdot \rho^{-E}e^{dt\theta/2}\;,$$
  which is a real function of $t$
  vanishing exactly when $L(k/2+it)$ does on the critical line. The
  normalizing factor $|s|^{-E}e^{dt\theta/2}$ compensates the
- exponential decrease of $\gamma_A(s)$ as $t\to\infty$ so that
+ exponential decrease of $\gamma_{A}(s)$ as $t\to\infty$ so that
  $Z(t) \approx 1$. For non-self-dual $\Lambda$, the definition is the same
  except we drop the $\varepsilon^{-1/2}$ term (which is not well defined since
- it depends on the chosen dual sequence $a^*(n)$): $Z(t)$ is still of the
+ it depends on the chosen dual sequence $a^{*}(n)$): $Z(t)$ is still of the
  order of $1$ and still vanishes where $L(k/2+it)$ does, but it needs no
  longer be real-valued.
 

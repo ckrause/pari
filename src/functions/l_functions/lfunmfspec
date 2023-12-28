@@ -11,7 +11,7 @@ Doc: let $L$ be the $L$-function attached to a modular eigenform $f$ of
  weight $k$, as given by \kbd{lfunmf}. In even weight, returns
  \kbd{[ve,vo,om,op]}, where \kbd{ve} (resp., \kbd{vo}) is the vector of even
  (resp., odd) periods of $f$ and \kbd{om} and \kbd{op} the corresponding
- real numbers $\omega^-$ and $\omega^+$ normalized in a noncanonical way.
+ real numbers $\omega^{-}$ and $\omega^{+}$ normalized in a noncanonical way.
  In odd weight \kbd{ominus} is the same as \kbd{op} and we
  return \kbd{[v,op]} where $v$ is the vector of all periods.
  \bprog
