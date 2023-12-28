@@ -3,8 +3,8 @@ Section: programming/specific
 C-Name: call0
 Prototype: GG
 Help: call(f, A): A being a vector, evaluates f(A[1],...,A[#A]).
-Doc: $A=[a_1,\dots, a_n]$ being a vector and $f$ being a function, returns the
- evaluation of $f(a_1,\dots,a_n)$.
+Doc: $A=[a_{1},\dots, a_{n}]$ being a vector and $f$ being a function,
+ returns the evaluation of $f(a_{1},\dots,a_{n})$.
  $f$ can also be the name of a built-in GP function.
  If $\# A =1$, \tet{call}($f,A$) = \tet{apply}($f,A$)[1].
  If $f$ is variadic (has a variable number of arguments), then

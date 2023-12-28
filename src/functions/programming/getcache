@@ -30,7 +30,7 @@ Doc:
  $O(N^{1+\varepsilon})$ using $O(N)$ space.
 
  \item Primitive dihedral forms of weight $1$ and level up to $N$,
- computed in time $O(N^{2+\varepsilon})$ and space $O(N^2)$.
+ computed in time $O(N^{2+\varepsilon})$ and space $O(N^{2})$.
 
  \bprog
  ? getcache()  \\ on startup, all caches are empty

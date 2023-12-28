@@ -19,7 +19,7 @@ Doc: We first describe the default behavior, when $\fl$ is 0 or omitted.
  %1 = [2, 5, 17, 37, 101, 197, 257, 401, 577, 677, 1297, 1601]
  ? select(x->(x<100), %)
  %2 = [2, 5, 17, 37]
- @eprog\noindent returns the primes of the form $i^2+1$ for some $i\leq 50$,
+ @eprog\noindent returns the primes of the form $i^{2}+1$ for some $i\leq 50$,
  then the elements less than 100 in the preceding result. The \kbd{select}
  function also applies to a matrix \kbd{A}, seen as a vector of columns, i.e. it
  selects columns instead of entries, and returns the matrix whose columns are
@@ -52,7 +52,7 @@ Doc: We first describe the default behavior, when $\fl$ is 0 or omitted.
  ? vecextract(V, %)
  %3 = [2, 5, 17, 37, 101, 197, 257, 401, 577, 677, 1297, 1601]
  @eprog\noindent
- The following function lists the elements in $(\Z/N\Z)^*$:
+ The following function lists the elements in $(\Z/N\Z)^{*}$:
  \bprog
  ? invertibles(N) = select(x->gcd(x,N) == 1, [1..N])
  @eprog

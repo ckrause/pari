@@ -54,7 +54,7 @@ Doc: if \var{nk} is a nonnegative integer $n$, evaluates \kbd{seq}, where
  Vecsmall([2, 3])
  Vecsmall([1, 2, 3])
  @eprog\noindent The running time is proportional to the number
- of subsets enumerated, respectively $2^n$ and \kbd{binomial}$(n,k)$:
+ of subsets enumerated, respectively $2^{n}$ and \kbd{binomial}$(n,k)$:
  \bprog
  ? c = 0; forsubset([40,35],s,c++); c
  time = 128 ms.

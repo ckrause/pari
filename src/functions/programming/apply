@@ -10,12 +10,12 @@ Doc: Apply the \typ{CLOSURE} \kbd{f} to the entries of \kbd{A}.
 
  \item If \kbd{A} is a scalar, return \kbd{f(A)}.
 
- \item If \kbd{A} is a polynomial or power series $\sum a_i x^i$ ($+
- O(x^N)$), apply \kbd{f} on all coefficients and return $\sum f(a_i) x^i$ ($+
- O(x^N)$).
+ \item If \kbd{A} is a polynomial or power series $\sum a_{i} x^{i}$ ($+
+ O(x^{N})$), apply \kbd{f} on all coefficients and return $\sum f(a_{i})
+ x^{i}$ ($+ O(x^{N})$).
 
- \item If \kbd{A} is a vector or list $[a_1,\dots,a_n]$, return the vector
- or list $[f(a_1),\dots, f(a_n)]$. If \kbd{A} is a matrix, return the matrix
+ \item If \kbd{A} is a vector or list $[a_{1},\dots,a_{n}]$, return the vector
+ or list $[f(a_{1}),\dots, f(a_{n})]$. If \kbd{A} is a matrix, return the matrix
  whose entries are the $f(\kbd{A[i,j]})$.
 
  \bprog

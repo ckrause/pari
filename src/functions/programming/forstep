@@ -16,8 +16,9 @@ Doc: evaluates \var{seq}, where the formal variable $X$ goes from $a$ to $b$
  progression starting at the smallest integer $A \geq a$ and congruent to $c$
  modulo $N$): $X = A, A + N, \dots$
 
- \item a vector of steps $[s_1,\dots,s_n]$ (the successive steps in $\R^*$
- are used in the order they appear in $s$): $X = a, a+s_1, a+s_1+s_2, \dots$
+ \item a vector of steps $[s_{1},\dots,s_{n}]$ (the successive steps in $\R^{*}$
+ are used in the order they appear in $s$): $X = a, a+s_{1}, a+s_{1}+s_{2},
+ \dots$
 
  \bprog
  ? forstep(x=5, 10, 2, print(x))

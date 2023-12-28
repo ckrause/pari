@@ -27,7 +27,7 @@ Doc: evaluates \var{seq}, where the formal variable $N$ is $[n,
  length $b-a$ is much larger than $\sqrt{b}$ and get relatively faster as
  the bounds increase. The function slows down dramatically
  if $\kbd{primelimit} < \sqrt{b}$. It is comparable to \kbd{forfactored}, but
- about $\zeta(2) = \pi^2/6$ times faster due to the relative density
+ about $\zeta(2) = \pi^{2}/6$ times faster due to the relative density
  of squarefree integers.
 
  \bprog
@@ -53,9 +53,9 @@ Doc: evaluates \var{seq}, where the formal variable $N$ is $[n,
  ? forsquarefree (N = B, B+10^6, [n,fan] = N)
  time = 33,399 ms.
  @eprog\noindent The last timing is with the default \kbd{primelimit}
- (500000) which is much less than $\sqrt{B+10^6}$; it goes down
+ (500000) which is much less than $\sqrt{B+10^{6}}$; it goes down
  to \kbd{29,253ms} if \kbd{primelimit} gets bigger than that bound.
- In any case $\sqrt{B+10^6}$ is much larger than the interval length $10^6$
+ In any case $\sqrt{B+10^{6}}$ is much larger than the interval length $10^{6}$
  so \kbd{forsquarefree} gets relatively slower for that reason as well.
 
  Note that all PARI multiplicative functions accept the \kbd{[n,fan]}

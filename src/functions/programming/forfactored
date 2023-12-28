@@ -34,9 +34,9 @@ Doc: evaluates \var{seq}, where
  ? forfactored (N = B, B+10^6, [n,fan] = N)
  time = 58,601 ms.
  @eprog\noindent The last timing is with the default \kbd{primelimit}
- (500000) which is much less than $\sqrt{B+10^6}$; it goes down
+ (500000) which is much less than $\sqrt{B+10^{6}}$; it goes down
  to \kbd{26,750ms} if \kbd{primelimit} gets bigger than that bound.
- In any case $\sqrt{B+10^6}$ is much larger than the interval length $10^6$
+ In any case $\sqrt{B+10^{6}}$ is much larger than the interval length $10^{6}$
  so \kbd{forfactored} gets relatively slower for that reason as well.
 
  Note that all PARI multiplicative functions accept the \kbd{[n,fan]}

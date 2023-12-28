@@ -16,7 +16,7 @@ Doc: parallel evaluation of $f$ on the elements of $x$.
    parapply(p->ellcard(E,p), V)
  }
  @eprog
- computes the order of $E(\F_p)$ for $12$ random primes of $200$ bits.
+ computes the order of $E(\F_{p})$ for $12$ random primes of $200$ bits.
 
 Function: _parapply_slice_worker
 Section: programming/internals

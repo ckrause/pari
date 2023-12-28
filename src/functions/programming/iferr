@@ -178,7 +178,7 @@ Doc: evaluates the expression sequence \var{seq1}. If an error occurs,
   \var{E} has one component (\typ{STR}): the error message to print.
 
   \item \kbd{"e\_USER"}. A user error, as triggered by
-  \tet{error}($g_1,\dots,g_n)$.
+  \tet{error}($g_{1},\dots,g_{n})$.
   \var{E} has one component, 1 (\typ{VEC}): the vector of $n$ arguments given
   to \kbd{error}.
 
