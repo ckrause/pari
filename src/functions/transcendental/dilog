@@ -5,4 +5,4 @@ Prototype: Gp
 Help: dilog(x): dilogarithm of x.
 Doc: principal branch of the dilogarithm of $x$,
  i.e.~analytic continuation of the power series
- $\text{Li}_2(x)=\sum_{n\ge1}x^n/n^2$.
+ $\text{Li}_{2}(x)=\sum_{n\ge1}x^{n}/n^{2}$.

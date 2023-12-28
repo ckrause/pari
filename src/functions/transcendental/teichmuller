@@ -7,9 +7,9 @@ Help: teichmuller(x,{tab}): Teichmuller character of p-adic number x. If
  i = 1, ..., p-1. Such a vector can be fed back to teichmuller, as the
  optional argument tab, to speed up later computations.
 Doc: Teichm\"uller character of the $p$-adic number $x$, i.e. the unique
- $(p-1)$-th root of unity congruent to $x / p^{v_p(x)}$ modulo $p$.
+ $(p-1)$-th root of unity congruent to $x / p^{v_{p}(x)}$ modulo $p$.
  If $x$ is of the form $[p,n]$, for a prime $p$ and integer $n$,
- return the lifts to $\Z$ of the images of $i + O(p^n)$ for
+ return the lifts to $\Z$ of the images of $i + O(p^{n})$ for
  $i = 1, \dots, p-1$, i.e. all roots of $1$ ordered  by residue class modulo
  $p$. Such a vector can be fed back to \kbd{teichmuller}, as the
  optional argument \kbd{tab}, to speed up later computations.
@@ -23,7 +23,7 @@ Doc: Teichm\"uller character of the $p$-adic number $x$, i.e. the unique
  ? teichmuller(2 + O(101^5), T)
  %4 = 2 + 83*101 + 18*101^2 + 69*101^3 + 62*101^4 + O(101^5)
  @eprog\noindent As a rule of thumb, if more than
- $$p \,/\, 2(\log_2(p) + \kbd{hammingweight}(p))$$
+ $$p \,/\, 2(\log_{2}(p) + \kbd{hammingweight}(p))$$
  values of \kbd{teichmuller} are to be computed, then it is worthwile to
  initialize:
  \bprog

@@ -74,11 +74,11 @@ Doc:
  \kbd{agm} (arithmetic-geometric mean) are implemented.
 
  Note that in the case of a $2$-adic number, $\kbd{sqr}(x)$ may not be
- identical to $x*x$: for example if $x = 1+O(2^5)$ and $y = 1+O(2^5)$ then
- $x*y = 1+O(2^5)$ while $\kbd{sqr}(x) = 1+O(2^6)$. Here, $x * x$ yields the
+ identical to $x*x$: for example if $x = 1+O(2^{5})$ and $y = 1+O(2^{5})$ then
+ $x*y = 1+O(2^{5})$ while $\kbd{sqr}(x) = 1+O(2^{6})$. Here, $x * x$ yields the
  same result as $\kbd{sqr}(x)$ since the two operands are known to be
  \emph{identical}. The same statement holds true for $p$-adics raised to the
- power $n$, where $v_p(n) > 0$.
+ power $n$, where $v_{p}(n) > 0$.
 
  \misctitle{Remark} If we wanted to be strictly consistent with
  the PARI philosophy, we should have $x*y = (4 \mod 8)$ and $\kbd{sqr}(x) =

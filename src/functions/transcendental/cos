@@ -15,4 +15,4 @@ Doc: cosine of $x$.
  \bprog
  cs2(x) = my(z = exp(I*x), u = 1/z); [(z+u)/2, (z-u)/2];
  @eprog Note that the latter function suffers from catastrophic cancellation
- when $z^2 \approx \pm1$.
+ when $z^{2} \approx \pm1$.

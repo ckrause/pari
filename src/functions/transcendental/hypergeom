@@ -11,17 +11,19 @@ Doc: general hypergeometric function, where \kbd{N} and \kbd{D} are
  series.
 
  This function implements hypergeometric functions
- $$_pF_q((a_i)_{1\le i\le p},(b_j)_{1\le j\le q};z)
-    = \sum_{n\ge0}\dfrac{\prod_{1\le i\le p}(a_i)_n}{\prod_{1\le j\le q}(b_j)_n}
-       \dfrac{z^n}{n!}\;,$$
- where $(a)_n=a(a+1)\cdots(a+n-1)$ is the rising Pochammer symbol. For this
- to make sense, none of the $b_j$ must be a negative or zero integer. The
+ $$_{p}F_{q}((a_{i})_{1\le i\le p},(b_{j})_{1\le j\le q};z)
+    = \sum_{n\ge0}\dfrac{\prod_{1\le i\le p}(a_{i})_{n}}
+                        {\prod_{1\le j\le q}(b_{j})_{n}}
+       \dfrac{z^{n}}{n!}\;,$$
+ where $(a)_{n}=a(a+1)\cdots(a+n-1)$ is the rising Pochammer symbol. For this
+ to make sense, none of the $b_{j}$ must be a negative or zero integer. The
  corresponding general GP command is
  \bprog
    hypergeom([a1,a2,...,ap], [b1,b2,...,bq], z)
  @eprog\noindent Whenever $p = 1$ or $q = 1$, a one-element vector can be
  replaced by the element it contains. Whenever $p = 0$ or $q = 0$, an empty
- vector can be omitted. For instance hypergeom(,b,z) computes $_0F_1(;b;z)$.
+ vector can be omitted. For instance hypergeom(,b,z) computes
+ $_{0}F_{1}(;b;z)$.
 
  The non-archimedean cases ($z$ a $p$-adic or power series) are handled
  trivially. We now discuss the case of a complex $z$; we distinguish three
@@ -29,7 +31,7 @@ Doc: general hypergeometric function, where \kbd{N} and \kbd{D} are
 
  \item $q\ge p$: $R = \infty$.
 
- \item $q=p-1$: $R=1$. Nonetheless, by integral representations, $_pF_q$
+ \item $q=p-1$: $R=1$. Nonetheless, by integral representations, $_{p}F_{q}$
  can be analytically continued outside the disc of convergence.
 
  \item $q\le p-2$: $R=0$. By integral representations, one can make sense of
@@ -48,21 +50,22 @@ Doc: general hypergeometric function, where \kbd{N} and \kbd{D} are
  function, computed by summing the series. $R=\infty$
 
  \kbd{F20}: \kbd{hypergeom([a,b],,z)}. $R=0$, computed as
- $$\dfrac{1}{\Gamma(a)}\int_0^\infty t^{a-1}(1-zt)^{-b}e^{-t}\,dt\;.$$
+ $$\dfrac{1}{\Gamma(a)}\int_{0}^{\infty}  t^{a-1}(1-zt)^{-b}e^{-t}\,dt\;.$$
 
  \kbd{F21}: \kbd{hypergeom([a,b],c,z)} (or \kbd{[c]}).
  $R=1$, extended by
  $$\dfrac{\Gamma(c)}{\Gamma(b)\Gamma(c-b)}
-    \int_0^1 t^{b-1}(1-t)^{c-b-1}(1-zt)^a\,dt\;.$$
+    \int_{0}^{1} t^{b-1}(1-t)^{c-b-1}(1-zt)^{a}\,dt\;.$$
  This is Gauss's Hypergeometric function, and almost all of the implementation
  work is done for this function.
 
  \kbd{F31}: \kbd{hypergeom([a,b,c],d,z)} (or \kbd{[d]}). $R=0$, computed as
- $$\dfrac{1}{\Gamma(a)}\int_0^\infty t^{a-1}e^{-t}{}_2F_1(b,c;d;tz)\,dt\;.$$
+ $$\dfrac{1}{\Gamma(a)}\int_{0}^{\infty} t^{a-1}e^{-t}
+   {}_{2}F_{1}(b,c;d;tz)\,dt\;.$$
 
  \kbd{F32}: \kbd{hypergeom([a,b,c],[d,e],z)}. $R=1$, extended by
  $$\dfrac{\Gamma(e)}{\Gamma(c)\Gamma(e-c)}
-    \int_0^1t^{c-1}(1-t)^{e-c-1}{}_2F_1(a,b;d;tz)\,dt\;.$$
+    \int_{0}^{1}t^{c-1}(1-t)^{e-c-1}{}_{2}F_{1}(a,b;d;tz)\,dt\;.$$
 
  For other inputs: if $R=\infty$ or $R=1$ and $|z| < 1- \varepsilon$ is not
  too close to the circle of convergence, we simply sum the series.

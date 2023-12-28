@@ -8,19 +8,20 @@ Help: zetamultall(k,{flag=0}): list of all multiple zeta values for weight
  (else all values up to weight k), 3 = return the 2-component vector
  [Z, M], where M is the vector of the corresponding indices m, i.e., such that
  zetamult(M[i]) = Z[i].
-Doc: list of all multiple zeta values (MZVs) for weight $s_1 + \dots + s_r$
+Doc: list of all multiple zeta values (MZVs) for weight $s_{1} + \dots + s_{r}$
  up to $k$. Binary digits of $\fl$ mean : 0 = star values if set;
  1 = values up to to duality if set (see \kbd{zetamultdual}, ignored if
  star values); 2 = values of weight $k$ if set (else all values up to weight
  $k$); 3 = return the 2-component vector \kbd{[Z, M]}, where $M$ is the vector
  of the corresponding indices $m$, i.e., such that
  \kbd{zetamult(M[i])} = \kbd{Z[i]}. Note that it is necessary to use
- \kbd{zetamultconvert} to have the corresponding \kbd{avec} $(s_1,\dots, s_r)$.
+ \kbd{zetamultconvert} to have the corresponding \kbd{avec}
+ $(s_{1},\dots, s_{r})$.
 
  With default flag $\fl = 0$, the function returns a vector with $2^{k-1}-1$
  components whose $i$-th entry is the MZV of \kbd{index} $i$ (see
  \kbd{zetamult}). If the bit precision is $B$, this function runs in time
- $O(2^k k B^2)$ for an output of size $O(2^k B)$.
+ $O(2^{k} k B^{2})$ for an output of size $O(2^{k} B)$.
 
  \bprog
  ? Z = zetamultall(5); #Z \\ 2^4 - 1 MZVs of weight <= 5

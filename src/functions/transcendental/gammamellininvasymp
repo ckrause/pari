@@ -12,12 +12,12 @@ Help: gammamellininvasymp(A,n,{m=0}): return the first n terms of the
 Doc: Return the first $n$ terms of the asymptotic expansion at infinity
  of the $m$-th derivative $K^{(m)}(t)$ of the inverse Mellin transform of the
  function
- $$f(s) = \Gamma_\R(s+a_1)\*\ldots\*\Gamma_\R(s+a_d)\;,$$
- where \kbd{A} is the vector $[a_1,\ldots,a_d]$ and
- $\Gamma_\R(s)=\pi^{-s/2}\*\Gamma(s/2)$ (Euler's \kbd{gamma}).
+ $$f(s) = \Gamma_{\R}(s+a_{1})\*\ldots\*\Gamma_{\R}(s+a_{d})\;,$$
+ where \kbd{A} is the vector $[a_{1},\ldots,a_{d}]$ and
+ $\Gamma_{\R}(s)=\pi^{-s/2}\*\Gamma(s/2)$ (Euler's \kbd{gamma}).
  The result is a vector
  $[M[1]...M[n]]$ with M[1]=1, such that
  $$K^{(m)}(t)=\sqrt{2^{d+1}/d}t^{a+m(2/d-1)}e^{-d\pi t^{2/d}}
     \sum_{n\ge0} M[n+1] (\pi t^{2/d})^{-n} $$
- with $a=(1-d+\sum_{1\le j\le d}a_j)/d$. We also allow $A$ to be the output of
- \kbd{gammamellininvinit}.
+ with $a=(1-d+\sum_{1\le j\le d}a_{j})/d$. We also allow $A$ to be the
+ output of \kbd{gammamellininvinit}.
