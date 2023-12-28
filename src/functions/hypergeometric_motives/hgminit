@@ -10,21 +10,21 @@ Help: hgminit(a, {b}): Create the template for a hypergeometric
 Doc: Create the template for the hypergeometric motive with parameters
  $a$ and possibly $b$. The format of the parameters may be
 
- \item alpha: lists of rational numbers $a=(\alpha_j)$ and
- $b=(\beta_k)$ of the same length (and defined over~$\Q$); if $b$ is
+ \item alpha: lists of rational numbers $a=(\alpha_{j})$ and
+ $b=(\beta_{k})$ of the same length (and defined over~$\Q$); if $b$ is
  omitted, we take it to be $(0,\dots,0)$.
 
  \item cyclo: lists $a=D$ and $b=E$ of positive integers corresponding
- to the denominators of the $(\alpha_i)$ and $(\beta_i)$; if $b$ is omitted
+ to the denominators of the $(\alpha_{i})$ and $(\beta_{i})$; if $b$ is omitted
  we take it to be $(1,\dots,1)$. This is the simplest and most compact input
  format.
 
- \item gamma: list of $\gamma_n$ such that the
- $\prod_j(x-\exp(2\pi i\alpha_j)) / \prod_k(x-\exp(2\pi i\beta_k))
- = \prod_n(x^n-1)^{\gamma_n}$.
+ \item gamma: list of $\gamma_{n}$ such that the
+ $\prod_{j}(x-\exp(2\pi i\alpha_{j})) / \prod_{k}(x-\exp(2\pi i\beta_{k}))
+ = \prod_{n}(x^{n}-1)^{\gamma_{n}}$.
 
  The hypergeometric motive itself is given by a pair $(H,t)$, where $H$
- is a template as above and $t\in \Q^*$. Note that the motives given by
+ is a template as above and $t\in \Q^{*}$. Note that the motives given by
  $(\alpha, \beta; t)$ and $(\beta,\alpha; 1/t)$ are identical.
 
  \bprog

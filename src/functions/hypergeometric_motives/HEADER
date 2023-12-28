@@ -7,32 +7,35 @@ Doc:
  \subsec{Templates} %GPHELPskip
 
  A \emph{hypergeometric template} is a pair of multisets (i.e., sets with
- possibly repeated elements) of rational numbers $(\alpha_1,\dots,\alpha_d)$
- and $(\beta_1,\dots,\beta_d)$ having the same number of elements, and we set
- $$A(x)=\prod_{1\le j\le d}(x-e^{2\pi i\alpha_j}),\quad
- B(x)=\prod_{1\le k\le d}(x-e^{2\pi i\beta_k})\;.$$
+ possibly repeated elements) of rational numbers
+ $(\alpha_{1},\dots,\alpha_{d})$ and $(\beta_{1},\dots,\beta_{d})$
+ having the same number of elements, and we set
+ $$A(x)=\prod_{1\le j\le d}(x-e^{2\pi i\alpha_{j}}),\quad
+ B(x)=\prod_{1\le k\le d}(x-e^{2\pi i\beta_{k}})\;.$$
  We make the following assumptions:
 
- \item $\alpha_j-\beta_k\notin\Z$ for all $j$ and $k$, or
+ \item $\alpha_{j}-\beta_{k}\notin\Z$ for all $j$ and $k$, or
  equivalently $\gcd(A,B)=1$.
 
- \item $\alpha_j\notin\Z$ for all $j$, or equivalently $A(1)\ne0$.
+ \item $\alpha_{j}\notin\Z$ for all $j$, or equivalently $A(1)\ne0$.
 
  \item our template is \emph{defined over $\Q$}, in other words
  $A,B\in\Z[x]$, or equivalently if some $a/D$ with $\gcd(a,D)=1$ occurs
- in the $\alpha_j$ or $\beta_k$, then all the $b/D$ modulo $1$ with
+ in the $\alpha_{j}$ or $\beta_{k}$, then all the $b/D$ modulo $1$ with
  $\gcd(b,D)=1$ also occur.
 
- The last assumption allows to abbreviate $[a_1/D,\dots,a_{\phi(D)}/D]$
- (where the $a_i$ range in $(\Z/D\Z)^*$) to $[D]$. We thus have two possible
+ The last assumption allows to abbreviate $[a_{1}/D,\dots,a_{\phi(D)}/D]$
+ (where the $a_{i}$ range in $(\Z/D\Z)^{*}$) to $[D]$. We thus have two possible
  ways of giving a hypergeometric template: either by the two vectors
- $[\alpha_1,\dots,\alpha_d]$ and $[\beta_1,\dots,\beta_d]$, or by their
- denominators $[D_1,\dots,D_m]$ and $[E_1,\dots,E_n]$ , which are called the
- \emph{cyclotomic parameters}; note that $\sum_j\phi(D_j) = \sum_k\phi(E_k)=d$.
- A third way is to give the \emph{gamma vector} $(\gamma_n)$
- defined by $A(X)/B(X)=\prod_n(X^n-1)^{\gamma_n}$, which satisfies
- $\sum_n n\gamma_n=0$. To any such data we associate a hypergeometric template
- using the function \kbd{hgminit}; then the $\alpha_j$ and $\beta_k$
+ $[\alpha_{1},\dots,\alpha_{d}]$ and $[\beta_{1},\dots,\beta_{d}]$, or by their
+ denominators $[D_{1},\dots,D_{m}]$ and $[E_{1},\dots,E_{n}]$ , which are
+ called the
+ \emph{cyclotomic parameters}; note that $\sum_{j}\phi(D_{j})
+ = \sum_{k}\phi(E_{k}) = d$.
+ A third way is to give the \emph{gamma vector} $(\gamma_{n})$
+ defined by $A(X)/B(X)=\prod_{n}(X^{n}-1)^{\gamma_{n}}$, which satisfies
+ $\sum_{n} n\gamma_{n}=0$. To any such data we associate a hypergeometric template
+ using the function \kbd{hgminit}; then the $\alpha_{j}$ and $\beta_{k}$
  are obtained using \kbd{hgmalpha}, cyclotomic parameters
  using \kbd{hgmcyclo} and the gamma vectors using \kbd{hgmgamma}.
 
@@ -42,7 +45,7 @@ Doc:
  \kbd{https://arxiv.org/abs/2109.00027}:
  the degree $d$, the \emph{weight} $w$, a \emph{Hodge polynomial}~$P$,
  a \emph{Tate twist} $T$, and a normalizing M-factor
- $M = \prod_n n^{n\gamma_n}$. The \kbd{hgmparams} function returns
+ $M = \prod_{n} n^{n\gamma_{n}}$. The \kbd{hgmparams} function returns
  $$[d,w,[P,T],M]\;.$$
  Example with cyclotomic parameters $[5],[1,1,1,1]$:
  \bprog
@@ -60,9 +63,9 @@ Doc:
  \subsec{Motives} %GPHELPskip
 
  A \emph{hypergeometric motive} (HGM for short) is a pair $(H,t)$, where
- $H$ is a hypergeometric template and $t\in\Q^*$. To such a motive and a
- finite field $\F_q$ one can associate via an explicit but
- complicated formula an \emph{integer} $N_q(H,t)$, see Beukers, Cohen and
+ $H$ is a hypergeometric template and $t\in\Q^{*}$. To such a motive and a
+ finite field $\F_{q}$ one can associate via an explicit but
+ complicated formula an \emph{integer} $N_{q}(H,t)$, see Beukers, Cohen and
  Mellit, \emph{Finite hypergeometric functions} Pure and Applied Math
  Quarterly 11 (2015), pp 559 - 589, \kbd{https://arxiv.org/abs/1505.02900}.
 
@@ -72,13 +75,13 @@ Doc:
 
  This formula does not make sense and is not valid for \emph{bad
  primes}~$p$: a \emph{wild prime} is a prime which divides a denominator of
- the $\alpha_j$ or $\beta_i$. If a prime $p$ is not wild, it can be
- \emph{good} if $v_p(t)=v_p(t-1)=0$, or \emph{tame} otherwise.
+ the $\alpha_{j}$ or $\beta_{i}$. If a prime $p$ is not wild, it can be
+ \emph{good} if $v_{p}(t)=v_{p}(t-1)=0$, or \emph{tame} otherwise.
  The \emph{local Euler factor} at a good prime $p$ is then given by the
  (inverse of the) usual formula
- $$P_p(T)=\exp\left(-\sum_{f\ge1}\dfrac{N_{p^f}(H,t)}{f}T^f\right)\;,$$
+ $$P_{p}(T)=\exp\left(-\sum_{f\ge1}\dfrac{N_{p^{f}}(H,t)}{f}T^{f}\right)\;,$$
  and in the case of HGM's it is always a polynomial (note that the Euler factor
- used in the global $L$-function is $1/P_p(p^{-s})$). At a tame prime $p$ it
+ used in the global $L$-function is $1/P_{p}(p^{-s})$). At a tame prime $p$ it
  is necessary to modify the above formula, and usually (but not always) the
  degree of the local Euler factor decreases. Wild primes are currently not
  implemented by a formula but can be guessed via the global functional
@@ -96,9 +99,9 @@ Doc:
 
  \subsec{The Global $L$-function} %GPHELPskip
 
- A theorem of Katz tells us that if one suitably defines $P_p(T)$ for
+ A theorem of Katz tells us that if one suitably defines $P_{p}(T)$ for
  all primes $p$ including the wild ones, then the $L$-function defined
- by $L(H,s)=\prod_p P_p(p^{-s})^{-1}$ is motivic,
+ by $L(H,s)=\prod_{p} P_{p}(p^{-s})^{-1}$ is motivic,
  with analytic continuation and functional equation,
  as used in the $L$-function package of \kbd{Pari/GP}. The command
  \kbd{L = lfunhgm(H,t)} creates such an $L$-function. In particular it must

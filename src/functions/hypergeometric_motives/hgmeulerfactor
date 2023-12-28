@@ -9,8 +9,8 @@ Doc: $(H,t)$ being a hypergeometric motive, returns the inverse of its
  Euler factor at the prime $p$ and the exponent $e$ of the conductor at $p$.
  This is not implemented when $p$ is a wild prime: the function returns $0$ and
  sets $e$ to $-1$. Caveat: contrary to \kbd{lfuneuler}, this function returns
- the \emph{inverse} of the Euler factor, given by a polynomial $P_p$ such that
- the Euler factor is $1 / P_p(p^{-s})$.
+ the \emph{inverse} of the Euler factor, given by a polynomial $P_{p}$ such that
+ the Euler factor is $1 / P_{p}(p^{-s})$.
  \bprog
  ? H = hgminit([5]); \\ cyclotomic parameters [5] and [1,1,1,1]
  ? hgmeulerfactor(H, 1/2, 3)
