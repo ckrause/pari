@@ -11,8 +11,8 @@ Doc: this default is only usable if \kbd{gp}
  colors for its output. With xterms, the colormap used corresponds to the
  resources \kbd{Xterm*color$n$} where $n$ ranges from $0$ to $15$ (see the
  file \kbd{misc/color.dft} for an example). Accepted values for this
- default are strings \kbd{"$a_1$,\dots,$a_k$"} where $k\le7$ and each
- $a_i$ is either
+ default are strings \kbd{"$a_{1}$,\dots,$a_{k}$"} where $k\le7$ and each
+ $a_{i}$ is either
 
  \noindent\item the keyword \kbd{no} (use the default color, usually
  black on transparent background)
@@ -20,14 +20,14 @@ Doc: this default is only usable if \kbd{gp}
  \noindent\item an integer between 0 and 15 corresponding to the
  aforementioned colormap
 
- \noindent\item a triple $[c_0,c_1,c_2]$ where $c_0$ stands for foreground
- color, $c_1$ for background color, and $c_2$ for attributes (0 is default, 1
- is bold, 4 is underline).
+ \noindent\item a triple $[c_{0},c_{1},c_{2}]$ where $c_{0}$ stands for
+ foreground color, $c_{1}$ for background color, and $c_{2}$ for attributes
+ (0 is default, 1 is bold, 4 is underline).
 
  The output objects thus affected are respectively error messages,
  history numbers, prompt, input line, output, help messages, timer (that's
- seven of them). If $k < 7$, the remaining $a_i$ are assumed to be $no$. For
- instance
+ seven of them). If $k < 7$, the remaining $a_{i}$ are assumed to be \kbd{no}.
+ For instance
  %
  \bprog
  default(colors, "9, 5, no, no, 4")
