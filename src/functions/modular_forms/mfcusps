@@ -3,7 +3,7 @@ Section: modular_forms
 C-Name: mfcusps
 Prototype: G
 Help: mfcusps(N): list of cusps of G_0(N) in the form a/b with b dividing N.
-Doc: let $N$ be a positive integer. Return the list of cusps of $\Gamma_0(N)$
+Doc: let $N$ be a positive integer. Return the list of cusps of $\Gamma_{0}(N)$
  in the form $a/b$ with $b\mid N$.
  \bprog
  ? mfcusps(24)

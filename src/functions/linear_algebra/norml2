@@ -10,7 +10,7 @@ Doc: square of the $L^{2}$-norm of $x$. More precisely,
  defined recursively as $\sum_{i} \kbd{norml2}(x_{i})$, where $(x_{i})$
  run through
  the components of $x$. In particular, this yields the usual
- $\sum_i |x_{i}|^{2}$ (resp.~$\sum_{i,j} |x_{i,j}|^{2}$) if $x$ is a
+ $\sum_{i} |x_{i}|^{2}$ (resp.~$\sum_{i,j} |x_{i,j}|^{2}$) if $x$ is a
  polynomial or vector (resp.~matrix) with complex components.
 
  \bprog

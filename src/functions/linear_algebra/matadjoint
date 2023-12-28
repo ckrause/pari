@@ -23,7 +23,7 @@ Doc:
 
  [Mod(1, 4) Mod(1, 4) Mod(2, 4)]
  @eprog\noindent
- Both algorithms use $O(n^4)$ operations in the base ring. Over a field,
+ Both algorithms use $O(n^{4})$ operations in the base ring. Over a field,
  they are usually slower than computing the characteristic polynomial or
  the inverse of $M$ directly.
 Variant: Also available are

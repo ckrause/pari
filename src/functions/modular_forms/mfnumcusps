@@ -3,7 +3,7 @@ Section: modular_forms
 C-Name: mfnumcusps
 Prototype: G
 Help: mfnumcusps(N): number of cusps of Gamma_0(N)
-Doc: number of cusps of $\Gamma_0(N)$
+Doc: number of cusps of $\Gamma_{0}(N)$
  \bprog
  ? mfnumcusps(24)
  %1 = 8

@@ -10,9 +10,9 @@ Doc:
  a two-component vector $[u,v]$ of power series, given to $n$ significant
  terms (\tet{seriesprecision} by default), characterized by the following two
  properties. First the point $(u,v)$ satisfies the equation of the elliptic
- curve. Second, let $N$ be the conductor of $E$ and $\Phi: X_0(N)\to E$
+ curve. Second, let $N$ be the conductor of $E$ and $\Phi: X_{0}(N)\to E$
  be a modular parametrization; the pullback by $\Phi$ of the
- N\'eron differential $du/(2v+a_1u+a_3)$ is equal to $2i\pi
+ N\'eron differential $du/(2v+a_{1}u+a_{3})$ is equal to $2i\pi
  f(z)dz$, a holomorphic differential form. The variable used in the power
  series for $u$ and $v$ is $x$, which is implicitly understood to be equal to
  $\exp(2i\pi z)$.

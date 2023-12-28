@@ -5,7 +5,7 @@ Prototype: GD&
 Help: ellintegralmodel(E,{&v}): given an elliptic curve E defined
  over a number field or Qp, returns an integral model. If v is present,
  sets the variable v to the corresponding change of variable.
-Doc: Let $E$ be an \kbd{ell} structure over a number field $K$ or $\Q_p$.
+Doc: Let $E$ be an \kbd{ell} structure over a number field $K$ or $\Q_{p}$.
  This function returns an integral model. If $v$ is present, sets
  $v = [u,0,0,0]$ to the corresponding change of variable: the return value is
  identical to that of \kbd{ellchangecurve(E, v)}.

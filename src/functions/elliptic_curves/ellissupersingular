@@ -5,7 +5,7 @@ Prototype: iGDG
 Help: ellissupersingular(E,{p}): return 1 if the elliptic curve E, defined
  over a number field or a finite field, is supersingular at p, and 0 otherwise.
 Doc:
- Return 1 if the elliptic curve $E$ defined over a number field, $\Q_p$
+ Return 1 if the elliptic curve $E$ defined over a number field, $\Q_{p}$
  or a finite field is supersingular at $p$, and $0$ otherwise.
  If the curve is defined over $\Q$ or a number field, $p$ must be explicitly
  given, and must be a prime number, resp.~a maximal ideal; we return $1$ if and

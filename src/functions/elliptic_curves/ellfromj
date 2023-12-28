@@ -4,7 +4,8 @@ C-Name: ellfromj
 Prototype: G
 Help: ellfromj(j): returns the coefficients [a1,a2,a3,a4,a6] of a fixed
  elliptic curve with j-invariant j.
-Doc: returns the coefficients $[a_1,a_2,a_3,a_4,a_6]$ of a fixed elliptic curve
+Doc: returns the coefficients $[a_{1},a_{2},a_{3},a_{4},a_{6}]$ of a fixed
+ elliptic curve
  with $j$-invariant $j$. The given model is arbitrary; for instance, over the
  rationals, it is in general not minimal nor even integral.
  \bprog

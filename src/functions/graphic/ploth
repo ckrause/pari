@@ -115,6 +115,7 @@ Doc: high precision plot of the function $y=f(x)$ represented by the expression
  @eprog\noindent will draw respectively a circle and a circle cut by the line
  $y=x$.
 
- \item $8192 = \kbd{no_MinMax}$: do not print the boundary numbers (in both directions).
+ \item $8192 = \kbd{no\_MinMax}$: do not print the boundary numbers (in both
+ directions).
 
  \synt{ploth}{void *E, GEN (*eval)(void*, GEN), GEN a, GEN b, long flag, long n, long prec},

@@ -14,7 +14,7 @@ Doc: \sidx{algebraic dependence}
  roots of the polynomial given by \kbd{algdep} (use \tet{polroots} or
  \tet{polrootspadic}).
 
- Internally, \tet{lindep}$([1,z,\ldots,z^k], \fl)$ is used. A nonzero value of
+ Internally, \tet{lindep}$([1,z,\ldots,z^{k}], \fl)$ is used. A nonzero value of
  $\fl$ may improve on the default behavior if the input number is known to a
  \emph{huge} accuracy, and you suspect the last bits are incorrect: if $\fl > 0$
  the computation is done with an accuracy of $\fl$ decimal  digits; to get

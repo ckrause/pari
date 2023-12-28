@@ -4,7 +4,7 @@ C-Name: mfshift
 Prototype: GL
 Help: mfshift(F,s): Divide the form F by q^s omitting the remainder if there
  is one; s can be negative.
-Doc: Divide the generalized modular form $F$ by $q^s$, omitting the remainder
+Doc: Divide the generalized modular form $F$ by $q^{s}$, omitting the remainder
  if there is one. One can have $s<0$.
  \bprog
  ? D=mfDelta(); mfcoefs(mfshift(D,1), 4)

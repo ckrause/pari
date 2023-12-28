@@ -13,7 +13,7 @@ Doc:
  the result is a matrix $M$ whose diagonal entries are the coefficients of the
  squares, and the off-diagonal entries on each line represent the bilinear
  forms. More precisely, if $(a_{ij})$ denotes the output, one has
- $$ q(x) = \sum_{i} a_{i,i} (x_{i} + \sum_{j \neq i} a_{i,j} x_{j})^2 $$
+ $$ q(x) = \sum_{i} a_{i,i} (x_{i} + \sum_{j \neq i} a_{i,j} x_{j})^{2} $$
  \bprog
  ? qfgaussred([0,1;1,0])
  %1 =

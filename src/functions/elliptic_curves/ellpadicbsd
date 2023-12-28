@@ -7,7 +7,7 @@ Help: ellpadicbsd(E, p, n, {D = 1}): returns [r,Lp] where
  to the quadratic twist E_D and Lp is (conjecturally) equal
  to the product of the p-adic regulator and the cardinal of the
  Tate-Shafarevich group.
-Doc: Given an elliptic curve $E$ over $\Q$, its quadratic twist $E_D$
+Doc: Given an elliptic curve $E$ over $\Q$, its quadratic twist $E_{D}$
  and a prime number $p$, this function is a $p$-adic analog of the complex
  functions \tet{ellanalyticrank} and \tet{ellbsd}. It calls \kbd{ellpadicL}
  with initial accuracy $p^{n}$ and may increase it internally;

@@ -17,12 +17,8 @@ Doc:
  If present, $m$ is set to the mapping from the original model to the new
  one: a three-component vector $[e,[a,b;c,d],H]$ such that
  if $(x,y)$ is a point on $W$, the corresponding point on $C$ is given by
- $$
-   x_C = (a*x+b)/(c*x+d)
- $$
- $$
-   y_C = (e*y+H(x))/(c*x+d)^{g+1}
- $$
+ $$ x_{C} = (a*x+b)/(c*x+d) $$
+ $$ y_{C} = (e*y+H(x))/(c*x+d)^{g+1} $$
  where $g$ is the genus.
  $C$ can be given either by a squarefree polynomial $P$ such that
  $C: y^{2} = P(x)$ or by a vector $[P,Q]$ such that

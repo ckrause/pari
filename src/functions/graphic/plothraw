@@ -11,4 +11,4 @@ Doc: given $X$ and $Y$ two vectors of equal length, plots (in
  $X$ and $Y$. Automatic positioning and scaling is done, but
  with the same scaling factor on $x$ and $y$. If $\fl$ is 1, join points,
  other nonzero flags toggle display options and should be combinations of bits
- $2^k$, $k \geq 3$ as in \kbd{ploth}.
+ $2^{k}$, $k \geq 3$ as in \kbd{ploth}.

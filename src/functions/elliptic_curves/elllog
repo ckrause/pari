@@ -5,7 +5,7 @@ Prototype: GGGDG
 Help: elllog(E,P,G,{o}): return the discrete logarithm of the point P of
  the elliptic curve E in base G. If present, o represents the order of G.
  If not present, assume that G generates the curve.
-Doc: given two points $P$ and $G$ on the elliptic curve $E/\F_q$, returns the
+Doc: given two points $P$ and $G$ on the elliptic curve $E/\F_{q}$, returns the
  discrete logarithm of $P$ in base $G$, i.e. the smallest nonnegative
  integer $n$ such that $P = [n]G$.
  See \tet{znlog} for the limitations of the underlying discrete log algorithms.
