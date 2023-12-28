@@ -65,7 +65,7 @@ Doc:
  A \emph{hypergeometric motive} (HGM for short) is a pair $(H,t)$, where
  $H$ is a hypergeometric template and $t\in\Q^{*}$. To such a motive and a
  finite field $\F_{q}$ one can associate via an explicit but
- complicated formula an \emph{integer} $N_{q}(H,t)$, see Beukers, Cohen and
+ complicated formula an \emph{integer} $N(H,t; q)$, see Beukers, Cohen and
  Mellit, \emph{Finite hypergeometric functions} Pure and Applied Math
  Quarterly 11 (2015), pp 559 - 589, \kbd{https://arxiv.org/abs/1505.02900}.
 
@@ -77,11 +77,12 @@ Doc:
  primes}~$p$: a \emph{wild prime} is a prime which divides a denominator of
  the $\alpha_{j}$ or $\beta_{i}$. If a prime $p$ is not wild, it can be
  \emph{good} if $v_{p}(t)=v_{p}(t-1)=0$, or \emph{tame} otherwise.
- The \emph{local Euler factor} at a good prime $p$ is then given by the
- (inverse of the) usual formula
- $$P_{p}(T)=\exp\left(-\sum_{f\ge1}\dfrac{N_{p^{f}}(H,t)}{f}T^{f}\right)\;,$$
- and in the case of HGM's it is always a polynomial (note that the Euler factor
- used in the global $L$-function is $1/P_{p}(p^{-s})$). At a tame prime $p$ it
+ The \emph{local Euler factor} $P_{p}$ at a good prime $p$ is then given by
+ the usual formula
+ $$-\log P_{p}(T) = \sum_{f\ge1} \dfrac{N(H,t; p^{f}) T^{f}}{f} \;,$$
+ and in the case of HGM's $P_{p}$ is always a polynomial (note that the Euler
+ factor used in the global $L$-function is $1/P_{p}(p^{-s})$). At a tame prime
+ $p$ it
  is necessary to modify the above formula, and usually (but not always) the
  degree of the local Euler factor decreases. Wild primes are currently not
  implemented by a formula but can be guessed via the global functional
