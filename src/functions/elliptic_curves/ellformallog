@@ -5,7 +5,7 @@ Prototype: GDPDn
 Help:ellformallog(E, {n = seriesprecision}, {v = 'x}): E elliptic curve,
  returns n terms of the elliptic logarithm as a series of t =-x/y.
 Doc: The formal elliptic logarithm is a series $L$ in $t K[[t]]$
- such that $d L = \omega = dx / (2y + a_1x + a_3)$, the canonical invariant
+ such that $d L = \omega = dx / (2y + a_{1}x + a_{3})$, the canonical invariant
  differential attached to the model $E$. It gives an isomorphism
  from the formal group of $E$ to the additive formal group.
  \bprog

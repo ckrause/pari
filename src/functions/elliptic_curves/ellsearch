@@ -21,9 +21,9 @@ Doc: This function finds all curves in the \tet{elldata} database satisfying
  \item if $N$ is an integer, curves with conductor $N$ are selected.
 
  If $N$ codes a full curve name, for instance \kbd{"11a1"} or \kbd{[11,0,1]},
- the output format is $[N, [a_1,a_2,a_3,a_4,a_6], G]$ where
- $[a_1,a_2,a_3,a_4,a_6]$ are the coefficients of the Weierstrass equation of
- the curve and $G$ is a $\Z$-basis of the free part of the
+ the output format is $[N, [a_{1},a_{2},a_{3},a_{4},a_{6}], G]$ where
+ $[a_{1},a_{2},a_{3},a_{4},a_{6}]$ are the coefficients of the Weierstrass
+ equation of the curve and $G$ is a $\Z$-basis of the free part of the
  \idx{Mordell-Weil group} attached to the curve.
  \bprog
  ? ellsearch("11a3")

@@ -9,7 +9,7 @@ Help: ellbsd(E): E being an elliptic curve over a number field,
 Doc:
  $E$ being an elliptic curve over a number field, returns a real
  number $c$ such that the Birch and Swinnerton-Dyer conjecture predicts that
- $L_E^{(r)}(1)/r!{} = c\*R\*S$, where $r$ is the rank, $R$ the regulator and
+ $L_{E}^{(r)}(1)/r!{} = c\*R\*S$, where $r$ is the rank, $R$ the regulator and
  $S$ the cardinal of the Tate-Shafarevich group.
 
  \bprog

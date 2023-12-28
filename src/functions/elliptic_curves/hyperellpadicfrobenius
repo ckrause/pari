@@ -11,7 +11,7 @@ Doc:
  Let $X$ be the curve defined by $y^{2}=Q(x)$, where $Q$ is a polynomial of
  degree $d$ over $\Q$ and $q\ge d$ is a prime such that $X$ has good reduction
  at $q$. Return the matrix of the Frobenius endomorphism $\varphi$ on the
- crystalline module $D_p(X) = \Q_p \otimes H^{1}_{dR}(X/\Q)$ with respect to the
+ crystalline module $D_{p}(X) = \Q_{p} \otimes H^{1}_{dR}(X/\Q)$ with respect to the
  basis of the given model $(\omega, x\*\omega,\ldots,x^{g-1}\*\omega)$, where
  $\omega = dx/(2\*y)$ is the invariant differential, where $g$ is the genus of
  $X$ (either $d=2\*g+1$ or $d=2\*g+2$).  The characteristic polynomial of
@@ -20,9 +20,9 @@ Doc:
 
  Alternatively, $q$ may be of the form $[T,p]$ where $p$ is a prime,
  $T$ is a polynomial with integral coefficients whose projection to
- $\F_p[t]$ is irreducible, $X$ is defined over $K = \Q[t]/(T)$ and has good
- reduction to the finite field $\F_q = \F_p[t]/(T)$. The matrix of
- $\varphi$ on $D_q(X) = \Q_q \otimes H^{1}_{dR}(X/K)$ is computed
+ $\F_{p}[t]$ is irreducible, $X$ is defined over $K = \Q[t]/(T)$ and has good
+ reduction to the finite field $\F_{q} = \F_{p}[t]/(T)$. The matrix of
+ $\varphi$ on $D_{q}(X) = \Q_{q} \otimes H^{1}_{dR}(X/K)$ is computed
  to absolute $p$-adic precision $p^{n}$.
 
  \bprog

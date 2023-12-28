@@ -10,20 +10,20 @@ Help: ellweilcurve(E, {&ms}): let E be an elliptic curve over Q given by
  it contains the output of msfromell(Emin,0) where Emin is the list of minimal
  models attached to the curves in the isogeny class.
 Doc: If $E'$ is an elliptic curve over $\Q$, let $L_{E'}$ be the
- sub-$\Z$-module of $\Hom_{\Gamma_0(N)}(\Delta_0,\Q)$ attached to $E'$
+ sub-$\Z$-module of $\Hom_{\Gamma_{0}(N)}(\Delta_{0},\Q)$ attached to $E'$
  (It is given by $x[3]$ if $[M,x] = \kbd{msfromell}(E')$.)
 
  On the other hand, if $N$ is the conductor of $E$ and $f$ is the modular form
- for $\Gamma_0(N)$ attached to $E$, let $L_f$ be the lattice of the
- $f$-component of $\Hom_{\Gamma_0(N)}(\Delta_0,\Q)$ given by the elements
+ for $\Gamma_{0}(N)$ attached to $E$, let $L_{f}$ be the lattice of the
+ $f$-component of $\Hom_{\Gamma_{0}(N)}(\Delta_{0},\Q)$ given by the elements
  $\phi$ such that $\phi(\{0,\gamma^{-1} 0\}) \in \Z$ for all
- $\gamma \in \Gamma_0(N)$ (see \tet{mslattice}).
+ $\gamma \in \Gamma_{0}(N)$ (see \tet{mslattice}).
 
  Let $E'$ run through the isomorphism classes of elliptic curves
  isogenous to $E$ as given by \kbd{ellisomat} (and in the same order).
  This function returns a pair \kbd{[vE,vS]} where \kbd{vE} contains minimal
  models for the $E'$ and \kbd{vS} contains the list of Smith invariants for
- the lattices $L_{E'}$ in $L_f$. The function also accepts the output of
+ the lattices $L_{E'}$ in $L_{f}$. The function also accepts the output of
  \kbd{ellisomat}, i.e. the isogeny class. If the optional argument \kbd{ms}
  is present, it contains the output of \kbd{msfromell(vE, 0)}, i.e. the new
  modular symbol space $M$ of level $N$ and a vector of triples

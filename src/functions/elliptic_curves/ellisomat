@@ -13,15 +13,15 @@ Doc:
  Given an elliptic curve $E$ defined over a number field $K$, compute
  representatives of the isomorphism classes of elliptic curves defined over
  $K$ and $K$-isogenous to $E$, assuming it is finite (see below).
- For any such curve $E_i$, let $f_i: E \to E_i$ be a rational isogeny
- of minimal degree and let $g_i: E_i \to E$ be the dual isogeny; and let $M$
- be the matrix such that $M_{i,j}$ is the minimal degree for an isogeny $E_i
- \to E_j$.
+ For any such curve $E_{i}$, let $f_{i}: E \to E_{i}$ be a rational isogeny
+ of minimal degree and let $g_{i}: E_{i} \to E$ be the dual isogeny; and let
+ $M$ be the matrix such that $M_{i,j}$ is the minimal degree for an isogeny
+ $E_{i} \to E_{j}$.
 
  The function returns a vector $[L,M]$ where $L$ is a list of triples
- $[E_i, f_i, g_i]$ ($\fl = 0$), or simply the list of $E_i$ ($\fl = 1$,
- which saves time). The curves $E_i$ are given in $[a_4,a_6]$ form and the
- first curve $E_1$ is isomorphic to $E$ by $f_1$.
+ $[E_{i}, f_{i}, g_{i}]$ ($\fl = 0$), or simply the list of $E_{i}$ ($\fl = 1$,
+ which saves time). The curves $E_{i}$ are given in $[a_{4},a_{6}]$ form and
+ the first curve $E_{1}$ is isomorphic to $E$ by $f_{1}$.
 
  The set of isomorphism classes is finite except when $E$ has CM over an
  quadratic order contained in $K$. In that case the function only returns the

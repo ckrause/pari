@@ -11,28 +11,28 @@ Doc: Given an elliptic curve $E$ over $\Q$, its quadratic twist $E_D$
  and a prime number $p$, this function is a $p$-adic analog of the complex
  functions \tet{ellanalyticrank} and \tet{ellbsd}. It calls \kbd{ellpadicL}
  with initial accuracy $p^{n}$ and may increase it internally;
- it returns a vector $[r, L_p]$ where
+ it returns a vector $[r, L_{p}]$ where
 
- \item $L_p$ is a $p$-adic number (resp. a pair of $p$-adic numbers if
+ \item $L_{p}$ is a $p$-adic number (resp. a pair of $p$-adic numbers if
  $E$ has good supersingular reduction) defined modulo $p^{N}$, conjecturally
- equal to $R_p S$, where $R_p$ is the $p$-adic regulator as given by
+ equal to $R_{p} S$, where $R_{p}$ is the $p$-adic regulator as given by
  \tet{ellpadicregulator} (in the basis $(\omega, F \omega)$) and $S$ is the
- cardinal of the Tate-Shafarevich group for the quadratic twist $E_D$.
+ cardinal of the Tate-Shafarevich group for the quadratic twist $E_{D}$.
 
  \item $r$ is an upper bound for the analytic rank of the $p$-adic
- $L$-function attached to $E_D$: we know for sure that the $i$-th
- derivative of $L_p(E_D,.)$ at $\chi^{0}$ is $O(p^{N})$ for all $i < r$
+ $L$-function attached to $E_{D}$: we know for sure that the $i$-th
+ derivative of $L_{p}(E_{D},.)$ at $\chi^{0}$ is $O(p^{N})$ for all $i < r$
  and that its $r$-th derivative is nonzero; it is expected that the true
- analytic rank is equal to the rank of the Mordell-Weil group $E_D(\Q)$,
- plus $1$ if the reduction of $E_D$ at $p$ is split multiplicative;
+ analytic rank is equal to the rank of the Mordell-Weil group $E_{D}(\Q)$,
+ plus $1$ if the reduction of $E_{D}$ at $p$ is split multiplicative;
  if $r = 0$, then both the analytic rank and the Mordell-Weil rank are
  unconditionnally $0$.
 
  Recall that the $p$-adic BSD conjecture (Mazur, Tate, Teitelbaum, Bernardi,
- Perrin-Riou) predicts an explicit link between $R_p S$ and
- $$(1-p^{-1}  F)^{-2} \cdot L_p^{(r)}(E_D, \chi^{0}) / r! $$
+ Perrin-Riou) predicts an explicit link between $R_{p} S$ and
+ $$(1-p^{-1}  F)^{-2} \cdot L_{p}^{(r)}(E_{D}, \chi^{0}) / r! $$
  where $r$ is the analytic rank of the $p$-adic $L$-function attached to
- $E_D$ and $F$ is the Frobenius on $H^{1}_{dR}$; see \tet{ellpadicL}
+ $E_{D}$ and $F$ is the Frobenius on $H^{1}_{dR}$; see \tet{ellpadicL}
  for definitions.
  \bprog
  ? E = ellinit("11a1"); p = 7; n = 5; \\ good ordinary

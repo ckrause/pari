@@ -9,21 +9,21 @@ Help: ellap(E,{p}): given an elliptic curve E defined over
  return the order of the (nonsingular) reduction of E.
 Doc:
  Let \kbd{E} be an \kbd{ell} structure as output by \kbd{ellinit}, attached
- to an elliptic curve $E/K$. If the field $K = \F_q$ is finite, return the
- trace of Frobenius $t$, defined by the equation $\#E(\F_q) = q+1 - t$.
+ to an elliptic curve $E/K$. If the field $K = \F_{q}$ is finite, return the
+ trace of Frobenius $t$, defined by the equation $\#E(\F_{q}) = q+1 - t$.
 
  For other fields of definition and $p$ defining a finite residue field
- $\F_q$, return the trace of Frobenius for the reduction of $E$: the argument
- $p$ is best left omitted if $K = \Q_\ell$ (else we must have $p = \ell$) and
+ $\F_{q}$, return the trace of Frobenius for the reduction of $E$: the argument
+ $p$ is best left omitted if $K = \Q_{\ell}$ (else we must have $p = \ell$) and
  must be a prime number ($K = \Q$) or prime ideal ($K$ a general number field)
- with residue field $\F_q$ otherwise. The equation need not be minimal
+ with residue field $\F_{q}$ otherwise. The equation need not be minimal
  or even integral at $p$; of course, a minimal model will be more efficient.
 
- For a number field $K$, the trace of Frobenius is the $a_p$
+ For a number field $K$, the trace of Frobenius is the $a_{p}$
  coefficient in the Euler product defining the curve $L$-series, whence
  the function name:
- $$L(E/K,s) = \prod_{\text{bad}\ p} (1-a_p (Np)^{-s})^{-1}
-              \prod_{\text{good}\ p} (1-a_p (Np)^{-s} + (Np)^{1-2s})^{-1}. $$
+ $$L(E/K,s) = \prod_{\text{bad}\ p} (1-a_{p} (Np)^{-s})^{-1}
+              \prod_{\text{good}\ p} (1-a_{p} (Np)^{-s} + (Np)^{1-2s})^{-1}. $$
 
  When the characteristic of the finite field is large, the availability of
  the \kbd{seadata} package will speed up the computation.
@@ -83,7 +83,7 @@ Doc:
   *** ellap: impossible inverse in Rg_to_ff: Mod(0, 3).
  @eprog
 
- \misctitle{Algorithms used} If $E/\F_q$ has CM by a principal imaginary
+ \misctitle{Algorithms used} If $E/\F_{q}$ has CM by a principal imaginary
  quadratic order we use a fast explicit formula (involving essentially
  Kronecker symbols and Cornacchia's algorithm), in $O(\log q)^{2}$ bit
  operations.

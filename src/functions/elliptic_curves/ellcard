@@ -8,8 +8,8 @@ Help: ellcard(E,{p}): given an elliptic curve E defined over
  (p prime for K = Qp or Q; p a maximal ideal for K a number field),
  return the order of the (nonsingular) reduction of E.
 Doc: Let \kbd{E} be an \kbd{ell} structure as output by \kbd{ellinit}, attached
- to an elliptic curve $E/K$. If $K = \F_q$ is finite, return the order of the
- group $E(\F_q)$.
+ to an elliptic curve $E/K$. If $K = \F_{q}$ is finite, return the order of the
+ group $E(\F_{q})$.
  \bprog
  ? E = ellinit([-3,1], 5); ellcard(E)
  %1 = 7
@@ -17,10 +17,10 @@ Doc: Let \kbd{E} be an \kbd{ell} structure as output by \kbd{ellinit}, attached
  %2 = 217
  @eprog\noindent
  For other fields of definition and $p$ defining a finite residue field
- $\F_q$, return the order of the reduction of $E$: the argument $p$ is best
- left omitted if $K = \Q_\ell$ (else we must have $p = \ell$) and must be a
+ $\F_{q}$, return the order of the reduction of $E$: the argument $p$ is best
+ left omitted if $K = \Q_{\ell}$ (else we must have $p = \ell$) and must be a
  prime number ($K = \Q$) or prime ideal ($K$ a general number field) with
- residue field $\F_q$ otherwise. The equation need not be minimal
+ residue field $\F_{q}$ otherwise. The equation need not be minimal
  or even integral at $p$; of course, a minimal model will be more efficient.
  The function considers the group of nonsingular points of the reduction
  of a minimal model of the curve at $p$, so also makes sense when the curve

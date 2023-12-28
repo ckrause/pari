@@ -5,7 +5,7 @@ Prototype: GG
 Help: ellak(E,n): computes the n-th Fourier coefficient of the L-function of
  the elliptic curve E (assumes E is an integral model).
 Doc:
- computes the coefficient $a_n$ of the $L$-function of the elliptic curve
+ computes the coefficient $a_{n}$ of the $L$-function of the elliptic curve
  $E/\Q$, i.e.~coefficients of a newform of weight 2 by the modularity theorem
  (\idx{Taniyama-Shimura-Weil conjecture}). $E$ must be an \kbd{ell} structure
  over $\Q$ as output by \kbd{ellinit}. $E$ must be given by an integral model,

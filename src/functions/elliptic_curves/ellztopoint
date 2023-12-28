@@ -30,7 +30,7 @@ Doc:
  @eprog
 
  \item If $E$ is defined over the complex numbers (for instance over $\Q$),
- $z$ is understood as a complex number in $\C/\Lambda_E$. If the
+ $z$ is understood as a complex number in $\C/\Lambda_{E}$. If the
  short Weierstrass equation is $y^{2} = 4x^{3} - g_{2}x - g_{3}$, then $[x,y]$
  represents the Weierstrass $\wp$-function\sidx{Weierstrass $\wp$-function}
  and its derivative. For a general Weierstrass equation we have

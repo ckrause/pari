@@ -10,12 +10,12 @@ Doc: $k$ being an even positive integer, computes the numerical value of the
  Eisenstein series of weight $k$ at the lattice $w$, as given by
  \tet{ellperiods}, namely
  $$
- (2i \pi/\omega_2)^{k}
+ (2i \pi/\omega_{2})^{k}
  \Big(1 + 2/\zeta(1-k) \sum_{n\geq 1} n^{k-1}q^{n} / (1-q^{n})\Big),
  $$
- where $q = \exp(2i\pi \tau)$ and $\tau:=\omega_1/\omega_2$ belongs to the
+ where $q = \exp(2i\pi \tau)$ and $\tau:=\omega_{1}/\omega_{2}$ belongs to the
  complex upper half-plane. It is also possible to directly input $w =
- [\omega_1,\omega_2]$, or an elliptic curve $E$ as given by \kbd{ellinit}.
+ [\omega_{1},\omega_{2}]$, or an elliptic curve $E$ as given by \kbd{ellinit}.
  \bprog
  ? w = ellperiods([1,I]);
  ? elleisnum(w, 4)

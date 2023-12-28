@@ -9,7 +9,7 @@ Doc: For any affine point $P = (t,u)$ on the curve $E$, we have
  for some $\phi_{n},\omega_{n},\psi_{n}$ in $\Z[a_{1},a_{2},a_{3},a_{4},a_{6}][t,u]$
  modulo the curve equation. This function returns a pair $[A,B]$ of polynomials
  in $\Z[a_{1},a_{2},a_{3},a_{4},a_{6}][v]$ such that $[A(t),B(t)]
- = [\phi_{n}(P),\psi_{n}(P)^2]$ in the function field of $E$,
+ = [\phi_{n}(P),\psi_{n}(P)^{2}]$ in the function field of $E$,
  whose quotient give the abscissa of $[n]P$. If $P$ is an $n$-torsion point,
  then $B(t) = 0$.
  \bprog

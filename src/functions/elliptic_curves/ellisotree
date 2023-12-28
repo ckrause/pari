@@ -13,8 +13,9 @@ Doc: Given an elliptic curve $E$ defined over $\Q$ or a set of
  curves $\Q$-isogenous to $E$ (or in the set of isogenous curves),
 
  \item $M$ is the adjacency matrix of the prime degree isogenies tree:
- there is an edge from $E_i$ to $E_j$ if there is an isogeny $E_i \to E_j$ of
- prime degree such that the N\'eron differential forms are preserved.
+ there is an edge from $E_{i}$ to $E_{j}$ if there is an isogeny $E_{i} \to
+ E_{j}$ of prime degree such that the N\'eron differential forms are
+ preserved.
 
  \bprog
  ? E = ellinit("14a1");

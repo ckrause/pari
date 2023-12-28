@@ -8,8 +8,8 @@ Help: ellsea(E,{tors=0}): computes the order of the group E(Fq)
  using SEA algorithm, with early abort for curves (or their quadratic
  twist) with nonprime order.
 Doc: Let $E$ be an \var{ell} structure as output by \kbd{ellinit}, defined over
- a finite field $\F_q$. This low-level function computes the order of the
- group $E(\F_q)$ using the SEA algorithm; compared to the high-level
+ a finite field $\F_{q}$. This low-level function computes the order of the
+ group $E(\F_{q})$ using the SEA algorithm; compared to the high-level
  function \kbd{ellcard}, which includes SEA among its choice of algorithms,
  the \kbd{tors} argument allows to speed up a search for curves having almost
  prime order and whose quadratic twist may also have almost prime order.
@@ -17,7 +17,7 @@ Doc: Let $E$ be an \var{ell} structure as output by \kbd{ellinit}, defined over
  as it detects that the order has a small prime factor not dividing \kbd{tors};
  SEA considers modular polynomials of increasing prime degree $\ell$ and we
  return $0$ as soon as we hit an $\ell$ (coprime to \kbd{tors}) dividing
- $\#E(\F_q)$:
+ $\#E(\F_{q})$:
  \bprog
  ? ellsea(ellinit([1,1], 2^56+3477), 1)
  %1 = 72057594135613381
@@ -34,7 +34,7 @@ Doc: Let $E$ be an \var{ell} structure as output by \kbd{ellinit}, defined over
  When \kbd{tors} is negative, similar checks are performed for the quadratic
  twist of the curve.
 
- The following function returns a curve of prime order over $\F_p$.
+ The following function returns a curve of prime order over $\F_{p}$.
  \bprog
  cryptocurve(p) =
  {

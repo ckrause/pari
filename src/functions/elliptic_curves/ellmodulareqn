@@ -14,24 +14,24 @@ Doc: given a prime $N < 500$, return a vector $[P,t]$ where $P(x,y)$
 
  Let $j$ be the $j$-invariant function. The polynomial $P$ satisfies
  the functional equation,
- $$ P(f,j) = P(f \mid W_N, j \mid W_N) = 0 $$
- for some modular function $f = f_N$ (hand-picked for each fixed $N$ to
- minimize its size, see below), where $W_N(\tau) = -1 / (N\*\tau)$ is the
+ $$ P(f,j) = P(f \mid W_{N}, j \mid W_{N}) = 0 $$
+ for some modular function $f = f_{N}$ (hand-picked for each fixed $N$ to
+ minimize its size, see below), where $W_{N}(\tau) = -1 / (N\*\tau)$ is the
  Atkin-Lehner involution. These two equations allow to compute the values of
- the classical modular polynomial $\Phi_N$, such that $\Phi_N(j(\tau),
+ the classical modular polynomial $\Phi_{N}$, such that $\Phi_{N}(j(\tau),
  j(N\tau)) = 0$, while being much smaller than the latter. More precisely, we
- have $j(W_N(\tau)) = j(N\*\tau)$; the function $f$ is invariant under
- $\Gamma_0(N)$ and also satisfies
+ have $j(W_{N}(\tau)) = j(N\*\tau)$; the function $f$ is invariant under
+ $\Gamma_{0}(N)$ and also satisfies
 
- \item for Atkin type: $f \mid W_N = f$;
+ \item for Atkin type: $f \mid W_{N} = f$;
 
  \item for canonical type: let $s = 12/\gcd(12,N-1)$, then
- $f \mid W_N = N^{s} / f$. In this case, $f$ has a simple definition:
+ $f \mid W_{N} = N^{s} / f$. In this case, $f$ has a simple definition:
  $f(\tau) = N^{s} \* \big(\eta(N\*\tau) / \eta(\tau) \big)^{2\*s}$,
  where $\eta$ is Dedekind's eta function.
 
  The following GP function returns values of the classical modular polynomial
- by eliminating $f_N(\tau)$ in the above functional equation,
+ by eliminating $f_{N}(\tau)$ in the above functional equation,
  for $N\leq 31$ or $N\in\{41,47,59,71\}$.
 
  \bprog

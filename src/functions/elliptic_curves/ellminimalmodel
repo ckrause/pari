@@ -14,7 +14,7 @@ Doc: Let $E$ be an \kbd{ell} structure over a number field $K$. This function
  Else return the (nonprincipal) Weierstrass class of $E$, i.e. the class of
  $\prod \goth{p}^{(v_{\goth{p}}{\Delta} - \delta_{\goth{p}}) / 12}$ where
  $\Delta = \kbd{E.disc}$ is the model's discriminant and
- $\goth{p} ^ {\delta_{\goth{p}}}$ is the local minimal discriminant.
+ $\goth{p}^{\delta_{\goth{p}}}$ is the local minimal discriminant.
  This function requires either that $E$ be defined
  over the rational field $\Q$ (with domain $D = 1$ in \kbd{ellinit}),
  in which case a global minimal model always exists, or over a number
@@ -22,11 +22,11 @@ Doc: Let $E$ be an \kbd{ell} structure over a number field $K$. This function
  \kbd{bnfisprincipal} format, i.e. in terms of the \kbd{K.gen} generators.
 
  The resulting model has integral coefficients and is everywhere minimal, the
- coefficients $a_1$ and $a_3$ are reduced modulo $2$ (in terms of the fixed
- integral basis \kbd{K.zk}) and $a_2$ is reduced modulo $3$. Over $\Q$, we
- further require that $a_1$ and $a_3$ be $0$ or $1$, that $a_2$ be $0$ or $\pm
- 1$ and that $u > 0$ in the change of variable: both the model and the change
- of variable $v$ are then unique.\sidx{minimal model}
+ coefficients $a_{1}$ and $a_{3}$ are reduced modulo $2$ (in terms of the fixed
+ integral basis \kbd{K.zk}) and $a_{2}$ is reduced modulo $3$. Over $\Q$, we
+ further require that $a_{1}$ and $a_{3}$ be $0$ or $1$, that $a_{2}$
+ be $0$ or $\pm 1$ and that $u > 0$ in the change of variable: both the model
+ and the change of variable $v$ are then unique.\sidx{minimal model}
 
  \bprog
  ? e = ellinit([6,6,12,55,233]);  \\ over Q

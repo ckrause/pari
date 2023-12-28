@@ -71,35 +71,35 @@ Doc:
  If the roots are all real, they are ordered by decreasing value. If only one
  is real, it is the first component.
 
- \item \tet{omega}: $[\omega_1,\omega_2]$, periods forming a basis of the
- complex lattice defining $E$. The first component $\omega_1$ is the
+ \item \tet{omega}: $[\omega_{1},\omega_{2}]$, periods forming a basis of the
+ complex lattice defining $E$. The first component $\omega_{1}$ is the
  (positive) real period, in other words the integral of the N\'eron
- differential $dx/(2y+a_1x+a_3)$
+ differential $dx/(2y+a_{1}x+a_{3})$
  over the connected component of the identity component of $E(\R)$.
- The second component $\omega_2$ is a complex period, such that
- $\tau=\dfrac{\omega_1}{\omega_2}$ belongs to Poincar\'e's
+ The second component $\omega_{2}$ is a complex period, such that
+ $\tau=\dfrac{\omega_{1}}{\omega_{2}}$ belongs to Poincar\'e's
  half-plane (positive imaginary part); not necessarily to the standard
- fundamental domain. It is normalized so that $\Im(\omega_2) < 0$
- and either $\Re(\omega_2) = 0$, when \kbd{E.disc > 0} ($E(\R)$ has two connected
- components), or $\Re(\omega_2) = \omega_1/2$
+ fundamental domain. It is normalized so that $\Im(\omega_{2}) < 0$
+ and either $\Re(\omega_{2}) = 0$, when \kbd{E.disc > 0}
+ ($E(\R)$ has two connected components), or $\Re(\omega_{2}) = \omega_{1}/2$
 
- \item \tet{eta} is a row vector containing the quasi-periods $\eta_1$ and
- $\eta_2$ such that $\eta_i = 2\zeta(\omega_i/2)$, where $\zeta$ is the
+ \item \tet{eta} is a row vector containing the quasi-periods $\eta_{1}$ and
+ $\eta_{2}$ such that $\eta_{i} = 2\zeta(\omega_{i}/2)$, where $\zeta$ is the
  Weierstrass zeta function attached to the period lattice; see
- \tet{ellzeta}. In particular, the Legendre relation holds: $\eta_2\omega_1 -
- \eta_1\omega_2 = 2\pi i$.
+ \tet{ellzeta}. In particular, the Legendre relation holds:
+ $\eta_{2}\omega_{1} - \eta_{1}\omega_{2} = 2\pi i$.
 
  \misctitle{Warning} As for the orientation of the basis of the period lattice,
- beware that many sources use the inverse convention where $\omega_2/\omega_1$
- has positive imaginary part and our $\omega_2$ is the negative of theirs. Our
- convention $\tau = \omega_1/\omega_2$  ensures that the action of
- $\text{PSL}_2$ is the natural one:
+ beware that many sources use the inverse convention where
+ $\omega_{2}/\omega_{1}$ has positive imaginary part and our $\omega_{2}$ is
+ the negative of theirs. Our convention $\tau = \omega_{1}/\omega_{2}$ ensures
+ that the action of $\text{PSL}_{2}$ is the natural one:
  $$[a,b;c,d]\cdot\tau = (a\tau+b)/(c\tau+d)
-   = (a \omega_1 + b\omega_2)/(c\omega_1 + d\omega_2),$$
+   = (a \omega_{1} + b\omega_{2})/(c\omega_{1} + d\omega_{2}),$$
  instead of a twisted one. (Our $\tau$ is $-1/\tau$ in the above inverse
  convention.)
 
- \misctitle{Curves over $\Q_p$} %GPHELPskip
+ \misctitle{Curves over $\Q_{p}$} %GPHELPskip
 
  We advise to input a model defined over $\Q$ for such curves. In any case,
  if you input an approximate model with \typ{PADIC} coefficients, it will be
@@ -108,59 +108,59 @@ Doc:
  model.
 
  For the time being only curves with multiplicative reduction (split or
- nonsplit), i.e. $v_p(j) < 0$, are supported by nontrivial functions. In
- this case the curve is analytically isomorphic to $\bar{\Q}_p^{*}/q^{\Z} :=
- E_q(\bar{\Q}_p)$, for some $p$-adic integer $q$ (the Tate period). In
+ nonsplit), i.e. $v_{p}(j) < 0$, are supported by nontrivial functions. In
+ this case the curve is analytically isomorphic to $\bar{\Q}_{p}^{*}/q^{\Z} :=
+ E_{q}(\bar{\Q}_{p})$, for some $p$-adic integer $q$ (the Tate period). In
  particular, we have $j(q) = j(E)$.
 
  \item \tet{p} is the residual characteristic
 
  \item \tet{roots} is a vector with a single component, equal to the $p$-adic
- root $e_1$ of the right hand side $g(x)$ of the attached $b$-model $Y^{2}
- = g(x)$. The point $(e_1,0)$ corresponds to $-1 \in \bar{\Q}_{p}^{*}/q^{\Z}$
+ root $e_{1}$ of the right hand side $g(x)$ of the attached $b$-model $Y^{2}
+ = g(x)$. The point $(e_{1},0)$ corresponds to $-1 \in \bar{\Q}_{p}^{*}/q^{\Z}$
  under the Tate parametrization.
 
  \item \tet{tate} returns $[u^{2},u,q,[a,b],Ei,L]$ in the notation of
  Henniart-Mestre (CRAS t. 308, p.~391--395, 1989): $q$ is as above,
- $u\in \Q_p(\sqrt{-c_6})$ is such that $\phi^{*} dx/(2y + a_1x+a3) = u dt/t$,
- where $\phi: E_q\to E$ is an isomorphism (well defined up to sign) and
- $dt/t$ is the canonical invariant differential on the Tate curve;
- $u^{2}\in\Q_p$ does not depend on $\phi$. (Technicality: if $u\not\in\Q_p$, it
- is stored as a quadratic \typ{POLMOD}.)
+ $u\in \Q_{p}(\sqrt{-c_{6}})$ is such that $\phi^{*} dx/(2y + a_{1}x + a_{3})
+ = u dt/t$, where $\phi: E_{q}\to E$ is an isomorphism
+ (well defined up to sign) and $dt/t$ is the canonical invariant differential
+ on the Tate curve; $u^{2}\in\Q_{p}$ does not depend on $\phi$.
+ (Technicality: if $u\not\in\Q_{p}$, it is stored as a quadratic \typ{POLMOD}.)
  The parameters $[a,b]$ satisfy $4u^{2} b \cdot \text{agm}(\sqrt{a/b},1)^{2}
  = 1$ as in Theorem~2 (\emph{loc.~cit.}).
  \kbd{Ei} describes the sequence of 2-isogenous curves (with kernel generated
- by $[0,0]$) $E_{i}: y^{2}=x(x+A_i)(x+A_{i}-B_{i})$ converging quadratically
+ by $[0,0]$) $E_{i}: y^{2}=x(x+A_{i})(x+A_{i}-B_{i})$ converging quadratically
  towards the singular curve $E_{\infty}$. Finally, $L$ is
  Mazur-Tate-Teitelbaum's ${\cal L}$-invariant, equal to $\log_{p} q / v_{p}(q)$.
 
- \misctitle{Curves over $\F_q$} %GPHELPskip
+ \misctitle{Curves over $\F_{q}$} %GPHELPskip
 
- \item \tet{p} is the characteristic of $\F_q$.
+ \item \tet{p} is the characteristic of $\F_{q}$.
 
- \item \tet{no} is $\#E(\F_q)$.
+ \item \tet{no} is $\#E(\F_{q})$.
 
- \item \tet{cyc} gives the cycle structure of $E(\F_q)$.
+ \item \tet{cyc} gives the cycle structure of $E(\F_{q})$.
 
- \item \tet{gen} returns the generators of $E(\F_q)$.
+ \item \tet{gen} returns the generators of $E(\F_{q})$.
 
- \item \tet{group} returns $[\kbd{no},\kbd{cyc},\kbd{gen}]$, i.e. $E(\F_q)$
+ \item \tet{group} returns $[\kbd{no},\kbd{cyc},\kbd{gen}]$, i.e. $E(\F_{q})$
  as an abelian group structure.
 
  \misctitle{Curves over $\Q$} %GPHELPskip
 
  All functions should return a correct result, whether the model is minimal or
  not, but it is a good idea to stick to minimal models whenever
- $\gcd(c_4,c_6)$ is easy to factor (minor speed-up). The construction
+ $\gcd(c_{4},c_{6})$ is easy to factor (minor speed-up). The construction
  \bprog
    E = ellminimalmodel(E0, &v)
- @eprog\noindent replaces the original model $E_0$ by a minimal model $E$,
+ @eprog\noindent replaces the original model $E_{0}$ by a minimal model $E$,
  and the variable change $v$ allows to go between the two models:
  \bprog
    ellchangepoint(P0, v)
    ellchangepointinv(P, v)
- @eprog\noindent respectively map the point $P_0$ on $E_0$ to its image on
- $E$, and the point $P$ on $E$ to its pre-image on $E_0$.
+ @eprog\noindent respectively map the point $P_{0}$ on $E_{0}$ to its image on
+ $E$, and the point $P$ on $E$ to its pre-image on $E_{0}$.
 
  A few routines --- namely \tet{ellgenerators}, \tet{ellidentify},
  \tet{ellsearch}, \tet{forell} --- require the optional package \tet{elldata}
@@ -185,13 +185,13 @@ Doc:
  in the same order as \kbd{E.nf.roots}.
 
  \subsec{Reduction} %GPHELPskip
- Let $E$ be a curve defined over $\Q_p$ given by a $p$-integral model;
+ Let $E$ be a curve defined over $\Q_{p}$ given by a $p$-integral model;
  if the curve has good reduction at $p$, we may define its reduction
- $\tilde{E}$ over the finite field $\F_p$:
+ $\tilde{E}$ over the finite field $\F_{p}$:
  \bprog
- ? E = ellinit([-3,1], O(5^10));  \\ @com $E/\Q_5$
+ ? E = ellinit([-3,1], O(5^10));  \\ @com $E/\Q_{5}$
  ? Et = ellinit(E, 5)
- ? ellcard(Et)  \\ @com $\tilde{E}/\F_5$ has 7 points
+ ? ellcard(Et)  \\ @com $\tilde{E}/\F_{5}$ has 7 points
  %3 = 7
  ? ellinit(E, 7)
   ***   at top-level: ellinit(E,7)
@@ -199,8 +199,8 @@ Doc:
   *** ellinit: inconsistent moduli in ellinit: 5 != 7
  @eprog\noindent
  Likewise, if a curve is defined over a number field $K$ and $\goth{p}$ is a
- maximal ideal with finite residue field $\F_q$, we define the reduction
- $\tilde{E}/\F_q$ provided $E$ has good reduction at $\goth{p}$.
+ maximal ideal with finite residue field $\F_{q}$, we define the reduction
+ $\tilde{E}/\F_{q}$ provided $E$ has good reduction at $\goth{p}$.
  $E/\Q$ is an important special case:
  \bprog
  ? E = ellinit([-3,1]);
@@ -210,7 +210,7 @@ Doc:
 
  [3 4]
  ? Et = ellinit(E, 5);
- ? ellcard(Et) \\ @com $\tilde{E} / \F_5$ has 7 points
+ ? ellcard(Et) \\ @com $\tilde{E} / \F_{5}$ has 7 points
  %4 = 7
  ? ellinit(E, 3)  \\ bad reduction at 3
  %5 = []
@@ -228,7 +228,7 @@ Doc:
  ? idealnorm(K, P)
  %4 = 9
  ? Et = ellinit(E, P);
- ? ellcard(Et)  \\ @com $\tilde{E} / \F_9$ has 4 points
+ ? ellcard(Et)  \\ @com $\tilde{E} / \F_{9}$ has 4 points
  %6 = 4
  @eprog\noindent
  If the model is not locally minimal at $\goth{p}$, the above will fail:

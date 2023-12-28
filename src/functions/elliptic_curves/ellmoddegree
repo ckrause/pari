@@ -8,7 +8,7 @@ Help: ellmoddegree(e): e being an elliptic curve defined over Q output by
 Doc: $e$ being an elliptic curve defined over $\Q$ output by \kbd{ellinit},
  compute the modular degree of $e$ divided by the square of
  the Manin constant $c$. It is conjectured that $c = 1$ for the strong Weil
- curve in the isogeny class (optimal quotient of $J_0(N)$) and this can be
+ curve in the isogeny class (optimal quotient of $J_{0}(N)$) and this can be
  proven using \kbd{ellweilcurve} when the conductor $N$ is moderate.
  \bprog
  ? E = ellinit("11a1"); \\ from Cremona table: strong Weil curve and c = 1

@@ -9,11 +9,11 @@ Help: ellfromeqn(P): given a genus 1 plane curve, defined by the affine
  general plane cubic or by a binary quartic or biquadratic model.
 Doc:
  Given a genus $1$ plane curve, defined by the affine equation $f(x,y) = 0$,
- return the coefficients $[a_1,a_2,a_3,a_4,a_6]$ of a Weierstrass equation
- for its Jacobian. This allows to recover a Weierstrass model for an elliptic
- curve given by a general plane cubic or by a binary quartic or biquadratic
- model. The function implements the $f \mapsto f^{*}$ formulae of Artin, Tate
- and Villegas (Advances in Math. 198 (2005), pp. 366--382).
+ return the coefficients $[a_{1},a_{2},a_{3},a_{4},a_{6}]$ of a Weierstrass
+ equation for its Jacobian. This allows to recover a Weierstrass model for an
+ elliptic curve given by a general plane cubic or by a binary quartic or
+ biquadratic model. The function implements the $f \mapsto f^{*}$ formulae of
+ Artin, Tate and Villegas (Advances in Math. 198 (2005), pp. 366--382).
 
  In the example below, the function is used to convert between twisted Edwards
  coordinates and Weierstrass coordinates.

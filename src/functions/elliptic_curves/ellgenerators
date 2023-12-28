@@ -12,17 +12,17 @@ Doc:
  free part of the \idx{Mordell-Weil group} attached to $E$.  This relies on
  the \tet{elldata} database being installed and referencing the curve, and so
  is only available for curves over $\Z$ of small conductors.
- If $E$ is an elliptic curve over a finite field $\F_q$ as output by
- \tet{ellinit}, return a minimal set of generators for the group $E(\F_q)$.
+ If $E$ is an elliptic curve over a finite field $\F_{q}$ as output by
+ \tet{ellinit}, return a minimal set of generators for the group $E(\F_{q})$.
 
- \misctitle{Caution} When the group is not cyclic, of shape $\Z/d_1\Z \times
- \Z/d_2\Z$ with $d_2\mid d_1$, the points $[P,Q]$ returned by ellgenerators
- need not have order $d_1$ and $d_2$: it is true that
- $P$ has order $d_1$, but we only know that $Q$ is a generator of
- $E(\F_q)/<P>$ and that the Weil pairing $w(P,Q)$ has order $d_2$,
+ \misctitle{Caution} When the group is not cyclic, of shape $\Z/d_{1}\Z \times
+ \Z/d_{2}\Z$ with $d_{2}\mid d_{1}$, the points $[P,Q]$ returned by
+ ellgenerators need not have order $d_{1}$ and $d_{2}$: it is true that
+ $P$ has order $d_{1}$, but we only know that $Q$ is a generator of
+ $E(\F_{q})/<P>$ and that the Weil pairing $w(P,Q)$ has order $d_{2}$,
  see \kbd{??ellgroup}.
- If you need generators $[P,R]$ with $R$ of order $d_2$, find
- $x$ such that $R = Q-[x]P$ has order $d_2$ by solving
- the discrete logarithm problem $[d_2]Q = [x]([d_2]P)$ in a cyclic group of
- order $d_1/d_2$. This will be very expensive if $d_1/d_2$ has a large
+ If you need generators $[P,R]$ with $R$ of order $d_{2}$, find
+ $x$ such that $R = Q-[x]P$ has order $d_{2}$ by solving
+ the discrete logarithm problem $[d_{2}]Q = [x]([d_{2}]P)$ in a cyclic group of
+ order $d_{1}/d_{2}$. This will be very expensive if $d_{1}/d_{2}$ has a large
  prime factor.

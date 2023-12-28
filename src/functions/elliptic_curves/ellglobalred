@@ -26,7 +26,7 @@ Doc: let $E$ be an \kbd{ell} structure as output by \kbd{ellinit} attached
  coordinate change to an integral model (\tet{ellintegralmodel} provides it
  in a cheaper way).
 
- \item $c$ is the product of the local Tamagawa numbers $c_p$, a quantity
+ \item $c$ is the product of the local Tamagawa numbers $c_{p}$, a quantity
  which enters in the \idx{Birch and Swinnerton-Dyer conjecture},
 
  \item $F$ is the factorization of $N$,

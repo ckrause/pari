@@ -18,9 +18,10 @@ Doc: Returns the value (or $r$-th derivative) on a character $\chi^{s}$ of
  finally, let
  $\langle\chi\rangle =\chi \tau^{-1}$, with values in $1 + 2p\Z_{p}$.
  In GP, the continuous character of
- $\text{Gal}(\Q(\mu_{p^{\infty}})/ \Q)$ given by $\langle\chi\rangle^{s_1}
- \tau^{s_2}$ is represented by the pair of integers $s=(s_1,s_2)$, with $s_1
- \in \Z_{p}$ and $s_2 \bmod p-1$ for $p > 2$, (resp. mod $2$ for $p = 2$); $s$
+ $\text{Gal}(\Q(\mu_{p^{\infty}})/ \Q)$ given by $\langle\chi\rangle^{s_{1}}
+ \tau^{s_{2}}$ is represented by the pair of integers $s=(s_{1},s_{2})$,
+ with $s_{1} \in \Z_{p}$ and $s_{2} \bmod p-1$ for $p > 2$,
+ (resp. mod $2$ for $p = 2$); $s$
  may be also an integer, representing $(s,s)$ or $\chi^{s}$.
 
  \misctitle{The $p$-adic $L$ function}
@@ -33,7 +34,7 @@ Doc: Returns the value (or $r$-th derivative) on a character $\chi^{s}$ of
  More precisely:
 
  \item When $E$ has good supersingular reduction, $L_{p}$ takes its
- values in $D := H^{1}_{dR}(E/\Q)\otimes_\Q \Q_{p}$ and satisfies
+ values in $D := H^{1}_{dR}(E/\Q)\otimes_{\Q} \Q_{p}$ and satisfies
  $$(1-p^{-1} F)^{-2} L_{p}(E, \chi^{0})= (L(E,1) / \Omega) \cdot \omega$$
  where $F$ is the Frobenius, $L(E,1)$ is the value of the complex $L$
  function at $1$, $\omega$ is the N\'eron differential
