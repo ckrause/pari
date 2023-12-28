@@ -44,7 +44,7 @@ Doc: \var{cyc} being a vector of positive integers giving the cyclic
  \misctitle{Warning} This function requires factoring the exponent of $G$.
  If you are only interested in subgroups of index $n$ (or dividing $n$), you
  may considerably speed up the function by computing the subgroups of
- $G/G^n$, whose cyclic components are \kbd{apply(x->gcd(n,x), C)} (where
+ $G/G^{n}$, whose cyclic components are \kbd{apply(x->gcd(n,x), C)} (where
  $C$ gives the cyclic components of $G$). If you want the \var{bnr} variant,
  now is a good time to use \kbd{bnrinit(,,, n)} as well, to directly compute
  the ray class group modulo $n$-th powers.

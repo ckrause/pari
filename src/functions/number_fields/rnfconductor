@@ -17,19 +17,21 @@ Doc: given a \var{bnf} structure attached to a number field $K$, as produced
  which case the extension is definitely not Abelian) or a wrong result.
 
  The result is a 3-component vector $[f,\var{bnr},H]$, where $f$ is the
- conductor of the extension given as a 2-component row vector $[f_0,f_\infty]$,
+ conductor of the extension given as a 2-component row vector
+ $[f_{0},f_{\infty}]$,
  \var{bnr} is the attached \kbd{bnr} structure and $H$ is a matrix in HNF
  defining the subgroup of the ray class group on the ray class group generators
  \kbd{bnr.gen}; in particular, it is a left divisor of the diagonal matrix
  attached to \kbd{bnr.cyc} and $|\det H| = N = \deg T$.
 
  \item If \fl\ is $1$, return $[f,\var{bnrmod}, H]$, where
- \kbd{bnrmod} is now attached to $\text{Cl}_f / \text{Cl}_f^N$, and $H$ is as
+ \kbd{bnrmod} is now attached to $\text{Cl}_{f} / \text{Cl}_{f}^{N}$,
+ and $H$ is as
  before since it contains the $N$-th powers. This is useful when $f$ contains
  a maximal ideal with huge residue field, since the corresponding tough
  discrete logarithms are trivialized: in the quotient group, all elements have
- small order dividing $N$. This allows to work in $\text{Cl}_f/H$ but no
- longer in $\text{Cl}_f$.
+ small order dividing $N$. This allows to work in $\text{Cl}_{f}/H$ but no
+ longer in $\text{Cl}_{f}$.
 
  \item If \fl\ is $2$, only return $[f, \kbd{fa}]$ where \kbd{fa} is the
  factorization of the conductor finite part ($=f[1]$).
@@ -37,7 +39,7 @@ Doc: given a \var{bnf} structure attached to a number field $K$, as produced
  \misctitle{Huge discriminants, helping rnfdisc} The format $[T,B]$ is
  also accepted instead of $T$ and computes the conductor of the extension
  provided it factors completely over the maximal ideals specified by $B$,
- see \kbd{??rnfinit}: the valuation of $f_0$ is then correct at all such
+ see \kbd{??rnfinit}: the valuation of $f_{0}$ is then correct at all such
  maximal ideals but may be incorrect at other primes.
 
 Variant: Also available is \fun{GEN}{rnfconductor}{GEN bnf, GEN T} when $\fl =

@@ -7,12 +7,12 @@ Help: rnfpseudobasis(nf,T): given an irreducible polynomial T with
  maximal order of the extension, D is the relative ideal discriminant, and d
  is the relative discriminant in nf^*/nf*^2.
 Doc: given an \var{nf} structure attached to a number field $K$, as output by
- \kbd{nfinit}, and a monic irreducible polynomial $T$ in $\Z_K[x]$ defining a
+ \kbd{nfinit}, and a monic irreducible polynomial $T$ in $\Z_{K}[x]$ defining a
  relative extension $L = K[x]/(T)$, computes the relative discriminant of $L$
- and a pseudo-basis $(A,J)$ for the maximal order $\Z_L$ viewed as a
- $\Z_K$-module. This is output as a vector $[A,J,D,d]$, where $D$ is the
+ and a pseudo-basis $(A,J)$ for the maximal order $\Z_{L}$ viewed as a
+ $\Z_{K}$-module. This is output as a vector $[A,J,D,d]$, where $D$ is the
  relative ideal discriminant and $d$ is the relative discriminant considered
- as an element of $K^*/{K^*}^2$.
+ as an element of $K^{*}/{K^{*}}^{2}$.
  \bprog
  ? K = nfinit(y^2+1);
  ? [A,J,D,d] = rnfpseudobasis(K, x^2+y);
@@ -54,4 +54,4 @@ Doc: given an \var{nf} structure attached to a number field $K$, as output by
  the case, the order would have been guaranteed maximal at primes
  $\goth{p} | p $ for $p \leq 100$ only (resp.~$\goth{p} | 3$).
  And might have been nonmaximal at any other prime ideal $\goth{p}$ such
- that $\goth{p}^2$ divided $D$.
+ that $\goth{p}^{2}$ divided $D$.

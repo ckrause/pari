@@ -29,7 +29,7 @@ Doc: similar to
 
  The answer is guaranteed (i.e.~$a$ is a norm iff $q = 1$) if the field is
  Galois, or, under \idx{GRH}, if $S$ contains all primes less than
- $12\log^2\left|\disc(M)\right|$, where $M$ is the normal
+ $12\log^{2}\left|\disc(M)\right|$, where $M$ is the normal
  closure of $L/K$.
 
  If \tet{rnfisnorminit} has determined (or was told) that $L/K$ is
@@ -44,5 +44,5 @@ Doc: similar to
  rnfisnorm(T, 17)
  @eprog\noindent
  checks whether $17$ is a norm in the Galois extension $\Q(\beta) /
- \Q(\alpha)$, where $\alpha^3 + \alpha^2 - 2\alpha - 1 = 0$ and $\beta^2 +
- \alpha^2 + 2\alpha + 1 = 0$ (it is).
+ \Q(\alpha)$, where $\alpha^{3} + \alpha^{2} - 2\alpha - 1 = 0$ and
+ $\beta^{2} + \alpha^{2} + 2\alpha + 1 = 0$ (it is).

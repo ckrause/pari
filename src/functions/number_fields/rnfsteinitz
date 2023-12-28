@@ -16,4 +16,4 @@ Doc: given a $\var{nf}$ attached to a number field $K$ and a projective
  $[A,I,D,d]$ where $(A,I)$ are as before and $(D,d)$ are discriminants
  as returned by \kbd{rnfpseudobasis}. The ideal class of the last ideal of
  $I$ is well defined; it is the \idx{Steinitz class} of $M$ (its image
- in $SK_0(\Z_K)$).
+ in $SK_{0}(\Z_{K})$).

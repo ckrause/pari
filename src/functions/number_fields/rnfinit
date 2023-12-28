@@ -7,7 +7,7 @@ Help: rnfinit(nf,T,{flag=0}): T being an irreducible polynomial
  working in relative number fields (rnf functions). See manual for technical
  details.
 Doc: given an \var{nf} structure attached to a number field $K$, as output by
- \kbd{nfinit}, and a monic irreducible polynomial $T$ in $\Z_K[x]$ defining a
+ \kbd{nfinit}, and a monic irreducible polynomial $T$ in $\Z_{K}[x]$ defining a
  relative extension $L = K[x]/(T)$, this computes data to work in $L/K$
  The main variable of $T$ must be of higher priority
  (see \secref{se:priority}) than that of $\var{nf}$, and the coefficients of
@@ -15,13 +15,13 @@ Doc: given an \var{nf} structure attached to a number field $K$, as output by
 
  The result is a row vector, whose components are technical.
  We let $m = [K:\Q]$ the degree of the base field, $n = [L:K]$ the relative
- degree, $r_1$ and $r_2$ the number of real and complex places of $K$. Access
+ degree, $r_{1}$ and $r_{2}$ the number of real and complex places of $K$. Access
  to this information via \emph{member functions} is preferred since the
  specific data organization specified below will change in the future.
 
  If $\fl = 1$, add an \var{nf} structure attached to $L$ to \var{rnf}.
  This is likely to be very expensive if the absolute degree $mn$ is large,
- but fixes an integer basis for $\Z_L$ as a $\Z$-module and allows to input
+ but fixes an integer basis for $\Z_{L}$ as a $\Z$-module and allows to input
  and output elements of $L$ in absolute form: as \typ{COL} for elements,
  as \typ{MAT} in HNF for ideals, as \kbd{prid} for prime ideals. Without such
  a call, elements of $L$ are represented as \typ{POLMOD}, etc.
@@ -41,16 +41,16 @@ Doc: given an \var{nf} structure attached to a number field $K$, as output by
  $\var{rnf}[3]$ (\kbd{rnf.disc}) is a two-component row vector
  $[\goth{d}(L/K),s]$ where $\goth{d}(L/K)$ is the relative ideal discriminant
  of $L/K$ and $s$ is the discriminant of $L/K$ viewed as an element of
- $K^*/(K^*)^2$, in other words it is the output of \kbd{rnfdisc}.
+ $K^{*}/(K^{*})^{2}$, in other words it is the output of \kbd{rnfdisc}.
 
  $\var{rnf}[4]$(\kbd{rnf.index}) is the ideal index $\goth{f}$, i.e.~such
- that $d(T)\Z_K=\goth{f}^2\goth{d}(L/K)$.
+ that $d(T)\Z_{K}=\goth{f}^{2}\goth{d}(L/K)$.
 
  $\var{rnf}[5]$(\kbd{rnf.p}) is the list of rational primes dividing the norm
  of the relative discriminant ideal.
 
  $\var{rnf}[7]$ (\kbd{rnf.zk}) is the pseudo-basis $(A,I)$ for the maximal
- order $\Z_L$ as a $\Z_K$-module: $A$ is the relative integral pseudo basis
+ order $\Z_{L}$ as a $\Z_{K}$-module: $A$ is the relative integral pseudo basis
  expressed as polynomials (in the variable of $T$) with polmod coefficients
  in $\var{nf}$, and the second component $I$ is the ideal list of the
  pseudobasis in HNF.
@@ -92,7 +92,7 @@ Doc: given an \var{nf} structure attached to a number field $K$, as output by
 
  \misctitle{Huge discriminants, helping rnfdisc} When $T$ has a
  discriminant which is difficult to factor, it is hard to compute
- $\Z_L$. As in \kbd{nfinit}, the special input format $[T,B]$
+ $\Z_{L}$. As in \kbd{nfinit}, the special input format $[T,B]$
  is also accepted, where $T$ is a polynomial as above and $B$ specifies a
  list of maximal ideals. The following formats are recognized for $B$:
 
@@ -102,12 +102,12 @@ Doc: given an \var{nf} structure attached to a number field $K$, as output by
  \item a vector of rational primes or prime ideals: the list of all maximal
  ideals dividing an element in the list.
 
- Instead of $\Z_L$, this produces an order which is maximal at all such
+ Instead of $\Z_{L}$, this produces an order which is maximal at all such
  maximal ideals primes. The result may actually be a complete and correct
  \var{rnf} structure if the relative ideal discriminant factors completely
  over this list of maximal ideals but this is not guaranteed. In general, the
  order may not be maximal at primes $\goth{p}$ not in the list such that
- $\goth{p}^2$ divides the relative ideal discriminant.
+ $\goth{p}^{2}$ divides the relative ideal discriminant.
 
 Variant: Also available is
  \fun{GEN}{rnfinit}{GEN nf,GEN T} ($\fl = 0$).

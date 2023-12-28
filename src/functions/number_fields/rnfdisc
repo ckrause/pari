@@ -9,7 +9,8 @@ Doc: given an \var{nf} structure attached to a number field $K$, as output
  by \kbd{nfinit}, and a monic irreducible polynomial $T\in K[x]$ defining a
  relative extension $L = K[x]/(T)$, compute the relative discriminant of $L$.
  This is a vector $[D,d]$, where $D$ is the relative ideal discriminant and
- $d$ is the relative discriminant considered as an element of $K^*/{K^*}^2$.
+ $d$ is the relative discriminant considered as an element of
+ $K^{*}/{K^{*}}^{2}$.
  The main variable of $\var{nf}$ \emph{must} be of lower priority than that of
  $T$, see \secref{se:priority}.
 

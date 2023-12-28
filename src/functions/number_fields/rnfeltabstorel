@@ -10,7 +10,7 @@ Doc: Let $\var{rnf}$ be a relative number field extension $L/K$ as output by
 
  \item as a polynomial modulo the absolute equation \kbd{\var{rnf}.polabs},
 
- \item or in terms of the absolute $\Z$-basis for $\Z_L$ if \var{rnf}
+ \item or in terms of the absolute $\Z$-basis for $\Z_{L}$ if \var{rnf}
  contains one (as in \kbd{rnfinit(nf,pol,1)}, or after a call to
  \kbd{nfinit(rnf)}).
 
