@@ -7,13 +7,13 @@ Help: znconreyconductor(G,chi, {&chi0}): let G be znstar(q,1) and chi
  the conductor of chi, and set chi0 to (the Conrey logarithm of) the
  attached primitive character. If chi0 != chi, return the conductor
  and its factorization.
-Doc: Let \var{G} be attached to $(\Z/q\Z)^*$ (as per
+Doc: Let \var{G} be attached to $(\Z/q\Z)^{*}$ (as per
  \kbd{G = znstar(q, 1)}) and \kbd{chi} be a Dirichlet character on
- $(\Z/q\Z)^*$, given by
+ $(\Z/q\Z)^{*}$, given by
 
  \item a \typ{VEC}: a standard character on \kbd{bid.gen},
 
- \item a \typ{INT} or a \typ{COL}: a Conrey index in $(\Z/q\Z)^*$ or its
+ \item a \typ{INT} or a \typ{COL}: a Conrey index in $(\Z/q\Z)^{*}$ or its
  Conrey logarithm;
  see \secref{se:dirichletchar} or \kbd{??character}.
 

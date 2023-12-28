@@ -14,19 +14,19 @@ Doc: \idx{Coppersmith}'s algorithm. $N$ being an integer and $P\in \Z[t]$,
  factorization of $N$. Notice that $P$ may be reduced modulo $N\Z[t]$ without
  affecting the situation. The parameter $X$ must not be too large: assume for
  now that the leading coefficient of $P$ is coprime to $N$, then we must have
- $$d \log X \log N < \log^2 B,$$ i.e., $X < N^{1/d}$ when $B = N$. Let now
- $P_0$ be the gcd of the leading coefficient of $P$ and $N$. In applications to
- factorization, we should have $P_0 = 1$; otherwise, either $P_0 = N$ and we can
- reduce the degree of $P$, or $P_0$ is a non trivial factor of $N$. For
+ $$d \log X \log N < \log^{2} B,$$ i.e., $X < N^{1/d}$ when $B = N$. Let now
+ $P_{0}$ be the gcd of the leading coefficient of $P$ and $N$. In applications
+ to factorization, we should have $P_{0} = 1$; otherwise, either $P_{0} = N$ and
+ we can reduce the degree of $P$, or $P_{0}$ is a non trivial factor of $N$. For
  completeness, we nevertheless document the exact conditions that $X$ must
- satisfy in this case: let $p := \log_N P_0$, $b := \log_N B$, $x := \log_N
- X$, then
+ satisfy in this case: let $p := \log_{N} P_{0}$, $b := \log_{N} B$,
+ $x := \log_{N} X$, then
 
  \item either $p \geq d / (2d-1)$ is large and we must have $x d < 2b - 1$;
 
  \item or $p < d / (2d-1)$ and we must have both $p < b < 1 - p + p/d$
- and $x(d + p(1-2d)) < (b - p)^2$. Note that this reduces to
- $x d < b^2$ when $p = 0$, i.e., the condition described above.
+ and $x(d + p(1-2d)) < (b - p)^{2}$. Note that this reduces to
+ $x d < b^{2}$ when $p = 0$, i.e., the condition described above.
 
  Some $x$ larger than $X$ may be returned if you are
  very lucky. The routine runs in polynomial time in $\log N$ and $d$

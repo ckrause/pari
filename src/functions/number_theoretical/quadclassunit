@@ -38,24 +38,24 @@ Doc: \idx{Buchmann-McCurley}'s sub-exponential algorithm for computing the
  it supposedly computed the narrow class group when $D>0$, but this did not
  work at all; use the general function \tet{bnfnarrow}.
 
- Optional parameter \var{tech} is a row vector of the form $[c_1, c_2]$,
- where $c_1 \leq c_2$ are nonnegative real numbers which control the execution
+ Optional parameter \var{tech} is a row vector of the form $[c_{1}, c_{2}]$,
+ where $c_{1} \leq c_{2}$ are nonnegative real numbers which control the execution
  time and the stack size, see \ref{se:GRHbnf}. The parameter is used as a
  threshold to balance the relation finding phase against the final linear
- algebra. Increasing the default $c_1$ means that relations are easier
+ algebra. Increasing the default $c_{1}$ means that relations are easier
  to find, but more relations are needed and the linear algebra will be
- harder. The default value for $c_1$ is $0$ and means that it is taken equal
- to $c_2$. The parameter $c_2$ is mostly obsolete and should not be changed,
+ harder. The default value for $c_{1}$ is $0$ and means that it is taken equal
+ to $c_{2}$. The parameter $c_{2}$ is mostly obsolete and should not be changed,
  but we still document it for completeness: we compute a tentative class
  group by generators and relations using a factorbase of prime ideals
- $\leq c_1 (\log |D|)^2$, then prove that ideals of norm
- $\leq c_2 (\log |D|)^2$ do
- not generate a larger group. By default an optimal $c_2$ is chosen, so that
+ $\leq c_{1} (\log |D|)^{2}$, then prove that ideals of norm
+ $\leq c_{2} (\log |D|)^{2}$ do
+ not generate a larger group. By default an optimal $c_{2}$ is chosen, so that
  the result is provably correct under the GRH --- a result of Greni\'e
- and Molteni states that $c_2 = 23/6 \approx 3.83$ is fine (and even
- $c_2 = 15/4 \approx 3.75$ for large $|D| > 2.41 E8$). But it is possible
- to improve on this algorithmically. You may provide a smaller $c_2$, it will
- be ignored (we use the provably correct one); you may provide a larger $c_2$
+ and Molteni states that $c_{2} = 23/6 \approx 3.83$ is fine (and even
+ $c_{2} = 15/4 \approx 3.75$ for large $|D| > 2.41 E8$). But it is possible
+ to improve on this algorithmically. You may provide a smaller $c_{2}$, it will
+ be ignored (we use the provably correct one); you may provide a larger $c_{2}$
  than the default value, which results in longer computing times for equally
  correct outputs (under GRH).
 Variant: If you really need to experiment with the \var{tech} parameter,

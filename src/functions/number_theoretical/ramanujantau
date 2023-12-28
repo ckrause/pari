@@ -14,11 +14,11 @@ Doc: compute the value of Ramanujan's tau function at an individual $n$,
  The complexity is in $\tilde{O}(n^{1/2})$ using $O(\log n)$ space.
 
  If all values up to $N$ are required, then
- $$\sum \tau(n)q^n = q \prod_{n\geq 1} (1-q^n)^{24}$$
+ $$\sum \tau(n)q^{n} = q \prod_{n\geq 1} (1-q^{n})^{24}$$
  and more generally, setting $u = \ell - 13$ and $C = 2/\zeta(-u)$ for $\ell
  > 12$,
- $$\sum\tau_{\ell}(n)q^n = q \prod_{n\geq 1}
-  (1-q^n)^{24} \Big( 1 + C\sum_{n\ge1}n^u q^n / (1-q^n)\Big)$$
+ $$\sum\tau_{\ell}(n)q^{n} = q \prod_{n\geq 1}
+  (1-q^{n})^{24} \Big( 1 + C\sum_{n\ge1}n^{u} q^{n} / (1-q^{n})\Big)$$
  produces them in time $\tilde{O}(N)$, against $\tilde{O}(N^{3/2})$ for
  individual calls to \kbd{ramanujantau}; of course the space complexity then
  becomes $\tilde{O}(N)$. For other values of $\ell$,

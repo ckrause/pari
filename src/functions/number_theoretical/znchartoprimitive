@@ -5,9 +5,9 @@ Prototype: GG
 Help: znchartoprimitive(G,chi): let G be znstar(q,1) and chi
  be a Dirichlet character on (Z/qZ)* of conductor q0. Return [G0,chi0],
  where chi0 is the primitive character attached to chi and G0 is znstar(q0).
-Doc: Let \var{G} be attached to $(\Z/q\Z)^*$ (as per
+Doc: Let \var{G} be attached to $(\Z/q\Z)^{*}$ (as per
  \kbd{G = znstar(q, 1)}) and \kbd{chi} be a Dirichlet character on
- $(\Z/q\Z)^*$, of conductor $q_0 \mid q$.
+ $(\Z/q\Z)^{*}$, of conductor $q_{0} \mid q$.
 
  \bprog
  ? G = znstar(126000, 1);
@@ -27,7 +27,7 @@ Doc: Let \var{G} be attached to $(\Z/q\Z)^*$ (as per
  ? chi0
  %5 = [14]~
  @eprog\noindent Note that \kbd{znconreyconductor} is more efficient since
- it can return $\chi_0$ and its conductor $q_0$ without needing to initialize
- $G_0$. The price to pay is a more cryptic format and the need to
- initalize $G_0$ later, but that needs to be done only once for all characters
- with conductor $q_0$.
+ it can return $\chi_{0}$ and its conductor $q_{0}$ without needing to
+ initialize $G_{0}$. The price to pay is a more cryptic format and the need to
+ initalize $G_{0}$ later, but that needs to be done only once for all characters
+ with conductor $q_{0}$.

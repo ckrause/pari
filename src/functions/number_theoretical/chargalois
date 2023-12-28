@@ -29,4 +29,4 @@ Doc: Let \var{cyc} represent a finite abelian group by its elementary divisors
  %4 = [[0, 0, 0], [2, 0, 0], [2, 1, 0], [2, 0, 1], [2, 1, 1]]
  @eprog\noindent
  Given a character $\chi$, of order $n$ (\kbd{charorder(G,chi)}), the
- elements in its orbit are the $\phi(n)$ characters $\chi^i$, $(i,n)=1$.
+ elements in its orbit are the $\phi(n)$ characters $\chi^{i}$, $(i,n)=1$.

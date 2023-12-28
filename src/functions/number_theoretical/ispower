@@ -15,7 +15,7 @@ Doc: if $k$ is given, returns true (1) if $x$ is a $k$-th power, false
  $x$; see \tet{issquare} for details.
 
  If $k$ is omitted, only integers and fractions are allowed for $x$ and the
- function returns the maximal $k \geq 2$ such that $x = n^k$ is a perfect
+ function returns the maximal $k \geq 2$ such that $x = n^{k}$ is a perfect
  power, or 0 if no such $k$ exist; in particular \kbd{ispower(-1)},
  \kbd{ispower(0)}, and \kbd{ispower(1)} all return $0$.
 

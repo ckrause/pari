@@ -7,7 +7,7 @@ Help: znorder(x,{o}): order of the integermod x in (Z/nZ)*.
 Description:
  (gen,?int):int         znorder($1, $2)
 Doc: $x$ must be an integer mod $n$, and the
- result is the order of $x$ in the multiplicative group $(\Z/n\Z)^*$. Returns
+ result is the order of $x$ in the multiplicative group $(\Z/n\Z)^{*}$. Returns
  an error if $x$ is not invertible.
  The parameter o, if present, represents a nonzero
  multiple of the order of $x$, see \secref{se:DLfun}; the preferred format for

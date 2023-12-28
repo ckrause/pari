@@ -4,9 +4,9 @@ C-Name: znchargauss
 Prototype: GGDGb
 Help: znchargauss(G, chi, {a=1}): given a Dirichlet character chi on
  G = (Z/NZ)^*, return the complex Gauss sum g(chi,a).
-Doc: Given a Dirichlet character $\chi$ on $G = (\Z/N\Z)^*$ (see
+Doc: Given a Dirichlet character $\chi$ on $G = (\Z/N\Z)^{*}$ (see
  \kbd{znchar}), return the complex Gauss sum
- $$g(\chi,a) = \sum_{n = 1}^N \chi(n) e(a n/N)$$
+ $$g(\chi,a) = \sum_{n = 1}^{N} \chi(n) e(a n/N)$$
  \bprog
  ? [G,chi] = znchar(-3); \\ quadratic Gauss sum: I*sqrt(3)
  ? znchargauss(G,chi)

@@ -30,7 +30,7 @@ Doc: using variants of the extended Euclidean algorithm, returns a rational
  (Which implies that $n/d$ is a convergent of the continued fraction of $x$.)
 
  \item If $x$ is a \typ{INTMOD} modulo $N$ or a \typ{PADIC} of precision $N =
- p^k$, this function performs rational modular reconstruction modulo $N$. The
+ p^{k}$, this function performs rational modular reconstruction modulo $N$. The
  routine then returns the unique rational number $a/b$ in coprime integers
  $|a| < N/2B$ and $b\leq B$ which is congruent to $x$ modulo $N$. Omitting
  $B$ amounts to choosing it of the order of $\sqrt{N/2}$. If rational

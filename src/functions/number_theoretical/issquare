@@ -13,7 +13,7 @@ Doc: true (1) if $x$ is a square, false (0)
  if not. What ``being a square'' means depends on the type of $x$: all
  \typ{COMPLEX} are squares, as well as all nonnegative \typ{REAL}; for
  exact types such as \typ{INT}, \typ{FRAC} and \typ{INTMOD}, squares are
- numbers of the form $s^2$ with $s$ in $\Z$, $\Q$ and $\Z/N\Z$ respectively.
+ numbers of the form $s^{2}$ with $s$ in $\Z$, $\Q$ and $\Z/N\Z$ respectively.
  \bprog
  ? issquare(3)          \\ as an integer
  %1 = 0

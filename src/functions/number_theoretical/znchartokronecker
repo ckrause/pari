@@ -7,12 +7,12 @@ Help: znchartokronecker(G, chi, {flag=0}): let G be znstar(N,1), let chi
  real equal to the Kronecker symbol (D/.) and 0 otherwise. If flag
  is set, return the fundamental discriminant attached to the corresponding
  primitive character.
-Doc: Let $G$ be attached to $(\Z/N\Z)^*$ (as per \kbd{G = znstar(N,1)})
- and let \kbd{chi} be a Dirichlet character on $(\Z/N\Z)^*$, given by
+Doc: Let $G$ be attached to $(\Z/N\Z)^{*}$ (as per \kbd{G = znstar(N,1)})
+ and let \kbd{chi} be a Dirichlet character on $(\Z/N\Z)^{*}$, given by
 
  \item a \typ{VEC}: a standard character on \kbd{bid.gen},
 
- \item a \typ{INT} or a \typ{COL}: a Conrey index in $(\Z/q\Z)^*$ or its
+ \item a \typ{INT} or a \typ{COL}: a Conrey index in $(\Z/q\Z)^{*}$ or its
  Conrey logarithm;
  see \secref{se:dirichletchar} or \kbd{??character}.
 

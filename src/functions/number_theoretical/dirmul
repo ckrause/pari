@@ -5,7 +5,7 @@ Prototype: GG
 Help: dirmul(x,y): multiplication of the Dirichlet series x by the Dirichlet
  series y.
 Doc: $x$ and $y$ being vectors of perhaps different lengths representing
- the \idx{Dirichlet series} $\sum_n x_n n^{-s}$ and $\sum_n y_n n^{-s}$,
+ the \idx{Dirichlet series} $\sum_{n} x_{n} n^{-s}$ and $\sum_{n} y_{n} n^{-s}$,
  computes the product of $x$ by $y$, again as a vector.
  \bprog
  ? dirmul(vector(10,n,1), vector(10,n,moebius(n)))

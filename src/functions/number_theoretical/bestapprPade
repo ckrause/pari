@@ -33,7 +33,7 @@ Doc: using variants of the extended Euclidean algorithm (Pad\'{e}
  @eprog
 
  \item If $x$ is a \typ{SER}, we implicitly
- convert the input to a \typ{POLMOD} modulo $N = t^k$ where $k$ is the
+ convert the input to a \typ{POLMOD} modulo $N = t^{k}$ where $k$ is the
  series absolute precision.
  \bprog
  ? T = 1 + t + t^2 + t^3 + t^4 + t^5 + t^6 + O(t^7); \\ mod t^7
@@ -41,7 +41,7 @@ Doc: using variants of the extended Euclidean algorithm (Pad\'{e}
  %1 = 1/(-t + 1)
  @eprog
  \item If $x$ is a \typ{RFRAC}, we implicitly convert the input to a
- \typ{POLMOD} modulo $N = t^k$ where $k = 2B + 1$. If $B$ was omitted,
+ \typ{POLMOD} modulo $N = t^{k}$ where $k = 2B + 1$. If $B$ was omitted,
  we return $x$:
  \bprog
  ? T = (4*t^2 + 2*t + 3)/(t+1)^10;

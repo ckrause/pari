@@ -10,7 +10,7 @@ Doc:
 
  \item 0 (default): Human-readable format. See \kbd{??primecert} for the
  meaning of the successive $N, t, s, a, m, q, E, P$. The integer $D$ is the
- negative fundamental discriminant \kbd{coredisc}$(t^2 - 4N)$.
+ negative fundamental discriminant \kbd{coredisc}$(t^{2} - 4N)$.
 
  \item 1: Primo format 4.
 

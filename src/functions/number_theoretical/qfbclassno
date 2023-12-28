@@ -8,8 +8,8 @@ Doc: ordinary class number of the quadratic order of discriminant $D$, for
  ``small'' values of $D$.
 
  \item if  $D > 0$ or $\fl = 1$, use a $O(|D|^{1/2})$
- algorithm (compute $L(1,\chi_D)$ with the approximate functional equation).
- This is slower than \tet{quadclassunit} as soon as $|D| \approx 10^2$ or
+ algorithm (compute $L(1,\chi_{D})$ with the approximate functional equation).
+ This is slower than \tet{quadclassunit} as soon as $|D| \approx 10^{2}$ or
  so and is not meant to be used for large $D$.
 
  \item if $D < 0$ and $\fl = 0$ (or omitted), use a $O(|D|^{1/4})$

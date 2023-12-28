@@ -9,5 +9,5 @@ Doc: the $n^{\text{th}}$ prime number
  %1 = 22801763489
  @eprog\noindent Uses checkpointing and a naive $O(n)$ algorithm. Will need
  about 30 minutes for $n$ up to $10^{11}$; make sure to start gp with
- \kbd{primelimit} at least $\sqrt{p_n}$, e.g. the value
+ \kbd{primelimit} at least $\sqrt{p_{n}}$, e.g. the value
  $\sqrt{n\log (n\log n)}$ is guaranteed to be sufficient.

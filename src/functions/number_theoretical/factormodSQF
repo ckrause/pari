@@ -7,10 +7,10 @@ Help: factormodSQF(f,{D}): squarefree factorization of the polynomial f over
 Doc: squarefree factorization of the polynomial $f$ over the finite field
  defined by the domain $D$ as follows:
 
- \item $D = p$ a prime: factor over $\F_p$;
+ \item $D = p$ a prime: factor over $\F_{p}$;
 
  \item $D = [T,p]$ for a prime $p$ and $T$ an irreducible polynomial over
- $\F_p$: factor over $\F_p[x]/(T)$;
+ $\F_{p}$: factor over $\F_{p}[x]/(T)$;
 
  \item $D$ a \typ{FFELT}: factor over the attached field;
 

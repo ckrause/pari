@@ -8,8 +8,8 @@ Help: contfrac(x,{b},{nmax}): continued fraction expansion of x (x
  for the number of terms in the continued fraction expansion.
 Doc: returns the row vector whose components are the partial quotients of the
  \idx{continued fraction} expansion of $x$. In other words, a result
- $[a_0,\dots,a_n]$ means that $x \approx a_0+1/(a_1+\dots+1/a_n)$. The
- output is normalized so that $a_n \neq 1$ (unless we also have $n = 0$).
+ $[a_{0},\dots,a_{n}]$ means that $x \approx a_{0}+1/(a_{1}+\dots+1/a_{n})$. The
+ output is normalized so that $a_{n} \neq 1$ (unless we also have $n = 0$).
 
  The number of partial quotients $n+1$ is limited by \kbd{nmax}. If
  \kbd{nmax} is omitted, the expansion stops at the last significant partial
@@ -26,9 +26,10 @@ Doc: returns the row vector whose components are the partial quotients of the
 
  If a vector $b$ is supplied, the numerators are equal to the coefficients
  of $b$, instead of all equal to $1$ as above; more precisely, $x \approx
- (1/b_0)(a_0+b_1/(a_1+\dots+b_n/a_n))$; for a numerical continued fraction
- ($x$ real), the $a_i$ are integers, as large as possible; if $x$ is a
- rational function, they are polynomials with $\deg a_i = \deg b_i + 1$.
+ (1/b_{0})(a_{0}+b_{1}/(a_{1}+\dots+b_{n}/a_{n}))$; for a numerical continued
+ fraction ($x$ real), the $a_{i}$ are integers, as large as possible;
+ if $x$ is a
+ rational function, they are polynomials with $\deg a_{i} = \deg b_{i} + 1$.
  The length of the result is then equal to the length of $b$, unless the next
  partial quotient cannot be reliably computed, in which case the expansion
  stops. This happens when a partial remainder is equal to zero (or too small
@@ -48,11 +49,11 @@ Doc: returns the row vector whose components are the partial quotients of the
      x = b[i+1] / t;
    ); a;
  }
- @eprog\noindent There is some degree of freedom when choosing the $a_i$; the
+ @eprog\noindent There is some degree of freedom when choosing the $a_{i}$; the
  program above can easily be modified to derive variants of the standard
  algorithm. In the same vein, although no builtin
  function implements the related \idx{Engel expansion} (a special kind of
- \idx{Egyptian fraction} decomposition: $x = 1/a_1 + 1/(a_1a_2) + \dots$ ),
+ \idx{Egyptian fraction} decomposition: $x = 1/a_{1} + 1/(a_{1}a_{2}) + \dots$),
  it can be obtained as follows:
  \bprog
  \\ n terms of the Engel expansion of x

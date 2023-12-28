@@ -7,7 +7,7 @@ Help: sqrtnint(x,n): integer n-th root of x, where x is nonnegative real
 Description:
  (gen,small):int sqrtnint($1, $2)
 Doc: returns the integer $n$-th root of $x$, i.e. the largest integer $y$ such
- that $y^n \leq x$, where $x$ is a nonnegative real number.
+ that $y^{n} \leq x$, where $x$ is a nonnegative real number.
  \bprog
  ? N = 120938191237; sqrtnint(N, 5)
  %1 = 164

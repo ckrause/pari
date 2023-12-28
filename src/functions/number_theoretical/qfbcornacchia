@@ -5,7 +5,7 @@ Prototype: GG
 Help: qfbcornacchia(d,n): Solve the equation
  x^2+dy^2 = n in integers x and y where d > 0 and
  n is prime or 4 times a prime.
-Doc: Solve the equation $x^2 + dy^2 = n$ in integers $x$ and $y$, where
+Doc: Solve the equation $x^{2} + dy^{2} = n$ in integers $x$ and $y$, where
  $d > 0$ and $n$ is prime. Returns the empty vector \kbd{[]} when no solution
  exists. It is also allowed to try $n = 4$ times a prime but the answer is
  then guaranteed only if $d$ is $3$ mod $4$; more precisely if $d \neq 3$ mod
@@ -39,6 +39,6 @@ Doc: Solve the equation $x^2 + dy^2 = n$ in integers $x$ and $y$, where
  time = 251 ms.
  ? for (i=1, 10^5, qfbsolve(Q, Mat([p,1]))) \\ just as fast
  time = 251 ms.
- @eprog\noindent We used \kbd{Mat([p,1])} to indicate that $p^1$
+ @eprog\noindent We used \kbd{Mat([p,1])} to indicate that $p^{1}$
  was the integer factorization of $p$, i.e., that $p$ is prime. Without it,
  \kbd{qfbsolve} attempts to factor $p$ and wastes a little time.

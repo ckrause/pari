@@ -8,10 +8,10 @@ Help: factormod(f,{D},{flag=0}): factors the polynomial f over the finite
 Doc: factors the polynomial $f$ over the finite field defined by the domain
  $D$ as follows:
 
- \item $D = p$ a prime: factor over $\F_p$;
+ \item $D = p$ a prime: factor over $\F_{p}$;
 
  \item $D = [T,p]$ for a prime $p$ and $T(y)$ an irreducible polynomial over
- $\F_p$: factor over $\F_p[y]/(T)$ (as usual the main variable of $T$ must have
+ $\F_{p}$: factor over $\F_{p}[y]/(T)$ (as usual the main variable of $T$ must have
  lower priority than the main variable of $f$);
 
  \item $D$ a \typ{FFELT}: factor over the attached field;
@@ -22,7 +22,7 @@ Doc: factors the polynomial $f$ over the finite field defined by the domain
  The coefficients of $f$ must be operation-compatible with the corresponding
  finite field. The result is a two-column matrix, the first column being the
  irreducible polynomials dividing $f$, and the second the exponents.
- By convention, the $0$ polynomial factors as $0^1$; a nonzero constant
+ By convention, the $0$ polynomial factors as $0^{1}$; a nonzero constant
  polynomial has empty factorization, a $0\times 2$ matrix. The irreducible
  factors are ordered by increasing degree and the result is canonical: it will
  not change across multiple calls or sessions.

@@ -14,7 +14,7 @@ Doc: return a generator for the finite field $k$ as a \typ{FFELT}.
 
  \item its order $q$
 
- \item the pair $[p,f]$ where $q=p^f$
+ \item the pair $[p,f]$ where $q=p^{f}$
 
  \item a monic irreducible polynomial with \typ{INTMOD} coefficients modulo a
        prime.

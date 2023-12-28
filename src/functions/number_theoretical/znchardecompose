@@ -5,16 +5,16 @@ Prototype: GGG
 Help: znchardecompose(G, chi, Q): given a znstar G = (Z/NZ)^* and
  a Dirichlet character chi, return the product of local characters chi_p
  for p | (N,Q).
-Doc: Let $N = \prod_p p^{e_p}$ and a Dirichlet character $\chi$,
- we have a decomposition $\chi = \prod_p \chi_p$ into character modulo $N$
- where the conductor of $\chi_p$ divides $p^{e_p}$; it equals $p^{e_p}$ for
- all $p$ if and only if $\chi$ is primitive.
+Doc: Let $N = \prod_{p} p^{e_{p}}$ and a Dirichlet character $\chi$,
+ we have a decomposition $\chi = \prod_{p} \chi_{p}$ into character modulo $N$
+ where the conductor of $\chi_{p}$ divides $p^{e_{p}}$; it equals $p^{e_{p}}$
+ for all $p$ if and only if $\chi$ is primitive.
 
- Given a \var{znstar} G describing a group $(\Z/N\Z)^*$, a Dirichlet
- character \kbd{chi} and an integer $Q$, return $\prod_{p \mid (Q,N)} \chi_p$.
+ Given a \var{znstar} G describing a group $(\Z/N\Z)^{*}$, a Dirichlet
+ character \kbd{chi} and an integer $Q$, return $\prod_{p \mid (Q,N)} \chi_{p}$.
  For instance, if $Q = p$ is a prime divisor of $N$, the function returns
- $\chi_p$ (as a character modulo $N$), given as a Conrey character (\typ{COL}).
-
+ $\chi_{p}$ (as a character modulo $N$), given as a Conrey
+ character (\typ{COL}).
  \bprog
  ? G = znstar(40, 1);
  ? G.cyc

@@ -85,46 +85,49 @@ Doc:
 
  \subsec{Dirichlet characters}\label{se:dirichletchar}
 
- The finite abelian group $G = (\Z/N\Z)^*$ can be written $G = \oplus_{i\leq
- n} (\Z/d_i\Z) g_i$, with $d_n \mid \dots \mid d_2 \mid d_1$ (SNF condition),
- all $d_i > 0$, and $\prod_i d_i = \phi(N)$.
+ The finite abelian group $G = (\Z/N\Z)^{*}$ can be written $G = \oplus_{i\leq
+ n} (\Z/d_{i}\Z) g_{i}$, with $d_{n} \mid \dots \mid d_{2} \mid d_{1}$
+ (SNF condition), all $d_{i} > 0$, and $\prod_{i} d_{i} = \phi(N)$.
 
- The SNF condition makes the $d_i$ unique, but the generators $g_i$, of
- respective order $d_i$, are definitely not unique. The $\oplus$ notation
- means that all elements of $G$ can be written uniquely as $\prod_i g_i^{n_i}$
- where $n_i \in \Z/d_i\Z$. The $g_i$ are the so-called \tev{SNF generators}
- of $G$.
+ The positivity and SNF condition make the $d_{i}$ unique, but the generators
+ $g_{i}$, of respective order $d_{i}$, are definitely not unique. The
+ $\oplus$ notation means that all elements of $G$ can be written uniquely as
+ $\prod_{i} g_{i}^{n_{i}}$ where $n_{i} \in \Z/d_{i}\Z$. The $g_{i}$ are the
+ so-called \tev{SNF generators} of $G$.
 
- \item a \tev{character} on the abelian group
- $\oplus (\Z/d_j\Z) g_j$
- is given by a row vector $\chi = [a_1,\ldots,a_n]$ of integers $0\leq a_i  <
- d_i$ such that $\chi(g_j) = e(a_j / d_j)$ for all $j$, with the standard
- notation $e(x) := \exp(2i\pi x)$.
+ \item a \tev{character} on the abelian group $\oplus_{j} (\Z/d_{j}\Z) g_{j}$
+ is given by a row vector $\chi = [a_{1},\ldots,a_{n}]$ of integers
+ $0\leq a_{i}  < d_{i}$ such that $\chi(g_{j}) = e(a_{j} / d_{j})$ for all $j$,
+ with the standard notation $e(x) := \exp(2i\pi x)$.
  In other words,
- $\chi(\prod g_j^{n_j}) = e(\sum a_j n_j / d_j)$.
+ $\chi(\prod_{j} g_{j}^{n_{j}}) = e(\sum_{j} a_{j} n_{j} / d_{j})$.
 
  This will be generalized to more general abelian groups in later sections
- (Hecke characters), but in the present case of $(\Z/N\Z)^*$, there is a useful
+ (Hecke characters), but in the present case of $(\Z/N\Z)^{*}$, there is a
+ useful
  alternate convention : namely, it is not necessary to impose the SNF
- condition and we can use Chinese remainders instead. If $N = \prod p^{e_p}$ is
+ condition and we can use Chinese remainders instead. If $N = \prod p^{e_{p}}$
+ is
  the factorization of $N$ into primes, the so-called \tev{Conrey generators}
- of $G$ are the generators of the $(\Z/p^{e_p}\Z)^*$ lifted to $(\Z/N\Z)^*$ by
- requesting that they be congruent to $1$ modulo $N/p^{e_p}$ (for $p$ odd we
- take the smallest positive primitive root mod $p^2$, and for $p = 2$
+ of $G$ are the generators of the $(\Z/p^{e_{p}}\Z)^{*}$ lifted to
+ $(\Z/N\Z)^{*}$ by
+ requesting that they be congruent to $1$ modulo $N/p^{e_{p}}$ (for $p$ odd we
+ take the smallest positive primitive root mod $p^{2}$, and for $p = 2$
  we take $-1$ if
- $e_2 > 1$ and additionally $5$ if $e_2 > 2$). We can again write $G =
- \oplus_{i\leq n} (\Z/D_i\Z) G_i$, where again $\prod_i D_i = \phi(N)$. These
- generators don't satisfy the SNF condition in general since their orders are
- now $(p-1)p^{e_p-1}$ for $p$ odd; for $p = 2$, the generator $-1$ has order
- $2$ and $5$ has order $2^{e_2-2}$ $(e_2 > 2)$. Nevertheless, any $m\in
- (\Z/N\Z)^*$ can be uniquely decomposed as $m = \prod G_i^{m_i}$ for some $m_i$
- modulo $D_i$ and we can define a character by $\chi(G_j) = e(m_j / D_j)$ for
- all $j$.
+ $e_{2} > 1$ and additionally $5$ if $e_{2} > 2$). We can again write $G =
+ \oplus_{i\leq n} (\Z/D_{i}\Z) G_{i}$, where again $\prod_{i} D_{i} = \phi(N)$.
+ These generators don't satisfy the SNF condition in general since their orders
+ are
+ now $(p-1)p^{e_{p}-1}$ for $p$ odd; for $p = 2$, the generator $-1$ has order
+ $2$ and $5$ has order $2^{e_{2}-2}$ $(e_{2} > 2)$. Nevertheless, any $m\in
+ (\Z/N\Z)^{*}$ can be uniquely decomposed as $m = \prod_{j} G_{i}^{m_{i}}$
+ for some $m_{i}$ modulo $D_{i}$ and we can define a character by $\chi(G_{j})
+ = e(m_{j} / D_{j})$ for all $j$.
 
- \item The \emph{column vector} of the $m_j$, $0 \leq m_j < D_j$ is called the
- \tev{Conrey logarithm} of $m$ (discrete logarithm in terms of the Conrey
- generators). Note that discrete logarithms in PARI/GP are always expressed as
- \typ{COL}s.
+ \item The \emph{column vector} of the $m_{j}$, $0 \leq m_{j} < D_{j}$ is
+ called the \tev{Conrey logarithm} of $m$ (discrete logarithm in terms of the
+ Conrey generators). Note that discrete logarithms in PARI/GP are always
+ expressed as \typ{COL}s.
 
  \item The attached character is called the \tev{Conrey character}
  attached to $m$.
@@ -137,7 +140,7 @@ Doc:
 
  Concretely, this works as follows:
 
- \kbd{G = znstar(N, 1)} initializes $(\Z/N\Z)^*$, which must be given as
+ \kbd{G = znstar(N, 1)} initializes $(\Z/N\Z)^{*}$, which must be given as
  first arguments to all functions handling Dirichlet characters.
 
  \kbd{znconreychar} transforms \typ{INT}, \typ{INTMOD} and \typ{COL} to a SNF
@@ -153,6 +156,6 @@ Doc:
  \kbd{znconreyconductor} (also computes the primitive character attached to
  the input character). The prefix \kbd{char} indicates that the function
  applies to all characters, the prefix \kbd{znchar} that it is specific to
- Dirichlet characters (on $(\Z/N\Z)^*$) and the prefix \kbd{znconrey} that it
+ Dirichlet characters (on $(\Z/N\Z)^{*}$) and the prefix \kbd{znconrey} that it
  is specific to Conrey representation.
 

@@ -7,8 +7,9 @@ Help: sqrtint(x,{&r}): integer square root y of x, where x is a nonnegative
 Description:
  (gen):int sqrtint($1)
 Doc: returns the integer square root of $x$, i.e. the largest integer $y$
- such that $y^2 \leq x$, where $x$ a nonnegative real number. If $r$ is present,
- set it to the remainder $r = x - y^2$, which satisfies $0\leq r < 2y + 1$.
+ such that $y^{2} \leq x$, where $x$ a nonnegative real number. If $r$ is
+ present,
+ set it to the remainder $r = x - y^{2}$, which satisfies $0\leq r < 2y + 1$.
  Further, when $x$ is an integer, $r$ is an integer satisfying
  $0 \leq r \leq 2y$.
  \bprog

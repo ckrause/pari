@@ -7,7 +7,7 @@ Help: quadray(D,f): relative equation for the ray class field of
  bnf).
 Doc: relative equation for the ray
  class field of conductor $f$ for the quadratic field of discriminant $D$
- using analytic methods. A \kbd{bnf} for $x^2 - D$ is also accepted in place
+ using analytic methods. A \kbd{bnf} for $x^{2} - D$ is also accepted in place
  of $D$.
 
  For $D < 0$, uses the $\sigma$ function and Schertz's method.

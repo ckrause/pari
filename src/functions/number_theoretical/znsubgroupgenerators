@@ -5,10 +5,10 @@ Prototype: GD0,L,
 Help: znsubgroupgenerators(H, {flag=0}): find generators of the subgroup H
  of (Z/fZ)^*; H is given by a vector of 1/0 values: the a-th component is 1
  if and only if a belongs to H.
-Doc: Finds a minimal set of generators for the subgroup of $(\Z/f\Z)^*$
+Doc: Finds a minimal set of generators for the subgroup of $(\Z/f\Z)^{*}$
  given by a vector (or vectorsmall) $H$ of length $f$:
- for $1\leq a\leq f$, \kbd{H[a]} is 1 or 0 according as $a\in H_F$
- or $a\not\in H_F$. In most PARI functions, subgroups of an abelian group
+ for $1\leq a\leq f$, \kbd{H[a]} is 1 or 0 according as $a\in H_{F}$
+ or $a\not\in H_{F}$. In most PARI functions, subgroups of an abelian group
  are given as HNF left-divisors of a diagonal matrix, representing the
  discrete logarithms of the subgroup generators in terms of a fixed
  generators for the group cyclic components. The present function
@@ -19,7 +19,7 @@ Doc: Finds a minimal set of generators for the subgroup of $(\Z/f\Z)^*$
  ? v = znsubgroupgenerators(H);
  ? subHNF(G, v) = mathnfmodid(Mat([znlog(h, G) | h<-v]), G.cyc);
  @eprog\noindent The function \kbd{subHNF} can be applied to any
- elements of $(\Z/f\Z)^*$, yielding the subgroup they generate, but using
+ elements of $(\Z/f\Z)^{*}$, yielding the subgroup they generate, but using
  \kbd{znsubgroupgenerators} first allows to reduce the number of discrete
  logarithms to be computed.
 
@@ -44,10 +44,10 @@ Doc: Finds a minimal set of generators for the subgroup of $(\Z/f\Z)^*$
  @eprog\noindent This function is mostly useful when $f$ is large
  and $H$ has small index: if $H$ has few elements, one may just use
  \kbd{subHNF} directly on the elements of $H$. For instance, let
- $K = \Q(\zeta_p, \sqrt{m}) \subset L = \Q(\zeta_f)$, where $p$ is
+ $K = \Q(\zeta_{p}, \sqrt{m}) \subset L = \Q(\zeta_{f})$, where $p$ is
  a prime, $\sqrt{m}$ is a quadratic number and $f$ is the conductor of the
  abelian extension $K/\Q$. The following GP script creates $H$ as the Galois
- group of $L/K$, as a subgroub of $(\Z/fZ)^*$:
+ group of $L/K$, as a subgroub of $(\Z/fZ)^{*}$:
  \bprog
  HK(m, p, flag = 0)=
  { my(d = quaddisc(m), f = lcm(d, p), H);
@@ -81,7 +81,7 @@ Doc: Finds a minimal set of generators for the subgroup of $(\Z/f\Z)^*$
  time = 242 ms.
  %6 = 1
  @eprog\noindent
- This shows that $K=\Q(\sqrt{36322},\zeta_5)$ is contained in
+ This shows that $K=\Q(\sqrt{36322},\zeta_{5})$ is contained in
  $\Q(\zeta_{726440})$ and $H=\langle 41, 61, 111, 131 \rangle$.
  Note that $H=\langle 41\rangle\langle 61\rangle\langle 111 \rangle
  \langle 131\rangle$ is not a direct product. If $\fl=1$, then the function
