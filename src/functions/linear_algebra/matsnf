@@ -9,8 +9,8 @@ Help: matsnf(X,{flag=0}): Smith normal form (i.e. elementary divisors) of
  4: removes all information corresponding to entries equal to 1 in d.
 Doc: if $X$ is a (singular or nonsingular) matrix outputs the vector of
  \idx{elementary divisors} of $X$, i.e.~the diagonal of the
- \idx{Smith normal form} of $X$, normalized so that $d_n \mid d_{n-1} \mid
- \ldots \mid d_1$. $X$ must have integer or polynomial entries; in the latter
+ \idx{Smith normal form} of $X$, normalized so that $d_{n} \mid d_{n-1} \mid
+ \ldots \mid d_{1}$. $X$ must have integer or polynomial entries; in the latter
  case, $X$ must be a square matrix.
 
  The binary digits of \fl\ mean:

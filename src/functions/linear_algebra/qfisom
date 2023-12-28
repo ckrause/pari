@@ -9,7 +9,7 @@ Help: qfisom(G,H,{fl},{grp}): find an isomorphism between the integral positive
 Doc:
  $G$, $H$ being square and symmetric matrices with integer entries representing
  positive definite quadratic forms, return an invertible matrix $S$ such that
- $G={^t}S\*H\*S$. This defines a isomorphism between the corresponding lattices.
+ $G={^{t}}S\*H\*S$. This defines a isomorphism between the corresponding lattices.
  Since this requires computing the minimal vectors, the computations can
  become very lengthy as the dimension grows.
  See \kbd{qfisominit} for the meaning of \var{fl}.

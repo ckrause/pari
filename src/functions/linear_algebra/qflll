@@ -39,8 +39,9 @@ Doc: \idx{LLL} algorithm applied to the
  If $\fl=2$, $x$ should be an integer matrix whose columns are linearly
  independent. Returns a partially reduced basis for $x$, using an unpublished
  algorithm by Peter Montgomery: a basis is said to be \emph{partially reduced}
- if $|v_i \pm v_j| \geq |v_i|$ for any two distinct basis vectors $v_i, \,
- v_j$. This is faster than $\fl=1$, esp. when one row is huge compared
+ if $|v_{i} \pm v_{j}| \geq |v_{i}|$ for any two distinct basis vectors
+ $v_{i}, \, v_{j}$. This is faster than $\fl=1$, esp. when one row is huge
+ compared
  to the other rows (knapsack-style), and should quickly produce relatively
  short vectors. The resulting basis is \emph{not} LLL-reduced in general.
  If LLL reduction is eventually desired, avoid this partial reduction:

@@ -34,7 +34,7 @@ Doc: let $R$ be a Euclidean ring, equal to $\Z$ or to $K[X]$ for some field
 
  \item $\fl=4$, returns $[H,U]$ as in ``complete output'' above, using a
  variant of \idx{LLL} reduction along the way. The matrix $U$ is provably
- small in the $L_2$ sense, and often close to optimal; but the
+ small in the $L_{2}$ sense, and often close to optimal; but the
  reduction is in general slow, although provably polynomial-time.
 
  If $\fl=5$, uses Batut's algorithm and output $[H,U,P]$, such that $H$ and

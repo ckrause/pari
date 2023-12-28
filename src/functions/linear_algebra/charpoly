@@ -37,17 +37,17 @@ Doc:
 
  If $\fl=0$, same method (Le Verrier's) as for computing the adjoint matrix,
  i.e.~using the traces of the powers of $A$. Assumes that $n!$ is
- invertible; uses $O(n^4)$ scalar operations.
+ invertible; uses $O(n^{4})$ scalar operations.
 
  If $\fl=1$, uses Lagrange interpolation which is usually the slowest method.
- Assumes that $n!$ is invertible; uses $O(n^4)$ scalar operations.
+ Assumes that $n!$ is invertible; uses $O(n^{4})$ scalar operations.
 
  If $\fl=2$, uses the Hessenberg form. Assumes that the base ring is a field.
- Uses $O(n^3)$ scalar operations, but suffers from coefficient explosion
+ Uses $O(n^{3})$ scalar operations, but suffers from coefficient explosion
  unless the base field is finite or $\R$.
 
  If $\fl=3$, uses Berkowitz's division free algorithm, valid over any
- ring (commutative, with unit). Uses $O(n^4)$ scalar operations.
+ ring (commutative, with unit). Uses $O(n^{4})$ scalar operations.
 
  If $\fl=4$, $x$ must be integral. Uses a modular algorithm: Hessenberg form
  for various small primes, then Chinese remainders.

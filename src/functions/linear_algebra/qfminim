@@ -38,7 +38,7 @@ Doc: $x$ being a square and symmetric matrix of dimension $d$ representing
  always) in an LLL-reduced basis for $x$.
 
  In these two cases, $x$ must have integral \emph{small} entries: more
- precisely, we definitely must have $d\cdot \|x\|_\infty^2 < 2^{53}$ but
+ precisely, we definitely must have $d\cdot \|x\|_{\infty}^{2} < 2^{53}$ but
  even that may not be enough. The implementation uses low precision floating
  point computations for maximal speed and gives incorrect results when $x$
  has large entries. That condition is checked in the code and the routine

@@ -10,6 +10,6 @@ Doc: $x$ and $y$ being two matrices with the same number of rows, finds a
  (resp.~$y$) should be independent.
 
  The faster function \tet{idealintersect} can be used to intersect
- fractional ideals (projective $\Z_K$ modules of rank $1$); the slower but
+ fractional ideals (projective $\Z_{K}$ modules of rank $1$); the slower but
  more general function \tet{nfhnf} can be used to intersect general
- $\Z_K$-modules.
+ $\Z_{K}$-modules.

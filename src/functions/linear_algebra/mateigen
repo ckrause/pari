@@ -12,8 +12,8 @@ Doc: returns the (complex) eigenvectors of $x$ as columns of a matrix.
  than the eigenvalue multiplicity in the characteristic polynomial).
 
  This function first computes the characteristic polynomial of $x$ and
- approximates its complex roots $(\lambda_i)$, then tries to compute the
- eigenspaces as kernels of the $x - \lambda_i$. This algorithm is
+ approximates its complex roots $(\lambda_{i})$, then tries to compute the
+ eigenspaces as kernels of the $x - \lambda_{i}$. This algorithm is
  ill-conditioned and is likely to miss kernel vectors if some roots of the
  characteristic polynomial are close, in particular if it has multiple roots.
  \bprog
