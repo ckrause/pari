@@ -31,8 +31,8 @@ Doc: high precision plot of the function $y=f(x)$ represented by the expression
 
  If no $\fl$ is given, \var{expr} is either a scalar expression $f(X)$, in which
  case the plane curve $y=f(X)$ will be drawn, or a vector
- $[f_1(X),\dots,f_k(X)]$, and then all the curves $y=f_i(X)$ will be drawn in
- the same window.
+ $[f_{1}(X),\dots,f_{k}(X)]$, and then all the curves $y=f_{i}(X)$ will be
+ drawn in the same window.
 
  \noindent The binary digits of $\fl$ mean:
 
