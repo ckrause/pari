@@ -11,13 +11,13 @@ Help: mspadicinit(M, p, n, {flag}): M being a full modular symbol space,
 
 Doc: $M$ being a full modular symbol space, as given by \kbd{msinit}, and $p$
  a prime, initialize technical data needed to compute with overconvergent
- modular symbols, modulo $p^n$. If $\fl$ is unset, allow
+ modular symbols, modulo $p^{n}$. If $\fl$ is unset, allow
  all symbols; else initialize only for a restricted range of symbols
  depending on $\fl$: if $\fl = 0$ restrict to ordinary symbols, else
- restrict to symbols $\phi$ such that $T_p(\phi) = a_p \phi$,
- with $v_p(a_p) \geq \fl$, which is faster as $\fl$ increases.
+ restrict to symbols $\phi$ such that $T_{p}(\phi) = a_{p} \phi$,
+ with $v_{p}(a_{p}) \geq \fl$, which is faster as $\fl$ increases.
  (The fastest initialization is obtained for $\fl = 0$ where we only allow
- ordinary symbols.) For supersingular eigensymbols, such that $p\mid a_p$, we
+ ordinary symbols.) For supersingular eigensymbols, such that $p\mid a_{p}$, we
  must further assume that $p$ does not divide the level.
  \bprog
  ? E = ellinit("11a1");
@@ -29,7 +29,7 @@ Doc: $M$ being a full modular symbol space, as given by \kbd{msinit}, and $p$
  @eprog
 
  If we restrict the range of allowed symbols with \fl (for faster
- initialization), exceptions will occur if $v_p(a_p)$ violates this bound:
+ initialization), exceptions will occur if $v_{p}(a_{p})$ violates this bound:
  \bprog
  ? E = ellinit("15a1");
  ? [M,phi] = msfromell(E,1);
@@ -42,5 +42,5 @@ Doc: $M$ being a full modular symbol space, as given by \kbd{msinit}, and $p$
  *** mstooms: incorrect type in mstooms [v_p(ap) > mspadicinit flag] (t_VEC).
  ? Mp = mspadicinit(M,7,5); \\ no restriction
  ? PHI = mstooms(Mp,phi);
- @eprog\noindent This function uses $O(N^2(n+k)^2p)$ memory, where $N$ is the
- level of $M$.
+ @eprog\noindent This function uses $O(N^{2}(n+k)^{2}p)$ memory,
+ where $N$ is the level of $M$.

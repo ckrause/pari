@@ -10,11 +10,12 @@ Help: mspadicmoments(Mp, PHI, {D = 1}): given Mp from mspadicinit, an
 Doc: given \kbd{Mp} from \kbd{mspadicinit}, an overconvergent
  eigensymbol \kbd{PHI} from \kbd{mstooms} and a fundamental discriminant
  $D$ coprime to $p$,
- let $\kbd{PHI}^D$ denote the twisted symbol. This function computes
- the distribution $\mu = \kbd{PHI}^D([0] - \infty]) \mid \Z_p^*$ restricted
- to $\Z_p^*$. More precisely, it returns
- the moments of the $p-1$ distributions $\kbd{PHI}^D([0]-[\infty])
- \mid (a + p\Z_p)$, $0 < a < p$.
+ let $\kbd{PHI}^{D}$ denote the twisted symbol. This function computes
+ the distribution $\mu = \kbd{PHI}^{D}([0] - \infty]) \mid \Z_{p}^{*}$
+ restricted
+ to $\Z_{p}^{*}$. More precisely, it returns
+ the moments of the $p-1$ distributions $\kbd{PHI}^{D}([0]-[\infty])
+ \mid (a + p\Z_{p})$, $0 < a < p$.
  We also allow \kbd{PHI} to be given as a classical
  symbol, which is then lifted to an overconvergent symbol by \kbd{mstooms};
  but this is wasteful if more than one twist is later needed.

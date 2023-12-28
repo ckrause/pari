@@ -9,8 +9,8 @@ Help: mspolygon(M, {flag = 0}): M describes a subgroup G of finite index in
  Binary digits of flag mean: 1=normalized polygon, 2=also add graphical
  representations.
 Doc: $M$ describes a subgroup $G$ of finite index in the modular group
- $\text{PSL}_2(\Z)$, as given by \kbd{msinit} or a positive integer $N$
- (encoding the group $G = \Gamma_0(N)$), or by \kbd{msfarey} (arbitrary
+ $\text{PSL}_{2}(\Z)$, as given by \kbd{msinit} or a positive integer $N$
+ (encoding the group $G = \Gamma_{0}(N)$), or by \kbd{msfarey} (arbitrary
  subgroup). Return an hyperbolic polygon (Farey symbol) attached to $G$.
  More precisely:
 
@@ -20,61 +20,65 @@ Doc: $M$ describes a subgroup $G$ of finite index in the modular group
  \item Its edges are hyperbolic arcs joining two consecutive vertices;
  each edge $e$ is labelled by an integer $\mu(e) \in \{\infty,2,3\}$.
 
- \item Given a path $(a,b)$ between two elements of $\P^1(\Q)$, let
+ \item Given a path $(a,b)$ between two elements of $\P^{1}(\Q)$, let
  $\overline{(a,b)} = (b,a)$ be the opposite path. There is an involution $e
- \to e^*$ on the edges. We have $\mu(e) = \infty$ if and only if $e\neq e^*$;
- when $\mu(e) \neq 3$, $e$ is $G$-equivalent to $\overline{e^*}$, i.e. there
- exists $\gamma_e \in G$ such that $e = \gamma_e \overline{e^*}$; if $\mu(e)=3$
- there exists $\gamma_e \in G$ of order $3$ such that the hyperbolic triangle
- $(e, \gamma_e e, \gamma_e^2 e)$ is invariant by $\gamma_e$. In all cases,
- to each edge we have attached $\gamma_e \in G$ of order $\mu(e)$.
+ \to e^{*}$ on the edges. We have $\mu(e) = \infty$ if and only if $e\neq
+ e^{*}$;
+ when $\mu(e) \neq 3$, $e$ is $G$-equivalent to $\overline{e^{*}}$, i.e. there
+ exists $\gamma_{e} \in G$ such that $e = \gamma_{e} \overline{e^{*}}$;
+ if $\mu(e)=3$
+ there exists $\gamma_{e} \in G$ of order $3$ such that the hyperbolic triangle
+ $(e, \gamma_{e} e, \gamma_{e}^{2} e)$ is invariant by $\gamma_{e}$.
+ In all cases,
+ to each edge we have attached $\gamma_{e} \in G$ of order $\mu(e)$.
 
  \noindent The polygon is given by a triple $[E, A, g]$
 
- \item The list $E$ of its consecutive edges as matrices in $M_2(\Z)$.
+ \item The list $E$ of its consecutive edges as matrices in $M_{2}(\Z)$.
 
  \item The permutation $A$ attached to the involution: if $e = E[i]$ is the
- $i$-th edge, then \kbd{A[i]} is the index of $e^*$ in $E$.
+ $i$-th edge, then \kbd{A[i]} is the index of $e^{*}$ in $E$.
 
- \item The list $g$ of pairing matrices $\gamma_e$.
- Remark that $\gamma_{e^*}=\gamma_e^{-1}$ if $\mu(e) \neq 3$,
+ \item The list $g$ of pairing matrices $\gamma_{e}$.
+ Remark that $\gamma_{e^{*}}=\gamma_{e}^{-1}$ if $\mu(e) \neq 3$,
  i.e., $g[i]^{-1} = g[A[i]]$ whenever $i\neq A[i]$ ($\mu(g[i]) = 1$) or
- $\mu(g[i]) = 2$ ($g[i]^2 = 1$). Modulo these trivial relations,
+ $\mu(g[i]) = 2$ ($g[i]^{2} = 1$). Modulo these trivial relations,
  the pairing matrices form a system of independant generators of $G$. Note
- that $\gamma_e$ is elliptic if and only if $e^* = e$.
+ that $\gamma_{e}$ is elliptic if and only if $e^{*} = e$.
 
  \noindent The above data yields a fundamental domain for $G$ acting
  on Poincar\'e's half-plane: take the convex hull of the polygon defined by
 
- \item The edges in $E$ such that $e \neq e^*$ or $e^*=e$, where the pairing
- matrix $\gamma_e$ has order $2$;
+ \item The edges in $E$ such that $e \neq e^{*}$ or $e^{*}=e$, where the pairing
+ matrix $\gamma_{e}$ has order $2$;
 
  \item The edges $(r,t)$ and $(t,s)$ where the edge $e = (r,s) \in E$ is such
- that $e = e^*$ and $\gamma_e$ has order $3$ and the triangle $(r,t,s)$
- is the image of $(0,\exp(2i\pi/3), \infty)$ by some element of $PSL_2(\Q)$
+ that $e = e^{*}$ and $\gamma_{e}$ has order $3$ and the triangle $(r,t,s)$
+ is the image of $(0,\exp(2i\pi/3), \infty)$ by some element of $PSL_{2}(\Q)$
  formed around the edge.
 
  Binary digits of flag mean:
 
  1: return a normalized hyperbolic polygon if set, else a polygon with
  unimodular edges (matrices of determinant $1$). A polygon is normalized
- in the sense of compact orientable surfaces if the distance $d(a,a^*)$ between
- an edge $a$ and its image by the involution $a^*$ is less than 2, with
+ in the sense of compact orientable surfaces if the distance $d(a,a^{*})$
+ between
+ an edge $a$ and its image by the involution $a^{*}$ is less than 2, with
  equality if and only if $a$ is \emph{linked} with another edge $b$
- ($a$, $b$, $a^*$ et $b^*$ appear consecutively in $E$ up to cyclic
+ ($a$, $b$, $a^{*}$ et $b^{*}$ appear consecutively in $E$ up to cyclic
  permutation). In particular, the vertices of all edges such that that
- $d(a,a^*) \neq 1$ (distance is 0 or 2) are all equivalent to $0$ modulo
- $G$. The external vertices of $a a^*$ such that $d(a,a^*) = 1$ are
- also equivalent to $0$; the internal vertices $a\cap a^*$ (a single point),
+ $d(a,a^{*}) \neq 1$ (distance is 0 or 2) are all equivalent to $0$ modulo
+ $G$. The external vertices of $a a^{*}$ such that $d(a,a^{*}) = 1$ are
+ also equivalent to $0$; the internal vertices $a\cap a^{*}$ (a single point),
  together with $0$, form a system of representatives of the cusps of
  $G\bs \P^{1}(\Q)$. This is useful to compute the homology group
- $H_1(G,\Z)$ as it gives a symplectic basis for the intersection pairing.
+ $H_{1}(G,\Z)$ as it gives a symplectic basis for the intersection pairing.
  In this case, the number of parabolic matrices (trace 2) in the system of
  generators $G$ is $2(t-1)$, where $t$ is the number of non equivalent cusps
- for $G$. This is currently only implemented for $G = \Gamma_0(N)$.
+ for $G$. This is currently only implemented for $G = \Gamma_{0}(N)$.
 
  2: add graphical representations (in LaTeX form) for the hyperbolic polygon
- in Poincar\'e's half-space and the involution $a\to a^*$ of the Farey symbol.
+ in Poincar\'e's half-space and the involution $a\to a^{*}$ of the Farey symbol.
  The corresponding character strings can be included in a LaTeX document
  provided the preamble contains \kbd{\bs usepackage\obr tikz\cbr}.
 
@@ -108,13 +112,13 @@ Doc: $M$ describes a subgroup $G$ of finite index in the modular group
  %13 = Vecsmall([2, 1, 4, 3, 6, 5, 9, 10, 7, 8])
  @eprog
  One can see from this last example that the (normalized) polygon has the form
- $$(a_1, a_1^*, a_2, a_2^*, a_3, a_3^*, a_4, a_5, a_4^*, a_5^*),$$
- that $X_0(14)$ is of genus 1 (in general the genus is the number of blocks
- of the form $aba^*b^*$), has no elliptic points ($A$ has no fixed point)
- and 4 cusps (number of blocks of the form $aa^*$ plus 1). The vertices
- of edges $a_4$ and $a_5$ all project to $0$ in $X_0(14)$: the paths $a_4$
- and $a_5$ project as loops in $X_0(14)$ and give a symplectic basis of the
- homology $H_1(X_0(14),\Z)$.
+ $$(a_{1}, a_{1}^{*}, a_{2}, a_{2}^{*}, a_{3}, a_{3}^{*}, a_{4}, a_{5}, a_{4}^{*}, a_{5}^{*}),$$
+ that $X_{0}(14)$ is of genus 1 (in general the genus is the number of blocks
+ of the form $aba^{*}b^{*}$), has no elliptic points ($A$ has no fixed point)
+ and 4 cusps (number of blocks of the form $aa^{*}$ plus 1). The vertices
+ of edges $a_{4}$ and $a_{5}$ all project to $0$ in $X_{0}(14)$: the paths $a_{4}$
+ and $a_{5}$ project as loops in $X_{0}(14)$ and give a symplectic basis of the
+ homology $H_{1}(X_{0}(14),\Z)$.
  \bprog
  ? [V,A] = mspolygon(15);
  ? apply(matdet, V) \\ all unimodular

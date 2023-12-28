@@ -10,23 +10,23 @@ Help: mstooms(Mp, phi): given Mp from mspadicinit, lift the
 Doc: given \kbd{Mp} from \kbd{mspadicinit}, lift the (classical) eigen symbol
  \kbd{phi} to a $p$-adic distribution-valued overconvergent symbol in the
  sense of Pollack and Stevens. More precisely, let $\phi$ belong to the space
- $W$ of modular symbols of level $N$, $v_p(N) \leq 1$, and weight $k$ which is
- an eigenvector for the Hecke operator $T_N(p)$ for a nonzero eigenvalue
- $a_p$ and let $N_0 = \text{lcm}(N,p)$.
+ $W$ of modular symbols of level $N$, $v_{p}(N) \leq 1$, and weight $k$ which is
+ an eigenvector for the Hecke operator $T_{N}(p)$ for a nonzero eigenvalue
+ $a_{p}$ and let $N_{0} = \text{lcm}(N,p)$.
 
- Under the action of $T_{N_0}(p)$, $\phi$ generates a subspace $W_\phi$ of
+ Under the action of $T_{N_{0}}(p)$, $\phi$ generates a subspace $W_{\phi}$ of
  dimension $1$ (if $p\mid N$) or $2$ (if $p$ does not divide $N$) in the
- space of modular symbols of level $N_0$.
+ space of modular symbols of level $N_{0}$.
 
- Let $V_p=[p,0;0,1]$ and $C_p=[a_p,p^{k-1};-1,0]$.
- When $p$ does not divide $N$ and $a_p$ is divisible by $p$, \kbd{mstooms}
- returns the lift $\Phi$ of $(\phi,\phi|_k V_p)$ such that
-  $$T_{N_0}(p) \Phi = C_p \Phi$$
+ Let $V_{p}=[p,0;0,1]$ and $C_{p}=[a_{p},p^{k-1};-1,0]$.
+ When $p$ does not divide $N$ and $a_{p}$ is divisible by $p$, \kbd{mstooms}
+ returns the lift $\Phi$ of $(\phi,\phi|_{k} V_{p})$ such that
+  $$T_{N_{0}}(p) \Phi = C_{p} \Phi$$
 
- When $p$ does not divide $N$ and $a_p$ is not divisible by $p$, \kbd{mstooms}
- returns the lift $\Phi$ of $\phi - \alpha^{-1} \phi|_k V_p$
- which is an eigenvector of $T_{N_0}(p)$ for the unit eigenvalue
- where $\alpha^2 - a_p \alpha + p^{k-1}=0$.
+ When $p$ does not divide $N$ and $a_{p}$ is not divisible by $p$, \kbd{mstooms}
+ returns the lift $\Phi$ of $\phi - \alpha^{-1} \phi|_{k} V_{p}$
+ which is an eigenvector of $T_{N_{0}}(p)$ for the unit eigenvalue
+ where $\alpha^{2} - a_{p} \alpha + p^{k-1}=0$.
 
  The resulting overconvergent eigensymbol can then be used in
  \tet{mspadicmoments}, then \tet{mspadicL} or \tet{mspadicseries}.

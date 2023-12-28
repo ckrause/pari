@@ -4,9 +4,10 @@ Section: modular_symbols
 Doc:
  \section{Modular symbols}
 
- Let $\Delta_0 := \text{Div}^0(\P^1(\Q))$ be the abelian group of divisors of
- degree $0$ on the rational projective line. The standard $\text{GL}(2,\Q)$
- action on $\P^1(\Q)$ via homographies naturally extends to $\Delta_0$. Given
+ Let $\Delta_{0} := \text{Div}^{0}(\P^{1}(\Q))$ be the abelian group of
+ divisors of degree $0$ on the rational projective line. The standard
+ $\text{GL}(2,\Q)$ action on $\P^{1}(\Q)$ via homographies naturally extends to
+ $\Delta_{0}$. Given
 
  \item $G$ a finite index subgroup of $\text{SL}(2,\Z)$,
 
@@ -14,17 +15,18 @@ Doc:
    $\text{GL}(2,\Q)$,
 
  \noindent we consider the space of \emph{modular symbols} $M :=
- \Hom_G(\Delta_0, V)$. This finite dimensional $F$-vector
- space is a $G$-module, canonically isomorphic to $H^1_c(X(G), V)$,
+ \Hom_{G}(\Delta_{0}, V)$. This finite dimensional $F$-vector
+ space is a $G$-module, canonically isomorphic to $H^{1}_{c}(X(G), V)$,
  and allows to compute modular forms for $G$.
 
- Currently, we only support the groups $\Gamma_0(N)$ ($N > 0$ an integer)
- and the representations $V_k = \Q[X,Y]_{k-2}$ ($k \geq 2$ an integer) over
+ Currently, we only support the groups $\Gamma_{0}(N)$ ($N > 0$ an integer)
+ and the representations $V_{k} = \Q[X,Y]_{k-2}$ ($k \geq 2$ an integer) over
  $\Q$. We represent a space of modular symbols by an \var{ms} structure,
  created by the function \tet{msinit}. It encodes basic data attached to the
- space: chosen $\Z[G]$-generators $(g_i)$ for $\Delta_0$ (and relations among
+ space: chosen $\Z[G]$-generators $(g_{i})$ for $\Delta_{0}$
+ (and relations among
  those) and an $F$-basis of $M$. A modular symbol $s$ is thus given either in
- terms of this fixed basis, or as a collection of values $s(g_i)$
+ terms of this fixed basis, or as a collection of values $s(g_{i})$
  satisfying certain relations.
 
  A subspace of $M$ (e.g. the cuspidal or Eisenstein subspaces, the new or

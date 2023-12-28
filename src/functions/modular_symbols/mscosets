@@ -14,12 +14,11 @@ Doc: \kbd{gen} being a system of generators for a group $G$ and $H$ being a
  multiplication (\kbd{*}) and inversion (\kbd{g\pow (-1)}), such as matrix
  groups or permutation groups.
 
- Let $\kbd{gens} = [g_1, \dots, g_r]$. The function returns $[C,M]$ where $C$
- lists the $h = [G:H]$ representatives $[\gamma_1, \dots, \gamma_h]$
- for the right cosets $H\gamma_1,\dots,H\gamma_h$; $\gamma_1$ is always the
- neutral element in $G$. For all $i \leq h$, $j \leq r$, if $M[i][j] = k$ then
- $H \gamma_i g_j = H\gamma_k$.
-
+ Let $\kbd{gens} = [g_{1}, \dots, g_{r}]$. The function returns $[C,M]$ where $C$
+ lists the $h = [G:H]$ representatives $[\gamma_{1}, \dots, \gamma_{h}]$
+ for the right cosets $H\gamma_{1},\dots,H\gamma_{h}$; $\gamma_{1}$ is always
+ the neutral element in $G$. For all $i \leq h$, $j \leq r$, if $M[i][j] = k$
+ then $H \gamma_{i} g_{j} = H\gamma_{k}$.
  \bprog
  ? PSL2 = [[0,1;-1,0], [1,1;0,1]];  \\ S and T
  \\ G = PSL2, H = Gamma0(2)

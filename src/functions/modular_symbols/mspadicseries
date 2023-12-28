@@ -6,20 +6,20 @@ Help: mspadicseries(mu, {i=0}): given mu from mspadicmoments,
  returns the attached p-adic series with maximal p-adic precision, depending
  on the precision of M (i-th Teichmueller component, if present).
 Doc: Let $\Phi$ be the $p$-adic distribution-valued overconvergent symbol
- attached to a modular symbol $\phi$ for $\Gamma_0(N)$ (eigenvector for
- $T_N(p)$ for the eigenvalue $a_p$).
- If $\mu$ is the distribution on $\Z_p^*$ defined by the restriction of
- $\Phi([\infty]-[0])$ to $\Z_p^*$, let
- $$\hat{L}_p(\mu,\tau^{i})(x)
-   = \int_{\Z_p^*} \tau^i(t) (1+x)^{\log_p(t)/\log_p(u)}d\mu(t)$$
+ attached to a modular symbol $\phi$ for $\Gamma_{0}(N)$ (eigenvector for
+ $T_{N}(p)$ for the eigenvalue $a_{p}$).
+ If $\mu$ is the distribution on $\Z_{p}^{*}$ defined by the restriction of
+ $\Phi([\infty]-[0])$ to $\Z_{p}^{*}$, let
+ $$\hat{L}_{p}(\mu,\tau^{i})(x)
+   = \int_{\Z_{p}^{*}} \tau^{i}(t) (1+x)^{\log_{p}(t)/\log_{p}(u)}d\mu(t)$$
  Here, $\tau$ is the Teichm\"uller character and $u$ is a specific
- multiplicative generator of $1+2p\Z_p$, namely $1+p$ if $p>2$ or $5$
+ multiplicative generator of $1+2p\Z_{p}$, namely $1+p$ if $p>2$ or $5$
  if $p=2$. To explain
- the formula, let $G_\infty := \text{Gal}(\Q(\mu_{p^{\infty}})/ \Q)$,
- let $\chi:G_\infty\to \Z_p^*$ be the cyclotomic character (isomorphism)
- and $\gamma$ the element of $G_\infty$ such that $\chi(\gamma)=u$;
+ the formula, let $G_{\infty} := \text{Gal}(\Q(\mu_{p^{\infty}})/ \Q)$,
+ let $\chi:G_{\infty}\to \Z_{p}^{*}$ be the cyclotomic character (isomorphism)
+ and $\gamma$ the element of $G_{\infty}$ such that $\chi(\gamma)=u$;
  then
- $\chi(\gamma)^{\log_p(t)/\log_p(u)}= \langle t \rangle$.
+ $\chi(\gamma)^{\log_{p}(t)/\log_{p}(u)}= \langle t \rangle$.
 
  The $p$-padic precision of individual terms is maximal given the precision of
  the overconvergent symbol $\mu$.

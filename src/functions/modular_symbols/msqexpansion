@@ -9,12 +9,12 @@ Help: msqexpansion(M,projH,{B = seriesprecision}): M being a full modular
 Doc:
  $M$ being a full modular symbol space, as given by \kbd{msinit},
  and \var{projH} being a projector on a Hecke-simple subspace (as given
- by \tet{mssplit}), return the Fourier coefficients $a_n$, $n\leq B$ of the
+ by \tet{mssplit}), return the Fourier coefficients $a_{n}$, $n\leq B$ of the
  corresponding normalized newform. If $B$ is omitted, use
  \kbd{seriesprecision}.
 
- This function uses a naive $O(B^2 d^3)$
- algorithm, where $d = O(kN)$ is the dimension of $M_k(\Gamma_0(N))$.
+ This function uses a naive $O(B^{2} d^{3})$
+ algorithm, where $d = O(kN)$ is the dimension of $M_{k}(\Gamma_{0}(N))$.
  \bprog
  ? M = msinit(11,2, 1); \\ M_2(Gamma_0(11))^+
  ? L = mssplit(M, msnew(M));

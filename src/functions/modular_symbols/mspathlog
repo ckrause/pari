@@ -6,17 +6,18 @@ Help: mspathlog(M,p): M being a full modular symbol space, as given by
  msinit and p being a path between two elements in P^1(Q), return (p_i)
  in Z[G] such that p = \sum p_i g_i, and the g_i are fixed Z[G]-generators
  for Div^0(P^1 Q), see mspathgens.
-Doc: Let $\Delta_0:=\text{Div}^0(\P^1(\Q))$.
+Doc: Let $\Delta_{0}:=\text{Div}^{0}(\P^{1}(\Q))$.
  Let $M$ being a full modular symbol space, as given by \kbd{msinit},
- encoding fixed $\Z[G]$-generators $(g_i)$ of $\Delta_0$ (see \tet{mspathgens}).
- A path $p=[a,b]$ between two elements in $\P^1(\Q)$ corresponds to
- $[b]-[a]\in \Delta_0$. The path extremities $a$ and $b$ may be given as
+ encoding fixed $\Z[G]$-generators $(g_{i})$ of $\Delta_{0}$
+ (see \tet{mspathgens}).
+ A path $p=[a,b]$ between two elements in $\P^{1}(\Q)$ corresponds to
+ $[b]-[a]\in \Delta_{0}$. The path extremities $a$ and $b$ may be given as
  \typ{INT}, \typ{FRAC} or $\kbd{oo} = (1:0)$. Finally, we also allow
  to input a path as a $2\times 2$ integer matrix, whose first
  and second column give $a$ and $b$ respectively, with the convention
- $[x,y]\til = (x:y)$ in $\P^1(\Q)$.
+ $[x,y]\til = (x:y)$ in $\P^{1}(\Q)$.
 
- Returns $(p_i)$ in $\Z[G]$ such that $p = \sum_i p_i g_i$.
+ Returns $(p_{i})$ in $\Z[G]$ such that $p = \sum_{i} p_{i} g_{i}$.
  \bprog
  ? M = msinit(2,8); \\ M_8(Gamma_0(2))
  ? [g,R] = mspathgens(M);

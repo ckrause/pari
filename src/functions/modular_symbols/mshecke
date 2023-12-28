@@ -7,9 +7,9 @@ Help: mshecke(M,p,{H}): M being a full modular symbol space, as given by msinit,
  return the matrix of T_p acting on H (U_p if p divides the level).
 Doc: $M$ being a full modular symbol space, as given by \kbd{msinit},
  $p$ being a prime number, and $H$ being a Hecke-stable subspace ($M$ if
- omitted), return the matrix of $T_p$ acting on $H$
- ($U_p$ if $p$ divides $N$). Result is undefined if $H$ is not stable
- by $T_p$ (resp.~$U_p$).
+ omitted), return the matrix of $T_{p}$ acting on $H$
+ ($U_{p}$ if $p$ divides $N$). Result is undefined if $H$ is not stable
+ by $T_{p}$ (resp.~$U_{p}$).
  \bprog
  ? M = msinit(11,2); \\ M_2(Gamma_0(11))
  ? T2 = mshecke(M,2)

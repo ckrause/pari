@@ -5,17 +5,17 @@ Prototype: GGDG
 Help: mseval(M,s,{p}): M being a full modular symbol space, as given by
  msinit, s being a modular symbol from M and p being a path between two
  elements in P^1(Q), return s(p).
-Doc: Let $\Delta_0:=\text{Div}^0(\P^1 (\Q))$.
+Doc: Let $\Delta_{0}:=\text{Div}^{0}(\P^{1} (\Q))$.
  Let $M$ be a full modular symbol space, as given by \kbd{msinit},
  let $s$ be a modular symbol from $M$, i.e. an element
- of $\Hom_G(\Delta_0, V)$, and let $p=[a,b] \in \Delta_0$ be a path between
- two elements in $\P^1(\Q)$, return $s(p)\in V$. The path extremities $a$ and
+ of $\Hom_{G}(\Delta_{0}, V)$, and let $p=[a,b] \in \Delta_{0}$ be a path between
+ two elements in $\P^{1}(\Q)$, return $s(p)\in V$. The path extremities $a$ and
  $b$ may be given as \typ{INT}, \typ{FRAC} or $\kbd{oo} = (1:0)$; it
  is also possible to describe the path by a $2 \times 2$ integral matrix
  whose columns give the two cusps. The symbol $s$ is either
 
  \item a \typ{COL} coding a modular symbol in terms of
- the fixed basis of $\Hom_G(\Delta_0,V)$ chosen in $M$; if $M$ was
+ the fixed basis of $\Hom_{G}(\Delta_{0},V)$ chosen in $M$; if $M$ was
  initialized with a nonzero \emph{sign} ($+$ or $-$), then either the
  basis for the full symbol space or the $\pm$-part can be used (the dimension
  being used to distinguish the two).
@@ -24,14 +24,14 @@ Doc: Let $\Delta_0:=\text{Div}^0(\P^1 (\Q))$.
  much faster than evaluating individual symbols on the same path $p$
  independently.
 
- \item a \typ{VEC} $(v_i)$ of elements of $V$, where the $v_i = s(g_i)$ give
- the image of the generators $g_i$ of $\Delta_0$, see \tet{mspathgens}.
- We assume that $s$ is a proper symbol, i.e.~that the $v_i$ satisfy
+ \item a \typ{VEC} $(v_{i})$ of elements of $V$, where the $v_{i} = s(g_{i})$
+ give
+ the image of the generators $g_{i}$ of $\Delta_{0}$, see \tet{mspathgens}.
+ We assume that $s$ is a proper symbol, i.e.~that the $v_{i}$ satisfy
  the \kbd{mspathgens} relations.
 
  If $p$ is omitted, convert a single symbol $s$  to the second form: a vector
- of the $s(g_i)$. A \typ{MAT} is converted to a vector of such.
-
+ of the $s(g_{i})$. A \typ{MAT} is converted to a vector of such.
  \bprog
  ? M = msinit(2,8,1); \\ M_8(Gamma_0(2))^+
  ? g = mspathgens(M)[1]
