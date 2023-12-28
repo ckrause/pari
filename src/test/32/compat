@@ -64,7 +64,7 @@ A function with that name existed in GP-1.39.15. Please update your script.
 New syntax: anell(e,n) ===> ellan(e,n)
 
 ellan(E,n): computes the first n Fourier coefficients of the L-function of the 
-elliptic curve E defined over a number field (n<2^24 on a 32-bit machine).
+elliptic curve E defined over a number field.
 
 
   ***   at top-level: apell()
@@ -4091,8 +4091,7 @@ New syntax: wf(x) ===> weber(x)
 
 weber(x,{flag=0}): one of Weber's f function of x. flag is optional, and can be 
 0: default, function f(x)=exp(-i*Pi/24)*eta((x+1)/2)/eta(x), 1: function 
-f1(x)=eta(x/2)/eta(x) 2: function f2(x)=sqrt(2)*eta(2*x)/eta(x). Note that j = 
-(f^24-16)^3/f^24 = (f1^24+16)^3/f1^24 = (f2^24+16)^3/f2^24.
+f1(x)=eta(x/2)/eta(x) 2: function f2(x)=sqrt(2)*eta(2*x)/eta(x).
 
 
   ***   at top-level: wf2()
@@ -4104,8 +4103,7 @@ New syntax: wf2(x) ===> weber(x,2)
 
 weber(x,{flag=0}): one of Weber's f function of x. flag is optional, and can be 
 0: default, function f(x)=exp(-i*Pi/24)*eta((x+1)/2)/eta(x), 1: function 
-f1(x)=eta(x/2)/eta(x) 2: function f2(x)=sqrt(2)*eta(2*x)/eta(x). Note that j = 
-(f^24-16)^3/f^24 = (f1^24+16)^3/f1^24 = (f2^24+16)^3/f2^24.
+f1(x)=eta(x/2)/eta(x) 2: function f2(x)=sqrt(2)*eta(2*x)/eta(x).
 
 
   ***   at top-level: zell()
@@ -4506,4 +4504,4 @@ New syntax: texprint(x) ===> printtex(x)
 printtex({str}*): outputs its string arguments in TeX format.
 
 
-Total time spent: 6
+Total time spent: 3
