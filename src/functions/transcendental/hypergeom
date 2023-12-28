@@ -12,8 +12,7 @@ Doc: general hypergeometric function, where \kbd{N} and \kbd{D} are
 
  This function implements hypergeometric functions
  $$_{p}F_{q}((a_{i})_{1\le i\le p},(b_{j})_{1\le j\le q};z)
-    = \sum_{n\ge0}\dfrac{\prod_{1\le i\le p}(a_{i})_{n}}
-                        {\prod_{1\le j\le q}(b_{j})_{n}}
+    = \sum_{n\ge0}\dfrac{\prod_{1\le i\le p}(a_{i})_{n}}{\prod_{1\le j\le q}(b_{j})_{n}}
        \dfrac{z^{n}}{n!}\;,$$
  where $(a)_{n}=a(a+1)\cdots(a+n-1)$ is the rising Pochammer symbol. For this
  to make sense, none of the $b_{j}$ must be a negative or zero integer. The
