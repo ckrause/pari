@@ -11,15 +11,16 @@ Help: mfsymboleval(fs,path,{ga=id}): evaluation of the modular
  If the integral diverges, the result will be a rational function.
 Doc: evaluation of the modular symbol $fs$ (corresponding to the modular
  form $f$) output by \kbd{mfsymbol} on the given path \kbd{path}, where
- \kbd{path} is either a vector $[s_1,s_2]$ or an integral matrix $[a,b;c,d]$
- representing the path $[a/c,b/d]$. In both cases $s_1$ or $s_2$ (or $a/c$ or
- $b/d$) can also be elements of the upper half-plane.
+ \kbd{path} is either a vector $[s_{1},s_{2}]$ or an integral matrix $[a,b;c,d]$
+ representing the path $[a/c,b/d]$. In both cases $s_{1}$ or $s_{2}$
+ (or $a/c$ or $b/d$) can also be elements of the upper half-plane.
  To avoid possibly lengthy \kbd{mfsymbol} computations, the program also
- accepts $fs$ of the form \kbd{[mf,F]}, but in that case $s_1$ and $s_2$
+ accepts $fs$ of the form \kbd{[mf,F]}, but in that case $s_{1}$ and $s_{2}$
  are limited to \kbd{oo} and elements of the upper half-plane.
  The result is the polynomial equal to
- $\int_{s_1}^{s_2}(X-\tau)^{k-2}F(\tau)\,d\tau$, the integral being
- computed along a geodesic joining $s_1$ and $s_2$. If \kbd{ga} in $GL_2^+(\Q)$
+ $\int_{s_{1}}^{s_{2}}(X-\tau)^{k-2}F(\tau)\,d\tau$, the integral being
+ computed along a geodesic joining $s_{1}$ and $s_{2}$. If \kbd{ga} in
+ $GL_{2}^{+}(\Q)$
  is given, replace $F$ by $F|_{k}\gamma$. Note that if the integral diverges,
  the result will be a rational function.
  If the field of definition $\Q(f)$ is larger than $\Q(\chi)$ then $f$ can be
@@ -48,8 +49,8 @@ Doc: evaluation of the modular symbol $fs$ (corresponding to the modular
  %3 = (-0.234978...*I*x^3 - 0.833333...*x^2 + 0.928067...*I*x + 0.333333...)/x
  @eprog\noindent
  \kbd{mfsymboleval(ES,[a,oo])} is the limit as $T\to\infty$ of
- $$\int_a^{iT}(X-\tau)^{k-2}F(\tau)\,d\tau + a(0)(X-iT)^{k-1}/(k-1)\;,$$
+ $$\int_{a}^{iT}(X-\tau)^{k-2}F(\tau)\,d\tau + a(0)(X-iT)^{k-1}/(k-1)\;,$$
  where $a(0)$ is the $0$th coefficient of $F$ at infinity. Similarly,
  \kbd{mfsymboleval(ES,[0,a])} is the limit as $T\to\infty$ of
- $$\int_{i/T}^a(X-\tau)^{k-2}F(\tau)\,d\tau+b(0)(1+iTX)^{k-1}/(k-1)\;,$$
+ $$\int_{i/T}^{a}(X-\tau)^{k-2}F(\tau)\,d\tau+b(0)(1+iTX)^{k-1}/(k-1)\;,$$
  where $b(0)$ is the $0$th coefficient of $F|_{k} S$ at infinity.

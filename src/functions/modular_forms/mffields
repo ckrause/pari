@@ -12,7 +12,7 @@ Doc: Given \kbd{mf} as output by \kbd{mfinit} with parameters
  %1 = [y, y^2 - y - 4]
  @eprog\noindent Here the character is trivial so $\Q(\chi) = \Q)$ and there
  are 3 newforms: one is rational (corresponding to $y$), the other two are
- conjugate and defined over the quadratic field $\Q[y]/(y^2-y-4)$.
+ conjugate and defined over the quadratic field $\Q[y]/(y^{2}-y-4)$.
 
  \bprog
  ? [G,chi] = znchar(Mod(3,35));

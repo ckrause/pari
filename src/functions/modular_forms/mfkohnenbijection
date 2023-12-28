@@ -8,20 +8,20 @@ Help: mfkohnenbijection(mf): mf being a cuspidal space of half-integral weight
  S_k+(4N,CHI), K is a basis of the Kohnen + space, and shi gives
  the linear combination of Shimura lifts giving M^(-1).
 Doc: Let \kbd{mf} be a cuspidal space of half-integral weight and weight $4N$,
- with $N$ squarefree and let $S_k^+(\Gamma_0(4N),\chi)$ be the Kohnen
+ with $N$ squarefree and let $S_{k}^{+}(\Gamma_{0}(4N),\chi)$ be the Kohnen
  $+$-space. Returns \kbd{[mf2,M,K,shi]}, where
 
- \item \kbd{mf2} gives the cuspidal space $S_{2k-1}(\Gamma_0(N),\chi^2)$;
+ \item \kbd{mf2} gives the cuspidal space $S_{2k-1}(\Gamma_{0}(N),\chi^{2})$;
 
  \item $M$ is a matrix giving a Hecke-module isomorphism from that space to the
- Kohnen $+$-space $S_k^+(\Gamma_0(4N),\chi)$;
+ Kohnen $+$-space $S_{k}^{+}(\Gamma_{0}(4N),\chi)$;
 
  \item \kbd{K} represents a basis $B$ of the Kohnen $+$-space as a matrix
  whose columns are the coefficients of $B$ on the basis of \kbd{mf};
 
- \item \kbd{shi} is a vector of pairs $(t_i,n_i)$ gives the linear
- combination of Shimura lifts giving $M^{-1}$: $t_i$ is a squarefree positive
- integer and $n_i$ is a small nonzero integer.
+ \item \kbd{shi} is a vector of pairs $(t_{i},n_{i})$ gives the linear
+ combination of Shimura lifts giving $M^{-1}$: $t_{i}$ is a squarefree positive
+ integer and $n_{i}$ is a small nonzero integer.
 
  \bprog
  ? mf=mfinit([60,5/2],1); [mf2,M,K,shi]=mfkohnenbijection(mf); M
@@ -78,10 +78,9 @@ Doc: Let \kbd{mf} be a cuspidal space of half-integral weight and weight $4N$,
  %7 = [3, 0, 0, 3, 1, 0, 0, 1, -9, 0, 0, -3, 0, 0]~
  @eprog
 
- This gives a basis of the new space of $S_{5/2}^+(\Gamma_0(60))$ expressed
- on the initial basis of $S_{5/2}(\Gamma_0(60))$. If we want the eigenforms, we
- write instead:
-
+ This gives a basis of the new space of $S_{5/2}^{+}(\Gamma_{0}(60))$ expressed
+ on the initial basis of $S_{5/2}(\Gamma_{0}(60))$. To obtain the eigenforms,
+ we write instead:
  \bprog
  ? BE=mfeigenbasis(mf20);[E1,E2]=apply(x->K*M*mftobasis(mf2,x),BE)
  %1 = [[1, 0, 0, 1, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0]~,\

@@ -13,7 +13,7 @@ Doc: Petersson scalar product of the modular forms $f$ and $g$ belonging to
  ``modular symbols'' \kbd{fs} and \kbd{gs} output by \kbd{mfsymbol}
  (also in weight $1$ and half-integral weight, where symbols do not exist).
  If \kbd{gs} is omitted it is understood to be equal to \kbd{fs}.
- The scalar product is normalized by the factor $1/[\Gamma:\Gamma_0(N)]$.
+ The scalar product is normalized by the factor $1/[\Gamma:\Gamma_{0}(N)]$.
  Note that $f$ and $g$ can both be noncuspidal, in which case the program
  returns an error if the product is divergent.
  If the fields of definition $\Q(f)$ and $\Q(g)$ are equal to $\Q(\chi)$

@@ -10,9 +10,9 @@ Help: mfmanin(FS): Given the modular symbol FS associated to an eigenform F
  to each embedding.
 Doc: Given the modular symbol $FS$ associated to an eigenform $F$ by
  \kbd{mfsymbol(mf,F)}, computes the even and odd special polynomials as well
- as the even and odd periods $\omega^+$ and $\omega^-$ as a vector
- $[[P^+,P^-],[\omega^+,\omega^-,r]]$, where
- $r=\Im(\omega^+\overline{\omega^-})/<F,F>$. If $F$ has several embeddings
+ as the even and odd periods $\omega^{+}$ and $\omega^{-}$ as a vector
+ $[[P^{+},P^{-}],[\omega^{+},\omega^{-},r]]$, where
+ $r=\Im(\omega^{+}\overline{\omega^{-}})/<F,F>$. If $F$ has several embeddings
  into $\C$, give the vector of results corresponding to each embedding.
  \bprog
  ? D=mfDelta(); mf=mfinit(D); DS=mfsymbol(mf,D);

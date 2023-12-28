@@ -26,8 +26,8 @@ Doc:  search for a normalized rational eigen cuspform with quadratic
  The level $N$ can be replaced by a vector of allowed levels.
 
  \item \kbd{AP} is the search criterion, which can be omitted: a list of
- pairs $[\ldots, [p,a_p], \ldots]$, where $p$ is a prime number and $a_p$ is
- either a \typ{INT} (the $p$-th Fourier coefficient must match $a_p$ exactly)
+ pairs $[\ldots, [p,a_{p}], \ldots]$, where $p$ is a prime number and $a_{p}$ is
+ either a \typ{INT} (the $p$-th Fourier coefficient must match $a_{p}$ exactly)
  or a \typ{INTMOD} \kbd{Mod}$(a,b)$ (the $p$-th coefficient must be congruent
  to $a$ modulo $b$).
 

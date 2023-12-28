@@ -10,9 +10,9 @@ Doc: $F$ being a modular form in modular form space \var{mf}, returns
  $T(n)F$, where $T(n)$ is the $n$-th Hecke operator.
 
  \misctitle{Warning} If $F$ is of level $M<N$, then $T(n)F$
- is in general not the same in $M_k(\Gamma_0(M),\chi)$ and in
- $M_k(\Gamma_0(N),\chi)$. We take $T(n)$ at the same level as the one used in
- \kbd{mf}.
+ is in general not the same in $M_{k}(\Gamma_{0}(M),\chi)$ and in
+ $M_{k}(\Gamma_{0}(N),\chi)$. We take $T(n)$ at the same level as the one
+ used in \kbd{mf}.
  \bprog
  ? mf = mfinit([26,2],0); F = mfbasis(mf)[1]; mftobasis(mf,F)
  %1 = [1, 0]~
@@ -21,13 +21,13 @@ Doc: $F$ being a modular form in modular form space \var{mf}, returns
  ? G5 = mfhecke(mf,F,5); mftobasis(mf,G5)
  %3 = [-2, 1]~
  @eprog\noindent Modular forms of half-integral weight are supported, in
- which case $n$ must be a perfect square, else $T_n$ will act as $0$ (the
- operator $T_p$ for $p \mid N$ is not supported yet):
+ which case $n$ must be a perfect square, else $T_{n}$ will act as $0$ (the
+ operator $T_{p}$ for $p \mid N$ is not supported yet):
  \bprog
  ? F = mfpow(mfTheta(),3); mf = mfinit(F);
  ? mfisequal(mfhecke(mf,F,9), mflinear([F],[4]))
  %2 = 1
- @eprog ($F$ is an eigenvector of all $T_{p^2}$, with eigenvalue $p+1$ for
+ @eprog ($F$ is an eigenvector of all $T_{p^{2}}$, with eigenvalue $p+1$ for
  odd $p$.)
 
  \misctitle{Warning} When $n$ is a large composite, resp.~the square of a large

@@ -7,10 +7,10 @@ Help: mfatkineigenvalues(mf,Q): given a modular form space mf
  Atkin-Lehner eigenvalues on the new space, grouped by orbit.
 Doc: Given a modular form space \kbd{mf} of integral weight $k$ and a primitive
  divisor $Q$ of the level $N$ of \kbd{mf}, outputs the Atkin--Lehner
- eigenvalues of $w_Q$ on the new space, grouped by orbit. If the Nebentypus
+ eigenvalues of $w_{Q}$ on the new space, grouped by orbit. If the Nebentypus
  $\chi$ of \kbd{mf} is a
  (trivial or) quadratic character defined modulo $N/Q$, the result is rounded
- and the eigenvalues are $\pm i^k$.
+ and the eigenvalues are $\pm i^{k}$.
  \bprog
  ? mf = mfinit([35,2],0); mffields(mf)
  %1 = [y, y^2 - y - 4] \\ two orbits, dimension 1 and 2

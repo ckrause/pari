@@ -13,9 +13,9 @@ Doc: \kbd{NK} being either \kbd{[N,1,CHI]} or an \kbd{mf} output by
  representations attached to each cuspidal eigenform,
  unless the modular form \kbd{F} is specified, in which case only for \kbd{F}
  (note that it is not tested whether \kbd{F} belongs to the correct modular
- form space, nor whether it is a cuspidal eigenform). Types $A_4$, $S_4$,
- $A_5$ are represented by minus their cardinality $-12$, $-24$, or $-60$,
- and type $D_n$ is represented by its cardinality, the integer $2n$:
+ form space, nor whether it is a cuspidal eigenform). Types $A_{4}$, $S_{4}$,
+ $A_{5}$ are represented by minus their cardinality $-12$, $-24$, or $-60$,
+ and type $D_{n}$ is represented by its cardinality, the integer $2n$:
  \bprog
  ? mfgaloistype([124,1, Mod(67,124)]) \\ A4
  %1 = [-12]

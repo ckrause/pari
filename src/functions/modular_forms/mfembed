@@ -46,7 +46,7 @@ Doc: let $f$ be a generalized modular form with parameters $[N,k,\chi,P]$ (see
  \bprog
  ? mf = mfinit([35,2,Mod(11,35)], 0);
  ? [f] = mfbasis(mf);
- ? f.mod  \\@com $\Q(\chi) = \Q(\zeta_3)$
+ ? f.mod  \\@com $\Q(\chi) = \Q(\zeta_{3})$
  %3 = t^2 + t + 1
  ? v = mfcoefs(f,5); lift(v)  \\@com coefficients in $\Q(\chi)$
  %4 = [0, 2, -2*t - 2, 2*t, 2*t, -2*t - 2]

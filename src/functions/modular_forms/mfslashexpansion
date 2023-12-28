@@ -8,28 +8,28 @@ Help: mfslashexpansion(mf,f,g,n,flrat,{&params}): g being in M_2^+(Q),
  If flrat is 1, the program tries to rationalize the expression; if flag
  is 0, it does not.
 Doc: let \var{mf} be a modular form space in level $N$, $f$ a modular form
- belonging to \var{mf} and let $g$ be in $M_2^+(Q)$. This function
- computes the Fourier expansion of $f|_k g$ to $n$ terms. We first describe
+ belonging to \var{mf} and let $g$ be in $M_{2}^{+}(Q)$. This function
+ computes the Fourier expansion of $f|_{k} g$ to $n$ terms. We first describe
  the behaviour when \kbd{flrat} is 0: the result is a
  vector $v$ of floating point complex numbers such that
- $$f|_k g(\tau) = q^\alpha \sum_{m\ge0} v[m+1] q^{m/w},$$
+ $$f|_{k} g(\tau) = q^{\alpha} \sum_{m\ge0} v[m+1] q^{m/w},$$
  where $q = e(\tau)$, $w$ is the width of the cusp $g(i\infty)$
- (namely $(N/(c^2,N)$ if $g$ is integral) and $\alpha$ is a rational number.
+ (namely $(N/(c^{2},N)$ if $g$ is integral) and $\alpha$ is a rational number.
  If \kbd{params} is given, it is set to the parameters $[\alpha,w,
  \kbd{matid}(2)]$.
 
  If \kbd{flrat} is 1, the program tries to rationalize the expression, i.e.,
  to express the coefficients as rational numbers or polmods. We
- write $g = \lambda \cdot M \cdot A$ where $\lambda \in \Q^*$,
- $M\in \text{SL}_2(\Z)$ and $A = [a,b;0,d]$ is upper triangular,
+ write $g = \lambda \cdot M \cdot A$ where $\lambda \in \Q^{*}$,
+ $M\in \text{SL}_{2}(\Z)$ and $A = [a,b;0,d]$ is upper triangular,
  integral and primitive  with $a > 0$, $d > 0$ and $0 \leq b < d$. Let
  $\alpha$ and $w$ by the parameters attached to the expansion of
- $F := f |_k M$ as above, i.e.
- $$ F(\tau) = q^\alpha \sum_{m\ge0} v[m+1] q^{m/w}.$$
- The function returns the expansion $v$ of $F = f |_k M$ and sets
+ $F := f |_{k} M$ as above, i.e.
+ $$ F(\tau) = q^{\alpha} \sum_{m\ge0} v[m+1] q^{m/w}.$$
+ The function returns the expansion $v$ of $F = f |_{k} M$ and sets
  the parameters to $[\alpha, w, A]$. Finally, the desired expansion is
  $(a/d)^{k/2} F(\tau + b/d)$. The latter is identical to the returned
- expansion when $A$ is the identity, i.e. when $g\in \text{PSL}_2(\Z)$.
+ expansion when $A$ is the identity, i.e. when $g\in \text{PSL}_{2}(\Z)$.
  If this is not the case, the expansion differs from $v$ by the multiplicative
  constant $(a/d)^{k/2} e(\alpha b/(dw))$ and a twist by a root of unity
  $q^{1/w} \to e(b/(dw)) q^{1/w}$. The complications introduced by this extra
@@ -74,7 +74,7 @@ Doc: let \var{mf} be a modular form space in level $N$, $f$ a modular form
  @eprog
  \misctitle{Caveat} In half-integral weight, we \emph{define} the ``slash''
  operation as
- $$(f |_k g)(\tau) := \big((c \tau + d)^{-1/2}\big)^{2k} f( g\cdot \tau),$$
+ $$(f |_{k} g)(\tau) := \big((c \tau + d)^{-1/2}\big)^{2k} f( g\cdot \tau),$$
  with the principal determination of the square root. In particular,
  the standard cocycle condition is no longer satisfied and we only
  have $f | (gg') = \pm (f | g) | g'$.

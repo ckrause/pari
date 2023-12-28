@@ -8,8 +8,8 @@ Help: mfgaloisprojrep(mf,F): mf being an mf output by mfinit in weight 1,
 Doc: \var{mf} being an \kbd{mf} output by \kbd{mfinit} in weight $1$,
  return a polynomial defining the field fixed by the kernel of the projective
  Artin representation attached to \var{F} (by Deligne--Serre).
- Currently only implemented for projective images $A_4$, $A_5$ and $S_4$.
- The type $A_5$ requires the \kbd{nflistdata} package to be installed.
+ Currently only implemented for projective images $A_{4}$, $A_{5}$ and $S_{4}$.
+ The type $A_{5}$ requires the \kbd{nflistdata} package to be installed.
 
  \bprog
  \\ A4 example

@@ -6,9 +6,9 @@ Help: mfcosets(N): list of right cosets of G_0(N)\G, i.e., matrices g_j in G
  such that G = U G_0(N) g_j. The g_j are chosen in the form [a,b; c,d] with
  c | N.
 Doc: let $N$ be a positive integer. Return the list of right cosets of
- $\Gamma_0(N) \bs \Gamma$, i.e., matrices $\gamma_j \in \Gamma$ such that
- $\Gamma = \bigsqcup_j \Gamma_0(N) \gamma_j$.
- The $\gamma_j$ are chosen in the form $[a,b;c,d]$ with $c \mid N$.
+ $\Gamma_{0}(N) \bs \Gamma$, i.e., matrices $\gamma_{j} \in \Gamma$ such that
+ $\Gamma = \bigsqcup_{j} \Gamma_{0}(N) \gamma_{j}$.
+ The $\gamma_{j}$ are chosen in the form $[a,b;c,d]$ with $c \mid N$.
  \bprog
  ? mfcosets(4)
  %1 = [[0, -1; 1, 0], [1, 0; 1, 1], [0, -1; 1, 2], [0, -1; 1, 3],\

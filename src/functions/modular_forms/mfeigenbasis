@@ -36,7 +36,7 @@ Doc: vector of the eigenforms for the space \kbd{mf}.
  nonrational character, their coefficients are hard to read and you may want
  to lift them or to express them in an absolute number field. In the
  construction below $T$ defines $\Q(f)$ over $\Q$, $a$ is the image of the
- generator \kbd{Mod}$(t, t^2+t+1)$ of $\Q(\chi)$ in $\Q(f)$
+ generator \kbd{Mod}$(t, t^{2}+t+1)$ of $\Q(\chi)$ in $\Q(f)$
  and $y - ka$ is the image of the root $y$ of \kbd{f.mod}:
  \bprog
  ? mf = mfinit([31, 2, Mod(25,31)], 0); [f] = mfeigenbasis(mf);

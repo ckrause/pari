@@ -6,7 +6,7 @@ Help: mfTheta({psi=1}): the unary theta function corresponding to the primitive
  Dirichlet character psi, hence of weight 1/2 if psi is even, of weight 3/2
  if psi is odd.
 Doc: the unary theta function corresponding to the primitive Dirichlet
- character $\psi$. Its level is $4 F(\psi)^2$ and its weight is
+ character $\psi$. Its level is $4 F(\psi)^{2}$ and its weight is
  $1 - \psi(-1)/2$.
  \bprog
  ? Ser(mfcoefs(mfTheta(),30))

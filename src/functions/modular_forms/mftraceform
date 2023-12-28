@@ -7,7 +7,7 @@ Help: mftraceform(NK,{space=0}): If NK=[N,k,CHI,.] as in
  of S_k(G_0(N),chi). The supported values for space are 0: the newspace
  (default), 1: the full cuspidal space.
 Doc: If $NK=[N,k,CHI,.]$ as in \kbd{mfinit} with $k$ integral, gives the
- trace form in the corresponding subspace of $S_k(\Gamma_0(N),\chi)$.
+ trace form in the corresponding subspace of $S_{k}(\Gamma_{0}(N),\chi)$.
  The supported values for \kbd{space} are 0: the newspace (default),
  1: the full cuspidal space.
  \bprog

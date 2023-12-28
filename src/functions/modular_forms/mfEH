@@ -4,8 +4,8 @@ C-Name: mfEH
 Prototype: G
 Help: mfEH(k): k>0 being in 1/2+Z, mf corresponding to the Cohen-Eisenstein
  series H_k of weight k on G_0(4).
-Doc: $k$ being in $1/2+\Z_{\geq 0}$, return the mf structure corresponding to the Cohen-Eisenstein series $H_k$ of
- weight $k$ on $\Gamma_0(4)$.
+Doc: $k$ being in $1/2+\Z_{\geq 0}$, return the mf structure corresponding to
+ the Cohen-Eisenstein series $H_{k}$ of weight $k$ on $\Gamma_{0}(4)$.
  \bprog
  ? H = mfEH(13/2); mfcoefs(H,4)
  %1 = [691/32760, -1/252, 0, 0, -2017/252]

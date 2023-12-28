@@ -11,7 +11,7 @@ Doc: Tests whether the eigenform $F$ is a CM form. The answer
  is $0$ if it is not, and if it is, either the unique negative discriminant
  of the CM field, or the pair of two negative discriminants of CM fields,
  this latter case occurring only in weight $1$ when the projective image is
- $D_2=C_2\times C_2$, i.e., coded $4$ by \kbd{mfgaloistype}.
+ $D_{2}=C_{2}\times C_{2}$, i.e., coded $4$ by \kbd{mfgaloistype}.
  \bprog
  ? F = mffromell(ellinit([0,1]))[2]; mfisCM(F)
  %1 = -3

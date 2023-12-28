@@ -12,28 +12,29 @@ Doc:
  These structures are initialized by the \kbd{mfinit} command; supported
  modular form \emph{spaces} with corresponding flags are the following:
 
- \item The full modular form space $M_k(\Gamma_0(N),\chi)$, where $k$ is an
+ \item The full modular form space $M_{k}(\Gamma_{0}(N),\chi)$, where $k$ is an
  integer or a half-integer and $\chi$ a Dirichlet character modulo $N$
  (flag $4$, the default).
 
- \item The cuspidal space $S_k(\Gamma_0(N),\chi)$ (flag $1$).
+ \item The cuspidal space $S_{k}(\Gamma_{0}(N),\chi)$ (flag $1$).
 
- \item The Eisenstein space ${\cal E}_k(\Gamma_0(N),\chi)$ (flag $3$), so
- that $M_k={\cal E}_k\oplus S_k$.
+ \item The Eisenstein space ${\cal E}_{k}(\Gamma_{0}(N),\chi)$ (flag $3$), so
+ that $M_{k}={\cal E}_{k}\oplus S_{k}$.
 
- \item The new space $S_k^{\text{new}}(\Gamma_0(N),\chi)$ (flag $0$).
+ \item The new space $S_{k}^{\text{new}}(\Gamma_{0}(N),\chi)$ (flag $0$).
 
- \item The old space $S_k^{\text{old}}(\Gamma_0(N),\chi)$ (flag $2$), so that
- $S_k=S_k^{\text{new}}\oplus S_k^{\text{old}}$.
+ \item The old space $S_{k}^{\text{old}}(\Gamma_{0}(N),\chi)$ (flag $2$),
+ so that
+ $S_{k}=S_{k}^{\text{new}}\oplus S_{k}^{\text{old}}$.
 
  These resulting \kbd{mf} structure contains a basis of modular forms, which
  is accessed by the function \kbd{mfbasis}; the elements of this basis have
  Fourier coefficients in the cyclotomic field $\Q(\chi)$. These coefficients
  are given algebraically, as rational numbers or \typ{POLMOD}s. The member
  function \kbd{mf.mod} recovers the modulus used to define $\Q(\chi)$, which
- is a cyclotomic polynomial $\Phi_n(t)$. When needed, the elements of
+ is a cyclotomic polynomial $\Phi_{n}(t)$. When needed, the elements of
  $\Q(\chi)$ are considered to be canonically embedded into $\C$ via
- $\kbd{Mod}(t,\Phi_n(t)) \mapsto \exp(2i\pi/n)$.
+ $\kbd{Mod}(t,\Phi_{n}(t)) \mapsto \exp(2i\pi/n)$.
 
  The basis of eigenforms for the new space is obtained by the function
  \kbd{mfeigenbasis}: the elements of this basis now have Fourier coefficients
@@ -61,7 +62,7 @@ Doc:
  A number of creation functions and operations are provided. It is however
  important to note that strictly speaking some of these operations create
  objects which are \emph{not} modular forms: typical examples are
- derivation or integration of modular forms, the Eisenstein series $E_2$, eta
+ derivation or integration of modular forms, the Eisenstein series $E_{2}$, eta
  quotients, or quotients of modular forms. These objects are nonetheless very
  important in the theory, so are not considered as errors; however the user must
  be aware that no attempt is made to check that the objects that he handles are

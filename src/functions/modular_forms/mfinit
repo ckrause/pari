@@ -12,24 +12,24 @@ Help: mfinit(NK,{space=4}): Create the space of modular forms corresponding
 Doc: Create the space of modular forms corresponding to the data contained in
  \kbd{NK} and \kbd{space}. \kbd{NK} is a vector which can be
  either $[N,k]$ ($N$ level, $k$ weight) corresponding to a subspace of
- $M_k(\Gamma_0(N))$, or $[N,k,\var{CHI}]$ (\var{CHI} a character)
- corresponding to a subspace of $M_k(\Gamma_0(N),\chi)$. Alternatively,
+ $M_{k}(\Gamma_{0}(N))$, or $[N,k,\var{CHI}]$ (\var{CHI} a character)
+ corresponding to a subspace of $M_{k}(\Gamma_{0}(N),\chi)$. Alternatively,
  it can be a modular form $F$ or modular form space, in which case we use
  \kbd{mfparams} to define the space parameters.
 
  The subspace is described by the small integer \kbd{space}: $0$ for the
- newspace $S_k^{\text{new}}(\Gamma_0(N),\chi)$, $1$ for the cuspidal
- space $S_k$, $2$ for the oldspace $S_k^{\text{old}}$, $3$ for the space of
- Eisenstein series $E_k$ and $4$ for the full space $M_k$.
+ newspace $S_{k}^{\text{new}}(\Gamma_{0}(N),\chi)$, $1$ for the cuspidal
+ space $S_{k}$, $2$ for the oldspace $S_{k}^{\text{old}}$, $3$ for the space of
+ Eisenstein series $E_{k}$ and $4$ for the full space $M_{k}$.
 
  \misctitle{Wildcards} For given level and weight, it is advantageous to
  compute simultaneously spaces attached to different Galois orbits
  of characters, especially in weight $1$. The parameter \var{CHI} may be set
  to 0 (wildcard), in which case we return a vector of all \kbd{mfinit}(s) of
- non trivial spaces in $S_k(\Gamma_1(N))$, one for each Galois orbit
+ non trivial spaces in $S_{k}(\Gamma_1(N))$, one for each Galois orbit
  (see \kbd{znchargalois}). One may also set \var{CHI} to a vector of
  characters and we return a vector of all mfinits of subspaces of
- $M_k(G_0(N),\chi)$ for $\chi$ in the list, in the same order. In weight $1$,
+ $M_{k}(G_{0}(N),\chi)$ for $\chi$ in the list, in the same order. In weight $1$,
  only $S_1^{\text{new}}$, $S_1$ and $E_1$ support wildcards.
 
  The output is a technical structure $S$, or a vector of structures if
