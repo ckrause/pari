@@ -26,11 +26,11 @@ Doc: Create the space of modular forms corresponding to the data contained in
  compute simultaneously spaces attached to different Galois orbits
  of characters, especially in weight $1$. The parameter \var{CHI} may be set
  to 0 (wildcard), in which case we return a vector of all \kbd{mfinit}(s) of
- non trivial spaces in $S_{k}(\Gamma_1(N))$, one for each Galois orbit
+ non trivial spaces in $S_{k}(\Gamma_{1}(N))$, one for each Galois orbit
  (see \kbd{znchargalois}). One may also set \var{CHI} to a vector of
  characters and we return a vector of all mfinits of subspaces of
  $M_{k}(G_{0}(N),\chi)$ for $\chi$ in the list, in the same order. In weight $1$,
- only $S_1^{\text{new}}$, $S_1$ and $E_1$ support wildcards.
+ only $S_{1}^{\text{new}}$, $S_{1}$ and $E_{1}$ support wildcards.
 
  The output is a technical structure $S$, or a vector of structures if
  \var{CHI} was a wildcard, which contains the following information:

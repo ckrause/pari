@@ -30,12 +30,12 @@ Doc: \kbd{NK} being of the form \kbd{[N,k]} with $k$ possibly half-integral,
  If a form is found at level $N$, any multiple of $N$ with the same $D$ is not
  considered. Some useful possibilities are
 
- \item \kbd{[$N_1$..$N_2$]}: all levels between $N_1$ and $N_2$,
+ \item \kbd{[$N_{1}$..$N_{2}$]}: all levels between $N_{1}$ and $N_{2}$,
  endpoints included;
 
- \item \kbd{$F$ * [$N_1$..$N_2$]}: same but levels divisible by $F$;
+ \item \kbd{$F$ * [$N_{1}$..$N_{2}$]}: same but levels divisible by $F$;
 
- \item \kbd{divisors}$(N_0)$: all levels dividing $N_0$.
+ \item \kbd{divisors}$(N_{0})$: all levels dividing $N_{0}$.
 
  Note that this is different from \kbd{mfeigensearch}, which only searches
  for rational eigenforms.
