@@ -847,7 +847,6 @@ sub basic_subst {
     | Id | det | Hom | deg | expr | seq | args 
     | min | max )
     (?![a-zA-Z])/$tr{startlword}$1$tr{endlword}/xg;
-#  s/\\pi(?![a-zA-Z])/$tr{startword}Pi$tr{endword}/g;
 
   # math symbols with HTML entities equivalents
   s/\\(Alpha | Beta | Chi | Delta | Epsilon | Phi | Gamma | Eta | Iota
