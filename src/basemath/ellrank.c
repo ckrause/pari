@@ -888,6 +888,7 @@ matcassels(GEN F, GEN M)
       { F2m_set(C,i,j); F2m_set(C,j,i); }
     }
   }
+  if (DEBUGLEVEL>=2) err_printf("Cassels Pairing: %Ps\n", F2m_to_ZM(C));
   return gc_const(av, C);
 }
 
