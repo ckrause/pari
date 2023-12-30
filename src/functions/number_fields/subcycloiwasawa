@@ -161,7 +161,7 @@ Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
  For the other cases, it is proved that $(1/2)\xi_{n}\in\Z_{p}[\Sigma_{n}]$.
  The polynomial $f_{n}(x)\in\Z_{p}[x]$ is constructed from $(1/2)\xi_{n}$
  by the
- correspondence $s\longleftrightarrow 1+x$. If $n$ is sufficiently large, then
+ correspondence $s\mapsto 1+x$. If $n$ is sufficiently large, then
  $p$ does not divide $f_{n}(x)$ and the distinguished polynomial
  $g_{n}(x)\in\Z_{p}[x]$ is uniquely determined by the relation
  $f_{n}(x)=u(x)g_{n}(x)$, $u(x)\in\Z_{p}[[x]]^{\times}$. The Iwasawa polynomial
@@ -195,7 +195,7 @@ Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
  $F=\Q(\sqrt{d}\,)$
  and $\omega$ is the Teichm\"uller character $\bmod{\,q}$. Next we construct
  $f_{n}^{*}(x)\in\Z_{p}[x]$ from $(1/2)\xi_{n}^{*}$ by the correspondence
- $s^{-1}\longleftrightarrow (1+x)(1+q_{0})^{-1}$ and define the distinguished
+ $s^{-1}\mapsto (1+x)(1+q_{0})^{-1}$ and define the distinguished
  polynomial $g_{n}^{*}(x)\in\Z_{p}[x]$ using $f_{n}^{*}(x)$.
  Then $g^{*}(x)=\lim_{n\rightarrow\infty}g_{n}^{*}(x)$ is the Iwasawa
  polynomial, which has a connection with Greenberg conjecture for $F$.

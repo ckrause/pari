@@ -554,6 +554,7 @@ sub nl { push(@f_text, shift); }
 
 sub split_words { my ($txt) = @_;
   $txt =~ s/^ +//;
+  $txt =~ s/([_\^])\{ *([^\-\^\{\}]+) *\}/$1$2/g;
   for ( split(/\s+/, $txt) )
   {
     s/\Q$tr{nbrk}/ /g;
@@ -900,7 +901,6 @@ sub basic_subst {
   s/\\rangle(?![a-zA-Z])\s*/$tr{startcode}$tr{gt}$tr{endcode}/g;
   s/\\langle(?![a-zA-Z])\s*/$tr{startcode}$tr{lt}$tr{endcode}/g;
   s/\\rightarrow(?![a-zA-Z])\s*/$tr{startcode}--$tr{gt}$tr{endcode}/g;
-  s/\\longleftrightarrow(?![a-zA-Z])\s*/$tr{startcode}$tr{lt}-----$tr{gt}$tr{endcode}/g;
   s/\\mapsto(?![a-zA-Z])\s*/$tr{startcode}:---$tr{gt}$tr{endcode}/g;
   s/ *\\geq?(?![a-zA-Z]) *([^ ])/ $tr{startcode}$tr{gt}=$tr{endcode} $1/g;
   s/ *\\leq?(?![a-zA-Z]) *([^ ])/ $tr{startcode}$tr{lt}=$tr{endcode} $1/g;
