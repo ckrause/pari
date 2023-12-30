@@ -921,7 +921,7 @@ sub basic_subst {
   s/\\bullet/\\item/g;
   s/^ *\\item/\@3$tr{startbold}*$tr{endbold}/g;
   s/\\item/$tr{startbold}*$tr{endbold}/g;
-  s/^ *\\misctitle\{([^\}]*)\}/\@3$tr{startbold}$1.$tr{endbold}/g;
+  s/^ *\\misctitle\{((?:[^{}]|\{[^{}]*\})*)\}/\@3$tr{startbold}$1.$tr{endbold}/g;
   s/\\subsubsec\{([^\}]*)\}/\@3$tr{startbold}$1.$tr{endbold}/g unless $to_pod;
   s/\\subsec\{([^\}]*)\}/\@3$tr{startbold}$1.$tr{endbold}/g unless $to_pod;
   s/\\\$/$tr{ldollar}/g;
