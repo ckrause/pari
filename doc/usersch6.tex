@@ -1251,7 +1251,9 @@ factorization of fractional ideal $x$ as limited by argument $L$:
 \item $L$ a vector of prime ideals of \var{nf} and/or rational primes
 (standing for ``all prime ideal divisors of given rational prime'') limit
 factorization to trial division by elements of $L$; do not include the
-cofactor.
+cofactor. For efficiency, the list should not contain the same element twice,
+nor both a rational prime and one of its prime ideal divisors, but the
+function will work in that case as well.
 
 \fun{GEN}{idealHNF_Z_factor}{GEN x, GEN *pvN, GEN *pvZ} given an integral
 (nonzero) ideal $x$ in HNF, compute both the factorization of $Nx$ and
