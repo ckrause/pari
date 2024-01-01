@@ -11,7 +11,7 @@ Help: hyperellratpoints(X,h,{flag=0}): X being a nonsingular hyperelliptic
  squarefree.
 Doc: $X$ being a nonsingular hyperelliptic curve given by an rational model,
  return a vector containing the affine rational points on the curve of naive
- height less than $h$.a  If $\fl=1$, stop as soon as a point is found; return
+ height less than $h$. If $\fl=1$, stop as soon as a point is found; return
  either an empty vector or a vector containing a single point.
 
  $X$ is given either by a squarefree polynomial $P$ such that $X: y^{2}=P(x)$
