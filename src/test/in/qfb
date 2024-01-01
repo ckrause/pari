@@ -22,6 +22,9 @@ f=Qfb(7,18,-18); g=Qfb(11,52,-41); [f * g, qfbcompraw(f, g)]
 q=Qfb(22000957029,25035917443,7122385192);
 qfbred(q)
 qfbredsl2(q)
+q=Qfb(33947,-39899,11650);
+qfbred(q)
+qfbredsl2(q)
 q=Qfb(1099511627776,1879224363605,802966544317);
 [qr,U]=qfbredsl2(q)
 qfeval(q,U)

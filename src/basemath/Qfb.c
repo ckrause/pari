@@ -435,10 +435,9 @@ static void
 rho_get_BC(GEN *B, GEN *C, GEN a, GEN b, GEN c, struct qfr_data *S)
 {
   GEN t, u, q;
-  u = shifti(c,1);
-  t = (abscmpii(S->isqrtD,c) >= 0)? S->isqrtD: c;
-  q = dvmdii(addii_sign(t,1, b,signe(b)), u, &u);
-  *B = addii_sign(t, 1, u, -signe(u)); /* |t| - (|t|+b) % |2c| */
+  t = (abscmpii(S->isqrtD,c) >= 0)? S->isqrtD: absi_shallow(c);
+  q = truedvmdii(addii(t, b), shifti(c,1), &u);
+  *B = subii(t, u); /* |t| - ((|t|+b) % 2c) */
   *C = subii(a, mulii(q, subii(b, mulii(q,c))));
 }
 /* Not stack-clean */
