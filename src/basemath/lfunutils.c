@@ -2259,72 +2259,12 @@ genus2_eulerfact_semistable(GEN P, GEN p)
   return ginv( ZX_mul(abe, tor) );
 }
 
-/* See algo57. if inf=0, ignore point at infinity */
-static GEN
-algo57bis(GEN F, long g, GEN p, long inf)
-{
-  pari_sp av = avma;
-  GEN vl = cgetg(3,t_VEC);
-  long nl = 1;
-  long ep = ZX_pval(F,p);
-  GEN Fe = FpX_red(ep ? ZX_Z_divexact(F,p): F, p);
-  if (inf && degpol(Fe) <= g+1+ep)
-  {
-    GEN Fi = ZX_unscale(RgXn_recip_shallow(F,2*g+3), p);
-    long lambda = ZX_pval(Fi,p);
-    if (lambda > g)
-    {
-      GEN ppr = powiu(p,lambda>>1);
-      gel(vl,nl++) = ZX_Z_divexact(Fi,sqri(ppr));
-    }
-  }
-  {
-    GEN R = FpX_roots_mult(Fe, g+1, p);
-    long j, lR = lg(R);
-    for (j = 1; j<lR; j++)
-    {
-      GEN c = gel(R,j);
-      GEN Fi = ZX_affine(F,p,c);
-      long lambda = ZX_pval(Fi,p);
-      if (lambda > g)
-      {
-        GEN ppr = powiu(p,lambda>>1);
-        gel(vl,nl++) = ZX_Z_divexact(Fi,sqri(ppr));
-      }
-    }
-  }
-  setlg(vl, nl);
-  return gerepilecopy(av,vl);
-}
-
-static GEN
-list_minimalmodels(GEN F, long g, GEN p)
-{
-  GEN R, W = algo57bis(F, g, p, 1);
-  long i, l = lg(W);
-  if (l==1) return mkvec(F);
-  R = cgetg(3, t_VEC);
-  gel(R,2) = F;
-  for(i = 1; i<l; i++)
-  {
-    GEN G = gel(W,i);
-    while(1)
-    {
-      GEN Wi = algo57bis(G, g, p, 0);
-      if (lg(Wi)==1) break;
-      G = gel(Wi,1);
-    }
-    gel(R,i) = G;
-  }
-  return R;
-}
-
 static GEN
 genus2_eulerfact(GEN P, GEN p)
 {
   GEN W;
   if (ZX_pval(P, p) > 0) return genus2_eulerfact_semistable(P,p);
-  W = list_minimalmodels(P, 2, p);
+  W = hyperellextremalmodels(P, 2, p);
   if (lg(W) < 3) return genus2_eulerfact_semistable(P,p);
   return gmul(genus2_eulerfact_semistable(gel(W,1),p),
               genus2_eulerfact_semistable(gel(W,2),p));
@@ -2413,7 +2353,7 @@ F2xqX_quad_nbroots(GEN b, GEN c, GEN T)
 }
 
 static GEN
-genus2_eulerfact2(GEN PQ)
+genus2_eulerfact2_semistable(GEN PQ)
 {
   GEN V = F2x_genus_red(ZX_to_F2x(gel(PQ, 1)), ZX_to_F2x(gel(PQ, 2)));
   GEN P = gel(V, 1), Q = gel(V, 2);
@@ -2453,6 +2393,15 @@ genus2_eulerfact2(GEN PQ)
   }
   tor = RgX_div(ZX_mul(oneminusxd(1),kq), ZX_mul(ki, kp));
   return ginv( ZX_mul(abe, tor) );
+}
+
+static GEN
+genus2_eulerfact2(GEN P)
+{
+  GEN W = hyperellextremalmodels(P, 2, gen_2);
+  if (lg(W) < 3) return genus2_eulerfact2_semistable(P);
+  return gmul(genus2_eulerfact2_semistable(gel(W,1)),
+              genus2_eulerfact2_semistable(gel(W,2)));
 }
 
 GEN

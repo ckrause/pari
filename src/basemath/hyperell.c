@@ -877,7 +877,7 @@ algo51(GEN W, GEN M)
     if (vP==1) break;
     /* 2d */
     r = minss(2*vQ, vP)>>1;
-    gel(M,1) = shifti(gel(M,1), r);
+    if (M) gel(M,1) = shifti(gel(M,1), r);
     P = ZX_shifti(P, -2*r);
     Q = ZX_shifti(Q, -r);
   }
@@ -994,6 +994,77 @@ algo56(GEN W, long g)
   return mkvec2(W, M);
 }
 
+static GEN
+algo56bis(GEN W, long g, long inf)
+{
+  pari_sp av = avma;
+  GEN vl = cgetg(3,t_VEC);
+  long nl = 1;
+  W = algo51(W, NULL);
+  if (inf)
+  {
+    GEN Woo = hyperell_reverse(W, g);
+    GEN Pc = ZX_unscale(gel(W,1), gen_2);
+    GEN Qc = ZX_unscale(gel(W,2), gen_2);
+    long ep = get_ep(Woo);
+    if (test55(mkvec2(Pc, Qc), ep, g))
+    {
+      long lambda;
+      Woo = algo52(Woo, gen_0, &lambda);
+      if (lambda > g)
+      {
+        long r = lambda>>1;
+        gel(vl,nl++) = mkvec2(ZX_shifti(ZX_unscale(gel(Woo,1), gen_2), -2*r),
+                              ZX_shifti(ZX_unscale(gel(Woo,2), gen_2), -r));
+      }
+    }
+  }
+  {
+    long j, ep = get_ep(W);
+    for (j = 0; j < 2; j++)
+    {
+      long lambda;
+      GEN c = utoi(j);
+      GEN Pc = ZX_affine(gel(W,1), gen_2, c);
+      GEN Qc = ZX_affine(gel(W,2), gen_2, c);
+      if (test55(mkvec2(Pc, Qc), ep, g))
+      {
+        GEN Wc = algo52(W, c, &lambda);
+        if (lambda > g)
+        {
+          long r = lambda>>1;
+          gel(vl,nl++) = mkvec2(ZX_shifti(ZX_affine(gel(Wc,1), gen_2,c), -2*r),
+                                ZX_shifti(ZX_affine(gel(Wc,2), gen_2,c), -r));
+        }
+      }
+    }
+  }
+  setlg(vl, nl);
+  return gerepilecopy(av,vl);
+}
+
+static GEN
+hyperellextremalmodels2(GEN F, long g)
+{
+  GEN R, W = algo56bis(F, g, 1);
+  long i, l = lg(W);
+  if (l==1) return mkvec(F);
+  R = cgetg(3, t_VEC);
+  gel(R,2) = F;
+  for(i = 1; i<l; i++)
+  {
+    GEN G = gel(W,i);
+    while(1)
+    {
+      GEN Wi = algo56bis(G, g, 0);
+      if (lg(Wi)==1) break;
+      G = gel(Wi,1);
+    }
+    gel(R,i) = G;
+  }
+  return R;
+}
+
 /* return the (degree 2) apolar invariant (the nth transvectant of P and P) */
 static GEN
 ZX_apolar(GEN P, long n)
@@ -1070,6 +1141,68 @@ algo57(GEN F, long g, GEN pr)
     }
   }
   return mkvec2(F, M);
+}
+
+/* if inf=0, ignore point at infinity */
+static GEN
+algo57bis(GEN F, long g, GEN p, long inf)
+{
+  pari_sp av = avma;
+  GEN vl = cgetg(3,t_VEC);
+  long nl = 1;
+  long ep = ZX_pval(F,p);
+  GEN Fe = FpX_red(ep ? ZX_Z_divexact(F,p): F, p);
+  if (inf && degpol(Fe) <= g+1+ep)
+  {
+    GEN Fi = ZX_unscale(RgXn_recip_shallow(F,2*g+3), p);
+    long lambda = ZX_pval(Fi,p);
+    if (lambda > g)
+    {
+      GEN ppr = powiu(p,lambda>>1);
+      gel(vl,nl++) = ZX_Z_divexact(Fi,sqri(ppr));
+    }
+  }
+  {
+    GEN R = FpX_roots_mult(Fe, g+1, p);
+    long j, lR = lg(R);
+    for (j = 1; j<lR; j++)
+    {
+      GEN c = gel(R,j);
+      GEN Fi = ZX_affine(F,p,c);
+      long lambda = ZX_pval(Fi,p);
+      if (lambda > g)
+      {
+        GEN ppr = powiu(p,lambda>>1);
+        gel(vl,nl++) = ZX_Z_divexact(Fi,sqri(ppr));
+      }
+    }
+  }
+  setlg(vl, nl);
+  return gerepilecopy(av,vl);
+}
+
+GEN
+hyperellextremalmodels(GEN F, long g, GEN p)
+{
+  GEN R, W;
+  long i, l;
+  if (equaliu(p,2)) return hyperellextremalmodels2(F,g);
+  W = algo57bis(F, g, p, 1); l = lg(W);
+  if (l==1) return mkvec(F);
+  R = cgetg(3, t_VEC);
+  gel(R,2) = F;
+  for(i = 1; i<l; i++)
+  {
+    GEN G = gel(W,i);
+    while(1)
+    {
+      GEN Wi = algo57bis(G, g, p, 0);
+      if (lg(Wi)==1) break;
+      G = gel(Wi,1);
+    }
+    gel(R,i) = G;
+  }
+  return R;
 }
 
 static GEN
