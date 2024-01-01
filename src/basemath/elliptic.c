@@ -6733,45 +6733,55 @@ ellnf_localheight(GEN e, GEN P, GEN pr)
   return gsubgs(v,vu);
 }
 
+/* L list of prime ideals, merge with prime ideals dividing integral ideal A
+ * in HNF (use elements of L as hints, which may or may not divide A).
+ * Return sorted list, without duplicates */
+static GEN
+prV_merge_factors(GEN nf, GEN L, GEN A)
+{
+  if (lg(L) > 1)
+  {
+    GEN LQ = prV_primes(L); /* rational primes */
+    GEN p, e, N = Z_smoothen(gcoeff(A,1,1), LQ, &p, &e);
+    L = shallowconcat(L, gel(idealfactor_partial(nf, A, LQ), 1));
+    /* L = primes in original L or dividing (A, vecprod(LQ)) */
+    A = N? ZM_hnfmodid(A, N): NULL;
+  }
+  /* A made coprime to vecprod(LQ), add remaining primes if not trivial */
+  if (A) L = shallowconcat(L, gel(idealfactor(nf, A), 1));
+  return gen_sort_uniq(L, (void*)cmp_prime_ideal, &cmp_nodata);
+}
 static GEN
 ellnf_height(GEN E, GEN P, long prec)
 {
   pari_sp av = avma;
-  GEN x, nf, d, F, F2, Ee, Pe, s, v, u, phi2, psi2;
-  long i, n, l, r1;
-  E = ellintegralmodel_i(E, &v);
-  if (v) P = ellchangepoint(P, v);
+  GEN logp, oldp, x, nf, d, F, Ee, Pe, s, v, phi2, psi2;
+  long i, l, r1;
+  E = ellintegralmodel_i(E, &v); if (v) P = ellchangepoint(P, v);
   if (!oncurve(E,P))
     pari_err_DOMAIN("ellheight", "point", "not on", strtoGENstr("E"), P);
-  if (signe(ellorder(E, P, NULL))) return gen_0;
+  if (signe(ellorder(E, P, NULL))) return gc_const(av, gen_0);
   x = gel(P,1);
-  if (gequal0(ec_2divpol_evalx(E, x))) { set_avma(av); return gen_0; }
-  nf = ellnf_get_nf(E); r1 = nf_get_r1(nf);
-  u = ellnf_minimalnormu(E);
+  if (gequal0(ec_2divpol_evalx(E, x))) return gc_const(av, gen_0);
+  nf = ellnf_get_nf(E);
   phi2 = gel(idealnumden(nf, ec_dFdx_evalQ(E, P)), 1);
   psi2 = gel(idealnumden(nf, ec_dmFdy_evalQ(E, P)),1);
   d = idealnorm(nf, gel(idealnumden(nf, x), 2));
-  F = gel(idealfactor(nf, idealadd(nf, phi2, psi2)), 1);
-  F2 = gel(ellminimalprimes(E), 1);
-  if (lg(F2) > 1)
-  {
-    F = shallowconcat(F, F2);
-    F = gen_sort_uniq(F, (void*)cmp_prime_ideal, &cmp_nodata);
-  }
-  Ee = ellnfembed(E, prec);
-  Pe = ellpointnfembed(E, P, prec);
-  n = lg(Ee); l = lg(F);
-  s = gsub(gmul2n(glog(d, prec), -1), glog(u, prec));
-  for (i=1; i<=r1; i++)
+  F = gel(ellminimalprimes(E), 1); /* prime ideals dividing (c4,c6) */
+  F = prV_merge_factors(nf, F, idealadd(nf, phi2, psi2));
+  Ee = ellnfembed(E, prec); Pe = ellpointnfembed(E, P, prec);
+  l = lg(Ee); r1 = nf_get_r1(nf);
+  s = gsub(gmul2n(glog(d, prec), -1), glog(ellnf_minimalnormu(E), prec));
+  for (i=1; i <= r1; i++)
     s = gadd(s, ellheightoo(gel(Ee, i), gel(Pe, i), prec));
-  for (   ; i<n; i++)
+  for (   ; i < l; i++)
     s = gadd(s, gmul2n(ellheight_C(gel(Ee, i), gel(Pe, i), prec), 1));
-  for (i=1; i<l; i++)
-  {
-    GEN pr = gel(F,i), p = pr_get_p(pr);
-    long f = pr_get_f(pr);
-    GEN lam = ellnf_localheight(E, P, pr);
-    s = gadd(s, gmul(lam, mulrs(glog(p, prec), f)));
+  l = lg(F); oldp = logp = NULL;
+  for (i = 1; i < l; i++)
+  { /* F = primes dividing (c4,c6) or (phi2,psi2) */
+    GEN pr = gel(F,i), p = pr_get_p(pr), lam = ellnf_localheight(E, P, pr);
+    if (!oldp || !equalii(p, oldp)) { oldp = p; logp = glog(p, prec); }
+    s = gadd(s, gmul(lam, mulru(logp, pr_get_f(pr))));
   }
   return gerepileupto(av, gmul2n(s, 1));
 }
