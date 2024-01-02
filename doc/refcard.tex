@@ -336,6 +336,8 @@ in gp header.\hfil\break
    {parforprime$(p = a, \{b\}, f,\{r\}, \{f_2\})$}
 \li{\dots for $p = a \mod q$}
    {parforprimestep$(p = a, \{b\}, q, f,\{r\}, \{f_2\})$}
+\li{\dots for $i=a, a+s, \dots,b$}
+   {parforstep$(i = a, \{b\}, s, f,\{r\}, \{f_2\})$}
 \li{\dots multivariate}
    {parforvec$(X = v, f,\{r\}, \{f_2\}, \{\fl\})$}
 \li{export $x$ to parallel world}{export$(x)$}
@@ -462,6 +464,7 @@ in gp header.\hfil\break
 interpolation polynomial at $(x[1],y[1]),\dots, (x[n],y[n])$,
 evaluated at $t$, with error estimate
 $e$ \hfil \kbd{polinterpolate}$(x,\{y\},\{t\},\{\&e\})$\break
+\li{monic polynomial from roots $r$}{polfromroots$(r)$}
 \li{$T_n/U_n$, $H_n$}{polchebyshev$(n)${\rm, }polhermite$(n)$}
 \li{$P_n$, $L_n^{(\alpha)}$}{pollegendre$(n)${\rm, }pollaguerre$(n,a)$}
 \li{$n$-th cyclotomic polynomial $\Phi_n$}{polcyclo$(n)$}
