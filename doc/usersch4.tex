@@ -2259,6 +2259,24 @@ must not be called anymore with the same initialization.
 \fun{void}{parforeach_stop}{parforeach_t *T} needs to be called when leaving
 the iterator before \kbd{parforeach\_next} returned \kbd{NULL}.
 
+\item \tet{parforstep}. To initialize the analog of
+\kbd{parforstep(i = a, b, s, ...)}, call
+
+\fun{void}{parforstep_init}{parforstep_t *T, GEN a, GEN b, GEN s, GEN code}
+
+initialize an iterator over the evaluation of \kbd{code} between $a$ and $b$,
+with steps $s$ (see \kbd{forstep} documentation for the possibilities for $s$).
+
+\fun{GEN}{parforstep_next}{parforstep_t *T}
+
+returns a \typ{VEC} \kbd{[x,code(x)]} where $x$ is one of the evaluation
+points and \kbd{code(x)} is the evaluation, \kbd{NULL} when all data have
+been exhausted. Once it happens, \kbd{parforstep\_next} must not be called
+anymore with the same initialization.
+
+\fun{void}{parforstep_stop}{parforstep_t *T} needs to be called when leaving
+the iterator before \kbd{parforstep\_next} returned \kbd{NULL}.
+
 \item \tet{parforprime}. To initialize the analog of
 \kbd{parforprime(p = a, b, ...)}, call
 
