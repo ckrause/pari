@@ -1,5 +1,5 @@
 Bug numbers refer to the BTS at http://pari.math.u-bordeaux.fr/Bugs/
-Done for version 2.16.1 (released 03/01/2023):
+Done for version 2.16.1 (released 04/01/2024):
   Fixed
 BA   1- lfunan(lfunetaquo([12,1;13*12,1]),1) -> stack overflow [#2457]
 BA   2- FpM_intersect could return a Flm [#2459]
