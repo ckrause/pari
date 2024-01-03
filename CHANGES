@@ -1,5 +1,5 @@
 Bug numbers refer to the BTS at http://pari.math.u-bordeaux.fr/Bugs/
-Done for version 2.16.1 (released ??/??/2023):
+Done for version 2.16.1 (released 03/01/2023):
   Fixed
 BA   1- lfunan(lfunetaquo([12,1;13*12,1]),1) -> stack overflow [#2457]
 BA   2- FpM_intersect could return a Flm [#2459]
@@ -116,6 +116,7 @@ BA  40- [libpari] hash_keys_GEN
 BA  42- [libpari] lg2prec, prec2lg
 BA  43- New GP function ellisisom
 BA  44- allow qfsolve([Q,F]) where F factorization of disc(Q)
+BA  45- New GP function plotell
 
   Removed
      1- [graphic] support for Qt4
