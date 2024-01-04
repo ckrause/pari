@@ -43,7 +43,7 @@ Doc: if $E$ is an elliptic curve over $\Q$, attempts to compute the
 
  \misctitle{Technical explanation}
  The algorithm, which computes the $2$-descent and the $2$-part of the Cassels
- pairings has an intrinsic limitation: $r = R$ never holds when
+ pairings has an intrinsic limitation: $r_{1} = r_{2}$ never holds when
  the Tate-Shafarevic group $G$ has $4$-torsion. Thus, in this case we cannot
  determine the rank precisely. The algorithm computes unconditionally three
  quantities:
@@ -52,20 +52,19 @@ Doc: if $E$ is an elliptic curve over $\Q$, attempts to compute the
 
  \item the rank $T$ of the $2$-torsion subgroup.
 
- \item the (even) rank $s$ of $G[2]/2G[4]$.
+ \item the (even) rank $s$ of $G[2]/2G[4]$; then $r_{2}$ is defined
+ by $r_{2} = C - T - s$.
 
  The following quantities are also relevant:
 
- \item the rank $R$ of the free part of $E(\Q)$.
+ \item the rank $R$ of the free part of $E(\Q)$; it always holds that
+ $r_{1} \le R \le r_{2}$.
 
- \item the rank $S$ of $G[2]$ (conjecturally even).
-
- Then, the following formula holds: $C = T + R + S$.
- It always holds that $s \le S$ and $r_{1} \le R \le r_{2}$.
- $r_{2}$ is defined by $r_{2} = C - T - s$.
+ \item the rank $S$ of $G[2]$ (conjecturally even); it always holds that
+ $s \le S$ and that $C = T + R + S$. Then $r_{2} = C - T - s \ge R$.
 
  When the conductor of $E$ is small, the BSD conjecture can be used
- to find the true rank:
+ to (conditionally) find the true rank:
  \bprog
  ? E=ellinit([-113^2,0]);
  ? ellrootno(E) \\ rank is even (parity conjecture)
@@ -84,16 +83,17 @@ Doc: if $E$ is an elliptic curve over $\Q$, attempts to compute the
  $(\Z/4\Z)^{2}$.
 
  When the rank is $1$ and the conductor is small, \kbd{ellheegner} can be used
- to find the point.
+ to find a non-torsion point:
  \bprog
   ? E = ellinit([-157^2,0]);
   ? ellrank(E)
-  %2 = [1, 1, []] \\ rank is 1, no point found
+  %2 = [1, 1, 0, []] \\ rank is 1, no point found
   ? ellrank(E, 5) \\ Try harder
-  time = 4,321 ms.
-  %3 = [1, 1, []] \\ No luck
+  time = 1,094 ms.
+  %3 = [1, 1, 0, []] \\ No luck
   ? ellheegner(E) \\ use analytic method
-  time = 608 ms.
+  time = 492 ms.
   %4 = [69648970982596494254458225/166136231668185267540804, ...]
  @eprog\noindent In this last example, an \kbd{effort} about 10 would also
- find a random point (not necessarily the Heegner point) in 5 to 20 seconds.
+ (with probability about 80\%) find a random point, not necessarily the
+ Heegner point, in about 5 seconds.
