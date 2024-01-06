@@ -37,5 +37,5 @@ Doc: \idx{binomial coefficient} $\binom{n}{k}$.
  components whose $k+1$-th entry is \kbd{binomial}$(n,k)$
  \bprog
  ? binomial(4)
- %3 = [1, 4, 6, 4, 1]
+ %4 = [1, 4, 6, 4, 1]
  @eprog
