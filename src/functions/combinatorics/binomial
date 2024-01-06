@@ -18,7 +18,7 @@ Doc: \idx{binomial coefficient} $\binom{n}{k}$.
  %3 = 1/2*x^2 - 1/2*x
  @eprog\noindent When $n$ is a negative integer and $k$ is negative,
  we use Daniel Loeb's extension,
- $$ \lim_{t\to 1} \Gamma(n+t) / \Gamma(k+t) / \Gamma(n-k+t), $$
+ $$ \lim_{t\to 1} \Gamma(n+t) / \Gamma(k+t) / \Gamma(n-k+t). $$
  (Sets with a negative number of elements, \emph{Adv. Math.} {\bf 91} (1992),
  no. 1, 64--74. See also~\kbd{https://arxiv.org/abs/1105.3689}.)
  This way the symmetry relation $\binom{n}{k} = \binom{n}{n - k}$
