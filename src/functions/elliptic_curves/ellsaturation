@@ -25,14 +25,15 @@ Doc: Let $E$ be an elliptic curve over $\Q$ and
  time = 1 ms.
  %4 = [[-1, 3], [-3, 0], [11, 35]]
  ? W = ellsaturation(E, W, 10) \\ index not divisible by p <= 10
+ %5 = [[1, -1], [2, -1], [0, -3]]
  time = 2 ms.
  ? W = ellsaturation(E, V, 100) \\ looks OK now
- %5 = [[1, -1], [2, 0], [0, -3]]
  time = 171 ms.
+ %6 = [[1, -1], [2, -1], [0, -3]]
  ? matdet(ellheightmatrix(E,V))
- %6 = 0.41714355875838396981711954461809339675
- ? lfun(E,1,3)/3! / ellbsd(E) \\ conductor is small, check assuming BSD
  %7 = 0.41714355875838396981711954461809339675
+ ? lfun(E,1,3)/3! / ellbsd(E) \\ conductor is small, check assuming BSD
+ %8 = 0.41714355875838396981711954461809339675
  @eprog
 
 Function: _ellQ_factorback_worker
