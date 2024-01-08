@@ -1675,7 +1675,7 @@ exactly 3, with generators \kbd{v[1]}, \kbd{v[2]} and \kbd{v[3]}, and this
 can be proved to be the case. Indeed, all this (and much more) is automated
 in the built-in \kbd{ellrank} function:
 \bprog
-  [r, R, P] = ellrank(e);
+  [r, R, s, P] = ellrank(e);
   Q = ellsaturation(e, P, 100)
 @eprog\noindent We find $r = R = 3$ and a vector $P$ containing $3$
 rational points. This performs $2$-descent on the curve: the rank belongs
