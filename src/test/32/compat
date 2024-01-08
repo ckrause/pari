@@ -1725,12 +1725,11 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: indsort(x) ===> vecsort(x,,1)
 
-vecsort(x,{cmpf},{flag=0}): sorts the vector of vectors (or matrix) x in 
-ascending order, according to the comparison function cmpf, if not omitted. (If 
-cmpf is an integer k, sort according to the value of the k-th component of each 
-entry.) Binary digits of flag (if present) mean: 1: indirect sorting, return 
-the permutation instead of the permuted vector, 4: use descending instead of 
-ascending order, 8: remove duplicate entries.
+vecsort(x,{cmpf},{flag=0}): sorts the vector x in ascending order, according to 
+the comparison function cmpf, if not omitted. Binary digits of flag (if 
+present) mean: 1: indirect sorting, return the permutation instead of the 
+permuted vector, 4: use descending instead of ascending order, 8: remove 
+duplicate entries.
 
 
   ***   at top-level: initalg()
@@ -2274,12 +2273,11 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: lexsort(x) ===> vecsort(x,,2)
 
-vecsort(x,{cmpf},{flag=0}): sorts the vector of vectors (or matrix) x in 
-ascending order, according to the comparison function cmpf, if not omitted. (If 
-cmpf is an integer k, sort according to the value of the k-th component of each 
-entry.) Binary digits of flag (if present) mean: 1: indirect sorting, return 
-the permutation instead of the permuted vector, 4: use descending instead of 
-ascending order, 8: remove duplicate entries.
+vecsort(x,{cmpf},{flag=0}): sorts the vector x in ascending order, according to 
+the comparison function cmpf, if not omitted. Binary digits of flag (if 
+present) mean: 1: indirect sorting, return the permutation instead of the 
+permuted vector, 4: use descending instead of ascending order, 8: remove 
+duplicate entries.
 
 
   ***   at top-level: lindep2()
@@ -3784,12 +3782,11 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: sort(x) ===> vecsort(x)
 
-vecsort(x,{cmpf},{flag=0}): sorts the vector of vectors (or matrix) x in 
-ascending order, according to the comparison function cmpf, if not omitted. (If 
-cmpf is an integer k, sort according to the value of the k-th component of each 
-entry.) Binary digits of flag (if present) mean: 1: indirect sorting, return 
-the permutation instead of the permuted vector, 4: use descending instead of 
-ascending order, 8: remove duplicate entries.
+vecsort(x,{cmpf},{flag=0}): sorts the vector x in ascending order, according to 
+the comparison function cmpf, if not omitted. Binary digits of flag (if 
+present) mean: 1: indirect sorting, return the permutation instead of the 
+permuted vector, 4: use descending instead of ascending order, 8: remove 
+duplicate entries.
 
 
   ***   at top-level: sqred()
@@ -4036,12 +4033,11 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: vecindexsort(x) ===> vecsort(x,,1)
 
-vecsort(x,{cmpf},{flag=0}): sorts the vector of vectors (or matrix) x in 
-ascending order, according to the comparison function cmpf, if not omitted. (If 
-cmpf is an integer k, sort according to the value of the k-th component of each 
-entry.) Binary digits of flag (if present) mean: 1: indirect sorting, return 
-the permutation instead of the permuted vector, 4: use descending instead of 
-ascending order, 8: remove duplicate entries.
+vecsort(x,{cmpf},{flag=0}): sorts the vector x in ascending order, according to 
+the comparison function cmpf, if not omitted. Binary digits of flag (if 
+present) mean: 1: indirect sorting, return the permutation instead of the 
+permuted vector, 4: use descending instead of ascending order, 8: remove 
+duplicate entries.
 
 
   ***   at top-level: veclexsort()
@@ -4051,12 +4047,11 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: veclexsort(x) ===> vecsort(x,,2)
 
-vecsort(x,{cmpf},{flag=0}): sorts the vector of vectors (or matrix) x in 
-ascending order, according to the comparison function cmpf, if not omitted. (If 
-cmpf is an integer k, sort according to the value of the k-th component of each 
-entry.) Binary digits of flag (if present) mean: 1: indirect sorting, return 
-the permutation instead of the permuted vector, 4: use descending instead of 
-ascending order, 8: remove duplicate entries.
+vecsort(x,{cmpf},{flag=0}): sorts the vector x in ascending order, according to 
+the comparison function cmpf, if not omitted. Binary digits of flag (if 
+present) mean: 1: indirect sorting, return the permutation instead of the 
+permuted vector, 4: use descending instead of ascending order, 8: remove 
+duplicate entries.
 
 
   ***   at top-level: vvector()
@@ -4504,4 +4499,4 @@ New syntax: texprint(x) ===> printtex(x)
 printtex({str}*): outputs its string arguments in TeX format.
 
 
-Total time spent: 3
+Total time spent: 7
