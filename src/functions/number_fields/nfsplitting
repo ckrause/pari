@@ -8,10 +8,10 @@ Help: nfsplitting(P,{d},{fl}): defining polynomial S over Q for the splitting
  of the splitting field degree. If fl=1, return [S,C] where C is an embedding
  of Q[x]/(P) in its splitting field.
 Doc: defining polynomial $S$ over~$\Q$ for the splitting field of
- $\var{P}\in\Q[x]$, that is the smallest field over which $P$ is totally split.
- If irreducible, the polynomial $P$ can also be given by a~\kbd{nf} structure,
- which is more efficient. If $d$ is given, it must be a multiple of the
- splitting field degree. Note that if $P$ is reducible the splitting field
+ $\var{P} \in \Q[x]$, that is the smallest field over which $P$ is totally
+ split. If irreducible, the polynomial $P$ can also be given by a~\kbd{nf}
+ structure, which is more efficient. If $d$ is given, it must be a multiple of
+ the splitting field degree. Note that if $P$ is reducible the splitting field
  degree can be smaller than the degree of $P$.
 
  If $\fl$ is non-zero, we assume $P$ to be monic, integral and irreducible and
@@ -21,7 +21,7 @@ Doc: defining polynomial $S$ over~$\Q$ for the splitting field of
  embedding of $\Q[x]/(P)$ in its splitting field given by a polynomial
  (implicitly modulo $S$, as in \kbd{nfisincl}).
 
- \item $\fl = 2$: return $[S,C]$ where $C$ is vector of rationals functions
+ \item $\fl = 2$: return $[S,C]$ where $C$ is vector of rational functions
   whose image in $\Q[x]/(S)$ yields the embedding; this avoids inverting the
   denominator, which is costly. when the degree of the splitting field is huge.
 
