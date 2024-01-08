@@ -692,18 +692,18 @@ Then, exactly as in the quadratic case, you can type \kbd{w\pow 10},
 264}, obtaining of course the same results. (Type \kbd{lift(\dots)} if you
 don't want to see the polynomial \kbd{x\pow 2 - x + 41} repeated all the
 time.) Of course, you can work in any degree, not only quadratic. For the
-latter, the corresponding elementary operations will be slower than
+latter, the corresponding elementary operations will be a little slower than
 with quadratic numbers. Start the timer, then compare
 \bprog
   w = quadgen(-163,'w); W = Mod(x, quadpoly(-163));
-  a = 2 + w;         A = 2 + W;
-  b = 3 + w;         B = 3 + W;
-  for (i=1,10^5, a+b)
-  for (i=1,10^5, A+B)
-  for (i=1,10^5, a*b)
-  for (i=1,10^5, A*B)
-  for (i=1,10^5, a/b)
-  for (i=1,10^5, A/B)
+  a = 2 + w;            A = 2 + W;
+  b = 3 + w;            B = 3 + W;
+  for (i=1,10^6, a+b)
+  for (i=1,10^6, A+B)
+  for (i=1,10^6, a*b)
+  for (i=1,10^6, A*B)
+  for (i=1,10^6, a/b)
+  for (i=1,10^6, A/B)
 @eprog\noindent
 Don't retype everything, use the arrow keys!
 
