@@ -5,8 +5,8 @@ Prototype: GDG
 Help: subcyclohminus(fH, {p=0}):
  Let F be the abelian number field contained in Q(zeta_f) corresponding
  to the subgroup H of (Z/fZ)^*. Let h be the relative class number
- h^-(F) and Q the Hasse unit index in {1,2}. If Q could be computed, return
- [h, Q]; else return [2h/Q, 0].
+ h^-(F) and Q the Hasse unit index in {1,2}. If Q could be computed, returns
+ [h, Q]; else returns [2h/Q, 0].
 Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
  corresponding to the subgroup $H$ of $(\Z/f\Z)^{*}$.
  Computes the relative class number $h^{-}(F)=h(F)/h(F^{+})$ of $F$.
