@@ -1527,13 +1527,14 @@ primecertisvalid_ecpp_worker(GEN certi)
   if (typ(P) != t_VEC || lg(P) != 3) return gen_0;
   P = FpE_to_FpJ(P);
 
-  /* Check mP == 0 */
-  mP = FpJ_mul(P, m, a, N);
-  if (!FpJ_is_inf(mP)) return gen_0;
-
   /* Check sP != 0 and third component is coprime to N */
   sP = FpJ_mul(P, s, a, N);
   if (!isint1(gcdii(gel(sP, 3), N))) return gen_0;
+
+  /* Check mP == 0 */
+  mP = FpJ_mul(sP, q, a, N);
+  if (!FpJ_is_inf(mP)) return gen_0;
+
   return q;
 }
 
