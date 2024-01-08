@@ -252,13 +252,12 @@ GEN
 intnumgaussinit(long N, long prec)
 {
   pari_sp av;
-  long N2, j, k, l, lV, bit;
+  long N2, j, k, l, lV;
   GEN res, V, W, F, S;
   double d;
 
   prec += EXTRAPREC64;
-  bit = prec2nbits(prec);
-  if (N <= 0) { N = bit >> 2; if (odd(N)) N++; }
+  if (N <= 0) { N = prec >> 2; if (odd(N)) N++; }
   if (N == 1) retmkvec2(mkvec(gen_0), mkvec(gen_2));
   l = prec2lg(prec);
   res = cgetg(3, t_VEC);
@@ -293,7 +292,7 @@ intnumgaussinit(long N, long prec)
   for (j = 4*N2-1; j >= 3; k++, j -= 4)
   {
     pari_sp av2 = avma;
-    GEN zw = Legendreroot(N, d * cos(M_PI * j / (4*N+2)), S, bit);
+    GEN zw = Legendreroot(N, d * cos(M_PI * j / (4*N+2)), S, prec);
     GEN z = gel(zw,1), w = gel(zw,2);
     affrr(z, gel(V,k));
     w = mulrr(F, divrr(subsr(1, sqrr(z)), sqrr(w)));
@@ -425,8 +424,8 @@ checktab(GEN tab)
 static void
 intinit_start(intdata *D, long m, double TUNE, long prec)
 {
-  long l, n, bitprec = prec2nbits(prec);
-  double d = bitprec*LOG10_2;
+  long l, n;
+  double d = prec*LOG10_2;
   GEN h, nh, pi = mppi(prec);
 
   n = (long)ceil(d*log(d) / TUNE); /* heuristic */
@@ -435,7 +434,7 @@ intinit_start(intdata *D, long m, double TUNE, long prec)
   h = divru(nh, n);
   if (m > 0) { h = gmul2n(h,-m); n <<= m; }
   D->h = h;
-  D->bit = bitprec;
+  D->bit = prec;
   D->l = l = n+1;
   D->tabxp = cgetg(l, t_VEC);
   D->tabwp = cgetg(l, t_VEC);
@@ -1668,7 +1667,7 @@ Pade(GEN M, GEN *pP, GEN *pQ)
 static GEN
 veczetaprime(GEN a, GEN b, long N, long prec)
 {
-  long B = prec2nbits(prec) / 2;
+  long B = prec / 2;
   GEN v, h = mkcomplex(gen_0, real2n(-B, prec));
   v = veczeta(a, gadd(b, h), N, prec);
   return gmul2n(imag_i(v), B);
@@ -1732,7 +1731,7 @@ static GEN
 sumnummonieninit_i(GEN a, GEN b, GEN w, GEN n0, long prec)
 {
   GEN c, M, P, Q, Qp, vr, vabs, vwt, ga = gadd(a, b);
-  double bit = 2*prec2nbits(prec) / gtodouble(ga), D = bit*M_LN2;
+  double bit = 2*prec / gtodouble(ga), D = bit*M_LN2;
   double da = maxdd(1., gtodouble(a));
   long n = (long)ceil(D / (da*(log(D)-1)));
   long j, prec2, prec0 = prec + EXTRAPREC64;
@@ -1882,13 +1881,13 @@ sumnuminit(GEN fast, long prec)
 {
   pari_sp av;
   GEN s, v, d, C, res = cgetg(6, t_VEC);
-  long bitprec = prec2nbits(prec), N, k, k2, m;
+  long N, k, k2, m;
   double w;
 
   gel(res, 1) = d = mkfrac(gen_1, utoipos(4)); /* 1/4 */
   av = avma;
   w = gtodouble(glambertW(ginv(d), 0, LOWDEFAULTPREC));
-  N = (long)ceil(M_LN2*bitprec/(w*(1+w))+5);
+  N = (long)ceil(M_LN2*prec/(w*(1+w))+5);
   k = (long)ceil(N*w); if (k&1) k--;
 
   prec += EXTRAPREC64;
@@ -1996,12 +1995,12 @@ intnumgauexpinit(long prec)
 {
   pari_sp ltop = avma;
   GEN V, N, E, P, Q, R, vabs, vwt;
-  long l, n, k, j, prec2, prec0 = prec + EXTRAPREC64, bit = prec2nbits(prec);
+  long l, n, k, j, prec2, prec0 = prec + EXTRAPREC64;
 
-  n = (long)ceil(bit*0.226);
+  n = (long)ceil(prec*0.226);
   n |= 1; /* make n odd */
-  prec = nbits2prec(1.5*bit + 32);
-  prec2 = maxss(prec0, nbits2prec(1.15*bit + 32));
+  prec2 = maxss(prec0, nbits2prec(1.15*prec + 32));
+  prec = nbits2prec(1.5*prec + 32);
   constbern(n+3);
   V = cgetg(n + 4, t_VEC);
   for (k = 1; k <= n + 3; ++k)
@@ -2087,7 +2086,7 @@ sumnumap(void *E, GEN (*eval)(void*,GEN), GEN a, GEN tab, long prec)
   if (!tab) tab = sumnumapinit(fast, prec);
   else if (typ(tab) != t_VEC || lg(tab) != 3) pari_err_TYPE("sumnumap",tab);
   as = itos(a);
-  T.N = N = maxss(as + 1, (long)ceil(prec2nbits(prec)*0.327));
+  T.N = N = maxss(as + 1, (long)ceil(prec*0.327));
   T.E = E;
   T.f = eval;
   gN = stoi(N);
@@ -2147,11 +2146,11 @@ rfrac_gtofp(GEN F, long prec)
 static GEN
 intnumainfrat(GEN F, long N, double r, long prec)
 {
-  long B = prec2nbits(prec), v, k, lim;
+  long v, k, lim;
   GEN S, ser;
   pari_sp av = avma;
 
-  lim = (long)ceil(B/log2(N/r));
+  lim = (long)ceil(prec / log2(N/r));
   F = rfrac_gtofp(F, prec + EXTRAPREC64);
   ser = rfracrecip_to_ser_absolute(F, lim+2);
   v = valser(ser);
@@ -2222,13 +2221,13 @@ get_kN(long r, long B, long *pk, long *pN)
 static GEN
 sumnumrat_i(GEN F, GEN F0, GEN vF, long prec)
 {
-  long B = prec2nbits(prec), vx, j, k, N;
+  long vx, j, k, N;
   GEN S, S1, S2, intf, _1;
   double r;
   if (poldegree(F, -1) > -2) pari_err(e_MISC, "sum diverges in sumnumrat");
   vx = varn(gel(F,2));
   r = ratpolemax(F);
-  get_kN((long)ceil(r), B, &k,&N);
+  get_kN((long)ceil(r), prec, &k,&N);
   intf = intnumainfrat(F, N, r, prec);
   /* N > ratpolemax(F) is not a pole */
   _1 = real_1(prec);
@@ -2297,7 +2296,7 @@ GEN
 prodnumrat(GEN F, long a, long prec)
 {
   pari_sp ltop = avma;
-  long B = prec2nbits(prec), j, k, m, N, vx;
+  long j, k, m, N, vx;
   GEN S, S1, S2, intf, G;
   double r;
 
@@ -2313,7 +2312,7 @@ prodnumrat(GEN F, long a, long prec)
   vx = varn(gel(F,2));
   if (a) F = gsubst(F, vx, gaddgs(pol_x(vx), a));
   r = ratpolemax2(F);
-  get_kN((long)ceil(r), B, &k,&N);
+  get_kN((long)ceil(r), prec, &k,&N);
   G = gdiv(deriv(F, vx), F);
   intf = intnumainfrat(gmul(pol_x(vx),G), N, r, prec);
   intf = gneg(gadd(intf, gmulsg(N, glog(gsubst(F, vx, stoi(N)), prec))));
@@ -2454,7 +2453,7 @@ sumeulerrat(GEN F, GEN s, long a, long prec)
   pari_sp av = avma;
   GEN ser, z, P;
   double r, rs, RS, lN;
-  long B = prec2nbits(prec), prec2 = prec + EXTRAPREC64, vF, N, lim;
+  long prec2 = prec + EXTRAPREC64, vF, N, lim;
 
   euler_set_Fs(&F, &s);
   switch(typ(F))
@@ -2477,7 +2476,7 @@ sumeulerrat(GEN F, GEN s, long a, long prec)
   RS = maxdd(1./vF, log2(r) / lN);
   if (rs <= RS)
     pari_err_DOMAIN("sumeulerrat", "real(s)", "<=",  dbltor(RS), dbltor(rs));
-  lim = (long)ceil(B / (rs*lN - log2(r)));
+  lim = (long)ceil(prec / (rs*lN - log2(r)));
   ser = rfracrecip_to_ser_absolute(rfrac_gtofp(F, prec2), lim+1);
   P = N < 1000000? primes_interval(gen_2, utoipos(N)): NULL;
   z = sumlogzeta(ser, s, P, N, rs, lN, vF, lim, prec);
@@ -2506,7 +2505,7 @@ prodeulerrat(GEN F, GEN s, long a, long prec)
   pari_sp ltop = avma;
   GEN DF, NF, ser, P, z;
   double r, rs, RS, lN;
-  long B = prec2nbits(prec), prec2 = prec + EXTRAPREC64, vF, N, lim;
+  long prec2 = prec + EXTRAPREC64, vF, N, lim;
 
   euler_set_Fs(&F, &s);
   switch(typ(F))
@@ -2528,10 +2527,10 @@ prodeulerrat(GEN F, GEN s, long a, long prec)
   RS = maxdd(1./vF, log2(r) / lN);
   if (rs <= RS)
     pari_err_DOMAIN("prodeulerrat", "real(s)", "<=",  dbltor(RS), dbltor(rs));
-  lim = (long)ceil(B / (rs*lN - log2(r)));
+  lim = (long)ceil(prec / (rs*lN - log2(r)));
   (void)rfracrecip(&NF, &DF); /* returned value is 0 */
   if (!RgX_is_ZX(DF) || !is_pm1(gel(DF,2))
-      || lim * log2(r) > 4 * B) NF = gmul(NF, real_1(prec2));
+      || lim * log2(r) > 4 * prec) NF = gmul(NF, real_1(prec2));
   ser = integser(rfrac_to_ser_i(rfrac_logderiv(NF,DF), lim+3));
   /* ser = log f, f = F(1/x) + O(x^(lim+1)) */
   P = N < 1000000? primes_interval(gen_2, utoipos(N)): NULL;
@@ -2549,13 +2548,13 @@ sumnumlagrange1init(GEN c1, long flag, long prec)
   pari_sp av = avma;
   GEN V, W, T;
   double c1d;
-  long B = prec2nbits(prec), prec2;
+  long prec2;
   ulong n, N;
   c1d = c1 ? gtodouble(c1) : 0.332;
   if (c1d <= 0)
     pari_err_DOMAIN("sumnumlagrangeinit", "c1", "<=", gen_0, c1);
-  N = (ulong)ceil(c1d*B); if ((N&1L) == 0) N++;
-  prec2 = nbits2prec(B+(long)ceil(1.8444*N) + 16);
+  N = (ulong)ceil(c1d*prec); if ((N&1L) == 0) N++;
+  prec2 = nbits2prec(prec+(long)ceil(1.8444*N) + 16);
   W = vecbinomial(N);
   T = vecpowuu(N, N);
   V = cgetg(N+1, t_VEC); gel(V,N) = gel(T,N);
@@ -2577,11 +2576,11 @@ sumnumlagrange2init(GEN c1, long flag, long prec)
   pari_sp av = avma;
   GEN V, W, T, told;
   double c1d = c1 ? gtodouble(c1) : 0.228;
-  long B = prec2nbits(prec), prec2;
+  long prec2;
   ulong n, N;
 
-  N = (ulong)ceil(c1d*B); if ((N&1L) == 0) N++;
-  prec2 = nbits2prec(B+(long)ceil(1.18696*N) + 16);
+  N = (ulong)ceil(c1d*prec); if ((N&1L) == 0) N++;
+  prec2 = nbits2prec(prec+(long)ceil(1.18696*N) + 16);
   W = vecbinomial(2*N);
   T = vecpowuu(N, 2*N);
   V = cgetg(N+1, t_VEC); gel(V, N) = told = gel(T,N);
@@ -2610,7 +2609,7 @@ sumnumlagrangeinit_i(GEN al, GEN c1, long flag, long prec)
   pari_sp av = avma;
   GEN V, W;
   double c1d = 0.0, c2;
-  long B = prec2nbits(prec), B1, prec2, dal;
+  long prec2, dal;
   ulong j, n, N;
 
   if (typ(al) == t_INT)
@@ -2639,9 +2638,8 @@ sumnumlagrangeinit_i(GEN al, GEN c1, long flag, long prec)
     if (c1d <= 0)
       pari_err_DOMAIN("sumnumlagrangeinit", "c1", "<=", gen_0, c1);
   }
-  N = (ulong)ceil(c1d*B); if ((N&1L) == 0) N++;
-  B1 = B + (long)ceil(c2*N) + 16;
-  prec2 = nbits2prec(B1);
+  N = (ulong)ceil(c1d * prec); if ((N&1L) == 0) N++;
+  prec2 = nbits2prec(prec + (long)ceil(c2*N) + 16);
   V = vecpowug(N, al, prec2);
   W = cgetg(N+1, t_VEC);
   for (n = 1; n <= N; ++n)
@@ -2765,10 +2763,9 @@ sumnumsidi(void *E, GEN (*f)(void*, GEN, long), GEN a, double mu, long prec)
 {
   pari_sp av;
   GEN M, N, Wkeep = gen_0, W = gen_0, _1, S, t, Wp;
-  long bit = prec2nbits(prec), newbit = (long)(mu * bit) + 33;
-  long n, s, fail = 0, BIG = LONG_MAX, ekeep = LONG_MAX;
+  long n, s, fail = 0, BIG = LONG_MAX, ekeep = LONG_MAX, bit = prec;
 
-  prec = nbits2prec(newbit); _1 = real_1(prec);
+  prec = nbits2prec((long)(mu * prec) + 33); _1 = real_1(prec);
   av = avma; S = real_0(prec); t = Wp = f(E, a, prec);
   M = N = cgetg(1, t_VEC);
   for (n = 1;; n++)
