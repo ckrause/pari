@@ -136,7 +136,6 @@ static GEN
 T_A_Matrices(GEN MatFU, long r, GEN *eps5, long prec)
 {
   GEN A, p1, m1, IntM, nia, eps3, eps2;
-  long e = prec2nbits(prec);
 
   m1 = matslice(MatFU, 1,r, 1,r); /* minor order r */
   m1 = glog(gabs(m1, prec), prec); /* HIGH accuracy */
@@ -144,14 +143,14 @@ T_A_Matrices(GEN MatFU, long r, GEN *eps5, long prec)
   IntM = RgM_Rg_add_shallow(RgM_mul(A,m1), gen_m1);
   IntM = gabs(IntM, 0);
 
-  eps2 = gadd(vecmax(IntM), real2n(-e, LOWDEFAULTPREC)); /* t_REAL */
+  eps2 = gadd(vecmax(IntM), real2n(-prec, LOWDEFAULTPREC)); /* t_REAL */
   nia = vecmax(gabs(A, 0));
 
   /* Check for the precision in matrix inversion. See paper, Lemma 2.4.2. */
-  p1 = addrr(mulur(r, gmul2n(nia, e)), eps2); /* t_REAL */
+  p1 = addrr(mulur(r, gmul2n(nia, prec)), eps2); /* t_REAL */
   if (expo(p1) < -2*r) pari_err_PREC("thue");
 
-  p1 = addrr(mulur(r, gmul2n(nia,-e)), eps2);
+  p1 = addrr(mulur(r, gmul2n(nia,-prec)), eps2);
   eps3 = mulrr(mulur(2*r*r,nia), p1);
   if (!signe(eps3))
     eps3 = real2n(expo(eps3), LOWDEFAULTPREC);

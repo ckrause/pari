@@ -1488,7 +1488,7 @@ RecCoeff3(GEN nf, RC_data *d, long prec)
   FP_chk_fun chk = { &chk_reccoeff, &chk_reccoeff_init, NULL, NULL, 0 };
   chk.data = (void*)d;
 
-  d->G = minss(-10, -prec2nbits(prec) >> 4);
+  d->G = minss(-10, -prec >> 4);
   BIG = maxss(32, -2*d->G);
   tB  = sqrtnr(real2n(BIG-N,DEFAULTPREC), N-1);
   Bd  = grndtoi(gmin_shallow(B, tB), &e);
@@ -1553,11 +1553,11 @@ RecCoeff2(GEN nf,  RC_data *d,  long prec)
   GEN vec, M = nf_get_M(nf), beta = d->beta;
   long bit, min, max, lM = lg(M);
 
-  d->G = minss(-20, -prec2nbits(prec) >> 4);
+  d->G = minss(-20, -prec >> 4);
 
   vec  = vec_prepend(row(M, d->v), gneg(beta));
-  min = (long)prec2nbits_mul(prec, 0.75);
-  max = (long)prec2nbits_mul(prec, 0.98);
+  min = (long)prec * 0.75;
+  max = (long)prec * 0.98;
   av = avma;
   for (bit = max; bit >= min; bit-=32, set_avma(av))
   {
@@ -1587,7 +1587,7 @@ RecCoeff(GEN nf,  GEN pol,  long v, long prec)
   for (j = 2; j <= cl+1; j++)
   {
     GEN t = gel(pol, j);
-    if (prec2nbits(precision(t)) - gexpo(t) < 34) return NULL;
+    if (precision(t) - gexpo(t) < 34) return NULL;
   }
 
   md = cl/2;
@@ -1793,12 +1793,12 @@ QuadGetST(GEN bnr, GEN *pS, GEN *pT, GEN CR, long prec)
         return;
       }
       /* FIXME: is this value of N0 correct for the general case ? */
-      N0[j] = (long)prec2nbits_mul(prec, 0.35 * gtodouble(c));
+      N0[j] = (long)prec * 0.35 * gtodouble(c);
     }
     else /* complex quadratic */
     {
       cs[j] = 1;
-      N0[j] = (long)prec2nbits_mul(prec, 0.7 * gtodouble(c));
+      N0[j] = (long)prec * 0.7 * gtodouble(c);
     }
     if (n0 < N0[j]) n0 = N0[j];
   }
@@ -2055,7 +2055,7 @@ GetST0(GEN bnr, GEN *pS, GEN *pT, GEN CR, long prec)
   C  = cgetg(ncond+1, t_VEC);
   N0 = cgetg(ncond+1, t_VECSMALL);
   n0 = 0;
-  limx = zeta_get_limx(r1, r2, prec2nbits(prec));
+  limx = zeta_get_limx(r1, r2, prec);
   for (j = 1; j <= ncond; j++)
   {
     GEN dtcr = gel(dataCR, mael(vChar,j,1)), c = ch_C(dtcr);
@@ -2063,7 +2063,7 @@ GetST0(GEN bnr, GEN *pS, GEN *pT, GEN CR, long prec)
     N0[j] = zeta_get_N0(c, limx);
     if (n0 < N0[j]) n0  = N0[j];
   }
-  cScT.i0 = i0 = zeta_get_i0(r1, r2, prec2nbits(prec), limx);
+  cScT.i0 = i0 = zeta_get_i0(r1, r2, prec, limx);
   if (DEBUGLEVEL>1) err_printf("i0 = %ld, N0 = %ld\n",i0, n0);
   InitPrimes(bnr, n0, &LIST);
   prec2 = precdbl(prec) + EXTRAPREC64;
@@ -2232,7 +2232,7 @@ LABDOUB:
   { /* compute a crude approximation of the result */
     C = cgetg(cl + 1, t_VEC);
     for (i = 1; i <= cl; i++) gel(C,i) = ch_C(gel(dataCR, i));
-    n = zeta_get_N0(vecmax(C), zeta_get_limx(r1, r2, prec2nbits(newprec)));
+    n = zeta_get_N0(vecmax(C), zeta_get_limx(r1, r2, newprec));
     if (n > BND) n = BND;
     if (DEBUGLEVEL) err_printf("N0 in QuickPol: %ld \n", n);
     InitPrimes(bnr, n, &LIST);
@@ -2314,7 +2314,7 @@ LABDOUB:
     long incr_pr;
     if (++cpt >= 3) pari_err_PREC( "stark (computation impossible)");
     /* estimate needed precision */
-    incr_pr = prec2nbits(gprecision(polrelnum))- gexpo(polrelnum);
+    incr_pr = gprecision(polrelnum) - gexpo(polrelnum);
     if (incr_pr < 0) incr_pr = -incr_pr + EXTRA_BITS;
     newprec += nbits2extraprec(maxss(3*EXTRA_BITS, cpt*incr_pr));
     if (DEBUGLEVEL) pari_warn(warnprec, "AllStark", newprec);
@@ -2871,7 +2871,7 @@ quadhilbertimag(GEN D)
     P = grndtoi(P,&exmax);
     if (DEBUGLEVEL>1) timer_printf(&ti,"product, error bits = %ld",exmax);
     if (exmax <= -10) break;
-    set_avma(av0); prec += nbits2extraprec(prec2nbits(DEFAULTPREC)+exmax);
+    set_avma(av0); prec += nbits2extraprec(DEFAULTPREC + exmax);
     if (DEBUGLEVEL) pari_warn(warnprec,"quadhilbertimag",prec);
   }
   return P;
@@ -3075,7 +3075,7 @@ computeth2(GEN om, GEN la, long prec)
 
   p1 = gsub(ellphist(om,res,la,prec), ellphist(om,res,gen_1,prec));
   p2 = imag_i(p1);
-  if (gexpo(real_i(p1))>20 || gexpo(p2)> prec2nbits(minss(prec,realprec(p2)))-10)
+  if (gexpo(real_i(p1)) > 20 || gexpo(p2) > minss(prec,realprec(p2)) - 10)
     return NULL;
   return gexp(p1,prec);
 }
