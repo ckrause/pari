@@ -2,9 +2,9 @@ Function: quadunitindex
 Section: number_theoretical
 C-Name: quadunitindex
 Prototype: GG
-Help: quadunitindex(D, f): given a fundamental discriminant D, return the
+Help: quadunitindex(D, f): given a fundamental discriminant D, returns the
  index of the unit group of the order of conductor f.
-Doc: given a fundamental discriminant $D$, return the index of the unit group
+Doc: given a fundamental discriminant $D$, returns the index of the unit group
  of the order of conductor $f$ in the units of $\Q(\sqrt{D})$. This function
  uses the continued fraction algorithm and has $O(D^{1/2 + \varepsilon}
  f^{\varepsilon})$ complexity; \kbd{quadclassunit} is asymptotically faster but
