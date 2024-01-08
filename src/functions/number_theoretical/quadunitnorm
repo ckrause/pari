@@ -2,9 +2,9 @@ Function: quadunitnorm
 Section: number_theoretical
 C-Name: quadunitnorm
 Prototype: lG
-Help: quadunitnorm(D): return the norm of the fundamental unit of the
+Help: quadunitnorm(D): returns the norm of the fundamental unit of the
  quadratic order of discriminant D.
-Doc: return the norm ($1$ or $-1$) of the fundamental unit of the quadratic
+Doc: returns the norm ($1$ or $-1$) of the fundamental unit of the quadratic
  order of discriminant $D$. The integer $D$ must be congruent to $0$ or $1$
  modulo $4$ and not a square. This is of course equal to \kbd{norm(quadunit(D))}
  but faster.
