@@ -9,12 +9,17 @@ Doc:
  $$
    y^{2} + a_{1} xy + a_{3} y = x^{3} + a_{2} x^{2} + a_{4} x + a_{6},
  $$
- whose discriminant is nonzero. Affine points on \kbd{E} are represented as
+ whose discriminant is nonzero. One can also define an elliptic curve with
+ a\sidx{short Weierstrass equation}
+ $$
+   y^{2} = x^{3} + a_{4} x + a_{6}.
+ $$
+ Affine points on \kbd{E} are represented as
  two-component vectors \kbd{[x,y]}; the point at infinity, i.e.~the identity
  element of the group law, is represented by the one-component vector
  \kbd{[0]}.
 
- Given a vector of coefficients $[a_{1},a_{2},a_{3},a_{4},a_{6}]$, the function
+ Given a vector of coefficients $[a_{1},a_{2},a_{3},a_{4},a_{6}]$ or $[a_{4},a_{6}]$, the function
  \tet{ellinit} initializes and returns an \tev{ell} structure. An additional
  optional argument allows to specify the base field in case it cannot be
  inferred from the curve coefficients. This structure contains data needed by
