@@ -9,8 +9,9 @@ Doc:
  return a random supersingular $j$-invariant defined over $\F_{p}^{2}$ as a
  \typ{FFELT} in the variable \kbd{w}, if $p$ is a prime number, or over the
  field of definition of $p$ if $p$ is a \typ{FFELT}. The field must be of even
- degree. The random distribution is mostly uniform except that when $0$ or
- $1728$ are supersingular, they are less likely.
+ degree. The random distribution is close to uniform except when $0$ or
+ $1728$ are supersingular $j$-invariants, in which case they are less
+ likely to be returned. This bias becomes negligible as $p$ grows.
  \bprog
  ?  j = ellsupersingularj(1009)
  %1 = 12*w+295
