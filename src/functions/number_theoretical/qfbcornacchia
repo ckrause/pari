@@ -2,10 +2,10 @@ Function: qfbcornacchia
 Section: number_theoretical
 C-Name: qfbcornacchia
 Prototype: GG
-Help: qfbcornacchia(d,n): Solve the equation
+Help: qfbcornacchia(d,n): Solves the equation
  x^2+dy^2 = n in integers x and y where d > 0 and
  n is prime or 4 times a prime.
-Doc: Solve the equation $x^{2} + dy^{2} = n$ in integers $x$ and $y$, where
+Doc: Solves the equation $x^{2} + dy^{2} = n$ in integers $x$ and $y$, where
  $d > 0$ and $n$ is prime. Returns the empty vector \kbd{[]} when no solution
  exists. It is also allowed to try $n = 4$ times a prime but the answer is
  then guaranteed only if $d$ is $3$ mod $4$; more precisely if $d \neq 3$ mod
@@ -22,7 +22,7 @@ Doc: Solve the equation $x^{2} + dy^{2} = n$ in integers $x$ and $y$, where
  ? qfbcornacchia(1, 113)
  %1 = [8, 7]
  ? qfbsolve(Qfb(1,0,1), 113)
- %2 = [7, -8]
+ %2 = [8, 7]
  ? qfbcornacchia(1, 4*113) \\ misses the non-primitive solution 2*[8,7]
  %3 = []
  ? qfbcornacchia(1, 4*109) \\ finds a non-primitive solution
