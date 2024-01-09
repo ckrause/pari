@@ -930,7 +930,7 @@ lfunlargeall(GEN ldata, GEN s, long lam, long bit)
     case t_LFUN_CHIGEN:
     {
       GEN chi = gmael(an, 2, 2);
-      if (lg(chi) > 1 && is_vec_t(typ(gel(chi,1))));
+      if (lg(chi) > 1 && is_vec_t(typ(gel(chi,1))))
       { /* multi char */
         w = mycharinit(mkcol(ldata), prec);
         return lfuncharall(w, s, lam, bit);
