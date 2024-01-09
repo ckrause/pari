@@ -4,10 +4,10 @@ C-Name: snfrank
 Prototype: lGDG
 Help: snfrank(D,{q = 0}): assuming that D is a Smith normal form
  (i.e. vector of elementary divisors) for some module and q a power of an
- irreducible element or 0 (default if omitted), return the rank of D/qD.
+ irreducible element or 0 (default if omitted), returns the rank of D/qD.
 Doc: assuming that $D$ is a Smith normal form
  (i.e. vector of elementary divisors) for some module and $q$ a power of an
- irreducible element or $0$, return the minimal number of generators for
+ irreducible element or $0$, returns the minimal number of generators for
  $D/qD$. For instance, if $q=p^{n}$ where $p$ is a prime number, this is the
  dimension of $(p^{n-1}D)/p^{n}D$ as an $\F_{p}$-vector space. An argument $q = 0$
  may be omitted.
