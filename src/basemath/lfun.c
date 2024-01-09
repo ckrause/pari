@@ -1464,16 +1464,12 @@ is_dirichlet(GEN ldata)
 static ulong
 lfuninit_cutoff(GEN ldata)
 {
-#if 0
   ulong L, N = itou_or_0(ldata_get_conductor(ldata));
   if (N > 1000) L = 7000;
   else if (N > 100) L = 5000;
   else if (N > 15) L = 3000;
   else L = 2500;
   return L;
-#else
-  return 1000;
-#endif
 }
 
 GEN
