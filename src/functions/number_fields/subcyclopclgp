@@ -71,7 +71,7 @@ Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
 
  8: ignores proper subfields of $F$. This is motivated by the following kind
  of problems: let $\Q(p^{k})$ be the $k$-th layer of the cyclotomic
- $\Z_{p}$-extenson of $\Q$ and define
+ $\Z_{p}$-extension of $\Q$ and define
  $\Q(n)=\Q(p_{1}^{e_{1}})\cdots\Q(p_{r}^{e_{r}})$
  when $n$ factors as $n=p_{1}^{e_{1}}\cdots p_{r}^{e_{r}}$,
  which is a real cyclic
@@ -80,7 +80,7 @@ Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
  factors of $h(n)$, not occurring in a lower level, will all be present
  when using this \fl.
 
- The other value are technical and only useful when bit 1 (certification and
+ The other values are technical and only useful when bit 1 (certification and
  structure) is set; do not set them unless you run into difficulties with
  default parameters.
 
