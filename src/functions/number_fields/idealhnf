@@ -25,7 +25,7 @@ Doc: gives the \idx{Hermite normal form} of the ideal $u\Z_{K}+v\Z_{K}$,
  [0 0 1/6]
  @eprog
 
- If $b$ is omitted, returns the HNF of the ideal defined by $u$: $u$ may be an
+ If $v$ is omitted, returns the HNF of the ideal defined by $u$: $u$ may be an
  algebraic number (defining a principal ideal), a maximal ideal (as given by
  \kbd{idealprimedec} or \kbd{idealfactor}), or a matrix whose columns give
  generators for the ideal. This last format is a little complicated, but
