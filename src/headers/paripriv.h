@@ -870,6 +870,12 @@ GEN int_h0_worker(GEN j, GEN sel, GEN s, GEN chi, GEN gprec);
 GEN lfunlambdalarge(GEN CHI, GEN s, long bitprec);
 GEN lfunlarge(GEN CHI, GEN s, long bitprec);
 
+GEN int_h0_worker(GEN j, GEN sel, GEN s, GEN chi, GEN gprec);
+GEN serh_worker(GEN gk, GEN V, GEN a, GEN ns, GEN gprec);
+GEN serhlong_worker(GEN gk, GEN z, GEN a, GEN ns, GEN gprec);
+GEN int_h0l_worker(GEN j, GEN selsm0, GEN s, GEN alam, GEN lin_grid, GEN gprec);
+GEN inth12_worker(GEN j, GEN selsm1, GEN s, GEN alam, GEN lin_grid, GEN gprec);
+
 /* mftrace.c */
 
 void pari_close_mf(void);

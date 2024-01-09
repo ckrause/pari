@@ -728,43 +728,43 @@ mylog(GEN x, long prec)
                    : gdiv(glog(x, prec), glog(gen_2, prec));
 }
 
-struct fun_q { GEN sel, s, VCALL; long B; };
+struct fun_q_t { GEN sel, s, VCALL; long B; };
 static GEN
 fun_q(void *E, GEN x)
 {
-  struct fun_q *S = (struct fun_q *)E;
+  struct fun_q_t *S = (struct fun_q_t *)E;
   long prec = DEFAULTPREC;
   GEN z = integrand_h0(S->sel, S->s, S->VCALL, gexp(x, prec), prec);
   if (typ(z) == t_VEC) z = vecsum(z);
   return gaddgs(mylog(gabs(z, prec), prec), S->B);
 }
 static GEN
-brent_q(void *E, GEN q_low, GEN q_hi)
+brent_q(void *E, GEN (*f)(void*,GEN), GEN q_low, GEN q_hi)
 {
-  GEN low_val = fun_q(E, q_low), high_val = fun_q(E, q_hi);
+  GEN low_val = f(E, q_low), high_val = f(E, q_hi);
   if (gsigne(low_val) * gsigne(high_val) >= 0) return NULL;
-  return zbrent(E, &fun_q, q_low, q_hi, LOWDEFAULTPREC);
+  return zbrent(E, f, q_low, q_hi, LOWDEFAULTPREC);
 }
 static GEN
-findq(void *E, GEN lq, long B)
+findq(void *E, GEN (*f)(void*,GEN), GEN lq, long B)
 {
   GEN q_low, q_hi, q_right, q_left, q_est = gasinh(lq, LOWDEFAULTPREC);
   q_low = gdivgs(gmulsg(4, q_est), 5);
   q_hi = gdivgs(gmulsg(3, q_est), 2);
-  q_right = brent_q(E, q_low, q_hi); if (!q_right) q_right = q_est;
-  q_left = brent_q(E, gneg(q_low), gneg(q_hi)); if (!q_left) q_left = q_est;
+  q_right = brent_q(E, f, q_low, q_hi); if (!q_right) q_right = q_est;
+  q_left = brent_q(E, f, gneg(q_low), gneg(q_hi)); if (!q_left) q_left = q_est;
   return bitprecision0(gmax(q_right, q_left), B);
 }
 
 static GEN
 set_q_value(GEN sel, GEN s, GEN VCALL, long prec)
 {
-  struct fun_q f;
+  struct fun_q_t E;
   GEN al = m_al(sel), lq;
   long md = get_modulus(VCALL), B = prec2nbits(prec), LD = DEFAULTPREC;
   lq = gdiv(gsqrt(gdiv(gmulsg(B * md, mplog2(LD)), Pi2n(1, LD)), LD), al);
-  f.sel = sel; f.s = s; f.VCALL = VCALL, f.B = B;
-  return findq((void*)&f, lq, B);
+  E.sel = sel; E.s = s; E.VCALL = VCALL, E.B = B;
+  return findq((void*)&E, &fun_q, lq, B);
 }
 
 static GEN
@@ -801,7 +801,7 @@ RZinit(GEN s, GEN VCALL, GEN num_of_poles, long prec)
   sel = mkvecn(8, n0, r0, al, aleps, NULL, NULL, NULL, PZ);
   q = set_q_value(sel, s, VCALL, prec);
   m = get_m(q, prec);
-  gel(sel,5) = h = gdivgs(gmulsg(2, q), m - 1);
+  gel(sel,5) = h = divru(q, (m - 1) >> 1);
   gel(sel,6) = setlin_grid_exp(h, m, prec);
   gel(sel,7) = num_of_poles;
   return sel;
@@ -949,3 +949,328 @@ lfunlarge(GEN CHI, GEN s, long bit)
 GEN
 lfunlambdalarge(GEN CHI, GEN s, long bit)
 { return lfunlargeall(CHI, s, 1, bit); }
+
+/********************************************************************/
+/*           LERCH RS IMPLEMENTATION FROM SANDEEP TYAGI             */
+/********************************************************************/
+
+static GEN
+double_exp_residue_pos_h(GEN selsm, long k, long ind, long prec)
+{
+  long nk = itos(gel(selsm, 1)) + k;
+  GEN r = gel(selsm, 2), ale = gel(selsm, 3), aor = gel(selsm, 4);
+  GEN h = gel(selsm, 5), t = gen_0;
+  switch(ind)
+  {
+    case 0: t = gaddsg(nk, aor); break;
+    case 1: t = gneg(gaddsg(nk, aor)); break;
+    case 2: t = gsubsg(nk, aor); break;
+  }
+  return gdiv(gasinh(gdiv(gsub(t, r), ale), prec), h);
+}
+
+static GEN
+phi_hat_h(GEN selsm, long m, long ind, long prec)
+{ return phi_hat(double_exp_residue_pos_h(selsm, m, ind, prec), prec); }
+
+static long
+myex(GEN is)
+{ return gequal0(is) ? 0 : maxss(0, 2 + gexpo(is)); }
+
+static GEN
+gaminus(GEN s, long prec)
+{
+  GEN is = imag_i(s), tmp;
+  long B = prec2nbits(prec);
+  if (gcmpgs(is, -5*B) < 0) return gen_0;
+  prec = nbits2prec(B + myex(is));
+  tmp = gexp(gsub(glngamma(s, prec), gmul(PiI2n(-1, prec), s)), prec);
+  return bitprecision0(tmp, B);
+}
+
+static GEN
+gaplus(GEN s, long prec)
+{
+  GEN is = imag_i(s), tmp;
+  long B = prec2nbits(prec);
+  if (gcmpgs(is, 5*B) > 0) return gen_0;
+  prec = nbits2prec(B + myex(is));
+  tmp = gexp(gadd(glngamma(s, prec), gmul(PiI2n(-1, prec), s)), prec);
+  return bitprecision0(tmp, B);
+}
+
+static GEN
+mypow(GEN x, long n, long prec)
+{
+  long B = prec2nbits(prec);
+  x = bitprecision0(x, B + 32);
+  return bitprecision0(gpowers(x, n), B);
+}
+
+GEN
+serh_worker(GEN gk, GEN V, GEN a, GEN ns, GEN gprec)
+{
+  long k = itos(gk);
+  return gmul(gel(V, k + 1), gpow(gaddsg(k, a), ns, itos(gprec)));
+}
+
+static GEN
+series_h0l(long n0, GEN s, GEN a, GEN lam, long prec)
+{
+  GEN V = mypow(gexp(gmul(PiI2(prec), lam), prec), n0, prec);
+  return parsum(gen_0, stoi(n0), strtoclosure("_serh_worker", 4, V, a, gneg(s), stoi(prec)));
+}
+
+static GEN
+series_h1(long n1, GEN s, GEN a, GEN lam, long prec)
+{
+  GEN sum1, pre_factor, V, sn = gsubgs(s, 1);
+  GEN ini = gequal0(lam) ? gen_1 : gen_0;
+  pre_factor = gaplus(gneg(sn), prec);
+  if (gequal0(pre_factor)) return gen_0;
+  pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
+  V = mypow(gexp(gneg(gmul(PiI2(prec), a)), prec), n1 - 1, prec);
+  sum1 = parsum(ini, stoi(n1 - 1), strtoclosure("_serh_worker", 4, V, lam, sn, stoi(prec)));
+  return gmul(pre_factor, sum1);
+}
+
+static GEN
+series_h2(long n2, GEN s, GEN a, GEN lam, long prec)
+{
+  GEN sum2, pre_factor, V, sn = gsubgs(s, 1);
+  pre_factor = gaminus(gneg(sn), prec);
+  if (gequal0(pre_factor)) return gen_0;
+  pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
+  V = mypow(gexp(gmul(PiI2(prec), a), prec), n2, prec);
+  sum2 = parsum(gen_1, stoi(n2), strtoclosure("_serh_worker", 4, V, gneg(lam), sn, stoi(prec)));
+  return gmul(pre_factor, sum2);
+}
+
+static GEN
+series_residues_h0l(long num_of_poles, GEN selsm0, GEN s, GEN a, GEN lam, long prec)
+{
+  GEN val = gen_0, ra = real_i(a);
+  long n0 = m_n0(selsm0), k;
+  for (k = -num_of_poles + 1; k <= num_of_poles; k++)
+  {
+    if (gsigne(gaddsg(n0 + k, ra)) > 0)
+      val = gadd(val, gmul(gmul(phi_hat_h(selsm0, k, 0, prec), gexp(gmul(PiI2(prec), gmulgs(lam, n0 + k)), prec)), gpow(gaddsg(n0 + k, a), gneg(s), prec)));
+  }
+  return val;
+}
+
+static GEN
+series_residues_h1(long num_of_poles, GEN selsm1, GEN s, GEN a, GEN lam, long prec)
+{
+  GEN val = gen_0, rlam = real_i(lam), pre_factor, sn = gsubgs(s, 1);
+  long n1 = m_n0(selsm1), k;
+  pre_factor = gaplus(gneg(sn), prec);
+  if (gequal0(pre_factor)) return gen_0;
+  pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
+  for (k = -num_of_poles; k <= num_of_poles - 1; k++)
+  {
+    if (gsigne(gaddsg(n1 + k, rlam)) > 0)
+      val = gadd(val, gmul(gmul(phi_hat_h(selsm1, k, 1, prec), gexp(gneg(gmul(PiI2(prec), gmulgs(a, n1 + k))), prec)), gpow(gaddsg(n1 + k, lam), sn, prec)));
+  }
+  return gmul(pre_factor, val);
+}
+
+static GEN
+series_residues_h2(long num_of_poles, GEN selsm2, GEN s, GEN a, GEN lam, long prec)
+{
+  GEN val = gen_0, rlam = real_i(lam), pre_factor, sn = gsubgs(s, 1);
+  long n2 = m_n0(selsm2), k;
+  pre_factor = gaminus(gneg(sn), prec);
+  if (gequal0(pre_factor)) return gen_0;
+  pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
+  for (k = -num_of_poles + 1; k <= num_of_poles; k++)
+  {
+    if (gsigne(gsubsg(n2 + k, rlam)) > 0)
+      val = gsub(val, gmul(gmul(phi_hat_h(selsm2, k, 2, prec), gexp(gmul(PiI2(prec), gmulgs(a, n2 + k)), prec)), gpow(gsubsg(n2 + k, lam), sn, prec)));
+  }
+  return gmul(pre_factor, val);
+}
+
+static GEN
+integrand_h0l(GEN selsm0, GEN s, GEN alam, GEN x, long prec)
+{
+  GEN r0 = gel(selsm0, 2), ale = gel(selsm0, 3), a = gel(selsm0, 4);
+  GEN zn = gadd(r0, gmul2n(gmul(ale, gsub(x, ginv(x))), -1));
+  GEN pii = PiI2n(0, prec), den, num;
+  den = gsub(gexp(gmul(pii, gsub(zn, gmul2n(a, 1))), prec), gexp(gneg(gmul(pii, zn)), prec));
+  num = gexp(gmul(gmul(pii, zn), gsub(gmul2n(alam, 1), zn)), prec);
+  num = gmul(gmul(gmul(num, ale), gmul2n(gadd(x, ginv(x)), -1)), gpow(zn, gneg(s), prec));
+  return gdiv(num, den);
+}
+
+static GEN
+integrand_h12(GEN selsm1, GEN s, GEN alam, GEN x, long prec)
+{
+  GEN r1 = gel(selsm1, 2), ale = gel(selsm1, 3), lam = gel(selsm1, 4);
+  GEN zn = gadd(r1, gmul2n(gmul(ale, gsub(x, ginv(x))), -1));
+  GEN pii = PiI2n(0, prec), den, num, y;
+  den = gsub(gexp(gmul(pii, gadd(zn, gmul2n(lam, 1))), prec), gexp(gneg(gmul(pii, zn)), prec));
+  num = gexp(gmul(gmul(pii, zn), gadd(gmul2n(alam, 1), zn)), prec);
+  num = gmul(gmul(gmul(num, ale), gmul2n(gadd(x, ginv(x)), -1)), gpow(zn, gsubgs(s, 1), prec));
+  y = gdiv(num, den);
+  if (gcmp(garg(zn, prec), Pi2n(-2, prec)) > 0)
+    y = gmul(y, gexp(gmul(PiI2(prec), gsubsg(1, s)), prec));
+  return y;
+}
+
+GEN
+int_h0l_worker(GEN j, GEN selsm0, GEN s, GEN alam, GEN lin_grid, GEN gprec)
+{
+  return integrand_h0l(selsm0, s, alam, gel(lin_grid, itos(j)), itos(gprec));
+}
+
+static GEN
+integral_h0l(GEN lin_grid, GEN selsm0, GEN s, GEN a, GEN lam, long prec)
+{
+  GEN alam = gadd(a, lam), sum0;
+  sum0 = parsum(gen_1, stoi(lg(lin_grid) - 1), strtoclosure("_int_h0l_worker", 5, selsm0, s, alam, lin_grid, stoi(prec)));
+  return gmul(gmul(m_h(selsm0), sum0), gexp(gneg(gmul(PiI2n(0, prec), gmul(a, gaddsg(1, gadd(a, gmul2n(lam, 1)))))), prec));
+}
+
+GEN
+inth12_worker(GEN j, GEN selsm1, GEN s, GEN alam, GEN lin_grid, GEN gprec)
+{ return integrand_h12(selsm1, s, alam, gel(lin_grid, itos(j)), itos(gprec)); }
+
+/* do not forget a minus sign for index 2 */
+static GEN
+integral_h12(GEN lin_grid, GEN selsm1, GEN s, GEN a, GEN lam, long prec)
+{
+  GEN alam = gadd(a, lam), sum1, ga = gaminus(gsubsg(1, s), prec);
+  if (gequal0(ga)) return gen_0;
+  sum1 = parsum(gen_1, stoi(lg(lin_grid) - 1), strtoclosure("_inth12_worker", 5, selsm1, s, alam, lin_grid, stoi(prec)));
+  if(gequal0(sum1)) return gen_0;
+  return gmul(gmul(gmul(gmul(m_h(selsm1), sum1), ga), gexp(gmul(PiI2n(0, prec), gmul(lam, gaddgs(lam, 1))), prec)), gpow(Pi2n(1, prec), gsubgs(s, 1), prec));
+}
+
+struct _fun_q0_t { GEN sel, s, alam; long B; };
+static GEN
+_fun_q0(void *E, GEN x)
+{
+  struct _fun_q0_t *S = (struct _fun_q0_t*)E;
+  long LD = DEFAULTPREC;
+  return gaddsg(S->B, mylog(gabs(integrand_h0l(S->sel, S->s, S->alam, x, LD), LD), LD));
+}
+static GEN
+_fun_q12(void *E, GEN x)
+{
+  struct _fun_q0_t *S = (struct _fun_q0_t*)E;
+  long LD = DEFAULTPREC;
+  return gaddsg(S->B, mylog(gabs(integrand_h12(S->sel, S->s, S->alam, x, LD), LD), LD));
+}
+
+static GEN
+RZLERinit(GEN s, GEN a, GEN lam, GEN al, GEN num_of_poles, long prec)
+{
+  GEN eps, r0, r1, r2, h, lin_grid, q, q0, q1, q2, sel0, sel1, sel2, lq;
+  GEN pinv = ginv(PiI2(prec)), c = gmul2n(gadd(a, lam), -1), n0, n1, n2, c2;
+  long m, LD = DEFAULTPREC;
+  struct _fun_q0_t E;
+  if (!al || gequal0(al))
+    al = gcmpgs(gabs(imag_i(s), prec), 100) < 0 ? ginv(stoi(4)) : gen_1;
+  c2 = gsub(gsqr(c), gmul(s, pinv));
+  r0 = gadd(c, gsqrt(c2, prec));
+  r1 = gsqrt(gadd(c2, pinv), prec);
+  r2 = gsub(r1, c);
+  r1 = gneg(gadd(r1, c));
+  n0 = gfloor(gsub(gadd(real_i(r0), imag_i(r0)), a));
+  n1 = gneg(gfloor(gadd(gsub(real_i(r1), imag_i(r1)), lam)));
+  n2 = gfloor(gadd(gsub(real_i(r2), imag_i(r2)), lam));
+
+  eps = gexp(PiI2n(-2, prec), prec);
+  E.s = s; E.alam = gadd(a, lam), E.B = prec2nbits(prec);
+  lq = gmul(gsqrt(gmul(gdivsg(E.B, Pi2n(1, LD)), mplog2(LD)), LD), al);
+  E.sel = sel0 = mkvec5(n0, r0, gdiv(al, eps), a, gen_0);
+  q0 = findq(&E, &_fun_q0, lq, E.B);
+
+  if (!gequal1(al)) lq = gdiv(lq, gsqr(al));
+  E.sel = sel1 = mkvec5(n1, r1, gmul(al, eps), lam, gen_0);
+  q1 = findq(&E, &_fun_q12, lq, E.B);
+  E.sel = sel2 = mkvec5(n2, r2, gmul(al, eps), lam, gen_0);
+  q2 = findq(&E, &_fun_q12, lq, E.B);
+  q = vecmax(mkvec3(q0, q1, q2));
+  m = get_m(q, prec);
+  gel(sel0, 5) = gel(sel1, 5) = gel(sel2, 5) = h = divru(q, (m-1) >> 1);
+  lin_grid = setlin_grid_exp(h, m, prec);
+  if (!num_of_poles) num_of_poles = gen_1;
+  return mkvec5(sel0, sel1, sel2, lin_grid, num_of_poles);
+}
+
+static GEN
+lerch_ours(GEN sel, GEN s, GEN a, GEN lam, long prec)
+{
+  GEN selsm0 = gel(sel, 1), selsm1 = gel(sel, 2), selsm2 = gel(sel, 3);
+  GEN lin_grid = gel(sel, 4), val_h0, val_h1, val_h2;
+  GEN serandres_h0, serandres_h1, serandres_h2;
+  long num_of_poles = itos(gel(sel, 5));
+  serandres_h0 = gadd(series_h0l(m_n0(selsm0), s, a, lam, prec), series_residues_h0l(num_of_poles, selsm0, s, a, lam, prec));
+  val_h0 = gadd(integral_h0l(lin_grid, selsm0, s, a, lam, prec), serandres_h0);
+  serandres_h1 = gadd(series_h1(m_n0(selsm1), s, a, lam, prec), series_residues_h1(num_of_poles, selsm1, s, a, lam, prec));
+  val_h1 = gadd(integral_h12(lin_grid, selsm1, s, a, lam, prec), serandres_h1);  serandres_h2 = gadd(series_h2(m_n0(selsm2), s, a, lam, prec), series_residues_h2(num_of_poles, selsm2, s, a, lam, prec));
+  val_h2 = gadd(gneg(integral_h12(lin_grid, selsm2, s, a, lam, prec)), serandres_h2);
+  return gadd(gadd(val_h0, val_h1), val_h2);
+}
+
+GEN
+serhlong_worker(GEN gk, GEN z, GEN a, GEN ns, GEN gprec)
+{
+  long k = itos(gk);
+  return gmul(gpowgs(z, k), gpow(gaddsg(k, a), ns, itos(gprec)));
+}
+
+static GEN
+RZlerch_easy(GEN s, GEN a, GEN lam, long prec)
+{
+  pari_sp ltop = avma;
+  GEN z, V, y, gnlim;
+  long B = prec2nbits(prec), nlim, LD = LOWDEFAULTPREC;
+  gnlim = gceil(gdiv(gmulsg(B + 5, mplog2(LD)), gmul(Pi2n(1, prec), imag_i(lam))));
+  if (gexpo(gnlim) > 40)
+    pari_err(e_MISC, "imag(lam) too small for RZlerch_easy");
+  nlim = itos(gnlim); prec++;
+  z = gexp(gmul(PiI2(prec), lam), prec);
+  if (nlim < 10000000)
+  {
+    V = gpowers(z, nlim);
+    y = parsum(gen_0, gnlim, strtoclosure("_serh_worker", 4, V, a, gneg(s), stoi(prec)));
+  }
+  else
+    y = parsum(gen_0, gnlim, strtoclosure("_serhlong_worker", 4, z, a, gneg(s), stoi(prec)));
+  return gerepileupto(ltop, bitprecision0(y, B));
+}
+
+static GEN
+lerchlarge(GEN s, GEN a, GEN lam, GEN al, GEN num_of_poles, long prec)
+{
+  pari_sp ltop = avma;
+  GEN val, sel;
+  long B = prec2nbits(prec), NB = B + 64, sl = gsigne(imag_i(lam));
+  if (sl < 0)
+    pari_err(e_MISC, "imag(lam) < 0, not yet implemented");
+  if (sl > 0) return RZlerch_easy(s, a, lam, prec);
+  /*  if (!gequal0(imag_i(a)))
+      pari_err(e_MISC, "a or lam nonreal not yet implemented"); */
+  if (gcmpgs(real_i(a), 1) < 0)
+    return gerepileupto(ltop, gadd(gpow(a, gneg(s), prec), gmul(gexp(gmul(PiI2(prec), lam), prec), lerchlarge(s, gaddgs(a, 1), lam, al, num_of_poles, prec))));
+  if (gcmpgs(real_i(a), 2) >= 0)
+    return gerepileupto(ltop, gmul(gexp(gneg(gmul(PiI2(prec), lam)), prec), gsub(lerchlarge(s, gsubgs(a, 1), lam, al, num_of_poles, prec), gpow(gsubgs(a, 1), gneg(s), prec))));
+  if (gsigne(imag_i(s)) > 0)
+    return gerepileupto(ltop, gconj(lerchlarge(gconj(s), a, gfrac(gneg(lam)), al, num_of_poles, prec)));
+  a = bitprecision0(a, NB); lam = bitprecision0(lam, NB);
+  s = bitprecision0(s, NB); prec = nbits2prec(NB);
+  sel = RZLERinit(s, a, lam, al, num_of_poles, prec);
+  val = lerch_ours(sel, s, a, lam, prec);
+  return gerepilecopy(ltop, bitprecision0(val, B));
+}
+
+GEN
+zetahurwitzlarge(GEN s, GEN a, long prec)
+{ return lerchlarge(s, a, gen_0, gen_1, gen_1, prec); }
+
+GEN
+lerchzetalarge(GEN s, GEN a, GEN lam, long prec)
+{ return lerchlarge(s, a, lam, gen_1, gen_1, prec); }
