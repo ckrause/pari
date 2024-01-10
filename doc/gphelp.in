@@ -448,8 +448,9 @@ sub tex { my ($first) = @_;
 
 sub posttex {
   my ($wrap) = "$tmpdir/gpwrapper.help";
+  my ($F) = ($tex =~ /pdftex/)? "$wrap.pdf": "$wrap.pdf";
   my (@goners) = ("$texfile.tex",
-                  "$wrap.tex", "$wrap.dvi", "$wrap.log", "$wrap.aux");
+                  $F, "$wrap.tex", "$wrap.log", "$wrap.aux");
   if (!$found) { unlink @goners; rmdir("$tmpdir"); cleanexit(); }
 
   open(WRAP, ">$wrap.tex") || die "Couldn't open $wrap.tex";
@@ -481,7 +482,6 @@ sub posttex {
 
   chdir($tmpdir);
   $out = `$tex $wrap.tex 2>&1 < /dev/null`;
-  my ($F) = ($tex =~ /pdftex/)? "$wrap.pdf": "$wrap.pdf";
   -f "$F"
     || die "could not create '$F': status=$?, $out";
   safe_setsid();
