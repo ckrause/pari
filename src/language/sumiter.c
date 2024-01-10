@@ -1804,7 +1804,7 @@ derivnumk(void *E, GEN (*eval)(void *, GEN, long), GEN x, GEN ind0, long prec)
   p = precision(x);
   fpr = p ? p: prec;
   e = (fpr + 3*M*log2((double)M)) / (2*M);
-  ex = gexpo(x);
+  ex = gexpo(real_i(x));
   if (ex < 0) ex = 0; /* near 0 */
   pr = (long)ceil(fpr + e * M); /* ~ 3fpr/2 */
   newprec = nbits2prec(pr + (emax - emin) + ex + BITS_IN_LONG);
