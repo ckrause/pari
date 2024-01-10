@@ -20,7 +20,7 @@ Doc: \idx{Galois} group of the nonconstant
  otherwise) and name is a character string containing name of the transitive
  group according to the GAP 4 transitive groups library by Alexander Hulpke.
 
- \bgroup
+ \bprog
  ? polgalois(x^8+12*x^6+36*x^4+36*x^2+9)
  %1 = [8, 1, 5, "Q_8(8)"]
  ? polgalois(x^19-380*x-360)
