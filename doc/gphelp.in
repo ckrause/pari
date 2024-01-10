@@ -481,11 +481,12 @@ sub posttex {
 
   chdir($tmpdir);
   $out = `$tex $wrap.tex 2>&1 < /dev/null`;
-  -f "$wrap.dvi"
-    || die "could not create '$wrap.dvi': status=$?, $out";
+  my ($F) = ($tex =~ /pdftex/)? "$wrap.pdf": "$wrap.pdf";
+  -f "$F"
+    || die "could not create '$F': status=$?, $out";
   safe_setsid();
   my ($goners) = join(" ", @goners);
-  system("($xdvi $wrap.dvi 2>/dev/null >/dev/null; rm -f $goners; rmdir $tmpdir)&");
+  system("($xdvi $F 2>/dev/null >/dev/null; rm -f $goners; rmdir $tmpdir)&");
 }
 
 #
