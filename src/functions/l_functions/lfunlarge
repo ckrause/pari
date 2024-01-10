@@ -12,13 +12,6 @@ Prototype: GGGGGG
 Help: _parsqfboth_worker(gk, vZ, vVQ, vV, P, Nsqstep): auxiliary.
 Doc: auxiliary
 
-Function: _int_h0_worker
-Section: transcendental
-C-Name: int_h0_worker
-Prototype: GGGGG
-Help: _int_h0_worker(j, sel, s, VCALL, gprec): auxiliary.
-Doc: auxiliary
-
 Function: _serh_worker
 Section: transcendental
 C-Name: serh_worker
@@ -31,18 +24,4 @@ Section: transcendental
 C-Name: serhlong_worker
 Prototype: GGGGG
 Help: _serhlong_worker(gk, z, a, ns, gprec): auxiliary.
-Doc: auxiliary
-
-Function: _int_h0l_worker
-Section: transcendental
-C-Name: int_h0l_worker
-Prototype: GGGGGG
-Help: _int_h0l_worker(j, selsm0, s, alam, lin_grid, gprec): auxiliary.
-Doc: auxiliary
-
-Function: _inth12_worker
-Section: transcendental
-C-Name: inth12_worker
-Prototype: GGGGGG
-Help: _inth12_worker(j, selsm1, s, alam, lin_grid, gprec): auxiliary.
 Doc: auxiliary
