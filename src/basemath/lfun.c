@@ -1876,12 +1876,20 @@ GEN
 lfun(GEN lmisc, GEN s, long bitprec)
 {
   pari_sp av = avma;
-  GEN linit, dom, z;
+  GEN ldata, linit, dom, z;
   long der;
   s = get_domain(s, &dom, &der);
-  if (!der)
+  if (der && typ(s) != t_SER)
   {
-    GEN ldata;
+    if (lfunspec_OK(lmisc, s, &ldata))
+    {
+      linit = lfuninit(lmisc, cgetg(1,t_VEC), 0, bitprec);
+      return derivnumk((void*)linit, (GEN(*)(void*,GEN,long))&lfun,
+                       s, stoi(der), nbits2prec(bitprec));
+    }
+  }
+  else
+  {
     long t = lfunspec_OK(lmisc, s, &ldata);
     if (t == 1)
     { /* special value ? */
@@ -1965,10 +1973,16 @@ static GEN
 lfunderiv(GEN lmisc, long m, GEN s, long flag, long bitprec)
 {
   pari_sp ltop = avma;
-  GEN res, S = NULL, linit, dom;
+  GEN res, S = NULL, linit, ldata, dom;
   long der, prec = nbits2prec(bitprec);
   if (m <= 0) pari_err_DOMAIN("lfun", "D", "<=", gen_0, stoi(m));
   s = get_domain(s, &dom, &der);
+  if (typ(s) != t_SER && lfunspec_OK(lmisc, s, &ldata) == 2)
+  {
+    linit = lfuninit(lmisc, cgetg(1,t_VEC), 0, bitprec);
+    return derivnumk((void*)linit, (GEN(*)(void*,GEN,long))&lfun,
+                     s, stoi(der + m), prec);
+  }
   linit = lfuninit(lmisc, dom, der + m, bitprec);
   if (typ(s) == t_SER)
   {
