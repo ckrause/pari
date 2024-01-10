@@ -217,4 +217,9 @@
 [16, -1, 8, "2D_8(8)=[D(4)]2"]
 [8, 1, 2, "4[x]2"]
 [39916800, -1, 8, "S11"]
-Total time spent: 7552
+[60822550204416000, 1, 0, "An"]
+[265252859812191058636308480000000, -1, 0, "Sn"]
+  ***   at top-level: setrand(1);polgalois(x^12-4356*x^8+47916*x^6-2
+  ***                            ^-----------------------------------
+  *** polgalois: sorry, galois groups except A_n and S_n in degree > 11 is not yet implemented.
+Total time spent: 3450
