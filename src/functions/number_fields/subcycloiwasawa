@@ -71,11 +71,11 @@ Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
  \bprog
  ? subcycloiwasawa(22220, 41)  \\ f = 22220, H = {1}
  %1 = [217]
- ? T = polcompositum(x^2 - 42853, polcyclo(5))[1];
- ? subcycloiwasawa(T, 5)
+ ? P = polcompositum(x^2 - 42853, polcyclo(5))[1];
+ ? subcycloiwasawa(P, 5)
  %3 = [3]
- ? subcycloiwasawa(T, 5, 4) \\ the sum of the degrees is indeed 3
- %4 = [x + 585, x^2 + 405*x]
+ ? subcycloiwasawa(P, 5, 4) \\ the sum of the degrees is indeed 3
+ %4 = [T + 585, T^2 + 405*T]
  @eprog
  The first example corresponds to $F = \Q(\zeta_{22220})$ and shows, that
  $\lambda_{41}^{-}(F) = 217$. The second one builds $F=\Q(\sqrt{42853},
