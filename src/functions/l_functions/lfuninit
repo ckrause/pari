@@ -39,10 +39,11 @@ Doc: initalization function for all functions linked to the
  @eprog\noindent
  \misctitle{Riemann-Siegel formula}
  If $L$ is a function of degree $d = 1$, then a completely different
- algorithm is implemented which can compute with complexity $N \sqrt{h}$, so
- much higher than the default implementation. But this variant is
- restricted to $s$ with imaginary part at least $2$ and medium precision at
- most, say less than 1000 decimal digits.
+ algorithm is implemented which can compute with complexity $N \sqrt{h}$ (for
+ fixed accuracy $B$). So it handles larger imaginary parts than the default
+ implementation. But this variant is less efficient when the imaginary part of
+ $s$ is tiny and the dependency in $B$ is still in $O(B^{2+1/2})$.
+
  For such functions, you can use $\var{sdom} = \kbd{[]}$ to indicate that you
  are only interested in relatively high imaginary parts and do not want to
  perform any initialization:
@@ -51,7 +52,13 @@ Doc: initalization function for all functions linked to the
  ? #lfunzeros(L, [10^12, 10^12+1])
  time = 1min, 31,496 ms.
  %2 = 4
- @eprog
+ @eprog\noindent If you ask instead for
+ \kbd{lfuninit(1, [10\pow12+1])}, the initialization is restricted by some
+ cutoff value (depending on the conductor, but less than $10^4$ in any case):
+ up to that point, the standard algorithm is used (and uses the
+ initialization); and above the cutoff, we switch to Riemann-Siegel. Note that
+ this is quite wasteful if only values with imaginary parts larger than $10^4$
+ are needed.
 
 Function: _lfuninit_worker
 C-Name: lfuninit_worker
