@@ -1011,50 +1011,48 @@ gaplus(GEN s, long prec)
   return bitprecision0(tmp, B);
 }
 
-static GEN
-mypow(GEN x, long n, long prec)
-{
-  long B = prec2nbits(prec);
-  x = bitprecision0(x, B + 32);
-  return bitprecision0(gpowers(x, n), B);
-}
-
 GEN
-serh_worker(GEN gk, GEN V, GEN a, GEN ns, GEN gprec)
+serh_worker(GEN gk, GEN z, GEN a, GEN ns, GEN gprec)
 {
   long k = itos(gk);
-  return gmul(gel(V, k + 1), gpow(gaddsg(k, a), ns, itos(gprec)));
+  return gmul(gpowgs(z, k), gpow(gaddsg(k, a), ns, itos(gprec)));
+}
+
+static GEN
+allparsums(long ini, long fin, GEN z, GEN a, GEN ns, long prec)
+{
+  return parsum(stoi(ini), stoi(fin), strtoclosure("_serh_worker", 4, z, a, ns, stoi(prec)));
 }
 
 static GEN
 series_h0l(long n0, GEN s, GEN a, GEN lam, long prec)
 {
-  GEN V = mypow(gexp(gmul(PiI2(prec), lam), prec), n0, prec);
-  return parsum(gen_0, stoi(n0), strtoclosure("_serh_worker", 4, V, a, gneg(s), stoi(prec)));
+  GEN z = typ(lam) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), lam), prec);
+  return allparsums(0, n0, z, a, gneg(s), prec);
 }
 
 static GEN
 series_h1(long n1, GEN s, GEN a, GEN lam, long prec)
 {
-  GEN sum1, pre_factor, V, sn = gsubgs(s, 1);
+  GEN sum1, pre_factor, z, sn = gsubgs(s, 1);
   GEN ini = gequal0(lam) ? gen_1 : gen_0;
   pre_factor = gaplus(gneg(sn), prec);
   if (gequal0(pre_factor)) return gen_0;
   pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
-  V = mypow(gexp(gneg(gmul(PiI2(prec), a)), prec), n1 - 1, prec);
-  sum1 = parsum(ini, stoi(n1 - 1), strtoclosure("_serh_worker", 4, V, lam, sn, stoi(prec)));
+  z = typ(a) == t_INT ? gen_1 : gexp(gneg(gmul(PiI2(prec), a)), prec);
+  sum1 = allparsums(itos(ini), n1 - 1, z, lam, sn, prec);
   return gmul(pre_factor, sum1);
 }
 
 static GEN
 series_h2(long n2, GEN s, GEN a, GEN lam, long prec)
 {
-  GEN sum2, pre_factor, V, sn = gsubgs(s, 1);
+  GEN sum2, pre_factor, z, sn = gsubgs(s, 1);
   pre_factor = gaminus(gneg(sn), prec);
   if (gequal0(pre_factor)) return gen_0;
   pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
-  V = mypow(gexp(gmul(PiI2(prec), a), prec), n2, prec);
-  sum2 = parsum(gen_1, stoi(n2), strtoclosure("_serh_worker", 4, V, gneg(lam), sn, stoi(prec)));
+  z = typ(a) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), a), prec);
+  sum2 = allparsums(1, n2, z, gneg(lam), sn, prec);
   return gmul(pre_factor, sum2);
 }
 
@@ -1242,18 +1240,14 @@ static GEN
 RZlerch_easy(GEN s, GEN a, GEN lam, long prec)
 {
   pari_sp ltop = avma;
-  GEN z, V, y, gnlim;
+  GEN z, y, gnlim;
   long B = prec2nbits(prec), nlim, LD = LOWDEFAULTPREC;
   gnlim = gceil(gdiv(gmulsg(B + 5, mplog2(LD)), gmul(Pi2n(1, prec), imag_i(lam))));
   if (gexpo(gnlim) > 40)
     pari_err(e_MISC, "imag(lam) too small for RZlerch_easy");
   nlim = itos(gnlim); prec += EXTRAPRECWORD;
-  z = gexp(gmul(PiI2(prec), lam), prec);
-  if (nlim < 10000000)
-  {
-    V = gpowers(z, nlim);
-    y = parsum(gen_0, gnlim, strtoclosure("_serh_worker", 4, V, a, gneg(s), stoi(prec)));
-  }
+  z = typ(lam) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), lam), prec);
+  if (nlim < 10000000) y = allparsums(0, nlim, z, a, gneg(s), prec);
   else
     y = parsum(gen_0, gnlim, strtoclosure("_serhlong_worker", 4, z, a, gneg(s), stoi(prec)));
   return gerepileupto(ltop, bitprecision0(y, B));
