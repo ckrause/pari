@@ -2,12 +2,14 @@ Function: gcharduallog
 Section: number_fields
 C-Name: gcharduallog
 Prototype: GG
-Help: gcharduallog(gc,chi): return logarithm vector of character chi
- in R^n. We have gchareval(g,chi,x,0) = gcharduallog(g,chi)*gcharlog(g,x)
-Doc: Return internal logarithm vector of character \kbd{chi}
+Help: gcharduallog(gc,chi): returns logarithm vector of character chi
+ in R^n.
+ We have gchareval(gc,chi,x,0) = gcharduallog(gc,chi)*gcharlog(gc,x) in R/Z.
+Doc: Returns internal logarithm vector of character \kbd{chi}
  as a \typ{VEC} in $\R^{n}$, so that for all \var{x},
  \kbd{gchareval}(\var{gc},\var{chi},\var{x},$0$) is equal to
- \kbd{gcharduallog}(\var{gc},\var{chi}) * \kbd{gcharlog}(\var{gc},\var{x}).
+ \kbd{gcharduallog}(\var{gc},\var{chi}) * \kbd{gcharlog}(\var{gc},\var{x}) in
+ $\R/ \Z$.
 
  The components are organized as follows:
 

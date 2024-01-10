@@ -2,12 +2,12 @@ Function: gchareval
 Section: number_fields
 C-Name: gchareval
 Prototype: GGGD1,L,
-Help: gchareval(gc,chi,x,{flag=1}): compute the evaluation chi(x) in C* if
+Help: gchareval(gc,chi,x,{flag=1}): computes the evaluation chi(x) in C* if
  flag=1 and in C/Z if flag=0.
 Doc: \var{gc} being the structure returned by \kbd{gcharinit}, \var{chi} a
- character in \var{gc}, and \var{x} an ideal of the base field, return the
- value~$\chi(x)$. If~$\fl=1$ (default), return a value in~$\C^{\times}$;
- if~$\fl=0$, return a value in~$\C/\Z$, normalized so that the real part is
+ character in \var{gc}, and \var{x} an ideal of the base field, returns the
+ value~$\chi(x)$. If~$\fl=1$ (default), returns a value in~$\C^{\times}$;
+ if~$\fl=0$, returns a value in~$\C/\Z$, normalized so that the real part is
  between~$-1/2$ and~$1/2$.
 
  \bprog
