@@ -570,6 +570,6 @@ lerchzeta(GEN s, GEN a, GEN lam, long prec)
   if (!iscplx(z)) pari_err_TYPE("lerchzeta", z);
   if (!iscplx(s)) pari_err_TYPE("lerchzeta", s);
   if (!iscplx(a)) pari_err_TYPE("lerchzeta", a);
-  if (hurwitz_cutoff(s, prec)) return lerchzetalarge(z, s, a, prec);
+  if (hurwitz_cutoff(s, prec)) return lerchzetalarge(s, a, lam, prec);
   return gerepileupto(av, _lerchphi(z, s, a, prec));
 }
