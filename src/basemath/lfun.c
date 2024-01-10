@@ -2515,11 +2515,18 @@ lfunzeros(GEN ldata, GEN lim, long divz, long bitprec)
   }
   if (typ(lim) == t_VEC)
   {
+    double H1, H2;
     if (lg(lim) != 3 || gcmp(gel(lim, 1), gel(lim, 2)) >= 0)
       pari_err_TYPE("lfunzeros",lim);
-    h1 = gel(lim, 1);
-    h2 = gel(lim, 2);
-    maxt = maxdd(fabs(gtodouble(h1)), fabs(gtodouble(h2)));
+    h1 = gel(lim, 1); H1 = gtodouble(h1);
+    h2 = gel(lim, 2); H2 = gtodouble(h2);
+    maxt = maxdd(fabs(H1), fabs(H2));
+    if (H1 * H2 > 0)
+    {
+      GEN LDATA = lfunmisc_to_ldata_shallow(ldata);
+      double m = mindd(fabs(H1), fabs(H2));
+      if (is_dirichlet(LDATA) && m > lfuninit_cutoff(LDATA)) maxt = 0;
+    }
   }
   else
   {
