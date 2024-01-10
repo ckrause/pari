@@ -146,6 +146,9 @@ static GEN
 deg1ser_shallow(GEN a1, GEN a0, long v, long e)
 { return RgX_to_ser(deg1pol_shallow(a1, a0, v), e+2); }
 
+static long
+hurwitz_cutoff(long bit) { return 5.37 * pow(bit, 1.4) / mt_nbthreads(); }
+
 /* New zetahurwitz, from Fredrik Johansson. */
 GEN
 zetahurwitz(GEN s, GEN x, long der, long bitprec)
@@ -193,7 +196,10 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
   switch (typ(s))
   {
     long v, pr;
-    case t_INT: case t_REAL: case t_FRAC: case t_COMPLEX: break;
+    case t_INT: case t_REAL: case t_FRAC: case t_COMPLEX:
+      if (!der && gcmpgs(imag_i(s), hurwitz_cutoff(bitprec)) > 0)
+        return zetahurwitzlarge(s, x, prec);
+      break;
     default:
       if (!(y = toser_i(s))) pari_err_TYPE("zetahurwitz", s);
       if (valser(y) < 0) pari_err_DOMAIN("zetahurwitz", "val(s)", "<", gen_0, s);
@@ -560,5 +566,7 @@ lerchzeta(GEN s, GEN a, GEN lam, long prec)
   if (!iscplx(z)) pari_err_TYPE("lerchzeta", z);
   if (!iscplx(s)) pari_err_TYPE("lerchzeta", s);
   if (!iscplx(a)) pari_err_TYPE("lerchzeta", a);
+  if (gcmpgs(imag_i(s), hurwitz_cutoff(prec)) > 0)
+    return lerchzetalarge(z, s, a, prec);
   return gerepileupto(av, _lerchphi(z, s, a, prec));
 }

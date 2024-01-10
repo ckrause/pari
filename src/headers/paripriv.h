@@ -867,8 +867,10 @@ GEN parsumprimeWfunboth_worker(GEN gk, GEN s, GEN W1, GEN W2, GEN f, GEN Nsqprec
 GEN int_h0_worker(GEN j, GEN sel, GEN s, GEN chi, GEN gprec);
 
 /* FIXME: delete */
+GEN lerchzetalarge(GEN s, GEN a, GEN lam, long prec);
 GEN lfunlambdalarge(GEN CHI, GEN s, long bitprec);
 GEN lfunlarge(GEN CHI, GEN s, long bitprec);
+GEN zetahurwitzlarge(GEN s, GEN a, long prec);
 
 GEN serh_worker(GEN gk, GEN V, GEN a, GEN ns, GEN gprec);
 GEN serhlong_worker(GEN gk, GEN z, GEN a, GEN ns, GEN gprec);
