@@ -834,10 +834,13 @@ total_value(GEN sel, GEN s, GEN VCALL, GEN *ptaux, long fl, long prec)
 static GEN
 xpquo_one(GEN s, GEN cs, GEN ga, long odd, long md, long prec)
 {
-  GEN a, rho, e = odd? gen_m1: gen_1;
-  a = gdivgs(gsubsg(1, e), 2);
-  rho = gmul(gdiv(gpow(gen_I(), gdivgs(gneg(a), 2), prec), gsqrt(ga, prec)), gpow(stoi(md), ginv(stoi(4)), prec));
-  return gmul(gdiv(gconj(gmul(rho, gpow(divsr(md, mppi(prec)), gdivgs(cs, 2), prec))), gmul(rho, gpow(divsr(md, mppi(prec)), gdivgs(s, 2), prec))), gexp(gsub(gconj(glngamma(gdivgs(gadd(cs, a), 2), prec)), glngamma(gdivgs(gadd(s, a), 2), prec)), prec));
+  GEN rho, a = odd? gen_1: gen_0, z = divsr(md, mppi(prec));
+  rho = gmul(gdiv(gpow(gen_I(), gdivgs(gneg(a), 2), prec), gsqrt(ga, prec)),
+             gpow(stoi(md), ginv(stoi(4)), prec));
+  return gmul(gdiv(gconj(gmul(rho, gpow(z, gdivgs(cs, 2), prec))),
+                   gmul(rho, gpow(z, gdivgs(s, 2), prec))),
+              gexp(gsub(gconj(glngamma(gdivgs(gadd(cs, a), 2), prec)),
+                        glngamma(gdivgs(gadd(s, a), 2), prec)), prec));
 }
 
 static GEN
@@ -848,7 +851,9 @@ xpquo(GEN s, GEN VCALL, long prec)
   if (!gequal0(s)) prec = nbits2prec(prec2nbits(prec) + maxss(gexpo(s), 0));
   z = gexp(gdivgs(PiI2(prec), -md), prec);
   if (md == 1)
-    return gmul(gpow(mppi(prec), gsub(s, ghalf), prec), gexp(gsub(glngamma(gdivgs(gsubsg(1, s), 2), prec), glngamma(gdivgs(s, 2), prec)), prec));
+    return gmul(gpow(mppi(prec), gsub(s, ghalf), prec),
+                gexp(gsub(glngamma(gdivgs(gsubsg(1, s), 2), prec),
+                          glngamma(gdivgs(s, 2), prec)), prec));
   pz = gpowers(z, md - 1);
   for (n = 1; n < md; n++)
   {
