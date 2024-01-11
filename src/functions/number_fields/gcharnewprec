@@ -2,10 +2,10 @@ Function: gcharnewprec
 Section: number_fields
 C-Name: gcharnewprec
 Prototype: Gp
-Help: gcharnewprec(gc): given a Grossencharacter group \kbd{gc}, recompute
+Help: gcharnewprec(gc): given a Grossencharacter group \kbd{gc}, recomputes
  its invariants to ensure accurate results to current precision.
 Doc: $\var{gc}$ being a Grossencharacter group output by \kbd{gcharinit},
- recompute its archimedean components ensuring accurate computations to
+ recomputes its archimedean components ensuring accurate computations to
  current precision.
 
  It is advisable to increase the precision before computing several
