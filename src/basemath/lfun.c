@@ -1797,7 +1797,7 @@ lfunlambda(GEN lmisc, GEN s, long bitprec)
         return gmul(r, z);
       }
     }
-    if (t == 2) return lfunlambdalarge(ldata, s, bitprec);
+    if (t == 2) return gerepilecopy(av, lfunlambdalarge(ldata, s, bitprec));
     if (!is_linit(lmisc)) lmisc = ldata;
   }
   linit = lfuninit(lmisc, dom, der, bitprec);
@@ -2038,7 +2038,7 @@ GEN
 lfunhardy(GEN lmisc, GEN t, long bitprec)
 {
   pari_sp ltop = avma;
-  long prec = nbits2prec(bitprec), d;
+  long prec = nbits2prec(bitprec), d, flisbig = 0;
   GEN h, linit, ldata, tech, w2, k2, E, a, argz, z;
 
   switch(typ(t))
@@ -2048,6 +2048,7 @@ lfunhardy(GEN lmisc, GEN t, long bitprec)
   }
   if (lfunspec_OK(lmisc, mkcomplex(gen_0, t), &ldata) == 2)
   {
+    flisbig = 1;
     k2 = ghalf;
     z = mkcomplex(k2, t);
     if (is_linit(lmisc)) linit = lmisc;
@@ -2056,7 +2057,7 @@ lfunhardy(GEN lmisc, GEN t, long bitprec)
       linit = lfunnoinit(ldata, bitprec);
       ldata = linit_get_ldata(linit); /* make sure eno is included */
     }
-    h = lfunlambdalarge(ldata, z, bitprec);
+    h = lfunloglambdalarge(ldata, z, bitprec);
     tech = linit_get_tech(linit);
   }
   else
@@ -2080,10 +2081,11 @@ lfunhardy(GEN lmisc, GEN t, long bitprec)
   a = gsub(gmulsg(d, gmul(t, gmul2n(argz,-1))),
            gmul(E, glog(gnorm(z),prec)));
   if (!isint1(w2) && typ(ldata_get_dual(ldata))==t_INT)
-    h = mulrealvec(h, w2);
+    h = flisbig ? gadd(h, glog(w2, prec)) : mulrealvec(h, w2);
   if (typ(h) == t_COMPLEX && gexpo(imag_i(h)) < -(bitprec >> 1))
     h = real_i(h);
-  return gerepileupto(ltop, gmul(h, gexp(a, prec)));
+  if (flisbig) return gerepileupto(ltop, greal(gexp(gadd(h, a), prec)));
+  else return gerepileupto(ltop, gmul(h, gexp(a, prec)));
 }
 
 /* L = log(t); return  \sum_{i = 0}^{v-1}  R[-i-1] L^i/i! */

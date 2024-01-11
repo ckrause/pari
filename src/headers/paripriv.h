@@ -868,6 +868,7 @@ GEN int_h0_worker(GEN j, GEN sel, GEN s, GEN chi, GEN gprec);
 
 /* FIXME: delete */
 GEN lerchzetalarge(GEN s, GEN a, GEN lam, long prec);
+GEN lfunloglambdalarge(GEN CHI, GEN s, long bitprec);
 GEN lfunlambdalarge(GEN CHI, GEN s, long bitprec);
 GEN lfunlarge(GEN CHI, GEN s, long bitprec);
 GEN zetahurwitzlarge(GEN s, GEN a, long prec);

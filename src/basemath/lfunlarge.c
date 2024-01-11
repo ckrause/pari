@@ -914,11 +914,19 @@ lfuncharall(GEN VCALL, GEN s, long lam, long bitprec)
   for (i = 1; i < l; i++)
   {
     GEN se = gmul2n(gaddgs(s, ve[i]), -1), r;
-    r = gmul(gpow(Q, se, prec), ggamma(se, prec));
-    if (P && ve[i]) r = gdiv(r, P);
+    if (lam == 1)
+    {
+      r = gmul(gpow(Q, se, prec), ggamma(se, prec));
+      if (P && ve[i]) r = gdiv(r, P);
+    }
+    else
+    {
+      r = gadd(gmul(se, glog(Q, prec)), glngamma(se, prec));
+      if (P && ve[i]) r = gsub(r, glog(P, prec));
+    }
     gel(R, i) = r;
   }
-  return vecmul(R, z);
+  return lam == 1 ? vecmul(R, z) : gadd(R, glog(z, prec));
 }
 
 static GEN
@@ -931,13 +939,15 @@ lfunlargeall(GEN ldata, GEN s, long lam, long bit)
     case t_LFUN_NF:
     {
       GEN C = nf_get_pol(an), v = lfungetchars(C);
-      long i, l = lg(v);
+      long i, l = lg(v), fl = lam == 0 || lam == 1;
       for (i = 1; i < l; i++)
       {
-        w = mycharinit(gel(v,i), prec);
-        gel(v,i) = vecprod(lfuncharall(w, s, lam, bit));
+        GEN L;
+        w = mycharinit(gel(v, i), prec);
+        L = lfuncharall(w, s, lam, bit);
+        gel(v, i) = fl ? vecprod(L) : vecsum(L);
       }
-      return vecprod(v);
+      return fl ? vecprod(v) : vecsum(v);
     }
     case t_LFUN_CHIGEN:
     {
@@ -961,6 +971,10 @@ lfunlarge(GEN CHI, GEN s, long bit)
 GEN
 lfunlambdalarge(GEN CHI, GEN s, long bit)
 { return lfunlargeall(CHI, s, 1, bit); }
+
+GEN
+lfunloglambdalarge(GEN CHI, GEN s, long bit)
+{ return lfunlargeall(CHI, s, -1, bit); }
 
 /********************************************************************/
 /*           LERCH RS IMPLEMENTATION FROM SANDEEP TYAGI             */
