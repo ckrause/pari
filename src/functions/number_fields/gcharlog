@@ -4,7 +4,7 @@ C-Name: gcharlog
 Prototype: GGp
 Help: gcharlog(gc,x): returns the internal representation (logarithm) of the
  ideal x suitable for computations in gc, as a column vector.
-Doc: Return the internal (logarithmic) representation of the ideal $x$ suitable
+Doc: Returns the internal (logarithmic) representation of the ideal $x$ suitable
  for computations in $gc$, as a \typ{COL} in $\R^{n}$.
 
  Its $n = \kbd{ns+nc}+(r_{1}+r_{2})+r_{2}+1$ components correspond to a
