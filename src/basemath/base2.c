@@ -1506,6 +1506,8 @@ update_phi(decomp_t *S)
         prc = ZpX_reduced_resultant_fast(S->chi, ZX_deriv(S->chi), S->p, vpsc);
         if (!equalii(prc, psc)) break;
         psc = mulii(psc, S->p); vpsc++;
+        /* it can happen that S->chi is never squarefree: then change PHI */
+        if (vpsc > 2*S->mf) PHI = gadd(PHI, ZX_Z_mul(X, S->p));
       }
       psc = mulii(sqri(prc), S->p);
       vpsc = 2*Z_pval(prc, S->p) + 1;
