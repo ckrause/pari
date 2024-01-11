@@ -23,7 +23,7 @@ Doc: $\var{bnf}$ being a number field output by \kbd{bnfinit} (including
  See \kbd{gcharlog} for more details on the map ${\cal L}$.
 
  \bprog
- ? bnf = bnfinit(polcyclo(5),1); \\ @com initialize number field $\Q(\zeta_5)$
+ ? bnf = bnfinit(polcyclo(5),1); \\ @com initializes number field $\Q(\zeta_5)$
  ? pr = idealprimedec(bnf,5)[1]; \\ @com prime $\goth{p}=(1-\zeta_5)$ above 5
  ? gc = gcharinit(bnf,idealpow(bnf,pr,2)); \\ @com characters of modulus dividing $\goth{p}^{2}$
  ? gc.cyc \\ @com structure as an abelian group
