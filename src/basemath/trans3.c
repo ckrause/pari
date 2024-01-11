@@ -1796,6 +1796,7 @@ zeta_funeq(GEN *ps)
   else
   {
     GEN sig = gel(s,1);
+    if (fabs(rtodbl(gel(s,2))) > 2500) return 0; /* lfunlarge */
     u = gsubsg(1, s);
     if (gexpo(u) >= -5
         && ((signe(sig) > 0 && expo(sig) >= -1) || gexpo(s) <= -5)) return 0;
