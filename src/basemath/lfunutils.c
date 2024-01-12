@@ -1426,13 +1426,14 @@ lfunzetakinit(GEN nf, GEN dom, long der, long bitprec)
   {
     GEN G = galoisinit(nf, NULL);
     if (isintzero(G))
-    {
+    { /* not Galois */
       GEN S = nfsubfields(nf, 0); n = lg(S)-1;
       return lfunzetakinit_quotient(nf, gmael(S,n-1,1), dom, der, bitprec);
     }
-    if (!group_isabelian(galois_group(G)))
+    if (!group_isabelian(galois_group(G))) /* Galois, not Abelian */
       return lfunzetakinit_artin(nf, G, dom, der, bitprec);
   }
+  /* Abelian over Q */
   Q = Buchall(pol_x(1), 0, nbits2prec(bitprec));
   T = shallowcopy(T); setvarn(T,0);
   R = rnfconductor0(Q, T, 1);
