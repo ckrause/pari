@@ -1638,20 +1638,19 @@ lfunsumcoth(GEN R, GEN s, GEN h, long prec)
 static GEN lfunlambda_OK(GEN linit, GEN s, GEN sdom, long bitprec);
 /* L is a t_LDESC_PRODUCT Linit */
 static GEN
-lfunlambda_product(GEN L, GEN s, GEN sdom, long bitprec)
+_product(GEN (*fun)(GEN,GEN,long), GEN L, GEN s, long bitprec)
 {
   GEN ldata = linit_get_ldata(L), v = lfunprod_get_fact(linit_get_tech(L));
   GEN r = gen_1, F = gel(v,1), E = gel(v,2), C = gel(v,3), cs = conj_i(s);
   long i, l = lg(F), isreal = gequal(imag_i(s), imag_i(cs));
   for (i = 1; i < l; ++i)
   {
-    GEN f = lfunlambda(gel(F, i), s, bitprec);
-    if( DEBUGLEVEL>=2) err_printf("lfunlambda(%ld): %Ps\n",i,f);
+    GEN f = fun(gel(F, i), s, bitprec);
     if (typ(f)==t_VEC) f = RgV_prod(f);
     if (E[i]) r = gmul(r, gpowgs(f, E[i]));
     if (C[i])
     {
-      GEN fc = isreal? f: conj_i(lfunlambda(gel(F, i), cs, bitprec));
+      GEN fc = isreal? f: conj_i(fun(gel(F, i), cs, bitprec));
       r = gmul(r, gpowgs(fc, C[i]));
     }
   }
@@ -1692,7 +1691,7 @@ lfunlambda_OK(GEN linit, GEN s, GEN sdom, long bitprec)
   struct lfunp D, D0;
 
   if (linit_get_type(linit) == t_LDESC_PRODUCT)
-    return lfunlambda_product(linit, s, sdom, bitprec);
+    return _product(&lfunlambda, linit, s, bitprec);
   ldata = linit_get_ldata(linit);
   eno = ldata_get_rootno(ldata);
   tech = linit_get_tech(linit);
@@ -1746,7 +1745,7 @@ lfunspec_OK(GEN lmisc, GEN s, GEN *pldata)
   if (!is_linit(lmisc)) lmisc = ldata;
   else switch(linit_get_type(lmisc))
   {
-    case t_LDESC_INIT:
+    case t_LDESC_INIT: case t_LDESC_PRODUCT:
       if (lg(lfun_get_dom(linit_get_tech(lmisc))) == 1) large = 1;
       break;
     default: return 0;
@@ -1788,7 +1787,7 @@ GEN
 lfunlambda(GEN lmisc, GEN s, long bitprec)
 {
   pari_sp av = avma;
-  GEN linit, dom, z;
+  GEN linit = NULL, dom, z;
   long der;
   s = get_domain(s, &dom, &der);
   if (!der)
@@ -1806,11 +1805,13 @@ lfunlambda(GEN lmisc, GEN s, long bitprec)
         se = gmul2n(gaddgs(s, e), -1);
         r = gmul(gpow(Q, se, prec), ggamma(se, prec));
         if (e && !equali1(q)) r = gdiv(r, gsqrt(q, prec));
-        return gmul(r, z);
+        return gerepileupto(av, gmul(r, z));
       }
     }
-    if (t == 2) return gerepilecopy(av, lfunlambdalarge(ldata, s, bitprec));
-    if (!is_linit(lmisc)) lmisc = ldata;
+    if (is_linit(lmisc)) linit = lmisc; else lmisc = ldata;
+    if (t == 2)
+      return gerepilecopy(av, linit? _product(&lfunlambda, linit, s, bitprec)
+                                   : lfunlambdalarge(ldata, s, bitprec));
   }
   linit = lfuninit(lmisc, dom, der, bitprec);
   z = lfunlambda_OK(linit,s, dom, bitprec);
@@ -1888,7 +1889,7 @@ GEN
 lfun(GEN lmisc, GEN s, long bitprec)
 {
   pari_sp av = avma;
-  GEN ldata, linit, dom, z;
+  GEN linit = NULL, ldata, dom, z;
   long der;
   s = get_domain(s, &dom, &der);
   if (der && typ(s) != t_SER)
@@ -1922,8 +1923,11 @@ lfun(GEN lmisc, GEN s, long bitprec)
         }
       }
     }
-    if (t == 2) return lfunlarge(ldata, s, bitprec);
     if (!is_linit(lmisc)) lmisc = ldata;
+    else if (linit_get_type(lmisc) == t_LDESC_PRODUCT) linit = lmisc;
+    if (t == 2)
+      return gerepilecopy(av, linit? _product(&lfun, linit, s, bitprec)
+                                   : lfunlarge(ldata, s, bitprec));
   }
   linit = lfuninit(lmisc, dom, der, bitprec);
   z = lfun_OK(linit, s, dom, bitprec);
