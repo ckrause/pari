@@ -448,7 +448,7 @@ sub tex { my ($first) = @_;
 
 sub posttex {
   my ($wrap) = "$tmpdir/gpwrapper.help";
-  my ($F) = ($tex =~ /pdftex/)? "$wrap.pdf": "$wrap.pdf";
+  my ($F) = ($tex =~ /pdftex/)? "$wrap.pdf": "$wrap.dvi";
   my (@goners) = ("$texfile.tex",
                   $F, "$wrap.tex", "$wrap.log", "$wrap.aux");
   if (!$found) { unlink @goners; rmdir("$tmpdir"); cleanexit(); }
