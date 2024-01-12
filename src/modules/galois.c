@@ -2334,39 +2334,6 @@ polgaloisnamesbig(long n, long k)
   return gerepilecopy(av, gel(V,k));
 }
 
-/* pol monic irreducible ZX, deg > 7 */
-static int
-polgaloiscontainsan(GEN pol, long iter)
-{
-  long i, n = degpol(pol);
-  for (i = 0; i < iter; i++)
-  {
-    /* Jordan criterion, cf. Hall 5.7.2 */
-    GEN d = gel(simplefactmod(pol, randomprime(NULL)),1);
-    ulong p = itou(gel(d,lg(d)-1));
-    if (n < 2*p && p < n-2 && uisprime(p))
-      return 1;
-  }
-  /* P(no large p-cycle | An in G) < (11/12)^iter */
-  return 0;
-}
-static GEN
-polgaloisN(long even, GEN pol)
-{
-  pari_sp av = avma;
-  GEN res;
-  if (!polgaloiscontainsan(pol, 100))
-  {
-    if (DEBUGLEVEL) err_printf("[polgaloisN] A_n probably not in Galois [P(An in G) < 2^-25]\n");
-    pari_err_IMPL("galois groups except A_n and S_n in degree > 11");
-  }
-  if (even)
-    res = mkvec4(shifti(mpfact(degpol(pol)),-1),gen_1,gen_0,strtoGENstr("An"));
-  else
-    res = mkvec4(mpfact(degpol(pol)),gen_m1,gen_0,strtoGENstr("Sn"));
-  return gerepilecopy(av, res);
-}
-
 /* pol a monic ZX */
 static GEN
 galoisbig(GEN pol, long prec)
@@ -2399,7 +2366,8 @@ galoisbig(GEN pol, long prec)
     case 9: t = galoismodulo9(EVEN,pol,dpol);  tab=tab9; break;
     case 10:t = galoismodulo10(EVEN,pol,dpol); tab=tab10; break;
     case 11:t = galoismodulo11(EVEN,pol,dpol); tab=tab11; break;
-    default: return polgaloisN(EVEN,pol);
+    default: pari_err_IMPL("galois in degree > 11");
+      return NULL; /* LCOV_EXCL_LINE */
   }
   if (!t)
   {
@@ -2513,6 +2481,7 @@ polgalois(GEN x, long prec)
                       1,2,4,6, 1,5,2,4, 1,3,2,6, 1,2,3,5, 1,4,2,3};
   if (typ(x)!=t_POL) pari_err_TYPE("galois",x);
   n=degpol(x);
+  if (n>11) pari_err_IMPL("galois of degree higher than 11");
   x = Q_primpart(x);
   RgX_check_ZX(x, "galois");
   if (!ZX_is_irred(x)) pari_err_IRREDPOL("galois",x);
