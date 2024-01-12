@@ -1464,7 +1464,11 @@ is_dirichlet(GEN ldata)
 static ulong
 lfuninit_cutoff(GEN ldata)
 {
-  ulong L, N = itou_or_0(ldata_get_conductor(ldata));
+  GEN gN = ldata_get_conductor(ldata);
+  ulong L, N;
+  if (ldata_get_type(ldata) == t_LFUN_NF) /* N ~ f^(d-1), exact for d prime */
+    gN = sqrtnint(gN, ldata_get_degree(ldata) - 1);
+  N = itou_or_0(gN);
   if (N > 1000) L = 7000;
   else if (N > 100) L = 5000;
   else if (N > 15) L = 3000;
@@ -1505,6 +1509,8 @@ lfuninit(GEN lmisc, GEN dom, long der, long bitprec)
   }
   k = ldata_get_k(ldata);
   parse_dom(gtodouble(k), dom, &S);
+  /* Reduce domain for Dirichlet characters. NOT for Abelian t_LFUN_NF,
+   * handled above. */
   if (S.dw >= 0 && (!der && is_dirichlet(ldata)))
     S.dh = mindd(S.dh, lfuninit_cutoff(ldata));
   if (S.dw < 0)
@@ -1639,13 +1645,13 @@ lfunlambda_product(GEN L, GEN s, GEN sdom, long bitprec)
   long i, l = lg(F), isreal = gequal(imag_i(s), imag_i(cs));
   for (i = 1; i < l; ++i)
   {
-    GEN f = lfunlambda_OK(gel(F, i), s, sdom, bitprec);
+    GEN f = lfunlambda(gel(F, i), s, bitprec);
     if( DEBUGLEVEL>=2) err_printf("lfunlambda(%ld): %Ps\n",i,f);
     if (typ(f)==t_VEC) f = RgV_prod(f);
     if (E[i]) r = gmul(r, gpowgs(f, E[i]));
     if (C[i])
     {
-      GEN fc = isreal? f: conj_i(lfunlambda_OK(gel(F, i), cs, sdom, bitprec));
+      GEN fc = isreal? f: conj_i(lfunlambda(gel(F, i), cs, bitprec));
       r = gmul(r, gpowgs(fc, C[i]));
     }
   }
@@ -1759,6 +1765,12 @@ lfunspec_OK(GEN lmisc, GEN s, GEN *pldata)
     case t_LFUN_NF: case t_LFUN_CHIZ:
       if (!large)
         large = (fabs(gtodouble(imag_i(s))) >= lfuninit_cutoff(ldata));
+      break;
+    case t_LFUN_CHIGEN:
+      if (ldata_get_degree(ldata) != 1) return 0;
+      if (!large)
+        large = (fabs(gtodouble(imag_i(s))) >= lfuninit_cutoff(ldata));
+      break;
   }
   if (large)
   {
@@ -1883,7 +1895,7 @@ lfun(GEN lmisc, GEN s, long bitprec)
   {
     if (lfunspec_OK(lmisc, s, &ldata))
     {
-      linit = lfuninit(lmisc, cgetg(1,t_VEC), 0, bitprec);
+      linit = lfunnoinit(lmisc, bitprec);
       return derivnumk((void*)linit, (GEN(*)(void*,GEN,long))&lfun,
                        s, stoi(der), nbits2prec(bitprec));
     }
@@ -1979,7 +1991,7 @@ lfunderiv(GEN lmisc, long m, GEN s, long flag, long bitprec)
   s = get_domain(s, &dom, &der);
   if (typ(s) != t_SER && lfunspec_OK(lmisc, s, &ldata) == 2)
   {
-    linit = lfuninit(lmisc, cgetg(1,t_VEC), 0, bitprec);
+    linit = lfunnoinit(lmisc, bitprec);
     return derivnumk((void*)linit, (GEN(*)(void*,GEN,long))&lfun,
                      s, stoi(der + m), prec);
   }
