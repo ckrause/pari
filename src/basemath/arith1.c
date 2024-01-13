@@ -4018,3 +4018,61 @@ bestapprPade(GEN x, long B)
   if (!t) { set_avma(av); return cgetg(1,t_VEC); }
   return t;
 }
+
+GEN
+serPade(GEN S, long p, long q)
+{
+  pari_sp ltop = avma;
+  GEN M, B, Q, P, y, LT = gen_1;
+  long c, va, tS = typ(S), i, j, lS, val;
+  if (p < 0 || q < 0) pari_err(e_MISC, "need p and q nonnegative in serPade");
+  switch(tS)
+  {
+    case t_INT: case t_REAL: case t_INTMOD: case t_FRAC:
+    case t_COMPLEX: case t_PADIC: case t_QUAD: case t_POLMOD:
+      return gcopy(S);
+    case t_RFRAC: S = rfrac_to_ser_i(S, p + q + 4); break;
+    case t_POL: S = RgX_to_ser(S, p + q + 4); break;
+    case t_SER: break;
+    case t_VEC: case t_COL: case t_MAT:
+      y = cgetg_copy(S, &lS);
+      if (lontyp[tS] == 1) i = 1; else { y[1] = S[1]; i = 2; }
+      for (; i<lS; i++) gel(y,i) = serPade(gel(S,i),p,q);
+      return y;
+    default: pari_err_TYPE("serPade", S);
+  }
+  va = gvar(S);
+  val = valser(S);
+  if (val) { LT = gpowgs(pol_x(va), val); S = gdiv(S, LT); }
+  if (val < 0)
+  {
+    if (q < -val) pari_err(e_MISC, "-valuation larger than q in serPade");
+    q += val;
+  }
+  if (val > 0)
+  {
+    if (p < val) pari_err(e_MISC, "+valuation larger than p in serPade");
+    p -= val;
+  }
+  if (p + q >= serprec(S, va))
+    pari_err(e_MISC, "insufficient series precision in serPade");
+  M = cgetg(q + 2, t_MAT);
+  for (j = 1; j <= q + 1; j++)
+  {
+    GEN C = cgetg(q + 1, t_COL);
+    for (i = 1; i <= q; i++) gel(C, i) = polcoeff0(S, i - j + p + 1, va);
+    gel(M, j) = C;
+  }
+  B = gel(ker(M), 1);
+  c = 1; while (gequal0(gel(B, c))) c++; B = gdiv(B, gel(B, c));
+  Q = gtopolyrev(B, va);
+  M = cgetg(q + 2, t_MAT);
+  for (j = 1; j <= q + 1; j++)
+  {
+    GEN C = cgetg(p + 2, t_COL);
+    for (i = 1; i <= p + 1; i++) gel(C, i) = polcoeff0(S, i - j, va);
+    gel(M, j) = C;
+  }
+  P = gtopolyrev(gmul(M, B), va);
+  return gerepileupto(ltop, val ? gmul(LT, gdiv(P, Q)) : gdiv(P, Q));
+}

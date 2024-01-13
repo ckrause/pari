@@ -2225,6 +2225,7 @@ GEN     ramanujantau(GEN n, long ell);
 ulong   rootsof1_Fl(ulong n, ulong p);
 GEN     rootsof1_Fp(GEN n, GEN p);
 GEN     rootsof1u_Fp(ulong n, GEN p);
+GEN     serPade(GEN S, long p, long q);
 ulong   u_chinese_coprime(ulong a, ulong b, ulong A, ulong B, ulong C);
 GEN     znlog(GEN x, GEN g, GEN o);
 GEN     znorder(GEN x, GEN o);

@@ -20,3 +20,10 @@ bestapprPade(x^2+x^3+x^4+O(x^5))
 bestapprPade(x^-4+x^-3+x^-2+O(x^-1))
 bestapprPade(x^10/(1-x)^11+O(x^22)) \\#1945
 bestapprPade(Mod((x^5+x+2)/(1-x)^11,x^20),12) \\#1946
+
+serPade(exp(x),3,4)
+serPade(tan(x),3,4)
+serPade(cotan(x),4,3)
+serPade(polsubcyclo(13,6),3,3)
+serPade(polsubcyclo(13,6),6,3)
+serPade((1+x)/(1+x^3+x^6),3,3)
