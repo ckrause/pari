@@ -70,20 +70,21 @@ which requires an account on our development machine.
 
 Official releases (starting from version 2.0.17) are 'tagged' so that all files
 pertaining to a given release can be simultaneously accessed without tracking
-version numbers. Tag names are pari-version with dots replaced by dashes, 
-e.g. pari-2-0-20 for 2.0.20.
+version numbers. Tag names are pari-version.
+e.g. pari-2.0.20 for 2.0.20.
 
 To fetch a specific version of pari (2.0.17 or more recent), type for instance
 
-    git checkout pari-2-0-20
+    git checkout pari-2.0.20
 
-The branch pari-2-5 denotes the stable branch 2.5.* as a whole, and can be
+The branch pari-2.5 denotes the stable branch 2.5.* as a whole, and can be
 used to checkout up to date sources from that branch in between releases.
 For instance:
 
-    git checkout pari-2-5
+    git checkout origin/pari-2.5
 
-produces the latest stable distribution with all relevant patches (the ones not affecting stability) backported.
+produces the latest stable distribution with all relevant patches (the ones not
+affecting stability) backported.
 
 Tips and Caveats:
 
