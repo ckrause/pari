@@ -1334,7 +1334,7 @@ ellheegner(GEN E)
   GEN z, P, ht, points, coefs, s, om, indmult;
   GEN sel, etal, et, cbb, A, dAi, T, Ag, At;
   long ind, indx, lint, k, l, wtor, etor, ndisc, ltors2, selrank;
-  long bitprec = 16, prec = nbits2prec(bitprec)+1;
+  long bitprec = 16, prec = nbits2prec(bitprec) + EXTRAPRECWORD;
   pari_timer ti;
   GEN N, cb, tam, torsion, nfA;
   E = ellanal_globalred_all(E, &cb, &N, &tam);
@@ -1368,7 +1368,7 @@ ellheegner(GEN E)
     if (DEBUGLEVEL) err_printf("precision = %ld\n", bitneeded);
     if (bitprec>=bitneeded) break;
     bitprec = bitneeded;
-    prec = nbits2prec(bitprec)+1;
+    prec = nbits2prec(bitprec) + EXTRAPRECWORD;
   }
   indmult = heegner_indexmult(om, wtor, tam, prec);
   ndisc = maxss(10, (long) rtodbl(ht)/10);
