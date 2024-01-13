@@ -1919,7 +1919,7 @@ K6_pol(GEN P, GEN D)
   GEN t = gel(P,5);
   GEN P2 = signe(t) ? ZX_translate(ZX_rescale2n(P,2), gneg(t)): P;
   GEN D2 = sqri(D), D3 = mulii(D,D2);
-  GEN a2 = gel(P2, 4), a1 = gel(P2, 3), a0 = gel(P, 2);
+  GEN a2 = gel(P2, 4), a1 = gel(P2, 3), a0 = gel(P2, 2);
   return mkpoln(7,gen_1, gen_0, mulii(D,shifti(a2,1)), gen_0,
                   mulii(D2,subii(sqri(a2),shifti(a0,2))), gen_0,
                   negi(mulii(D3,sqri(a1))));
