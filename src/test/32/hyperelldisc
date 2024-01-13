@@ -13,6 +13,9 @@
 [2*x^10 + 9*x^9 + 8*x^8 + x^6 + 8*x^5 + 6*x^4 + 5*x^3 + 7*x + 3, 0]
 [1, [524494, -909; -505088299, 875368], 0]
 [2*x^10 + 9*x^9 + 8*x^8 + x^6 + 8*x^5 + 6*x^4 + 5*x^3 + 7*x + 3, 0]
+[x^3 + 1, 0]
+[1, [-1, 9; 1, -10], 0]
+[x^3 + 1, 0]
   ***   at top-level: hyperellred(1)
   ***                 ^--------------
   *** hyperellred: incorrect type in hyperellred (t_INT).
@@ -43,4 +46,4 @@
   ***   at top-level: hyperellminimalmodel(15625*x^6+15626*x^3+1,,[x
   ***                 ^----------------------------------------------
   *** hyperellminimalmodel: incorrect type in hyperellminimalmodel (t_VEC).
-Total time spent: 475
+Total time spent: 349

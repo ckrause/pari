@@ -60,6 +60,11 @@ hyperellred(Q,&M)
 M
 hyperellchangecurve(Q,M)
 
+Q = 1001*x^4 + 3704*x^3 + 5136*x^2 + 3163*x + 730;
+hyperellred(Q,&M)
+M
+hyperellchangecurve(Q,M)
+
 \\ ERRORS, KEEP AT END OF FILE
 hyperellred(1)
 hyperellred(Pol(1))
