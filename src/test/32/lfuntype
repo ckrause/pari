@@ -772,25 +772,24 @@ error("sorry, domain = [] for derivatives in lfuninit is not yet implemented
 44 (lfuncheckfeq): -125
 44 (lfuncheckfeq(lfundual)): -125
 44 (lfunhardy): -0.962008487244040578808410995533804668
-44 (lfunorderzero): error("domain error in lfun: im(s) < 2")
+44 (lfunorderzero): 0
 44 (lfuntheta): 6.97468471241799127935745572277338608 E-6
 44 (lfunan): [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 44 (lfuneuler): 1/(-x + 1)
 44 (lfuneuler): 1/(-x + 1)
 45 (lfun(2+2*I)): 0.922776163650349305999729933896297615 - 0.210629145130885
 436777484004430146615*I
-error("domain error in lfun: im(s) < 2")
-error("sorry, domain = [] for derivatives in lfuninit is not yet implemented
-.")
-error("domain error in lfun: im(s) < 2")
-error("sorry, domain = [] for derivatives in lfuninit is not yet implemented
-.")
+45 (lfun): 1.50670300992298503088656504818207140
+45 (lfuncreate): 1.50670300992298503088656504818207140
+45 (lfunderiv): 1.54673238030356925747170841068625513
+45 (lfunlambda): 0.305321864725739671684867838310794704
+45 (lfunderivlambda): 1.54673238030356925747170841068625513
 45 (lfuncheckfeq): -125
 45 (lfuncheckfeq(lfundual)): -125
 45 (lfunhardy): -1.07637023438345995368832251445133622
-45 (lfunorderzero): error("domain error in lfun: im(s) < 2")
+45 (lfunorderzero): 0
 45 (lfuntheta): 0.00374186017254235308169191833938384906
 45 (lfunan): [1, 1, 0, 1, 2, 0, 0, 1, 1, 2]
 45 (lfuneuler): 1/(-x^2 + 1)
 45 (lfuneuler): 1/(-x^2 + 1)
-Total time spent: 11535
+Total time spent: 9317

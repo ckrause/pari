@@ -429,22 +429,21 @@ pardirpowerssum(ulong N, GEN s, long prec)
 /*                      Character programs                       */
 /*****************************************************************/
 /* A character, always assumed primitive can be given in the following formats:
-   -- omitted or 0: special to zetaRS,
-   -- a t_INT: assumed to be a discriminant,
-   -- a t_INTMOD: a conrey character,
-   -- a pair [G,chi] or [bnr,chi],
-   -- [C1,C2,...]~ where the Ci are characters as above having
-   the same moduli. */
+ * - omitted or 0: special to zetaRS,
+ * - a t_INT: assumed to be a discriminant,
+ * - a t_INTMOD: a conrey character,
+ * - a pair [G,chi] or [bnr,chi],
+ * - [C1,C2,...]~ where the Ci are characters as above with same moduli. */
 
-/* Given a list of ldata for chars of same conductor F, return
- * [Vecan, F, Parities, Gaussums], with Vecan transposed so
- * as to be callable directly. */
+/* Given a list of linit/ldata for chars of same conductor F, return
+ * [Vecan, F, Parities, Gaussums] */
 static GEN
-mycharinit(GEN C, long prec)
+mycharinit(GEN C, long bit)
 {
   GEN L, LVC, LE, LGA;
-  long F = 0, i, j, lc = lg(C);
+  long F = 0, i, j, lc = lg(C), prec;
 
+  bit += 64; prec = nbits2prec(bit);
   L = cgetg(lc, t_VEC);
   LE = cgetg(lc, t_VECSMALL);
   LGA = cgetg(lc, t_VEC);
@@ -452,10 +451,11 @@ mycharinit(GEN C, long prec)
   {
     GEN gv, ga, gm, ro, ldata = gel(C, i);
     long e;
+    if (is_linit(ldata)) ldata = linit_get_ldata(ldata);
     gv = ldata_get_gammavec(ldata); e = itou(gel(gv, 1));
     gm = ldata_get_conductor(ldata);
     ro = ldata_get_rootno(ldata);
-    if (isintzero(ro)) ro = lfunrootno(ldata, prec2nbits(prec));
+    if (isintzero(ro)) ro = lfunrootno(ldata, bit);
     ga = gmul(ro, gsqrt(gm, prec)); if (e) ga = mulcxI(ga);
     gel(LGA, i) = ga;
     LE[i] = e;
@@ -930,36 +930,47 @@ lfuncharall(GEN VCALL, GEN s, long lam, long bitprec)
 }
 
 static GEN
+lfunlargeall_from_chars(GEN v, GEN s, long lam, long bit)
+{
+  long i, l = lg(v);
+  for (i = 1; i < l; i++)
+  {
+    GEN w = mycharinit(gel(v, i), bit), L = lfuncharall(w, s, lam, bit);
+    gel(v, i) = lam==-1 ? vecsum(L): vecprod(L);
+  }
+  return lam==-1 ? vecsum(v): vecprod(v);
+}
+static GEN
 lfunlargeall(GEN ldata, GEN s, long lam, long bit)
 {
-  long prec = nbits2prec(bit) + EXTRAPRECWORD;
-  GEN w, an = gel(ldata_get_an(ldata), 2);
+  GEN w, an;
+  if (lg(ldata) == 2)
+  { /* HACK: ldata[1] a t_DESC_PRODUCT from lfunabelianrelinit / Q */
+    GEN v = lfunprod_get_fact(linit_get_tech(gel(ldata,1)));
+    long i, l;
+    v = shallowcopy(gel(v,1)); l = lg(v);
+    for (i = 1; i < l; i++) gel(v,i) = mkvec(gel(v,i));
+    return lfunlargeall_from_chars(v, s, lam, bit);
+  }
+  an = gel(ldata_get_an(ldata), 2);
   switch(ldata_get_type(ldata))
   {
     case t_LFUN_NF:
     {
-      GEN C = nf_get_pol(an), v = lfungetchars(C);
-      long i, l = lg(v), fl = lam == 0 || lam == 1;
-      for (i = 1; i < l; i++)
-      {
-        GEN L;
-        w = mycharinit(gel(v, i), prec);
-        L = lfuncharall(w, s, lam, bit);
-        gel(v, i) = fl ? vecprod(L) : vecsum(L);
-      }
-      return fl ? vecprod(v) : vecsum(v);
+      GEN v = lfungetchars(nf_get_pol(an));
+      return lfunlargeall_from_chars(v, s, lam, bit);
     }
     case t_LFUN_CHIGEN:
     {
       GEN chi = gmael(an, 2, 2);
       if (lg(chi) > 1 && is_vec_t(typ(gel(chi,1))))
       { /* multi char */
-        w = mycharinit(mkcol(ldata), prec);
+        w = mycharinit(mkcol(ldata), bit);
         return lfuncharall(w, s, lam, bit);
       }
     }
     default: /* single char */
-      w = mycharinit(mkcol(ldata), prec);
+      w = mycharinit(mkcol(ldata), bit);
       return gel(lfuncharall(w, s, lam, bit), 1);
   }
 }
