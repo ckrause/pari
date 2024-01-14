@@ -25,9 +25,10 @@ Iterator:
 Help: parfor(i=a,{b},expr1,{r},{expr2}):
  evaluates the expression expr1 in parallel for all i between a and b
  (if b is set to +oo, the loop will not stop), resulting in as many
- values; if the formal variables r and expr2 are present, evaluate
- sequentially expr2, in which r has been replaced by the different results
- obtained for expr1 and i with the corresponding arguments.
+ values; if r and expr2 are present, the expression expr2 in the
+ formal variables r and i is evaluated with r running through all
+ the different results obtained for expr1 and $i$ takes the
+ corresponding argument.
 Doc: evaluates in parallel the expression \kbd{expr1} in the formal
  argument $i$ running from $a$ to $b$.
  If $b$ is set to \kbd{+oo}, the loop runs indefinitely.
