@@ -211,10 +211,10 @@ Doc: evaluates the expression sequence \var{seq1}. If an error occurs,
   \item \kbd{"e\_MODULUS"}. moduli $x$ and $y$ submitted to function $s$ are
   inconsistent. As in
   \bprog
-    nfalgtobasis(nfinit(t^3-2), Mod(t,t^2+1)
+    nfalgtobasis(nfinit(t^3-2), Mod(t,t^2+1))
   @eprog\noindent
   \var{E} has three component, 1 (\typ{STR}): the function $s$,
-  2: the argument $x$, 3: the argument $x$.
+  2: the argument $x$, 3: the argument $y$.
 
   \item \kbd{"e\_PRIME"}. Function $s$ expected a prime number,
   and did receive $p$, which was not. (As in \kbd{idealprimedec(nf, 4)}.)
