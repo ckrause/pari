@@ -3156,6 +3156,7 @@ ldata_vecan(GEN van, long L, long prec)
   if (DEBUGLEVEL >= 1)
     err_printf("Lfun: computing %ld coeffs, prec %ld, type %ld\n", L, prec, t);
   if (DEBUGLEVEL >= 2) timer_start(&ti);
+  if (L < 0) L = 0;
   switch (t)
   {
     long n;

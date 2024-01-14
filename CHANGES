@@ -51,6 +51,7 @@ BA  43- memory leak when using member functions and ~ arguments.
     44- idealstar(nf,id,,MOD).cyc was not reduced modulo MOD
     45- changed qfbred to use standard normalization (same as qfbredsl2)
 XR  46- rare oo-loop in nfdisc [#2510]
+    47- fix lfun(x, -2) -> stack overflow
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output
