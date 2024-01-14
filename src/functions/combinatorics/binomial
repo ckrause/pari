@@ -8,7 +8,7 @@ Help: binomial(n,{k}): binomial coefficient n*(n-1)...*(n-k+1)/k! defined for
 Doc: \idx{binomial coefficient} $\binom{n}{k}$.
  Here $k$ must be an integer, but $n$ can be any PARI object. For nonnegative
  $k$, $\binom{n}{k} = (n)_{k} / k!$ is polynomial in $n$, where $(n)_{k} =
- n(n-1)\dots(n-k+1)$ is the Pochammer symbol.
+ n(n-1)\dots(n-k+1)$ is the Pochhammer symbol.
  \bprog
  ? binomial(4,2)
  %1 = 6
