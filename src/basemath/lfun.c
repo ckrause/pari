@@ -1661,7 +1661,7 @@ _product(GEN (*fun)(GEN,GEN,long), GEN L, GEN s, long bitprec)
   return (ldata_isreal(ldata) && gequal0(imag_i(s)))? real_i(r): r;
 }
 
-/* s a t_SER */
+/* s a t_SER; # terms - 1 */
 static long
 der_level(GEN s)
 { return signe(s)? lg(s)-3: valser(s)-1; }
@@ -2004,14 +2004,14 @@ lfunderiv(GEN lmisc, long m, GEN s, long flag, long bitprec)
                      s, stoi(der + m), prec);
   }
   linit = lfuninit(lmisc, dom, der + m, bitprec);
+  if (lg(lfun_get_dom(linit_get_tech(linit))) == 1)
+    pari_err_IMPL("domain = [] for derivatives in lfuninit");
   if (typ(s) == t_SER)
   {
-    long v, l = lg(s)-1;
-    GEN sh;
+    GEN a;
     if (valser(s) < 0) pari_err_DOMAIN("lfun","valuation", "<", gen_0, s);
-    S = sersplit1(s, &sh);
-    v = valser(S);
-    s = deg1ser_shallow(gen_1, sh, varn(S), m + (l+v-1)/v);
+    S = sersplit1(s, &a);
+    s = deg1ser_shallow(gen_1, a, varn(S), m + ceildivuu(lg(s)-2, valser(S)));
   }
   else
   {
@@ -2020,8 +2020,6 @@ lfunderiv(GEN lmisc, long m, GEN s, long flag, long bitprec)
     if (gequal0(s)) s = gen_0;
     s = deg1ser_shallow(gen_1, s, 0, m+1+ex);
   }
-  if (lg(lfun_get_dom(linit_get_tech(linit))) == 1)
-    pari_err_IMPL("domain = [] for derivatives in lfuninit");
   res = flag ? lfunlambda_OK(linit, s, dom, bitprec):
                lfun_OK(linit, s, dom, bitprec);
   if (S)
