@@ -428,16 +428,13 @@ smallfact(ulong n, GEN P, ulong sq, GEN V)
 }
 
 static GEN
+_Qtor(GEN x, long prec)
+{ return typ(x) == t_FRAC? fractor(x, prec): x; }
+static GEN
 Qtor(GEN x, long prec)
 {
   long tx = typ(x);
-  if (tx == t_VEC || tx == t_COL)
-  {
-    long lx = lg(x), i;
-    GEN V = cgetg(lx, tx);
-    for (i = 1; i < lx; i++) gel(V, i) = Qtor(gel(x, i), prec);
-    return V;
-  }
+  if (tx == t_VEC || tx == t_COL) pari_APPLY_same(_Qtor(gel(x, i), prec));
   return tx == t_FRAC? fractor(x, prec): x;
 }
 
@@ -788,7 +785,7 @@ dirpowerssum0(GEN N, GEN s, GEN f, long both, long prec)
 }
 
 /*******************************************************************/
-/*                     parallel dirpowerssumfun                    */
+/*                     Parallel dirpowerssumfun                    */
 /*******************************************************************/
 /* f is a totally multiplicative function of modulus 0 or 1
  * (essentially a Dirichlet character). Compute simultaneously
@@ -797,15 +794,10 @@ dirpowerssum0(GEN N, GEN s, GEN f, long both, long prec)
  * where we need R(chi,s) and conj(R(chi,1-conj(s))). */
 
 static GEN
-_Qtor(GEN x, long prec)
-{ return typ(x) == t_FRAC? fractor(x, prec): x; }
-
-static GEN
 mycallvec(GEN f, ulong n, long prec)
 {
-  long N;
-  if (typ(f) == t_CLOSURE) return closure_callgen1prec(f, utoi(n), prec);
-  N = lg(f) - 1; return gel(f, (n - 1) % N + 1);
+  if (typ(f) == t_CLOSURE) return gp_callUp((void*)f, n, prec);
+  return gel(f, (n-1) % (lg(f)-1) + 1);
 }
 
 static GEN
@@ -827,22 +819,6 @@ gmulvecsqlv(GEN Q, GEN V)
   lq = lg(Q); W = cgetg(lq, t_VEC);
   for (i = 1; i < lq; i++) gel(W, i) = vecmul(gel(Q, i), V);
   return W;
-}
-
-/* P = prime divisors of (squarefree) n, V[i] = i^s for i <= sq.
- * Return NULL if n is not sq-smooth, else f(n)n^s */
-static GEN
-smallfactvec(ulong n, GEN P, ulong sq, GEN V)
-{
-  long i, l;
-  ulong p, m, o;
-  GEN c;
-  if (n <= sq) return gel(V,n);
-  l = lg(P); m = p = uel(P, l-1); if (p > sq) return NULL;
-  for (i = l-2; i > 1; i--, m = o) { p = uel(P,i); o = m*p; if (o > sq) break; }
-  c = gel(V,m); n /= m; /* m <= sq, o = m * p > sq */
-  if (n > sq) { c = vecmul(c, gel(V,p)); n /= p; }
-  return vecmul(c, gel(V,n));
 }
 
 GEN
@@ -870,7 +846,7 @@ parsqfboth_worker(GEN gk, GEN vZ, GEN vVQ, GEN vV, GEN P, GEN Nsqstep)
     if (gel(v,j))
     {
       ulong d = x1 - 1 + j; /* squarefree, coprime to 6 */
-      GEN t1 = smallfactvec(d, gel(v,j), sq, V1), t2 = gen_0, u1, u2 = gen_0;
+      GEN t1 = smallfact(d, gel(v,j), sq, V1), t2 = gen_0, u1, u2 = gen_0;
       /* = f(d) d^s */
       if (!t1 || gequal0(t1)) continue;
       if (fl) t2 = vecinv(gmulsg(d, gconj(t1)));
