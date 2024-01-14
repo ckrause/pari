@@ -327,6 +327,16 @@ mapget(GEN T, GEN a)
   return gcopy(gel(x, 2));
 }
 
+GEN
+mapapply(GEN T, GEN a, GEN f)
+{
+  GEN x;
+  if (!ismap(T)) pari_err_TYPE("mapapply",T);
+  x = treesearch(T, a);
+  if (!x) pari_err_COMPONENT("mapapply", "not in", strtoGENstr("map"), a);
+  return closure_callgen1(f, gel(x,2));
+}
+
 int
 mapisdefined(GEN T, GEN a, GEN *pt_z)
 {
