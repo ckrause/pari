@@ -17,7 +17,7 @@ Doc: product of expression \var{expr}, initialized at \kbd{1.0}
  @eprog\noindent The function returns a floating point number because,
  as the second expression shows, such products are usually intractably
  large rational numbers when computed symbolically.
- If the expression is a rational funtction, \kbd{prodeulerrat} computes the
+ If the expression is a rational function, \kbd{prodeulerrat} computes the
  product over all primes:
  \bprog
  ? prodeulerrat(1 - p^-2)
