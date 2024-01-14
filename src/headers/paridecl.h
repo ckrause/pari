@@ -3218,8 +3218,8 @@ GEN     dirpowers(long n, GEN x, long prec);
 GEN     dirpowerssum(ulong N, GEN s, long both, long prec);
 GEN     dirpowerssumfun(ulong N, GEN s, void *E, GEN (*f)(void *,ulong,long), long both, long prec);
 GEN     pardirpowerssumfun(GEN f, ulong N, GEN s, long both, long prec);
-GEN     pardirpowerssum(ulong N, GEN s, long prec)
-GEN     pardirpowerssum0(GEN N, GEN s, GEN f, long both, long prec)
+GEN     pardirpowerssum(ulong N, GEN s, long prec);
+GEN     pardirpowerssum0(GEN N, GEN s, GEN f, long both, long prec);
 GEN     vecpowuu(long N, ulong B);
 GEN     vecpowug(long N, GEN B, long prec);
 
