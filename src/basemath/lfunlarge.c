@@ -40,15 +40,15 @@ Qtor(GEN x, long prec)
 { return typ(x) == t_FRAC? fractor(x, prec): x; }
 
 static GEN
-mycallvec(GEN f, long n, long prec)
+mycallvec(GEN f, ulong n, long prec)
 {
   long N;
-  if (typ(f) == t_CLOSURE) return closure_callgen1prec(f, stoi(n), prec);
+  if (typ(f) == t_CLOSURE) return closure_callgen1prec(f, utoi(n), prec);
   N = lg(f) - 1; return gel(f, (n - 1) % N + 1);
 }
 
 static GEN
-smalldirpowerssum(ulong N, GEN s, long fl, long prec)
+smalldirpowerssum(long N, GEN s, long fl, long prec)
 {
   GEN vg = vecpowug(N, s, prec), S1 = Qtor(RgV_sum(vg), prec);
   long n;
@@ -92,9 +92,9 @@ parsqfboth_worker(GEN gk, GEN vZ, GEN vVQ, GEN vV, GEN P, GEN Nsqstep)
   GEN VQ1 = gel(vVQ, 1), VQN, v, S1, S2;
   GEN Q1 = gel(VQ1, 1), Q2 = gel(VQ1, 2), Q3 = gel(VQ1, 3), Q6 = gel(VQ1, 4);
   GEN QN = gen_0, Q2N = gen_0, Q3N = gen_0, Q6N = gen_0;
-  long k = itos(gk), N = Nsqstep[1], sq = Nsqstep[2], step = Nsqstep[3];
+  long k = itos(gk), N = Nsqstep[1], step = Nsqstep[3];
   long x1 = 1 + step * k, x2, j, lv, fl = !gcmp0(V2), lvv = 0;
-  ulong a, b, c, e, q;
+  ulong a, b, c, e, q, sq = Nsqstep[2];
   if (typ(gel(V1, 1)) == t_VEC)
   { lvv = lg(gel(V1, 1)) - 1; S1 = zerovec(lvv); S2 = zerovec(lvv); }
   else { S1 = gen_0; S2 = gen_0; }
@@ -208,8 +208,8 @@ parsumprimeWfunboth_worker(GEN gk, GEN s, GEN W1, GEN W2, GEN f, GEN Nsqprec)
 static GEN
 smalldirpowerssumfunvec_i(GEN f, ulong N, GEN s, long prec)
 {
-  long n;
   GEN S = real_0(prec);
+  ulong n;
   if (f && gequal0(f)) f = NULL;
   if (f)
   {
