@@ -850,7 +850,7 @@ parsqfboth_worker(GEN gk, GEN vZ, GEN vVQ, GEN vV, GEN P, GEN Nsq)
       ulong d = x1 - 1 + j; /* squarefree, coprime to 6 */
       GEN t = smallfact(d, gel(v,j), sq, V1), u;
       GEN tB = NULL, uB = NULL; /* = f(d) d^s */
-      long a, b, c, e, q;
+      ulong a, b, c, e, q;
       if (!t || gequal0(t)) continue;
       if (fl) tB = vecinv(gmulsg(d, gconj(t)));
       /* warning: gives 1/conj(f(d)) d^(-1-conj(s)), equal to
