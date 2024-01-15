@@ -831,8 +831,8 @@ RZLERinit(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
   r2 = gsub(r1, c);
   r1 = gneg(gadd(r1, c));
   n0 = gfloor(gsub(gadd(real_i(r0), imag_i(r0)), a));
-  n1 = gneg(gfloor(gadd(gsub(real_i(r1), imag_i(r1)), lam)));
-  n2 = gfloor(gadd(gsub(real_i(r2), imag_i(r2)), lam));
+  n1 = gneg(gfloor(gadd(gsub(real_i(r1), imag_i(r1)), greal(lam))));
+  n2 = gfloor(gadd(gsub(real_i(r2), imag_i(r2)), greal(lam)));
 
   eps = gexp(PiI2n(-2, prec), prec);
   E.s = s; E.alam1 = gaddgs(gmul2n(gadd(a, lam), 1), 1);
@@ -902,19 +902,26 @@ RZlerch_easy(GEN s, GEN a, GEN lam, long prec)
 }
 
 static GEN
+mygfrac(GEN z)
+{
+  return typ(z) == t_COMPLEX ? mkcomplex(gfrac(real_i(z)), imag_i(z)) : gfrac(z);
+}
+  
+static GEN
 lerchlarge(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
 {
   pari_sp ltop = avma;
   GEN val, sel;
   long prec2, sl = gsigne(imag_i(lam));
   if (sl < 0) pari_err_IMPL("imag(lam) < 0");
-  if (sl > 0) return RZlerch_easy(s, a, lam, prec);
+  if (sl > 0 && gexpo(imag_i(lam)) >= -16)
+    return RZlerch_easy(s, a, lam, prec);
   if (gcmpgs(real_i(a), 1) < 0)
     return gerepileupto(ltop, gadd(gpow(a, gneg(s), prec), gmul(gexp(gmul(PiI2(prec), lam), prec), lerchlarge(s, gaddgs(a, 1), lam, al, numpoles, prec))));
   if (gcmpgs(real_i(a), 2) >= 0)
     return gerepileupto(ltop, gmul(gexp(gneg(gmul(PiI2(prec), lam)), prec), gsub(lerchlarge(s, gsubgs(a, 1), lam, al, numpoles, prec), gpow(gsubgs(a, 1), gneg(s), prec))));
   if (gsigne(imag_i(s)) > 0)
-    return gerepileupto(ltop, gconj(lerchlarge(gconj(s), a, gfrac(gneg(lam)), al, numpoles, prec)));
+    return gerepileupto(ltop, gconj(lerchlarge(gconj(s), a, mygfrac(gneg(gconj(lam))), al, numpoles, prec)));
   prec2 = prec + EXTRAPREC64;
   a = gprec_w(a, prec2);
   s = gprec_w(s, prec2);
