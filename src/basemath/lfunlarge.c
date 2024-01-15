@@ -247,10 +247,8 @@ static GEN
 wd(GEN VCALL, GEN pmd, GEN x, GEN PZ, long prec)
 {
   GEN VC = get_chivec(VCALL), E = get_signat(VCALL), Z = get_chiZ(VCALL);
-  GEN xpmd = gmul(x, pmd), y = NULL;
-  GEN Sx, Cx, ex, emx;
+  GEN ex, emx, xpmd = gmul(x, pmd), y = NULL;
   long md = get_modulus(VCALL), k;
-  gsincos(xpmd, &Sx, &Cx, prec);
   ex = gexp(mulcxI(xpmd), prec); emx = ginv(ex);
   for (k = 1; k <= (md-1) / 2; k++)
   {
