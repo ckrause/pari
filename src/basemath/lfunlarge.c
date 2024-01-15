@@ -887,9 +887,10 @@ RZlerch_easy(GEN s, GEN a, GEN lam, long prec)
   pari_sp ltop = avma;
   GEN z, y, gnlim;
   long B = prec2nbits(prec), nlim, LD = LOWDEFAULTPREC;
-  gnlim = gceil(gdiv(gmulsg(B + 5, mplog2(LD)), gmul(Pi2n(1, prec), imag_i(lam))));
+  gnlim = gdiv(gmulsg(B + 5, mplog2(LD)), gmul(Pi2n(1, LD), imag_i(lam)));
   if (gexpo(gnlim) > 40)
     pari_err(e_MISC, "imag(lam) too small for RZlerch_easy");
+  gnlim = gceil(gnlim);
   nlim = itos(gnlim); prec += EXTRAPRECWORD;
   z = typ(lam) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), lam), prec);
   if (nlim < 10000000)
@@ -905,7 +906,7 @@ lerchlarge(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
 {
   pari_sp ltop = avma;
   GEN val, sel;
-  long B = prec2nbits(prec), NB = B + EXTRAPRECWORD, sl = gsigne(imag_i(lam));
+  long prec2, sl = gsigne(imag_i(lam));
   if (sl < 0) pari_err_IMPL("imag(lam) < 0");
   if (sl > 0) return RZlerch_easy(s, a, lam, prec);
   if (gcmpgs(real_i(a), 1) < 0)
@@ -914,12 +915,13 @@ lerchlarge(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
     return gerepileupto(ltop, gmul(gexp(gneg(gmul(PiI2(prec), lam)), prec), gsub(lerchlarge(s, gsubgs(a, 1), lam, al, numpoles, prec), gpow(gsubgs(a, 1), gneg(s), prec))));
   if (gsigne(imag_i(s)) > 0)
     return gerepileupto(ltop, gconj(lerchlarge(gconj(s), a, gfrac(gneg(lam)), al, numpoles, prec)));
-  a = bitprecision0(a, NB);
-  s = bitprecision0(s, NB);
-  lam = bitprecision0(lam, NB); prec = nbits2prec(NB);
-  sel = RZLERinit(s, a, lam, al, numpoles, prec);
-  val = lerch_ours(sel, s, a, lam, prec);
-  return gerepilecopy(ltop, bitprecision0(val, B));
+  prec2 = prec + EXTRAPREC64;
+  a = gprec_w(a, prec2);
+  s = gprec_w(s, prec2);
+  lam = gprec_w(lam, prec2);
+  sel = RZLERinit(s, a, lam, al, numpoles, prec2);
+  val = lerch_ours(sel, s, a, lam, prec2);
+  return gerepilecopy(ltop, gprec_wtrunc(val, prec));
 }
 
 GEN
