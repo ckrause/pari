@@ -643,20 +643,25 @@ serh_worker(GEN gk, GEN z, GEN a, GEN ns, GEN gprec)
 }
 
 static GEN
-allparsums(long ini, long fin, GEN z, GEN a, GEN ns, long prec)
+allparsums(GEN worker, GEN ini, long fin, GEN z, GEN a, GEN ns, long prec)
 {
-  return parsum(stoi(ini), stoi(fin), strtoclosure("_serh_worker", 4, z, a, ns, stoi(prec)));
+  GEN data = mkvec4(z, a, ns, stoi(prec));
+  if (worker)
+    gel(worker, 7) = data;
+  else
+    worker = snm_closure(is_entry("_serh_worker"), data);
+  return parsum(ini, stoi(fin), worker);
 }
 
 static GEN
-series_h0l(long n0, GEN s, GEN a, GEN lam, long prec)
+series_h0l(GEN worker, long n0, GEN s, GEN a, GEN lam, long prec)
 {
   GEN z = typ(lam) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), lam), prec);
-  return allparsums(0, n0, z, a, gneg(s), prec);
+  return allparsums(worker, gen_0, n0, z, a, gneg(s), prec);
 }
 
 static GEN
-series_h1(long n1, GEN s, GEN a, GEN lam, long prec)
+series_h1(GEN worker, long n1, GEN s, GEN a, GEN lam, long prec)
 {
   GEN sum1, pre_factor, z, sn = gsubgs(s, 1);
   GEN ini = gequal0(lam) ? gen_1 : gen_0;
@@ -664,19 +669,19 @@ series_h1(long n1, GEN s, GEN a, GEN lam, long prec)
   if (gequal0(pre_factor)) return gen_0;
   pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
   z = typ(a) == t_INT ? gen_1 : gexp(gneg(gmul(PiI2(prec), a)), prec);
-  sum1 = allparsums(itos(ini), n1 - 1, z, lam, sn, prec);
+  sum1 = allparsums(worker, ini, n1 - 1, z, lam, sn, prec);
   return gmul(pre_factor, sum1);
 }
 
 static GEN
-series_h2(long n2, GEN s, GEN a, GEN lam, long prec)
+series_h2(GEN worker, long n2, GEN s, GEN a, GEN lam, long prec)
 {
   GEN sum2, pre_factor, z, sn = gsubgs(s, 1);
   pre_factor = gaminus(gneg(sn), prec);
   if (gequal0(pre_factor)) return gen_0;
   pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
   z = typ(a) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), a), prec);
-  sum2 = allparsums(1, n2, z, gneg(lam), sn, prec);
+  sum2 = allparsums(worker, gen_1, n2, z, gneg(lam), sn, prec);
   return gmul(pre_factor, sum2);
 }
 
@@ -845,10 +850,15 @@ lerch_ours(GEN sel, GEN s, GEN a, GEN lam, long prec)
   GEN lin_grid = gel(sel, 4), val_h0, val_h1, val_h2;
   GEN serandres_h0, serandres_h1, serandres_h2;
   long num_of_poles = itos(gel(sel, 5));
-  serandres_h0 = gadd(series_h0l(m_n0(selsm0), s, a, lam, prec), series_residues_h0l(num_of_poles, selsm0, s, a, lam, prec));
+  GEN worker = snm_closure(is_entry("_serh_worker"),
+                           mkvec4(NULL, NULL, NULL, NULL));
+  serandres_h0 = gadd(series_h0l(worker, m_n0(selsm0), s, a, lam, prec),
+                      series_residues_h0l(num_of_poles, selsm0, s, a, lam, prec));
   val_h0 = gadd(integral_h0l(lin_grid, selsm0, s, a, lam, prec), serandres_h0);
-  serandres_h1 = gadd(series_h1(m_n0(selsm1), s, a, lam, prec), series_residues_h1(num_of_poles, selsm1, s, a, lam, prec));
-  val_h1 = gadd(integral_h12(lin_grid, selsm1, s, a, lam, prec), serandres_h1);  serandres_h2 = gadd(series_h2(m_n0(selsm2), s, a, lam, prec), series_residues_h2(num_of_poles, selsm2, s, a, lam, prec));
+  serandres_h1 = gadd(series_h1(worker, m_n0(selsm1), s, a, lam, prec),
+                      series_residues_h1(num_of_poles, selsm1, s, a, lam, prec));
+  val_h1 = gadd(integral_h12(lin_grid, selsm1, s, a, lam, prec), serandres_h1);  serandres_h2 = gadd(series_h2(worker, m_n0(selsm2), s, a, lam, prec),
+                     series_residues_h2(num_of_poles, selsm2, s, a, lam, prec));
   val_h2 = gadd(gneg(integral_h12(lin_grid, selsm2, s, a, lam, prec)), serandres_h2);
   return gadd(gadd(val_h0, val_h1), val_h2);
 }
@@ -871,9 +881,11 @@ RZlerch_easy(GEN s, GEN a, GEN lam, long prec)
     pari_err(e_MISC, "imag(lam) too small for RZlerch_easy");
   nlim = itos(gnlim); prec += EXTRAPRECWORD;
   z = typ(lam) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), lam), prec);
-  if (nlim < 10000000) y = allparsums(0, nlim, z, a, gneg(s), prec);
+  if (nlim < 10000000)
+    y = allparsums(NULL, gen_0, nlim, z, a, gneg(s), prec);
   else
-    y = parsum(gen_0, gnlim, strtoclosure("_serhlong_worker", 4, z, a, gneg(s), stoi(prec)));
+    y = parsum(gen_0, gnlim, snm_closure(is_entry("_serhlong_worker"),
+                                         mkvec4(z, a, gneg(s), stoi(prec))));
   return gerepileupto(ltop, bitprecision0(y, B));
 }
 
