@@ -210,7 +210,7 @@ static GEN m_al(GEN sel) { return gel(sel, 3); }
 static GEN m_aleps(GEN sel) { return gel(sel, 4); }
 static GEN m_h(GEN sel) { return gel(sel, 5); }
 static GEN m_lin(GEN sel) { return gel(sel, 6); }
-static GEN m_np(GEN sel) { return gel(sel, 7); }
+static long m_np(GEN sel) { return itou(gel(sel, 7)); }
 static GEN m_pz(GEN sel) { return gel(sel, 8); }
 
 static GEN
@@ -279,9 +279,9 @@ series_h0(long n0, GEN s, GEN VCALL, long fl, long prec)
 static GEN
 series_residues_h0(GEN sel, GEN s, GEN VCALL, long prec)
 {
-  long n0 = m_n0(sel), num_of_poles = itos(m_np(sel)), k;
+  long n0 = m_n0(sel), np = m_np(sel), k;
   GEN val = gen_0, VC = get_chivec(VCALL);
-  for (k = maxss(1 - num_of_poles, 1 - n0); k <= 1 + num_of_poles; k++)
+  for (k = maxss(1 - np, 1 - n0); k <= 1 + np; k++)
   {
     GEN nk = mycall(VC, n0 + k); /* n0 + k > 0 */
     if (nk) val = gadd(val, gmul(gmul(phi_hat_h0(sel, k, prec), nk),
@@ -395,7 +395,7 @@ get_m(GEN q, long prec)
 }
 
 static GEN
-RZinit(GEN s, GEN VCALL, GEN num_of_poles, long prec)
+RZinit(GEN s, GEN VCALL, GEN numpoles, long prec)
 {
   GEN sel, al, aleps, n0, r0, q, h, PZ;
   long md = get_modulus(VCALL), m;
@@ -404,12 +404,11 @@ RZinit(GEN s, GEN VCALL, GEN num_of_poles, long prec)
   n0 = gfloor(gsub(real_i(r0), imag_i(r0)));
   aleps = gmul(al, gexp(PiI2n(-2, prec), prec));
   PZ = gpowers(gexp(gdivgs(PiI2n(0, prec), -md), prec), 2*md);
-  sel = mkvecn(8, n0, r0, al, aleps, NULL, NULL, NULL, PZ);
+  sel = mkvecn(8, n0, r0, al, aleps, NULL, NULL, numpoles, PZ);
   q = set_q_value(sel, s, VCALL, prec);
   m = get_m(q, prec);
   gel(sel,5) = h = divru(q, (m - 1) >> 1);
   gel(sel,6) = setlin_grid_exp(h, m, prec);
-  gel(sel,7) = num_of_poles;
   return sel;
 }
 
@@ -686,11 +685,11 @@ series_h2(GEN worker, long n2, GEN s, GEN a, GEN lam, long prec)
 }
 
 static GEN
-series_residues_h0l(long num_of_poles, GEN selsm0, GEN s, GEN a, GEN lam, long prec)
+series_residues_h0l(long numpoles, GEN selsm0, GEN s, GEN a, GEN lam, long prec)
 {
   GEN val = gen_0, ra = real_i(a);
   long n0 = m_n0(selsm0), k;
-  for (k = -num_of_poles + 1; k <= num_of_poles; k++)
+  for (k = -numpoles + 1; k <= numpoles; k++)
   {
     if (gsigne(gaddsg(n0 + k, ra)) > 0)
       val = gadd(val, gmul(gmul(phi_hat_h(selsm0, k, 0, prec), gexp(gmul(PiI2(prec), gmulgs(lam, n0 + k)), prec)), gpow(gaddsg(n0 + k, a), gneg(s), prec)));
@@ -699,14 +698,14 @@ series_residues_h0l(long num_of_poles, GEN selsm0, GEN s, GEN a, GEN lam, long p
 }
 
 static GEN
-series_residues_h1(long num_of_poles, GEN selsm1, GEN s, GEN a, GEN lam, long prec)
+series_residues_h1(long numpoles, GEN selsm1, GEN s, GEN a, GEN lam, long prec)
 {
   GEN val = gen_0, rlam = real_i(lam), pre_factor, sn = gsubgs(s, 1);
   long n1 = m_n0(selsm1), k;
   pre_factor = gaplus(gneg(sn), prec);
   if (gequal0(pre_factor)) return gen_0;
   pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
-  for (k = -num_of_poles; k <= num_of_poles - 1; k++)
+  for (k = -numpoles; k <= numpoles - 1; k++)
   {
     if (gsigne(gaddsg(n1 + k, rlam)) > 0)
       val = gadd(val, gmul(gmul(phi_hat_h(selsm1, k, 1, prec), gexp(gneg(gmul(PiI2(prec), gmulgs(a, n1 + k))), prec)), gpow(gaddsg(n1 + k, lam), sn, prec)));
@@ -715,14 +714,14 @@ series_residues_h1(long num_of_poles, GEN selsm1, GEN s, GEN a, GEN lam, long pr
 }
 
 static GEN
-series_residues_h2(long num_of_poles, GEN selsm2, GEN s, GEN a, GEN lam, long prec)
+series_residues_h2(long numpoles, GEN selsm2, GEN s, GEN a, GEN lam, long prec)
 {
   GEN val = gen_0, rlam = real_i(lam), pre_factor, sn = gsubgs(s, 1);
   long n2 = m_n0(selsm2), k;
   pre_factor = gaminus(gneg(sn), prec);
   if (gequal0(pre_factor)) return gen_0;
   pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
-  for (k = -num_of_poles + 1; k <= num_of_poles; k++)
+  for (k = -numpoles + 1; k <= numpoles; k++)
   {
     if (gsigne(gsubsg(n2 + k, rlam)) > 0)
       val = gsub(val, gmul(gmul(phi_hat_h(selsm2, k, 2, prec), gexp(gmul(PiI2(prec), gmulgs(a, n2 + k)), prec)), gpow(gsubsg(n2 + k, lam), sn, prec)));
@@ -807,7 +806,7 @@ _fun_q12(void *E, GEN x)
 }
 
 static GEN
-RZLERinit(GEN s, GEN a, GEN lam, GEN al, GEN num_of_poles, long prec)
+RZLERinit(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
 {
   GEN eps, r0, r1, r2, h, lin_grid, q, q0, q1, q2, sel0, sel1, sel2, lq;
   GEN pinv = ginv(PiI2(prec)), c = gmul2n(gadd(a, lam), -1), n0, n1, n2, c2;
@@ -840,8 +839,8 @@ RZLERinit(GEN s, GEN a, GEN lam, GEN al, GEN num_of_poles, long prec)
   m = get_m(q, prec);
   gel(sel0, 5) = gel(sel1, 5) = gel(sel2, 5) = h = divru(q, (m-1) >> 1);
   lin_grid = setlin_grid_exp(h, m, prec);
-  if (!num_of_poles) num_of_poles = gen_1;
-  return mkvec5(sel0, sel1, sel2, lin_grid, num_of_poles);
+  if (!numpoles) numpoles = gen_1;
+  return mkvec5(sel0, sel1, sel2, lin_grid, numpoles);
 }
 
 static GEN
@@ -850,16 +849,16 @@ lerch_ours(GEN sel, GEN s, GEN a, GEN lam, long prec)
   GEN selsm0 = gel(sel, 1), selsm1 = gel(sel, 2), selsm2 = gel(sel, 3);
   GEN lin_grid = gel(sel, 4), val_h0, val_h1, val_h2;
   GEN serandres_h0, serandres_h1, serandres_h2;
-  long num_of_poles = itos(gel(sel, 5));
+  long numpoles = itos(gel(sel, 5));
   GEN worker = snm_closure(is_entry("_serh_worker"),
                            mkvec4(NULL, NULL, NULL, NULL));
   serandres_h0 = gadd(series_h0l(worker, m_n0(selsm0), s, a, lam, prec),
-                      series_residues_h0l(num_of_poles, selsm0, s, a, lam, prec));
+                      series_residues_h0l(numpoles, selsm0, s, a, lam, prec));
   val_h0 = gadd(integral_h0l(lin_grid, selsm0, s, a, lam, prec), serandres_h0);
   serandres_h1 = gadd(series_h1(worker, m_n0(selsm1), s, a, lam, prec),
-                      series_residues_h1(num_of_poles, selsm1, s, a, lam, prec));
+                      series_residues_h1(numpoles, selsm1, s, a, lam, prec));
   val_h1 = gadd(integral_h12(lin_grid, selsm1, s, a, lam, prec), serandres_h1);  serandres_h2 = gadd(series_h2(worker, m_n0(selsm2), s, a, lam, prec),
-                     series_residues_h2(num_of_poles, selsm2, s, a, lam, prec));
+                     series_residues_h2(numpoles, selsm2, s, a, lam, prec));
   val_h2 = gadd(gneg(integral_h12(lin_grid, selsm2, s, a, lam, prec)), serandres_h2);
   return gadd(gadd(val_h0, val_h1), val_h2);
 }
@@ -891,7 +890,7 @@ RZlerch_easy(GEN s, GEN a, GEN lam, long prec)
 }
 
 static GEN
-lerchlarge(GEN s, GEN a, GEN lam, GEN al, GEN num_of_poles, long prec)
+lerchlarge(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
 {
   pari_sp ltop = avma;
   GEN val, sel;
@@ -899,15 +898,15 @@ lerchlarge(GEN s, GEN a, GEN lam, GEN al, GEN num_of_poles, long prec)
   if (sl < 0) pari_err_IMPL("imag(lam) < 0");
   if (sl > 0) return RZlerch_easy(s, a, lam, prec);
   if (gcmpgs(real_i(a), 1) < 0)
-    return gerepileupto(ltop, gadd(gpow(a, gneg(s), prec), gmul(gexp(gmul(PiI2(prec), lam), prec), lerchlarge(s, gaddgs(a, 1), lam, al, num_of_poles, prec))));
+    return gerepileupto(ltop, gadd(gpow(a, gneg(s), prec), gmul(gexp(gmul(PiI2(prec), lam), prec), lerchlarge(s, gaddgs(a, 1), lam, al, numpoles, prec))));
   if (gcmpgs(real_i(a), 2) >= 0)
-    return gerepileupto(ltop, gmul(gexp(gneg(gmul(PiI2(prec), lam)), prec), gsub(lerchlarge(s, gsubgs(a, 1), lam, al, num_of_poles, prec), gpow(gsubgs(a, 1), gneg(s), prec))));
+    return gerepileupto(ltop, gmul(gexp(gneg(gmul(PiI2(prec), lam)), prec), gsub(lerchlarge(s, gsubgs(a, 1), lam, al, numpoles, prec), gpow(gsubgs(a, 1), gneg(s), prec))));
   if (gsigne(imag_i(s)) > 0)
-    return gerepileupto(ltop, gconj(lerchlarge(gconj(s), a, gfrac(gneg(lam)), al, num_of_poles, prec)));
+    return gerepileupto(ltop, gconj(lerchlarge(gconj(s), a, gfrac(gneg(lam)), al, numpoles, prec)));
   a = bitprecision0(a, NB);
   s = bitprecision0(s, NB);
   lam = bitprecision0(lam, NB); prec = nbits2prec(NB);
-  sel = RZLERinit(s, a, lam, al, num_of_poles, prec);
+  sel = RZLERinit(s, a, lam, al, numpoles, prec);
   val = lerch_ours(sel, s, a, lam, prec);
   return gerepilecopy(ltop, bitprecision0(val, B));
 }
