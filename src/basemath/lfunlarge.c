@@ -212,7 +212,6 @@ static GEN m_aleps(GEN sel) { return gel(sel, 4); }
 static GEN m_h(GEN sel) { return gel(sel, 5); }
 static GEN m_lin(GEN sel) { return gel(sel, 6); }
 static long m_np(GEN sel) { return itou(gel(sel, 7)); }
-static GEN m_pz(GEN sel) { return gel(sel, 8); }
 
 static GEN
 phi_hat(GEN x, long prec)
@@ -244,21 +243,20 @@ mul_addsub(GEN A, GEN a, GEN b, GEN E)
 }
 
 static GEN
-wd(GEN VCALL, GEN pmd, GEN x, GEN PZ, long prec)
+wd(GEN VCALL, GEN pmd, GEN x, long prec)
 {
   GEN VC = get_chivec(VCALL), E = get_signat(VCALL), Z = get_chiZ(VCALL);
   GEN ex, emx, xpmd = gmul(x, pmd), y = NULL;
-  long md = get_modulus(VCALL), k;
+  long md = get_modulus(VCALL), N = 2*md, k;
   ex = gexp(mulcxI(xpmd), prec); emx = ginv(ex);
   for (k = 1; k <= (md-1) / 2; k++)
   {
     GEN xc = mycall(VC, k);
     if (xc)
     {
-      GEN p1 = gmul(xc, gel(PZ, Fl_sqr(k, 2 * md) + 1));
-      GEN p2 = gsub(xpmd, mulru(pmd, k)), p3 = gadd(xpmd, mulru(pmd, k));
-      GEN a = gmul(ex, gel(Z, 2*md - k + 1)), b = gmul(emx, gel(Z, k + 1));
-      GEN c = gmul(ex, gel(Z, k + 1)), d = gmul(emx, gel(Z, 2*md - k + 1));
+      GEN p3, p2, p1 = gmul(xc, gel(Z, Fl_neg(Fl_sqr(k,N), N) + 1));
+      GEN a = gmul(ex, gel(Z, N - k + 1)), b = gmul(emx, gel(Z, k + 1));
+      GEN c = gmul(ex, gel(Z, k + 1)), d = gmul(emx, gel(Z, N - k + 1));
       if (odd(md))
       {
         p2 = ginv(mulcxmI(gmul2n(gsub(a,b), -1))); /* 1 / sin(xpmd - kpmd) */
@@ -273,7 +271,7 @@ wd(GEN VCALL, GEN pmd, GEN x, GEN PZ, long prec)
       y = y ? gadd(y, p1) : p1;
     }
   }
-  return mulcxmI(gdivgs(y, 2*md));
+  return mulcxmI(gdivgs(y, N));
 }
 
 static GEN
@@ -316,7 +314,7 @@ integrand_h0(GEN sel, GEN s, GEN VCALL, GEN x, long prec)
   if (md == 1)
     p1 = gdiv(mkvec(mulcxI(p1)), gmul2n(gsin(gmul(pmd, zn), prec), 2));
   else
-    p1 = gdivgs(gmul(p1, wd(VCALL, pmd, zn, m_pz(sel), prec)), -2);
+    p1 = gdivgs(gmul(p1, wd(VCALL, pmd, zn, prec)), -2);
   return gerepileupto(av, p1);
 }
 
@@ -411,14 +409,13 @@ get_m(GEN q, long prec)
 static GEN
 RZinit(GEN s, GEN VCALL, GEN numpoles, long prec)
 {
-  GEN sel, al, aleps, n0, r0, q, h, PZ;
+  GEN sel, al, aleps, n0, r0, q, h;
   long md = get_modulus(VCALL), m;
   al = gcmpgs(gabs(imag_i(s), prec), 100) < 0 ? ginv(stoi(4)) : gen_1;
   r0 = gsqrt(gdiv(gmulgs(s, md), PiI2(prec)), prec);
   n0 = gfloor(gsub(real_i(r0), imag_i(r0)));
   aleps = gmul(al, gexp(PiI2n(-2, prec), prec));
-  PZ = gpowers(gexp(gdivgs(PiI2n(0, prec), -md), prec), 2*md);
-  sel = mkvecn(8, n0, r0, al, aleps, NULL, NULL, numpoles, PZ);
+  sel = mkvecn(7, n0, r0, al, aleps, NULL, NULL, numpoles);
   q = set_q_value(sel, s, VCALL, prec);
   m = get_m(q, prec);
   gel(sel,5) = h = divru(q, (m - 1) >> 1);
