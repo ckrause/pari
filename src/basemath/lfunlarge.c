@@ -731,25 +731,25 @@ series_residues_h2(long num_of_poles, GEN selsm2, GEN s, GEN a, GEN lam, long pr
 }
 
 static GEN
-integrand_h0l(GEN selsm0, GEN s, GEN alam, GEN x, long prec)
+integrand_h0l(GEN selsm0, GEN s, GEN alam1, GEN x, long prec)
 {
   GEN r0 = gel(selsm0, 2), ale = gel(selsm0, 3), a = gel(selsm0, 4);
   GEN ix = ginv(x), zn = gadd(r0, gmul2n(gmul(ale, gsub(x, ix)), -1));
   GEN pii = PiI2n(0, prec), den, num;
-  den = gsub(gexp(gmul(pii, gsub(zn, gmul2n(a, 1))), prec), gexp(gneg(gmul(pii, zn)), prec));
-  num = gexp(gmul(gmul(pii, zn), gsub(gmul2n(alam, 1), zn)), prec);
+  den = gexpm1(gmul(pii, gmul2n(gsub(zn,a), 1)), prec);
+  num = gexp(gmul(gmul(pii, zn), gsub(alam1, zn)), prec);
   num = gmul(gmul(gmul(num, ale), gmul2n(gadd(x, ix), -1)), gpow(zn, gneg(s), prec));
   return gdiv(num, den);
 }
 
 static GEN
-integrand_h12(GEN selsm1, GEN s, GEN alam, GEN x, long prec)
+integrand_h12(GEN selsm1, GEN s, GEN alam1, GEN x, long prec)
 {
   GEN r1 = gel(selsm1, 2), ale = gel(selsm1, 3), lam = gel(selsm1, 4);
   GEN ix = ginv(x), zn = gadd(r1, gmul2n(gmul(ale, gsub(x, ix)), -1));
   GEN pii = PiI2n(0, prec), den, num, y;
-  den = gsub(gexp(gmul(pii, gadd(zn, gmul2n(lam, 1))), prec), gexp(gneg(gmul(pii, zn)), prec));
-  num = gexp(gmul(gmul(pii, zn), gadd(gmul2n(alam, 1), zn)), prec);
+  den = gexpm1(gmul(pii, gmul2n(gadd(zn,lam), 1)), prec);
+  num = gexp(gmul(gmul(pii, zn), gadd(alam1, zn)), prec);
   num = gmul(gmul(gmul(num, ale), gmul2n(gadd(x, ix), -1)), gpow(zn, gsubgs(s, 1), prec));
   y = gdiv(num, den);
   if (gcmp(garg(zn, prec), Pi2n(-2, prec)) > 0)
@@ -760,12 +760,12 @@ integrand_h12(GEN selsm1, GEN s, GEN alam, GEN x, long prec)
 static GEN
 integral_h0l(GEN lin_grid, GEN selsm0, GEN s, GEN a, GEN lam, long prec)
 {
-  GEN alam = gadd(a, lam), S = gen_0;
+  GEN alam1 = gaddgs(gmul2n(gadd(a, lam),1), 1), S = gen_0;
   pari_sp av = avma;
   long j, l = lg(lin_grid);
   for (j = 1; j < l; j++)
   {
-    S = gadd(S, integrand_h0l(selsm0, s, alam, gel(lin_grid, j), prec));
+    S = gadd(S, integrand_h0l(selsm0, s, alam1, gel(lin_grid, j), prec));
     if ((j & 0xff) == 0) S = gerepileupto(av, S);
   }
   S = gmul(m_h(selsm0), S);
@@ -776,13 +776,13 @@ integral_h0l(GEN lin_grid, GEN selsm0, GEN s, GEN a, GEN lam, long prec)
 static GEN
 integral_h12(GEN lin_grid, GEN selsm1, GEN s, GEN a, GEN lam, long prec)
 {
-  GEN alam = gadd(a, lam), S = gen_0, ga = gaminus(gsubsg(1, s), prec);
+  GEN alam1 = gaddgs(gmul2n(gadd(a,lam), 1), 1), S = gen_0, ga = gaminus(gsubsg(1, s), prec);
   pari_sp av = avma;
   long j, l = lg(lin_grid);
   if (gequal0(ga)) return S;
   for (j = 1; j < l; j++)
   {
-    S = gadd(S, integrand_h12(selsm1, s, alam, gel(lin_grid, j), prec));
+    S = gadd(S, integrand_h12(selsm1, s, alam1, gel(lin_grid, j), prec));
     if ((j & 0xff) == 0) S = gerepileupto(av, S);
   }
   if (gequal0(S)) return gen_0;
@@ -790,19 +790,19 @@ integral_h12(GEN lin_grid, GEN selsm1, GEN s, GEN a, GEN lam, long prec)
   return gmul(gmul(gmul(S, ga), gexp(gmul(PiI2n(0, prec), gmul(lam, gaddgs(lam, 1))), prec)), gpow(Pi2n(1, prec), gsubgs(s, 1), prec));
 }
 
-struct _fun_q0_t { GEN sel, s, alam, B; };
+struct _fun_q0_t { GEN sel, s, alam1, B; };
 static GEN
 _fun_q0(void *E, GEN x)
 {
   struct _fun_q0_t *S = (struct _fun_q0_t*)E;
-  GEN z = integrand_h0l(S->sel, S->s, S->alam, x, DEFAULTPREC);
+  GEN z = integrand_h0l(S->sel, S->s, S->alam1, x, DEFAULTPREC);
   return addrr(S->B, mylog(z, DEFAULTPREC));
 }
 static GEN
 _fun_q12(void *E, GEN x)
 {
   struct _fun_q0_t *S = (struct _fun_q0_t*)E;
-  GEN z = integrand_h12(S->sel, S->s, S->alam, x, DEFAULTPREC);
+  GEN z = integrand_h12(S->sel, S->s, S->alam1, x, DEFAULTPREC);
   return addrr(S->B, mylog(z, DEFAULTPREC));
 }
 
@@ -825,7 +825,8 @@ RZLERinit(GEN s, GEN a, GEN lam, GEN al, GEN num_of_poles, long prec)
   n2 = gfloor(gadd(gsub(real_i(r2), imag_i(r2)), lam));
 
   eps = gexp(PiI2n(-2, prec), prec);
-  E.s = s; E.alam = gadd(a, lam), E.B = mulur(prec, mplog2(prec));
+  E.s = s; E.alam1 = gaddgs(gmul2n(gadd(a, lam), 1), 1);
+  E.B = mulur(prec, mplog2(prec));
   lq = gmul(gsqrt(gmul(gdivsg(prec, Pi2n(1, LD)), mplog2(LD)), LD), al);
   E.sel = sel0 = mkvec5(n0, r0, gdiv(al, eps), a, gen_0);
   q0 = findq(&E, &_fun_q0, lq, prec);
