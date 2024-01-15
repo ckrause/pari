@@ -821,8 +821,9 @@ RZLERinit(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
 {
   GEN eps, r0, r1, r2, h, lin_grid, q, q0, q1, q2, sel0, sel1, sel2, lq;
   GEN pinv = ginv(PiI2(prec)), c = gmul2n(gadd(a, lam), -1), n0, n1, n2, c2;
-  long m, LD = DEFAULTPREC;
+  long m;
   struct _fun_q0_t E;
+
   if (!al || gequal0(al))
     al = gcmpgs(gabs(imag_i(s), prec), 100) < 0 ? ginv(stoi(4)) : gen_1;
   c2 = gsub(gsqr(c), gmul(s, pinv));
@@ -831,13 +832,14 @@ RZLERinit(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
   r2 = gsub(r1, c);
   r1 = gneg(gadd(r1, c));
   n0 = gfloor(gsub(gadd(real_i(r0), imag_i(r0)), a));
-  n1 = gneg(gfloor(gadd(gsub(real_i(r1), imag_i(r1)), greal(lam))));
-  n2 = gfloor(gadd(gsub(real_i(r2), imag_i(r2)), greal(lam)));
+  n1 = gneg(gfloor(gadd(gsub(real_i(r1), imag_i(r1)), real_i(lam))));
+  n2 = gfloor(gadd(gsub(real_i(r2), imag_i(r2)), real_i(lam)));
 
-  eps = gexp(PiI2n(-2, prec), prec);
   E.s = s; E.alam1 = gaddgs(gmul2n(gadd(a, lam), 1), 1);
   E.B = mulur(prec, mplog2(prec));
-  lq = gmul(gsqrt(gmul(gdivsg(prec, Pi2n(1, LD)), mplog2(LD)), LD), al);
+  lq = gmul(al, sqrtr_abs(mulrr(divsr(prec, Pi2n(1, DEFAULTPREC)),
+                                mplog2(DEFAULTPREC))));
+  eps = gexp(PiI2n(-2, prec), prec);
   E.sel = sel0 = mkvec5(n0, r0, gdiv(al, eps), a, gen_0);
   q0 = findq(&E, &_fun_q0, lq, prec);
 
@@ -846,8 +848,7 @@ RZLERinit(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
   q1 = findq(&E, &_fun_q12, lq, prec);
   E.sel = sel2 = mkvec5(n2, r2, gmul(al, eps), lam, gen_0);
   q2 = findq(&E, &_fun_q12, lq, prec);
-  q = vecmax(mkvec3(q0, q1, q2));
-  m = get_m(q, prec);
+  q = vecmax(mkvec3(q0, q1, q2)); m = get_m(q, prec);
   gel(sel0, 5) = gel(sel1, 5) = gel(sel2, 5) = h = divru(q, (m-1) >> 1);
   lin_grid = setlin_grid_exp(h, m, prec);
   if (!numpoles) numpoles = gen_1;
@@ -884,51 +885,63 @@ serhlong_worker(GEN gk, GEN z, GEN a, GEN ns, GEN gprec)
 static GEN
 RZlerch_easy(GEN s, GEN a, GEN lam, long prec)
 {
-  pari_sp ltop = avma;
+  pari_sp av = avma;
   GEN z, y, gnlim;
-  long B = prec2nbits(prec), nlim, LD = LOWDEFAULTPREC;
+  long nlim, B = prec2nbits(prec), LD = LOWDEFAULTPREC;
   gnlim = gdiv(gmulsg(B + 5, mplog2(LD)), gmul(Pi2n(1, LD), imag_i(lam)));
-  if (gexpo(gnlim) > 40)
-    pari_err(e_MISC, "imag(lam) too small for RZlerch_easy");
-  gnlim = gceil(gnlim);
-  nlim = itos(gnlim); prec += EXTRAPRECWORD;
+  if (gexpo(gnlim) > 40) pari_err_IMPL("precision too large in lerchzeta");
+  gnlim = gceil(gnlim); nlim = itos(gnlim); prec += EXTRAPRECWORD;
   z = typ(lam) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), lam), prec);
   if (nlim < 10000000)
     y = allparsums(NULL, gen_0, nlim, z, a, gneg(s), prec);
   else
     y = parsum(gen_0, gnlim, snm_closure(is_entry("_serhlong_worker"),
                                          mkvec4(z, a, gneg(s), stoi(prec))));
-  return gerepileupto(ltop, bitprecision0(y, B));
+  return gerepilecopy(av, gprec_wtrunc(y, prec));
 }
 
 static GEN
 mygfrac(GEN z)
-{
-  return typ(z) == t_COMPLEX ? mkcomplex(gfrac(real_i(z)), imag_i(z)) : gfrac(z);
-}
-  
+{ return typ(z) == t_COMPLEX ? mkcomplex(gfrac(real_i(z)), imag_i(z))
+                             : gfrac(z); }
+
 static GEN
 lerchlarge(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
 {
-  pari_sp ltop = avma;
-  GEN val, sel;
-  long prec2, sl = gsigne(imag_i(lam));
-  if (sl < 0) pari_err_IMPL("imag(lam) < 0");
-  if (sl > 0 && gexpo(imag_i(lam)) >= -16)
-    return RZlerch_easy(s, a, lam, prec);
+  pari_sp av = avma;
+  GEN val, sel, imlam = imag_i(lam);
+  long prec2;
+  switch(gsigne(imlam))
+  {
+    case -1: pari_err_IMPL("imag(lam) < 0");
+    case  1: if (gexpo(imlam) >= -16) return RZlerch_easy(s, a, lam, prec);
+  }
   if (gcmpgs(real_i(a), 1) < 0)
-    return gerepileupto(ltop, gadd(gpow(a, gneg(s), prec), gmul(gexp(gmul(PiI2(prec), lam), prec), lerchlarge(s, gaddgs(a, 1), lam, al, numpoles, prec))));
+  {
+    GEN P = gexp(gmul(PiI2(prec), lam), prec);
+    GEN L = lerchlarge(s, gaddgs(a, 1), lam, al, numpoles, prec);
+    return gerepileupto(av, gadd(gpow(a, gneg(s), prec), gmul(P, L)));
+  }
   if (gcmpgs(real_i(a), 2) >= 0)
-    return gerepileupto(ltop, gmul(gexp(gneg(gmul(PiI2(prec), lam)), prec), gsub(lerchlarge(s, gsubgs(a, 1), lam, al, numpoles, prec), gpow(gsubgs(a, 1), gneg(s), prec))));
+  {
+    GEN L, P = gexp(gneg(gmul(PiI2(prec), lam)), prec);
+    a = gsubgs(a, 1); L = lerchlarge(s, a, lam, al, numpoles, prec);
+    return gerepileupto(av, gmul(P, gsub(L, gpow(a, gneg(s), prec))));
+  }
   if (gsigne(imag_i(s)) > 0)
-    return gerepileupto(ltop, gconj(lerchlarge(gconj(s), a, mygfrac(gneg(gconj(lam))), al, numpoles, prec)));
+  {
+    GEN L;
+    lam = mygfrac(gneg(gconj(lam)));
+    L = lerchlarge(gconj(s), a, lam, al, numpoles, prec);
+    return gerepileupto(av, gconj(L));
+  }
   prec2 = prec + EXTRAPREC64;
   a = gprec_w(a, prec2);
   s = gprec_w(s, prec2);
   lam = gprec_w(lam, prec2);
   sel = RZLERinit(s, a, lam, al, numpoles, prec2);
   val = lerch_ours(sel, s, a, lam, prec2);
-  return gerepilecopy(ltop, gprec_wtrunc(val, prec));
+  return gerepilecopy(av, gprec_wtrunc(val, prec));
 }
 
 GEN
