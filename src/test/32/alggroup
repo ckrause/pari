@@ -276,6 +276,9 @@ D46
 D58
 1
 1
+testing decomposition.
+testing decomposition.
+testing decomposition.
   ***   at top-level: alggroupcenter(['x,'y])
   ***                 ^-----------------------
   *** alggroupcenter: incorrect type in checkgroupelts (element) (t_POL).
@@ -297,4 +300,4 @@ D58
   ***   at top-level: alggroup([Vecsmall([1]),Vecsmall([2,3]),Vecsma
   ***                 ^----------------------------------------------
   *** alggroup: inconsistent dimensions in checkgroupelts [length of permutations].
-Total time spent: 608
+Total time spent: 533

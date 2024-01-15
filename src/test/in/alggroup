@@ -109,11 +109,29 @@ firstprime1mod(n) =
 );}
 alggroupcenter(Sn(3),0);
 
+\\ #2525
+testdec(al,dec) =
+{
+  my(quo,proj,lif,z,e);
+  z = algrandom(al,5);
+  print("testing decomposition.");
+  for(i=1,#dec,
+    [quo,proj,lif] = dec[i];
+    if(proj*algsqr(al,z) != algsqr(quo,proj*z), print("not alg hom: i=", i););
+    if(proj*lif != matid(algdim(quo)),
+      print("map is not a lift of proj: i=",i)
+    );
+    e = lif*vectorv(algdim(quo),j,j==1);
+    if(algsqr(al,e)!=e, print("lift of 1 is not an idempotent: i=", i););
+  );
+};
+
 \\Bill: random slow cases
 G=galoisinit(x^24-24*x^22+253*x^20-1540*x^18+5984*x^16-15488*x^14+27026*x^12-31448*x^10+23540*x^8-10528*x^6+2416*x^4-192*x^2+1);
 al = alggroup(G);
-setrand(8690); algsimpledec(al)[2];
-setrand(1294); algsimpledec(al)[2];
+setrand(2); dec=algsimpledec(al,1)[2]; testdec(al,dec);
+setrand(8690); dec=algsimpledec(al,1)[2]; testdec(al,dec);
+setrand(1294); dec=algsimpledec(al,1)[2]; testdec(al,dec);
 
 
 

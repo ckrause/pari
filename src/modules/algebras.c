@@ -625,6 +625,7 @@ change_Rgmultable(GEN mt, GEN P, GEN Pi)
   return mt2;
 }
 
+/* S: lift (basis of quotient) ; Si: proj */
 static GEN
 alg_quotient0(GEN al, GEN S, GEN Si, long nq, GEN p, long maps)
 {
@@ -640,11 +641,11 @@ alg_quotient0(GEN al, GEN S, GEN Si, long nq, GEN p, long maps)
     dbg_printf(3)("  bad case: denominator=%Ps\n", Q_denom(mt));
     P = Q_remove_denom(Si,&d);
     P = ZM_hnf(P);
-    P = RgM_Rg_div(P,d);
+    P = RgM_Rg_div(P,d); /* P: new basis (Z-basis of image of order in al) */
     Pi = RgM_inv(P);
     mt = change_Rgmultable(mt,P,Pi);
-    Si = RgM_mul(P,Si);
-    S = RgM_mul(S,Pi);
+    Si = RgM_mul(Pi,Si);
+    S = RgM_mul(S,P);
   }
   al = algtableinit_i(mt,p);
   if (maps) al = mkvec3(al,Si,S); /* algebra, proj, lift */
