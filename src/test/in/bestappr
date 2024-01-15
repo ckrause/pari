@@ -27,3 +27,7 @@ serPade(cotan(x),4,3)
 serPade(polsubcyclo(13,6),3,3)
 serPade(polsubcyclo(13,6),6,3)
 serPade((1+x)/(1+x^3+x^6),3,3)
+
+\\ ERRORS, keep at end of file
+serPade(exp(x), -1, 2)
+serPade(exp(x), 2, -1)

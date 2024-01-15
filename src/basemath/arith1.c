@@ -4022,10 +4022,10 @@ bestapprPade(GEN x, long B)
 GEN
 serPade(GEN S, long p, long q)
 {
-  pari_sp ltop = avma;
-  long va, v;
-  va = gvar(S); v = gvaluation(S, pol_x(va));
-  if (p < 0 || q < 0) pari_err(e_MISC, "need p and q nonnegative in serPade");
+  pari_sp av = avma;
+  long va = gvar(S), v = gvaluation(S, pol_x(va));
+  if (p < 0) pari_err_DOMAIN("serPade", "p", "<", gen_0, stoi(p));
+  if (q < 0) pari_err_DOMAIN("serPade", "q", "<", gen_0, stoi(q));
   S = gadd(S, zeroser(va, p + q + 1 + v));
-  return gerepileupto(ltop, bestapprPade(S, q));
+  return gerepileupto(av, bestapprPade(S, q));
 }
