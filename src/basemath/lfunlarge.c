@@ -77,7 +77,7 @@ mycharinit(GEN C, long bit)
       gel(LVC, j) = v;
     }
   }
-  return mkvec4(LVC, stoi(F), LE, LGA);
+  return mkvec5(LVC, stoi(F), LE, LGA, grootsof1(2*F, prec));
 }
 
 /* n >= 1 and #VC = F, the conductor of the character or multicharacter X.
@@ -94,6 +94,7 @@ static GEN get_chivec(GEN VCALL) { return gel(VCALL, 1); }
 static long get_modulus(GEN VCALL) { return itos(gel(VCALL, 2)); }
 static GEN get_signat(GEN VCALL) { return gel(VCALL, 3); }
 static GEN get_gauss(GEN VCALL) { return gel(VCALL, 4); }
+static GEN get_chiZ(GEN VCALL) { return gel(VCALL, 5); }
 
 /* (-1)^A[i] * conj(B[i]) */
 static GEN
@@ -217,10 +218,10 @@ static GEN
 phi_hat(GEN x, long prec)
 {
   GEN y;
-  if (signe(imag_i(x)) > 0)
-    y = gsubsg(1, gexp(gneg(gmul(PiI2(prec), x)), prec));
+  if (gsigne(imag_i(x)) > 0)
+    y = gneg(gexpm1(gneg(gmul(PiI2(prec), x)), prec));
   else
-    y = gsubgs(gexp(gmul(PiI2(prec), x), prec), 1);
+    y = gexpm1(gmul(PiI2(prec), x), prec);
   return ginv(y);
 }
 
@@ -245,17 +246,31 @@ mul_addsub(GEN A, GEN a, GEN b, GEN E)
 static GEN
 wd(GEN VCALL, GEN pmd, GEN x, GEN PZ, long prec)
 {
-  GEN VC = get_chivec(VCALL), E = get_signat(VCALL), y = NULL;
+  GEN VC = get_chivec(VCALL), E = get_signat(VCALL), Z = get_chiZ(VCALL);
+  GEN xpmd = gmul(x, pmd), y = NULL;
+  GEN Sx, Cx, ex, emx;
   long md = get_modulus(VCALL), k;
+  gsincos(xpmd, &Sx, &Cx, prec);
+  ex = gexp(mulcxI(xpmd), prec); emx = ginv(ex);
   for (k = 1; k <= (md-1) / 2; k++)
   {
     GEN xc = mycall(VC, k);
     if (xc)
     {
       GEN p1 = gmul(xc, gel(PZ, Fl_sqr(k, 2 * md) + 1));
-      GEN p2 = gmul(pmd, gsubgs(x, k)), p3 = gmul(pmd, gaddgs(x, k));
-      p2 = odd(md)? ginv(gsin(p2, prec)): gcotan(p2, prec);
-      p3 = odd(md)? ginv(gsin(p3, prec)): gcotan(p3, prec);
+      GEN p2 = gsub(xpmd, mulru(pmd, k)), p3 = gadd(xpmd, mulru(pmd, k));
+      GEN a = gmul(ex, gel(Z, 2*md - k + 1)), b = gmul(emx, gel(Z, k + 1));
+      GEN c = gmul(ex, gel(Z, k + 1)), d = gmul(emx, gel(Z, 2*md - k + 1));
+      if (odd(md))
+      {
+        p2 = ginv(mulcxmI(gmul2n(gsub(a,b), -1))); /* 1 / sin(xpmd - kpmd) */
+        p3 = ginv(mulcxmI(gmul2n(gsub(c,d), -1))); /* 1 / sin(xpmd + kpmd) */
+      }
+      else
+      {
+        p2 = mulcxI(gdiv(gadd(a,b), gsub(a,b))); /* cotan(xpmd - kpmd) */
+        p3 = mulcxI(gdiv(gadd(c,d), gsub(c,d))); /* cotan(xpmd + kpmd) */
+      }
       p1 = mul_addsub(p1, p2, p3, E);
       y = y ? gadd(y, p1) : p1;
     }
@@ -293,6 +308,7 @@ series_residues_h0(GEN sel, GEN s, GEN VCALL, long prec)
 static GEN
 integrand_h0(GEN sel, GEN s, GEN VCALL, GEN x, long prec)
 {
+  pari_sp av = avma;
   long md = get_modulus(VCALL);
   GEN r0 = m_r0(sel), aleps = m_aleps(sel), zn, p1;
   GEN pmd = divru(mppi(prec), md), ix = ginv(x);
@@ -303,7 +319,7 @@ integrand_h0(GEN sel, GEN s, GEN VCALL, GEN x, long prec)
     p1 = gdiv(mkvec(mulcxI(p1)), gmul2n(gsin(gmul(pmd, zn), prec), 2));
   else
     p1 = gdivgs(gmul(p1, wd(VCALL, pmd, zn, m_pz(sel), prec)), -2);
-  return p1;
+  return gerepileupto(av, p1);
 }
 
 static GEN
