@@ -700,7 +700,7 @@ dirpowsummakez(GEN V, GEN W, GEN VB, GEN WB, GEN onef, ulong sq)
   return VB ? mkvec2(Z, ZB) : mkvec(Z);
 }
 
-static const ulong step = 2048;
+static const long step = 2048;
 
 /* both =
  * 0: sum_{n<=N}f(n)n^s
