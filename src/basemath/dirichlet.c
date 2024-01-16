@@ -1077,9 +1077,7 @@ pardirpowerssumfun(GEN f, ulong N, GEN s, long both, long prec)
     Q3N = gmulvecsqlv(QN, gel(V2,3));
     Q6N = gmulvecsqlv(QN, gel(V2,6));
   }
-  if (typ(zervec) == t_VEC)
-  { S1 = const_vec(lv, re0); S2 = const_vec(lv, re0); }
-  else { S1 = re0; S2 = re0; }
+  S1 = S2 = typ(zervec) == t_VEC? const_vec(lv, re0): re0;
   RES = mkvec2(S1, S2);
   {
     GEN fspec = f ? f : gen_0;
