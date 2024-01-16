@@ -1619,7 +1619,7 @@ monrefine(GEN Q, GEN QP, GEN z, long prec)
     if (gcmp(gabs(prnew, prec), gabs(pr, prec)) >= 0) break;
     pr = prnew;
   }
-  z = gprec_wensure(z, 2*prec-2);
+  z = gprec_wensure(z, precdbl(prec));
   z = gsub(z, gdiv(poleval(Q, z), poleval(QP, z)));
   return gerepileupto(av, z);
 }
@@ -1744,8 +1744,8 @@ sumnummonieninit_i(GEN a, GEN b, GEN w, GEN n0, long prec)
   prec = nbits2prec(maxdd(2.05*da*bit, bit0));
   prec2 = nbits2prec(maxdd(1.3*da*bit, bit0));
   S.w = w;
-  S.a = a = gprec_wensure(a, 2*prec-2);
-  S.b = b = gprec_wensure(b, 2*prec-2);
+  S.a = a = gprec_wensure(a, precdbl(prec));
+  S.b = b = gprec_wensure(b, precdbl(prec));
   S.n = n;
   S.j = 1;
   S.prec = prec;

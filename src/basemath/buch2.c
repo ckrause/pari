@@ -4181,7 +4181,7 @@ START:
       if (!A || lg(A) < RU || expo(gsub(get_regulator(A), R)) > -1)
       {
         long add = nbits2extraprec( gexpo(AU) + 64 ) - gprecision(AU);
-        long t = maxss((PREC-2) * 0.15, add);
+        long t = maxss(PREC * 0.15, add);
         if (!A && DEBUGLEVEL) err_printf("### Incorrect units lognorm");
         precpb = "cleanarch"; PREC += maxss(t, EXTRAPREC64); continue;
       }

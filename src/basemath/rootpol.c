@@ -1212,7 +1212,7 @@ conformal_mapping(double *radii, GEN ctr, GEN p, long k, long bit,
   double lrho, delta, param, param2;
   /* n * (2.*log2(2.732)+log2(1.5)) + 1 */
   bit2 = bit + (long)(n*3.4848775) + 1;
-  a = sqrtr_abs( utor(3, 2*MEDDEFAULTPREC - 2) );
+  a = sqrtr_abs( utor(3, precdbl(MEDDEFAULTPREC)) );
   a = divrs(a, -6);
   a = gmul(mygprec(a,bit2), mygprec(ctr,bit2)); /* a = -ctr/2sqrt(3) */
 

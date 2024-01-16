@@ -755,7 +755,7 @@ moreprec(buildroot *BR)
     long l = lg(BR->r);
     GEN ro;
 
-    if (d < BIGDEFAULTPREC-2) d = BIGDEFAULTPREC-2;
+    if (d < BIGDEFAULTPREC) d = BIGDEFAULTPREC;
     BR->prmax = maxss(BR->prmax+d, (long)(BR->prmax * 1.2));
     if (DEBUGLEVEL) err_printf("$$$$$ New prec = %ld\n",BR->prmax);
     ro = sortroots(QX_complex_roots(BR->p,BR->prmax), gel(BR->r,1));
@@ -814,10 +814,10 @@ get_ro_perm(PERM S1, PERM S2, long d, resolv *R, buildroot *BR)
   }
   if (e > -10 || typ(roi) == t_COMPLEX) return NULL;
   /* compute with 128 more bits */
-  BR->pr += MEDDEFAULTPREC-2;
+  BR->pr += MEDDEFAULTPREC;
   moreprec(BR);
   ro = get_ro(BR->N, gel(BR->r, d), S1,S2,R);
-  BR->pr -= MEDDEFAULTPREC-2;
+  BR->pr -= MEDDEFAULTPREC;
   fixprec(BR);
   /* ro closer to roi (32 more bits) ? */
   return (gexpo(gsub(ro, roi)) < e - 32) ? roi: NULL;
@@ -2382,7 +2382,7 @@ galoisbig(GEN pol, long prec)
     BR.coef = z;
     BR.p = pol;
     BR.pr = prec + nbits2extraprec((long)fujiwara_bound(pol));
-    BR.prmax = BR.pr + BIGDEFAULTPREC-2;
+    BR.prmax = BR.pr + BIGDEFAULTPREC;
     BR.N = N;
     BR.r = vectrunc_init(N+1);
     r = gclone ( QX_complex_roots(BR.p, BR.prmax) );
