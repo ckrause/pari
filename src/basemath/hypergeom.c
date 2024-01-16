@@ -168,7 +168,7 @@ hyperu_i(GEN a, GEN b, GEN x, long prec)
   {
     if (typ(b) == t_INT)
     {
-      bit = prec2nbits(l); l += l-2;
+      bit = prec2nbits(l); l = precdbl(l);
       b = gadd(b, real2n(-bit, l));
       a = gprec_wensure(a, l);
       x = gprec_wensure(x, l);
