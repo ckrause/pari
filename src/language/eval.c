@@ -163,7 +163,7 @@ zerovalue(entree *ep)
   var_cell *v = (var_cell*) pari_malloc(sizeof(var_cell));
   v->value  = (GEN)ep->value;
   v->prev   = (var_cell*) ep->pvalue;
-  v->flag   = PUSH_VAL;
+  v->flag   = COPY_VAL;
   v->valence= ep->valence;
   ep->value = gen_0;
   ep->pvalue= (char*)v;
