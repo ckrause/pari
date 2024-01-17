@@ -1838,7 +1838,7 @@ parsum(GEN a, GEN b, GEN code)
         s = gerepileupto(av2,s);
       }
     }
-    a = incloop(a);
+    a = incloop(a); gel(v,1) = a;
   }
   mt_queue_end(&pt); return gerepileupto(av, s);
 }
