@@ -1,8 +1,8 @@
-Function: plotell
+Function: plotarc
 Section: graphic
-C-Name: plotell
+C-Name: plotarc
 Prototype: vLGGD0,L,
-Help: plotell(w,x2,y2,{filled=0}): if the cursor is at position (x1,y1), draws the
+Help: plotarc(w,x2,y2,{filled=0}): if the cursor is at position (x1,y1), draws the
  ellipse that fits inside the box with diagonal (x1,y1) and (x2,y2) in rectwindow w
  (cursor does not move).
  If filled=1, fill the ellipse
@@ -12,5 +12,5 @@ Doc: let $(x1,y1)$ be the current position of the virtual cursor. Draws in the
  If $\var{filled}=1$, fills the ellipse.
  \bprog
  ? plotinit(1);plotmove(1,0,0);
- ? plotell(1,50,50); plotdraw([1,100,100]);
+ ? plotarc(1,50,50); plotdraw([1,100,100]);
  @eprog

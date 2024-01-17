@@ -575,7 +575,7 @@ rectarc0(long ne, double gx2, double gy2, long relative, long filled)
 }
 
 void
-plotell(long ne, GEN gx2, GEN gy2, long f)
+plotarc(long ne, GEN gx2, GEN gy2, long f)
 { rectarc0(ne, gtodouble(gx2), gtodouble(gy2), 0, f); }
 
 static void

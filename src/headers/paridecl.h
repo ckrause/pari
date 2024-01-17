@@ -5034,7 +5034,7 @@ void    pari_set_plot_engine(void (*plot)(PARI_plot *));
 void    pari_kill_plot_engine(void);
 GEN     parploth(GEN a, GEN b, GEN code, long flags,long n, long prec);
 GEN     parplothexport(GEN fmt, GEN a, GEN b, GEN code, long flags, long n, long prec);
-void    plotell(long ne, GEN gx2, GEN gy2, long fl);
+void    plotarc(long ne, GEN gx2, GEN gy2, long fl);
 void    plotbox(long ne, GEN gx2, GEN gy2, long fl);
 void    plotclip(long rect);
 GEN     plotcolor(long ne, GEN c);
