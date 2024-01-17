@@ -2318,9 +2318,9 @@ static GEN
 get_gramschmidt(GEN M, long rank)
 {
   GEN B, Q, L;
-  long l = lg(M), bitprec = 3*(l-1) + 30;
+  long r = lg(M)-1, bitprec = 3*r + 30;
   long prec = nbits2prec64(bitprec);
-  if (rank < l-1) M = vconcat(gshift(M,1), matid(l-1));
+  if (rank < r) M = vconcat(gshift(M,1), matid(r));
   if (!QR_init(RgM_gtofp(M, prec), &B, &Q, &L, prec) || !gsisinv(L)) return NULL;
   return L;
 }
@@ -2329,10 +2329,9 @@ static GEN
 get_gaussred(GEN M, long rank)
 {
   pari_sp ltop = avma;
-  long lM = lg(M);
-  long bitprec = 3*(lM-1) + 30, prec = nbits2prec64(bitprec);
+  long r = lg(M)-1, bitprec = 3*r + 30, prec = nbits2prec64(bitprec);
   GEN R;
-  if (rank < lM-1) M = RgM_Rg_add(gshift(M, 1), gen_1);
+  if (rank < r) M = RgM_Rg_add(gshift(M, 1), gen_1);
   R = RgM_Cholesky(RgM_gtofp(M, prec), prec);
   if (!R) return NULL;
   return gerepilecopy(ltop, R);
@@ -2391,7 +2390,8 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
   if(DEBUGLEVEL>=4) timer_start(&T);
   if (n > 2)
   {
-    GEN R = B ? is_upper ? B : is_lower ? L : get_gramschmidt(B, rank) : get_gaussred(G, rank);
+    GEN R = B ? (is_upper ? B : (is_lower ? L : get_gramschmidt(B, rank)))
+              : get_gaussred(G, rank);
     if (R)
     {
       long spr = spread(R), sz = mpexpo(gsupnorm(R, DEFAULTPREC)), thr;
