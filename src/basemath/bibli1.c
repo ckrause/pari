@@ -1962,7 +1962,14 @@ fincke_pohst(GEN a, GEN B0, long stockmax, long PREC, FP_chk_fun *CHECK)
       if (CHECK) pari_err_TYPE("fincke_pohst [dimension 0]", a);
       retmkvec3(gen_0, gen_0, cgetg(1,t_MAT));
     }
-    u = lllfp(a, 0.75, LLL_GRAM | LLL_IM);
+    if (isinexact(a))
+    {
+      GEN C = RgM_Cholesky(a, prec);
+      if (!C) return gc_NULL(av);
+      u = lllfp(C, 0.75, LLL_IM);
+    }
+    else
+      u = lllfp(a, 0.75, LLL_GRAM | LLL_IM);
     if (lg(u) != lg(a)) return gc_NULL(av);
     r = qf_RgM_apply(a,u);
     i = gprecision(r);
