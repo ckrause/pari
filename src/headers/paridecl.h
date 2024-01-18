@@ -1957,6 +1957,7 @@ GEN     matadjoint0(GEN x, long flag);
 GEN     matcompanion(GEN x);
 GEN     matrixqz0(GEN x, GEN pp);
 GEN     minpoly(GEN x, long v);
+GEN     qfcholesky(GEN a, long prec);
 GEN     qfgaussred(GEN a);
 GEN     qfgaussred_positive(GEN a);
 GEN     qfgaussred0(GEN a, long flag);

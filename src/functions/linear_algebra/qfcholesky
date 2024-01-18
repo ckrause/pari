@@ -1,0 +1,8 @@
+Function: qfcholesky
+Section: linear_algebra
+C-Name: qfcholesky
+Prototype: Gp
+Help: qfcholesky(q): given a square symmetric matrix M, return R such that
+ R~*R = M, or [] if there is no solution.
+Doc: given a square symmetric \typ{MAT} $M$, return $R$ such that
+ $^t{}R\*R = M$, or $[]$ if there is no solution.

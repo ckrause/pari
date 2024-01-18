@@ -1745,6 +1745,19 @@ qfgaussred0(GEN a, long flag)
 }
 
 GEN
+qfcholesky(GEN a, long prec)
+{
+  GEN M;
+  long n = lg(a);
+  if (typ(a) != t_MAT) pari_err_TYPE("qfcholesky",a);
+  if (n == 1) return cgetg(1, t_MAT);
+  if (lgcols(a) != lg(a)) pari_err_DIM("qfcholesky");
+  M =  RgM_Cholesky(a, prec);
+  if (!M) return cgetg(1, t_VEC);
+  return M;
+}
+
+GEN
 qfsign(GEN a) { return gaussred(a,1); }
 
 /* x -= s(y+u*x) */

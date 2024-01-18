@@ -1,4 +1,5 @@
 Q = [0,7,2,3; 7,0,6,8; 2,6,0,9; 3,8,9,0];
+qfcholesky(Q)
 M = qfgaussred(Q)
 [U,V] = qfgaussred(Q,1); D = matdiagonal(V);
 if(U~*D*U!=Q || M!=U+D-1,error("qfgaussred"));
@@ -19,7 +20,7 @@ qfminim(Mat(1),,,2) \\ #2262
 qfminim(matid(2),0,1,2)
 qfminim(matid(2),0,1,1)
 qfminim(matid(2),0,1,0)
-
+U=qfcholesky(Q);round(U~*U-Q,&e);e
 
 
 L=[360815,2283021;-316840,2566404];

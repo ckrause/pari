@@ -2,8 +2,11 @@ Bug numbers refer to the BTS at http://pari.math.u-bordeaux.fr/Bugs/
 Done for version 2.16.2 (released ??/??/2024):
   Fixed
 XR   1- rare oo-loop in nfdisc [#2510]
+
   Added
 BA   1- GP function mapapply
+BA   2- GP function qfcholesky
+
   Changed
 BA   1- plotell renamed to plotarc
 
