@@ -2651,7 +2651,16 @@ lllfp(GEN x, double D, long flag)
   pari_sp av = avma;
   GEN h;
   if (n <= 1) return lll_trivial(x,flag);
-  if ((flag & LLL_GRAM) && !RgM_is_square_mat(x)) pari_err_DIM("qflllgram");
+  if (flag & LLL_GRAM)
+  {
+    if (!RgM_is_square_mat(x)) pari_err_DIM("qflllgram");
+    if (isinexact(x))
+    {
+      x = RgM_Cholesky(x, gprecision(x));
+      if (!x) return NULL;
+      flag &= ~LLL_GRAM;
+    }
+  }
   h = ZM_lll(RgM_rescale_to_int(x), D, flag);
   return gerepilecopy(av, h);
 }
@@ -2660,6 +2669,14 @@ GEN
 lllgram(GEN x) { return lllfp(x,LLLDFT,LLL_GRAM|LLL_IM); }
 GEN
 lll(GEN x) { return lllfp(x,LLLDFT,LLL_IM); }
+
+static GEN
+qflllgram(GEN x)
+{
+  GEN T = lllgram(x);
+  if (!T) pari_err_PREC("qflllgram");
+  return T;
+}
 
 GEN
 qflll0(GEN x, long flag)
@@ -2685,7 +2702,7 @@ qflllgram0(GEN x, long flag)
   if (typ(x) != t_MAT) pari_err_TYPE("qflllgram",x);
   switch(flag)
   {
-    case 0: return lllgram(x);
+    case 0: return qflllgram(x);
     case 1: RgM_check_ZM(x,"qflllgram"); return lllgramint(x);
     case 4: RgM_check_ZM(x,"qflllgram"); return lllgramkerim(x);
     case 5: return lllgramkerimgen(x);

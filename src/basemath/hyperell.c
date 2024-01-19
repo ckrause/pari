@@ -1216,19 +1216,24 @@ red_Cremona_Stoll(GEN P, GEN *pM)
 {
   GEN q1, q2, q3, M, R;
   long i, prec = nbits2prec(2*gexpo(P)) + EXTRAPRECWORD, d = degpol(P);
-  GEN dP = ZX_deriv(P), r = QX_complex_roots(P, prec);
-  q1 = gen_0; q2 = gen_0; q3 = gen_0;
-  for (i = 1; i <= d; i++)
+  GEN dP = ZX_deriv(P);
+  for (;;)
   {
-    GEN ri = gel(r,i);
-    GEN s = ginv(gabs(RgX_cxeval(dP,ri,NULL), prec));
-    if (d!=4) s = gpow(s, gdivgs(gen_2,d-2), prec);
-    q1 = gadd(q1, s);
-    q2 = gsub(q2, gmul(real_i(ri), s));
-    q3 = gadd(q3, gmul(gnorm(ri), s));
+    GEN r = QX_complex_roots(P, prec);
+    q1 = gen_0; q2 = gen_0; q3 = gen_0;
+    for (i = 1; i <= d; i++)
+    {
+      GEN ri = gel(r,i);
+      GEN s = ginv(gabs(RgX_cxeval(dP,ri,NULL), prec));
+      if (d!=4) s = gpow(s, gdivgs(gen_2,d-2), prec);
+      q1 = gadd(q1, s);
+      q2 = gsub(q2, gmul(real_i(ri), s));
+      q3 = gadd(q3, gmul(gnorm(ri), s));
+    }
+    M = lllgram(mkmat22(q1,q2,q2,q3));
+    if (M && lg(M) == 3) break;
+    prec = precdbl(prec);
   }
-  M = lllgram(mkmat22(q1,q2,q2,q3));
-  if (lg(M) != 3) M = matid(2);
   R = polreduce(P, M);
   *pM = M;
   return R;

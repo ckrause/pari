@@ -5547,7 +5547,14 @@ ellQ_genreduce(GEN E, GEN G, GEN M, long prec)
   GEN L, V = cgetg(l, t_VEC);
 
   if (!M) M = ellheightmatrix(E, G, prec);
-  L = lllgram(M); l = lg(L); /* can decrease */
+  while(1)
+  {
+    L = lllgram(M);
+    if (L) break;
+    prec = precdbl(prec);
+    M = ellheightmatrix(E, G, prec);
+  }
+  l = lg(L); /* can decrease */
   for (i = j = 1; i < l; i++)
   {
     GEN Li = gel(L, i), h = qfeval(M, Li);
