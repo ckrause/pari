@@ -2,7 +2,7 @@ Function: znchardecompose
 Section: number_theoretical
 C-Name: znchardecompose
 Prototype: GGG
-Help: znchardecompose(G, chi, Q): given a znstar G = (Z/NZ)^* and
+Help: znchardecompose(G,chi,Q): given a znstar G = (Z/NZ)^* and
  a Dirichlet character chi, return the product of local characters chi_p
  for p | (N,Q).
 Doc: Let $N = \prod_{p} p^{e_{p}}$ and a Dirichlet character $\chi$,

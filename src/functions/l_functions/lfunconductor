@@ -2,7 +2,7 @@ Function: lfunconductor
 Section: l_functions
 C-Name: lfunconductor
 Prototype: GDGD0,L,b
-Help: lfunconductor(L, {setN = 10000},{flag=0}): gives the conductor
+Help: lfunconductor(L,{setN=10000},{flag=0}): gives the conductor
  of the given L-function, expecting to find it in the interval [1,setN].
  If flag=0 (default), gives either the conductor found as an integer, or a
  vector of conductors found, possibly empty. If flag=1, same but gives the

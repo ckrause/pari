@@ -2,7 +2,7 @@ Function: mfcuspisregular
 Section: modular_forms
 C-Name: mfcuspisregular
 Prototype: lGG
-Help: mfcuspisregular(NK, cusp): In the space defined by NK = [N,k,CHI] or
+Help: mfcuspisregular(NK,cusp): In the space defined by NK = [N,k,CHI] or
  NK = mf, determine if cusp in canonical format (oo or denominator
  dividing N) is regular or not.
 Doc: In the space defined by \kbd{NK = [N,k,CHI]} or \kbd{NK = mf},

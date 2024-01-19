@@ -2,7 +2,7 @@ Function: bnrisgalois
 Section: number_fields
 C-Name: bnrisgalois
 Prototype: lGGG
-Help: bnrisgalois(bnr, gal, H): check whether the class field attached to
+Help: bnrisgalois(bnr,gal,H): check whether the class field attached to
  the subgroup H is Galois over the subfield of bnr.nf fixed by the Galois
  group gal, which can be given as output by galoisinit, or as a matrix or a
  vector of matrices as output by bnrgaloismatrix. The ray class field

@@ -2,7 +2,7 @@ Function: qfparam
 Section: linear_algebra
 C-Name: qfparam
 Prototype: GGD0,L,
-Help: qfparam(G, sol, {flag = 0}):
+Help: qfparam(G,sol,{flag=0}):
  coefficients of binary quadratic forms that parametrize the
  solutions of the ternary quadratic form G, using the particular
  solution sol.

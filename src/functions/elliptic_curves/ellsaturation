@@ -2,7 +2,7 @@ Function: ellsaturation
 C-Name: ellsaturation
 Section: elliptic_curves
 Prototype: GGLp
-Help: ellsaturation(E, V, B): let E be an elliptic curve over Q
+Help: ellsaturation(E,V,B): let E be an elliptic curve over Q
  and V be a vector of independent rational points on E of infinite order that
  generate a subgroup G of E(Q) of finite index.
  Return a new set W of the same length that generate a subgroup H of

@@ -2,7 +2,7 @@ Function: mslattice
 Section: modular_symbols
 C-Name: mslattice
 Prototype: GDG
-Help: mslattice(M, {H}): M being a full modular symbol space,
+Help: mslattice(M,{H}): M being a full modular symbol space,
  as given by msinit, H a Q-subspace or a matrix of modular symbols.
  Return the canonical integral structure of H.
 Doc: Let $\Delta_{0}:=\text{Div}^{0}(\P^{1}(\Q))$ and $V_{k} = \Q[x,y]_{k-2}$.

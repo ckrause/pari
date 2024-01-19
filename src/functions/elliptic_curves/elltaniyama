@@ -2,7 +2,7 @@ Function: elltaniyama
 Section: elliptic_curves
 C-Name: elltaniyama
 Prototype: GDP
-Help: elltaniyama(E, {n = seriesprecision}): modular parametrization of
+Help: elltaniyama(E,{n=seriesprecision}): modular parametrization of
  elliptic curve E/Q.
 Doc:
  computes the modular parametrization of the elliptic curve $E/\Q$,

@@ -2,7 +2,7 @@ Function: bnfisunit
 Section: number_fields
 C-Name: bnfisunit0
 Prototype: GGDG
-Help: bnfisunit(bnf,x, {U}): bnf being output by bnfinit, give
+Help: bnfisunit(bnf,x,{U}): bnf being output by bnfinit, give
  the column vector of exponents of x on the fundamental units and the roots
  of unity if x is a unit, the empty vector otherwise. If U is present,
  as given by bnfunits, decompose x on the attached S-units generators.

@@ -2,7 +2,7 @@ Function: laurentseries
 Section: sums
 C-Name: laurentseries0
 Prototype: GDPDnp
-Help: laurentseries(f, {M = seriesprecision}, {x='x}): expand f around 0 as a
+Help: laurentseries(f,{M=seriesprecision},{x='x}): expand f around 0 as a
  Laurent series in x to order M.
 Doc: Expand $f$ as a Laurent series around $x = 0$ to order $M$. This
  function computes $f(x + O(x^{n}))$ until $n$ is large enough: it

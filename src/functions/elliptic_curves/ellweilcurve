@@ -2,7 +2,7 @@ Function: ellweilcurve
 Section: elliptic_curves
 C-Name: ellweilcurve
 Prototype: GD&
-Help: ellweilcurve(E, {&ms}): let E be an elliptic curve over Q given by
+Help: ellweilcurve(E,{&ms}): let E be an elliptic curve over Q given by
  ellinit or a rational isogeny class given by ellisomat. Return a list
  of isomorphism classes of elliptic curves isogenous to E as given by ellisomat
  and the list of the Smith invariants of the lattice associated to E in

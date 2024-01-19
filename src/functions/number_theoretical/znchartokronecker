@@ -2,7 +2,7 @@ Function: znchartokronecker
 Section: number_theoretical
 C-Name: znchartokronecker
 Prototype: GGD0,L,
-Help: znchartokronecker(G, chi, {flag=0}): let G be znstar(N,1), let chi
+Help: znchartokronecker(G,chi,{flag=0}): let G be znstar(N,1), let chi
  be a Dirichlet character mod N, return the discriminant D if chi is
  real equal to the Kronecker symbol (D/.) and 0 otherwise. If flag
  is set, return the fundamental discriminant attached to the corresponding

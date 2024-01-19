@@ -2,7 +2,7 @@ Function: alggroup
 Section: algebras
 C-Name: alggroup
 Prototype: GDG
-Help: alggroup(gal, {p=0}): constructs the group algebra of gal over Q (resp. Fp).
+Help: alggroup(gal,{p=0}): constructs the group algebra of gal over Q (resp. Fp).
 Doc: initializes the group algebra~$K[G]$ over~$K=\Q$ ($p$ omitted) or~$\F_{p}$
  where~$G$ is the underlying group of the \kbd{galoisinit} structure~\var{gal}.
  The input~\var{gal} is also allowed to be a \typ{VEC} of permutations that is

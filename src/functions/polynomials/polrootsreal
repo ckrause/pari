@@ -4,7 +4,7 @@ C-Name: realroots
 Prototype: GDGp
 Description:
   (gen,?gen):vec:prec realroots($1, $2, $prec)
-Help: polrootsreal(T, {ab}): real roots of the polynomial T with real
+Help: polrootsreal(T,{ab}): real roots of the polynomial T with real
  coefficients, using Uspensky's method. In interval ab = [a,b] if present.
 Doc: real roots of the polynomial $T$ with real coefficients, multiple
  roots being included according to their multiplicity. If the polynomial

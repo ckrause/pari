@@ -2,7 +2,7 @@ Function: primecert
 Section: number_theoretical
 C-Name: primecert0
 Prototype: GD0,L,D0,L,
-Help: primecert(N, {flag=0}, {partial=0}): If N is a prime, return a Primality
+Help: primecert(N,{flag=0},{partial=0}): If N is a prime, return a Primality
  Certificate.  Return 0 otherwise. If flag = 0 return an ECPP certificate
  (Atkin-Morain); if flag = 1 return an N-1 certificate (Pocklington-Lehmer)
 Doc:

@@ -2,7 +2,7 @@ Function: hgminit
 Section: hypergeometric_motives
 C-Name: hgminit
 Prototype: GDG
-Help: hgminit(a, {b}): Create the template for a hypergeometric
+Help: hgminit(a,{b}): Create the template for a hypergeometric
  motive with parameters a and possibly b. The format of the parameters may
  be alpha: Galois invariant lists of rational numbers a=alpha and b=beta;
  or cyclo: lists A and B of positive integers corresponding to alpha and beta;

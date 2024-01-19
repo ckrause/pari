@@ -2,7 +2,7 @@ Function: ffmap
 Section: number_theoretical
 C-Name: ffmap
 Prototype: GG
-Help: ffmap(m, x): given a (partial) map m between two finite fields,
+Help: ffmap(m,x): given a (partial) map m between two finite fields,
  return the image of x by m. The function is applied recursively to the
  component of vectors, matrices and polynomials. If m is a partial map that
  is not defined at x, return []

@@ -3,7 +3,7 @@ Section: programming/specific
 C-Name: trap0
 Prototype: DrDEDE
 Obsolete: 2012-01-17
-Help: trap({e}, {rec}, seq): this function is obsolete, use "iferr".
+Help: trap({e},{rec},seq): this function is obsolete, use "iferr".
  Try to execute seq, trapping runtime error e (all of them if e omitted);
  sequence rec is executed if the error occurs and is the result of the command.
 Wrapper: (,_,_)

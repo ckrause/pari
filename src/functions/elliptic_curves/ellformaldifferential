@@ -2,7 +2,7 @@ Function: ellformaldifferential
 Section: elliptic_curves
 C-Name: ellformaldifferential
 Prototype: GDPDn
-Help:ellformaldifferential(E, {n=seriesprecision}, {t = 'x}) : E elliptic curve,
+Help: ellformaldifferential(E,{n=seriesprecision},{t='x}) : E elliptic curve,
  n integer. Returns n terms of the power series [f, g] such that
  omega = dx/(2y+a_1x+a_3) = f(t) dt and eta = x(t) * omega = g(t) dt in the
  local parameter t=-x/y.

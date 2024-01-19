@@ -2,7 +2,7 @@ Function: bnflog
 Section: number_fields
 C-Name: bnflog
 Prototype: GG
-Help: bnflog(bnf, l): let bnf be attached to a number field F and let l be
+Help: bnflog(bnf,l): let bnf be attached to a number field F and let l be
  a prime number. Return the logarithmic l-class group Cl~_F.
 Doc: let \var{bnf} be a \var{bnf} structure attached to the number field $F$ and let $l$ be
  a prime number (hereafter denoted $\ell$ for typographical reasons). Return

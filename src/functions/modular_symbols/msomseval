@@ -2,7 +2,7 @@ Function: msomseval
 Section: modular_symbols
 C-Name: msomseval
 Prototype: GGG
-Help: msomseval(Mp, PHI, path):
+Help: msomseval(Mp,PHI,path):
  return the vectors of moments of the p-adic distribution attached
  to the path 'path' via the overconvergent modular symbol 'PHI'.
 Doc:return the vectors of moments of the $p$-adic distribution attached

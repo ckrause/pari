@@ -2,7 +2,7 @@ Function: mspadicseries
 Section: modular_symbols
 C-Name: mspadicseries
 Prototype: GD0,L,
-Help: mspadicseries(mu, {i=0}): given mu from mspadicmoments,
+Help: mspadicseries(mu,{i=0}): given mu from mspadicmoments,
  returns the attached p-adic series with maximal p-adic precision, depending
  on the precision of M (i-th Teichmueller component, if present).
 Doc: Let $\Phi$ be the $p$-adic distribution-valued overconvergent symbol

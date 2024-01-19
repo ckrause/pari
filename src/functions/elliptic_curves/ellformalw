@@ -2,7 +2,7 @@ Function: ellformalw
 Section: elliptic_curves
 C-Name: ellformalw
 Prototype: GDPDn
-Help:ellformalw(E, {n = seriesprecision}, {t = 'x}): E elliptic curve,
+Help: ellformalw(E,{n=seriesprecision},{t='x}): E elliptic curve,
  n integer; returns n terms of the formal expansion of w = -1/y in the formal
  parameter t = -x/y.
 Doc:Return the formal power series $w$ attached to the elliptic curve $E$,

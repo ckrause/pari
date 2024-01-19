@@ -2,7 +2,7 @@ Function: mscosets
 Section: modular_symbols
 C-Name: mscosets0
 Prototype: GG
-Help: mscosets(gen, inH): gen being a system of generators for a group G and H
+Help: mscosets(gen,inH): gen being a system of generators for a group G and H
  being a subgroup of finite index of G, return a list of right cosets of H \ G
  and the right action of G on H \ G. The subgroup H is given by a criterion inH
  (closure) deciding whether an element of G belongs to H.

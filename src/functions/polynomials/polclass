@@ -2,7 +2,7 @@ Function: polclass
 Section: polynomials
 C-Name: polclass
 Prototype: GD0,L,Dn
-Help: polclass(D, {inv = 0}, {x = 'x}): return a polynomial generating the
+Help: polclass(D,{inv=0},{x='x}): return a polynomial generating the
  Hilbert class field of Q(sqrt(D)) for the discriminant D<0.
 Doc:
  Return a polynomial in $\Z[x]$ generating the Hilbert class field for the

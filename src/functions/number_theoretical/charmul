@@ -2,7 +2,7 @@ Function: charmul
 Section: number_theoretical
 C-Name: charmul0
 Prototype: GGG
-Help: charmul(cyc, a,b): given a finite abelian group (by its elementary
+Help: charmul(cyc,a,b): given a finite abelian group (by its elementary
  divisors cyc) and two characters a and b, return the product character
  ab.
 Doc: let \var{cyc} represent a finite abelian group by its elementary

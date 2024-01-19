@@ -2,7 +2,7 @@ Function: bnflogdegree
 Section: number_fields
 C-Name: bnflogdegree
 Prototype: GGG
-Help: bnflogdegree(nf, A, l): let A be an ideal, return exp(deg_F A)
+Help: bnflogdegree(nf,A,l): let A be an ideal, return exp(deg_F A)
  the exponential of the l-adic logarithmic degree.
 Doc: Let \var{nf} be a \var{nf} structure attached to a number field $F$,
  and let $l$ be a prime number (hereafter

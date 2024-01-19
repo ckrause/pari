@@ -2,7 +2,7 @@ Function: znconreyexp
 Section: number_theoretical
 C-Name: znconreyexp
 Prototype: GG
-Help: znconreyexp(G, chi): Conrey exponential attached to G =
+Help: znconreyexp(G,chi): Conrey exponential attached to G =
  znstar(q, 1). Returns the element m in (Z/qZ)^* attached to the character
  chi on G: znconreylog(G, m) = chi.
 Doc: Given a \var{znstar} $G$ attached to $(\Z/q\Z)^{*}$ (as per

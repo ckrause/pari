@@ -2,7 +2,7 @@ Function: subcycloiwasawa
 Section: number_fields
 C-Name: subcycloiwasawa
 Prototype: GGD0,L,
-Help: subcycloiwasawa(fH, p, {n=0}): Let F be the abelian
+Help: subcycloiwasawa(fH,p,{n=0}): Let F be the abelian
  number field contained in Q(zeta_f) corresponding to the subgroup H of
  (Z/fZ)^*. Returns the minus part of Iwasawa polynomials attached to the
  cyclotomic Z_p extension of F.

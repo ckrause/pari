@@ -2,7 +2,7 @@ Function: parapply
 Section: programming/parallel
 C-Name: parapply
 Prototype: GG
-Help: parapply(f, x): parallel evaluation of f on the elements of x.
+Help: parapply(f,x): parallel evaluation of f on the elements of x.
 Doc: parallel evaluation of $f$ on the elements of $x$.
  The function $f$ must not access global variables or variables
  declared with local(), and must be free of side effects.

@@ -2,7 +2,7 @@ Function: snfrank
 Section: linear_algebra
 C-Name: snfrank
 Prototype: lGDG
-Help: snfrank(D,{q = 0}): assuming that D is a Smith normal form
+Help: snfrank(D,{q=0}): assuming that D is a Smith normal form
  (i.e. vector of elementary divisors) for some module and q a power of an
  irreducible element or 0 (default if omitted), returns the rank of D/qD.
 Doc: assuming that $D$ is a Smith normal form

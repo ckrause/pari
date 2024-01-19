@@ -2,7 +2,7 @@ Function: factormodcyclo
 Section: number_theoretical
 C-Name: factormodcyclo
 Prototype: LGD0,L,Dn
-Help: factormodcyclo(n, p, {single=0}, {v='x}): factor n-th
+Help: factormodcyclo(n,p,{single=0},{v='x}): factor n-th
  cyclotomic polynomial mod p.
 Doc: Factors $n$-th cyclotomic polynomial $\Phi_{n}(x)$ mod $p$,
  where $p$ is a prime number not dividing $n$.

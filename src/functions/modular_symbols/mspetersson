@@ -2,7 +2,7 @@ Function: mspetersson
 Section: modular_symbols
 C-Name: mspetersson
 Prototype: GDGDG
-Help: mspetersson(M, {F}, {G=F}): M being a full modular symbol space,
+Help: mspetersson(M,{F},{G=F}): M being a full modular symbol space,
  as given by msinit, calculate the intersection product {F,G} of modular
  symbols F and G on M.
 Doc: $M$ being a full modular symbol space for $\Gamma = \Gamma_{0}(N)$,

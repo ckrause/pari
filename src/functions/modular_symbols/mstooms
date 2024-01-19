@@ -2,7 +2,7 @@ Function: mstooms
 Section: modular_symbols
 C-Name: mstooms
 Prototype: GG
-Help: mstooms(Mp, phi): given Mp from mspadicinit, lift the
+Help: mstooms(Mp,phi): given Mp from mspadicinit, lift the
  (classical) eigen symbol phi to a distribution-valued overconvergent symbol
  in the sense of Pollack and Stevens.
  The resulting overconvergent eigensymbol can then be used in

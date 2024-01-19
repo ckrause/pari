@@ -2,7 +2,7 @@ Function: bestapprPade
 Section: number_theoretical
 C-Name: bestapprPade
 Prototype: GD-1,L,
-Help: bestapprPade(x, {B}): returns a rational function approximation to x.
+Help: bestapprPade(x,{B}): returns a rational function approximation to x.
  This function applies to series, polmods, and rational functions of course.
  Otherwise it applies recursively to all components.
 Doc: using variants of the extended Euclidean algorithm (Pad\'{e}

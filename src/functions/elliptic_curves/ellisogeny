@@ -2,7 +2,7 @@ Function: ellisogeny
 Section: elliptic_curves
 C-Name: ellisogeny
 Prototype: GGD0,L,DnDn
-Help: ellisogeny(E, G, {only_image = 0}, {x = 'x}, {y = 'y}): compute the image
+Help: ellisogeny(E,G,{only_image=0},{x='x},{y='y}): compute the image
  and isogeny corresponding to the quotient of E by the subgroup G.
 Doc:
  Given an elliptic curve $E$, a finite subgroup $G$ of $E$ is given either

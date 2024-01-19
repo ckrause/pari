@@ -2,7 +2,7 @@ Function: chardiv
 Section: number_theoretical
 C-Name: chardiv0
 Prototype: GGG
-Help: chardiv(cyc, a,b): given a finite abelian group (by its elementary
+Help: chardiv(cyc,a,b): given a finite abelian group (by its elementary
  divisors cyc) and two characters a and b, return the character a/b.
 Doc: let \var{cyc} represent a finite abelian group by its elementary
  divisors, i.e. $(d_{j})$ represents $\sum_{j \leq k} \Z/d_{j}\Z$ with $d_{k}.

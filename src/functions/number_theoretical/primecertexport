@@ -2,7 +2,7 @@ Function: primecertexport
 Section: number_theoretical
 C-Name: primecertexport
 Prototype: GD0,L,
-Help: primecertexport(cert, {format = 0}): Returns a string suitable for
+Help: primecertexport(cert,{format=0}): Returns a string suitable for
  print/write to display a primality certificate.
 Doc:
  Returns a string suitable for print/write to display a primality certificate

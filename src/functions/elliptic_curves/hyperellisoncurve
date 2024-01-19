@@ -2,7 +2,7 @@ Function: hyperellisoncurve
 Section: elliptic_curves
 C-Name: hyperellisoncurve
 Prototype: iGG
-Help: hyperellisoncurve(X, p): X being a nonsingular hyperelliptic model of a curve,
+Help: hyperellisoncurve(X,p): X being a nonsingular hyperelliptic model of a curve,
  test whether the point p is on the curve.
  X can be given either by a squarefree polynomial P such that
  X:y^2=P(x) or by a vector [P,Q] such that X:y^2+Q(x)*y=P(x) and Q^2+4P is

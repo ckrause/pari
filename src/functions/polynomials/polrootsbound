@@ -2,7 +2,7 @@ Function: polrootsbound
 Section: polynomials
 C-Name: polrootsbound
 Prototype: GDG
-Help: polrootsbound(T, {tau = 0.01}): return a sharp upper bound for the
+Help: polrootsbound(T,{tau=0.01}): return a sharp upper bound for the
  modulus of the largest complex root of the polynomial T with relative error
  tau.
 Doc: return a sharp upper bound $B$ for the modulus of

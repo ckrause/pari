@@ -2,7 +2,7 @@ Function: ffmaprel
 Section: number_theoretical
 C-Name: ffmaprel
 Prototype: GG
-Help: ffmaprel(m, x): given a (partial) map m between two finite fields,
+Help: ffmaprel(m,x): given a (partial) map m between two finite fields,
  express x as an algebraic element over the codomain of m in a way which
  is compatible with m.
  The function is applied recursively to the component of vectors, matrices and

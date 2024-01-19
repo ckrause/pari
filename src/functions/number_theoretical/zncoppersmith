@@ -2,7 +2,7 @@ Function: zncoppersmith
 Section: number_theoretical
 C-Name: zncoppersmith
 Prototype: GGGDG
-Help: zncoppersmith(P, N, X, {B=N}): finds all integers x
+Help: zncoppersmith(P,N,X,{B=N}): finds all integers x
  with |x| <= X such that  gcd(N, P(x)) >= B. The parameter X should be smaller
  than exp((log B)^2 / (deg(P) log N)) and the leading coefficient of P should be
  coprime to N.

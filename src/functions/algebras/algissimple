@@ -2,7 +2,7 @@ Function: algissimple
 Section: algebras
 C-Name: algissimple
 Prototype: iGD0,L,
-Help: algissimple(al, {ss = 0}): test whether the algebra al is simple.
+Help: algissimple(al,{ss=0}): test whether the algebra al is simple.
 Doc: \var{al} being a table algebra output by \tet{algtableinit} or a central
  simple algebra output by \tet{alginit}, tests whether the algebra \var{al} is
  simple. If $\var{ss}=1$, assumes that the algebra~\var{al} is semisimple

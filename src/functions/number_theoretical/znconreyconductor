@@ -2,7 +2,7 @@ Function: znconreyconductor
 Section: number_theoretical
 C-Name: znconreyconductor
 Prototype: GGD&
-Help: znconreyconductor(G,chi, {&chi0}): let G be znstar(q,1) and chi
+Help: znconreyconductor(G,chi,{&chi0}): let G be znstar(q,1) and chi
  be a Dirichlet character on (Z/qZ)* given by its Conrey logarithm. Return
  the conductor of chi, and set chi0 to (the Conrey logarithm of) the
  attached primitive character. If chi0 != chi, return the conductor

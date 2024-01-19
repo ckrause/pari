@@ -2,7 +2,7 @@ Function: mscuspidal
 Section: modular_symbols
 C-Name: mscuspidal
 Prototype: GD0,L,
-Help: mscuspidal(M, {flag=0}): M being a full modular symbol space, as given
+Help: mscuspidal(M,{flag=0}): M being a full modular symbol space, as given
  by msinit, return its cuspidal part S. If flag = 1, return [S,E] its
  decomposition into Eisenstein and cuspidal parts.
 Doc:

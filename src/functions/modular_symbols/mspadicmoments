@@ -2,7 +2,7 @@ Function: mspadicmoments
 Section: modular_symbols
 C-Name: mspadicmoments
 Prototype: GGD1,L,
-Help: mspadicmoments(Mp, PHI, {D = 1}): given Mp from mspadicinit, an
+Help: mspadicmoments(Mp,PHI,{D=1}): given Mp from mspadicinit, an
  overconvergent eigensymbol PHI, and optionally a fundamental discriminant
  D coprime to p, return the moments of the p-1 distributions
  PHI^D([0]-[oo]) | (a + pZp), 0 < a < p. To be used by mspadicL and

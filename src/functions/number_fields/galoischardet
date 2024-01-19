@@ -2,7 +2,7 @@ Function: galoischardet
 Section: number_fields
 C-Name: galoischardet
 Prototype: GGD1,L,
-Help: galoischardet(gal, chi, {o=1}): return the determinant character of the
+Help: galoischardet(gal,chi,{o=1}): return the determinant character of the
  character chi.
 Doc: Let $G$ be the group attached to the \kbd{galoisinit}
  structure~\var{gal}, and

@@ -2,7 +2,7 @@ Function: plotdraw
 Section: graphic
 C-Name: plotdraw
 Prototype: vGD0,L,
-Help: plotdraw(w, {flag=0}): draw rectwindow w. More generally,
+Help: plotdraw(w,{flag=0}): draw rectwindow w. More generally,
  w can be of the form [w1,x1,y1, w2,x2,y2,etc.]: draw rectwindows wi
  at given xi,yi positions. If flag!=0, the xi,yi express fractions of the size
  of the current output device.

@@ -2,7 +2,7 @@ Function: msfromell
 Section: modular_symbols
 C-Name: msfromell
 Prototype: GD0,L,
-Help: msfromell(E, {sign=0}): return the [M, x], where M is msinit(N,2)
+Help: msfromell(E,{sign=0}): return the [M, x], where M is msinit(N,2)
  and x is the modular symbol in M attached to the elliptic curve E/Q.
 Doc: Let $E/\Q$ be an elliptic curve of conductor $N$. For $\varepsilon =
  \pm1$, we define the (cuspidal, new) modular symbol $x^{\varepsilon}$ in

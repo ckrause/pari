@@ -9,19 +9,19 @@ Function: _parsqfboth_worker
 Section: number_theoretical
 C-Name: parsqfboth_worker
 Prototype: GGGGGG
-Help: _parsqfboth_worker(gk, vZ, vVQ, vV, P, Nsqstep): auxiliary.
+Help: _parsqfboth_worker(gk,vZ,vVQ,vV,P,Nsqstep): auxiliary.
 Doc: auxiliary
 
 Function: _serh_worker
 Section: transcendental
 C-Name: serh_worker
 Prototype: GGGGG
-Help: _serh_worker(gk, V, a, ns, gprec): auxiliary.
+Help: _serh_worker(gk,V,a,ns,gprec): auxiliary.
 Doc: auxiliary
 
 Function: _serhlong_worker
 Section: transcendental
 C-Name: serhlong_worker
 Prototype: GGGGG
-Help: _serhlong_worker(gk, z, a, ns, gprec): auxiliary.
+Help: _serhlong_worker(gk,z,a,ns,gprec): auxiliary.
 Doc: auxiliary

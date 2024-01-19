@@ -2,7 +2,7 @@ Function: Vecsmall
 Section: conversions
 C-Name: gtovecsmall0
 Prototype: GD0,L,
-Help: Vecsmall(x, {n}): transforms the object x into a VECSMALL of dimension n.
+Help: Vecsmall(x,{n}): transforms the object x into a VECSMALL of dimension n.
 Description:
  (gen,?0):vecsmall               gtovecsmall($1)
  (gen,small):vecsmall            gtovecsmall0($1, $2)

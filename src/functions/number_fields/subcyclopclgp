@@ -2,7 +2,7 @@ Function: subcyclopclgp
 Section: number_fields
 C-Name: subcyclopclgp
 Prototype: GGD0,L,
-Help: subcyclopclgp(fH, p, {flag=0}): Let F be the abelian
+Help: subcyclopclgp(fH,p,{flag=0}): Let F be the abelian
  number field contained in Q(zeta_f) corresponding to the subgroup H of
  (Z/fZ)^*. Returns the minus part of Iwasawa polynomials attached to the
  ideal class group of F.

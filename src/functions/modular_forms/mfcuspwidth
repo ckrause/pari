@@ -2,7 +2,7 @@ Function: mfcuspwidth
 Section: modular_forms
 C-Name: mfcuspwidth
 Prototype: lGG
-Help: mfcuspwidth(N, cusp): width of cusp in Gamma_0(N).
+Help: mfcuspwidth(N,cusp): width of cusp in Gamma_0(N).
 Doc: width of \kbd{cusp} in $\Gamma_{0}(N)$.
  \bprog
  ? mfcusps(12)

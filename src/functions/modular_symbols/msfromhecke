@@ -2,7 +2,7 @@ Function: msfromhecke
 Section: modular_symbols
 C-Name: msfromhecke
 Prototype: GGDG
-Help: msfromhecke(M, v, {H}): given a msinit M and a vector v
+Help: msfromhecke(M,v,{H}): given a msinit M and a vector v
  of pairs [p, P] (where p is prime and P is a polynomial with integer
  coefficients), return a basis of all modular symbols such that
  P(Tp) * s = 0. If H is present, it must be a Hecke-stable subspace

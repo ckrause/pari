@@ -2,7 +2,7 @@ Function: zncharinduce
 Section: number_theoretical
 C-Name: zncharinduce
 Prototype: GGG
-Help: zncharinduce(G, chi, N): let G be znstar(q,1), let chi
+Help: zncharinduce(G,chi,N): let G be znstar(q,1), let chi
  be a Dirichlet character mod q and let N be a multiple of q. Return
  the character modulo N extending chi.
 Doc: Let $G$ be attached to $(\Z/q\Z)^{*}$ (as per \kbd{G = znstar(q,1)})

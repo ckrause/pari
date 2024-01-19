@@ -2,7 +2,7 @@ Function: plothrawexport
 Section: graphic
 C-Name: plothrawexport
 Prototype: GGGD0,L,
-Help: plothrawexport(fmt, X,Y,{flag=0}): plot in high resolution
+Help: plothrawexport(fmt,X,Y,{flag=0}): plot in high resolution
  points whose x (resp. y) coordinates are in X (resp. Y), returning
  the resulting picture as a character string. If flag is 1, join points,
  other nonzero flags should be combinations of bits 8,16,32,64,128,256 meaning

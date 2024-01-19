@@ -2,7 +2,7 @@ Function: mspolygon
 Section: modular_symbols
 C-Name: mspolygon
 Prototype: GD0,L,
-Help: mspolygon(M, {flag = 0}): M describes a subgroup G of finite index in
+Help: mspolygon(M,{flag=0}): M describes a subgroup G of finite index in
  the modular group PSL2(Z), as given by msinit or a positive integer N
  (encoding the group G = Gamma0(N)), or by msfarey (arbitrary subgroups).
  Return an hyperbolic polygon (Farey symbol) attached to G.

@@ -2,7 +2,7 @@ Function: sumnumlagrangeinit
 Section: sums
 C-Name: sumnumlagrangeinit
 Prototype: DGDGp
-Help: sumnumlagrangeinit({asymp}, {c1}): initialize tables for Lagrange
+Help: sumnumlagrangeinit({asymp},{c1}): initialize tables for Lagrange
  summation of a series.
 Doc: initialize tables for Lagrange summation of a series. By
  default, assume that the remainder $R(n) = \sum_{m \geq n} f(m)$

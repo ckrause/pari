@@ -2,7 +2,7 @@ Function: ellisogenyapply
 Section: elliptic_curves
 C-Name: ellisogenyapply
 Prototype: GG
-Help: ellisogenyapply(f, g): given an isogeny f and g either a point P (in the
+Help: ellisogenyapply(f,g): given an isogeny f and g either a point P (in the
  domain of f) or an isogeny, apply f to g: return the image of P under f or
  the composite isogeny f o g.
 Doc:

@@ -2,7 +2,7 @@ Function: msfromcusp
 Section: modular_symbols
 C-Name: msfromcusp
 Prototype: GG
-Help: msfromcusp(M, c): returns the modular symbol attached to the cusp
+Help: msfromcusp(M,c): returns the modular symbol attached to the cusp
  c, where M is a modular symbol space of level N.
 Doc: returns the modular symbol attached to the cusp
  $c$, where $M$ is a modular symbol space of level $N$, attached to

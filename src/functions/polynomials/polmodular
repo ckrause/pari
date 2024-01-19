@@ -2,7 +2,7 @@ Function: polmodular
 Section: polynomials
 C-Name: polmodular
 Prototype: LD0,L,DGDnD0,L,
-Help: polmodular(L, {inv = 0}, {x = 'x}, {y = 'y}, {derivs = 0}):
+Help: polmodular(L,{inv=0},{x='x},{y='y},{derivs=0}):
  return the modular polynomial of level L and invariant inv.
 Doc: Return the modular polynomial of prime level $L$ in variables $x$ and $y$
  for the modular function specified by \kbd{inv}.  If \kbd{inv} is 0 (the

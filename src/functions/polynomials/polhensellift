@@ -2,7 +2,7 @@ Function: polhensellift
 Section: polynomials
 C-Name: polhensellift
 Prototype: GGGL
-Help: polhensellift(A, B, p, e): lift the factorization B of A modulo p to a
+Help: polhensellift(A,B,p,e): lift the factorization B of A modulo p to a
  factorization modulo p^e using Hensel lift. The factors in B must be
  pairwise relatively prime modulo p.
 Doc: given a prime $p$, an integral polynomial $A$ whose leading coefficient

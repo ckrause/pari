@@ -2,7 +2,7 @@ Function: subcyclohminus
 Section: number_fields
 C-Name: subcyclohminus
 Prototype: GDG
-Help: subcyclohminus(fH, {p=0}):
+Help: subcyclohminus(fH,{p=0}):
  Let F be the abelian number field contained in Q(zeta_f) corresponding
  to the subgroup H of (Z/fZ)^*. Let h be the relative class number
  h^-(F) and Q the Hasse unit index in {1,2}. If Q could be computed, returns

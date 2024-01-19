@@ -2,7 +2,7 @@ Function: hyperellchangecurve
 Section: elliptic_curves
 C-Name: hyperellchangecurve
 Prototype: GG
-Help: hyperellchangecurve(C, m): C being a nonsingular
+Help: hyperellchangecurve(C,m): C being a nonsingular
  hyperelliptic model of a curve, apply the change of coordinate
  given by m.
  C can be given either by a squarefree polynomial P such that

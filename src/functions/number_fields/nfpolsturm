@@ -2,7 +2,7 @@ Function: nfpolsturm
 Section: number_fields
 C-Name: nfpolsturm
 Prototype: GGDG
-Help: nfpolsturm(nf, T, {pl}): number of distinct real roots of the polynomial
+Help: nfpolsturm(nf,T,{pl}): number of distinct real roots of the polynomial
  s(T) where s runs through the real embeddings given by vector pl.
 Doc: given a polynomial $T$ with coefficients in the number field \var{nf},
  returns the number of real roots of the $s(T)$ where $s$ runs through

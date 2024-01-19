@@ -2,7 +2,7 @@ Function: zncharisodd
 Section: number_theoretical
 C-Name: zncharisodd
 Prototype: lGG
-Help: zncharisodd(G, chi): let G be znstar(N,1), let chi
+Help: zncharisodd(G,chi): let G be znstar(N,1), let chi
  be a Dirichlet character mod N, return 1 if and only if chi(-1) = -1
  and 0 otherwise.
 Doc: Let $G$ be attached to $(\Z/N\Z)^{*}$ (as per \kbd{G = znstar(N,1)})

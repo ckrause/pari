@@ -2,7 +2,7 @@ Function: bnrL1
 Section: number_fields
 C-Name: bnrL1
 Prototype: GDGD0,L,p
-Help: bnrL1(bnr, {H}, {flag=0}): bnr being output by bnrinit and
+Help: bnrL1(bnr,{H},{flag=0}): bnr being output by bnrinit and
  H being a square matrix defining a congruence subgroup of bnr (the
  trivial subgroup if omitted), for each character of bnr trivial on this
  subgroup, compute L(1, chi) (or equivalently the first nonzero term c(chi)

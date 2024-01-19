@@ -2,7 +2,7 @@ Function: lfunorderzero
 Section: l_functions
 C-Name: lfunorderzero
 Prototype: lGD-1,L,b
-Help: lfunorderzero(L, {m = -1}): computes the order of the possible zero
+Help: lfunorderzero(L,{m=-1}): computes the order of the possible zero
  of the L-function at the center k/2 of the critical strip. If m is
  given and has a nonnegative value, assumes the order is at most m.
 Doc: Computes the order of the possible zero of the $L$-function at the

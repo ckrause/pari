@@ -2,7 +2,7 @@ Function: ffextend
 Section: number_theoretical
 C-Name: ffextend
 Prototype: GGDn
-Help: ffextend(a, P, {v}):
+Help: ffextend(a,P,{v}):
  extend the field K of definition of a by a root of the polynomial P, assumed
  to be irreducible over K.  Return [r, m] where r is a root of P in the
  extension field L and m is a map from K to L, see \kbd{ffmap}. If v is given,

@@ -2,7 +2,7 @@ Function: eulerianpol
 Section: combinatorics
 C-Name: eulerianpol
 Prototype: LDn
-Help: eulerianpol(n, {v = 'x}): Eulerian polynomial A_n, in variable v.
+Help: eulerianpol(n,{v='x}): Eulerian polynomial A_n, in variable v.
 Doc: \idx{Eulerian polynomial} $A_{n}$ in variable $v$ defined by
  $$
   \sum_{n=0}^{\infty} A_{n}(x) \dfrac{T^{n}}{n!} = \dfrac{x-1}{x-e^{(x-1)T}}.

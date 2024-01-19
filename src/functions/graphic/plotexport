@@ -2,7 +2,7 @@ Function: plotexport
 Section: graphic
 C-Name: plotexport
 Prototype: GGD0,L,
-Help: plotexport(fmt, list, {flag=0}): draw vector of rectwindows list as
+Help: plotexport(fmt,list,{flag=0}): draw vector of rectwindows list as
  in plotdraw, returning the resulting picture as a character string;
  fmt is either "ps" or "svg".
 Doc: draw list of rectwindows as in \kbd{plotdraw(list,flag)}, returning

@@ -2,7 +2,7 @@ Function: mfcoefs
 Section: modular_forms
 C-Name: mfcoefs
 Prototype: GLD1,L,
-Help: mfcoefs(F,n,{d = 1}): Compute the vector of coefficients
+Help: mfcoefs(F,n,{d=1}): Compute the vector of coefficients
  [a[0],a[d],...,a[nd]] of the modular form F.
 Doc: Compute the vector of Fourier coefficients $[a[0],a[d],...,a[nd]]$ of the
  generalized modular form $F$; $d$ must be positive and $d = 1$ by default.

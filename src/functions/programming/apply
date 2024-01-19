@@ -2,7 +2,7 @@ Function: apply
 Section: programming/specific
 C-Name: apply0
 Prototype: GG
-Help: apply(f, A): apply function f to each entry in A.
+Help: apply(f,A): apply function f to each entry in A.
 Wrapper: (G)
 Description:
   (closure,gen):gen    genapply(${1 cookie}, ${1 wrapper}, $2)

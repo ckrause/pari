@@ -2,7 +2,7 @@ Function: lerchzeta
 Section: transcendental
 C-Name: lerchzeta
 Prototype: GGGp
-Help: lerchzeta(s, a, lam): Lerch zeta function equal to sum for n >= 0 of
+Help: lerchzeta(s,a,lam): Lerch zeta function equal to sum for n >= 0 of
  e^(2 pi i lam n) / (n+a)^s for reasonable values of the arguments.
 Doc: Lerch zeta function
  $$L(s,a,\lambda)=\sum_{n\ge0}e^{2\pi i\lambda n}(n+a)^{-s}$$
@@ -12,5 +12,5 @@ Function: _lerch_worker
 Section: programming/internals
 C-Name: lerch_worker
 Prototype: GG
-Help: _lerch_worker(E, t): worker for lerchzeta
+Help: _lerch_worker(E,t): worker for lerchzeta
 Doc: auxiliary.

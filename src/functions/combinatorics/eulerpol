@@ -2,7 +2,7 @@ Function: eulerpol
 Section: combinatorics
 C-Name: eulerpol
 Prototype: LDn
-Help: eulerpol(n, {v = 'x}): Euler polynomial E_n, in variable v.
+Help: eulerpol(n,{v='x}): Euler polynomial E_n, in variable v.
 Doc: \idx{Euler polynomial} $E_{n}$ in variable $v$ defined by
  $$
   \sum_{n=0}^{\infty} E_{n}(x)\dfrac{T^{n}}{n!} = \dfrac{2e^{xT}}{e^{T}+1}.

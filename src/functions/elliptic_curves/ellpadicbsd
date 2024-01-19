@@ -2,7 +2,7 @@ Function: ellpadicbsd
 Section: elliptic_curves
 C-Name: ellpadicbsd
 Prototype: GGLDG
-Help: ellpadicbsd(E, p, n, {D = 1}): returns [r,Lp] where
+Help: ellpadicbsd(E,p,n,{D=1}): returns [r,Lp] where
  r is the (conjectural) analytic rank of the p-adic L-function attached
  to the quadratic twist E_D and Lp is (conjecturally) equal
  to the product of the p-adic regulator and the cardinal of the

@@ -2,7 +2,7 @@ Function: randomprime
 Section: number_theoretical
 C-Name: randomprime0
 Prototype: DGDG
-Help: randomprime({N = 2^31}, {q}): returns a strong pseudo prime in [2, N-1].
+Help: randomprime({N=2^31},{q}): returns a strong pseudo prime in [2, N-1].
  If q is an integer, return a prime = 1 mod q; if q is an intmod, return
  a prime in the given congruence class.
 Doc: returns a strong pseudo prime (see \tet{ispseudoprime}) in $[2,N-1]$.

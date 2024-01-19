@@ -2,7 +2,7 @@ Function: hgmeulerfactor
 Section: hypergeometric_motives
 C-Name: hgmeulerfactor
 Prototype: GGLD&
-Help: hgmeulerfactor(H, t, p, {&e}): (H,t) being a hypergeometric motive,
+Help: hgmeulerfactor(H,t,p,{&e}): (H,t) being a hypergeometric motive,
  returns the Euler factor P_p at the prime p; if present, set e to the valuation
  of the conductor at p.
 Doc: $(H,t)$ being a hypergeometric motive, returns the inverse of its

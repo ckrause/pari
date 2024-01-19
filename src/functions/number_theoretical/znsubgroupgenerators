@@ -2,7 +2,7 @@ Function: znsubgroupgenerators
 Section: number_theoretical
 C-Name: znsubgroupgenerators
 Prototype: GD0,L,
-Help: znsubgroupgenerators(H, {flag=0}): finds generators of the subgroup H
+Help: znsubgroupgenerators(H,{flag=0}): finds generators of the subgroup H
  of (Z/fZ)^*; H is given by a vector of length f of 1/0 values: the a-th component is 1
  if and only if a belongs to H.
 Doc: Finds a minimal set of generators for the subgroup of $(\Z/f\Z)^{*}$

@@ -2,7 +2,7 @@ Function: select
 Section: programming/specific
 C-Name: select0
 Prototype: GGD0,L,
-Help: select(f, A, {flag = 0}): selects elements of A according to the selection
+Help: select(f,A,{flag=0}): selects elements of A according to the selection
  function f. If flag is 1, return the indices of those elements (indirect
  selection).
 Wrapper: (bG)

@@ -2,7 +2,7 @@ Function: ellpadicL
 Section: elliptic_curves
 C-Name: ellpadicL
 Prototype: GGLDGD0,L,DG
-Help: ellpadicL(E, p, n, {s = 0}, {r = 0}, {D = 1}): returns the value
+Help: ellpadicL(E,p,n,{s=0},{r=0},{D=1}): returns the value
  on a character of Z_{p}^* represented by an integer s or a vector [s1,s2]
  of the derivative of order r of the p-adic L-function of
  the elliptic curve E (twisted by D, if present).

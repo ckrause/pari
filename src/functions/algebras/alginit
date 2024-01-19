@@ -2,7 +2,7 @@ Function: alginit
 Section: algebras
 C-Name: alginit
 Prototype: GGDnD3,L,
-Help: alginit(B, C, {v}, {flag = 3}): initializes the central simple algebra
+Help: alginit(B,C,{v},{flag=3}): initializes the central simple algebra
  defined by data B, C. Binary digits of the flag mean 1: compute a maximal
  order; 2: fully factor the discriminant instead of using a lazy factorisation.
 Doc: initializes the central simple algebra defined by data $B$, $C$ and

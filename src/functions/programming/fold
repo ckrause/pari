@@ -2,7 +2,7 @@ Function: fold
 Section: programming/specific
 C-Name: fold0
 Prototype: GG
-Help: fold(f, A): return f(...f(f(A[1],A[2]),A[3]),...,A[#A]).
+Help: fold(f,A): return f(...f(f(A[1],A[2]),A[3]),...,A[#A]).
 Wrapper: (GG)
 Description:
   (closure,gen):gen    genfold(${1 cookie}, ${1 wrapper}, $2)

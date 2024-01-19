@@ -2,7 +2,7 @@ Function: ellperiods
 Section: elliptic_curves
 C-Name: ellperiods
 Prototype: GD0,L,p
-Help: ellperiods(w, {flag = 0}): w describes a complex period lattice ([w1,w2]
+Help: ellperiods(w,{flag=0}): w describes a complex period lattice ([w1,w2]
  or an ellinit structure). Returns normalized periods [W1,W2] generating the
  same lattice such that tau := W1/W2 satisfies Im(tau) > 0 and lies in the
  standard fundamental domain for SL2. If flag is 1, the return value is

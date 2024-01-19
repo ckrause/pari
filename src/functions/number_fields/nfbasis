@@ -2,7 +2,7 @@ Function: nfbasis
 Section: number_fields
 C-Name: nfbasis
 Prototype: GD&
-Help: nfbasis(T, {&dK}): integral basis of the field Q[a], where a is
+Help: nfbasis(T,{&dK}): integral basis of the field Q[a], where a is
  a root of the polynomial T, using the round 4 algorithm. An argument
  [T,listP] is possible, where listP is a list of primes or a prime bound,
  to get an order which is maximal at certain primes only. If present, dK is

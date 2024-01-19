@@ -2,7 +2,7 @@ Function: galoischarpoly
 Section: number_fields
 C-Name: galoischarpoly
 Prototype: GGD1,L,
-Help: galoischarpoly(gal, chi, {o=1}): return the list of characteristic
+Help: galoischarpoly(gal,chi,{o=1}): return the list of characteristic
  polynomials of the representation attached to the character chi.
 Doc: Let $G$ be the group attached to the \kbd{galoisinit}
  structure~\var{gal}, and

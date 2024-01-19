@@ -2,7 +2,7 @@ Function: Col
 Section: conversions
 C-Name: gtocol0
 Prototype: GD0,L,
-Help: Col(x, {n}): transforms the object x into a column vector of dimension n.
+Help: Col(x,{n}): transforms the object x into a column vector of dimension n.
 Description:
  (gen):vec     gtocol($1)
 Doc:

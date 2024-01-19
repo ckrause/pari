@@ -2,7 +2,7 @@ Function: ellformalexp
 Section: elliptic_curves
 C-Name: ellformalexp
 Prototype: GDPDn
-Help: ellformalexp(E, {n = seriesprecision}, {z = 'x}) : E elliptic curve,
+Help: ellformalexp(E,{n=seriesprecision},{z='x}): E elliptic curve,
  returns n terms of the formal elliptic exponential on E as a series in z.
 Doc: The elliptic formal exponential \kbd{Exp} attached to $E$ is the
  isomorphism from the formal additive law to the formal group of $E$. It is

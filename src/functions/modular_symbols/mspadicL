@@ -2,7 +2,7 @@ Function: mspadicL
 Section: modular_symbols
 C-Name: mspadicL
 Prototype: GDGD0,L,
-Help: mspadicL(mu, {s = 0}, {r = 0}): given
+Help: mspadicL(mu,{s=0},{r=0}): given
  mu from mspadicmoments (p-adic distributions attached to an
  overconvergent symbol PHI) returns the value on a
  character of Z_p^* represented by s of the derivative of order r of the

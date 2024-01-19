@@ -2,7 +2,7 @@ Function: ellpadiclambdamu
 Section: elliptic_curves
 C-Name: ellpadiclambdamu
 Prototype: GLD1,L,D0,L,
-Help: ellpadiclambdamu(E, p, {D=1},{i=0}): returns the Iwasawa invariants for
+Help: ellpadiclambdamu(E,p,{D=1},{i=0}): returns the Iwasawa invariants for
  the p-adic L-function attached to E, twisted by (D,.) and the i-th power
  of the Teichmuller character.
 Doc: Let $p$ be a prime number and let $E/\Q$ be a rational elliptic curve

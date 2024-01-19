@@ -2,7 +2,7 @@ Function: charpow
 Section: number_theoretical
 C-Name: charpow0
 Prototype: GGG
-Help: charpow(cyc, a,n): given a finite abelian group (by its elementary
+Help: charpow(cyc,a,n): given a finite abelian group (by its elementary
  divisors cyc) a character a and an integer n return the character a^n.
 Doc: let \var{cyc} represent a finite abelian group by its elementary
  divisors, i.e. $(d_{j})$ represents $\sum_{j \leq k} \Z/d_{j}\Z$ with $d_{k}

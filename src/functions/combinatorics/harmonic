@@ -2,7 +2,7 @@ Function: harmonic
 Section: combinatorics
 C-Name: harmonic0
 Prototype: UDG
-Help: harmonic(n,{r = 1}): generalized harmonic number of index n in power r.
+Help: harmonic(n,{r=1}): generalized harmonic number of index n in power r.
 Doc: generalized harmonic number of index $n \geq 0$ in power $r$, as a rational
  number. If $r = 1$ (or omitted), this is the harmonic number
  $$ H_{n} = \sum_{i = 1}^{n} \dfrac{1}{i}.$$

@@ -2,7 +2,7 @@ Function: quadunitindex
 Section: number_theoretical
 C-Name: quadunitindex
 Prototype: GG
-Help: quadunitindex(D, f): given a fundamental discriminant D, returns the
+Help: quadunitindex(D,f): given a fundamental discriminant D, returns the
  index of the unit group of the order of conductor f.
 Doc: given a fundamental discriminant $D$, returns the index of the unit group
  of the order of conductor $f$ in the units of $\Q(\sqrt{D})$. This function

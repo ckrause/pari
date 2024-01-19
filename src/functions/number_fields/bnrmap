@@ -2,7 +2,7 @@ Function: bnrmap
 Section: number_fields
 C-Name: bnrmap
 Prototype: GG
-Help: bnrmap(A, B): if A and B are bnr structures for the same bnf attached
+Help: bnrmap(A,B): if A and B are bnr structures for the same bnf attached
  to moduli mA and mB with mB | mA, return the canonical surjection from
  A to B. Alternatively, if A is a map from bnrmap and B is a congruence
  subgroup or ray class character modulo mA, return the corresponding object on

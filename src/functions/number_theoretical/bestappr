@@ -2,7 +2,7 @@ Function: bestappr
 Section: number_theoretical
 C-Name: bestappr
 Prototype: GDG
-Help: bestappr(x, {B}): return a rational approximation to x, whose
+Help: bestappr(x,{B}): return a rational approximation to x, whose
  denominator is limited by B, if present. This function applies to reals,
  intmods, p-adics, and rationals of course. Otherwise it applies recursively
  to all components.

@@ -2,7 +2,7 @@ Function: algtableinit
 Section: algebras
 C-Name: algtableinit
 Prototype: GDG
-Help: algtableinit(mt, {p=0}): initializes the associative algebra
+Help: algtableinit(mt,{p=0}): initializes the associative algebra
  over Q (resp. Fp) defined by the multiplication table mt.
 Doc: initializes the associative algebra over $K = \Q$ ($p$ omitted) or $\F_{p}$
  defined by the multiplication table \var{mt}.

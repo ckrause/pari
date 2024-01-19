@@ -2,7 +2,7 @@ Function: ffcompomap
 Section: number_theoretical
 C-Name: ffcompomap
 Prototype: GG
-Help: ffcompomap(f, g): Let k, l, m be three finite fields and f a (partial) map
+Help: ffcompomap(f,g): Let k, l, m be three finite fields and f a (partial) map
  from l to m and g a partial map from k to l, return the (partial) map f o g
  from k to m.
 Doc: Let $k$, $l$, $m$ be three finite fields and $f$ a (partial) map from $l$

@@ -2,7 +2,7 @@ Function: filewrite
 Section: programming/specific
 C-Name: gp_filewrite
 Prototype: vLs
-Help: filewrite(n, s): write the string s to file attached to descriptor n,
+Help: filewrite(n,s): write the string s to file attached to descriptor n,
  ending with a newline. The file must have been opened with fileopen in
  "w" or "a" mode.
 Doc: write the string $s$ to the file attached to descriptor $n$, ending with

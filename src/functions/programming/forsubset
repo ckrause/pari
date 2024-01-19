@@ -18,7 +18,7 @@ Prototype: vGVI
 Iterator:
  (gen,gen)         (forsubset, _forsubset_init, _forsubset_next)
 Wrapper: (,vG,,)
-Help: forsubset(nk, s, seq): if nk is an integer n, the sequence is evaluated,
+Help: forsubset(nk,s,seq): if nk is an integer n, the sequence is evaluated,
   s going through all subsets of {1, 2, ..., n}; if nk is a pair [n,k]
   of integers s goes through k-subsets of {1, 2, ..., n}.
   The order is lexicographic among subsets of the same size and smaller

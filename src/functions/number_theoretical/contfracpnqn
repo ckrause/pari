@@ -2,7 +2,7 @@ Function: contfracpnqn
 Section: number_theoretical
 C-Name: contfracpnqn
 Prototype: GD-1,L,
-Help: contfracpnqn(x, {n=-1}): [p_n,p_{n-1}; q_n,q_{n-1}] corresponding to the
+Help: contfracpnqn(x,{n=-1}): [p_n,p_{n-1}; q_n,q_{n-1}] corresponding to the
  continued fraction x. If n >= 0 is present, returns all convergents from
  p_0/q_0 up to p_n/q_n.
 Doc: when $x$ is a vector or a one-row matrix, $x$

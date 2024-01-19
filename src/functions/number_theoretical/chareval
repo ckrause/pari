@@ -2,7 +2,7 @@ Function: chareval
 Section: number_theoretical
 C-Name: chareval
 Prototype: GGGDG
-Help: chareval(G, chi, x, {z}): given an abelian group structure affording
+Help: chareval(G,chi,x,{z}): given an abelian group structure affording
  a discrete logarithm method, e.g. G = znstar(N,1) or a bnr structure,
  let x be an element of G and let chi be a character of G. This function
  returns the value of chi at x, where the encoding depends on the optional
