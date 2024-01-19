@@ -458,6 +458,8 @@ L=lfun([bnr,[[2,0],[6,0]]],2)
 L=lfunshift(1,-100);
 lfun(L,-100+50*I); \\ SEGV at low accuracy
 
+lfun(y^8-4*y^7+7*y^6-7*y^5+7*y^4-7*y^3+2*y^2+y-1,0,1)
+
 \\ ERRORS: keep them at end of file
 lfuntheta(1,0)
 lfunhardy(1,I)

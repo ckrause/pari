@@ -318,6 +318,7 @@ O(x^2)
 9183815*I]
 [0.98840426632758622164719972283433390539, 0.9884042663275862216471997228343
 3390539]
+0
   ***   at top-level: lfuntheta(1,0)
   ***                 ^--------------
   *** lfuntheta: domain error in lfunthetainit: t = 0
@@ -390,4 +391,4 @@ O(x^2)
   ***   at top-level: lfuncheckfeq(1,I)
   ***                 ^-----------------
   *** lfuncheckfeq: domain error in lfunthetaneed: arg t > 0.7853981633974482790
-Total time spent: 4071
+Total time spent: 5900

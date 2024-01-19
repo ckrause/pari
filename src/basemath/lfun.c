@@ -2015,10 +2015,10 @@ lfunderiv(GEN lmisc, long m, GEN s, long flag, long bitprec)
   }
   else
   {
-    long ex = lfunlambdaord(linit, s);
+    long e = lfunlambdaord(linit, s) + m + 1;
     /* HACK: pretend lfuninit was done to right accuracy */
-    if (gequal0(s)) s = gen_0;
-    s = deg1ser_shallow(gen_1, s, 0, m+1+ex);
+    if (gequal0(s)) { s = gen_0; e--; }
+    s = deg1ser_shallow(gen_1, s, 0, e);
   }
   res = flag ? lfunlambda_OK(linit, s, dom, bitprec):
                lfun_OK(linit, s, dom, bitprec);
