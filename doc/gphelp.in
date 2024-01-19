@@ -295,7 +295,6 @@ sub treat {
   }
 
   s/(\W)/\\$1/g;
-  s/_/\\\\_/g if (!/^se\\:/);
       ($pipe && open(DOC,"$pipe $docfile |"))
   || (!$pipe && open(DOC,"$docfile")) || die "Cannot open $docfile: $!";
   return &apropos($_) if ($apropos);
