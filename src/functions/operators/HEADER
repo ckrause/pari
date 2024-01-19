@@ -93,7 +93,7 @@ Doc:
 
  \subseckbd{*} The expression $x$ \kbd{*} $y$ is the \idx{product} of $x$
  and $y$. Among the prominent impossibilities are multiplication between
- vector/matrices of incompatible sizes, between a \typ{INTMOD} or \typ{PADIC}
+ vector/matrices of incompatible sizes, between a \typ{INTMOD} or \typ{PADIC}.
  Restricted to scalars, \kbd{*} is commutative; because of vector and matrix
  operations, it is not commutative in general.
 
@@ -198,15 +198,17 @@ Doc:
 
  \subseckbd{op=} When \kbd{op} is a binary arithmetic operator among
  \kbd{+}, \kbd{-}, \kbd{\%}, \kbd{/}, \kbd{\bs} or \kbd{\bs/}, the construct
- $x \var{op}= y$ is a shortcut for $x = x \var{op} y$.
+ $x$~\kbd{op=}~$y$ is a shortcut for $x$~\kbd{=}~$x\ \kbd{op}\ y$.
  \bprog
  ? v[1] += 10  \\ increment v[1] by 10
  ? a /= 2 \\ divide a by 2
  @eprog
 
- \subseckbd{++} \kbd{$x$++} is a shortcut for \kbd{$x$ = $x$ + 1}.
+ \subseckbd{++} \kbd{$x$++} is a shortcut for \kbd{$x$ = $x$ + 1} and for
+ \kbd{$x$ += 1}.
 
- \subseckbd{--} \kbd{$x$--} is a shortcut for \kbd{$x$ = $x$ - 1}.
+ \subseckbd{--} \kbd{$x$--} is a shortcut for \kbd{$x$ = $x$ - 1} and for
+ \kbd{$x$ -= 1}.
 
  \subseckbd{\pow} The expression $x\hbox{\kbd{\pow}}n$ is \idx{powering}.
 

@@ -7,4 +7,5 @@ Doc: creates the binary quadratic form\sidx{binary quadratic form}
  $ax^{2}+bxy+cy^{2}$. Negative definite forms are not implemented,
  use their positive definite counterpart instead.
  The syntax \kbd{Qfb(V)} is also allowed with $V$ being either
- $[a,b,c]$, $a*x^{2}+b*x+c$ or $[a,b_{0};b_{1},c]$ with $b_{0}+b_{1}=b$.
+ a \typ{VEC} $[a,b,c]$, a \typ{POL} $ax^{2}+bx+c$ or a \typ{MAT}
+ $[a,b_{0};b_{1},c]$ with $b_{0}+b_{1}=b$.

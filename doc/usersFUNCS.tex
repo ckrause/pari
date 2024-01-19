@@ -16,9 +16,9 @@ Except when stated otherwise, it is understood that a function or operation
 which should make natural sense is legal.
 
 On the other hand, many routines list explicit preconditions for some of their
-argument, e.g. $p$ is a prime number, or $q$ is a positive definite quadratic
-form. For reasons of efficiency, all trust the user input and only perform
-minimal sanity checks. When a precondition is not satisfied, any of the
+arguments, e.g. $p$ is a prime number, or $q$ is a positive definite quadratic
+form. For reasons of efficiency, all routines trust the user input and only
+perform minimal sanity checks. When a precondition is not satisfied, any of the
 following may occur: a regular exception is raised, the PARI stack overflows, a
 \kbd{SIGSEGV} or \kbd{SIGBUS} signal is generated, or we enter an infinite
 loop. The function can also quietly return a mathematically meaningless
@@ -30,12 +30,12 @@ classification. The general entry looks something like:
 
 \key{foo}$(x,\{\fl=0\})$: short description.
 
-The library syntax is \kbd{GEN foo(GEN x, long fl = 0)}.
+The library syntax is \kbd{GEN foo(GEN x, long flag = 0)}.
 
 \noindent
 This means that the GP function \kbd{foo} has one mandatory argument $x$, and
 an optional one, $\fl$, whose default value is 0. (The $\{\}$ should not be
-typed, it is just a convenient notation we will use throughout to denote
+typed, it is just a convenient notation that we will use throughout to denote
 optional arguments.) That is, you can type \kbd{foo(x,2)}, or \kbd{foo(x)},
 which is then understood to mean \kbd{foo(x,0)}. As well, a comma or closing
 parenthesis, where an optional argument should have been, signals to GP it

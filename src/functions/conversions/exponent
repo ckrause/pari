@@ -41,3 +41,6 @@ Doc: When $x$ is a \typ{REAL}, the result is the binary exponent $e$ of $x$.
  ? exponent(0)
  %6 = -oo
  @eprog
+
+Variant:
+ Also available is \fun{long}{gexpo}{GEN x}.
