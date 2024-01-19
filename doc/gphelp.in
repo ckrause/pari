@@ -267,7 +267,7 @@ sub treat {
     $found = 0;
     $searchall = 1;
     $help = $_;
-    for (@file_list)
+    for (sort @file_list)
     {
       next if (!/^usersch(.*)\.tex/);
 
@@ -285,7 +285,7 @@ sub treat {
   }
   &choose_chap;
 
-  if ($apropos) { &is_op; }
+  if ($apropos) { &is_op if (!$searchall); }
   else
   {
     $_ = "users" if (/^$/);
@@ -337,10 +337,8 @@ sub apropos_print_list {
   {
     next if ($_ eq $current);
     $current = $_;
-    if (/ /)
-    { print "$pre\"$_\"\n"; }
-    else
-    { print "$pre$_\n"; }
+    $_ = "\"$_\"" if (/ /);
+    print "$pre$_\n";
   }
 }
 
