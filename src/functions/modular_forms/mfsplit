@@ -26,7 +26,7 @@ Doc: \kbd{mf} from \kbd{mfinit} with integral weight containing the new space
  character is real). This can considerably speed up the function when a Galois
  orbit is defined over a large field.
 
- \kbd{flag} speeds up computations when the dimension is large: if $flag=d>0$,
+ $\fl$ speeds up computations when the dimension is large: if $\fl=d>0$,
  when the dimension of the eigenspace is $>d$, only the Galois polynomial is
  computed.
 

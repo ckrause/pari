@@ -2,8 +2,8 @@ Function: ffnbirred
 Section: number_theoretical
 C-Name: ffnbirred0
 Prototype: GLD0,L,
-Help: ffnbirred(q,n,{fl=0}): number of monic irreducible polynomials over F_q, of
- degree n (fl=0, default) or at most n (fl=1).
+Help: ffnbirred(q,n,{flag=0}): number of monic irreducible polynomials over F_q,
+ of degree n (flag=0, default) or at most n (flag=1).
 Description:
  (int, small, ?0):int      ffnbirred($1, $2)
  (int, small, 1):int       ffsumnbirred($1, $2)

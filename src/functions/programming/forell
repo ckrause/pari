@@ -12,7 +12,7 @@ Doc: evaluates \var{seq}, where the formal variable $E = [\var{name}, M, G]$
  ranges through all elliptic curves of conductors from $a$ to $b$. In this
  notation \var{name} is the curve name in Cremona's elliptic  curve  database,
  $M$ is the minimal model, $G$ is a $\Z$-basis of the free part of the
- Mordell-Weil group $E(\Q)$. If flag is nonzero, select
+ Mordell-Weil group $E(\Q)$. If $\fl$ is nonzero, select
  only the first curve in each isogeny class.
  \bprog
  ? forell(E, 1, 500, my([name,M,G] = E); \

@@ -2,14 +2,14 @@ Function: nfsubfieldscm
 Section: number_fields
 C-Name: nfsubfieldscm
 Prototype: GD0,L,
-Help: nfsubfieldscm(nf,{fl=0}): compute the maximal CM subfield of nf. Return 0 if
- nf does not have a CM subfield, otherwise return [g,h] (default) or g (fl=1)
- where g is an absolute
- equation and h expresses a root of g in terms of the generator of nf.
-Doc: Compute the maximal CM subfield of \var{nf}. Return $0$ if \var{nf} does
- not have a CM subfield, otherwise return~$[g,h]$ (default) or $g$ (flag=1)
- where~$g$ is an absolute
- equation and~$h$ expresses a root of $g$ in terms of the generator of~\var{nf}.
+Help: nfsubfieldscm(nf,{flag=0}): computes the maximal CM subfield of nf.
+ Returns 0 if nf does not have a CM subfield, otherwise returns [g,h] (default)
+ or g (flag=1) where g is an absolute equation and h expresses a root of g in
+ terms of the generator of nf.
+Doc: Computes the maximal CM subfield of \var{nf}. Returns $0$ if \var{nf} does
+ not have a CM subfield, otherwise returns~$[g,h]$ (default) or $g$ ($\fl=1$)
+ where~$g$ is an absolute equation and~$h$ expresses a root of $g$ in terms of
+ the generator of~\var{nf}.
  Moreover, the CM involution is given by $X\bmod g(X) \mapsto -X\bmod g(X)$,
  i.e. $X\bmod g(X)$ is a totally imaginary element.
 

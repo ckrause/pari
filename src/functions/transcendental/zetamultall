@@ -18,7 +18,7 @@ Doc: list of all multiple zeta values (MZVs) for weight $s_{1} + \dots + s_{r}$
  \kbd{zetamultconvert} to have the corresponding \kbd{avec}
  $(s_{1},\dots, s_{r})$.
 
- With default flag $\fl = 0$, the function returns a vector with $2^{k-1}-1$
+ With the default value $\fl=0$, the function returns a vector with $2^{k-1}-1$
  components whose $i$-th entry is the MZV of \kbd{index} $i$ (see
  \kbd{zetamult}). If the bit precision is $B$, this function runs in time
  $O(2^{k} k B^{2})$ for an output of size $O(2^{k} B)$.

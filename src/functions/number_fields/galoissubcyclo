@@ -2,13 +2,13 @@ Function: galoissubcyclo
 Section: number_fields
 C-Name: galoissubcyclo
 Prototype: GDGD0,L,Dn
-Help: galoissubcyclo(N,H,{fl=0},{v}): compute a polynomial (in variable v)
+Help: galoissubcyclo(N,H,{flag=0},{v}): computes a polynomial (in variable v)
  defining the subfield of Q(zeta_n) fixed by the subgroup H of (Z/nZ)*. N can
  be an integer n, znstar(n) or bnrinit(bnfinit(y),[n,[1]]). H can be given
  by a generator, a set of generator given by a vector or a HNF matrix (see
- manual). If flag is 1, output only the conductor of the abelian extension.
- If flag is 2 output [pol,f] where pol is the polynomial and f the conductor.
- If flag is 3 output galoisinit(pol).
+ manual). If flag is 1, outputs only the conductor of the abelian extension.
+ If flag is 2, outputs [pol,f] where pol is the polynomial and f the conductor.
+ If flag is 3, outputs galoisinit(pol).
 Doc: computes the subextension $L$ of $\Q(\zeta_{n})$ fixed by the subgroup
  $H \subset (\Z/n\Z)^{*}$. By the Kronecker-Weber theorem, all abelian number
  fields can be generated in this way (uniquely if $n$ is taken to be minimal).
@@ -36,16 +36,16 @@ Doc: computes the subextension $L$ of $\Q(\zeta_{n})$ fixed by the subgroup
  an integer, then it is not a subgroup of $(\Z/n\Z)^{*}$, but of its quotient by
  $\{\pm 1\}$.
 
- If $fl=0$, compute a polynomial (in the variable \var{v}) defining
+ If $\fl=0$, computes a polynomial (in the variable \var{v}) defining
  the subfield of $\Q(\zeta_{n})$ fixed by the subgroup \var{H} of
  $(\Z/n\Z)^{*}$.
 
- If $fl=1$, compute only the conductor of the abelian extension, as a module.
+ If $\fl=1$, computes only the conductor of the abelian extension, as a module.
 
- If $fl=2$, output $[pol, N]$, where $pol$ is the polynomial as output when
- $fl=0$ and $N$ the conductor as output when $fl=1$.
+ If $\fl=2$, outputs $[pol, N]$, where $pol$ is the polynomial as output when
+ $\fl=0$ and $N$ the conductor as output when $\fl=1$.
 
- If $fl=3$; output \kbd{galoisinit(pol)}.
+ If $\fl=3$; outputs \kbd{galoisinit(pol)}.
 
  The following function can be used to compute all subfields of
  $\Q(\zeta_{n})$ (of exact degree \kbd{d}, if \kbd{d} is set):

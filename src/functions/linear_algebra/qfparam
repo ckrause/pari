@@ -9,8 +9,8 @@ Help: qfparam(G, sol, {flag = 0}):
 Doc: coefficients of binary quadratic forms that parametrize the
  solutions of the ternary quadratic form $G$, using the particular
  solution~\var{sol}.
- \fl{} is optional and can be 1, 2, or 3, in which case the \fl-th form is
- reduced. The default is \fl=0 (no reduction).
+ $\fl$ is optional and can be 1, 2, or 3, in which case the $\fl$-th form is
+ reduced. The default is $\fl=0$ (no reduction).
  \bprog
  ? G = [1,0,0;0,1,0;0,0,-34];
  ? M = qfparam(G, qfsolve(G))

@@ -37,7 +37,7 @@ Doc: gives back the ideal corresponding to a factorization. The integer $1$
  ? % == idealhnf(nf, 4 + 2*y)
  %4 = 1
  @eprog
- If \kbd{flag} is nonzero, perform ideal reductions (\tet{idealred}) along the
+ If $\fl$ is nonzero, perform ideal reductions (\tet{idealred}) along the
  way. This is most useful if the ideals involved are all \emph{extended}
  ideals (for instance with trivial principal part), so that the principal parts
  extracted by \kbd{idealred} are not lost. Here is an example:

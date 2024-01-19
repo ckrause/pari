@@ -53,14 +53,14 @@ Doc: outputs a \kbd{bid} structure,
    idealstar(nfinit(x), N, flag)
  @eprog\noindent but faster. The alternative syntax \kbd{znstar(N, flag)}
  is also available for an analogous effect but, due to an unfortunate
- historical oversight, the default value of \kbd{flag} is different in
+ historical oversight, the default value of $\fl$ is different in
  the two functions (\kbd{znstar} does not initialize by default, you probably
  want \kbd{znstar(N,1)}).
 
 Variant: Instead the above hardcoded numerical flags, one should rather use
  \fun{GEN}{Idealstarmod}{GEN nf, GEN ideal, long flag, GEN cycmod} or
  \fun{GEN}{Idealstar}{GEN nf, GEN ideal, long flag} (\kbd{cycmod} is
- \kbd{NULL}), where \kbd{flag} is
+ \kbd{NULL}), where $\fl$ is
  an or-ed combination of \tet{nf_GEN} (include generators) and \tet{nf_INIT}
  (return a full \kbd{bid}, not a group), possibly $0$. This offers
  one more combination: gen, but no init. The \kbd{nf} argument must be a true

@@ -14,7 +14,7 @@ Doc: coefficients of the form $F$ on the basis given by \kbd{mfbasis(mf)}.
  A $q$-expansion or vector of coefficients
  can also be given instead of $F$, but in this case an error message may occur
  if the expansion is too short. An error message is also given if $F$ does not
- belong to the modular form space. If \kbd{flag} is set, instead of
+ belong to the modular form space. If $\fl$ is set, instead of
  error messages the output is an affine space of solutions if a $q$-expansion
  or vector of coefficients is given, or the empty column otherwise.
  \bprog
@@ -33,7 +33,7 @@ Doc: coefficients of the form $F$ on the basis given by \kbd{mfbasis(mf)}.
  If $F$ does not belong to the corresponding space, the result is incorrect
  and simply matches the coefficients of $F$ up to some bound, and
  the function may either return an empty column or an error message.
- If \kbd{flag} is set, there are no error messages, and the result is
+ If $\fl$ is set, there are no error messages, and the result is
  an empty column if $F$ is a modular form; if $F$ is supplied via a series
  or vector of coefficients which does not contain enough information to force
  a unique (potential) solution, the function returns $[v,K]$ where $v$ is a

@@ -2,16 +2,16 @@ Function: lfunconductor
 Section: l_functions
 C-Name: lfunconductor
 Prototype: GDGD0,L,b
-Help: lfunconductor(L, {setN = 10000},{flag=0}): give the conductor
+Help: lfunconductor(L, {setN = 10000},{flag=0}): gives the conductor
  of the given L-function, expecting to find it in the interval [1,setN].
- If flag=0 (default), give either the conductor found as an integer, or a
- vector of conductors found, possibly empty. If flag=1, same but give the
+ If flag=0 (default), gives either the conductor found as an integer, or a
+ vector of conductors found, possibly empty. If flag=1, same but gives the
  computed floating point approximations to the conductors found, without
- rounding to integers. If flag=2, give all the conductors found, even those
+ rounding to integers. If flag=2, gives all the conductors found, even those
  far from integers. Alternatively, setN can contain a list of possible
  conductors and we select the best one according to lfuncheckfeq;
  in this case, flag is ignored and we return [N, lfuncheckfeq for that N].
-Doc:  Compute the conductor of the given $L$-function (if the structure
+Doc:  Computes the conductor of the given $L$-function (if the structure
  contains a conductor, it is ignored). Two methods are available,
  depending on what we know about the conductor, encoded in the \kbd{setN}
  parameter:
@@ -19,10 +19,10 @@ Doc:  Compute the conductor of the given $L$-function (if the structure
  \item \kbd{setN} is a scalar: we know nothing but expect that the conductor
  lies in the interval $[1, \kbd{setN}]$.
 
- If \kbd{flag} is $0$ (default), give either the conductor found as an
- integer, or a vector (possibly empty) of conductors found. If \kbd{flag} is
- $1$, same but give the computed floating point approximations to the
- conductors found, without rounding to integers. It \kbd{flag} is $2$, give
+ If $\fl$ is $0$ (default), gives either the conductor found as an
+ integer, or a vector (possibly empty) of conductors found. If $\fl$ is
+ $1$, same but gives the computed floating point approximations to the
+ conductors found, without rounding to integers. It $\fl$ is $2$, gives
  all the conductors found, even those far from integers.
 
  \misctitle{Caveat} This is a heuristic program and the result is not
@@ -50,7 +50,7 @@ Doc:  Compute the conductor of the given $L$-function (if the structure
  of the conductor and $D_{2}$ is a multiple of the contribution of the
  bad primes.
 
- In that case, \kbd{flag} is ignored and the routine uses \kbd{lfuncheckfeq}.
+ In that case, $\fl$ is ignored and the routine uses \kbd{lfuncheckfeq}.
  It returns $[N,e]$ where $N$ is the best conductor in the list and $e$ is the
  value of \kbd{lfuncheckfeq} for that $N$. When no suitable conductor exist or
  there is a tie among best potential conductors, return the empty vector

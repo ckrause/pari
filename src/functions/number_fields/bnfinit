@@ -21,7 +21,7 @@ Doc: initializes a
  This implements \idx{Buchmann}'s sub-exponential algorithm for computing the
  class group, the regulator and a system of \idx{fundamental units} of the
  general algebraic number field $K$ defined by the irreducible polynomial $P$
- with integer coefficients. The meaning of \fl is as follows:
+ with integer coefficients. The meaning of $\fl$ is as follows:
 
  \item $\fl = 0$ (default). This is the historical behavior, kept for
  compatibility reasons and speed. It has severe drawbacks but is likely to be
@@ -122,6 +122,6 @@ Doc: initializes a
 Variant:
  Also available is \fun{GEN}{Buchall}{GEN P, long flag, long prec},
  corresponding to \kbd{tech = NULL}, where
- \kbd{flag} is either $0$ (default) or \tet{nf_FORCE} (include all data in
+ $\fl$ is either $0$ (default) or \tet{nf_FORCE} (include all data in
  algebraic form). The function
  \fun{GEN}{Buchall_param}{GEN P, double c1, double c2, long nrpid, long flag, long prec} gives direct access to the technical parameters.

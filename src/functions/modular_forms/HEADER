@@ -14,16 +14,16 @@ Doc:
 
  \item The full modular form space $M_{k}(\Gamma_{0}(N),\chi)$, where $k$ is an
  integer or a half-integer and $\chi$ a Dirichlet character modulo $N$
- (flag $4$, the default).
+ ($\fl=4$, the default).
 
- \item The cuspidal space $S_{k}(\Gamma_{0}(N),\chi)$ (flag $1$).
+ \item The cuspidal space $S_{k}(\Gamma_{0}(N),\chi)$ ($\fl=1$).
 
- \item The Eisenstein space ${\cal E}_{k}(\Gamma_{0}(N),\chi)$ (flag $3$), so
+ \item The Eisenstein space ${\cal E}_{k}(\Gamma_{0}(N),\chi)$ ($\fl=3$), so
  that $M_{k}={\cal E}_{k}\oplus S_{k}$.
 
- \item The new space $S_{k}^{\text{new}}(\Gamma_{0}(N),\chi)$ (flag $0$).
+ \item The new space $S_{k}^{\text{new}}(\Gamma_{0}(N),\chi)$ ($\fl=0$).
 
- \item The old space $S_{k}^{\text{old}}(\Gamma_{0}(N),\chi)$ (flag $2$),
+ \item The old space $S_{k}^{\text{old}}(\Gamma_{0}(N),\chi)$ ($\fl=2$),
  so that
  $S_{k}=S_{k}^{\text{new}}\oplus S_{k}^{\text{old}}$.
 

@@ -8,7 +8,7 @@ Help: mfperiodpol(mf,f,{flag=0}): period polynomial of the cuspidal part of
  part of that polynomial. f can also be the modular symbol output by
  mfsymbol(mf,f).
 Doc: period polynomial of the cuspidal part of the form $f$, in other words
- $\int_{0}^{i\infty}(X-\tau)^{k-2}f(\tau)\,d\tau$. If \kbd{flag} is $0$,
+ $\int_{0}^{i\infty}(X-\tau)^{k-2}f(\tau)\,d\tau$. If $\fl=0$,
  ordinary period polynomial. If it is $1$ or $-1$, even or odd part of that
  polynomial. $f$ can also be the modular symbol output by \kbd{mfsymbol}(mf,f).
  \bprog

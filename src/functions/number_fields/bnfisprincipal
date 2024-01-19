@@ -43,7 +43,7 @@ Doc: $\var{bnf}$ being the \sidx{principal ideal}
  %7 = 1
  @eprog
 
- \noindent The binary digits of \fl mean:
+ \noindent The binary digits of $\fl$ mean:
 
  \item $1$: If set, outputs $[e,t]$ as explained above, otherwise returns
  only $e$, which is easier to compute. The following idiom only tests
@@ -58,7 +58,7 @@ Doc: $\var{bnf}$ being the \sidx{principal ideal}
  set, increase the precision and recompute needed quantities until $t$ can be
  computed. Warning: setting this may induce \emph{lengthy} computations, and
  the result may be too large to be physically representable in any case.
- You should consider using flag $4$ instead.
+ You should consider using $\fl=4$ instead.
 
  \item $4$: Return $t$ in factored form (compact representation),
  as a small product of $S$-units for a small set of finite places $S$,
@@ -69,7 +69,7 @@ Doc: $\var{bnf}$ being the \sidx{principal ideal}
  costly. The algorithm is guaranteed to succeed if the \kbd{bnf} was computed
  using \kbd{bnfinit(,1)}. If not, the algorithm may fail to compute a huge
  generator in this case (and replace it by \kbd{[]\til}). This is orders of
- magnitude faster than flag $2$ when the generators are indeed large.
+ magnitude faster than $\fl=2$ when the generators are indeed large.
 
 Variant: Instead of the above hardcoded numerical flags, one should
  rather use an or-ed combination of the symbolic flags \tet{nf_GEN} (include

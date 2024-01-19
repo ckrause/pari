@@ -18,6 +18,6 @@ Doc: if $x$ is a fractional ideal
  occurring in $x$, $v_{\goth{p}}(\alpha) = v_{\goth{p}}(x)$;
  for all other prime ideals, $v_{\goth{p}}(\alpha)\ge0$.
 
- flag is deprecated (ignored), kept for backward compatibility.
+ $\fl$ is deprecated (ignored), kept for backward compatibility.
 
-Variant: Use directly \fun{GEN}{idealappr}{GEN nf, GEN x} since \fl is ignored.
+Variant: Use directly \fun{GEN}{idealappr}{GEN nf, GEN x} since $\fl$ is ignored.

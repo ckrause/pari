@@ -44,8 +44,8 @@ Doc: let \var{bnr} be the ray class group data output by
  although the underlying \var{bnf} and \var{bid} are the same. This defines
  unique generators for the ray class group as ideal \emph{classes}, whether
  we use \kbd{bnrinit(,0)} or \kbd{bnrinit(,1)}. But the actual ideal
- representatives (implicit if the flag is $0$, computed and stored in the
- \var{bnr} if the flag is $1$) are in general different and this is what
+ representatives (implicit if $\fl=0$, computed and stored in the
+ \var{bnr} if $\fl=1$) are in general different and this is what
  happens here. Indeed, the implicit generators are naturally expressed
  in terms of \kbd{bnr.bnf.gen} and \kbd{bnr.bid.gen} and \emph{then}
  expanded and simplified (in the same ideal class) so that we obtain ideal
@@ -65,7 +65,7 @@ Doc: let \var{bnr} be the ray class group data output by
  @eprog
 
 Variant: Instead of hardcoded  numerical flags,  one should rather use
- \fun{GEN}{isprincipalray}{GEN bnr, GEN x} for $\kbd{flag} = 0$, and if you
+ \fun{GEN}{isprincipalray}{GEN bnr, GEN x} for $\fl = 0$, and if you
  want generators:
  \bprog
    bnrisprincipal(bnr, x, nf_GEN)
@@ -74,4 +74,4 @@ Variant: Instead of hardcoded  numerical flags,  one should rather use
  \fun{GEN}{bnrisprincipalmod}{GEN bnr, GEN x, GEN mod, long flag}
  that returns the discrete logarithm of~$x$ modulo the~\typ{INT}
  \kbd{mod}; the value~$\kbd{mod = NULL}$ is treated as~$0$ (full discrete
- logarithm), and~$\kbd{flag}=1$ is not allowed if~\kbd{mod} is set.
+ logarithm), and~$\fl=1$ is not allowed if~\kbd{mod} is set.
