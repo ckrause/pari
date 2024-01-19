@@ -197,8 +197,8 @@ Doc:
  The library syntax is \fun{GEN}{mpprimorial}{long n}
 
  \subseckbd{op=} When \kbd{op} is a binary arithmetic operator among
- \kbd{+}, \kbd{-}, \kbd{\%}, \kbd{/}, \kbd{\bs} or \kbd{\bs/}, the construct
- $x$~\kbd{op=}~$y$ is a shortcut for $x$~\kbd{=}~$x\ \kbd{op}\ y$.
+ \kbd{+}, \kbd{-}, \kbd{*}, \kbd{\%}, \kbd{/}, \kbd{\bs} or \kbd{\bs/}, the
+ construct $x$~\kbd{op=}~$y$ is a shortcut for $x$~\kbd{=}~$x\ \kbd{op}\ y$.
  \bprog
  ? v[1] += 10  \\ increment v[1] by 10
  ? a /= 2 \\ divide a by 2
