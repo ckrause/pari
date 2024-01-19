@@ -19,7 +19,7 @@ A function with that name existed in GP-1.39.15. Please update your script.
 New syntax: adj(x) ===> matadjoint(x)
 
 matadjoint(M,{flag=0}): adjoint matrix of M using Leverrier-Faddeev's 
-algorithm. If flag is 1, compute the characteristic polynomial independently 
+algorithm. If flag is 1, computes the characteristic polynomial independently 
 first.
 
 
@@ -120,7 +120,7 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: basis(x) ===> nfbasis(x)
 
-nfbasis(T, {&dK}): integral basis of the field Q[a], where a is a root of the 
+nfbasis(T,{&dK}): integral basis of the field Q[a], where a is a root of the 
 polynomial T, using the round 4 algorithm. An argument [T,listP] is possible, 
 where listP is a list of primes or a prime bound, to get an order which is 
 maximal at certain primes only. If present, dK is set to the discriminant of 
@@ -134,7 +134,7 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: basis2(x) ===> nfbasis(x,2)
 
-nfbasis(T, {&dK}): integral basis of the field Q[a], where a is a root of the 
+nfbasis(T,{&dK}): integral basis of the field Q[a], where a is a root of the 
 polynomial T, using the round 4 algorithm. An argument [T,listP] is possible, 
 where listP is a list of primes or a prime bound, to get an order which is 
 maximal at certain primes only. If present, dK is set to the discriminant of 
@@ -1011,7 +1011,7 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: factoredbasis(x,p) ===> nfbasis(x,,p)
 
-nfbasis(T, {&dK}): integral basis of the field Q[a], where a is a root of the 
+nfbasis(T,{&dK}): integral basis of the field Q[a], where a is a root of the 
 polynomial T, using the round 4 algorithm. An argument [T,listP] is possible, 
 where listP is a list of primes or a prime bound, to get an order which is 
 maximal at certain primes only. If present, dK is set to the discriminant of 
@@ -2100,7 +2100,7 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: isunit(bnf,x) ===> bnfisunit(bnf,x)
 
-bnfisunit(bnf,x, {U}): bnf being output by bnfinit, give the column vector of 
+bnfisunit(bnf,x,{U}): bnf being output by bnfinit, give the column vector of 
 exponents of x on the fundamental units and the roots of unity if x is a unit, 
 the empty vector otherwise. If U is present, as given by bnfunits, decompose x 
 on the attached S-units generators.
@@ -2979,7 +2979,7 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: pnqn(x) ===> contfracpnqn(x)
 
-contfracpnqn(x, {n=-1}): [p_n,p_{n-1}; q_n,q_{n-1}] corresponding to the 
+contfracpnqn(x,{n=-1}): [p_n,p_{n-1}; q_n,q_{n-1}] corresponding to the 
 continued fraction x. If n >= 0 is present, returns all convergents from 
 p_0/q_0 up to p_n/q_n.
 
@@ -3643,7 +3643,7 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: smallbasis(x) ===> nfbasis(x,1)
 
-nfbasis(T, {&dK}): integral basis of the field Q[a], where a is a root of the 
+nfbasis(T,{&dK}): integral basis of the field Q[a], where a is a root of the 
 polynomial T, using the round 4 algorithm. An argument [T,listP] is possible, 
 where listP is a list of primes or a prime bound, to get an order which is 
 maximal at certain primes only. If present, dK is set to the discriminant of 
@@ -3910,8 +3910,8 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: taniyama(e) ===> elltaniyama(e)
 
-elltaniyama(E, {n = seriesprecision}): modular parametrization of elliptic 
-curve E/Q.
+elltaniyama(E,{n=seriesprecision}): modular parametrization of elliptic curve 
+E/Q.
 
 
   ***   at top-level: tchebi()
@@ -4023,7 +4023,7 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: vec(x) ===> Vec(x)
 
-Vec(x, {n}): transforms the object x into a vector of dimension n.
+Vec(x,{n}): transforms the object x into a vector of dimension n.
 
 
   ***   at top-level: vecindexsort()
@@ -4223,7 +4223,7 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: draw(list) ===> plotdraw(list)
 
-plotdraw(w, {flag=0}): draw rectwindow w. More generally, w can be of the form 
+plotdraw(w,{flag=0}): draw rectwindow w. More generally, w can be of the form 
 [w1,x1,y1, w2,x2,y2,etc.]: draw rectwindows wi at given xi,yi positions. If 
 flag!=0, the xi,yi express fractions of the size of the current output device.
 
@@ -4499,4 +4499,4 @@ New syntax: texprint(x) ===> printtex(x)
 printtex({str}*): outputs its string arguments in TeX format.
 
 
-Total time spent: 7
+Total time spent: 6
