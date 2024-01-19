@@ -249,12 +249,6 @@ sub open_viewer_then_quit {
   cleanexit();
 }
 
-sub is_op
-{
-  return if (/^ $/ || !/^[^a-zA-Z0-9]*$/);
-  $_ = 'GP operators@2'; &choose_chap;
-}
-
 sub treat {
   my($help);
   $_ = $_[0];
@@ -285,8 +279,7 @@ sub treat {
   }
   &choose_chap;
 
-  if ($apropos) { &is_op if (!$searchall); }
-  else
+  if (!$apropos)
   {
     $_ = "users" if (/^$/);
     open_viewer_then_quit($_) if (/^(users|tutorial|refcard|libpari)$/
