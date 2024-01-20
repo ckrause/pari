@@ -586,18 +586,25 @@ u_forprime_set_prime_table(forprime_t *T, ulong a)
 }
 
 /* Set p so that p + q the smallest integer = c (mod q) and > original p.
- * Assume 0 < c < q. Set p = 0 on overflow */
+ * Assume 0 < c < q. */
 static void
 arith_set(forprime_t *T)
 {
   ulong r = T->p % T->q; /* 0 <= r <= min(p, q-1) */
   pari_sp av = avma;
-  GEN d = adduu(T->p - r, T->c);
+  GEN d = adduu(T->p - r, T->c); /* = c mod q */
   if (T->c > r) d = subiu(d, T->q);
   /* d = c mod q,  d = c > r? p-r+c-q: p-r+c, so that
    *  d <= p  and  d+q = c>r? p-r+c  : p-r+c+q > p */
-  if (signe(d) <= 0) d = addiu(d, T->q); /* and now d > 0 */
-  T->p = itou_or_0(d); set_avma(av);
+  if (signe(d) <= 0)
+  {
+    T->p = 0;
+    T->strategy = PRST_nextprime;
+    affii(d, T->pp);
+  }
+  else
+    T->p = itou_or_0(d);
+  set_avma(av);
 }
 
 /* run through primes in arithmetic progression = c (mod q) */
@@ -640,7 +647,7 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   if (a >= maxp)
   {
     T->p = a - 1;
-    if (T->q > 1) arith_set(T);
+    if (T->q != 1) arith_set(T);
   }
   else
     u_forprime_set_prime_table(T, a);
@@ -689,9 +696,31 @@ u_forprime_restrict(forprime_t *T, ulong c) { T->b = c; }
 int
 forprimestep_init(forprime_t *T, GEN a, GEN b, GEN q)
 {
+  GEN c = NULL;
   long lb;
+
   a = gceil(a); if (typ(a) != t_INT) pari_err_TYPE("forprime_init",a);
-  if (signe(a) <= 0) a = gen_1;
+  if (q)
+  {
+    switch(typ(q))
+    {
+      case t_INT:
+        c = a; break;
+      case t_INTMOD:
+        c = gel(q,2); q = gel(q,1);
+        /* first int >= initial a which is = c (mod q) */
+        a = addii(a, modii(subii(c,a), q)); break;
+      default: pari_err_TYPE("forprimestep_init",q);
+    }
+    if (signe(q) <= 0) pari_err_TYPE("forprimestep_init (q <= 0)",q);
+    if (equali1(q)) c = q = NULL;
+    else
+    {
+      T->q = itou(q);
+      T->c = umodiu(c, T->q);
+    }
+  }
+  if (signe(a) <= 0) a = q? modii(a, q): gen_1;
   if (b && typ(b) != t_INFINITY)
   {
     b = gfloor(b);

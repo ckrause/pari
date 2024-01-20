@@ -55,6 +55,7 @@ BA  39- ellheight for non-minimal curve over a number field -> wrong result
 BA  43- memory leak when using member functions and ~ arguments.
     44- idealstar(nf,id,,MOD).cyc was not reduced modulo MOD
     45- changed qfbred to use standard normalization (same as qfbredsl2)
+    46- forprimestep and variants with initial value negative [#2531]
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output
