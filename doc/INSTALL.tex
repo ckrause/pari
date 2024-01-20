@@ -290,7 +290,6 @@ version of the compiler. You can try
 compiler and run into trouble with a fussy \kbd{g++}, try to use
 \kbd{g++ -fpermissive}.
 
-
 \noindent The contents of the following variables are \emph{appended} to the
 values computed by \kbd{Configure}:
 
@@ -315,6 +314,17 @@ searched for libraries.
 \noindent You may disable inlining by adding \kbd{-DDISABLE\_INLINE} to
 \kbd{CFLAGS}, and prevent the use of the \kbd{volatile} keyword with
 \kbd{-DDISABLE\_VOLATILE}.
+
+\subsec{Target plateform ABI}: By design, Configure will always build PARI for
+the default target ABI of the compiler. To build for a different ABI, add
+the relevant compiler flag to CFLAGS. Some examples (with gcc):
+
+\kbd{CFLAGS=-m32} build 32-bit binaries (on a 64-bit system)
+
+\kbd{CFLAGS=-mavx2} allows uses of AVX2 instructions on x86\_64
+
+\kbd{CFLAGS=-march=native} use the largest ABI supported by the CPU PARI
+is compiled on. Binaries will be faster but not portable to older CPU.
 
 \subsec{Debugging/profiling}: If you also want to debug the PARI library,
 
