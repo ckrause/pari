@@ -66,6 +66,7 @@ Vec
 [5, 4, 3, 2, 1]
 [1, 2]
 [1, 2]
+[1, 2, 3]
 [1, 2]
 [1, 2, 3]
 [1, 2, 3, 4, 5]
@@ -80,6 +81,7 @@ Vec
 [5, 4, 3, 2]
 [1, 2, 0, 0]
 [1, 2, 0, 0]
+[1, 2, 3, 0]
 [1, 2, 0, 0]
 [1, 2, 3, 0]
 [1, 2, 3, 4]
@@ -94,6 +96,7 @@ error("incorrect type in gtovec (t_ERROR).")
 [5, 4, 3, 2]
 [0, 0, 1, 2]
 [0, 0, 1, 2]
+[0, 1, 2, 3]
 [0, 0, 1, 2]
 [0, 1, 2, 3]
 [1, 2, 3, 4]
@@ -108,6 +111,7 @@ Vecrev
 [1, 2, 3, 4, 5]
 [2, 1]
 [2, 1]
+[3, 2, 1]
 [2, 1]
 [3, 2, 1]
 [5, 4, 3, 2, 1]
@@ -122,6 +126,7 @@ Vecrev
 [2, 3, 4, 5]
 [2, 1, 0, 0]
 [2, 1, 0, 0]
+[3, 2, 1, 0]
 [2, 1, 0, 0]
 [3, 2, 1, 0]
 [4, 3, 2, 1]
@@ -136,6 +141,7 @@ error("incorrect type in gtovec (t_ERROR).")
 [2, 3, 4, 5]
 [0, 0, 2, 1]
 [0, 0, 2, 1]
+[0, 3, 2, 1]
 [0, 0, 2, 1]
 [0, 3, 2, 1]
 [4, 3, 2, 1]
@@ -150,6 +156,7 @@ Col
 [5, 4, 3, 2, 1]~
 [1, 2]~
 [1, 2]~
+[1, 2, 3]~
 [1, 2]~
 [1, 2, 3]~
 [1, 2, 3, 4, 5]~
@@ -164,6 +171,7 @@ Col
 [5, 4, 3, 2]~
 [1, 2, 0, 0]~
 [1, 2, 0, 0]~
+[1, 2, 3, 0]~
 [1, 2, 0, 0]~
 [1, 2, 3, 0]~
 [1, 2, 3, 4]~
@@ -178,6 +186,7 @@ error("incorrect type in gtovec (t_ERROR).")
 [5, 4, 3, 2]~
 [0, 0, 1, 2]~
 [0, 0, 1, 2]~
+[0, 1, 2, 3]~
 [0, 0, 1, 2]~
 [0, 1, 2, 3]~
 [1, 2, 3, 4]~
@@ -192,6 +201,7 @@ Colrev
 [1, 2, 3, 4, 5]~
 [2, 1]~
 [2, 1]~
+[3, 2, 1]~
 [2, 1]~
 [3, 2, 1]~
 [5, 4, 3, 2, 1]~
@@ -206,6 +216,7 @@ Colrev
 [2, 3, 4, 5]~
 [2, 1, 0, 0]~
 [2, 1, 0, 0]~
+[3, 2, 1, 0]~
 [2, 1, 0, 0]~
 [3, 2, 1, 0]~
 [4, 3, 2, 1]~
@@ -220,6 +231,7 @@ error("incorrect type in gtovec (t_ERROR).")
 [2, 3, 4, 5]~
 [0, 0, 2, 1]~
 [0, 0, 2, 1]~
+[0, 3, 2, 1]~
 [0, 0, 2, 1]~
 [0, 3, 2, 1]~
 [4, 3, 2, 1]~
@@ -234,6 +246,7 @@ error("incorrect type in vectosmall (t_RFRAC).")
 Vecsmall([5, 4, 3, 2, 1])
 Vecsmall([1, 2])
 Vecsmall([1, 2])
+error("incorrect type in vectosmall (t_QFB).")
 Vecsmall([1, 2])
 Vecsmall([1, 2, 3])
 Vecsmall([1, 2, 3, 4, 5])
@@ -248,6 +261,7 @@ error("incorrect type in gtovecsmall (t_RFRAC).")
 Vecsmall([5, 4, 3, 2])
 Vecsmall([1, 2, 0, 0])
 Vecsmall([1, 2, 0, 0])
+error("incorrect type in gtovecsmall (t_QFB).")
 Vecsmall([1, 2, 0, 0])
 Vecsmall([1, 2, 3, 0])
 Vecsmall([1, 2, 3, 4])
@@ -262,6 +276,7 @@ error("incorrect type in gtovecsmall (t_RFRAC).")
 Vecsmall([5, 4, 3, 2])
 Vecsmall([0, 0, 1, 2])
 Vecsmall([0, 0, 1, 2])
+error("incorrect type in gtovecsmall (t_QFB).")
 Vecsmall([0, 0, 1, 2])
 Vecsmall([0, 1, 2, 3])
 Vecsmall([1, 2, 3, 4])
@@ -279,6 +294,7 @@ x
 2
 2
 2
+2
 error("incorrect type in component [leaf] (t_STR).")
 error("incorrect type in component [leaf] (t_STR).")
 [2, 4]~
@@ -290,6 +306,7 @@ error("nonexistent component: index > 2")
 error("nonexistent component: index > 5")
 error("nonexistent component: index > 2")
 error("nonexistent component: index > 2")
+error("nonexistent component: index > 4")
 error("nonexistent component: index > 2")
 error("nonexistent component: index > 3")
 error("nonexistent component: index > 5")
@@ -304,6 +321,7 @@ error("nonexistent component: index > 2")
 0
 0
 error("incorrect type in polcoef (t_VEC).")
+error("incorrect type in polcoef (t_QFB).")
 error("incorrect type in polcoef (t_VECSMALL).")
 error("incorrect type in polcoef (t_LIST).")
 error("incorrect type in polcoef (t_LIST).")
@@ -318,6 +336,7 @@ error("incorrect type in polcoef (t_ERROR).")
 3
 2
 error("incorrect type in polcoef (t_VEC).")
+error("incorrect type in polcoef (t_QFB).")
 error("incorrect type in polcoef (t_VECSMALL).")
 error("incorrect type in polcoef (t_LIST).")
 error("incorrect type in polcoef (t_LIST).")
@@ -332,6 +351,7 @@ error("incorrect type in polcoef (t_ERROR).")
 0
 error("domain error in polcoef: degree > 2")
 error("incorrect type in polcoef (t_VEC).")
+error("incorrect type in polcoef (t_QFB).")
 error("incorrect type in polcoef (t_VECSMALL).")
 error("incorrect type in polcoef (t_LIST).")
 error("incorrect type in polcoef (t_LIST).")

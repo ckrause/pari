@@ -3071,15 +3071,20 @@ gtovecpost(GEN x, long n)
   switch(tx)
   {
     case t_POL:
-      lx=lg(x); imax = minss(lx-2, n);
+      lx = lg(x); imax = minss(lx-2, n);
       for (i=1; i<=imax; i++) gel(y,i) = gcopy(gel(x,lx-i));
       return y;
     case t_SER:
-      lx=lg(x); imax = minss(lx-2, n); x++;
+      lx = lg(x); imax = minss(lx-2, n); x++;
       for (i=1; i<=imax; i++) gel(y,i) = gcopy(gel(x,i));
       return y;
-    case t_QFB: case t_VEC: case t_COL:
-      lx=lg(x); imax = minss(lx-1, n);
+    case t_QFB:
+      lx = lg(x)-1; /* remove discriminant */
+      imax = minss(lx-1, n);
+      for (i=1; i<=imax; i++) gel(y,i) = gcopy(gel(x,i));
+      return y;
+    case t_VEC: case t_COL:
+      lx = lg(x); imax = minss(lx-1, n);
       for (i=1; i<=imax; i++) gel(y,i) = gcopy(gel(x,i));
       return y;
     case t_LIST:
@@ -3096,8 +3101,7 @@ gtovecpost(GEN x, long n)
       return y;
     }
     case t_VECSMALL:
-      lx=lg(x);
-      imax = minss(lx-1, n);
+      lx = lg(x); imax = minss(lx-1, n);
       for (i=1; i<=imax; i++) gel(y,i) = stoi(x[i]);
       return y;
     default: pari_err_TYPE("gtovec",x);
@@ -3108,9 +3112,10 @@ gtovecpost(GEN x, long n)
 static GEN
 init_vectopre(long a, long n, GEN y, long *imax)
 {
-  *imax = minss(a, n);
-  return (n == *imax)?  y: y + n - a;
+  if (n <= a) { *imax = n; return y; }
+  *imax = a; return y + n - a;
 }
+/* assume n > 0 */
 static GEN
 gtovecpre(GEN x, long n)
 {
@@ -3121,17 +3126,22 @@ gtovecpre(GEN x, long n)
   switch(tx)
   {
     case t_POL:
-      lx=lg(x);
+      lx = lg(x);
       y0 = init_vectopre(lx-2, n, y, &imax);
       for (i=1; i<=imax; i++) gel(y0,i) = gcopy(gel(x,lx-i));
       return y;
     case t_SER:
-      lx=lg(x); x++;
+      lx = lg(x); x++;
       y0 = init_vectopre(lx-2, n, y, &imax);
       for (i=1; i<=imax; i++) gel(y0,i) = gcopy(gel(x,i));
       return y;
-    case t_QFB: case t_VEC: case t_COL:
-      lx=lg(x);
+    case t_QFB:
+      lx = lg(x)-1; /* remove discriminant */
+      y0 = init_vectopre(lx-1, n, y, &imax);
+      for (i=1; i<=imax; i++) gel(y0,i) = gcopy(gel(x,i));
+      return y;
+    case t_VEC: case t_COL:
+      lx = lg(x);
       y0 = init_vectopre(lx-1, n, y, &imax);
       for (i=1; i<=imax; i++) gel(y0,i) = gcopy(gel(x,i));
       return y;
@@ -3149,7 +3159,7 @@ gtovecpre(GEN x, long n)
       return y;
     }
     case t_VECSMALL:
-      lx=lg(x);
+      lx = lg(x);
       y0 = init_vectopre(lx-1, n, y, &imax);
       for (i=1; i<=imax; i++) gel(y0,i) = stoi(x[i]);
       return y;
@@ -3321,17 +3331,17 @@ gtovecsmallpre(GEN x, long n)
     case t_INT:
       y[n] = itos(x); return y;
     case t_POL:
-      lx=lg(x);
+      lx = lg(x);
       y0 = init_vectopre(lx-2, n, y, &imax);
       for (i=1; i<=imax; i++) y0[i] = Itos(gel(x,lx-i));
       return y;
     case t_SER:
-      lx=lg(x); x++;
+      lx = lg(x); x++;
       y0 = init_vectopre(lx-2, n, y, &imax);
       for (i=1; i<=imax; i++) y0[i] = Itos(gel(x,i));
       return y;
     case t_VEC: case t_COL:
-      lx=lg(x);
+      lx = lg(x);
       y0 = init_vectopre(lx-1, n, y, &imax);
       for (i=1; i<=imax; i++) y0[i] = Itos(gel(x,i));
       return y;
@@ -3341,7 +3351,7 @@ gtovecsmallpre(GEN x, long n)
       for (i=1; i<=imax; i++) y0[i] = Itos(gel(x,i));
       return y;
     case t_VECSMALL:
-      lx=lg(x);
+      lx = lg(x);
       y0 = init_vectopre(lx-1, n, y, &imax);
       for (i=1; i<=imax; i++) y0[i] = x[i];
       return y;
