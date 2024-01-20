@@ -30,6 +30,9 @@ my(n=8);forprimestep(p=nextprime(10^8),10^8+10^n,10^n,print(p))
 my(n=9);forprimestep(p=nextprime(10^8),10^8+10^n,10^n,print(p))
 my(p0=1500301459763,step=4907262314955);forprimestep(p=p0-step,2e14,step,print(p))
 
+forprimestep(p=2,oo,2^64,print(p))
+forprimestep(p=3,oo,Mod(0,5),print(p))
+
 for(a=0.5,3,print(a))
 for(a=1,10, print(a+=2))
 

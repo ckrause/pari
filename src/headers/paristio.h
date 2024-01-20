@@ -41,6 +41,7 @@ typedef struct {
   int strategy; /* 1 to 4 */
   GEN bb; /* iterate through primes <= bb */
   ulong c, q; /* congruent to c (mod q) */
+  GEN qq;
 
   /* strategy 1: private prime table */
   byteptr d; /* diffptr + n */

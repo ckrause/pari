@@ -80,6 +80,7 @@ BA  13- [libpari] suminf_bitprec, intnumromb_bitprec: use suminf, intnumromb
         ellL1_bitprec, ellanalyticrank_bitprec: use ellL1, ellanalyticrank
     14- lfun for degree 1 L-functions: use Riemann-Siegel when imag(s) is large
     15- zetahurwitz, lerchzeta: use Tyagi's method when imag(s) is large
+    16- forprimestep: allow modulus not fitting in an unsigned long
 
   Added
      1- [libpari] nfeltembed_i

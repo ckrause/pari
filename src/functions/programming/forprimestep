@@ -32,15 +32,6 @@ Doc: evaluates \var{seq}, where the formal variable $p$ ranges over the prime
  $\geq a$, starting an infinite loop; it is expected that the caller will break
  out of the loop itself at some point, using \kbd{break} or \kbd{return}.
 
- The current implementation restricts the modulus of the arithmetic
- progression to an unsigned long (64 or 32 bits).
- \bprog
- ? forprimestep(p=2,oo,2^64,print(p))
-  ***   at top-level: forprimestep(p=2,oo,2^64,print(p))
-  ***                 ^----------------------------------
-  *** forprimestep: overflow in t_INT-->ulong assignment.
- @eprog
-
  Note that the value of $p$ cannot be modified within \var{seq}:
  \bprog
  ? forprimestep(p = 2, 10, 3, p = [])

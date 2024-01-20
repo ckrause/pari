@@ -625,8 +625,9 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   maxp = maxprime();
   if (q != 1)
   {
-    c %= q;
-    if (ugcd(c,q) != 1) { a = maxuu(a,c); b = minuu(b,c); }
+    ulong D;
+    c %= q; D = ugcd(c, q);
+    if (D != 1) { a = maxuu(a,D); b = minuu(b,D); }
     if (odd(q) && (a > 2 || c != 2))
     { /* only *odd* primes. If a <= c = 2, then p = 2 must be included :-( */
       if (!odd(c)) c += q;
@@ -700,6 +701,7 @@ forprimestep_init(forprime_t *T, GEN a, GEN b, GEN q)
   long lb;
 
   a = gceil(a); if (typ(a) != t_INT) pari_err_TYPE("forprime_init",a);
+  T->qq = NULL; T->q = 1; T->c = 0;
   if (q)
   {
     switch(typ(q))
@@ -716,8 +718,16 @@ forprimestep_init(forprime_t *T, GEN a, GEN b, GEN q)
     if (equali1(q)) c = q = NULL;
     else
     {
-      T->q = itou(q);
-      T->c = umodiu(c, T->q);
+      GEN D = gcdii(c, q);
+      if (!is_pm1(D))
+      { /* at most one prime: c */
+        if (cmpii(a, D) < 0) a = D;
+        if (gcmp(b, D) > 0) b = D;
+      }
+      if ((T->q = itou_or_0(q)))
+        T->c = umodiu(c, T->q);
+      else
+        T->qq = q;
     }
   }
   if (signe(a) <= 0) a = q? modii(a, q): gen_1;
@@ -743,33 +753,13 @@ forprimestep_init(forprime_t *T, GEN a, GEN b, GEN q)
     T->strategy = PRST_nextprime; /* paranoia */
     T->bb = T->pp = gen_0; return 0;
   }
-  T->pp = cgeti(lb);
-  T->c = 0;
-  T->q = 1;
+  T->pp = cgeti(T->qq? maxuu(lb, lgefint(T->qq)): lb);
   /* a, b are positive integers, a <= b */
-  if (q)
-  {
-    switch(typ(q))
-    {
-      case t_INT: break;
-      case t_INTMOD: a = addii(a, modii(subii(gel(q,2),a), gel(q,1)));
-                     q = gel(q,1); break;
-      default: pari_err_TYPE("forprimestep_init",q);
-    }
-    if (signe(q) <= 0) pari_err_TYPE("forprimestep_init (q <= 0)",q);
-    if (equali1(q)) q = NULL;
-    else
-    {
-      T->q = itou(q);
-      T->c = umodiu(a, T->q);
-    }
-  }
-  if (lgefint(a) == 3) /* lb == 3 implies b != NULL */
+  if (!T->qq && lgefint(a) == 3) /* lb == 3 implies b != NULL */
     return u_forprime_arith_init(T, uel(a,2), lb == 3? uel(b,2): ULONG_MAX,
                                     T->c, T->q);
   T->strategy = PRST_nextprime;
-  affii(subiu(a,T->q), T->pp);
-  return 1;
+  affii(T->qq? subii(a,T->qq): subiu(a,T->q), T->pp); return 1;
 }
 int
 forprime_init(forprime_t *T, GEN a, GEN b)
@@ -1046,7 +1036,7 @@ forprime_next(forprime_t *T)
     p = nextprime(addiu(p, 1));
     if (T->bb && abscmpii(p, T->bb) > 0) return gc_NULL(av);
   } else do {
-    p = addiu(p, T->q);
+    p = T->qq? addii(p, T->qq): addiu(p, T->q);
     if (T->bb && abscmpii(p, T->bb) > 0) return gc_NULL(av);
   } while (!BPSW_psp(p));
   affii(p, T->pp); return gc_const(av, T->pp);
