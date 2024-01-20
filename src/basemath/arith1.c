@@ -4028,6 +4028,7 @@ serPade(GEN S, long p, long q)
   va = gvar(S); v = gvaluation(S, pol_x(va));
   if (p < 0) pari_err_DOMAIN("bestapprPade", "p", "<", gen_0, stoi(p));
   if (q < 0) pari_err_DOMAIN("bestapprPade", "q", "<", gen_0, stoi(q));
+  if (v == LONG_MAX) { set_avma(av); return cgetg(1,t_VEC); }
   S = gadd(S, zeroser(va, p + q + 1 + v));
   return gerepileupto(av, bestapprPade(S, q));
 }
