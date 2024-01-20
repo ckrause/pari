@@ -4019,13 +4019,26 @@ bestapprPade(GEN x, long B)
   return t;
 }
 
-GEN
+static GEN
 serPade(GEN S, long p, long q)
 {
   pari_sp av = avma;
-  long va = gvar(S), v = gvaluation(S, pol_x(va));
-  if (p < 0) pari_err_DOMAIN("serPade", "p", "<", gen_0, stoi(p));
-  if (q < 0) pari_err_DOMAIN("serPade", "q", "<", gen_0, stoi(q));
+  long va, v, t = typ(S);
+  if (t!=t_SER && t!=t_POL && t!=t_RFRAC) pari_err_TYPE("bestapprPade", S);
+  va = gvar(S); v = gvaluation(S, pol_x(va));
+  if (p < 0) pari_err_DOMAIN("bestapprPade", "p", "<", gen_0, stoi(p));
+  if (q < 0) pari_err_DOMAIN("bestapprPade", "q", "<", gen_0, stoi(q));
   S = gadd(S, zeroser(va, p + q + 1 + v));
   return gerepileupto(av, bestapprPade(S, q));
+}
+
+GEN
+bestapprPade0(GEN x, long p, long q)
+{
+  pari_sp av = avma;
+  GEN t;
+  if (p>=0 && q>=0) return serPade(x, p, q);
+  t = bestappr_RgX(x, p>=0 ? p: q);
+  if (!t) { set_avma(av); return cgetg(1,t_VEC); }
+  return t;
 }

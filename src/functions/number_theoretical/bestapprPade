@@ -1,8 +1,8 @@
 Function: bestapprPade
 Section: number_theoretical
-C-Name: bestapprPade
-Prototype: GD-1,L,
-Help: bestapprPade(x,{B}): returns a rational function approximation to x.
+C-Name: bestapprPade0
+Prototype: GD-1,L,D-1,L,
+Help: bestapprPade(x,{B},{Q}): returns a rational function approximation to x.
  This function applies to series, polmods, and rational functions of course.
  Otherwise it applies recursively to all components.
 Doc: using variants of the extended Euclidean algorithm (Pad\'{e}
@@ -40,6 +40,12 @@ Doc: using variants of the extended Euclidean algorithm (Pad\'{e}
  ? bestapprPade(T)
  %1 = 1/(-t + 1)
  @eprog
+ \item If $x$ is a \typ{SER} and both $B$ and $Q$ are nonnegative,
+   returns a rational function approximation $a/b$
+ to $x$, with $a$ of degree at most $B$ and $b$ of degree at most $Q$, with
+ $x-a/b=O(t^{B+Q+1+v})$ if $t$ is the variable, where $v$ is the valuation
+ of $x$, the empty vector if not possible.
+
  \item If $x$ is a \typ{RFRAC}, we implicitly convert the input to a
  \typ{POLMOD} modulo $N = t^{k}$ where $k = 2B + 1$. If $B$ was omitted,
  we return $x$:
@@ -55,3 +61,6 @@ Doc: using variants of the extended Euclidean algorithm (Pad\'{e}
  The function applies recursively to components of complex objects
  (polynomials, vectors, \dots). If rational reconstruction fails for even a
  single entry, return $[]$.
+
+Variants:
+  \fun{GEN}{bestapprPade}{GEN x, long B} as \kbd{bestapprPade0} when Q is ommited.
