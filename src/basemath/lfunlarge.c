@@ -501,7 +501,7 @@ dirichlet_ours(GEN s, GEN VCALL, long prec)
 static GEN
 RZchi(GEN VCALL, GEN s, long prec)
 {
-  long prec2 = prec + EXTRAPRECWORD;
+  long prec2 = prec + EXTRAPREC64;
   return gprec_wtrunc(dirichlet_ours(gprec_w(s, prec2), VCALL, prec2), prec);
 }
 
@@ -890,7 +890,7 @@ RZlerch_easy(GEN s, GEN a, GEN lam, long prec)
   long nlim, B = prec2nbits(prec), LD = LOWDEFAULTPREC;
   gnlim = gdiv(gmulsg(B + 5, mplog2(LD)), gmul(Pi2n(1, LD), imag_i(lam)));
   if (gexpo(gnlim) > 40) pari_err_IMPL("precision too large in lerchzeta");
-  gnlim = gceil(gnlim); nlim = itos(gnlim); prec += EXTRAPRECWORD;
+  gnlim = gceil(gnlim); nlim = itos(gnlim); prec += EXTRAPREC64;
   z = typ(lam) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), lam), prec);
   if (nlim < 10000000)
     y = allparsums(NULL, gen_0, nlim, z, a, gneg(s), prec);
