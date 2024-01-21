@@ -40,7 +40,8 @@ Doc: transforms the object $x$ into a row vector. The dimension of the
  %5 = [[1, 4]~, [2, 5]~, [3, 6]~]
  @eprog
 
- \item a character string: returns the vector of individual characters,
+ \item a character string: returns the vector of individual characters
+ (as strings of length $1$),
  \bprog
  ? Vec("PARI")
  %6 = ["P", "A", "R", "I"]
@@ -55,12 +56,30 @@ Doc: transforms the object $x$ into a row vector. The dimension of the
  meaningless and must be omitted or an error is raised. Otherwise, if $n$ is
  given, $0$ entries are appended at the end of the vector if $n > 0$, and
  prepended at the beginning if $n < 0$. The dimension of the resulting vector
- is $|n|$. This allows to write a conversion function for series that
- takes positive valuations into account:
+ is $|n|$. If the original object had fewer than $|n|$ components, it is
+ truncated from the right if $n > 0$ and from the left if $n < 0$:
+ \bprog
+ ? v = [1,2,3,4];
+ ? forstep(i=5, 2, -1, print(Vec(v, i)));
+ [1, 2, 3, 4, 0]
+ [1, 2, 3, 4]
+ [1, 2, 3]  \\ truncated from the right
+ [1, 2]
+
+ ? forstep(i=5, 2, -1, print(Vec(v, -i)));
+ [0, 1, 2, 3, 4]
+ [1, 2, 3, 4]
+ [2, 3, 4]  \\ truncated from the left
+ [3, 4]
+ @eprog
+
+ These rules allow to write a conversion function for series that takes
+ positive valuations into account:
  \bprog
  ? serVec(s) = Vec(s, -serprec(s,variable(s)));
  ? serVec(x^2 + 3*x^3 + O(x^5))
  %2 = [0, 0, 1, 3, 0]
- @eprog (That function is not intended for series of negative valuation.)
+ @eprog\noindent (That function is not intended for series of negative
+ valuation.)
 
 Variant: \fun{GEN}{gtovec}{GEN x} is also available.

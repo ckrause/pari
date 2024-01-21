@@ -93,14 +93,14 @@ error("incorrect type in gtovec (t_ERROR).")
 [0, 0, 0, 1]
 [0, 0, 1, 0]
 [0, 0, 0, 1/x]
-[5, 4, 3, 2]
+[4, 3, 2, 1]
 [0, 0, 1, 2]
 [0, 0, 1, 2]
 [0, 1, 2, 3]
 [0, 0, 1, 2]
 [0, 1, 2, 3]
-[1, 2, 3, 4]
-["a", "b", "c", "d"]
+[2, 3, 4, 5]
+["c", "d", "e", "f"]
 ["a", "b", 0, 0]
 error("incorrect type in gtovec (t_MAT).")
 error("incorrect type in gtovec (t_ERROR).")
@@ -123,14 +123,14 @@ Vecrev
 [1, 0, 0, 0]
 [0, 1, 0, 0]
 [1/x, 0, 0, 0]
-[2, 3, 4, 5]
+[1, 2, 3, 4]
 [2, 1, 0, 0]
 [2, 1, 0, 0]
 [3, 2, 1, 0]
 [2, 1, 0, 0]
 [3, 2, 1, 0]
-[4, 3, 2, 1]
-["d", "c", "b", "a"]
+[5, 4, 3, 2]
+["f", "e", "d", "c"]
 [0, 0, "b", "a"]
 error("incorrect type in gtovec (t_MAT).")
 error("incorrect type in gtovec (t_ERROR).")
@@ -183,14 +183,14 @@ error("incorrect type in gtovec (t_ERROR).")
 [0, 0, 0, 1]~
 [0, 0, 1, 0]~
 [0, 0, 0, 1/x]~
-[5, 4, 3, 2]~
+[4, 3, 2, 1]~
 [0, 0, 1, 2]~
 [0, 0, 1, 2]~
 [0, 1, 2, 3]~
 [0, 0, 1, 2]~
 [0, 1, 2, 3]~
-[1, 2, 3, 4]~
-["a", "b", "c", "d"]~
+[2, 3, 4, 5]~
+["c", "d", "e", "f"]~
 ["a", "b", 0, 0]~
 error("incorrect type in gtovec (t_MAT).")
 error("incorrect type in gtovec (t_ERROR).")
@@ -213,14 +213,14 @@ Colrev
 [1, 0, 0, 0]~
 [0, 1, 0, 0]~
 [1/x, 0, 0, 0]~
-[2, 3, 4, 5]~
+[1, 2, 3, 4]~
 [2, 1, 0, 0]~
 [2, 1, 0, 0]~
 [3, 2, 1, 0]~
 [2, 1, 0, 0]~
 [3, 2, 1, 0]~
-[4, 3, 2, 1]~
-["d", "c", "b", "a"]~
+[5, 4, 3, 2]~
+["f", "e", "d", "c"]~
 [0, 0, "b", "a"]~
 error("incorrect type in gtovec (t_MAT).")
 error("incorrect type in gtovec (t_ERROR).")
@@ -273,14 +273,14 @@ error("incorrect type in gtovecsmall (t_ERROR).")
 Vecsmall([0, 0, 0, 1])
 Vecsmall([0, 0, 1, 0])
 error("incorrect type in gtovecsmall (t_RFRAC).")
-Vecsmall([5, 4, 3, 2])
+Vecsmall([4, 3, 2, 1])
 Vecsmall([0, 0, 1, 2])
 Vecsmall([0, 0, 1, 2])
 error("incorrect type in gtovecsmall (t_QFB).")
 Vecsmall([0, 0, 1, 2])
 Vecsmall([0, 1, 2, 3])
-Vecsmall([1, 2, 3, 4])
-Vecsmall([97, 98, 99, 100])
+Vecsmall([2, 3, 4, 5])
+Vecsmall([99, 100, 101, 102])
 Vecsmall([0, 0, 97, 98])
 error("incorrect type in gtovecsmall (t_MAT).")
 error("incorrect type in gtovecsmall (t_ERROR).")
@@ -396,4 +396,4 @@ Vecsmall([4, 5, 3])
   ***   at top-level: [1..1/2]
   ***                   ^------
   *** [_.._]: incorrect type in [_.._] (t_FRAC).
-Total time spent: 1
+Total time spent: 2

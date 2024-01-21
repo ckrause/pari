@@ -82,6 +82,9 @@ BA  13- [libpari] suminf_bitprec, intnumromb_bitprec: use suminf, intnumromb
     14- lfun for degree 1 L-functions: use Riemann-Siegel when imag(s) is large
     15- zetahurwitz, lerchzeta: use Tyagi's method when imag(s) is large
     16- forprimestep: allow modulus not fitting in an unsigned long
+    17- specify how Vec(v, n) truncates v when #v > |n|. Changes previous
+        behaviour when n < 0: Vec([1,2,3], -2) -> [2,3]  (was [1,2])
+        Same for Vecrev, Vecsmall, Col, and Colrev.
 
   Added
      1- [libpari] nfeltembed_i

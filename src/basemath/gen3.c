@@ -3119,48 +3119,49 @@ init_vectopre(long a, long n, GEN y, long *imax)
 static GEN
 gtovecpre(GEN x, long n)
 {
-  long i, imax, lx, tx = typ(x);
+  long a, i, imax, lx, tx = typ(x);
   GEN y = zerovec(n), y0;
 
   if (is_scalar_t(tx) || tx == t_RFRAC) { gel(y,n) = gcopy(x); return y; }
   switch(tx)
   {
     case t_POL:
-      lx = lg(x);
-      y0 = init_vectopre(lx-2, n, y, &imax);
+      lx = lg(x); a = lx-2;
+      y0 = init_vectopre(a, n, y, &imax); if (imax == n) x -= a-imax;
       for (i=1; i<=imax; i++) gel(y0,i) = gcopy(gel(x,lx-i));
       return y;
     case t_SER:
-      lx = lg(x); x++;
-      y0 = init_vectopre(lx-2, n, y, &imax);
+      a = lg(x)-2; x++;
+      y0 = init_vectopre(a, n, y, &imax); if (imax == n) x += a-imax;
       for (i=1; i<=imax; i++) gel(y0,i) = gcopy(gel(x,i));
       return y;
     case t_QFB:
-      lx = lg(x)-1; /* remove discriminant */
-      y0 = init_vectopre(lx-1, n, y, &imax);
+      a = lg(x)-2; /* remove discriminant */
+      y0 = init_vectopre(a, n, y, &imax); if (imax == n) x += a-imax;
       for (i=1; i<=imax; i++) gel(y0,i) = gcopy(gel(x,i));
       return y;
     case t_VEC: case t_COL:
-      lx = lg(x);
-      y0 = init_vectopre(lx-1, n, y, &imax);
+      a = lg(x)-1;
+      y0 = init_vectopre(a, n, y, &imax); if (imax == n) x += a-imax;
       for (i=1; i<=imax; i++) gel(y0,i) = gcopy(gel(x,i));
       return y;
     case t_LIST:
       if (list_typ(x) == t_LIST_MAP) pari_err_TYPE("gtovec",x);
-      x = list_data(x); lx = x? lg(x): 1;
-      y0 = init_vectopre(lx-1, n, y, &imax);
+      x = list_data(x); a = x? lg(x)-1: 0;
+      y0 = init_vectopre(a, n, y, &imax); if (imax == n) x += a-imax;
       for (i=1; i<=imax; i++) gel(y0,i) = gcopy(gel(x,i));
       return y;
     case t_STR:
     {
       char *s = GSTR(x);
-      y0 = init_vectopre(strlen(s), n, y, &imax); s--;
+      a = strlen(s);
+      y0 = init_vectopre(a, n, y, &imax); s--; if (imax == n) s += a-imax;
       for (i=1; i<=imax; i++) gel(y,i) = chartoGENstr(s[i]);
       return y;
     }
     case t_VECSMALL:
-      lx = lg(x);
-      y0 = init_vectopre(lx-1, n, y, &imax);
+      a = lg(x)-1;
+      y0 = init_vectopre(a, n, y, &imax); if (imax == n) x += a-imax;
       for (i=1; i<=imax; i++) gel(y0,i) = stoi(x[i]);
       return y;
     default: pari_err_TYPE("gtovec",x);
@@ -3323,42 +3324,43 @@ gtovecsmallpost(GEN x, long n)
 static GEN
 gtovecsmallpre(GEN x, long n)
 {
-  long i, imax, lx;
   GEN y = zero_Flv(n), y0;
+  long a, i, imax, lx;
 
   switch(typ(x))
   {
     case t_INT:
       y[n] = itos(x); return y;
     case t_POL:
-      lx = lg(x);
-      y0 = init_vectopre(lx-2, n, y, &imax);
+      lx = lg(x); a = lx-2;
+      y0 = init_vectopre(a, n, y, &imax); if (imax == n) x -= a-imax;
       for (i=1; i<=imax; i++) y0[i] = Itos(gel(x,lx-i));
       return y;
     case t_SER:
-      lx = lg(x); x++;
-      y0 = init_vectopre(lx-2, n, y, &imax);
+      a = lg(x)-2; x++;
+      y0 = init_vectopre(a, n, y, &imax); if (imax == n) x += a-imax;
       for (i=1; i<=imax; i++) y0[i] = Itos(gel(x,i));
       return y;
     case t_VEC: case t_COL:
-      lx = lg(x);
-      y0 = init_vectopre(lx-1, n, y, &imax);
+      a = lg(x)-1;
+      y0 = init_vectopre(a, n, y, &imax); if (imax == n) x += a-imax;
       for (i=1; i<=imax; i++) y0[i] = Itos(gel(x,i));
       return y;
     case t_LIST:
-      x = list_data(x); lx = x? lg(x): 1;
-      y0 = init_vectopre(lx-1, n, y, &imax);
+      x = list_data(x); a = x? lg(x)-1: 0;
+      y0 = init_vectopre(a, n, y, &imax); if (imax == n) x += a-imax;
       for (i=1; i<=imax; i++) y0[i] = Itos(gel(x,i));
       return y;
     case t_VECSMALL:
-      lx = lg(x);
-      y0 = init_vectopre(lx-1, n, y, &imax);
+      a = lg(x)-1;
+      y0 = init_vectopre(a, n, y, &imax); if (imax == n) x += a-imax;
       for (i=1; i<=imax; i++) y0[i] = x[i];
       return y;
     case t_STR:
     {
       unsigned char *s = (unsigned char*)GSTR(x);
-      y0 = init_vectopre(strlen((const char *)s), n, y, &imax); s--;
+      a = strlen((const char *)s);
+      y0 = init_vectopre(a, n, y, &imax); s--; if (imax == n) s += a-imax;
       for (i=1; i<=imax; i++) y0[i] = (long)s[i];
       return y;
     }
