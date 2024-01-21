@@ -3932,56 +3932,49 @@ bestappr_ser(GEN x, long B)
     b = gel(t,2);
     v -= RgX_valrem(b, &b);
     if (typ(a) == t_POL && varn(a) == vx) v += RgX_valrem(a, &a);
-    if (v < 0) b = RgX_shift(b, -v);
+    if (v < 0) b = RgX_shift_shallow(b, -v);
     else if (v > 0) {
       if (typ(a) != t_POL || varn(a) != vx) a = scalarpol_shallow(a, vx);
-      a = RgX_shift(a, v);
+      a = RgX_shift_shallow(a, v);
     }
     t = mkrfraccopy(a, b);
   }
   return t;
 }
+static GEN
+gc_empty(pari_sp av) { set_avma(av); return cgetg(1, t_VEC); }
+static GEN
+_gc_upto(pari_sp av, GEN x) { return x? gerepileupto(av, x): NULL; }
+
 static GEN bestappr_RgX(GEN x, long B);
-/* x t_POLMOD, B >= 0 or < 0 [omit condition on B].
- * Look for coprime t_POL a,b, deg(b)<=B, such that a/b = x */
+/* B >= 0 or < 0 [omit condition on B].
+ * Look for coprime t_POL a,b, deg(b)<=B, such that a/b ~ x */
 static GEN
 bestappr_RgX(GEN x, long B)
 {
-  long i, lx, tx = typ(x);
-  GEN y, t;
-  switch(tx)
+  pari_sp av;
+  switch(typ(x))
   {
-    case t_INT: case t_REAL: case t_INTMOD: case t_FRAC:
+    case t_INT: case t_REAL: case t_INTMOD: case t_FRAC: case t_FFELT:
     case t_COMPLEX: case t_PADIC: case t_QUAD: case t_POL:
       return gcopy(x);
-
-    case t_RFRAC: {
-      pari_sp av = avma;
+    case t_RFRAC:
       if (B < 0 || degpol(gel(x,2)) <= B) return gcopy(x);
-      x = rfrac_to_ser_i(x, 2*B+1);
-      t = bestappr_ser(x, B); if (!t) return NULL;
-      return gerepileupto(av, t);
-    }
-    case t_POLMOD: {
-      pari_sp av = avma;
-      t = mod_to_rfrac(gel(x,2), gel(x,1), B); if (!t) return NULL;
-      return gerepileupto(av, t);
-    }
-    case t_SER: {
-      pari_sp av = avma;
-      t = bestappr_ser(x, B); if (!t) return NULL;
-      return gerepileupto(av, t);
-    }
-
-    case t_VEC: case t_COL: case t_MAT:
-      y = cgetg_copy(x, &lx);
-      if (lontyp[tx] == 1) i = 1; else { y[1] = x[1]; i = 2; }
-      for (; i<lx; i++)
+      av = avma; return _gc_upto(av, bestappr_ser(rfrac_to_ser_i(x, 2*B+1), B));
+    case t_POLMOD:
+      av = avma; return _gc_upto(av, mod_to_rfrac(gel(x,2), gel(x,1), B));
+    case t_SER:
+      av = avma; return _gc_upto(av, bestappr_ser(x, B));
+    case t_VEC: case t_COL: case t_MAT: {
+      long i, lx;
+      GEN y = cgetg_copy(x, &lx);
+      for (i = 1; i < lx; i++)
       {
-        t = bestappr_RgX(gel(x,i),B); if (!t) return NULL;
+        GEN t = bestappr_RgX(gel(x,i),B); if (!t) return NULL;
         gel(y,i) = t;
       }
       return y;
+    }
   }
   pari_err_TYPE("bestappr_RgX",x);
   return NULL; /* LCOV_EXCL_LINE */
@@ -4007,16 +4000,14 @@ bestappr(GEN x, GEN k)
     }
   }
   x = bestappr_Q(x, k);
-  if (!x) { set_avma(av); return cgetg(1,t_VEC); }
-  return x;
+  return x? x: gc_empty(av);
 }
 GEN
 bestapprPade(GEN x, long B)
 {
   pari_sp av = avma;
   GEN t = bestappr_RgX(x, B);
-  if (!t) { set_avma(av); return cgetg(1,t_VEC); }
-  return t;
+  return t? t: gc_empty(av);
 }
 
 static GEN
@@ -4028,7 +4019,7 @@ serPade(GEN S, long p, long q)
   va = gvar(S); v = gvaluation(S, pol_x(va));
   if (p < 0) pari_err_DOMAIN("bestapprPade", "p", "<", gen_0, stoi(p));
   if (q < 0) pari_err_DOMAIN("bestapprPade", "q", "<", gen_0, stoi(q));
-  if (v == LONG_MAX) { set_avma(av); return cgetg(1,t_VEC); }
+  if (v == LONG_MAX) return gc_empty(av);
   S = gadd(S, zeroser(va, p + q + 1 + v));
   return gerepileupto(av, bestapprPade(S, q));
 }
@@ -4036,10 +4027,6 @@ serPade(GEN S, long p, long q)
 GEN
 bestapprPade0(GEN x, long p, long q)
 {
-  pari_sp av = avma;
-  GEN t;
-  if (p>=0 && q>=0) return serPade(x, p, q);
-  t = bestappr_RgX(x, p>=0 ? p: q);
-  if (!t) { set_avma(av); return cgetg(1,t_VEC); }
-  return t;
+  return (p >= 0 && q >= 0)? serPade(x, p, q)
+                           : bestapprPade(x, p >= 0? p: q);
 }
