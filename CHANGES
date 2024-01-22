@@ -2,6 +2,7 @@ Bug numbers refer to the BTS at http://pari.math.u-bordeaux.fr/Bugs/
 Done for version 2.16.2 (released ??/??/2024):
   Fixed
 XR   1- rare oo-loop in nfdisc [#2510]
+PB   2- polcoeff(polmodular(2, 0, ffgen([7,2])^0),0).mod -> incorrect [#2533]
 
   Added
 BA   1- GP function mapapply
