@@ -1859,12 +1859,12 @@ rnfconductor0(GEN bnf, GEN T, long flag)
 {
   pari_sp av = avma;
   GEN P, E, D, nf, module, bnr, H, lim, Tr, MOD;
-  long i, l, degT = degpol(T);
+  long i, l, degT;
 
   if (flag < 0 || flag > 2) pari_err_FLAG("rnfconductor");
   bnf = checkbnf(bnf); nf = bnf_get_nf(bnf);
   Tr = rnfdisc_get_T(nf, T, &lim);
-  T = nfX_to_monic(nf, Tr, NULL);
+  T = nfX_to_monic(nf, Tr, NULL); degT = degpol(T);
   if (!lim)
     D = rnfdisc_factored(nf, T, NULL);
   else
