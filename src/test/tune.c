@@ -703,6 +703,16 @@ diag(const char *format, ...)
   vfprintf(stderr, format, ap);
   va_end(ap);
 }
+
+void
+fdiag(FILE *stream, const char *format, ...)
+{
+  va_list ap;
+  va_start(ap, format);
+  vfprintf(stream, format, ap);
+  va_end(ap);
+}
+
 void
 print_define(tune_param *param, long value)
 {
@@ -873,22 +883,24 @@ Test(tune_param *param, long linear)
   set_avma(av);
 }
 
-void error(char **argv) {
+void error(int err, char **argv) {
   long i;
-  diag("This is the PARI/GP tuning utility. Usage: tune [OPTION] var1 var2...\n");
-  diag("Options:\n");
-  diag("  -t:     verbose output\n");
-  diag("  -tt:    very verbose output\n");
-  diag("  -ttt:   output everything\n");
-  diag("  -l:     use linear search (slower)\n");
-  diag("  -d xxx: set finite field degree to xxx (default 10)\n");
-  diag("  -p xxx: set Flx modulus to xxx (default 27449)\n");
-  diag("  -s xxx: set step factor between successive sizes to xxx (default 0.01)\n");
-  diag("  -u xxx: set speed_unittime to xxx (default 1e-4s)\n");
-  diag("Tunable variables (omitting variable indices tunes everybody):\n");
+  FILE *stream = err ? stderr: stdout;
+  fdiag(stream, "This is the PARI/GP tuning utility. Usage: tune [OPTION] var1 var2...\n");
+  fdiag(stream, "Options:\n");
+  fdiag(stream, "  -h:     this help\n");
+  fdiag(stream, "  -t:     verbose output\n");
+  fdiag(stream, "  -tt:    very verbose output\n");
+  fdiag(stream, "  -ttt:   output everything\n");
+  fdiag(stream, "  -l:     use linear search (slower)\n");
+  fdiag(stream, "  -d xxx: set finite field degree to xxx (default 10)\n");
+  fdiag(stream, "  -p xxx: set Flx modulus to xxx (default 27449)\n");
+  fdiag(stream, "  -s xxx: set step factor between successive sizes to xxx (default 0.01)\n");
+  fdiag(stream, "  -u xxx: set speed_unittime to xxx (default 1e-4s)\n");
+  fdiag(stream, "Tunable variables (omitting variable indices tunes everybody):\n");
   for (i = 0; i < (long)numberof(param); i++)
-    diag("  %2ld: %-25s (default %4ld)\n", i, param[i].name, *(param[i].var));
-  exit(1);
+    fdiag(stream, "  %2ld: %-25s (default %4ld)\n", i, param[i].name, *(param[i].var));
+  exit(err);
 }
 
 int
@@ -916,36 +928,38 @@ main(int argc, char **argv)
         case 'd':
           if (!*++s)
           {
-            if (++i == argc) error(argv);
+            if (++i == argc) error(1,argv);
             s = argv[i];
           }
           DFLT_deg = itou(gp_read_str(s)); break;
+        case 'h':
+          error(0,argv); break;
         case 'p':
           if (!*++s)
           {
-            if (++i == argc) error(argv);
+            if (++i == argc) error(1,argv);
             s = argv[i];
           }
           DFLT_mod = itou(gp_read_str(s)); break;
         case 's':
           if (!*++s)
           {
-            if (++i == argc) error(argv);
+            if (++i == argc) error(1,argv);
             s = argv[i];
           }
           Step_Factor = atof(s); break;
         case 'u': s++;
           if (!*++s)
           {
-            if (++i == argc) error(argv);
+            if (++i == argc) error(1,argv);
             s = argv[i];
           }
           speed_unittime = atof(s); break;
-        default: error(argv);
+        default: error(1,argv);
       }
     } else {
-      if (!isdigit((unsigned char)*s)) error(argv);
-      r = atol(s); if (r >= (long)numberof(param) || r < 0) error(argv);
+      if (!isdigit((unsigned char)*s)) error(1,argv);
+      r = atol(s); if (r >= (long)numberof(param) || r < 0) error(1,argv);
       v[n++] = r;
     }
   }
