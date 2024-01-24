@@ -1,7 +1,7 @@
-HEAP=[96, if(sizebyte(0)==16,3253,3295)];
+HEAP=[96, if(sizebyte(0)==16,3267,3323)];
 \e
 addprimes([nextprime(10^9),nextprime(10^10)])
-bestappr(Pi,10000)
+localbitprec(1024);bestappr(Pi,10000)
 gcdext(123456789,987654321)
 bigomega(12345678987654321)
 binomial(1.1,5)
