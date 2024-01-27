@@ -4,6 +4,7 @@ Done for version 2.16.2 (released ??/??/2024):
 XR   1- rare oo-loop in nfdisc [#2510]
 PB   2- polcoeff(polmodular(2, 0, ffgen([7,2])^0),0).mod -> incorrect [#2533]
 BA   3- rnfconductor(...,[P, B]) -> wrong result [#2534]
+     4- vecsearch(t_LIST,) would raise a type error [#2535]
 
   Added
 BA   1- GP function mapapply

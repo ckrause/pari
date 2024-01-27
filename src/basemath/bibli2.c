@@ -1869,12 +1869,23 @@ long
 vecsearch(GEN v, GEN x, GEN k)
 {
   pari_sp av = avma;
+  long r;
   void *E;
   int (*CMP)(void*,GEN,GEN) = sort_function(&E, v, k);
-  long r, tv = typ(v);
-  if (tv == t_VECSMALL)
-    x = (GEN)itos(x);
-  else if (!is_matvec_t(tv)) pari_err_TYPE("vecsearch", v);
+  switch(typ(v))
+  {
+    case t_VECSMALL: x = (GEN)itos(x); break;
+    case t_VEC: case t_COL: break;
+    case t_LIST:
+      if (list_typ(v)==t_LIST_RAW)
+      {
+        v = list_data(v); if (!v) v = cgetg(1, t_VEC);
+        break;
+      }
+      /* fall through */
+    default:
+      pari_err_TYPE("vecsearch", v);
+  }
   r = CMP? gen_search(v, x, E, CMP): key_search(v, x, k);
   return gc_long(av, r < 0? 0: r);
 }
