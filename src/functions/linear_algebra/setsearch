@@ -7,7 +7,8 @@ Help: setsearch(S,x,{flag=0}): determines whether x belongs to the set (or
  If flag is 0 or omitted, returns 0 if it does not, otherwise returns the index
  j such that x==S[j]. If flag is nonzero, return 0 if x belongs to S,
  otherwise the index j where it should be inserted.
-Doc: determines whether $x$ belongs to the set $S$ (see \kbd{setisset}).
+Doc: determines whether $x$ belongs to the set or sorted list $S$
+ (see \kbd{setisset}).
 
  We first describe the default behavior, when $\fl$ is zero or omitted. If $x$
  belongs to the set $S$, returns the index $j$ such that $S[j]=x$, otherwise
