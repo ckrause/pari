@@ -93,9 +93,9 @@ Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
  i.e.~$\chi(-1)=-1$) is implemented.
 
  \item If $p > 2$, the function returns
- $[\lambda, \kappa, [e_{0},\dots,e_{k}]]$, where $\lambda=\lambda_{p}^{-}(F)$,
+ $[\lambda, \nu, [e_{0},\dots,e_{k}]]$, where $\lambda=\lambda_{p}^{-}(F)$,
  $p^{e_{n}}$ denotes the $p$-part of the class number of $F_{n}$ and $e_{n} =
- \lambda n + \kappa$ for all $n > k$. We use Gold's theorem
+ \lambda n + \nu$ for all $n > k$. We use Gold's theorem
  (Acta Arith. vol.26 (1974), pp.~21--32, vol.26 (1975), pp.~233--240).
  Then as soon as $e_{n} - e_{n-1} < \varphi(p^{n})$ for some $n \geq 1$, we have
  $\lambda_{p}(F)=e_{n}-e_{n-1}$;
@@ -121,7 +121,7 @@ Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
  ? subcycloiwasawa(x^2+11111, 11)
  %3 = [0, 0, []]
  @eprog\noindent This shows that for $p = 3$, we have $\lambda = 1$,
- $\kappa = 0$, and $e_{n} = n$ for all $n \geq 0$.
+ $\nu = 0$, and $e_{n} = n$ for all $n \geq 0$.
  And at $p = 11$, we have $e_{n} = 0$ for all $n \geq 0$.
 
  \bprog
@@ -130,7 +130,7 @@ Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
  %4 = [14, -16, [2, 5]]
  @eprog\noindent
  computes $e_{n}$ by Gold's algorithm for $F=\Q(\sqrt{-1501391})$.
- This shows that at $p = 3$, we have $\lambda=14$, $\kappa=-16$, then
+ This shows that at $p = 3$, we have $\lambda=14$, $\nu=-16$, then
  $e_{0}=2$, $e_{1}=5$, and $e_{n}=14n-16$ for $n\geq 2$.
  \bprog
  ? subcycloiwasawa(x^2+956238, 3)
