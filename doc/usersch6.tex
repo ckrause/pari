@@ -3321,24 +3321,25 @@ absolute precision \kbd{prec}.
 \subsec{Initialization}
 
 Low-level routines underlying \kbd{alginit}; argument \kbd{rnf} (resp.~\kbd{nf})
-must be true \var{rnf} (resp.~\var{nf}) structure.
+must be true \var{rnf} (resp.~\var{nf}) structure. The meaning of~$\fl$ is the
+same as in~\kbd{alginit}.
 
-\fun{GEN}{alg_csa_table}{GEN nf, GEN mt, long v, long maxord}
+\fun{GEN}{alg_csa_table}{GEN nf, GEN mt, long v, long flag}
 central simple algebra defined by a multiplication table over \kbd{nf}.
 
-\fun{GEN}{alg_cyclic}{GEN rnf, GEN aut, GEN b, long maxord}
+\fun{GEN}{alg_cyclic}{GEN rnf, GEN aut, GEN b, long flag}
 cyclic algebra~$(L/K,\sigma,b)$.
 
-\fun{GEN}{alg_hasse}{GEN nf, long d, GEN hi, GEN hf, long v, long maxord}
+\fun{GEN}{alg_hasse}{GEN nf, long d, GEN hi, GEN hf, long v, long flag}
 algebra defined by local Hasse invariants.
 
-\fun{GEN}{alg_hilbert}{GEN nf, GEN a, GEN b, long v, long maxord}
+\fun{GEN}{alg_hilbert}{GEN nf, GEN a, GEN b, long v, long flag}
 quaternion algebra.
 
-\fun{GEN}{alg_matrix}{GEN nf, long n, long v, long maxord}
+\fun{GEN}{alg_matrix}{GEN nf, long n, long v, long flag}
 matrix algebra of degree \kbd{n} over \kbd{nf}.
 
-\fun{GEN}{alg_complete}{GEN rnf, GEN aut, GEN hf, GEN hi, long maxord}
+\fun{GEN}{alg_complete}{GEN rnf, GEN aut, GEN hf, GEN hi, long flag}
 cyclic algebra~$(L/K,\sigma,b)$ with~$b$ computed from the Hasse invariants.
 
 \subsec{Type checks}
