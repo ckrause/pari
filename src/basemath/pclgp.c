@@ -491,26 +491,20 @@ ediff_ber(ulong p, long m, ulong n, int *chi)
 }
 
 #ifdef DEBUG
-/* slow */
 static int*
-set_quad_chi_1(long m)
+set_quad_chi_slow(long m)
 {
-  long a, d, f;
-  int *chi;
-  d=((m-1)%4==0)?m:4*m; f=labs(d);
-  chi= (int*)stack_calloc(sizeof(int)*f);
+  long a, d = (m-1) % 4? 4*m: m, f = labs(d);
+  int *chi = (int*)stack_calloc(sizeof(int)*f);
   for (a=1; a<f; a++) chi[a]=kross(d, a);
   return chi;
 }
 #endif
 
-/* chi[a]=kross(d, a)   0<=a<=f-1
- * d=discriminant of Q(sqrt(m)), f=abs(d)
- *
- * Algorithm: m=-p1*p2*...*pr ==> kross(d,gi)=-1 (1<=i<=r), gi=proot(pi)
- * set_quad_chi_1(m)=set_quad_chi_2(m) for all square-free m s.t. |m|<10^5. */
+/* chi[a] = kross(d, a), 0 <= a < f, d = disc Q(sqrt(m)), f = abs(d)
+ * Algorithm: m=-p1*p2*...*pr ==> kross(d,gi)=-1 (1<=i<=r), gi=proot(pi) */
 static int*
-set_quad_chi_2(long m)
+set_quad_chi(long m)
 {
   long d = (m-1) % 4? 4*m: m, f = labs(d);
   GEN fa = factoru(f), P = gel(fa, 1), E = gel(fa,2), u, v;
@@ -524,17 +518,17 @@ set_quad_chi_2(long m)
   v = cgetg(32, t_VECSMALL);
   for (i = 1; i < l; i++)
   {
-    ulong p = upowuu(P[i], E[i]);
-    u[i] = p * Fl_inv(p, f / p);
-    v[i] = Fl_sub(1, u[i], f);
+    ulong q = upowuu(P[i], E[i]);
+    u[i] = q * Fl_inv(q, f / q); /* 1 mod f/q, 0 mod q */
+    v[i] = Fl_sub(1, u[i], f); /* => gv + u is 1 mod f/q and g mod q */
   }
-  if (E[1]==2)       /* f=4*(-m) */
+  if (E[1]==2) /* f=4*(-m) */
   {
     *p0++ = Fl_add(v[1], u[1], f);
     *p1++ = Fl_add(Fl_mul(3, v[1], f), u[1], f);
     i = 2;
   }
-  else if (E[1]==3)  /* f=8*(-m) */
+  else if (E[1]==3) /* f=8*(-m) */
   {
     ulong a;
     *p0++ = Fl_add(v[1], u[1], f);
@@ -546,7 +540,7 @@ set_quad_chi_2(long m)
     if (kross(d, a) > 0) *p0++ = a; else *p1++ = a;
     i = 2;
   }
-  else              /* f=-m */
+  else /* f=-m */
   {*p0++ = 1; i = 1; }
   for (; i < l; i++)
   {
@@ -849,7 +843,7 @@ imagquadstkpol(long p, long m, long n)
   if (p==2 && (m==-1 || m==-2 || m==-3 || m==-6)) return nullvec();
   if (p==3 && m==-3) return nullvec();
   if (p==2 && m%2==0) m /= 2;
-  chi = set_quad_chi_2(m);
+  chi = set_quad_chi(m);
   stk = (p==2)? quadstk2(m, n, chi): quadstkp(p, m, n, chi);
   stk2 = zx_to_Flx(stk, pn);
   pol = Flxn_Weierstrass_prep(zlx_translate1(stk2, p, n), p, n, 1);
@@ -883,14 +877,14 @@ realquadstkpol(long p, long m, long n)
   q0 = ulcm((p==2)?4:p, d);
   if (p==2)
   {
-    chi = set_quad_chi_2(-m);
+    chi = set_quad_chi(-m);
     stk = quadstk2(-m, n, chi);
     stk = zx_to_Flx_inplace(stk, pn);
   }
   else if (p==3 && m%3==0 && kross(-m/3,3)==1)
   {
     long m3 = m/3;
-    chi = set_quad_chi_2(-m3);
+    chi = set_quad_chi(-m3);
     stk = quadstkp(3, -m3, n, chi);
     stk = zx_to_Flx_inplace(stk, pn);
   }
@@ -900,7 +894,7 @@ realquadstkpol(long p, long m, long n)
     long x = Fl_powu(Fl_inv(g, p), pnm1, pn);
     GEN Chi = get_teich(p, g);
     GEN Gam = set_gam((1+q0)%pn1, p, n);
-    chi = set_quad_chi_2(m);
+    chi = set_quad_chi(m);
     stk = quadteichstk(Chi, chi, Gam, p, m, n);  /* exact */
     stk = zxX_to_FlxX(stk, pn);  /* approx. */
     stk = FlxY_evalx(stk, x, pn);
@@ -943,7 +937,7 @@ quadlambda(long p, long m)
   flag = kross(m, p);
   e[1] = Z_lval(quadclassno(quaddisc(stoi(m))), p);
   if (flag!=1 && e[1]==0) return mkvec3(gen_0, gen_0, nullvec());
-  chi = set_quad_chi_2(m);
+  chi = set_quad_chi(m);
   phipn = p-1;  /* phipn=phi(p^n) */
   for (n=1; n; n++, phipn *= p)
   {
