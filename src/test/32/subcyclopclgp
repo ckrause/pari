@@ -66,6 +66,7 @@
 [x^3 + 132*x^2 + 248*x + 106]
 []
 [6, -2, [1]]
+[1, 1, []]
   ***   at top-level: subcyclopclgp([7,[1]],3)
   ***                 ^------------------------
   *** subcyclopclgp: domain error in subcyclopclgp: p divides [F:Q] = 6
@@ -89,4 +90,4 @@
   ***   at top-level: subcyclopclgp([7],5,64)
   ***                 ^-----------------------
   *** subcyclopclgp: invalid flag in subcyclopclgp.
-Total time spent: 5008
+Total time spent: 3855

@@ -518,8 +518,8 @@ set_quad_chi(long m)
   v = cgetg(32, t_VECSMALL);
   for (i = 1; i < l; i++)
   {
-    ulong q = upowuu(P[i], E[i]);
-    u[i] = q * Fl_inv(q, f / q); /* 1 mod f/q, 0 mod q */
+    ulong q = upowuu(P[i], E[i]), fq = f / q;
+    u[i] = q * Fl_inv(q % fq, fq); /* 1 mod f/q, 0 mod q */
     v[i] = Fl_sub(1, u[i], f); /* => gv + u is 1 mod f/q and g mod q */
   }
   if (E[1]==2) /* f=4*(-m) */
