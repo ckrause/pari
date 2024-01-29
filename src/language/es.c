@@ -359,6 +359,58 @@ gp_read_str_multiline(const char *s, char *last)
   return z ? z: gnil;
 }
 
+static void
+gp_read_str_history(const char *s)
+{
+  input_method IM;
+  const char *ptr = s;
+  char last = 0;
+  pari_sp av = avma;
+  IM.file = (void*)(&ptr);
+  IM.myfgets = (fgets_t)&string_gets;
+  IM.getline = &file_input;
+  IM.free = 0;
+  struct gp_context rec;
+  for(;ptr[0];)
+  {
+    GEN z;
+    gp_context_save(&rec);
+    timer_start(GP_DATA->T);
+    walltimer_start(GP_DATA->Tw);
+    pari_set_last_newline(1);
+    z = gp_read_from_input(&IM, 0, &last);
+    pari_alarm(0);
+    if (!pari_last_was_newline()) pari_putc('\n');
+    if (z)
+    {
+      long t = timer_delay(GP_DATA->T);
+      long r = walltimer_delay(GP_DATA->Tw);
+      if (t && GP_DATA->chrono)
+      {
+        if (pari_mt_nbthreads==1)
+        {
+          pari_puts("time = ");
+          pari_puts(gp_format_time(t));
+        }
+        else
+        {
+          pari_puts("cpu time = ");
+          pari_puts(gp_format_time(t));
+          pari_puts(", real time = ");
+          pari_puts(gp_format_time(r));
+        }
+        pari_puts(".\n");
+      }
+      if (GP_DATA->simplify) z = simplify_shallow(z);
+      pari_add_hist(z, t, r);
+      if (z != gnil && last!=';')
+        gp_display_hist(pari_nb_hist());
+    }
+    set_avma(av);
+    parivstack_reset();
+  }
+}
+
 void
 gp_embedded_init(long rsize, long vsize)
 {
@@ -369,39 +421,26 @@ gp_embedded_init(long rsize, long vsize)
 #endif
 }
 
-char *
+long
 gp_embedded(const char *s)
 {
-  char last, *res;
+  long err = 0;
   struct gp_context state;
-  VOLATILE long t = 0, r = 0;
   gp_context_save(&state);
   timer_start(GP_DATA->T);
   timer_start(GP_DATA->Tw);
   pari_set_last_newline(1);
   pari_CATCH(CATCH_ALL)
   {
-    GENbin* err = copy_bin(pari_err_last());
+    pari_err_display(pari_err_last());
     gp_context_restore(&state);
-    res = pari_err2str(bin_copy(err));
+    err = 1;
   } pari_TRY {
-    GEN z = gp_read_str_multiline(s, &last);
-    ulong n;
-    t = timer_delay(GP_DATA->T);
-    r = walltimer_delay(GP_DATA->Tw);
-    if (GP_DATA->simplify) z = simplify_shallow(z);
-    pari_add_hist(z, t, r);
-    n = pari_nb_hist();
-    set_avma(pari_mainstack->top);
-    parivstack_reset();
-    res = (z==gnil || last==';') ? stack_strdup("\n"):
-          stack_sprintf("%%%lu = %Ps\n", n, pari_get_hist(n));
-    if (t && GP_DATA->chrono)
-      res = stack_sprintf("%stime = %s.\n", res, gp_format_time(t));
+    gp_read_str_history(s);
   } pari_ENDCATCH;
   if (!pari_last_was_newline()) pari_putc('\n');
   set_avma(pari_mainstack->top);
-  return res;
+  return err;
 }
 
 GEN

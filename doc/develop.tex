@@ -494,11 +494,10 @@ interpretor in a program.
 Initialize the GP interpretor (like \kbd{pari\_init} does) with
 \kbd{parisize=rsize} and \kbd{parisizemax=vsize}.
 
-\fun{char *}{gp_embedded}{const char *s}
-Evaluate the string \kbd{s} with GP and return the result as a string,
-in a format similar to what GP displays (with the history index).
-The resulting string is allocated on the PARI stack, so subsequent call
-to \kbd{gp\_embedded} will destroy it.
+\fun{long}{gp_embedded}{const char *s}
+Evaluate the string \kbd{s} as if it was input to the GP interpretor,
+displaying results, timings and error, filling the history etc, as
+needed. return $1$ if an error was triggered, $0$ otherwise.
 
 \section{Readline interface}
 

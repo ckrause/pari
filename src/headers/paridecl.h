@@ -3448,7 +3448,7 @@ void    dbg_pari_heap(void);
 int     file_is_binary(FILE *f);
 void    err_flush(void);
 void    err_printf(const char* pat, ...);
-char *  gp_embedded(const char *s);
+long    gp_embedded(const char *s);
 void    gp_embedded_init(long rsize, long vsize);
 void    gp_fileclose(long n);
 long    gp_fileextern(char *s);
