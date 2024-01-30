@@ -278,20 +278,23 @@ static GEN
 gp_read_from_input(input_method* IM, int loop, char *last)
 {
   Buffer *b = new_buffer();
-  GEN x = gnil;
+  GEN x = NULL;
   filtre_t F;
   if (last) *last = 0;
-  do {
+  for (;;)
+  {
     char *s;
     init_filtre(&F, b);
     if (!input_loop(&F, IM)) break;
     s = b->buf;
     if (s[0])
     {
-      x = readseq(s);
+      if (gp_meta(s,0)) continue;
+      x = closure_evalres(pari_compile_str(s));
       if (last) *last = s[strlen(s) - 1];
     }
-  } while (loop);
+    if (!loop) break;
+  }
   delete_buffer(b);
   return x;
 }
@@ -345,13 +348,15 @@ gp_read_str_multiline(const char *s, char *last)
 {
   input_method IM;
   const char *ptr = s;
+  GEN z;
 
   IM.file = (void*)(&ptr);
   IM.myfgets = (fgets_t)&string_gets;
   IM.getline = &file_input;
   IM.free = 0;
 
-  return gp_read_from_input(&IM, 1, last);
+  z = gp_read_from_input(&IM, 1, last);
+  return z ? z: gnil;
 }
 
 void
