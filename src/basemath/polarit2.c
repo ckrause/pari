@@ -1872,8 +1872,8 @@ fix_lcm(GEN x)
   GEN t;
   switch(typ(x))
   {
-    case t_INT: if (signe(x)<0) x = negi(x);
-      break;
+    case t_INT:
+      x = absi_shallow(x); break;
     case t_POL:
       if (lg(x) <= 2) break;
       t = leading_coeff(x);
@@ -2065,8 +2065,7 @@ content(GEN x)
   switch(typ(c))
   {
     case t_INT:
-      if (signe(c) < 0) c = negi(c);
-      break;
+      c = absi_shallow(c); break;
     case t_VEC: case t_COL: case t_MAT:
       pari_err_TYPE("content",x);
   }

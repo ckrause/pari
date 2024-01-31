@@ -1870,7 +1870,7 @@ primes_certify(GEN dK, GEN dKP)
   }
   if (!is_pm1(D))
   {
-    if (signe(D) < 0) D = negi(D);
+    D = absi_shallow(D);
     vectrunc_append(isprime(D)? w: v, D);
   }
   return mkvec2(v,w);

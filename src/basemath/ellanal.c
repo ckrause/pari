@@ -650,7 +650,7 @@ logplusQ(GEN t, long prec)
   if (typ(t) == t_INT)
   {
     if (!signe(t)) return real_1(prec);
-    if (signe(t) < 0) t = negi(t);
+    t = absi_shallow(t);
   }
   else
   {
