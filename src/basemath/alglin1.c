@@ -5453,13 +5453,12 @@ ZM_det_worker(GEN P, GEN A)
 GEN
 ZM_det(GEN M)
 {
-  const long DIXON_THRESHOLD = 40;
   pari_sp av, av2;
-  long i, n = lg(M)-1;
+  long  n = lg(M)-1;
   ulong p, Dp;
   forprime_t S;
   pari_timer ti;
-  GEN H, D, mod, h, q, v, worker;
+  GEN H, mod, h, q, worker;
 #ifdef LONG_IS_64BIT
   const ulong PMAX = 18446744073709551557UL;
 #else
@@ -5497,35 +5496,11 @@ ZM_det(GEN M)
   }
   if (!p) pari_err_OVERFLOW("ZM_det [ran out of primes]");
   if (!Dp) { set_avma(av); return gen_0; }
-  if (mt_nbthreads() > 1 || n <= DIXON_THRESHOLD)
-    D = q; /* never competitive when bound is sharp even with 2 threads */
-  else
-  {
-    av2 = avma;
-    v = cgetg(n+1, t_COL);
-    gel(v, 1) = gen_1; /* ensure content(v) = 1 */
-    for (i = 2; i <= n; i++) gel(v, i) = stoi(random_Fl(15) - 7);
-    D = Q_denom(ZM_gauss(M, v));
-    if (expi(D) < expi(h) >> 1)
-    { /* First try unlucky, try once more */
-      for (i = 2; i <= n; i++) gel(v, i) = stoi(random_Fl(15) - 7);
-      D = lcmii(D, Q_denom(ZM_gauss(M, v)));
-    }
-    D = gerepileuptoint(av2, D);
-    if (q != gen_1) D = lcmii(D, q);
-  }
-  if (DEBUGLEVEL >=4)
-    timer_printf(&ti,"ZM_det: Dixon %ld/%ld bits",expi(D),expi(h));
-  /* determinant is a multiple of D */
-  if (is_pm1(D)) D = NULL;
-  if (D) h = divii(h, D); /* not an exact division, just a bound */
   worker = snm_closure(is_entry("_ZM_det_worker"), mkvec(M));
-  H = gen_crt("ZM_det", worker, &S, D, expi(h)+1, 0, &mod,
+  H = gen_crt("ZM_det", worker, &S, NULL, expi(h)+1, 0, &mod,
               ZV_chinese, NULL);
   /* H = det(M) modulo mod, (mod,D) = 1; |det(M) / D| <= h */
-  if (D) H = Fp_div(H, D, mod);
   H = Fp_center(H, mod, shifti(mod,-1));
-  if (D) H = mulii(H, D);
   return gerepileuptoint(av, H);
 }
 
