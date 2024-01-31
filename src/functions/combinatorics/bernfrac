@@ -6,7 +6,7 @@ Help: bernfrac(n): Bernoulli number B_n, as a rational number.
 Doc: Bernoulli number\sidx{Bernoulli numbers} $B_{n}$,
  where $B_{0}=1$, $B_{1}=-1/2$, $B_{2}=1/6$,\dots, expressed as a rational
  number.
- The argument $n$ should be a nonnegative integer. The function \tet{bervec}
+ The argument $n$ should be a nonnegative integer. The function \tet{bernvec}
  creates a cache of successive Bernoulli numbers which greatly speeds up
  later calls to \kbd{bernfrac}:
  \bprog
