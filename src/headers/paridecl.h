@@ -4339,6 +4339,7 @@ void    pari_close_opts(ulong init_opts);
 GEN     pari_compile_str(const char *lex);
 int     pari_daemon(void);
 void    pari_err(int numerr, ...);
+int     pari_err_display(GEN err);
 GEN     pari_err_last(void);
 char *  pari_err2str(GEN err);
 void    pari_init_opts(size_t parisize, ulong maxprime, ulong init_opts);

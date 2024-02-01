@@ -12,6 +12,7 @@ BA   3- rnfconductor(...,[P, B]) -> wrong result [#2534]
   Added
 BA   1- GP function mapapply
 BA   2- GP function qfcholesky
+BA   3- [libpari] pari_err_display
 
   Changed
 BA   1- plotell renamed to plotarc

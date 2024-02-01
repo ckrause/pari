@@ -1233,8 +1233,6 @@ dflt_err_recover(long errnum) { (void) errnum; pari_exit(); }
 static void
 dflt_pari_quit(long err) { (void)err; /*do nothing*/; }
 
-static int pari_err_display(GEN err);
-
 /* initialize PARI data. Initialize [new|old]fun to NULL for default set. */
 void
 pari_init_opts(size_t parisize, ulong maxprime, ulong init_opts)
@@ -1833,7 +1831,7 @@ pari_err2str(GEN e)
   return NULL; /*LCOV_EXCL_LINE*/
 }
 
-static int
+int
 pari_err_display(GEN err)
 {
   long numerr=err_get_num(err);
