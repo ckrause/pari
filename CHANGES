@@ -6,6 +6,8 @@ PB   2- polcoeff(polmodular(2, 0, ffgen([7,2])^0),0).mod -> incorrect [#2533]
 BA   3- rnfconductor(...,[P, B]) -> wrong result [#2534]
      4- vecsearch(t_LIST,) would raise a type error [#2535]
      5- subcycloiwasawa(x^2+87,3) -> SEGV
+     6- forprimestep and variants with initial value negative [#2531]
+     7- when converting a t_QFB to a vector of given length, remove discriminant
 
   Added
 BA   1- GP function mapapply
@@ -13,6 +15,12 @@ BA   2- GP function qfcholesky
 
   Changed
 BA   1- plotell renamed to plotarc
+     2- lfun for degree 1 L-functions: use Riemann-Siegel when imag(s) is large
+     3- zetahurwitz, lerchzeta: use Tyagi's method when imag(s) is large
+     4- forprimestep: allow modulus not fitting in an unsigned long
+     5- specify how Vec(v, n) truncates v when #v > |n|. Changes previous
+        behaviour when n < 0: Vec([1,2,3], -2) -> [2,3]  (was [1,2])
+        Same for Vecrev, Vecsmall, Col, and Colrev.
 
 Done for version 2.16.1 (released 04/01/2024):
   Fixed
@@ -62,8 +70,6 @@ BA  39- ellheight for non-minimal curve over a number field -> wrong result
 BA  43- memory leak when using member functions and ~ arguments. [#2513]
     44- idealstar(nf,id,,MOD).cyc was not reduced modulo MOD
     45- changed qfbred to use standard normalization (same as qfbredsl2)
-    46- forprimestep and variants with initial value negative [#2531]
-    47- when converting a t_QFB to a vector of given length, remove discriminant
 
   Changed
 HC   1- dirpowerssum: allow functions with t_VEC output
@@ -83,12 +89,6 @@ BA  10- [libpari] rename qfb_apply_ZM -> qfb_ZM_apply,
 BA  12- [libpari] change prec to be a number of bits, instead of lg
 BA  13- [libpari] suminf_bitprec, intnumromb_bitprec: use suminf, intnumromb
         ellL1_bitprec, ellanalyticrank_bitprec: use ellL1, ellanalyticrank
-    14- lfun for degree 1 L-functions: use Riemann-Siegel when imag(s) is large
-    15- zetahurwitz, lerchzeta: use Tyagi's method when imag(s) is large
-    16- forprimestep: allow modulus not fitting in an unsigned long
-    17- specify how Vec(v, n) truncates v when #v > |n|. Changes previous
-        behaviour when n < 0: Vec([1,2,3], -2) -> [2,3]  (was [1,2])
-        Same for Vecrev, Vecsmall, Col, and Colrev.
 
   Added
      1- [libpari] nfeltembed_i
