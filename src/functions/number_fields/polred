@@ -40,7 +40,7 @@ Doc: This function is \emph{deprecated}, use \tet{polredbest} instead.
  [     1/2*x^2       x^2 + 2]
 
  [     1/4*x^3       x^4 + 2]
- ? minpoly(Mod(M[2,1], x^4+8))
+ ? minpoly(Mod(M[4,1], x^4+8))
  %2 = x^2 + 2
  @eprog
 
