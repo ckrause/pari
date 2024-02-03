@@ -324,8 +324,8 @@ static void
 gp_output(GEN z)
 {
   if (cb_gp_output) { cb_gp_output(z); return; }
-  if (GP_DATA->fmt->prettyp == f_PRETTY)
-  { if (tex2mail_output(z, GP_DATA->hist->total)) return; }
+  if (GP_DATA->fmt->prettyp == f_PRETTY
+      && tex2mail_output(z, GP_DATA->hist->total)) return;
   normal_output(z, GP_DATA->hist->total);
   pari_flush();
 }
