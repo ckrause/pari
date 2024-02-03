@@ -2071,6 +2071,9 @@ gabs(GEN x, long prec)
 
     case t_VEC: case t_COL: case t_MAT:
       pari_APPLY_same(gabs(gel(x,i),prec));
+
+    case t_INFINITY:
+      return mkoo();
   }
   pari_err_TYPE("gabs",x);
   return NULL; /* LCOV_EXCL_LINE */

@@ -23,6 +23,7 @@ BA   1- plotell renamed to plotarc
      5- specify how Vec(v, n) truncates v when #v > |n|. Changes previous
         behaviour when n < 0: Vec([1,2,3], -2) -> [2,3]  (was [1,2])
         Same for Vecrev, Vecsmall, Col, and Colrev.
+     6- allow abs(+oo), abs(-oo)
 
 Done for version 2.16.1 (released 04/01/2024):
   Fixed
