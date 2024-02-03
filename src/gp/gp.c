@@ -286,50 +286,6 @@ init_test(void)
   cb_pari_is_interactive = test_is_interactive;
 }
 
-/*******************************************************************/
-/**                                                               **/
-/**                   FORMAT GP OUTPUT                            **/
-/**                                                               **/
-/*******************************************************************/
-    /* REGULAR */
-static void
-normal_output(GEN z, long n)
-{
-  long l = 0;
-  char *s;
-  /* history number */
-  if (n)
-  {
-    char buf[64];
-    if (!(GP_DATA->flags & gpd_QUIET))
-    {
-      term_color(c_HIST);
-      sprintf(buf, "%%%ld = ", n);
-      pari_puts(buf);
-      l = strlen(buf);
-    }
-  }
-  /* output */
-  term_color(c_OUTPUT);
-  s = GENtostr(z);
-  if (GP_DATA->lim_lines)
-    lim_lines_output(s, l, GP_DATA->lim_lines);
-  else
-    pari_puts(s);
-  pari_free(s);
-  term_color(c_NONE); pari_putc('\n');
-}
-
-static void
-gp_output(GEN z)
-{
-  if (cb_gp_output) { cb_gp_output(z); return; }
-  if (GP_DATA->fmt->prettyp == f_PRETTY
-      && tex2mail_output(z, GP_DATA->hist->total)) return;
-  normal_output(z, GP_DATA->hist->total);
-  pari_flush();
-}
-
 static GEN
 gp_main_loop(long ismain)
 {
@@ -399,7 +355,17 @@ gp_main_loop(long ismain)
     }
     if (GP_DATA->simplify) z = simplify_shallow(z);
     pari_add_hist(z, t, r);
-    if (z != gnil && ! is_silent(b->buf) ) gp_output(z);
+    if (z != gnil && ! is_silent(b->buf) )
+    {
+      if (cb_gp_output) cb_gp_output(z);
+      else if (GP_DATA->fmt->prettyp == f_PRETTY
+          && tex2mail_output(z, GP_DATA->hist->total)) /* nothing */;
+      else
+      {
+        gp_classic_output(z, GP_DATA->hist->total);
+        pari_flush();
+      }
+    }
     set_avma(av);
     parivstack_reset();
   }

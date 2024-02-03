@@ -1492,6 +1492,40 @@ tex2mail_output(GEN z, long n)
 
 /*******************************************************************/
 /**                                                               **/
+/**                   FORMAT GP OUTPUT                            **/
+/**                                                               **/
+/*******************************************************************/
+
+void
+gp_classic_output(GEN z, long n)
+{
+  long l = 0;
+  char *s;
+  /* history number */
+  if (n)
+  {
+    char buf[64];
+    if (!(GP_DATA->flags & gpd_QUIET))
+    {
+      term_color(c_HIST);
+      sprintf(buf, "%%%ld = ", n);
+      pari_puts(buf);
+      l = strlen(buf);
+    }
+  }
+  /* output */
+  term_color(c_OUTPUT);
+  s = GENtostr(z);
+  if (GP_DATA->lim_lines)
+    lim_lines_output(s, l, GP_DATA->lim_lines);
+  else
+    pari_puts(s);
+  pari_free(s);
+  term_color(c_NONE); pari_putc('\n');
+}
+
+/*******************************************************************/
+/**                                                               **/
 /**                     GP-SPECIFIC DEFAULTS                      **/
 /**                                                               **/
 /*******************************************************************/
