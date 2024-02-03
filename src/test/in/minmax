@@ -1,5 +1,5 @@
 v = [-3,7,-2,11];
-obj = [1, v, Vecsmall(v), [-3,7;-2,11]];
+obj = [1, v, Vecsmall(v), List(v), [-3,7;-2,11]];
 
 {
 for (i = 1, #obj,
@@ -10,3 +10,10 @@ for (i = 1, #obj,
 )
 }
 
+\\ ERRORS
+vecmin([])
+vecmin(Mat())
+vecmin(List())
+vecmax([])
+vecmax(Mat())
+vecmax(List())

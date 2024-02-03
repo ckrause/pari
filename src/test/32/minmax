@@ -1,5 +1,24 @@
 1: [1, 1, 0, 0]
 2: [11, -3, 1, 4]
 3: [11, -3, 1, 4]
-4: [11, -3, [1, 1], [2, 2]]
+4: [11, -3, 1, 4]
+5: [11, -3, [1, 1], [2, 2]]
+  ***   at top-level: vecmin([])
+  ***                 ^----------
+  *** vecmin: domain error in vecmin: empty argument = []
+  ***   at top-level: vecmin(Mat())
+  ***                 ^-------------
+  *** vecmin: domain error in vecmin: empty argument = [;]
+  ***   at top-level: vecmin(List())
+  ***                 ^--------------
+  *** vecmin: domain error in vecmin: empty argument = List([])
+  ***   at top-level: vecmax([])
+  ***                 ^----------
+  *** vecmax: domain error in vecmax: empty argument = []
+  ***   at top-level: vecmax(Mat())
+  ***                 ^-------------
+  *** vecmax: domain error in vecmax: empty argument = [;]
+  ***   at top-level: vecmax(List())
+  ***                 ^--------------
+  *** vecmax: domain error in vecmax: empty argument = List([])
 Total time spent: 0

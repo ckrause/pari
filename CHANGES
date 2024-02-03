@@ -13,6 +13,7 @@ BA   3- rnfconductor(...,[P, B]) -> wrong result [#2534]
 BA   1- GP function mapapply
 BA   2- GP function qfcholesky
 BA   3- [libpari] pari_err_display
+     4- allow vecmin and vecmax to handle t_LIST
 
   Changed
 BA   1- plotell renamed to plotarc

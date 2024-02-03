@@ -7,14 +7,15 @@ Help: vecmax(x,{&v}): largest entry in the vector/matrix x. If v
 Description:
   (gen):gen            vecmax($1)
   (gen, &gen):gen      vecmax0($1, &$2)
-Doc: if $x$ is a vector or a matrix, returns the largest entry of $x$,
+Doc: if $x$ is a list, vector or matrix, returns the largest entry of $x$,
  otherwise returns a copy of $x$. Error if $x$ is empty. Here, largest
  refers to the ordinary real ordering (\kbd{<=}).
 
  If $v$ is given, set it to the index of a largest entry (indirect maximum),
- when $x$ is a vector. If $x$ is a matrix, set $v$ to coordinates $[i,j]$
- such that $x[i,j]$ is a largest entry. This is ignored if $x$ is not a vector
- or matrix. When the vector has equal largest entries, the first occurence is
+ when $x$ is a vector or list. If $x$ is a matrix, set $v$ to coordinates
+ $[i,j]$ such that $x[i,j]$ is a largest entry. This argument $v$ is
+ ignored for other types.
+ When the vector has equal largest entries, the first occurence is
  chosen; in a matrix, the smallest $j$ is chosen first, then the smallest $i$.
  vector or matrix.
 

@@ -8,14 +8,15 @@ Help: vecmin(x,{&v}): smallest entry in the vector/matrix x. If v is
 Description:
   (gen):gen            vecmin($1)
   (gen, &gen):gen      vecmin0($1, &$2)
-Doc: if $x$ is a vector or a matrix, returns the smallest entry of $x$,
+Doc: if $x$ is a list, vector or matrix, returns the smallest entry of $x$,
  otherwise returns a copy of $x$. Error if $x$ is empty. Here, smallest
  refers to the ordinary real ordering (\kbd{<=}).
 
  If $v$ is given, set it to the index of a smallest entry (indirect minimum),
- when $x$ is a vector. If $x$ is a matrix, set $v$ to coordinates $[i,j]$ such
- that $x[i,j]$ is a smallest entry. This is ignored if $x$ is not a vector or
- matrix. When a vector has equal smallest entries, the first occurence is
+ when $x$ is a vector or list. If $x$ is a matrix, set $v$ to coordinates
+ $[i,j]$ such that $x[i,j]$ is a smallest entry. This argument $v$ is
+ ignored for other types.
+ When a vector has equal smallest entries, the first occurence is
  chosen; in a matrix, the smallest $j$ is chosen first, then the smallest $i$.
 
  \bprog

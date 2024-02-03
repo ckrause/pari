@@ -2133,7 +2133,10 @@ GEN
 vecmax0(GEN x, GEN *pi)
 {
   long i, lx = lg(x), tx = typ(x);
-  if (!is_matvec_t(tx) && tx != t_VECSMALL) return gcopy(x);
+  if (!is_matvec_t(tx) && tx != t_VECSMALL
+      && (tx != t_LIST || list_typ(x) != t_LIST_RAW)) return gcopy(x);
+  if (tx == t_LIST)
+  { if (list_data(x)) { x = list_data(x); lx = lg(x); } else lx = 1; }
   if (lx==1) pari_err_DOMAIN("vecmax", "empty argument", "=", x,x);
   switch(typ(x))
   {
@@ -2164,7 +2167,10 @@ GEN
 vecmin0(GEN x, GEN *pi)
 {
   long i, lx = lg(x), tx = typ(x);
-  if (!is_matvec_t(tx) && tx != t_VECSMALL) return gcopy(x);
+  if (!is_matvec_t(tx) && tx != t_VECSMALL
+      && (tx != t_LIST || list_typ(x) != t_LIST_RAW)) return gcopy(x);
+  if (tx == t_LIST)
+  { if (list_data(x)) { x = list_data(x); lx = lg(x); } else lx = 1; }
   if (lx==1) pari_err_DOMAIN("vecmin", "empty argument", "=", x,x);
   switch(typ(x))
   {
