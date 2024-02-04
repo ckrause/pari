@@ -1234,7 +1234,11 @@ sift(long b, ratpoints_bit_array *survivors, ratpoints_args *args,
      int process(long, long, GEN, void*, int*), void *info)
 {
   pari_sp av = avma;
-  sieve_spec ssp[args->sp2];
+  /* + 1 not needed memory-wise; it is only there to prevent
+   * undefined behavior when initializing variable length array with
+   * sp2 = 0 (in that case we don't access the array).
+   * NB. VLAs are C99-specific. */
+  sieve_spec ssp[args->sp2 + 1];
   int do_setup = 1;
   long k, height = args->height, nb;
 
@@ -1664,7 +1668,9 @@ find_points_work(ratpoints_args *args,
       else
       {
         long b, n;
-        long bp_list[args->sp2];
+        /* see comment at beginning of sift() for + 1. Silences warning
+         * when sp2 = 0 */
+        long bp_list[args->sp2 + 1];
         long last_b = args->b_low;
         for (n = 0; n < args->sp2; n++)
           bp_list[n] = mod(args->b_low, sieve_list[n]->p);
