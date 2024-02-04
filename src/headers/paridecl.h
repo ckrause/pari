@@ -2532,7 +2532,7 @@ GEN     rnfbasistoalg(GEN rnf, GEN x);
 GEN     rnfeltnorm(GEN rnf, GEN x);
 GEN     rnfelttrace(GEN rnf, GEN x);
 GEN     set_sign_mod_divisor(GEN nf, GEN x, GEN y, GEN sarch);
-GEN     tablemul(GEN TAB, GEN x, GEN y);
+GEN     tablemul(GEN M, GEN x, GEN y);
 GEN     tablemul_ei(GEN M, GEN x, long i);
 GEN     tablemul_ei_ej(GEN M, long i, long j);
 GEN     tablemulvec(GEN M, GEN x, GEN v);
