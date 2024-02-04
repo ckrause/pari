@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include <pari/pari.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <setjmp.h>
+#include <pari/pari.h>
 
 jmp_buf env;
 
