@@ -2361,6 +2361,8 @@ GEN     polredbest(GEN x, long flag);
 GEN     poltomonic(GEN T, GEN *L);
 GEN     rnfpolredabs(GEN nf, GEN pol, long flag);
 GEN     rnfpolredbest(GEN nf, GEN R, long flag);
+GEN     rnfnewprec_shallow(GEN rnf, long prec);
+GEN     rnfnewprec(GEN rnf, long prec);
 GEN     smallpolred(GEN x);
 GEN     smallpolred2(GEN x);
 GEN     tschirnhaus(GEN x);

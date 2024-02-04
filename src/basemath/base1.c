@@ -2214,22 +2214,37 @@ nfnewprec_shallow(GEN nf, long prec)
   gel(NF,6) = F.ro; return NF;
 }
 
+/* true rnf */
+GEN
+rnfnewprec_shallow(GEN rnf, long prec)
+{
+  GEN RNF = leafcopy(rnf);
+  gel(RNF,10) = nfnewprec_shallow(gel(RNF,10), prec);
+  if (obj_check(RNF, rnf_NFABS)) rnfcomplete(RNF);
+  return RNF;
+}
+GEN
+rnfnewprec(GEN rnf, long prec)
+{
+  pari_sp av = avma;
+  checkrnf(rnf);
+  return gerepilecopy(av, rnfnewprec_shallow(rnf, prec));
+}
+
 GEN
 nfnewprec(GEN nf, long prec)
 {
+  pari_sp av = avma;
   GEN z;
   switch(nftyp(nf))
   {
     default: pari_err_TYPE("nfnewprec", nf);
-    case typ_BNF: z = bnfnewprec(nf,prec); break;
-    case typ_BNR: z = bnrnewprec(nf,prec); break;
-    case typ_NF: {
-      pari_sp av = avma;
-      z = gerepilecopy(av, nfnewprec_shallow(checknf(nf), prec));
-      break;
-    }
+    case typ_RNF: z = rnfnewprec_shallow(nf,prec); break;
+    case typ_BNF: z = bnfnewprec_shallow(nf,prec); break;
+    case typ_NF:  z = nfnewprec_shallow(nf, prec); break;
+    case typ_BNR: return bnrnewprec(nf,prec);
   }
-  return z;
+  return gerepilecopy(av, z);
 }
 
 /********************************************************************/

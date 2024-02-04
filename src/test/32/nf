@@ -416,6 +416,9 @@ Mod(-6/5, x)
   ***   at top-level: nfnewprec(vector(9))
   ***                 ^--------------------
   *** nfnewprec: incorrect type in nfnewprec (t_VEC).
+  ***   at top-level: nfnewprec(vector(12))
+  ***                 ^---------------------
+  *** nfnewprec: incorrect type in nfnewprec (t_VEC).
   ***   at top-level: nfnewprec(vector(16))
   ***                 ^---------------------
   *** nfnewprec: incorrect type in nfnewprec (t_VEC).
@@ -453,4 +456,4 @@ x^7 + 89/19*x^4 + 128/57*x, 31/171*x^16 - 98/171*x^13 + 157/57*x^10 + 571/17
 11250
 -4
 1
-Total time spent: 340
+Total time spent: 253

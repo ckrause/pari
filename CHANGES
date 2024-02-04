@@ -9,12 +9,6 @@ BA   3- rnfconductor(...,[P, B]) -> wrong result [#2534]
      6- forprimestep and variants with initial value negative [#2531]
      7- when converting a t_QFB to a vector of given length, remove discriminant
 
-  Added
-BA   1- GP function mapapply
-BA   2- GP function qfcholesky
-BA   3- [libpari] pari_err_display
-     4- allow vecmin and vecmax to handle t_LIST
-
   Changed
 BA   1- plotell renamed to plotarc
      2- lfun for degree 1 L-functions: use Riemann-Siegel when imag(s) is large
@@ -24,6 +18,14 @@ BA   1- plotell renamed to plotarc
         behaviour when n < 0: Vec([1,2,3], -2) -> [2,3]  (was [1,2])
         Same for Vecrev, Vecsmall, Col, and Colrev.
      6- allow abs(+oo), abs(-oo)
+
+  Added
+BA   1- GP function mapapply
+BA   2- GP function qfcholesky
+BA   3- [libpari] pari_err_display
+     4- allow vecmin and vecmax to handle t_LIST
+     5- support 'rnf' structure in nfnewprec
+     6- [libpari] rnfnewprec, rnfnewprec_shallow
 
 Done for version 2.16.1 (released 04/01/2024):
   Fixed

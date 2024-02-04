@@ -578,9 +578,15 @@ returns only the latter.
 \var{bnr} structure form \kbd{x} before increasing its accuracy, and
 returns only the latter.
 
+\fun{GEN}{rnfnewprec}{GEN x, long prec}. As \kbd{nfnewprec}, but extracts a
+\var{rnf} structure form \kbd{x} before increasing its accuracy, and
+returns only the latter.
+
 \fun{GEN}{nfnewprec_shallow}{GEN nf, long prec}
 
 \fun{GEN}{bnfnewprec_shallow}{GEN bnf, long prec}
+
+\fun{GEN}{rnfnewprec_shallow}{GEN rnf, long prec}
 
 \fun{GEN}{bnrnewprec_shallow}{GEN bnr, long prec} Shallow functions
 underlying the above, except that the first argument must now have the
