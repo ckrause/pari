@@ -276,6 +276,7 @@ sieve_init1(long p, ratpoints_sieve_entry *se1, long b1, ratpoints_args *args1)
 static ratpoints_bit_array *
 sieve_init2(long p, ratpoints_sieve_entry *se1, long b1, ratpoints_args *args1)
 {
+  pari_sp av = avma;
   ratpoints_sieve_entry *se = se1;
   ratpoints_args *args = args1;
   int *isfs = se->is_f_square;
@@ -285,7 +286,7 @@ sieve_init2(long p, ratpoints_sieve_entry *se1, long b1, ratpoints_args *args1)
   long wp = p >> TWOPOTBITS_IN_LONG;
   long diff_shift = p & LONG_MASK;
   long diff = BITS_IN_LONG - diff_shift;
-  ulong help[(p>>TWOPOTBITS_IN_LONG) + 2];
+  ulong *help = (ulong *) new_chunk((p>>TWOPOTBITS_IN_LONG) + 2);
 
   /* initialize help */
   {
@@ -334,6 +335,7 @@ sieve_init2(long p, ratpoints_sieve_entry *se1, long b1, ratpoints_args *args1)
      CODE_INIT_SIEVE_COPY
     /* set sieve array */
     se->sieve[b] = (ratpoints_bit_array *)si;
+    set_avma(av);
     return (ratpoints_bit_array *)si;
   }
 }
@@ -1066,6 +1068,7 @@ sieving_info(ratpoints_args *args,
   long pn, pnp = 0;
   long n;
   long nbprime = lg(args->listprime)-1;
+  long * coeffs_mod_p;
   entry *prec = (entry*) stack_malloc(nbprime*sizeof(entry));
     /* This array is used for sorting in order to
        determine the `best' sieving primes. */
@@ -1075,11 +1078,10 @@ sieving_info(ratpoints_args *args,
   ulong bound = (1UL)<<(BITS_IN_LONG - args->bit_primes);
   pari_sp av = avma;
   squares = gen_squares(args->listprime);
-
+  coeffs_mod_p = (long *) new_chunk(degree+1);
   /* initialize sieve in se_buffer */
   for (pn = 1; pn <= args->num_primes; pn++)
   {
-    long coeffs_mod_p[degree+1]; /* The coefficients of f reduced modulo p */
     ulong a, p = args->listprime[pn], np;
     long n;
     int *is_f_square = args->int_next;
@@ -1234,13 +1236,9 @@ sift(long b, ratpoints_bit_array *survivors, ratpoints_args *args,
      int process(long, long, GEN, void*, int*), void *info)
 {
   pari_sp av = avma;
-  /* + 1 not needed memory-wise; it is only there to prevent
-   * undefined behavior when initializing variable length array with
-   * sp2 = 0 (in that case we don't access the array).
-   * NB. VLAs are C99-specific. */
-  sieve_spec ssp[args->sp2 + 1];
   int do_setup = 1;
   long k, height = args->height, nb;
+  sieve_spec *ssp = (sieve_spec *) stack_malloc(args->sp2*sizeof(sieve_spec));
 
   if (odd(b) == 0) which_bits = num_odd; /* even denominator */
 
@@ -1506,13 +1504,13 @@ find_points_work(ratpoints_args *args,
   {
     ratpoints_bit_array *survivors = (ratpoints_bit_array *)
       stack_malloc_align((args->array_size)*RBA_SIZE, RBA_SIZE);
+    long *bp_list = (long *) new_chunk(args->sp2);
     if (args->flags & (RATPOINTS_USE_SQUARES | RATPOINTS_USE_SQUARES1))
     {
       if (args->flags & RATPOINTS_USE_SQUARES)
       /* need only take squares as denoms */
       {
         long b, bb;
-        long bp_list[args->sp2];
         long last_b = args->b_low;
         long n;
         for (n = 0; n < args->sp2; n++)
@@ -1545,7 +1543,6 @@ find_points_work(ratpoints_args *args,
         long ld = lg(divisors);
         long k;
         long b, bb;
-        long bp_list[args->sp2];
 
         for (k = 1; k < ld; k++)
         {
@@ -1598,7 +1595,6 @@ find_points_work(ratpoints_args *args,
       {
         long *forb;
         long b;
-        long bp_list[args->sp2];
         long last_b = args->b_low;
         ulong b_bits;
         long n;
@@ -1670,7 +1666,6 @@ find_points_work(ratpoints_args *args,
         long b, n;
         /* see comment at beginning of sift() for + 1. Silences warning
          * when sp2 = 0 */
-        long bp_list[args->sp2 + 1];
         long last_b = args->b_low;
         for (n = 0; n < args->sp2; n++)
           bp_list[n] = mod(args->b_low, sieve_list[n]->p);
