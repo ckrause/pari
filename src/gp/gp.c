@@ -361,10 +361,7 @@ gp_main_loop(long ismain)
       else if (GP_DATA->fmt->prettyp == f_PRETTY
           && tex2mail_output(z, GP_DATA->hist->total)) /* nothing */;
       else
-      {
         gp_classic_output(z, GP_DATA->hist->total);
-        pari_flush();
-      }
     }
     set_avma(av);
     parivstack_reset();

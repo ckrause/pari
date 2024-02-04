@@ -1521,7 +1521,7 @@ gp_classic_output(GEN z, long n)
   else
     pari_puts(s);
   pari_free(s);
-  term_color(c_NONE); pari_putc('\n');
+  term_color(c_NONE); pari_putc('\n'); pari_flush();
 }
 
 /*******************************************************************/
