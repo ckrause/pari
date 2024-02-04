@@ -641,7 +641,7 @@ ex10(long e) {
     av = avma; z = mulsr(e, log10_2());
     z = floorr(z); e = itos(z) - 1;
   }
-  set_avma(av); return e;
+  return gc_long(av, e);
 }
 
 static char *
@@ -4280,8 +4280,7 @@ is_magic_ok(FILE *f)
   pari_sp av = avma;
   size_t L = strlen(MAGIC);
   char *s = stack_malloc(L);
-  int r = (fread(s,1,L, f) == L && strncmp(s,MAGIC,L) == 0);
-  set_avma(av); return r;
+  return gc_int(av, fread(s,1,L, f) == L && strncmp(s,MAGIC,L) == 0);
 }
 
 static int
