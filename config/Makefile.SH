@@ -694,8 +694,16 @@ parilvl0.h: \$(L0MODS)
 EOT
 fi
 
+vcfile=
 if test -f "$TOP/.git/index"; then
   vcfile="../.git/index"
+else
+ if test -f "$TOP/.git"; then
+   vcfile=`sed  -n '/gitdir: / { s/gitdir: \(.*\)/\1/;p;q}' $TOP/.git`/index
+ fi
+fi
+echo $vcfile
+if  test -n $vcfile && test -f "$vcfile"; then
   cat >> $file <<EOT
 paricfg.h: $vcfile $cfg/version
 	-sh $cfg/setversion
