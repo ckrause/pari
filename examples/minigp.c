@@ -45,11 +45,7 @@ int main(int argc, char **argv)
     time = timer_delay(&T); rtime = walltimer_delay(&Tw);
     pari_add_hist(z, time, rtime);
     if (z != gnil && in[strlen(in)-1] != ';')
-    {
-      pari_printf("%s%%%lu = %s",col(c_HIST),pari_nb_hist(),col(c_OUTPUT));
-      output(z);
-      pari_puts(col(c_NONE));
-    }
+      gp_display_hist(pari_nb_hist());
     if (GP_DATA->chrono && time)
     {
       if (pari_mt_nbthreads==1)
