@@ -1430,7 +1430,7 @@ prettyp_init(void)
 }
 
 /* n = history number. if n = 0 no history */
-int
+static int
 tex2mail_output(GEN z, long n)
 {
   pariout_t T = *(GP_DATA->fmt); /* copy */
@@ -1496,7 +1496,7 @@ tex2mail_output(GEN z, long n)
 /**                                                               **/
 /*******************************************************************/
 
-void
+static void
 gp_classic_output(GEN z, long n)
 {
   long l = 0;
@@ -1522,6 +1522,16 @@ gp_classic_output(GEN z, long n)
     pari_puts(s);
   pari_free(s);
   term_color(c_NONE); pari_putc('\n'); pari_flush();
+}
+
+GEN
+gp_display_hist(long n)
+{
+  GEN z = pari_get_hist(n);
+  if (GP_DATA->fmt->prettyp == f_PRETTY
+      && tex2mail_output(z, n)) /* nothing */;
+  else
+    gp_classic_output(z, n);
 }
 
 /*******************************************************************/

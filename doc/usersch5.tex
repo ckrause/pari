@@ -478,6 +478,9 @@ itself.
 
 \fun{ulong}{pari_nb_hist}{void} return the index of the last entry.
 
+\fun{void}{gp_display_hist}{long n} print the history entry $n$ using the
+usual GP format "$\%n = \dots$".
+
 \section{Handling \kbd{GEN}s}
 \noindent Almost all these functions are either macros or inlined. Unless
 mentioned otherwise, they do not evaluate their arguments twice. Most of them

@@ -356,8 +356,6 @@ void decode_color(long n, long *c);
 extern long precreal;
 
 void lim_lines_output(char *s, long n, long max);
-int tex2mail_output(GEN z, long n);
-void gp_classic_output(GEN z, long n);
 void gen_output(GEN x);
 void fputGEN_pariout(GEN x, pariout_t *T, FILE *out);
 
