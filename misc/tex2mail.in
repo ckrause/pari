@@ -1371,19 +1371,18 @@ sub defb {
 # Discards surrounding {}
 
 sub get_balanced {
-        return undef unless $par =~ s/^($tokenpattern)//;
+  return undef unless $par =~ s/^($tokenpattern)//;
   return $1 unless $1 eq '{';
-        local($def,$lev)=('',1);
-        while ($lev) {
-                last unless $par =~ s/^[^\\{}]|\\.|[{}]//;
-                $lev++ if $& eq '{';
-                $lev-- if $& eq '}';
-                $def .= $& if $lev;
-        }
-        (warn "Balanced text not finished!",return undef) if $lev;
-        return $def;
+  local($def,$lev)=('',1);
+  while ($lev) {
+    last unless $par =~ s/^[^\\{}]|\\.|[{}]//;
+    $lev++ if $& eq '{';
+    $lev-- if $& eq '}';
+    $def .= $& if $lev;
+  }
+  (warn "Balanced text not finished!",return undef) if $lev;
+  return $def;
 }
-
 
 sub open_curly {
   #&puts("{") unless $tokenByToken[$#level];
@@ -1524,11 +1523,9 @@ sub endmatrixArg {
 # and truncates the rest
 
 # I'm trying to add parameters: 
-#	length to insert between columns
-#	Array of centering options one for a column (last one repeated if needed)
-#		Currently supported:	c for center
-#					r for right
-#					l for left
+#   length to insert between columns
+#   Array of centering options one for a column (last one repeated if needed)
+#     Currently supported: c for center, r for right, l for left
 
 sub halign {
   local($explength)=(shift);
@@ -1713,8 +1710,8 @@ sub choose {
     local($prevw)=($wait[$#level-1]);
     $wait[$#level-1]="junk";
     &finish("}",1);
-          &collapse(1);
-          &assertHave(1) || &finish("",1);
+    &collapse(1);
+    &assertHave(1) || &finish("",1);
     local($rec)=$out[$#out];
     $#out--;
     $#chunks--;
