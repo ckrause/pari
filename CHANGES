@@ -8,6 +8,7 @@ BA   3- rnfconductor(...,[P, B]) -> wrong result [#2534]
      5- subcycloiwasawa(x^2+87,3) -> SEGV
      6- forprimestep and variants with initial value negative [#2531]
      7- when converting a t_QFB to a vector of given length, remove discriminant
+     8- \o3 [tex2mail]: support \*
 
   Changed
 BA   1- plotell renamed to plotarc
