@@ -14,8 +14,6 @@ entree functions_gp[]={
   {"quit",0,(void*)gp_quit,11,"vD0,L,","quit({status = 0}): quit, return to the system with exit status 'status'."},
   {NULL,0,NULL,0,NULL,NULL}};
 
-#define col(a) term_get_color(NULL, a)
-
 int main(int argc, char **argv)
 {
   pari_init(8000000,500000);
@@ -29,11 +27,11 @@ int main(int argc, char **argv)
   (void)setjmp(env);
   while(1)
   {
-    GEN z;
     const char *prompt = gp_format_prompt(GP_DATA->prompt);
     char *in = readline(prompt);
     pari_timer T, Tw;
     long time, rtime;
+    GEN z;
 
     if (!in) break;
     if (!*in) continue;
