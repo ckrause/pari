@@ -1664,8 +1664,6 @@ find_points_work(ratpoints_args *args,
       else
       {
         long b, n;
-        /* see comment at beginning of sift() for + 1. Silences warning
-         * when sp2 = 0 */
         long last_b = args->b_low;
         for (n = 0; n < args->sp2; n++)
           bp_list[n] = mod(args->b_low, sieve_list[n]->p);
