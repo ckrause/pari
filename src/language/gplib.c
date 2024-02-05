@@ -1524,7 +1524,7 @@ gp_classic_output(GEN z, long n)
   term_color(c_NONE); pari_putc('\n'); pari_flush();
 }
 
-GEN
+void
 gp_display_hist(long n)
 {
   GEN z = pari_get_hist(n);
