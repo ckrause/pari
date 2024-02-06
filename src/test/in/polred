@@ -77,6 +77,11 @@ polredbest(4*x^6+1,1)
 \\ #2414
 polredbest(y^4 - y^3 - 1/4,1)
 
+\\ #2538
+K=nfinit(y^4-18*y^2+82); b=-4*y^3-12*y^2+40*y+121;
+rnfpolredabs(K,x^4-b)
+rnfpolredabs(K,x^4+(4*y^3-9*y^2-40*y+95)*x^2+(-2*y^3+8*y^2+20*y-82)*x+(58*y^3-178*y^2-520*y+1604))
+
 \\ ERRORS, keep at end of file
 
 \\#2241
