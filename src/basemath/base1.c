@@ -2957,6 +2957,22 @@ polredabs(GEN x) { return polredabs0(x,0); }
 GEN
 polredabs2(GEN x) { return polredabs0(x,nf_ORIG); }
 
+static GEN
+ZC_canon_neg(GEN v)
+{
+  long i, l = lg(v);
+  for (i = 1; i < l; i++)
+  {
+    long s = signe(gel(v,i));
+    if (s)
+    {
+      if (s < 0) v = ZC_neg(v);
+      break;
+    }
+  }
+  return v;
+}
+
 /* relative polredabs/best. Returns relative polynomial by default (flag = 0)
  * flag & nf_ORIG: + element (base change)
  * flag & nf_ABSOLUTE: absolute polynomial */
@@ -2991,7 +3007,7 @@ rnfpolred_i(GEN nf, GEN R, long flag, long best)
   {
     nfmaxord_t S;
     GEN rnf, u, v, y, a;
-    long i, j, l;
+    long i, j, l, even;
     pari_timer ti;
     if (DEBUGLEVEL>1) timer_start(&ti);
     rnf = rnfinit(nf, R);
@@ -3004,13 +3020,16 @@ rnfpolred_i(GEN nf, GEN R, long flag, long best)
     a = gel(v,2);
     l = lg(y); A = cgetg(l, t_VEC);
     for (i = j = 1; i < l; i++)
-      if (ZX_equal(gel(y,i),P))
-      {
-        GEN t = gel(a,i);
-        if (u) t = RgV_RgC_mul(S.basis, ZM_ZC_mul(u,t));
-        gel(A,j++) = t;
-      }
+      if (ZX_equal(gel(y,i),P)) gel(A,j++) = gel(a,i);
     setlg(A,j); /* mod(A[i], pol) are all roots of P in Q[X]/(pol) */
+    even = j > 2 && !odd(degpol(P)) && !odd(ZX_deflate_order(P));
+    for (i = 1; i < j; i++)
+    {
+      GEN t = gel(A,i);
+      if (even) t = ZC_canon_neg(t);
+      if (u) t = ZM_ZC_mul(u,t);
+      gel(A,i) = RgV_RgC_mul(S.basis, t);
+    }
   }
   if (DEBUGLEVEL>1) err_printf("reduced absolute generator: %Ps\n",P);
   if (flag & nf_ABSOLUTE)
