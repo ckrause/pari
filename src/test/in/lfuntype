@@ -64,6 +64,7 @@ if(1,my(bnf=bnfinit(x^2-x+2), gc=gcharinit(bnf,idealprimedec(bnf,11)[1]),chi=[1,
 if(1,my(bnf=bnfinit(a^2-a-9), bnr=bnrinit(bnf,[2,[0,0]]));
   lfuncreate([bnr,matdiagonal(bnr.cyc)])),
   lfuninit(1, []),
+\\45
   lfuninit(x^2+1, [])
 ];
 }
