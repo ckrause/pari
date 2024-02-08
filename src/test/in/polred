@@ -82,6 +82,13 @@ K=nfinit(y^4-18*y^2+82); b=-4*y^3-12*y^2+40*y+121;
 rnfpolredabs(K,x^4-b)
 rnfpolredabs(K,x^4+(4*y^3-9*y^2-40*y+95)*x^2+(-2*y^3+8*y^2+20*y-82)*x+(58*y^3-178*y^2-520*y+1604))
 
+K=bnfinit(y^4 - 18*y^2 + 82);
+A=x^4+(4*y^3-15*y^2-40*y+149)*x^2+(-2*y^3+8*y^2+20*y-82)*x+(46*y^3-136*y^2-424*y+1262);
+rnfpolredabs(K,A)
+B=x^4+Mod(4*y^3+12*y^2-40*y-121,y^4-18*y^2+82);
+rnfpolredabs(K,B)
+
+
 \\ ERRORS, keep at end of file
 
 \\#2241
