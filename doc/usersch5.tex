@@ -279,6 +279,10 @@ break loop handler) to the following callbacks, and so can you:
 initialized to \kbd{NULL}. Called with argument $s$ whenever PARI wants
 confirmation for action $s$, for instance in \tet{secure} mode.
 
+\doc{cb_pari_display_hist}{long (*cb_pari_display_hist)(long n)}
+initialized to \kbd{NULL}. If set, called by \kbd{gp\_embedded}
+in place of \kbd{gp\_display\_hist}.
+
 \doc{cb_pari_init_histfile}{void (*cb_pari_init_histfile)(void)}
 initialized to \kbd{NULL}. Called when the \kbd{histfile} default
 is changed. The intent is for that callback to read the file content, append

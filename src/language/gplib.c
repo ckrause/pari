@@ -1527,11 +1527,12 @@ gp_classic_output(GEN z, long n)
 void
 gp_display_hist(long n)
 {
-  GEN z = pari_get_hist(n);
-  if (GP_DATA->fmt->prettyp == f_PRETTY
-      && tex2mail_output(z, n)) /* nothing */;
+  if (cb_pari_display_hist)
+    cb_pari_display_hist(n);
+  else if (GP_DATA->fmt->prettyp == f_PRETTY
+      && tex2mail_output(pari_get_hist(n), n)) /* nothing */;
   else
-    gp_classic_output(z, n);
+    gp_classic_output(pari_get_hist(n), n);
 }
 
 /*******************************************************************/

@@ -206,12 +206,12 @@ tm_get_line(const char *prompt, const char *prompt_cont, filtre_t *F)
   return res;
 }
 
-void
-tm_output(GEN z)
+static void
+tm_output(long n)
 {
-  char *sz = GENtoTeXstr(z);
+  char *sz = GENtoTeXstr(pari_get_hist(n));
   printf("%clatex:", DATA_BEGIN);
-  printf("\\magenta\\%%%lu = ", GP_DATA->hist->total);
+  printf("\\magenta\\%%%lu = ", n);
   printf("$\\blue %s$%c", sz,DATA_END);
   pari_free(sz); fflush(stdout);
   pari_flush();
@@ -231,7 +231,7 @@ init_texmacs(void)
   cb_pari_start_output = tm_start_output;
   cb_pari_end_output = tm_end_output;
   cb_pari_is_interactive = tm_is_interactive;
-  cb_gp_output = tm_output;
+  cb_pari_display_hist = tm_output;
   disable_color = 1;
   tm_start_output();
 }

@@ -33,7 +33,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 static jmp_buf *env;
 static pari_stack s_env;
-void (*cb_gp_output)(GEN z) = NULL;
 void (*cb_pari_end_output)(void) = NULL;
 
 static void
@@ -275,14 +274,14 @@ static int
 test_is_interactive(void) { return 0; }
 
 static void
-test_output(GEN z) { init_linewrap(76); gen_output(z); }
+test_output(long n) { init_linewrap(76); gen_output(pari_get_hist(n)); }
 void
 init_test(void)
 {
   disable_color = 1;
   init_linewrap(76);
   pari_errfile = stdout;
-  cb_gp_output = test_output;
+  cb_pari_display_hist = test_output;
   cb_pari_is_interactive = test_is_interactive;
 }
 
@@ -356,10 +355,7 @@ gp_main_loop(long ismain)
     if (GP_DATA->simplify) z = simplify_shallow(z);
     pari_add_hist(z, t, r);
     if (z != gnil && ! is_silent(b->buf) )
-    {
-      if (cb_gp_output) cb_gp_output(z);
-      else gp_display_hist(GP_DATA->hist->total);
-    }
+      gp_display_hist(GP_DATA->hist->total);
     set_avma(av);
     parivstack_reset();
   }

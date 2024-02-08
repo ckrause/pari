@@ -109,6 +109,7 @@ static pari_stack s_MODULES;
 const long functions_tblsz = 135; /* size of functions_hash */
 entree **functions_hash, **defaults_hash;
 
+void (*cb_pari_display_hist)(long n);
 char *(*cb_pari_fgets_interactive)(char *s, int n, FILE *f);
 int (*cb_pari_get_line_interactive)(const char*, const char*, filtre_t *F);
 void (*cb_pari_quit)(long);

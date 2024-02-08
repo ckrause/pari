@@ -133,6 +133,7 @@ extern GEN gen_m1,gen_1,gen_2,gen_m2,ghalf,gen_0,gnil,err_e_STACK;
 extern THREAD VOLATILE int PARI_SIGINT_block, PARI_SIGINT_pending;
 
 extern const long lontyp[];
+extern void (*cb_pari_display_hist)(long n);
 extern void (*cb_pari_ask_confirm)(const char *);
 extern void (*cb_pari_init_histfile)(void);
 extern int  (*cb_pari_whatnow)(PariOUT *out, const char *, int);

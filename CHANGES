@@ -21,6 +21,7 @@ BA   1- plotell renamed to plotarc
         Same for Vecrev, Vecsmall, Col, and Colrev.
 BA   6- allow abs(+oo), abs(-oo)
 BA   7- [libpari] gp_embedded : make interface more similar to GP
+BA   8- [libpari] callback cb_pari_display_hist (used by gp_embedded)
 
   Added
 BA   1- GP function mapapply
