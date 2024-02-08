@@ -1496,10 +1496,40 @@ tex2mail_output(GEN z, long n)
 /**                                                               **/
 /*******************************************************************/
 
+#define COLOR_LEN 16
+
 static void
-gp_classic_output(GEN z, long n)
+str_lim_lines(pari_str *S, char *s, long n, long max_lin)
+{
+  long lin, col, width;
+  char COL[COLOR_LEN];
+  char c;
+  if (!*s) return;
+  width = term_width();
+  lin = 1;
+  col = n;
+
+  if (lin > max_lin) return;
+  while ( (c = *s++) )
+  {
+    if (lin >= max_lin)
+      if (c == '\n' || col >= width-5)
+      {
+        pari_sp av = avma;
+        str_puts(S, term_get_color(COL, c_ERR)); set_avma(av);
+        str_puts(S,"[+++]"); return;
+      }
+    if (c == '\n')         { col = -1; lin++; }
+    else if (col == width) { col =  0; lin++; }
+    pari_set_last_newline(c=='\n');
+    col++; str_putc(S, c);
+  }
+}
+void
+str_display_hist(pari_str *S, long n)
 {
   long l = 0;
+  char col[COLOR_LEN];
   char *s;
   /* history number */
   if (n)
@@ -1507,21 +1537,34 @@ gp_classic_output(GEN z, long n)
     char buf[64];
     if (!(GP_DATA->flags & gpd_QUIET))
     {
-      term_color(c_HIST);
+      str_puts(S, term_get_color(col, c_HIST));
       sprintf(buf, "%%%ld = ", n);
-      pari_puts(buf);
+      str_puts(S, buf);
       l = strlen(buf);
     }
   }
   /* output */
-  term_color(c_OUTPUT);
-  s = GENtostr(z);
+  str_puts(S, term_get_color(col, c_OUTPUT));
+  s = GENtostr(pari_get_hist(n));
   if (GP_DATA->lim_lines)
-    lim_lines_output(s, l, GP_DATA->lim_lines);
+    str_lim_lines(S, s, l, GP_DATA->lim_lines);
   else
-    pari_puts(s);
+    str_puts(S, s);
   pari_free(s);
-  term_color(c_NONE); pari_putc('\n'); pari_flush();
+  str_puts(S,term_get_color(col, c_NONE));
+}
+
+static void
+gp_classic_output(long n)
+{
+  pari_sp av = avma;
+  pari_str S;
+  str_init(&S, 1);
+  str_display_hist(&S, n);
+  str_putc(&S, 0);
+  pari_puts(S.string);
+  pari_putc('\n'); pari_flush();
+  set_avma(av);
 }
 
 void
@@ -1532,7 +1575,7 @@ gp_display_hist(long n)
   else if (GP_DATA->fmt->prettyp == f_PRETTY
       && tex2mail_output(pari_get_hist(n), n)) /* nothing */;
   else
-    gp_classic_output(pari_get_hist(n), n);
+    gp_classic_output(n);
 }
 
 /*******************************************************************/

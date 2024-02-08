@@ -485,6 +485,9 @@ itself.
 \fun{void}{gp_display_hist}{long n} print the history entry $n$ using the
 usual GP format "$\%n = \dots$".
 
+\fun{void}{str_display_hist}{pari_str *S, long n} as \kbd{gp\_display\_hist},
+but output to the string $S$.
+
 \section{Handling \kbd{GEN}s}
 \noindent Almost all these functions are either macros or inlined. Unless
 mentioned otherwise, they do not evaluate their arguments twice. Most of them

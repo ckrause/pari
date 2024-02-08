@@ -26,7 +26,7 @@ BA   8- [libpari] callback cb_pari_display_hist (used by gp_embedded)
   Added
 BA   1- GP function mapapply
 BA   2- GP function qfcholesky
-BA   3- [libpari] pari_err_display, gp_display_hist
+BA   3- [libpari] pari_err_display, gp_display_hist, str_display_hist
      4- allow vecmin and vecmax to handle t_LIST
      5- support 'rnf' structure in nfnewprec
      6- [libpari] rnfnewprec, rnfnewprec_shallow

@@ -355,7 +355,6 @@ void decode_color(long n, long *c);
 /* defaults */
 extern long precreal;
 
-void lim_lines_output(char *s, long n, long max);
 void gen_output(GEN x);
 void fputGEN_pariout(GEN x, pariout_t *T, FILE *out);
 

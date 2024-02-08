@@ -3192,6 +3192,7 @@ GEN     sd_recover(const char *v, long flag);
 GEN     sd_timer(const char *v, long flag);
 void    pari_hit_return(void);
 void    gp_display_hist(long n);
+void    str_display_hist(pari_str *S, long n);
 void    gp_load_gprc(void);
 int     gp_meta(const char *buf, int ismain);
 const char **gphelp_keyword_list(void);

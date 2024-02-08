@@ -1742,35 +1742,6 @@ static PariOUT pariOut_lw= {putc_lw, puts_lw, normalOutF};
 void
 init_linewrap(long w) { col_index=0; GP_DATA->linewrap=w; pariOut=&pariOut_lw; }
 
-/* output stopped after max_line have been printed, for default(lines,).
- * n = length of prefix already printed (print up to max_lin lines) */
-void
-lim_lines_output(char *s, long n, long max_lin)
-{
-  long lin, col, width;
-  char c;
-  if (!*s) return;
-  width = term_width();
-  lin = 1;
-  col = n;
-
-  if (lin > max_lin) return;
-  while ( (c = *s++) )
-  {
-    if (lin >= max_lin)
-      if (c == '\n' || col >= width-5)
-      {
-        pari_sp av = avma;
-        pari_puts(term_get_color(NULL, c_ERR)); set_avma(av);
-        pari_puts("[+++]"); return;
-      }
-    if (c == '\n')         { col = -1; lin++; }
-    else if (col == width) { col =  0; lin++; }
-    set_last_newline(c);
-    col++; pari_putc(c);
-  }
-}
-
 static void
 new_line(PariOUT *out, const char *prefix)
 {
