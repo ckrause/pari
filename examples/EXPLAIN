@@ -12,6 +12,10 @@ make TARGET=extgcd
 interpretor (Need readline). To build it, run
 make TARGET=minigp EXTRALIBS=-lreadline
 
+* the C program gp_embedded.c using the gp_embedded function to implement
+a basic GP interpretor (Need readline). To build it, run
+make TARGET=gp_embedded EXTRALIBS=-lreadline
+
 * the C program pari-mt.c using the Pari library interface for parallel
 computation. To build it, run
 make TARGET=pari-mt
