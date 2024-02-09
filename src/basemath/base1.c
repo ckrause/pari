@@ -2957,22 +2957,6 @@ polredabs(GEN x) { return polredabs0(x,0); }
 GEN
 polredabs2(GEN x) { return polredabs0(x,nf_ORIG); }
 
-static GEN
-ZC_canon_neg(GEN v)
-{
-  long i, l = lg(v);
-  for (i = 1; i < l; i++)
-  {
-    long s = signe(gel(v,i));
-    if (s)
-    {
-      if (s < 0) v = ZC_neg(v);
-      break;
-    }
-  }
-  return v;
-}
-
 /* relative polredabs/best. Returns relative polynomial by default (flag = 0)
  * flag & nf_ORIG: + element (base change)
  * flag & nf_ABSOLUTE: absolute polynomial */
@@ -2983,6 +2967,7 @@ rnfpolred_i(GEN nf, GEN R, long flag, long best)
   const long abs = ((flag & nf_ORIG) && (flag & nf_ABSOLUTE));
   GEN listP = NULL, red, pol, A, P, T, rnfeq;
   pari_sp av = avma;
+  long even = 0;
 
   if (typ(R) == t_VEC) {
     if (lg(R) != 3) pari_err_TYPE(f,R);
@@ -3007,7 +2992,7 @@ rnfpolred_i(GEN nf, GEN R, long flag, long best)
   {
     nfmaxord_t S;
     GEN rnf, u, v, y, a;
-    long i, j, l, even;
+    long i, j, l;
     pari_timer ti;
     if (DEBUGLEVEL>1) timer_start(&ti);
     rnf = rnfinit(nf, R);
@@ -3026,7 +3011,6 @@ rnfpolred_i(GEN nf, GEN R, long flag, long best)
     for (i = 1; i < j; i++)
     {
       GEN t = gel(A,i);
-      if (even) t = ZC_canon_neg(t);
       if (u) t = ZM_ZC_mul(u,t);
       gel(A,i) = RgV_RgC_mul(S.basis, t);
     }
@@ -3057,6 +3041,11 @@ rnfpolred_i(GEN nf, GEN R, long flag, long best)
     {
       GEN a = eltabstorel_lift(rnfeq, gel(A,i));
       GEN p = lift_if_rational( RgXQ_charpoly(a, R, v) );
+      if (even)
+      {
+        GEN q = RgX_unscale(p, gen_m1);
+        if (cmp_universal(q, p) < 0) { p = q; a = gneg(a); }
+      }
       if (i == 1 || cmp_universal(p, P) < 0) { P = p; besta = a; }
     }
     A = besta;

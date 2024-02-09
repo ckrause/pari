@@ -88,6 +88,9 @@ rnfpolredabs(K,A)
 B=x^4+Mod(4*y^3+12*y^2-40*y-121,y^4-18*y^2+82);
 rnfpolredabs(K,B)
 
+A=x^4+(4*y^3-10*y^2-40*y+105)*x^2+(-2*y^3+10*y^2+16*y-82)*x+(54*y^3-162*y^2-484*y+1458);
+rnfpolredabs(K,A)
+
 
 \\ ERRORS, keep at end of file
 
