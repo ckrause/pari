@@ -1429,19 +1429,17 @@ prettyp_init(void)
   return 0;
 }
 
-/* n = history number. if n = 0 no history */
-static int
-tex2mail_output(GEN z, long n)
+/* Assume prettyp_init() was called.
+ * n = history number. if n = 0 no history */
+static void
+prettyp_output(GEN z, long n)
 {
   pariout_t T = *(GP_DATA->fmt); /* copy */
-  FILE *log = pari_logfile, *out;
+  FILE *log = pari_logfile, *out = GP_DATA->pp->file->file;
 
-  if (!prettyp_init()) return 0;
-  out = GP_DATA->pp->file->file;
   /* Emit first: there may be lines before the prompt */
   if (n) term_color(c_OUTPUT);
   pari_flush();
-  T.prettyp = f_TEX;
   /* history number */
   if (n)
   {
@@ -1472,6 +1470,7 @@ tex2mail_output(GEN z, long n)
     set_avma(av);
   }
   /* output */
+  T.prettyp = f_TEX;
   fputGEN_pariout(z, &T, out);
   /* flush and restore, output to logfile */
   prettyp_wait(out);
@@ -1487,7 +1486,7 @@ tex2mail_output(GEN z, long n)
     fputc('\n', log); fflush(log);
   }
   if (n) term_color(c_NONE);
-  pari_flush(); return 1;
+  pari_flush();
 }
 
 /*******************************************************************/
@@ -1572,8 +1571,8 @@ gp_display_hist(long n)
 {
   if (cb_pari_display_hist)
     cb_pari_display_hist(n);
-  else if (GP_DATA->fmt->prettyp == f_PRETTY
-      && tex2mail_output(pari_get_hist(n), n)) /* nothing */;
+  else if (GP_DATA->fmt->prettyp == f_PRETTY && prettyp_init())
+    prettyp_output(pari_get_hist(n), n);
   else
     gp_classic_output(n);
 }
@@ -1899,7 +1898,7 @@ escape(const char *tch, int ismain)
       switch (c)
       {
         case 'B': /* prettyprinter */
-          if (tex2mail_output(x,0)) break;
+          if (prettyp_init()) { prettyp_output(x,0); break; }
         case 'b': /* fall through */
         case 'm': matbrute(x, GP_DATA->fmt->format, -1); break;
         case 'a': brute(x, GP_DATA->fmt->format, -1); break;
