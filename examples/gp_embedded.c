@@ -31,10 +31,11 @@ int main(int argc, char **argv)
     char *in = readline(prompt);
     if (!in) break;
     if (!*in) continue;
+
     add_history(in);
     gp_echo_and_log(prompt,in);
     gp_embedded(in);
-    free(in); avma = pari_mainstack->top;
+    free(in); set_avma(pari_mainstack->top);
   }
   return 0;
 }

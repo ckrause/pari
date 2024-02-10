@@ -27,12 +27,11 @@ int main(int argc, char **argv)
   (void)setjmp(env);
   while(1)
   {
-    const char *prompt = gp_format_prompt(GP_DATA->prompt);
-    char *in = readline(prompt);
+    GEN z;
     pari_timer T, Tw;
     long time, rtime;
-    GEN z;
-
+    const char *prompt = gp_format_prompt(GP_DATA->prompt);
+    char *in = readline(prompt);
     if (!in) break;
     if (!*in) continue;
 
@@ -52,7 +51,7 @@ int main(int argc, char **argv)
         pari_printf("cpu time = %s, real time = %s.\n",
           gp_format_time(time), gp_format_time(rtime));
     }
-    free(in); avma = pari_mainstack->top;
+    free(in); set_avma(pari_mainstack->top);
   }
   return 0;
 }

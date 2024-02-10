@@ -8,12 +8,13 @@ This directory contains:
 the users' manual.  To build it, run:
 make TARGET=extgcd
 
-* the C program minigp.c using the Pari library to implement a basic GP
-interpretor (Need readline). To build it, run
+* the C program minigp.c using low-level functions in the Pari library to
+implement a basic GP interpretor using libreadline. This shows in particular
+how to add a new function 'quit' to the interpretor. To build it, run
 make TARGET=minigp EXTRALIBS=-lreadline
 
-* the C program gp_embedded.c using the gp_embedded function to implement
-a basic GP interpretor (Need readline). To build it, run
+* the C program gp_embedded.c using the gp_embedded() function to
+simplify minigp. To build it, run
 make TARGET=gp_embedded EXTRALIBS=-lreadline
 
 * the C program pari-mt.c using the Pari library interface for parallel
