@@ -1428,47 +1428,12 @@ prettyp_init(void)
   sd_output("1", d_SILENT);
   return 0;
 }
-
-/* Assume prettyp_init() was called.
- * n = history number. if n = 0 no history */
+/* assume prettyp_init() was called */
 static void
-prettyp_output(GEN z, long n)
+prettyp_GEN(GEN z)
 {
-  pariout_t T = *(GP_DATA->fmt); /* copy */
   FILE *log = pari_logfile, *out = GP_DATA->pp->file->file;
-
-  /* Emit first: there may be lines before the prompt */
-  if (n) term_color(c_OUTPUT);
-  pari_flush();
-  /* history number */
-  if (n)
-  {
-    pari_sp av = avma;
-    const char *c_hist = term_get_color(NULL, c_HIST);
-    const char *c_out = term_get_color(NULL, c_OUTPUT);
-    if (!(GP_DATA->flags & gpd_QUIET))
-    {
-      if (*c_hist || *c_out)
-        fprintf(out, "\\LITERALnoLENGTH{%s}\\%%%ld =\\LITERALnoLENGTH{%s} ",
-                     c_hist, n, c_out);
-      else
-        fprintf(out, "\\%%%ld = ", n);
-    }
-    if (log) {
-      switch (pari_logstyle) {
-      case logstyle_plain:
-        fprintf(log, "%%%ld = ", n);
-        break;
-      case logstyle_color:
-        fprintf(log, "%s%%%ld = %s", c_hist, n, c_out);
-        break;
-      case logstyle_TeX:
-        fprintf(log, "\\PARIout{%ld}", n);
-        break;
-      }
-    }
-    set_avma(av);
-  }
+  pariout_t T = *(GP_DATA->fmt); /* copy */
   /* output */
   T.prettyp = f_TEX;
   fputGEN_pariout(z, &T, out);
@@ -1485,8 +1450,41 @@ prettyp_output(GEN z, long n)
     }
     fputc('\n', log); fflush(log);
   }
-  if (n) term_color(c_NONE);
-  pari_flush();
+}
+/* assume prettyp_init() was called. */
+static void
+prettyp_output(long n)
+{
+  FILE *log = pari_logfile, *out = GP_DATA->pp->file->file;
+  pari_sp av = avma;
+  const char *c_hist = term_get_color(NULL, c_HIST);
+  const char *c_out = term_get_color(NULL, c_OUTPUT);
+  GEN z = pari_get_hist(n);
+  /* Emit first: there may be lines before the prompt */
+  term_color(c_OUTPUT); pari_flush();
+  /* history number */
+  if (!(GP_DATA->flags & gpd_QUIET))
+  {
+    if (*c_hist || *c_out)
+      fprintf(out, "\\LITERALnoLENGTH{%s}\\%%%ld =\\LITERALnoLENGTH{%s} ",
+                   c_hist, n, c_out);
+    else
+      fprintf(out, "\\%%%ld = ", n);
+  }
+  if (log) switch (pari_logstyle)
+  {
+    case logstyle_plain:
+      fprintf(log, "%%%ld = ", n);
+      break;
+    case logstyle_color:
+      fprintf(log, "%s%%%ld = %s", c_hist, n, c_out);
+      break;
+    case logstyle_TeX:
+      fprintf(log, "\\PARIout{%ld}", n);
+      break;
+  }
+  set_avma(av); prettyp_GEN(z);
+  term_color(c_NONE); pari_flush();
 }
 
 /*******************************************************************/
@@ -1572,7 +1570,7 @@ gp_display_hist(long n)
   if (cb_pari_display_hist)
     cb_pari_display_hist(n);
   else if (GP_DATA->fmt->prettyp == f_PRETTY && prettyp_init())
-    prettyp_output(pari_get_hist(n), n);
+    prettyp_output(n);
   else
     gp_classic_output(n);
 }
@@ -1898,7 +1896,11 @@ escape(const char *tch, int ismain)
       switch (c)
       {
         case 'B': /* prettyprinter */
-          if (prettyp_init()) { prettyp_output(x,0); break; }
+          if (prettyp_init())
+          {
+            pari_flush(); prettyp_GEN(x);
+            pari_flush(); break;
+          }
         case 'b': /* fall through */
         case 'm': matbrute(x, GP_DATA->fmt->format, -1); break;
         case 'a': brute(x, GP_DATA->fmt->format, -1); break;
