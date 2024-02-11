@@ -363,7 +363,6 @@ static void
 gp_read_str_history(const char *s)
 {
   input_method IM;
-  struct gp_context rec;
   const char *ptr = s;
   char last = 0;
   pari_sp av = avma;
@@ -374,7 +373,6 @@ gp_read_str_history(const char *s)
   for(;ptr[0];)
   {
     GEN z;
-    gp_context_save(&rec);
     timer_start(GP_DATA->T);
     walltimer_start(GP_DATA->Tw);
     pari_set_last_newline(1);
