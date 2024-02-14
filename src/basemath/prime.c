@@ -397,47 +397,19 @@ _uisprime(ulong n)
 int
 uisprime(ulong n)
 {
-  if (n < 103)
-    switch(n)
-    {
-      case 2:
-      case 3:
-      case 5:
-      case 7:
-      case 11:
-      case 13:
-      case 17:
-      case 19:
-      case 23:
-      case 29:
-      case 31:
-      case 37:
-      case 41:
-      case 43:
-      case 47:
-      case 53:
-      case 59:
-      case 61:
-      case 67:
-      case 71:
-      case 73:
-      case 79:
-      case 83:
-      case 89:
-      case 97:
-      case 101: return 1;
-      default: return 0;
-    }
+  if (!odd(n)) return n == 2;
+  if (n <= maxprimelim()) return prime_search(n) > 0;
   /* gcd-extraction is much slower */
-  return odd(n) && n % 3 && n % 5 && n % 7 && n % 11 && n % 13 && n % 17
-                && n % 19 && n % 23 && n % 29 && n % 31 && n % 37 && n % 41
-                && (n < 1849 || _uisprime(n));
+  return n % 3 && n % 5 && n % 7 && n % 11 && n % 13 && n % 17
+      && n % 19 && n % 23 && n % 29 && n % 31 && n % 37 && n % 41
+      && _uisprime(n);
 }
 
 /* assume no prime divisor <= 101 */
 int
 uisprime_101(ulong n)
 {
+  if (n <= maxprimelim()) return prime_search(n) > 0;
   if (n < 1016801) return n < 10609? 1: (uispsp(2, n) && !is_2_prp_101(n));
   return _uisprime(n);
 }
@@ -446,6 +418,7 @@ uisprime_101(ulong n)
 int
 uisprime_661(ulong n)
 {
+  if (n <= maxprimelim()) return prime_search(n) > 0;
   if (n < 1016801) return n < 452929? 1: uispsp(2, n);
   return _uisprime(n);
 }
@@ -949,9 +922,11 @@ RESET:
 static GEN
 prime_table_find_n(ulong N)
 {
-  byteptr d;
-  ulong n, p, maxp = maxprime();
+  ulong n, p, maxp;
   long i;
+  if (N <= (ulong)pari_PRIMES[0]) return utoipos((ulong)pari_PRIMES[N]);
+  /* not in table */
+  maxp = maxprime();
   for (i = 1; i < prime_table_len; i++)
   {
     n = prime_table[i].n;
@@ -963,35 +938,18 @@ prime_table_find_n(ulong N)
     }
   }
   if (i == prime_table_len) i = prime_table_len - 1;
-  p = prime_table[i].p;
+  p = prime_table[i].p; /* > maxp */
   n = prime_table[i].n;
-  if (n > N && p > maxp)
+  if (n > N)
   {
     i--;
     p = prime_table[i].p;
     n = prime_table[i].n;
   }
-  /* if beyond prime table, then n <= N */
-  d = diffptr + n;
-  if (n > N)
-  {
-    n -= N;
-    do { n--; PREC_PRIME_VIADIFF(p,d); } while (n) ;
-  }
-  else if (n < N)
-  {
-    ulong maxpN = maxprimeN();
-    if (N >= maxpN)
-    {
-      if (N == maxpN) return utoipos(maxp);
-      if (p < maxp) { p = maxp; n = maxpN; }
-      return prime_successor(p, N - n);
-    }
-    /* can find prime(N) in table */
-    n = N - n;
-    do { n--; NEXT_PRIME_VIADIFF(p,d); } while (n) ;
-  }
-  return utoipos(p);
+  /* n <= N */
+  if (n == N) return utoipos(p);
+  if (p < maxp) { p = maxp; n = pari_PRIMES[0]; }
+  return prime_successor(p, N - n);
 }
 
 ulong
@@ -1116,38 +1074,18 @@ randomprime0(GEN N, GEN q)
   return NULL;
 }
 
-/* set *pp = nextprime(a) = p
- *     *pd so that NEXT_PRIME_VIADIFF(d, p) = nextprime(p+1)
- *     *pn so that p = the n-th prime
- * error if nextprime(a) is out of primetable bounds */
-void
-prime_table_next_p(ulong a, byteptr *pd, ulong *pp, ulong *pn)
+/* cf gen_search; assume x <= maxprime() */
+long
+prime_search(ulong x)
 {
-  byteptr d;
-  ulong p, n, maxp = maxprime();
-  long i = prime_table_closest_p(a);
-  p = prime_table[i].p;
-  if (p > a && p > maxp)
+  pari_prime *T = pari_PRIMES;
+  long u = T[0], i, l = 1;
+  do
   {
-    i--;
-    p = prime_table[i].p;
-  }
-  /* if beyond prime table, then p <= a */
-  n = prime_table[i].n;
-  d = diffptr + n;
-  if (p < a)
-  {
-    if (a > maxp) pari_err_MAXPRIME(a);
-    do { n++; NEXT_PRIME_VIADIFF(p,d); } while (p < a);
-  }
-  else if (p != a)
-  {
-    do { n--; PREC_PRIME_VIADIFF(p,d); } while (p > a) ;
-    if (p < a) { NEXT_PRIME_VIADIFF(p,d); n++; }
-  }
-  *pn = n;
-  *pp = p;
-  *pd = d;
+    i = (l+u) >> 1;
+    if (x < T[i]) u = i-1; else if (x > T[i]) l = i+1; else return i;
+  } while (u >= l);
+  return -(T[i] > x? i: i+1);
 }
 
 ulong
@@ -1156,22 +1094,17 @@ uprimepi(ulong a)
   ulong p, n, maxp = maxprime();
   if (a <= maxp)
   {
-    byteptr d;
-    prime_table_next_p(a, &d, &p, &n);
-    return p == a? n: n-1;
+    long i = prime_search(a);
+    return (ulong)(i > 0? i: -i-1);
   }
   else
   {
     long i = prime_table_closest_p(a);
     forprime_t S;
     p = prime_table[i].p;
-    if (p > a)
-    {
-      i--;
-      p = prime_table[i].p;
-    }
-    /* p = largest prime in table <= a */
-    n = prime_table[i].n;
+    if (p > a) p = prime_table[--i].p;
+    /* p = largest prime in prime_table <= a */
+    if (p > maxp) n = prime_table[i].n; else { p = maxp; n = maxprimeN(); }
     (void)u_forprime_init(&S, p+1, a);
     for (; p; n++) p = u_forprime_next(&S);
     return n-1;

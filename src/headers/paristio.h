@@ -26,7 +26,6 @@ typedef struct pari_str {
   int use_stack; /* use stack_malloc instead of malloc ? */
 } pari_str;
 
-typedef unsigned char *byteptr;
 typedef ulong pari_sp;
 
 struct pari_sieve
@@ -44,7 +43,7 @@ typedef struct {
   GEN qq;
 
   /* strategy 1: private prime table */
-  byteptr d; /* diffptr + n */
+  ulong n; /* 1 <= n <= pari_PRIMES[0] */
   ulong p; /* current p = n-th prime */
   ulong b; /* min(bb, ULONG_MAX) */
 
@@ -382,7 +381,7 @@ enum { TEXSTYLE_PAREN=2, TEXSTYLE_BREAK=4 };
 
 extern THREAD pari_sp avma;
 #define DISABLE_MEMUSED (size_t)-1
-extern byteptr diffptr;
+extern pari_prime *pari_PRIMES;
 extern char *current_psfile, *pari_datadir;
 
 #define gcopyifstack(x,y)  STMT_START {pari_sp _t=(pari_sp)(x); \

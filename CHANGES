@@ -22,6 +22,12 @@ BA   1- plotell renamed to plotarc
 BA   6- allow abs(+oo), abs(-oo)
 BA   7- [libpari] gp_embedded : make interface more similar to GP
 BA   8- [libpari] callback cb_pari_display_hist (used by gp_embedded)
+     9- [libpari] the diffptr low level interface is gone (table of difference
+        of primes), replaced by a table of 32bit primes (pari_PRIMES).
+        The byteptr type and following functions / macros are gone: initprimes,
+        init_primepointer_geq, init_primepointer_gt, init_primepointer_leq,
+        init_primepointer_lt NEXT_PRIME_VIADIFF, PREC_PRIME_VIADIFF,
+        NEXT_PRIME_VIADIFF_CHECK.
 
   Added
 BA   1- GP function mapapply

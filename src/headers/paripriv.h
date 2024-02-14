@@ -858,10 +858,6 @@ hashtable *hashstr_import_static(hashentry *e, ulong size);
 GEN     ZlXQX_hyperellpadicfrobenius(GEN H, GEN T, ulong p, long n);
 GEN     hyperellextremalmodels(GEN F, long g, GEN p);
 
-/* ifactor1.c */
-
-ulong snextpr(ulong p, byteptr *d, long *rcn, long *q, int (*ispsp)(ulong));
-
 /* intnum.c */
 
 GEN     contfraceval_inv(GEN CF, GEN tinv, long nlim);
@@ -895,7 +891,6 @@ GEN mfrhopol_eval(GEN Q, GEN t2);
 long    BPSW_psp_nosmalldiv(GEN N);
 int     MR_Jaeschke(GEN n);
 long    isanypower_nosmalldiv(GEN N, GEN *px);
-void    prime_table_next_p(ulong a, byteptr *pd, ulong *pp, ulong *pn);
 
 /* perm.c */
 

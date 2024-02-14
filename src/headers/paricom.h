@@ -171,8 +171,3 @@ enum {
 
 #define ONLY_REM ((GEN*)0x1L)
 #define ONLY_DIVIDES ((GEN*)0x2L)
-
-#define NEXT_PRIME_VIADIFF(p,d) STMT_START { (p) += *(d)++; } STMT_END
-#define PREC_PRIME_VIADIFF(p,d) STMT_START { (p) -= *--(d); } STMT_END
-#define NEXT_PRIME_VIADIFF_CHECK(p,d)  STMT_START \
-  { if (!*(d)) pari_err_MAXPRIME(0); NEXT_PRIME_VIADIFF(p,d); } STMT_END

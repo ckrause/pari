@@ -86,7 +86,7 @@ static const ulong readonly_constants[] = {
   (ulong)(readonly_constants+7)
 };
 THREAD GEN zetazone, bernzone, eulerzone, primetab;
-byteptr diffptr;
+pari_prime *pari_PRIMES;
 FILE    *pari_outfile, *pari_errfile, *pari_logfile, *pari_infile;
 char    *current_logfile, *current_psfile, *pari_datadir;
 long    gp_colors[c_LAST];
@@ -1267,7 +1267,7 @@ pari_init_opts(size_t parisize, ulong maxprime, ulong init_opts)
   pari_mainstack = (struct pari_mainstack *) malloc(sizeof(*pari_mainstack));
   paristack_alloc(parisize, 0);
   init_universal_constants();
-  diffptr = NULL;
+  pari_PRIMES = NULL;
   if (!(init_opts&INIT_noPRIMEm))
   {
     GP_DATA->primelimit = maxprime;
@@ -1321,7 +1321,7 @@ pari_close_opts(ulong init_opts)
 
   free((void*)functions_hash);
   free((void*)defaults_hash);
-  if (diffptr) pari_close_primes();
+  if (pari_PRIMES) pari_close_primes();
   free(current_logfile);
   free(current_psfile);
   pari_mainstack_free(pari_mainstack);

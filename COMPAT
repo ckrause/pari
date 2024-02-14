@@ -30,6 +30,12 @@ This file lists the incompatible changes between Version 2.x and older versions
    - suminf_bitprec: use suminf instead (with same arguments)
      intnumromb_bitprec: use intnumromb instead (with same arguments)
      ellL1_bitprec, ellanalyticrank_bitprec: use ellL1, ellanalyticrank
+   - the diffptr low level interface is gone (table of difference of primes),
+     replaced by a table of 32bit primes (pari_PRIMES). The byteptr type and
+     following functions / macros are gone: initprimes, functions and macros
+     are gone: initprimes, init_primepointer_geq, init_primepointer_gt,
+     init_primepointer_leq, init_primepointer_lt NEXT_PRIME_VIADIFF,
+     PREC_PRIME_VIADIFF, NEXT_PRIME_VIADIFF_CHECK.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.14 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - qfbredsl2(q, S): change format of S: was [D,isD], is now isD

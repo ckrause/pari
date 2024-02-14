@@ -67,6 +67,11 @@ unextprime(ulong n)
     case 4: case 5: return 5;
     case 6: case 7: return 7;
   }
+  if (n <= maxprime())
+  {
+    long i = prime_search(n);
+    return i > 0? n: pari_PRIMES[-i];
+  }
   if (unextprime_overflow(n)) return 0;
   /* here n > 7 */
   n |= 1; /* make it odd */
@@ -145,6 +150,11 @@ uprecprime(ulong n)
     if (n <= 6)  return 5;
     if (n <= 10) return 7;
   }
+  if (n <= maxprimelim())
+  {
+    long i = prime_search(n);
+    return i > 0? n: pari_PRIMES[-i-1];
+  }
   /* here n >= 11 */
   if (!(n % 2)) n--;
   rc = rc0 = n % 210;
@@ -205,38 +215,33 @@ precprime(GEN n)
 }
 
 /* Find next single-word prime strictly larger than p.
- * If **d is non-NULL (somewhere in a diffptr), this is p + *(*d)++;
+ * If *n != 0, p is *n-th primethis is p + *(*d)++;
  * otherwise imitate nextprime().
  * *rcn = NPRC or the correct residue class for the current p; we'll use this
  * to track the current prime residue class mod 210 once we're out of range of
- * the diffptr table, and we'll update it before that if it isn't NPRC.
+ * the prime table, and we'll update it before that if it isn't NPRC.
  *
  * *q is incremented whenever q!=NULL and we wrap from 209 mod 210 to
  * 1 mod 210 */
-ulong
-snextpr(ulong p, byteptr *d, long *rcn, long *q, int (*ispsp)(ulong))
+static ulong
+snextpr(ulong p, long *n, long *rcn, long *q, int (*ispsp)(ulong))
 {
-  if (**d)
+  if (*n)
   {
-    byteptr dd = *d;
-    long d1 = 0;
-
-    NEXT_PRIME_VIADIFF(d1,dd);
-    /* d1 = nextprime(p+1) - p */
+    long t, p1 = t = pari_PRIMES[++*n]; /* nextprime(p + 1) */
     if (*rcn != NPRC)
     {
-      while (d1 > 0)
+      while (t > p)
       {
-        d1 -= prc210_d1[*rcn];
+        t -= prc210_d1[*rcn];
         if (++*rcn > 47) { *rcn = 0; if (q) (*q)++; }
       }
-      /* assert(d1 == 0) */
+      /* assert(d1 == p) */
     }
-    NEXT_PRIME_VIADIFF(p,*d);
-    return p;
+    return p1;
   }
   if (unextprime_overflow(p)) pari_err_OVERFLOW("snextpr");
-  /* we are beyond the diffptr table, initialize if needed */
+  /* we are beyond the prime table, initialize if needed */
   if (*rcn == NPRC) *rcn = prc210_no[(p % 210) >> 1]; /* != NPRC */
   /* look for the next one */
   do {
@@ -708,8 +713,7 @@ ECM_loop(struct ECM *E, GEN N, ulong B1)
   const ulong B2 = 110 * B1, B2_rt = usqrt(B2);
   const ulong nbc = E->nbc, nbc2 = E->nbc2;
   pari_sp av1, avtmp;
-  byteptr d0, d = diffptr;
-  long i, gse, gss, bstp, bstp0, rcn0, rcn;
+  long i, np, np0, gse, gss, bstp, bstp0, rcn0, rcn;
   ulong B2_p, m, p, p0;
   GEN g, *XG, *YG;
   GEN *X = E->X, *XAUX = E->XAUX, *XT = E->XT, *XD = E->XD;
@@ -734,8 +738,7 @@ ECM_loop(struct ECM *E, GEN N, ulong B1)
     err_printf("ECM: time = %6ld ms\nECM: B1 = %4lu,", timer_delay(&E->T), B1);
     err_printf("\tB2 = %6lu,\tgss = %4ld*420\n", B2, gss);
   }
-  p = 0;
-  NEXT_PRIME_VIADIFF(p,d);
+  p = 2; np = 1; /* p is np-th prime */
 
   /* ---B1 PHASE--- */
   /* treat p=2 separately */
@@ -750,7 +753,7 @@ ECM_loop(struct ECM *E, GEN N, ulong B1)
   while (p < B1 && p <= B2_rt)
   {
     pari_sp av2 = avma;
-    p = snextpr(p, &d, &rcn, NULL, uisprime);
+    p = snextpr(p, &np, &rcn, NULL, uisprime);
     B2_p = B2/p; /* beware integer overflow on 32-bit CPUs */
     for (m=1; m<=B2_p; m*=p)
     {
@@ -764,7 +767,7 @@ ECM_loop(struct ECM *E, GEN N, ulong B1)
   while (p < B1)
   {
     pari_sp av2 = avma;
-    p = snextpr(p, &d, &rcn, NULL, uisprime);
+    p = snextpr(p, &np, &rcn, NULL, uisprime);
     if (ellmult(N, &g, nbc, p, X, X, XAUX) > 1) return g;
     set_avma(av2);
   }
@@ -786,7 +789,7 @@ ECM_loop(struct ECM *E, GEN N, ulong B1)
   if (DEBUGLEVEL >= 7) err_printf("\t(got [2]Q...[10]Q)\n");
 
   /* get next prime (still using the foolproof test) */
-  p = snextpr(p, &d, &rcn, NULL, uisprime);
+  p = snextpr(p, &np, &rcn, NULL, uisprime);
   /* make sure we have the residue class number (mod 210) */
   if (rcn == NPRC)
   {
@@ -804,10 +807,8 @@ ECM_loop(struct ECM *E, GEN N, ulong B1)
   if (DEBUGLEVEL >= 7)
     err_printf("\t(got [p]Q, p = %lu = prc210_rp[%ld] mod 210)\n", p, rcn);
 
-  /* save current p, d, and rcn;  we'll need them more than once below */
-  p0 = p;
-  d0 = d;
-  rcn0 = rcn; /* remember where the helix wraps */
+  /* save current p, np, and rcn;  we'll need them more than once below */
+  p0 = p; np0 = np; rcn0 = rcn;
   bstp0 = 0; /* p is at baby-step offset 0 from itself */
 
   /* fill up the helix, stepping forward through the prime residue classes
@@ -925,8 +926,7 @@ ECM_loop(struct ECM *E, GEN N, ulong B1)
     }
     if (DEBUGLEVEL >= 7) err_printf("\t(baby step table complete)\n");
     /* initialize a few other things */
-    bstp = bstp0;
-    p = p0; d = d0; rcn = rcn0;
+    bstp = bstp0; p = p0; np = np0; rcn = rcn0;
     g = gen_1; av1 = avma;
     /* scratchspace for prod (x_i-x_j) */
     avtmp = (pari_sp)new_chunk(8 * lgefint(N));
@@ -948,7 +948,7 @@ ECM_loop(struct ECM *E, GEN N, ulong B1)
     while (p < B2)
     {/* loop over probable primes p0 < p <= nextprime(B2), inserting giant
       * steps as necessary */
-      p = snextpr(p, &d, &rcn, &bstp, uis2psp); /* next probable prime */
+      p = snextpr(p, &np, &rcn, &bstp, uis2psp); /* next probable prime */
       /* work out the corresponding baby-step multiplier */
       k = bstp - (rcn < rcn0 ? 1 : 0);
       if (k > gss)
@@ -1953,10 +1953,7 @@ is_357_power(GEN x, GEN *pt, ulong *mask)
   return 0;
 }
 
-/* Is x a n-th power ?
- * if d = NULL, n not necessarily prime, otherwise, n prime and d the
- * corresponding diffptr to go on looping over primes.
- * If pt != NULL, it receives the n-th root */
+/* Is x a n-th power ? If pt != NULL, it receives the n-th root */
 ulong
 is_kth_power(GEN x, ulong n, GEN *pt)
 {
@@ -3121,9 +3118,9 @@ ifac_moebiusu(GEN n)
 INLINE ulong
 u_forprime_next_fast(forprime_t *T)
 {
-  if (*(T->d))
+  if (++T->n <= pari_PRIMES[0])
   {
-    NEXT_PRIME_VIADIFF(T->p, T->d);
+    T->p = pari_PRIMES[T->n];
     return T->p > T->b ? 0: T->p;
   }
   return u_forprime_next(T);

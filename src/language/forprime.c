@@ -23,10 +23,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 static ulong _maxprime = 0;
 static ulong _maxprimelim = 0;
-static ulong diffptrlen;
 static GEN _prodprimes,_prodprimes_addr;
+typedef unsigned char *byteptr;
 
-/* Building/Rebuilding the diffptr table. The actual work is done by the
+/* Build/Rebuild table of prime differences. The actual work is done by the
  * following two subroutines;  the user entry point is the function
  * initprimes() below.  initprimes1() is the old algorithm, called when
  * maxnum (size) is moderate. Must be called after pari_init_stack() )*/
@@ -455,13 +455,13 @@ initprimes0(ulong maxnum, long *lenp, ulong *lastp, byteptr p1)
 }
 
 ulong
-maxprime(void) { return diffptr ? _maxprime : 0; }
+maxprime(void) { return pari_PRIMES ? _maxprime : 0; }
 ulong
-maxprimelim(void) { return diffptr ? _maxprimelim : 0; }
+maxprimelim(void) { return pari_PRIMES ? _maxprimelim : 0; }
 ulong
-maxprimeN(void) { return diffptr ? diffptrlen-1: 0; }
+maxprimeN(void) { return pari_PRIMES? pari_PRIMES[0]: 0; }
 GEN
-prodprimes(void) { return diffptr ? _prodprimes: NULL; }
+prodprimes(void) { return pari_PRIMES ? _prodprimes: NULL; }
 
 void
 maxprime_check(ulong c) { if (_maxprime < c) pari_err_MAXPRIME(c); }
@@ -470,7 +470,7 @@ maxprime_check(ulong c) { if (_maxprime < c) pari_err_MAXPRIME(c); }
  * have enough fast primes to work, the RHS ensures that p_{n+1} - p_n < 255
  * (N.B. RHS would be incorrect since initprimes0 would make it odd, thereby
  * increasing it by 1) */
-byteptr
+static byteptr
 initprimes(ulong maxnum, long *lenp, ulong *lastp)
 {
   byteptr t;
@@ -487,52 +487,18 @@ initprimes(ulong maxnum, long *lenp, ulong *lastp)
 void
 initprimetable(ulong maxnum)
 {
-  long len;
-  ulong last;
-  byteptr p = initprimes(maxnum, &len, &last), old = diffptr;
-  diffptrlen = minss(diffptrlen, len);
+  long i, len;
+  ulong last, q;
+  byteptr p = initprimes(maxnum, &len, &last);
+  pari_prime *old = pari_PRIMES;
   _maxprime  = minss(_maxprime,last); /*Protect against ^C*/
-  diffptr = p; diffptrlen = len; _maxprime = last;
-  set_prodprimes();
+  _maxprime = last;
+  pari_PRIMES = (pari_prime*)pari_malloc((size_t)sizeof(pari_prime) * len);
+  pari_PRIMES[0] = (pari_prime)len-1;
+  pari_PRIMES[1] = q = 2;
+  for (i = 2; i < len; i++) pari_PRIMES[i] = (q += *++p);
   if (old) free(old);
-}
-
-/* all init_primepointer_xx routines set *ptr to the corresponding place
- * in prime table */
-/* smallest p >= a */
-ulong
-init_primepointer_geq(ulong a, byteptr *pd)
-{
-  ulong n, p;
-  prime_table_next_p(a, pd, &p, &n);
-  return p;
-}
-/* largest p < a */
-ulong
-init_primepointer_lt(ulong a, byteptr *pd)
-{
-  ulong n, p;
-  prime_table_next_p(a, pd, &p, &n);
-  PREC_PRIME_VIADIFF(p, *pd);
-  return p;
-}
-/* largest p <= a */
-ulong
-init_primepointer_leq(ulong a, byteptr *pd)
-{
-  ulong n, p;
-  prime_table_next_p(a, pd, &p, &n);
-  if (p != a) PREC_PRIME_VIADIFF(p, *pd);
-  return p;
-}
-/* smallest p > a */
-ulong
-init_primepointer_gt(ulong a, byteptr *pd)
-{
-  ulong n, p;
-  prime_table_next_p(a, pd, &p, &n);
-  if (p == a) NEXT_PRIME_VIADIFF(p, *pd);
-  return p;
+  set_prodprimes();
 }
 
 /**********************************************************************/
@@ -579,10 +545,15 @@ u_forprime_set_prime_table(forprime_t *T, ulong a)
   if (a < 3)
   {
     T->p = 0;
-    T->d = diffptr;
+    T->n = 0;
   }
   else
-    T->p = init_primepointer_lt(a, &T->d);
+  {
+    long n = prime_search(a - 1);
+    if (n < 0) n = - n - 1;
+    T->n = n;
+    T->p = pari_PRIMES[n];
+  }
 }
 
 /* Set p so that p + q the smallest integer = c (mod q) and > original p.
@@ -619,7 +590,7 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
     T->strategy = PRST_diffptr; /* paranoia */
     T->p = 0; /* empty */
     T->b = 0; /* empty */
-    T->d = diffptr;
+    T->n = 0;
     return 0;
   }
   maxp = maxprime();
@@ -772,13 +743,11 @@ forprime_init(forprime_t *T, GEN a, GEN b)
 static void
 sieve_block(ulong a, ulong b, ulong maxpos, unsigned char* sieve)
 {
-  ulong p = 2, lim = usqrt(b), sz = (b-a) >> 1;
-  byteptr d = diffptr+1;
+  ulong i, lim = usqrt(b), sz = (b-a) >> 1;
   (void)memset(sieve, 0, maxpos+1);
-  for (;;)
+  for (i = 2;; i++)
   { /* p is odd */
-    ulong k, r;
-    NEXT_PRIME_VIADIFF(p, d); /* starts at p = 3 */
+    ulong k, r, p = pari_PRIMES[i]; /* starts at p = 3 */
     if (p > lim) break;
 
     /* solve a + 2k = 0 (mod p) */
@@ -827,9 +796,9 @@ pari_init_primes(ulong maxprime)
 void
 pari_close_primes(void)
 {
-  if (diffptr)
+  if (pari_PRIMES)
   {
-    pari_free(diffptr);
+    pari_free(pari_PRIMES);
     pari_free(_prodprimes_addr);
   }
   pari_free(pari_sieve_modular.sieve);
@@ -875,18 +844,18 @@ u_forprime_next(forprime_t *T)
   {
     for(;;)
     {
-      if (!*(T->d))
+      if (++T->n <= pari_PRIMES[0])
       {
+        T->p = pari_PRIMES[T->n];
+        if (T->p > T->b) return 0;
+        if (T->q == 1 || T->p % T->q == T->c) return T->p;
+      }
+      else
+      { /* beyond the table */
         T->strategy = T->isieve? PRST_sieve: PRST_unextprime;
         if (T->q != 1) { arith_set(T); if (!T->p) return 0; }
         /* T->p possibly not a prime if q != 1 */
         break;
-      }
-      else
-      {
-        NEXT_PRIME_VIADIFF(T->p, T->d);
-        if (T->p > T->b) return 0;
-        if (T->q == 1 || T->p % T->q == T->c) return T->p;
       }
     }
   }
@@ -1002,6 +971,7 @@ NEXT_CHUNK:
       }
 #endif
       T->p = unextprime(T->p + 1);
+      if (T->p > T->b) return 0;
     }
     else do {
       T->p += T->q;
