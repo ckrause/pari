@@ -433,7 +433,11 @@ gp_embedded(const char *s)
     GEN z = pari_err_last();
     long t = err_get_num(z);
     err = t == e_NONE ? 2 : 1;
-    if (err==1) pari_err_display(z);
+    if (err==1)
+    {
+      pari_err_display(z);
+      err_printf("\n");
+    }
     gp_context_restore(&state);
   } pari_TRY {
     gp_read_str_history(s);
