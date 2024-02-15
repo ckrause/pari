@@ -20,8 +20,7 @@ void
 pari_emscripten_wget(const char *s)
 {
   const char *name = stack_sprintf("/gpjs/root/%s",s);
-  emscripten_async_wget(name,s,NULL,NULL);
-  pari_err(e_NONE,"@Retry");
+  emscripten_wget(name,s);
 }
 
 void

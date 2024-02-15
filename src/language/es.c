@@ -430,15 +430,10 @@ gp_embedded(const char *s)
   pari_set_last_newline(1);
   pari_CATCH(CATCH_ALL)
   {
-    GEN z = pari_err_last();
-    long t = err_get_num(z);
-    err = t == e_NONE ? 2 : 1;
-    if (err==1)
-    {
-      pari_err_display(z);
-      err_printf("\n");
-    }
+    pari_err_display(pari_err_last());
+    err_printf("\n");
     gp_context_restore(&state);
+    err = 1;
   } pari_TRY {
     gp_read_str_history(s);
   } pari_ENDCATCH;
@@ -3913,7 +3908,12 @@ pari_fopengz(const char *s)
   if (f) return pari_get_infile(s, f);
 
 #ifdef __EMSCRIPTEN__
-  if (pari_is_dir(pari_datadir)) pari_emscripten_wget(s);
+  if (pari_is_dir(pari_datadir))
+  {
+    pari_emscripten_wget(s);
+    f = fopen(s, "r");
+    if (f) return pari_get_infile(s, f);
+  }
 #endif
   l = strlen(s);
   name = stack_malloc(l + 3 + 1);
