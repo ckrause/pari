@@ -1,4 +1,4 @@
-default(parisize,"34M"); \\ overflows 32M
+default(parisize,"44M"); \\ overflows 42M
 count = 0;
 
 nfisprobisom(P,Q, n = 50)=
