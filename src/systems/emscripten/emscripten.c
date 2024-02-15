@@ -21,7 +21,7 @@ pari_emscripten_wget(const char *s)
 {
   const char *name = stack_sprintf("/gpjs/root/%s",s);
   emscripten_async_wget(name,s,NULL,NULL);
-  pari_err(e_MISC,"retry");
+  pari_err(e_NONE,"@Retry");
 }
 
 void
@@ -30,9 +30,9 @@ pari_emscripten_help(const char *s, long n)
   const char *url = "https://pari.math.u-bordeaux.fr/dochtml";
   (void) n;
 #if ((PARI_VERSION_CODE>>PARI_VERSION_SHIFT)&1)
-  pari_err(e_MISC,"Help: %s/help-stable/%s",url,s);
+  err_printf"@Help: %s/help-stable/%s\n",url,s);
 #else
-  pari_err(e_MISC,"Help: %s/help/%s",url,s);
+  err_printf("@Help: %s/help/%s\n",url,s);
 #endif
 }
 
