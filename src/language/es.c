@@ -414,9 +414,6 @@ gp_embedded_init(long rsize, long vsize)
 {
   pari_init(rsize, 1UL<<20);
   paristack_setsize(rsize, vsize);
-#ifdef __EMSCRIPTEN__
-  cb_pari_long_help = &pari_emscripten_help;
-#endif
 }
 
 long

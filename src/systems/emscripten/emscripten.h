@@ -16,4 +16,5 @@ BEGINEXTERN
 void pari_emscripten_help(const char *s, long n);
 void pari_emscripten_wget(const char *s);
 void pari_emscripten_plot_init(long width, long height);
+void pari_emscripten_init(long rsize, long vsize);
 ENDEXTERN

@@ -27,12 +27,15 @@ void
 pari_emscripten_help(const char *s, long n)
 {
   const char *url = "https://pari.math.u-bordeaux.fr/dochtml";
+  char *t;
   (void) n;
 #if ((PARI_VERSION_CODE>>PARI_VERSION_SHIFT)&1)
-  err_printf"@Help: %s/help-stable/%s\n",url,s);
+  t = pari_sprintf("%s/help-stable/%s\n",url,s);
 #else
-  err_printf("@Help: %s/help/%s\n",url,s);
+  t = pari_sprintf("%s/help/%s\n",url,s);
 #endif
+  EM_ASM(window.open(UTF8ToString($0)),t);
+  pari_free(t);
 }
 
 static void
@@ -69,4 +72,12 @@ pari_emscripten_plot_init(long width, long height)
   plot_width  = width;
   plot_height = height;
   pari_set_plot_engine(pari_emscripten_get_plot);
+  cb_pari_long_help = &pari_emscripten_help;
+}
+
+void
+pari_emscripten_init(long rsize, long vsize)
+{
+  gp_embedded_init(rsize, vsize);
+  cb_pari_long_help = &pari_emscripten_help;
 }
