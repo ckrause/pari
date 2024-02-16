@@ -72,7 +72,6 @@ pari_emscripten_plot_init(long width, long height)
   plot_width  = width;
   plot_height = height;
   pari_set_plot_engine(pari_emscripten_get_plot);
-  cb_pari_long_help = &pari_emscripten_help;
 }
 
 void
