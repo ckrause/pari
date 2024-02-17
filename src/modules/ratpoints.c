@@ -746,13 +746,13 @@ static const int squares16[16] = {1,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0};
  **************************************************************************/
 
 static ratpoints_sieve_entry*
-alloc_sieve(long nbprime, long maxprime)
+alloc_sieve(long nbprime, long maxp)
 {
   long i;
   ratpoints_sieve_entry * s = (ratpoints_sieve_entry*)
                         stack_malloc(nbprime*sizeof(ratpoints_sieve_entry));
   for (i=0; i<nbprime; i++)
-    s[i].sieve = (ratpoints_bit_array**) new_chunk(maxprime);
+    s[i].sieve = (ratpoints_bit_array**) new_chunk(maxp);
   return s;
 }
 
@@ -760,14 +760,13 @@ alloc_sieve(long nbprime, long maxprime)
 static void
 find_points_init(ratpoints_args *args, long bit_primes)
 {
-  long need = 0;
-  long n, nbprime,maxprime;
+  long need = 0, n, nbprime, maxp;
   args->listprime = primes_interval_zv(3, 1<<bit_primes);
   nbprime = lg(args->listprime)-1;
-  maxprime = args->listprime[nbprime];
+  maxp = args->listprime[nbprime];
 
   /* allocate space for se_buffer */
-  args->se_buffer = alloc_sieve(nbprime, maxprime);
+  args->se_buffer = alloc_sieve(nbprime, maxp);
   args->se_next = args->se_buffer;
   for (n = 1; n <= nbprime; n++)
   {
@@ -779,7 +778,7 @@ find_points_init(ratpoints_args *args, long bit_primes)
   args->ba_next = args->ba_buffer;
 
   /* allocate space for int_buffer */
-  args->int_buffer = (int *) stack_malloc(nbprime*(maxprime+1)*sizeof(int));
+  args->int_buffer = (int *) stack_malloc(nbprime*(maxp+1)*sizeof(int));
   args->int_next = args->int_buffer;
 
   args->forb_ba   = (forbidden_entry*)
