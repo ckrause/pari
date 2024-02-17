@@ -22,19 +22,18 @@ typedef unsigned long long pari_ulong;
 typedef unsigned long pari_ulong;
 #endif
 #define ulong pari_ulong
+typedef unsigned int pari_prime;
 typedef long *GEN;
 
 #undef ULONG_MAX
 #undef LONG_MAX
 
 #ifdef LONG_IS_64BIT
-typedef unsigned int pari_prime;
 #  define BITS_IN_LONG 64
 #  define TWOPOTBITS_IN_LONG 6
 #  define LONG_MAX (9223372036854775807L) /* 2^63-1 */
 #  define SMALL_ULONG(p) ((ulong)p <= 3037000493UL)
 #else
-typedef unsigned long pari_prime;
 #  define BITS_IN_LONG 32
 #  define TWOPOTBITS_IN_LONG 5
 #  define LONG_MAX (2147483647L) /* 2^31-1 */
