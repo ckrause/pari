@@ -1074,17 +1074,20 @@ randomprime0(GEN N, GEN q)
   return NULL;
 }
 
-/* cf gen_search; assume x <= maxprime() */
+/* cf gen_search; assume 0 <= x <= maxprime() = T[T[0]]. Return i > 0 such that
+ * x = T[i] or -i < 0 such that T[i-1] < x < T[i]; return -1 for the special
+ * case 0 <= x < 2 */
 long
-prime_search(ulong x)
+prime_search(long x)
 {
   pari_prime *T = pari_PRIMES;
-  long u = T[0], i, l = 1;
+  long u = minss(T[0], x), i, l = 1;
   do
   {
     i = (l+u) >> 1;
     if (x < T[i]) u = i-1; else if (x > T[i]) l = i+1; else return i;
-  } while (u >= l);
+  } while (u > l);
+  if (u == l) { i = l; if (x == T[i]) return i; }
   return -(T[i] > x? i: i+1);
 }
 

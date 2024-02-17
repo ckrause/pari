@@ -5323,7 +5323,7 @@ long    isprime(GEN x);
 long    ispseudoprime(GEN x, long flag);
 long    millerrabin(GEN n, long k);
 GEN     prime(long n);
-long    prime_search(ulong x);
+long    prime_search(long x);
 GEN     primecert(GEN x, long flag);
 GEN     primecert0(GEN x, long flag, long stopat);
 GEN     primecertexport(GEN cert, long flag);
