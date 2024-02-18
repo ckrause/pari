@@ -1523,7 +1523,7 @@ static GEN
 wrap_relker(void*E, GEN x)
 {
   struct wrapper_modp_s *W = (struct wrapper_modp_s*)E;
-  return FpV_FpMs_mul(x, W->E, W->p);
+  return FpV_FpMs_mul(x, (GEN) W->E, W->p);
 }
 
 /* Solve f(X) = B (mod p^e); blackbox version of ZlM_gauss */
