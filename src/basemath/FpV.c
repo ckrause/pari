@@ -1446,45 +1446,33 @@ GEN
 FpMs_FpC_mul(GEN M, GEN B, GEN p) { return FpC_red(zMs_ZC_mul(M, B), p); }
 
 GEN
-ZV_zMs_mul(GEN B, GEN M)
+FpV_FpMs_mul(GEN B, GEN M, GEN p)
 {
-  long i, j;
-  long m = lg(M)-1;
-  GEN V = cgetg(m+1,t_VEC);
-  for (i = 1; i <= m; ++i)
+  long i, j, lM = lg(M);
+  GEN V = cgetg(lM,t_VEC);
+  for (i = 1; i < lM; ++i)
   {
-    GEN R = gel(M, i), C = gel(R, 1), E = gel(R, 2);
-    long l = lg(C);
-    GEN z;
-    if (l == 1)
-    {
-      gel(V,i) = gen_0;
-      continue;
-    }
+    GEN z, R = gel(M, i), C = gel(R, 1), E = gel(R, 2);
+    pari_sp av = avma;
+    long lC = lg(C);
+    if (lC == 1) { gel(V,i) = gen_0; continue; }
     z = mulis(gel(B, C[1]), E[1]);
-    for (j = 2; j < l; ++j)
+    for (j = 2; j < lC; ++j)
     {
-      long k = C[j];
+      GEN b = gel(B, C[j]);
       switch(E[j])
       {
-      case 1:
-        z = addii(z, gel(B,k));
-        break;
-      case -1:
-        z = subii(z, gel(B,k));
-        break;
-      default:
-        z = addii(z, mulis(gel(B,k), E[j]));
-        break;
+        case  1: z = addii(z, b); break;
+        case -1: z = subii(z, b); break;
+        default: z = addii(z, mulis(b, E[j])); break;
       }
     }
-    gel(V,i) = z;
+    gel(V,i) = gerepileuptoint(av, p? Fp_red(z, p): z);
   }
   return V;
 }
-
 GEN
-FpV_FpMs_mul(GEN B, GEN M, GEN p) { return FpV_red(ZV_zMs_mul(B, M), p); }
+ZV_zMs_mul(GEN B, GEN M) { return FpV_FpMs_mul(B, M, NULL); }
 
 GEN
 ZlM_gauss(GEN a, GEN b, ulong p, long e, GEN C)
@@ -1532,7 +1520,11 @@ static GEN
 wrap_relcomb(void*E, GEN x) { return zMs_ZC_mul((GEN)E, x); }
 
 static GEN
-wrap_relker(void*E, GEN x) { return ZV_zMs_mul(x, (GEN)E); }
+wrap_relker(void*E, GEN x)
+{
+  struct wrapper_modp_s *W = (struct wrapper_modp_s*)E;
+  return FpV_FpMs_mul(x, W->E, W->p);
+}
 
 /* Solve f(X) = B (mod p^e); blackbox version of ZlM_gauss */
 GEN
@@ -1679,9 +1671,8 @@ GEN
 FpMs_leftkernel_elt_col(GEN M, long nbcol, long nbrow, GEN p)
 {
   pari_sp av = avma, av2;
-  GEN pcol, prow;
+  GEN Mp, pcol, prow;
   long i, n;
-  GEN Mp, B, MB, R, Rp;
   pari_timer ti;
   struct wrapper_modp_s W;
   if (DEBUGLEVEL) timer_start(&ti);
@@ -1691,28 +1682,23 @@ FpMs_leftkernel_elt_col(GEN M, long nbcol, long nbrow, GEN p)
     timer_printf(&ti,"structured elimination (%ld -> %ld)",nbcol,lg(pcol)-1);
   n = lg(pcol)-1;
   Mp = cgetg(n+1, t_MAT);
-  for(i=1; i<=n; i++)
-    gel(Mp, i) = vecprow(gel(M,pcol[i]), prow);
-  W.E = (void*) Mp;
-  W.f = wrap_relker;
+  for (i=1; i<=n; i++) gel(Mp, i) = vecprow(gel(M,pcol[i]), prow);
+  W.E = (void*)Mp;
   W.p = p;
   av2 = avma;
-  for(;;)
+  for(;; set_avma(av2))
   {
-    set_avma(av2);
-    B = random_FpV(n, p);
-    MB = FpV_FpMs_mul(B, Mp, p);
+    GEN R, Rp, B = random_FpV(n, p), MB = FpV_FpMs_mul(B, Mp, p);
     if (DEBUGLEVEL) timer_start(&ti);
     pari_CATCH(e_INV)
     {
-      GEN E = pari_err_last();
-      GEN x = err_get_compo(E,2);
+      GEN E = pari_err_last(), x = err_get_compo(E,2);
       if (typ(x) != t_INTMOD) pari_err(0,E);
       if (DEBUGLEVEL)
         pari_warn(warner,"FpMs_leftkernel_elt, impossible inverse %Ps", x);
       Rp = NULL;
     } pari_TRY {
-      Rp = gen_FpM_Wiedemann((void*)&W, wrap_relcomb_modp, MB, p);
+      Rp = gen_FpM_Wiedemann((void*)&W, wrap_relker, MB, p);
     } pari_ENDCATCH
     if (!Rp) continue;
     if (typ(Rp)==t_COL)
