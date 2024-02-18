@@ -1081,7 +1081,7 @@ long
 prime_search(long x)
 {
   pari_prime *T = pari_PRIMES;
-  long u = minss(T[0], x), i, l = 1;
+  long i, u = minss(T[0], (x + 2) >> ((x < 122)? 1: 2)), l = 1;
   do
   {
     i = (l+u) >> 1;
@@ -1282,14 +1282,31 @@ primes_interval(GEN a, GEN b)
   setlg(y, i); return gerepileupto(av, y);
 }
 
-/* a <= b, at most d primes in [a,b]. Return them */
+/* simpler case a <= b <= maxprimelim() */
+static GEN
+PRIMES_interval(ulong a, ulong b)
+{
+  long k, i = prime_search(a), j = prime_search(b);
+  GEN y;
+  if (i < 0) i = -i;
+  if (j < 0) j = -j - 1;
+  /* T[i] = smallest p >= a, T[j] = largest p <= b */
+  y = cgetg(j - i + 2, t_VECSMALL);
+  if (i == 1)
+    for (; i <= j; i++) y[i] = pari_PRIMES[i];
+  else
+    for (k = 1; i <= j; i++) y[k++] = pari_PRIMES[i];
+  return y;
+}
+/* a <= b, at most d primes in [a,b]. Return them.
+ * PRIMES_interval is more efficient if b <= maxprimelim() */
 static GEN
 primes_interval_i(ulong a, ulong b, ulong d)
 {
-  ulong p, i = 1, n = d + 1;
-  forprime_t S;
+  ulong p, i = 1, n = d+1;
   GEN y = cgetg(n+1, t_VECSMALL);
   pari_sp av = avma;
+  forprime_t S;
   u_forprime_init(&S, a, b);
   while ((p = u_forprime_next(&S))) y[i++] = p;
   set_avma(av); setlg(y, i); stackdummy((pari_sp)(y + i), (pari_sp)(y + n+1));
@@ -1301,6 +1318,7 @@ primes_interval_zv(ulong a, ulong b)
   ulong d;
   if (a < 3) return primes_upto_zv(b);
   if (b < a) return cgetg(1, t_VECSMALL);
+  if (b <= maxprimelim()) return PRIMES_interval(a, b);
   d = b - a;
   if (d > 100000UL)
   {
@@ -1314,6 +1332,7 @@ primes_upto_zv(ulong b)
 {
   ulong d;
   if (b < 2) return cgetg(1, t_VECSMALL);
+  if (b <= maxprimelim()) return PRIMES_interval(2, b);
   d = (b > 100000UL)? (ulong)primepi_upper_bound(b): b;
   return primes_interval_i(2, b, d);
 }
