@@ -1,3 +1,5 @@
+default(parisize,"10M"); \\ 8M overflows
+
 test2(p)=
 {
   ffgen(x*Mod(1,p));
