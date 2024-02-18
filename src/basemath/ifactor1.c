@@ -228,7 +228,7 @@ snextpr(ulong p, long *n, long *rcn, long *q, int (*ispsp)(ulong))
 {
   if (*n)
   {
-    long t, p1 = t = pari_PRIMES[++*n]; /* nextprime(p + 1) */
+    ulong t, p1 = t = pari_PRIMES[++*n]; /* nextprime(p + 1) */
     if (*rcn != NPRC)
     {
       while (t > p)
