@@ -12,20 +12,12 @@ Doc: \kbd{gp} precomputes a list of
 
  Since almost all arithmetic functions eventually require some table of prime
  numbers, PARI guarantees that the first 6547 primes, up to and
- including 65557, are precomputed, even if \kbd{primelimit} is $1$.
+ including $65557$, are precomputed, even if \kbd{primelimit} is $1$.
 
- The maximal value for practical purposes is $436273289$ (the largest prime
- such that all prime gaps below the threshold are < 255), but values beyond
- $10^{8}$, allowing to iterate over primes up to $10^{16}$, do not seem useful.
-
- The default can be set to a higher value, up to $2^{64}-2049$ on
- a 64-bit machine ! But the precomputed prime table will be truncated at the
- maximal value given above. This allows to use \kbd{primelimit} as an
- indication of how far one might want to trial divide by default, even if the
- missing primes must be computed on the spot. Note this is of dubious value
- since the function will soon get \emph{very} slow without precomputations
- and better factoring algorithms are used internally. (See also the
- Deprecated feature below.)
+ The default value is $2^20$.
+ A value of $10^{8}$ allows to iterate over primes up to $10^{16}$, and is
+ the upper range of what is generally useful. Using large values can
+ actually slow down some computations.
 
  This default is only used on startup: changing it will not recompute a new
  table. On startup, a product tree of all primes in the table is also
@@ -38,7 +30,7 @@ Doc: \kbd{gp} precomputes a list of
  2^23:     190 ms
  2^26:   1,980 ms
  max:   18,071 ms
- @eprog\noindent (The maximal value 436273289 is about $2^{28.7}$.)
+ @eprog
 
  \misctitle{Deprecated feature} \kbd{primelimit} was used in some
  situations by algebraic number theory functions using the

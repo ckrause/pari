@@ -48,7 +48,7 @@ initprimes1(ulong size, long *lenp, ulong *lastp, pari_prime *p1)
   {
     do q++; while (*q);
     if (q > fin) break;
-    *re++ = (unsigned char) ((q-s) << 1);
+    *re++ = (pari_prime) ((q-s) << 1);
   }
   *re++ = 0;
   *lenp = re - p1;
@@ -476,11 +476,11 @@ static pari_prime*
 initprimes(ulong maxnum, long *lenp, ulong *lastp)
 {
   pari_prime *t;
+  ulong N;
   if (maxnum < 65537)
     maxnum = 65537;
-  else if (maxnum > 436273289)
-    maxnum = 436273289;
-  t = (pari_prime*) pari_malloc(sizeof(*t) *( (size_t) (1.09 * maxnum/log((double)maxnum)) + 146));
+  N = (long) ceil(primepi_upper_bound((double)maxnum));
+  t = (pari_prime*) pari_malloc(sizeof(*t) * (N+1));
   initprimes0(maxnum, lenp, lastp, t);
   _maxprimelim = maxnum;
   return (pari_prime*) pari_realloc(t, sizeof(*t) * *lenp);

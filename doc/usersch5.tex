@@ -1058,7 +1058,7 @@ iterator provide \emph{fast} access to primes up to the \emph{square}
 of \kbd{maxprime}. In any case, the implementation requires that
 $\tet{maxprime} < 2^{\B} - 2048$, whatever memory is available.
 In fact, \kbd{maxprime} is automatically replaced by
-$$\min\big(\max(\kbd{maxprime}, 65557), 436273289\big).$$
+$$\max(\kbd{maxprime}, 65557)\enspace.$$
 
 In particular, PARI guarantees that the first 6547 primes, up to and
 including 65557, are present in the table, even if you set \kbd{maxprime} to
@@ -1077,7 +1077,7 @@ detect small prime divisors of large integers, using a few gcd's.
 
 \fun{ulong}{maxprimelim}{void} the argument used for the last
 \kbd{initprimetable}
-call. This belongs to $[65537, 436273289]$ and the largest prime
+call. This is at least $65537$ and the largest prime
 less than or equal to this number is \kbd{maxprime}$()$.
 
 \fun{void}{maxprime_check}{ulong B} raise an error if \kbd{maxprime()} is $< B$.
