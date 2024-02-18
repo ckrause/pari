@@ -926,7 +926,6 @@ prime_table_find_n(ulong N)
   long i;
   if (N <= (ulong)pari_PRIMES[0]) return utoipos((ulong)pari_PRIMES[N]);
   /* not in table */
-  maxp = maxprime();
   for (i = 1; i < prime_table_len; i++)
   {
     n = prime_table[i].n;
@@ -938,7 +937,7 @@ prime_table_find_n(ulong N)
     }
   }
   if (i == prime_table_len) i = prime_table_len - 1;
-  p = prime_table[i].p; /* > maxp */
+  p = prime_table[i].p;
   n = prime_table[i].n;
   if (n > N)
   {
@@ -948,6 +947,7 @@ prime_table_find_n(ulong N)
   }
   /* n <= N */
   if (n == N) return utoipos(p);
+  maxp = maxprime();
   if (p < maxp) { p = maxp; n = pari_PRIMES[0]; }
   return prime_successor(p, N - n);
 }
