@@ -31,26 +31,27 @@ typedef unsigned char *byteptr;
  * initprimes() below.  initprimes1() is the old algorithm, called when
  * maxnum (size) is moderate. Must be called after pari_init_stack() )*/
 static void
-initprimes1(ulong size, long *lenp, ulong *lastp, byteptr p1)
+initprimes1(ulong size, long *lenp, ulong *lastp, pari_prime *p1)
 {
   pari_sp av = avma;
   long k;
   byteptr q, r, s, p = (byteptr)stack_calloc(size+2), fin = p + size;
+  pari_prime *re;
 
   for (r=q=p,k=1; r<=fin; )
   {
     do { r+=k; k+=2; r+=k; } while (*++q);
     for (s=r; s<=fin; s+=k) *s = 1;
   }
-  r = p1; *r++ = 2; *r++ = 1; /* 2 and 3 */
+  re = p1; *re++ = 2; *re++ = 1; /* 2 and 3 */
   for (s=q=p+1; ; s=q)
   {
     do q++; while (*q);
     if (q > fin) break;
-    *r++ = (unsigned char) ((q-s) << 1);
+    *re++ = (unsigned char) ((q-s) << 1);
   }
-  *r++ = 0;
-  *lenp = r - p1;
+  *re++ = 0;
+  *lenp = re - p1;
   *lastp = ((s - p) << 1) + 1;
   set_avma(av);
 }
@@ -334,10 +335,10 @@ set_optimize(long what, GEN g)
   terminated by a 0 byte. Checks n odd numbers starting at 'start', setting
   bytes starting at data to 0 (composite) or 1 (prime) */
 static void
-sieve_chunk(byteptr known_primes, ulong s, byteptr data, ulong n)
+sieve_chunk(pari_prime *known_primes, ulong s, byteptr data, ulong n)
 {
   ulong p, cnt = n-1, start = s, delta = 1;
-  byteptr q;
+  pari_prime *q;
 
   memset(data, 0, n);
   start >>= 1;  /* (start - 1)/2 */
@@ -385,14 +386,15 @@ set_prodprimes(void)
 
 /* assume maxnum <= 436273289 < 2^29 */
 static void
-initprimes0(ulong maxnum, long *lenp, ulong *lastp, byteptr p1)
+initprimes0(ulong maxnum, long *lenp, ulong *lastp, pari_prime *p1)
 {
   pari_sp av = avma, bot = pari_mainstack->bot;
   long alloced, psize;
-  byteptr q, end, p, end1, plast, curdiff;
+  byteptr q, end, p, plast;
   ulong last, remains, curlow, rootnum, asize;
   ulong prime_above;
-  byteptr p_prime_above;
+  pari_prime *end1, *curdiff;
+  pari_prime *p_prime_above;
 
   maxnum |= 1; /* make it odd. */
   /* base case */
@@ -441,7 +443,7 @@ initprimes0(ulong maxnum, long *lenp, ulong *lastp, byteptr p1)
     { /* q runs over addresses corresponding to primes */
       while (*q) q++; /* use sentinel at end */
       if (q >= end) break;
-      *curdiff++ = (unsigned char)(q-plast) << 1; /* < 255 for q < 436273291 */
+      *curdiff++ = (pari_prime)(q-plast) << 1; /* < 255 for q < 436273291 */
     }
     plast -= asize;
     remains -= asize;
@@ -470,18 +472,18 @@ maxprime_check(ulong c) { if (_maxprime < c) pari_err_MAXPRIME(c); }
  * have enough fast primes to work, the RHS ensures that p_{n+1} - p_n < 255
  * (N.B. RHS would be incorrect since initprimes0 would make it odd, thereby
  * increasing it by 1) */
-static byteptr
+static pari_prime*
 initprimes(ulong maxnum, long *lenp, ulong *lastp)
 {
-  byteptr t;
+  pari_prime *t;
   if (maxnum < 65537)
     maxnum = 65537;
   else if (maxnum > 436273289)
     maxnum = 436273289;
-  t = (byteptr)pari_malloc((size_t) (1.09 * maxnum/log((double)maxnum)) + 146);
+  t = (pari_prime*) pari_malloc(sizeof(*t) *( (size_t) (1.09 * maxnum/log((double)maxnum)) + 146));
   initprimes0(maxnum, lenp, lastp, t);
   _maxprimelim = maxnum;
-  return (byteptr)pari_realloc(t, *lenp);
+  return (pari_prime*) pari_realloc(t, sizeof(*t) * *lenp);
 }
 
 void
@@ -489,7 +491,7 @@ initprimetable(ulong maxnum)
 {
   long i, len;
   ulong last, q;
-  byteptr p = initprimes(maxnum, &len, &last);
+  pari_prime *p = initprimes(maxnum, &len, &last);
   pari_prime *old = pari_PRIMES;
   _maxprime  = minss(_maxprime,last); /*Protect against ^C*/
   _maxprime = last;
