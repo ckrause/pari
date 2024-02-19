@@ -2915,7 +2915,7 @@ cxanalyze(cxanalyze_t *T, GEN z)
   GEN a, b;
   long ta, tb;
 
-  T->u = gen_1;
+  T->u = z;
   T->v = 0;
   if (is_intreal_t(typ(z)))
   {
@@ -2939,7 +2939,7 @@ cxanalyze(cxanalyze_t *T, GEN z)
     T->t = gsigne(a) < 0? 4: 0;
     return 1;
   }
-  if (ta != tb || ta == t_REAL) { T->u = z; return 0; }
+  if (ta != tb || ta == t_REAL) return 0;
   /* a,b both non zero, both t_INT or t_FRAC */
   if (ta == t_INT)
   {
