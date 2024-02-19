@@ -2915,6 +2915,7 @@ cxanalyze(cxanalyze_t *T, GEN z)
   GEN a, b;
   long ta, tb;
 
+  T->u = gen_1;
   T->v = 0;
   if (is_intreal_t(typ(z)))
   {
