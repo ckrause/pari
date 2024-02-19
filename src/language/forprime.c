@@ -31,7 +31,7 @@ typedef unsigned char *byteptr;
  * initprimes() below.  initprimes1() is the old algorithm, called when
  * maxnum (size) is moderate. Must be called after pari_init_stack() )*/
 static void
-initprimes1(ulong size, long *lenp, ulong *lastp, pari_prime *p1)
+initprimes1(ulong size, long *lenp, pari_prime *p1)
 {
   pari_sp av = avma;
   long k;
@@ -43,16 +43,15 @@ initprimes1(ulong size, long *lenp, ulong *lastp, pari_prime *p1)
     do { r+=k; k+=2; r+=k; } while (*++q);
     for (s=r; s<=fin; s+=k) *s = 1;
   }
-  re = p1; *re++ = 2; *re++ = 1; /* 2 and 3 */
+  re = p1; *re++ = 2; *re++ = 3; /* 2 and 3 */
   for (s=q=p+1; ; s=q)
   {
     do q++; while (*q);
     if (q > fin) break;
-    *re++ = (pari_prime) ((q-s) << 1);
+    *re++ = (pari_prime) 2*(q-p)+1;
   }
   *re++ = 0;
   *lenp = re - p1;
-  *lastp = ((s - p) << 1) + 1;
   set_avma(av);
 }
 
@@ -331,20 +330,20 @@ set_optimize(long what, GEN g)
   return ret;
 }
 
-/* s is odd; prime differences (starting from 5-3=2) start at known_primes[2],
+/* s is odd; prime (starting from 3 == known_primes[2]),
   terminated by a 0 byte. Checks n odd numbers starting at 'start', setting
   bytes starting at data to 0 (composite) or 1 (prime) */
 static void
 sieve_chunk(pari_prime *known_primes, ulong s, byteptr data, ulong n)
 {
-  ulong p, cnt = n-1, start = s, delta = 1;
+  ulong p, cnt = n-1, start = s;
   pari_prime *q;
 
   memset(data, 0, n);
   start >>= 1;  /* (start - 1)/2 */
   start += n; /* Corresponds to the end */
   /* data corresponds to start, q runs over primediffs */
-  for (q = known_primes + 1, p = 3; delta; delta = *++q, p += delta)
+  for (q = known_primes + 1, p = 3; p; p = *++q)
   { /* first odd number >= start > p and divisible by p
        = last odd number <= start + 2p - 2 and 0 (mod p)
        = p + last number <= start + p - 2 and 0 (mod 2p)
@@ -386,26 +385,26 @@ set_prodprimes(void)
 
 /* assume maxnum <= 436273289 < 2^29 */
 static void
-initprimes0(ulong maxnum, long *lenp, ulong *lastp, pari_prime *p1)
+initprimes0(ulong maxnum, long *lenp, pari_prime *p1)
 {
   pari_sp av = avma, bot = pari_mainstack->bot;
   long alloced, psize;
-  byteptr q, end, p, plast;
-  ulong last, remains, curlow, rootnum, asize;
-  ulong prime_above;
+  byteptr q, end, p;
+  ulong remains, curlow, rootnum, asize;
+  ulong prime_above, last;
   pari_prime *end1, *curdiff;
   pari_prime *p_prime_above;
 
   maxnum |= 1; /* make it odd. */
   /* base case */
-  if (maxnum < 1ul<<17) { initprimes1(maxnum>>1, lenp, lastp, p1); return; }
+  if (maxnum < 1ul<<17) { initprimes1(maxnum>>1, lenp, p1); return; }
 
   /* Checked to be enough up to 40e6, attained at 155893 */
   rootnum = usqrt(maxnum) | 1;
-  initprimes1(rootnum>>1, &psize, &last, p1);
+  initprimes1(rootnum>>1, &psize, p1);
+  last = p1[psize - 2];
   end1 = p1 + psize - 1;
   remains = (maxnum - last) >> 1; /* number of odd numbers to check */
-
   /* we access primes array of psize too; but we access it consecutively,
    * thus we do not include it in fixed_to_cache */
   asize = good_arena_size((ulong)(rootnum * slow2_in_roots), remains+1, 0,
@@ -421,38 +420,33 @@ initprimes0(ulong maxnum, long *lenp, ulong *lastp, pari_prime *p1)
   curdiff = end1;
 
   /* During each iteration p..end-1 represents a range of odd
-     numbers.  plast is a pointer which represents the last prime seen,
-     it may point before p..end-1. */
-  plast = p - 1;
+     numbers.   */
   p_prime_above = p1 + 2;
   prime_above = 3;
   while (remains)
   { /* cycle over arenas; performance not crucial */
-    unsigned char was_delta;
+    pari_prime was_delta;
     if (asize > remains) { asize = remains; end = p + asize; }
     /* Fake the upper limit appropriate for the given arena */
     while (prime_above*prime_above <= curlow + (asize << 1) && *p_prime_above)
-      prime_above += *p_prime_above++;
+      prime_above = *p_prime_above++;
     was_delta = *p_prime_above;
     *p_prime_above = 0; /* sentinel for sieve_chunk */
     sieve_chunk(p1, curlow, p, asize);
     *p_prime_above = was_delta; /* restore */
 
     p[asize] = 0; /* sentinel */
-    for (q = p; ; plast = q++)
+    for (q = p; ; q++)
     { /* q runs over addresses corresponding to primes */
       while (*q) q++; /* use sentinel at end */
       if (q >= end) break;
-      *curdiff++ = (pari_prime)(q-plast) << 1; /* < 255 for q < 436273291 */
+      *curdiff++ = (pari_prime) 2*(q-p) + curlow;
     }
-    plast -= asize;
     remains -= asize;
     curlow += (asize<<1);
   }
-  last = curlow - ((p - plast) << 1);
   *curdiff++ = 0; /* sentinel */
   *lenp = curdiff - p1;
-  *lastp = last;
   if (alloced) pari_free(p); else set_avma(av);
 }
 
@@ -473,15 +467,19 @@ maxprime_check(ulong c) { if (_maxprime < c) pari_err_MAXPRIME(c); }
  * (N.B. RHS would be incorrect since initprimes0 would make it odd, thereby
  * increasing it by 1) */
 static pari_prime*
-initprimes(ulong maxnum, long *lenp, ulong *lastp)
+initprimes(ulong maxnum, long *lenp)
 {
   pari_prime *t;
   ulong N;
   if (maxnum < 65537)
+  {
     maxnum = 65537;
-  N = (long) ceil(primepi_upper_bound((double)maxnum));
-  t = (pari_prime*) pari_malloc(sizeof(*t) * (N+1));
-  initprimes0(maxnum, lenp, lastp, t);
+    N = 6543;
+  }
+  else
+    N = (long) ceil(primepi_upper_bound((double)maxnum));
+  t = (pari_prime*) pari_malloc(sizeof(*t) * (N+2));
+  initprimes0(maxnum, lenp, t);
   _maxprimelim = maxnum;
   return (pari_prime*) pari_realloc(t, sizeof(*t) * *lenp);
 }
@@ -490,15 +488,13 @@ void
 initprimetable(ulong maxnum)
 {
   long i, len;
-  ulong last, q;
-  pari_prime *p = initprimes(maxnum, &len, &last);
+  pari_prime *p = initprimes(maxnum, &len);
   pari_prime *old = pari_PRIMES;
-  _maxprime  = minss(_maxprime,last); /*Protect against ^C*/
-  _maxprime = last;
+  _maxprime = p[len-2];
   pari_PRIMES = (pari_prime*)pari_malloc((size_t)sizeof(pari_prime) * len);
   pari_PRIMES[0] = (pari_prime)len-1;
-  pari_PRIMES[1] = q = 2;
-  for (i = 2; i < len; i++) pari_PRIMES[i] = (q += *++p);
+  pari_PRIMES[1] = 2;
+  for (i = 2; i < len; i++) pari_PRIMES[i] = *++p;
   if (old) free(old);
   set_prodprimes();
 }
