@@ -3165,7 +3165,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
       P[1] = 2; E[1] = v; i = 2;
       n >>= v; if (n == 1) goto END;
     }
-    lim = all? all-1: tridiv_boundu(n);
+    lim = minss(usqrt(n), all? all-1: tridiv_boundu(n));
     if (!(hint & 16) && lim >= 128) /* expu(lim) >= 7 */
     { /* fast trial division */
       GEN PR = prodprimes();
