@@ -402,7 +402,7 @@ initprimes0(ulong maxnum, long *lenp, pari_prime *p1)
   /* Checked to be enough up to 40e6, attained at 155893 */
   rootnum = usqrt(maxnum) | 1;
   initprimes1(rootnum>>1, &psize, p1);
-  last = p1[psize - 2];
+  last = rootnum;
   end1 = p1 + psize - 1;
   remains = (maxnum - last) >> 1; /* number of odd numbers to check */
   /* we access primes array of psize too; but we access it consecutively,
@@ -462,10 +462,6 @@ prodprimes(void) { return pari_PRIMES ? _prodprimes: NULL; }
 void
 maxprime_check(ulong c) { if (_maxprime < c) pari_err_MAXPRIME(c); }
 
-/* We ensure 65302 <= maxnum <= 436273289: the LHS ensures modular function
- * have enough fast primes to work, the RHS ensures that p_{n+1} - p_n < 255
- * (N.B. RHS would be incorrect since initprimes0 would make it odd, thereby
- * increasing it by 1) */
 static pari_prime*
 initprimes(ulong maxnum, long *lenp)
 {
@@ -479,22 +475,19 @@ initprimes(ulong maxnum, long *lenp)
   else
     N = (long) ceil(primepi_upper_bound((double)maxnum));
   t = (pari_prime*) pari_malloc(sizeof(*t) * (N+2));
-  initprimes0(maxnum, lenp, t);
+  initprimes0(maxnum, lenp, t+1);
   _maxprimelim = maxnum;
-  return (pari_prime*) pari_realloc(t, sizeof(*t) * *lenp);
+  return (pari_prime*) pari_realloc(t, sizeof(*t) * (*lenp+1));
 }
 
 void
 initprimetable(ulong maxnum)
 {
-  long i, len;
-  pari_prime *p = initprimes(maxnum, &len);
+  long len;
   pari_prime *old = pari_PRIMES;
-  _maxprime = p[len-2];
-  pari_PRIMES = (pari_prime*)pari_malloc((size_t)sizeof(pari_prime) * len);
-  pari_PRIMES[0] = (pari_prime)len-1;
-  pari_PRIMES[1] = 2;
-  for (i = 2; i < len; i++) pari_PRIMES[i] = *++p;
+  pari_PRIMES = initprimes(maxnum, &len);
+  pari_PRIMES[0] = (pari_prime)(len-1);
+  _maxprime = pari_PRIMES[len-1];
   if (old) free(old);
   set_prodprimes();
 }
