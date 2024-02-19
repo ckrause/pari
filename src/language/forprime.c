@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 /***                                                                ***/
 /**********************************************************************/
 
-static ulong _maxprime = 0;
 static ulong _maxprimelim = 0;
 static GEN _prodprimes,_prodprimes_addr;
 typedef unsigned char *byteptr;
@@ -358,8 +357,8 @@ static void
 set_prodprimes(void)
 {
   pari_sp ltop = avma, av;
-  long m = expu(_maxprime) + 1 - 7;
-  GEN W, w, v = primes_interval_zv(3, _maxprime);
+  long M = maxprime(), m = expu(M) + 1 - 7;
+  GEN W, w, v = primes_interval_zv(3, M);
   long s, j, jold, lv = lg(v), u = 1;
   ulong b = 1UL << 8;
 
@@ -371,7 +370,7 @@ set_prodprimes(void)
       w = v+jold-1; w[0] = evaltyp(t_VECSMALL) | _evallg(lw);
       gel(W,u++) = zv_prod_Z(w); /* p_jold ... p_{j-1} */
       jold = j; b *= 2;
-      if (b > _maxprime) b = _maxprime; /* truncate last run */
+      if (b > M) b = M; /* truncate last run */
     }
   m = u - 1; setlg(W, u);
   for (j = 2; j <= m; j++) gel(W,j) = mulii(gel(W,j-1), gel(W,j));
@@ -451,7 +450,7 @@ initprimes0(ulong maxnum, long *lenp, pari_prime *p1)
 }
 
 ulong
-maxprime(void) { return pari_PRIMES ? _maxprime : 0; }
+maxprime(void) { return pari_PRIMES ? pari_PRIMES[pari_PRIMES[0]]: 0; }
 ulong
 maxprimelim(void) { return pari_PRIMES ? _maxprimelim : 0; }
 ulong
@@ -460,7 +459,7 @@ GEN
 prodprimes(void) { return pari_PRIMES ? _prodprimes: NULL; }
 
 void
-maxprime_check(ulong c) { if (_maxprime < c) pari_err_MAXPRIME(c); }
+maxprime_check(ulong c) { if (maxprime() < c) pari_err_MAXPRIME(c); }
 
 static pari_prime*
 initprimes(ulong maxnum, long *lenp)
@@ -487,7 +486,6 @@ initprimetable(ulong maxnum)
   pari_prime *old = pari_PRIMES;
   pari_PRIMES = initprimes(maxnum, &len);
   pari_PRIMES[0] = (pari_prime)(len-1);
-  _maxprime = pari_PRIMES[len-1];
   if (old) free(old);
   set_prodprimes();
 }
