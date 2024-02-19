@@ -357,14 +357,13 @@ static void
 set_prodprimes(void)
 {
   pari_sp ltop = avma, av;
-  long M = maxprime(), m = expu(M) + 1 - 7;
+  ulong b = 1UL << 8, M = maxprime();
   GEN W, w, v = primes_interval_zv(3, M);
-  long s, j, jold, lv = lg(v), u = 1;
-  ulong b = 1UL << 8;
+  long s, j, jold, lv = lg(v), u = 1, m = expu(M) + 1 - 7;
 
   W = cgetg(m+1, t_VEC);
   for (jold = j = 1; j < lv; j++)
-    if ((ulong)v[j] >= b)
+    if (uel(v,j) >= b)
     {
       long lw = (j == lv-1? lv:j) - jold + 1;
       w = v+jold-1; w[0] = evaltyp(t_VECSMALL) | _evallg(lw);
