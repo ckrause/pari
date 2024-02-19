@@ -382,8 +382,6 @@ set_prodprimes(void)
   set_avma(ltop);
 }
 
-/* Assumption: max prime gap p_{n+1} - p_n < 2^9.
- * OK for maxnum < P = 304599509051; then precprime(P-1) = P - 514 */
 static void
 initprimes0(ulong maxnum, long *lenp, pari_prime *p1)
 {
