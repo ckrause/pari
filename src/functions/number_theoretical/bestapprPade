@@ -61,6 +61,5 @@ Doc: using variants of the extended Euclidean algorithm (Pad\'{e}
  The function applies recursively to components of complex objects
  (polynomials, vectors, \dots). If rational reconstruction fails for even a
  single entry, return $[]$.
-
-Variants:
+Variant:
   \fun{GEN}{bestapprPade}{GEN x, long B} as \kbd{bestapprPade0} when Q is ommited.
