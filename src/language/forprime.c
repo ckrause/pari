@@ -394,7 +394,7 @@ initprimes0(ulong maxnum, long *lenp, pari_prime *p1)
   pari_prime *end1, *curdiff;
   pari_prime *p_prime_above;
 
-  maxnum |= 1; /* make it odd. */
+  if (!odd(maxnum)) maxnum--; /* make it odd. */
   /* base case */
   if (maxnum < 1ul<<17) { initprimes1(maxnum>>1, lenp, p1); return; }
 
@@ -462,9 +462,10 @@ void
 maxprime_check(ulong c) { if (maxprime() < c) pari_err_MAXPRIME(c); }
 
 static pari_prime*
-initprimes(ulong maxnum, long *lenp)
+initprimes(ulong maxnum)
 {
   pari_prime *t;
+  long len;
   ulong N;
   if (maxnum < 65537)
   {
@@ -474,18 +475,16 @@ initprimes(ulong maxnum, long *lenp)
   else
     N = (long) ceil(primepi_upper_bound((double)maxnum));
   t = (pari_prime*) pari_malloc(sizeof(*t) * (N+2));
-  initprimes0(maxnum, lenp, t+1);
+  initprimes0(maxnum, &len, t+1); t[0] = (pari_prime)(len-1);
   _maxprimelim = maxnum;
-  return (pari_prime*) pari_realloc(t, sizeof(*t) * (*lenp+1));
+  return (pari_prime*) pari_realloc(t, sizeof(*t) * (len+1));
 }
 
 void
 initprimetable(ulong maxnum)
 {
-  long len;
   pari_prime *old = pari_PRIMES;
-  pari_PRIMES = initprimes(maxnum, &len);
-  pari_PRIMES[0] = (pari_prime)(len-1);
+  pari_PRIMES = initprimes(maxnum);
   if (old) free(old);
   set_prodprimes();
 }
