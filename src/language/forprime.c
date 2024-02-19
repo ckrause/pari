@@ -27,7 +27,7 @@ typedef unsigned char *byteptr;
 
 /* Build/Rebuild table of prime differences. The actual work is done by the
  * following two subroutines;  the user entry point is the function
- * initprimes() below.  initprimes1() is the old algorithm, called when
+ * initprimes() below; initprimes1() is the basecase, called when
  * maxnum (size) is moderate. Must be called after pari_init_stack() )*/
 static void
 initprimes1(ulong size, long *lenp, pari_prime *p1)
@@ -329,9 +329,9 @@ set_optimize(long what, GEN g)
   return ret;
 }
 
-/* s is odd; prime (starting from 3 == known_primes[2]),
-  terminated by a 0 byte. Checks n odd numbers starting at 'start', setting
-  bytes starting at data to 0 (composite) or 1 (prime) */
+/* s is odd; prime (starting from 3 = known_primes[2]), terminated by a 0 byte.
+ * Checks n odd numbers starting at 'start', setting bytes to 0 (composite)
+ * or 1 (prime), starting at data */
 static void
 sieve_chunk(pari_prime *known_primes, ulong s, byteptr data, ulong n)
 {
@@ -382,17 +382,16 @@ set_prodprimes(void)
   set_avma(ltop);
 }
 
-/* assume maxnum <= 436273289 < 2^29 */
+/* Assumption: max prime gap p_{n+1} - p_n < 2^9.
+ * OK for maxnum < P = 304599509051; then precprime(P-1) = P - 514 */
 static void
 initprimes0(ulong maxnum, long *lenp, pari_prime *p1)
 {
   pari_sp av = avma, bot = pari_mainstack->bot;
   long alloced, psize;
   byteptr q, end, p;
-  ulong remains, curlow, rootnum, asize;
-  ulong prime_above, last;
-  pari_prime *end1, *curdiff;
-  pari_prime *p_prime_above;
+  ulong remains, curlow, rootnum, asize, prime_above, last;
+  pari_prime *end1, *curdiff, *p_prime_above;
 
   if (!odd(maxnum)) maxnum--; /* make it odd. */
   /* base case */
@@ -410,10 +409,7 @@ initprimes0(ulong maxnum, long *lenp, pari_prime *p1)
                           &cache_model) - 1;
   /* enough room on the stack ? */
   alloced = (((byteptr)avma) <= ((byteptr)bot) + asize);
-  if (alloced)
-    p = (byteptr)pari_malloc(asize+1);
-  else
-    p = (byteptr)stack_malloc(asize+1);
+  p = (byteptr)(alloced? pari_malloc(asize+1): stack_malloc(asize+1));
   end = p + asize; /* the 0 sentinel goes at end. */
   curlow = last + 2; /* First candidate: know primes up to last (odd). */
   curdiff = end1;
@@ -450,14 +446,13 @@ initprimes0(ulong maxnum, long *lenp, pari_prime *p1)
 }
 
 ulong
-maxprime(void) { return pari_PRIMES ? pari_PRIMES[pari_PRIMES[0]]: 0; }
+maxprime(void) { return pari_PRIMES? pari_PRIMES[pari_PRIMES[0]]: 0; }
 ulong
-maxprimelim(void) { return pari_PRIMES ? _maxprimelim : 0; }
+maxprimelim(void) { return pari_PRIMES? _maxprimelim: 0; }
 ulong
 maxprimeN(void) { return pari_PRIMES? pari_PRIMES[0]: 0; }
 GEN
-prodprimes(void) { return pari_PRIMES ? _prodprimes: NULL; }
-
+prodprimes(void) { return pari_PRIMES? _prodprimes: NULL; }
 void
 maxprime_check(ulong c) { if (maxprime() < c) pari_err_MAXPRIME(c); }
 
