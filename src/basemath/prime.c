@@ -405,7 +405,7 @@ uisprime(ulong n)
       && _uisprime(n);
 }
 
-/* assume no prime divisor <= 101 */
+/* assume n <= maxprimelim() or no prime divisor <= 101 */
 int
 uisprime_101(ulong n)
 {
@@ -414,7 +414,7 @@ uisprime_101(ulong n)
   return _uisprime(n);
 }
 
-/* assume no prime divisor <= 661 */
+/* assume n <= maxprimelim() or no prime divisor <= 661 */
 int
 uisprime_661(ulong n)
 {

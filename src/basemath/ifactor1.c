@@ -3137,14 +3137,11 @@ u_forprime_next_fast(forprime_t *T)
   return u_forprime_next(T);
 }
 
-/* uisprime(n) knowing n has no prime divisor
- *    < all if all != 0,
- *    < tridiv_boundu(n) >= 2^14 if all = 0 */
+/* uisprime(n) knowing n has no prime divisor <= lim */
 static int
-uisprime_nosmall(ulong n, ulong all)
-{
-  return (!all || all > 661) ? uisprime_661(n): uisprime(n);
-}
+uisprime_nosmall(ulong n, ulong lim)
+{ return (lim >= 661)? uisprime_661(n): uisprime(n); }
+
 /* Factor n and output [p,e] where
  * p, e are vecsmall with n = prod{p[i]^e[i]}. If all != 0:
  * if pU1 is not NULL, set *pU1 and *pU2 so that unfactored composite is
@@ -3154,7 +3151,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
 {
   GEN f, E, E2, P, P2;
   pari_sp av;
-  ulong p;
+  ulong p, lim = 0;
   long i, oldi = -1;
   forprime_t S;
 
@@ -3169,13 +3166,14 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
   E = cgetg(16, t_VECSMALL);
   if (!all || all > 2)
   {
-    ulong lim;
+    ulong maxp = maxprime();
     long v = vals(n);
     if (v)
     {
       P[1] = 2; E[1] = v; i = 2;
       n >>= v; if (n == 1) goto END;
     }
+    if (n <= maxp && prime_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
     lim = minss(usqrt(n), all? all-1: tridiv_boundu(n));
     if (!(hint & 16) && lim >= 128) /* expu(lim) >= 7 */
     { /* fast trial division */
@@ -3194,6 +3192,8 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
           P[i] = p; i++;
         }
         if (n == 1) goto END;
+        if (n <= maxp
+            && prime_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
       }
     }
     else
@@ -3231,14 +3231,14 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
     long k = 1, ex;
     while (uissquareall(n, &n)) k <<= 1;
     while ( (ex = uis_357_power(n, &n, &mask)) ) k *= ex;
-    if (pU1 && (i == oldi || !uisprime(n)))
+    if (pU1 && (i == oldi || !uisprime_nosmall(n, lim)))
     { *pU1 = n; *pU2 = (ulong)k; }
     else
     { P[i] = n; E[i] = k; i++; }
     goto END;
   }
   /* we don't known that n is composite ? */
-  if (oldi != i && uisprime_nosmall(n,all)) { P[i]=n; E[i]=1; i++; goto END; }
+  if (oldi != i && uisprime_nosmall(n, lim)) { P[i]=n; E[i]=1; i++; goto END; }
 
   {
     GEN perm;
