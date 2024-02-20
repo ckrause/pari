@@ -890,7 +890,7 @@ GEN mfrhopol_eval(GEN Q, GEN t2);
 
 long    BPSW_psp_nosmalldiv(GEN N);
 int     MR_Jaeschke(GEN n);
-long    Z_isanypower_nosmalldiv(GEN N, GEN *px);
+long    Z_isanypower_nosmalldiv(GEN N, ulong cutoff, GEN *px);
 
 /* perm.c */
 

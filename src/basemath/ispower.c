@@ -974,9 +974,10 @@ split_exponent(ulong e, GEN *x)
   return k;
 }
 
+/* any prime divisor of x is > 102 */
 static long
-Z_isanypower_nosmalldiv(GEN *px)
-{ /* any prime divisor of x is > 102 */
+Z_isanypower_101(GEN *px)
+{
   const double LOG2_103 = 6.6865; /* lower bound for log_2(103) */
   const double LOG103 = 4.6347; /* lower bound for log(103) */
   forprime_t T;
@@ -1104,7 +1105,7 @@ Z_isanypower_aux(GEN x, GEN *pty)
     k *= split_exponent(e2, &x);
   }
   else
-    k = Z_isanypower_nosmalldiv(&x);
+    k = Z_isanypower_101(&x);
 END:
   if (pty && k != 1)
   {
@@ -1193,7 +1194,7 @@ isprimepower_i(GEN n, GEN *pt, long flag)
     }
   }
   /* p | n => p >= 103 */
-  v = Z_isanypower_nosmalldiv(&n); /* expensive */
+  v = Z_isanypower_101(&n); /* expensive */
   if (!(flag? isprime(n): BPSW_psp(n))) return gc_long(av,0);
   if (pt) *pt = gerepilecopy(av, n); else set_avma(av);
   return v;

@@ -3784,18 +3784,17 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
   if (all)
   { /* smallfact: look for easy pure powers then stop. Cf Z_isanypower */
     GEN x;
-    long k;
+    long k, e = expu(lim);
     av = avma;
-    /* may miss a power if all < 2^14 */
-    k = lim > (1<<14)? Z_isanypower_nosmalldiv(n, &x)
-                     : Z_isanypower(n, &x);
-    if (k > 1) { affii(x, n); nb0 = -1; }
+    k = e >= 10? Z_isanypower_nosmalldiv(n, e, &x)
+               : Z_isanypower(n, &x);
+    if (k > 1) { affii(x, n); nb0 = -1; } else if (k < 1) k = 1;
     if (pU)
     {
       GEN F;
       if (abscmpiu(n, lim) <= 0
           || cmpii(n, sqru(lim)) <= 0
-          || (all >= (1<<14)
+          || (lim >= (1<<14)
               && (nb>nb0 && bit_accuracy(lgefint(n))<2048 && ifac_isprime(n))))
       { set_avma(av); STOREi(&nb, n, k); return aux_end(M,n, nb); }
       set_avma(av); F = aux_end(M, NULL, nb); /* don't destroy n */
