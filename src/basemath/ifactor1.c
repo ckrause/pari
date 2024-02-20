@@ -3072,17 +3072,25 @@ tridiv_bound(GEN n)
   return 1UL<<19; /* Rho is generally faster above this */
 }
 
-/* return a value <= (48 << 10) = 49152 < primelinit */
+/* Unfortunately various functions assume it is at least 1UL<<14 */
+
 ulong
 tridiv_boundu(ulong n)
 {
 #ifdef LONG_IS_64BIT
-  if (n & HIGHMASK)
-    return ((ulong)expu(n) + 1 - 16) << 10;
+  long e = expu(n);
+  if(e<35) return 1UL<<14;
+  if(e<40) return 1UL<<15;
+  if(e<46) return 1UL<<16;
+  if(e<50) return 1UL<<17;
+  if(e<56) return 1UL<<18;
+  if(e<62) return 1UL<<19;
+  if(e<63) return 1UL<<18;
+  return 1UL<<17;
 #else
   (void)n;
-#endif
   return 1UL<<14;
+#endif
 }
 
 /* destroys n */
