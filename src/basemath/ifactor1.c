@@ -3786,7 +3786,9 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
     GEN x;
     long k;
     av = avma;
-    k = isanypower_nosmalldiv(n, &x); /* may miss a power if all < 2^14 */
+    /* may miss a power if all < 2^14 */
+    k = lim > (1<<14)? Z_isanypower_nosmalldiv(n, &x)
+                     : Z_isanypower(n, &x);
     if (k > 1) { affii(x, n); nb0 = -1; }
     if (pU)
     {

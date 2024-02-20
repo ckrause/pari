@@ -456,7 +456,7 @@ BPSW_psp(GEN N)
 /* can we write n = x^k ? Assume N has no prime divisor <= 2^14, else may
  * miss som powers. Not memory clean */
 long
-isanypower_nosmalldiv(GEN N, GEN *px)
+Z_isanypower_nosmalldiv(GEN N, GEN *px)
 {
   GEN x = N, y;
   ulong mask = 7;
@@ -481,7 +481,7 @@ BPSW_psp_nosmalldiv(GEN N)
   av = avma;
   /* N large: test for pure power, rarely succeeds, but requires < 1% of
    * compositeness test times */
-  if (bit_accuracy(l) > 512 && isanypower_nosmalldiv(N,&N) != 1)
+  if (bit_accuracy(l) > 512 && Z_isanypower_nosmalldiv(N,&N) != 1)
     return gc_long(av,0);
   N = absi_shallow(N);
   return gc_long(av, is2psp(N) && islucaspsp(N));
