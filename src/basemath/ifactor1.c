@@ -3062,16 +3062,6 @@ ifac_core(GEN n)
   }
 }
 
-/* Where to stop trial dividing in factorization. Guaranteed >= 2^14 */
-ulong
-tridiv_bound(GEN n)
-{
-  ulong l = (ulong)expi(n) + 1;
-  if (l <= 32)  return 1UL<<14;
-  if (l <= 512) return (l-16) << 10;
-  return 1UL<<19; /* Rho is generally faster above this */
-}
-
 /* Unfortunately various functions assume it is at least 1UL<<14 */
 
 ulong
@@ -3091,6 +3081,19 @@ tridiv_boundu(ulong n)
   (void)n;
   return 1UL<<14;
 #endif
+}
+
+/* Where to stop trial dividing in factorization. Guaranteed >= 2^14 */
+ulong
+tridiv_bound(GEN n)
+{
+  if (lgefint(n)==3) return tridiv_boundu(n[2]);
+  else
+  {
+    ulong l = (ulong)expi(n) + 1;
+    if (l <= 512) return (l-16) << 10;
+    return 1UL<<19; /* Rho is generally faster above this */
+  }
 }
 
 /* destroys n */
