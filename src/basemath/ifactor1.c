@@ -1457,7 +1457,7 @@ squfof(GEN n)
   int act1 = 1, act2 = 1;
 
 #ifdef LONG_IS_64BIT
-  if (tf > 3 || (tf == 3 && uel(n,2)             >= (1UL << (BITS_IN_LONG-5))))
+  if (tf > 3 || (tf == 3 && uel(n,2)             >= (1UL << 46)))
 #else  /* 32 bits */
   if (tf > 4 || (tf == 4 && (ulong)(*int_MSW(n)) >= (1UL << (BITS_IN_LONG-5))))
 #endif
