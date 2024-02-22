@@ -215,8 +215,7 @@ precprime(GEN n)
 }
 
 /* Find next single-word prime strictly larger than p.
- * If *n != 0, p is *n-th primethis is p + *(*d)++;
- * otherwise imitate nextprime().
+ * If *n < pari_PRIMES[0], p is *n-th prime, otherwise imitate nextprime().
  * *rcn = NPRC or the correct residue class for the current p; we'll use this
  * to track the current prime residue class mod 210 once we're out of range of
  * the prime table, and we'll update it before that if it isn't NPRC.
@@ -226,7 +225,7 @@ precprime(GEN n)
 static ulong
 snextpr(ulong p, long *n, long *rcn, long *q, int (*ispsp)(ulong))
 {
-  if (*n)
+  if (*n < pari_PRIMES[0])
   {
     ulong t, p1 = t = pari_PRIMES[++*n]; /* nextprime(p + 1) */
     if (*rcn != NPRC)
