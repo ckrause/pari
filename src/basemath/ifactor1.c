@@ -2744,7 +2744,7 @@ ifac_crack(GEN *partial, GEN *where, long moebius_mode)
       update_pow(*where, factor, exp, &av);
       if (moebius_mode) return 0; /* no need to carry on */
     }
-    /* cutoff at 14 bits: OK if tridiv_bound >= 2^14 OR if >= 691 for
+    /* cutoff at 14 bits: OK if tridiv_bound >= 2^14 OR if >= 661 for
      * an integer < 701^11 (103 bits). */
     while ( (exp = is_pth_power(VALUE(*where), &factor, &T, 15)) )
     {
@@ -3063,8 +3063,7 @@ ifac_core(GEN n)
   }
 }
 
-/* Unfortunately various functions assume it is at least 1UL<<14 */
-
+/* must be >= 661 (various functions assume it) */
 ulong
 tridiv_boundu(ulong n)
 {
@@ -3084,7 +3083,8 @@ tridiv_boundu(ulong n)
 #endif
 }
 
-/* Where to stop trial dividing in factorization. Guaranteed >= 2^14 */
+/* Where to stop trial dividing in factorization. Must be >= 661.
+ * If further n > 2^512, must be >= 2^14 */
 ulong
 tridiv_bound(GEN n)
 {
