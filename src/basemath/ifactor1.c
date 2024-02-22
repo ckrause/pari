@@ -3063,7 +3063,8 @@ ifac_core(GEN n)
   }
 }
 
-/* must be >= 661 (various functions assume it) */
+/* must be >= 661 (various functions assume it in order to call uisprime_661
+ * instead of uisprime, and Z_isanypower_nosmalldiv instead of Z_isanypower) */
 ulong
 tridiv_boundu(ulong n)
 {
@@ -3795,8 +3796,8 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
       GEN F;
       if (abscmpiu(n, lim) <= 0
           || cmpii(n, sqru(lim)) <= 0
-          || (lim >= (1<<14)
-              && (nb>nb0 && bit_accuracy(lgefint(n))<2048 && ifac_isprime(n))))
+          || ((e >= 14) &&
+              (nb>nb0 && bit_accuracy(lgefint(n))<2048 && ifac_isprime(n))))
       { set_avma(av); STOREi(&nb, n, k); return aux_end(M,n, nb); }
       set_avma(av); F = aux_end(M, NULL, nb); /* don't destroy n */
       *pU = mkvec2(icopy(n), utoipos(k)); /* composite cofactor */
