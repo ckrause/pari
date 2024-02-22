@@ -2455,9 +2455,9 @@ ifac_resort(GEN *partial, GEN *where)
   ifac_defrag(partial, where); /* remove newly created gaps */
 }
 
-/* Let x be a t_INT known not to have small divisors (< 2^14). Return 0 if x
- * is a proven composite. Return 1 if we believe it to be prime (fully proven
- * prime if factor_proven is set).  */
+/* Let x be a t_INT known not to have small divisors (< 661, and < 2^14 for huge
+ * x > 2^512). Return 0 if x is a proven composite. Return 1 if we believe it
+ * to be prime (fully proven prime if factor_proven is set).  */
 int
 ifac_isprime(GEN x)
 {
@@ -2744,7 +2744,8 @@ ifac_crack(GEN *partial, GEN *where, long moebius_mode)
       update_pow(*where, factor, exp, &av);
       if (moebius_mode) return 0; /* no need to carry on */
     }
-    /* cutoff at 14 bits as trial division must have found everything below */
+    /* cutoff at 14 bits: OK if tridiv_bound >= 2^14 OR if >= 691 for
+     * an integer < 701^11 (103 bits). */
     while ( (exp = is_pth_power(VALUE(*where), &factor, &T, 15)) )
     {
       good = 1; /* remember we succeeded once */
