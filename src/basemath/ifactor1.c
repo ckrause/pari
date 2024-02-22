@@ -263,7 +263,7 @@ int factor_add_primes = 0, factor_proven = 0;
 /**                 FACTORIZATION (ECM) -- GN Jul-Aug 1998            **/
 /**   Integer factorization using the elliptic curves method (ECM).   **/
 /**   ellfacteur() returns a non trivial factor of N, assuming N>0,   **/
-/**   is composite, and has no prime divisor below 2^14 or so.        **/
+/**   is composite, and has no prime divisor below tridiv_bound(N)    **/
 /**   Thanks to Paul Zimmermann for much helpful advice and to        **/
 /**   Guillaume Hanrot and Igor Schein for intensive testing          **/
 /**                                                                   **/
@@ -3685,7 +3685,7 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
    * we know that n is composite */
   lim = 1;
   if (!all || all > 2)
-  { /* trial divide p < all if all != 0, else p <= tridiv_bound() >= 2^14 */
+  { /* trial divide p < all if all != 0, else p <= tridiv_bound() */
     ulong maxp, p;
     pari_sp av2;
     i = vali(n);
