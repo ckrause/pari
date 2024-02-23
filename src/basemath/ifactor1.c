@@ -1328,12 +1328,8 @@ pollardbrent(GEN n)
   if (size <= 28)
     c0 = 32;/* amounts very nearly to 'insist'. Now that we have squfof(), we
              * don't insist any more when input is 2^29 ... 2^32 */
-  else if (size <= 42)
-    c0 = tune_pb_min;
-  else if (size <= 59) /* match squfof() cutoff point */
-    c0 = tune_pb_min + ((size - 42)<<1);
-  else if (size <= 72)
-    c0 = tune_pb_min + size - 24;
+  else if (size <= 96)
+    return NULL;
   else if (size <= 301)
     /* nonlinear increase in effort, kicking in around 80 bits */
     /* 301 gives 48121 + tune_pb_min */
