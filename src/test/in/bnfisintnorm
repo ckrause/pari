@@ -13,3 +13,15 @@ for(i=1,1000, do(i-500))
 /* regression tests: */
 bnfisintnorm(bnfinit(x^3+5), 5)
 bnfisintnorm(bnfinit('y^2+93),54647)
+
+bnf = bnfinit('y^2-1466,1);
+bnfisintnorm(bnf, 10, 1)
+bnfisintnorm(bnf, -10, 1)
+
+bnf = bnfinit('y^2-100129,1);
+bnfisintnorm(bnf,-6,1)
+
+bnf = bnfinit('x^2-2305843005992468481,1);
+v=bnfisintnorm(bnf,2305843008139952128,1);
+#v
+

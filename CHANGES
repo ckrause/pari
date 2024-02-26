@@ -29,6 +29,7 @@ BA   8- [libpari] callback cb_pari_display_hist (used by gp_embedded)
         init_primepointer_geq, init_primepointer_gt, init_primepointer_leq,
         init_primepointer_lt NEXT_PRIME_VIADIFF, PREC_PRIME_VIADIFF,
         NEXT_PRIME_VIADIFF_CHECK.
+    10- bnfisintnorm: add flag to return solution in factored form
 
   Added
 BA   1- GP function mapapply

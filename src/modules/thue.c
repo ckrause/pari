@@ -1184,7 +1184,7 @@ filter_sol_Z(GEN S)
   setlg(S, k); return S;
 }
 
-static GEN bnfisintnorm_i(GEN bnf, GEN a, long s, GEN z);
+static GEN bnfisintnorm_i(GEN bnf, GEN a, long s, GEN z, long flag);
 static GEN
 tnf_get_Ind(GEN tnf) { return gmael(tnf,7,7); }
 static GEN
@@ -1201,7 +1201,7 @@ static GEN
 get_ne(GEN bnf, GEN a, GEN fa, GEN Ind)
 {
   if (DEBUGLEVEL) maybe_warn(bnf,a,Ind);
-  return bnfisintnorm_i(bnf, a, signe(a), bnfisintnormabs(bnf, mkvec2(a, fa)));
+  return bnfisintnorm_i(bnf, a, signe(a), bnfisintnormabs(bnf, mkvec2(a,fa)), 0);
 }
 /* return solutions of |Norm(x)| = |a| mod U(K) */
 static GEN
@@ -1351,11 +1351,11 @@ thue(GEN tnf, GEN rhs, GEN ne)
     tnf = gel(tnf,2);
     bnf = tnf_get_bnf(tnf);
     ne = get_neabs(bnf, rhs, lg(tnf)==8?tnf_get_Ind(tnf): gen_1);
-    ne1= bnfisintnorm_i(bnf,rhs,1,ne);
+    ne1= bnfisintnorm_i(bnf,rhs,1,ne,0);
     S = thue(tnf, rhs, ne1);
     if (!odd(e) && lg(tnf)==8) /* if s=0, norms are positive */
     {
-      ne2 = bnfisintnorm_i(bnf,rhs,-1,ne);
+      ne2 = bnfisintnorm_i(bnf,rhs,-1,ne,0);
       S = shallowconcat(S, thue(tnf, negi(rhs), ne2));
     }
   }
@@ -1582,27 +1582,37 @@ get_sol_abs(struct sol_abs *T, GEN bnf, GEN nf, GEN fact, GEN *ptPR)
   isintnorm_loop(T, 0); return 1;
 }
 
-/* Look for unit of norm -1. Return 1 if it exists and set *unit, 0 otherwise */
-static long
-get_unit_1(GEN bnf, GEN *unit)
+/* Return unit of norm -1 (NULL if it doesn't exit). */
+static GEN
+get_unit_1(GEN bnf, long flag)
 {
-  GEN v, nf = bnf_get_nf(bnf);
-  long i, n = nf_get_degree(nf);
+  GEN v;
+  long i;
 
   if (DEBUGLEVEL > 2) err_printf("looking for a fundamental unit of norm -1\n");
-  if (odd(n)) { *unit = gen_m1; return 1; }
+  if (odd(nf_get_degree(bnf_get_nf(bnf)))) return gen_m1;
   v = nfsign_fu(bnf, NULL);
   for (i = 1; i < lg(v); i++)
-    if ( Flv_sum( gel(v,i), 2) ) { *unit = gel(bnf_get_fu(bnf), i); return 1; }
-  return 0;
+    if (Flv_sum( gel(v,i), 2))
+    {
+      GEN fu = NULL;
+      if (flag)
+      {
+        fu = bnf_build_cheapfu(bnf);
+        if (!fu) fu = bnf_compactfu(bnf);
+      }
+      if (!fu) fu = bnf_get_fu(bnf);
+      return gel(fu, i);
+    }
+  return NULL;
 }
 
 GEN
-bnfisintnormabs(GEN bnf, GEN a)
+bnfisintnormabs0(GEN bnf, GEN a, long flag)
 {
   struct sol_abs T;
   GEN nf, res, PR, F;
-  long i;
+  long i, fl = nf_FORCE | nf_GEN_IF_PRINCIPAL | (flag ? nf_GENMAT: 0);
 
   if ((F = check_arith_all(a,"bnfisintnormabs")))
   {
@@ -1619,11 +1629,15 @@ bnfisintnormabs(GEN bnf, GEN a)
   for (i=1; i<=T.sindex; i++)
   {
     GEN x = vecsmall_to_col( gel(T.normsol,i) );
-    x = isprincipalfact(bnf, NULL, PR, x, nf_FORCE | nf_GEN_IF_PRINCIPAL);
-    gel(res,i) = nf_to_scalar_or_alg(nf, x); /* x solution, up to sign */
+    x = isprincipalfact(bnf, NULL, PR, x, fl);
+    if (!flag) x = nf_to_scalar_or_alg(nf, x);
+    gel(res,i) = x; /* solution, up to sign */
   }
   return res;
 }
+GEN
+bnfisintnormabs(GEN bnf, GEN a)
+{ return bnfisintnormabs0(bnf, a, 0); }
 
 /* true nf */
 GEN
@@ -1647,19 +1661,35 @@ ideals_by_norm(GEN nf, GEN a)
   return res;
 }
 
-/* true bnf; z = bnfisintnormabs(bnf,a), sa = 1 or -1,
- * return bnfisintnorm(bnf,sa*|a|) */
-static GEN
-bnfisintnorm_i(GEN bnf, GEN a, long sa, GEN z)
+/* largest prime used in factorbase */
+static ulong
+bnf_get_lastp(GEN bnf)
 {
-  GEN nf = bnf_get_nf(bnf), T = nf_get_pol(nf), f = nf_get_index(nf), unit=NULL;
+  GEN vbase = gel(bnf,5);
+  long l = lg(vbase), i;
+  ulong P = 0;
+  for (i = 1; i < l; i++)
+  {
+    GEN pr = gel(vbase,i);
+    ulong p = itou(pr_get_p(pr));
+    if (p > P) P = p;
+  }
+  return P;
+}
+
+/* true bnf; z = bnfisintnormabs0(bnf,a,flag), sa = 1 or -1,
+ * return bnfisintnorm0(bnf,sa*|a|,flag). If flag is set, allow returning
+ * elements in factored form */
+static GEN
+bnfisintnorm_i(GEN bnf, GEN a, long sa, GEN z, long flag)
+{
+  GEN nf = bnf_get_nf(bnf), T = nf_get_pol(nf), f = nf_get_index(nf), unit = gen_0;
   GEN Tp, A = signe(a) == sa? a: negi(a);
   long sNx, i, j, N = degpol(T), l = lg(z);
-  long norm_1 = 0; /* gcc -Wall */
   ulong p, Ap = 0; /* gcc -Wall */
   forprime_t S;
   if (!signe(a)) return z;
-  u_forprime_init(&S,3,ULONG_MAX);
+  u_forprime_init(&S, flag? bnf_get_lastp(bnf): 3, ULONG_MAX);
   while((p = u_forprime_next(&S)))
     if (umodiu(f,p)) { Ap = umodiu(A,p); if (Ap) break; }
   Tp = ZX_to_Flx(T,p);
@@ -1670,28 +1700,48 @@ bnfisintnorm_i(GEN bnf, GEN a, long sa, GEN z)
   for (i = j = 1; i < l; i++)
   {
     GEN x = gel(z,i);
-    int xpol = (typ(x) == t_POL);
+    long tx = typ(x);
 
-    if (xpol)
+    switch(tx)
     {
-      GEN dx, y = Q_remove_denom(x,&dx);
-      ulong Np = Flx_resultant(Tp, ZX_to_Flx(y,p), p);
-      ulong dA = dx? Fl_mul(Ap, Fl_powu(umodiu(dx,p), N, p), p): Ap;
-      /* Nx = Res(T,y) / dx^N = A or -A. Check mod p */
-      sNx = dA == Np? sa: -sa;
+      case t_POL:
+      {
+        GEN dx, y = Q_remove_denom(x,&dx);
+        ulong Np = Flx_resultant(Tp, ZX_to_Flx(y,p), p);
+        ulong dA = dx? Fl_mul(Ap, Fl_powu(umodiu(dx,p), N, p), p): Ap;
+        /* Nx = Res(T,y) / dx^N = A or -A. Check mod p */
+        sNx = dA == Np? sa: -sa; break;
+      }
+      case t_MAT:
+      {
+        GEN G = gel(x,1), E = gel(x,2);
+        long k, lG = lg(G);
+        GEN g = cgetg(lG, t_VECSMALL), e = cgetg(lG, t_VECSMALL);
+        ulong Np;
+        for (k = 1; k < lG; k++)
+        {
+          g[k] = umodiu(nfnorm(nf, gel(G,k)), p);
+          e[k] = umodiu(gel(E,k), p-1);
+        }
+        Np = Flv_factorback(g, e, p);
+        sNx = Np == Ap? sa: -sa; break;
+      }
+      default: sNx = gsigne(x) < 0 && odd(N) ? -1 : 1;
     }
-    else
-      sNx = gsigne(x) < 0 && odd(N) ? -1 : 1;
     if (sNx != sa)
     {
-      if (! unit) norm_1 = get_unit_1(bnf, &unit);
-      if (!norm_1)
+      if (unit == gen_0) unit = get_unit_1(bnf, flag);
+      if (!unit)
       {
         if (DEBUGLEVEL > 2) err_printf("%Ps eliminated because of sign\n",x);
         continue;
       }
-      if (xpol) x = (unit == gen_m1)? RgX_neg(x): RgXQ_mul(unit,x,T);
-      else      x = (unit == gen_m1)? gneg(x): RgX_Rg_mul(unit,x);
+      switch(tx)
+      {
+        case t_POL: x = (unit == gen_m1)? RgX_neg(x): RgXQ_mul(unit,x,T); break;
+        case t_MAT: x = famat_mul(x, unit); break;
+        default: x = (unit == gen_m1)? gneg(x): RgX_Rg_mul(unit,x); break;
+      }
     }
     gel(z,j++) = x;
   }
@@ -1699,15 +1749,19 @@ bnfisintnorm_i(GEN bnf, GEN a, long sa, GEN z)
 }
 GEN
 bnfisintnorm(GEN bnf, GEN a)
+{ return bnfisintnorm0(bnf, a, 0); }
+GEN
+bnfisintnorm0(GEN bnf, GEN a, long flag)
 {
   pari_sp av = avma;
   GEN ne;
   bnf = checkbnf(bnf);
-  ne = bnfisintnormabs(bnf,a);
+  if (flag < 0 || flag > 1) pari_err_FLAG("bnfisintnorm");
+  ne = bnfisintnormabs0(bnf, a, flag);
   switch(typ(a))
   {
     case t_VEC: a = gel(a,1); break;
     case t_MAT: a = factorback(a); break;
   }
-  return gerepilecopy(av, bnfisintnorm_i(bnf, a, signe(a), ne));
+  return gerepilecopy(av, bnfisintnorm_i(bnf, a, signe(a), ne, flag));
 }
