@@ -2461,6 +2461,14 @@ Fincke_Pohst_bound(double T, GEN r)
   return gc_double(av, rtodbl(B));
 }
 
+static void
+fact_update(GEN R, FB_t *F, long ipr, GEN c)
+{
+  GEN pr = gel(F->LP,ipr), p = pr_get_p(pr);
+  long v = Z_lval(c, itou(p));
+  if (v) R[ipr] -= pr_get_e(pr) * v;
+}
+
 INLINE long
 Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
     GEN NI, FACT *fact, long Nrelid, FP_t *fp, RNDREL_t *rr, long prec,
@@ -2468,7 +2476,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
 {
   pari_sp av;
   const long N = nf_get_degree(nf), R1 = nf_get_r1(nf);
-  GEN G = nf_get_G(nf), G0 = nf_get_roundG(nf), r, u, gx, inc, ideal;
+  GEN G = nf_get_G(nf), G0 = nf_get_roundG(nf), r, u, gx, cgx, inc, ideal;
   double BOUND, B1, B2;
   long j, k, skipfirst, relid=0, try_factor=0;
 
@@ -2562,6 +2570,26 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
 
     /* smooth element */
     R = set_fact(F, fact, rr ? rr->ex : NULL, &nz);
+    cgx = Z_content(gx);
+    if (cgx)
+    { /* relatively rare, compute relation attached to gx/cgx */
+      long i, n = fact[0].pr;
+      gx = Q_div_to_int(gx, cgx);
+      for (i = 1; i <= n; i++) fact_update(R, F, fact[i].pr, cgx);
+      if (rr)
+      {
+        GEN e = rr->ex;
+        long l = lg(e);
+        for (i = 1; i < l; i++)
+          if (e[i])
+          {
+            long t, ipr = F->subFB[i];
+            for (t = 1; t <= n; t++)
+              if (fact[t].pr == ipr) break;
+            if (t > n) fact_update(R, F, ipr, cgx);
+          }
+      }
+    }
     /* make sure we get maximal rank first, then allow all relations */
     if (add_rel(cache, F, R, nz, gx, rr ? 1 : 0) <= 0)
     { /* probably Q-dependent from previous ones: forget it */

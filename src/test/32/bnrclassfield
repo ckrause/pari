@@ -4,9 +4,9 @@
 2
 [x^2 - 5, x^2 + 3]
 3
-[x^4 - y*x^2 - 3]
+[x^4 + (y - 1)*x^2 - 3]
 4
-[x^2 + 3, x^3 + 3*x - 5]
+[x^2 + 3, x^3 + 3*x + 5]
 5
 1
 6
@@ -298,4 +298,4 @@ bad inputs
   ***   at top-level: bnrclassfield(bnfinit(x))
   ***                 ^-------------------------
   *** bnrclassfield: incorrect priority in bnrclassfield: variable x = x
-Total time spent: 6094
+Total time spent: 4906
