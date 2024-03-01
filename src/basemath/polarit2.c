@@ -3135,6 +3135,13 @@ RgX_resultant_all(GEN P, GEN Q, GEN *sol)
     if (sig == -1) s = gerepileupto(av, gneg(s));
     return s;
   }
+  if (dQ == 1)
+  {
+    if (sol) *sol = Q;
+    s = RgX_homogenous_evalpow(P, gel(Q,2), gpowers(gneg(gel(Q,3)), dP));
+    if (sig==-1) s = gneg(s);
+    return gc_all(av, sol ? 2: 1, &s, sol);
+  }
   /* primitive_part is also possible here, but possibly very costly,
    * and hardly ever worth it */
   P = Q_primitive_part(P, &cP);
