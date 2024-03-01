@@ -2603,7 +2603,7 @@ idealred0(GEN nf, GEN I, GEN vdir)
   }
   /* now I integral, HNF; and J = (I\cap Z) I^(-1), integral */
   y = idealpseudomin(J, G); /* small elt in (I\cap Z)I^(-1), integral */
-  if (equalii(ZV_content(y), IZ))
+  if (ZV_isscalar(y))
   { /* already reduced */
     if (!aI) return gerepilecopy(av, I);
     goto END;
