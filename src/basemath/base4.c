@@ -2635,7 +2635,7 @@ idealred0(GEN nf, GEN I, GEN vdir)
   {
     GEN nyi = Q_muli_to_int(yi, dyi);
     if (gexpo(nyi) >= gexpo(y))
-      aI = famat_div(aI, y); /* yi "larger" than y, keep the former */
+      aI = famat_div(aI, y); /* yi "larger" than y, keep the latter */
     else
     { /* use yi */
       aI = famat_mul(aI, nyi);
