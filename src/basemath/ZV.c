@@ -1400,18 +1400,38 @@ _mulii(void *E, GEN a, GEN b)
 GEN
 zv_prod_Z(GEN v)
 {
-  pari_sp av = avma;
+  pari_sp av;
   long k, m, n = lg(v)-1;
+  int stop = 0;
   GEN V;
   switch(n) {
     case 0: return gen_1;
     case 1: return utoi(v[1]);
     case 2: return muluu(v[1], v[2]);
   }
-  m = n >> 1;
+  av = avma; m = n >> 1;
   V = cgetg(m + (odd(n)? 2: 1), t_VEC);
+  for (k = n; k; k--) /* start from the end: v is usually sorted */
+    if (v[k] & HIGHMASK) { stop = 1; break; }
+  while (!stop)
+  { /* HACK: handle V as a t_VECSMALL; gain a few iterations */
+    for (k = 1; k <= m; k++)
+    {
+      V[k] = uel(v,k<<1) * uel(v,(k<<1)-1);
+      if (V[k] & HIGHMASK) stop = 1; /* last "free" iteration */
+    }
+    if (odd(n))
+    {
+      if (n == 1) { set_avma(av); return utoi(v[1]); }
+      V[++m] = v[n];
+    }
+    v = V; n = m; m = n >> 1;
+  }
+  /* n > 1; m > 0 */
+  if (n == 2) { set_avma(av); return muluu(v[1], v[2]); }
   for (k = 1; k <= m; k++) gel(V,k) = muluu(v[k<<1], v[(k<<1)-1]);
-  if (odd(n)) gel(V,k) = utoipos(v[n]);
+  if (odd(n)) gel(V, ++m) = utoipos(v[n]);
+  setlg(V, m+1); /* HACK: now V is a bona fide t_VEC */
   return gerepileuptoint(av, gen_product(V, NULL, &_mulii));
 }
 GEN
