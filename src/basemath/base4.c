@@ -1149,6 +1149,20 @@ famat_div_shallow(GEN f, GEN g)
 { return famat_mul_shallow(f, famat_inv_shallow(g)); }
 
 GEN
+Z_to_famat(GEN x)
+{
+  long k;
+  if (equali1(x)) return trivial_fact();
+  k = Z_isanypower(x, &x) ;
+  return to_famat_shallow(x, k? utoi(k): gen_1);
+}
+GEN
+Q_to_famat(GEN x)
+{
+  if (typ(x) == t_INT) return Z_to_famat(x);
+  return famat_div(Z_to_famat(gel(x,1)), Z_to_famat(gel(x,2)));
+}
+GEN
 to_famat(GEN x, GEN y) { retmkmat2(mkcolcopy(x), mkcolcopy(y)); }
 GEN
 to_famat_shallow(GEN x, GEN y) { return mkmat2(mkcol(x), mkcol(y)); }
@@ -2617,7 +2631,10 @@ idealred0(GEN nf, GEN I, GEN vdir)
   I = hnfmodid(I, Q_denom(yi)); /* denom(yi) generates (y) \cap Z */
   if (!aI) return gerepileupto(av, I);
   if (typ(aI) == t_MAT) /* yi is not integral and usually larger than y */
+  {
     aI = famat_div(aI, y);
+    if (c1) { aI = famat_mul(aI, Q_to_famat(c1)); c1 = NULL; }
+  }
   else
     c1 = c1? RgC_Rg_mul(yi, c1): yi;
 END:

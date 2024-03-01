@@ -2551,6 +2551,7 @@ GEN     zkmultable_inv(GEN mx);
 /* base4.c */
 
 ulong   Fl_invgen(ulong x, ulong p, ulong *pg);
+GEN     Q_to_famat(GEN x);
 GEN     RM_round_maxrank(GEN G);
 GEN     ZM_famat_limit(GEN fa, GEN limit);
 GEN     ZV_cba(GEN v);
@@ -2559,6 +2560,7 @@ GEN     Z_cba(GEN a, GEN b);
 GEN     Z_ppgle(GEN a, GEN b);
 GEN     Z_ppio(GEN a, GEN b);
 GEN     Z_ppo(GEN x, GEN f);
+GEN     Z_to_famat(GEN x);
 GEN     famatV_factorback(GEN v, GEN e);
 GEN     famatV_zv_factorback(GEN v, GEN e);
 GEN     famat_Z_gcd(GEN M, GEN n);

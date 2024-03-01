@@ -1807,7 +1807,7 @@ isprincipalall(GEN bnf, GEN x, long *pprec, long flag)
   if (lg(x) == 2)
   { /* nf = Q */
     col = gel(x,1);
-    if (flag & nf_GENMAT) col = to_famat_shallow(col, gen_1);
+    if (flag & nf_GENMAT) col = Q_to_famat(gel(col,1));
     return (flag & nf_GEN_IF_PRINCIPAL)? col: mkvec2(cgetg(1,t_COL), col);
   }
 
@@ -1819,7 +1819,7 @@ isprincipalall(GEN bnf, GEN x, long *pprec, long flag)
     if (flag & nf_GEN_IF_PRINCIPAL)
       return scalarcol_shallow(xc? xc: gen_1, nf_get_degree(nf));
     if (flag & nf_GENMAT)
-      col = xc? to_famat_shallow(xc, gen_1): trivial_fact();
+      col = xc? Q_to_famat(xc): trivial_fact();
     else
       col = scalarcol_shallow(xc? xc: gen_1, nf_get_degree(nf));
     return mkvec2(R, col);
@@ -1887,10 +1887,23 @@ isprincipalall(GEN bnf, GEN x, long *pprec, long flag)
   }
   if (col)
   { /* add back missing content */
-    if (xc) col = (typ(col)==t_MAT)? famat_mul_shallow(col,xc)
-                                   : RgC_Rg_mul(col,xc);
-    if (typ(col) != t_MAT && lg(col) != 1 && (flag & nf_GENMAT))
-      col = to_famat_shallow(col, gen_1);
+    if (typ(col) == t_MAT)
+    { if (xc) col = famat_mul_shallow(col, xc); }
+    else if (flag & nf_GENMAT)
+    {
+      GEN c;
+      if (RgV_isscalar(col))
+        col = Q_to_famat(mul_content(xc, gel(col,1)));
+      else
+      {
+        col = Q_primitive_part(col, &c);
+        col = to_famat_shallow(col, gen_1);
+        xc = mul_content(xc, c);
+        if (xc) col = famat_mul(col, Q_to_famat(xc));
+      }
+    }
+    else
+    { if (xc) col = RgC_Rg_mul(col,xc); }
   }
   else
   {
