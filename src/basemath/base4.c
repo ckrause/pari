@@ -2580,7 +2580,7 @@ GEN
 idealred0(GEN nf, GEN I, GEN vdir)
 {
   pari_sp av = avma;
-  GEN G, aI, IZ, J, y, my, yi, c1 = NULL;
+  GEN G, aI, IZ, J, y, my, dyi, yi, c1 = NULL;
   long N;
 
   nf = checknf(nf);
@@ -2628,11 +2628,19 @@ idealred0(GEN nf, GEN I, GEN vdir)
   c1 = mul_content(c1, IZ);
   if (equali1(c1)) c1 = NULL; /* can be simplified with IZ */
   yi = ZM_gauss(my, col_ei(N,1)); /* y^-1 */
-  I = hnfmodid(I, Q_denom(yi)); /* denom(yi) generates (y) \cap Z */
+  dyi = Q_denom(yi); /* generates (y) \cap Z */
+  I = hnfmodid(I, dyi);
   if (!aI) return gerepileupto(av, I);
-  if (typ(aI) == t_MAT) /* yi is not integral and usually larger than y */
+  if (typ(aI) == t_MAT)
   {
-    aI = famat_div(aI, y);
+    GEN nyi = Q_muli_to_int(yi, dyi);
+    if (gexpo(nyi) >= gexpo(y))
+      aI = famat_div(aI, y); /* yi "larger" than y, keep the former */
+    else
+    { /* use yi */
+      aI = famat_mul(aI, nyi);
+      c1 = div_content(c1, dyi);
+    }
     if (c1) { aI = famat_mul(aI, Q_to_famat(c1)); c1 = NULL; }
   }
   else
