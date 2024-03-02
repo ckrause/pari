@@ -2531,7 +2531,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I, GEN NI,
     if (ZV_isscalar(gx)) continue;
     if (++try_factor > maxtry_FACT) break;
 
-    if (Nsmall) (*Nsmall)++;
+    if (DEBUGLEVEL && Nsmall) (*Nsmall)++;
     if (!factorgen(F,nf,I,NI,gx,fact)) continue;
     if (!Nrelid) return 1;
     if (jid == jid0)
@@ -2563,14 +2563,13 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I, GEN NI,
           }
       }
     }
+    if (DEBUGLEVEL && Nfact) (*Nfact)++;
     /* make sure we get maximal rank first, then allow all relations */
     if (add_rel(cache, F, R, nz, gx, rex? 1: 0) <= 0)
     { /* probably Q-dependent from previous ones: forget it */
       if (DEBUGLEVEL>1) err_printf("*");
-      if (DEBUGLEVEL && Nfact && rex) (*Nfact)++;
       continue;
     }
-    if (DEBUGLEVEL && Nfact) (*Nfact)++;
     if (cache->last >= cache->end) return 1; /* we have enough */
     if (++relid == Nrelid) break;
   }
