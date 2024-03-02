@@ -824,21 +824,6 @@ divide_p_quo(GEN LP, long ip, long k, GEN nf, GEN I, GEN m, FACT *fact)
   return 0;
 }
 
-/* |*N| != 0 is the norm of a primitive ideal, in particular not divisible by
- * any inert prime. Is |*N| a smooth rational integer wrt F ?
- */
-static int
-Z_issmooth_prod(GEN N, GEN P)
-{
-  P = gcdii(P,N);
-  while (!is_pm1(P))
-  {
-    N = diviiexact(N, P);
-    P = gcdii(N, P);
-  }
-  return is_pm1(N);
-}
-
 static int
 divide_p(FB_t *F, long p, long k, GEN nf, GEN I, GEN m, FACT *fact)
 {
@@ -860,7 +845,7 @@ can_factor(FB_t *F, GEN nf, GEN I, GEN m, GEN N, FACT *fact)
   long i, l;
   fact[0].pr = 0;
   if (is_pm1(N)) return 1;
-  if (!Z_issmooth_prod(N, F->prodZ)) return 0;
+  if (!is_pm1(Z_ppo(N, F->prodZ))) return 0;
   f = absZ_factor(N); p = gel(f,1); e = gel(f,2); l = lg(p);
   for (i = 1; i < l; i++)
     if (!divide_p(F, itou(gel(p,i)), itou(gel(e,i)), nf, I, m, fact))
