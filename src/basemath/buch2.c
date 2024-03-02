@@ -106,17 +106,9 @@ typedef struct RELCACHE_t {
 } RELCACHE_t;
 
 typedef struct FP_t {
-  double **q;
+  double **q, *v, *y, *z;
   GEN x;
-  double *y;
-  double *z;
-  double *v;
 } FP_t;
-
-typedef struct RNDREL_t {
-  long jid;
-  GEN ex;
-} RNDREL_t;
 
 static void
 wr_rel(GEN e)
@@ -2265,23 +2257,21 @@ set_rel_alpha(REL_t *rel, GEN auts, GEN vA, long ind)
 static GEN
 set_fact(FB_t *F, FACT *fact, GEN e, long *pnz)
 {
-  long n = fact[0].pr;
+  long i, n = fact[0].pr, nz = F->KC + 1;
   GEN c = zero_Flv(F->KC);
-  if (!n) /* trivial factorization */
-    *pnz = F->KC+1;
-  else
+  for (i = 1; i <= n; i++)
   {
-    long i, nz = minss(fact[1].pr, fact[n].pr);
-    for (i = 1; i <= n; i++) c[fact[i].pr] = fact[i].ex;
-    if (e)
-    {
-      long l = lg(e);
-      for (i = 1; i < l; i++)
-        if (e[i]) { long v = F->subFB[i]; c[v] += e[i]; if (v < nz) nz = v; }
-    }
-    *pnz = nz;
+    long p = fact[i].pr;
+    if (p < nz) nz = p;
+    c[p] = fact[i].ex;
   }
-  return c;
+  if (e)
+  {
+    long l = lg(e);
+    for (i = 1; i < l; i++)
+      if (e[i]) { long v = F->subFB[i]; c[v] += e[i]; if (v < nz) nz = v; }
+  }
+  *pnz = nz; return c;
 }
 
 /* Is cols already in the cache ? bs = index of first non zero coeff in cols
@@ -2467,9 +2457,9 @@ fact_update(GEN R, FB_t *F, long ipr, GEN c)
 }
 
 static long
-Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I,
-    GEN NI, FACT *fact, long Nrelid, FP_t *fp, RNDREL_t *rr, long prec,
-    long *Nsmall, long *Nfact)
+Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I, GEN NI,
+  FACT *fact, long Nrelid, FP_t *fp, GEN rex, long jid, long jid0, long e0,
+  long prec, long *Nsmall, long *Nfact)
 {
   pari_sp av;
   GEN G = nf_get_G(nf), G0 = nf_get_roundG(nf), r, u, gx, cgx, inc, ideal;
@@ -2541,36 +2531,30 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I,
     if (ZV_isscalar(gx)) continue;
     if (++try_factor > maxtry_FACT) break;
 
-    if (!Nrelid)
-    {
-      if (!factorgen(F,nf,I,NI,gx,fact)) continue;
-      return 1;
-    }
-    else if (rr)
-    {
-      if (!factorgen(F,nf,I,NI,gx,fact)) continue;
-      add_to_fact(rr->jid, 1, fact);
-    }
+    if (Nsmall) (*Nsmall)++;
+    if (!factorgen(F,nf,I,NI,gx,fact)) continue;
+    if (!Nrelid) return 1;
+    if (jid == jid0)
+      add_to_fact(jid, 1 + e0, fact);
     else
     {
-      if (Nsmall) (*Nsmall)++;
-      if (!factorgen(F,nf,NULL,NULL,gx,fact)) continue;
+      add_to_fact(jid, 1, fact);
+      if (jid0) add_to_fact(jid0, e0, fact);
     }
 
     /* smooth element */
-    R = set_fact(F, fact, rr ? rr->ex : NULL, &nz);
+    R = set_fact(F, fact, rex, &nz);
     cgx = Z_content(gx);
     if (cgx)
     { /* relatively rare, compute relation attached to gx/cgx */
       long i, n = fact[0].pr;
       gx = Q_div_to_int(gx, cgx);
       for (i = 1; i <= n; i++) fact_update(R, F, fact[i].pr, cgx);
-      if (rr)
+      if (rex)
       {
-        GEN e = rr->ex;
-        long l = lg(e);
+        long l = lg(rex);
         for (i = 1; i < l; i++)
-          if (e[i])
+          if (rex[i])
           {
             long t, ipr = F->subFB[i];
             for (t = 1; t <= n; t++)
@@ -2580,10 +2564,10 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I,
       }
     }
     /* make sure we get maximal rank first, then allow all relations */
-    if (add_rel(cache, F, R, nz, gx, rr ? 1 : 0) <= 0)
+    if (add_rel(cache, F, R, nz, gx, rex? 1: 0) <= 0)
     { /* probably Q-dependent from previous ones: forget it */
       if (DEBUGLEVEL>1) err_printf("*");
-      if (DEBUGLEVEL && Nfact && rr) (*Nfact)++;
+      if (DEBUGLEVEL && Nfact && rex) (*Nfact)++;
       continue;
     }
     if (DEBUGLEVEL && Nfact) (*Nfact)++;
@@ -2595,13 +2579,13 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I,
 }
 
 static void
-small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, FACT *fact, GEN p0)
+small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, FACT *fact, long j0)
 {
-  const long prec = nf_get_prec(nf);
+  const long prec = nf_get_prec(nf), N = nf_get_degree(nf);
   FP_t fp;
   pari_sp av;
-  GEN L_jid = F->L_jid, Np0 = NULL;
-  long Nsmall, Nfact, n = lg(L_jid);
+  GEN L_jid = F->L_jid, Np0 = NULL, p0 = j0? gel(F->LP,j0): NULL;
+  long Nsmall, Nfact, n = lg(L_jid), e0 = 0;
   pari_timer T;
 
   if (DEBUGLEVEL)
@@ -2612,13 +2596,13 @@ small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, FACT *fact, GEN p0)
     if (p0) err_printf("Look in p0 = %Ps\n", vecslice(p0,1,4));
   }
   Nsmall = Nfact = 0;
-  minim_alloc(nf_get_degree(nf)+1, &fp.q, &fp.x, &fp.y, &fp.z, &fp.v);
+  minim_alloc(N+1, &fp.q, &fp.x, &fp.y, &fp.z, &fp.v);
   if (p0)
   {
     GEN n = pr_norm(p0);
-    ulong e = maxuu(1,logint0(sqri(pr_norm(veclast(F->LP))), n, NULL));
-    p0 = idealpow(nf, p0, utoi(e));
-    Np0 = powiu(n,e);
+    e0 = logint0(sqri(pr_norm(veclast(F->LP))), n, NULL);
+    p0 = idealpows(nf, p0, e0);
+    Np0 = powiu(n,e0);
   }
   for (av = avma; --n; set_avma(av))
   {
@@ -2627,11 +2611,18 @@ small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, FACT *fact, GEN p0)
     if (DEBUGLEVEL>1)
       err_printf("\n*** Ideal no %ld: %Ps\n", j, vecslice(id,1,4));
     if (p0)
-    { Nid = mulii(Np0, pr_norm(id)); id = idealmul(nf, p0, id); }
+    {
+      if (j == j0)
+      { /* avoid trivial relation */
+        long e = pr_get_e(id);
+        if ((e0 + 1) % e == 0 && e * pr_get_f(id) == N) continue;
+      }
+      Nid = mulii(Np0, pr_norm(id)); id = idealmul(nf, p0, id);
+    }
     else
     { Nid = pr_norm(id); id = pr_hnf(nf, id);}
     if (Fincke_Pohst_ideal(cache, F, nf, id, Nid, fact, Nrelid, &fp,
-                           NULL, prec, &Nsmall, &Nfact)) break;
+                           NULL, j, j0, e0, prec, &Nsmall, &Nfact)) break;
   }
   if (DEBUGLEVEL && Nsmall)
   {
@@ -2665,9 +2656,8 @@ static void
 rnd_rel(RELCACHE_t *cache, FB_t *F, GEN nf, FACT *fact)
 {
   pari_timer T;
-  GEN L_jid = F->L_jid, R, NR;
+  GEN L_jid = F->L_jid, R, NR, ex;
   long i, l = lg(L_jid), prec = nf_get_prec(nf), Nfact = 0;
-  RNDREL_t rr;
   FP_t fp;
   pari_sp av;
 
@@ -2676,8 +2666,8 @@ rnd_rel(RELCACHE_t *cache, FB_t *F, GEN nf, FACT *fact)
     err_printf("#### Look for %ld relations in %ld ideals (rnd_rel)\n",
                cache->end - cache->last, l-1);
   }
-  rr.ex = cgetg(lg(F->subFB), t_VECSMALL);
-  R = get_random_ideal(F, nf, rr.ex); /* random product from subFB */
+  ex = cgetg(lg(F->subFB), t_VECSMALL);
+  R = get_random_ideal(F, nf, ex); /* random product from subFB */
   NR = ZM_det_triangular(R);
   minim_alloc(nf_get_degree(nf)+1, &fp.q, &fp.x, &fp.y, &fp.z, &fp.v);
   for (av = avma, i = 1; i < l; i++, set_avma(av))
@@ -2685,9 +2675,8 @@ rnd_rel(RELCACHE_t *cache, FB_t *F, GEN nf, FACT *fact)
     long j = L_jid[i];
     GEN P = gel(F->LP, j), Nid = mulii(NR, pr_norm(P));
     if (DEBUGLEVEL>1) err_printf("\n*** Ideal %ld: %Ps\n", j, vecslice(P,1,4));
-    rr.jid = j;
     if (Fincke_Pohst_ideal(cache, F, nf, idealHNF_mul(nf, R, P), Nid, fact,
-                           RND_REL_RELPID, &fp, &rr, prec, NULL, &Nfact)) break;
+          RND_REL_RELPID, &fp, ex, j, 0, 0, prec, NULL, &Nfact)) break;
   }
   if (DEBUGLEVEL)
   {
@@ -2857,7 +2846,7 @@ be_honest(FB_t *F, GEN nf, GEN auts, FACT *fact)
       for (nbtest=0;;)
       {
         if (Fincke_Pohst_ideal(NULL, F, nf, id, Nid, fact, 0, &fp,
-                               NULL, prec, NULL, NULL)) break;
+                               NULL, 0, 0, 0, prec, NULL, NULL)) break;
         if (++nbtest > maxtry_HONEST)
         {
           if (DEBUGLEVEL)
@@ -3930,7 +3919,6 @@ START:
         long j, k, LIE = (R && lg(W) > 1 && (done_small % 2));
         REL_t *last = cache.last;
         pari_sp av3 = avma;
-        GEN p0;
         if (LIE)
         { /* We have full rank for class group and unit. The following tries to
            * improve the prime group lattice by looking for relations involving
@@ -3944,27 +3932,21 @@ START:
           for ( ; n > 0; n--) mael(cache.basis, F.perm[n], F.perm[n]) = 0;
         }
         j = done_small % (F.KC+1);
-        if (j == 0) p0 = NULL;
-        else
-        {
-          p0 = gel(F.LP, j);
-          if (!A)
-          { /* Prevent considering both P_iP_j and P_jP_i in small_norm */
-            /* Not all elements end up in F.L_jid (eliminated by hnfspec/add or
-             * by trim_list): keep track of which ideals are being considered
-             * at each run. */
-            long mj = small_multiplier[j];
-            for (i = k = 1; i < lg(F.L_jid); i++)
-              if (F.L_jid[i] > mj)
-              {
-                small_multiplier[F.L_jid[i]] = j;
-                F.L_jid[k++] = F.L_jid[i];
-              }
-            setlg(F.L_jid, k);
-          }
+        if (j && !A)
+        { /* Prevent considering both P_iP_j and P_jP_i in small_norm */
+          /* Not all elements end up in F.L_jid (eliminated by hnfspec/add or
+           * by trim_list): keep track of which ideals are being considered
+           * at each run. */
+          long mj = small_multiplier[j];
+          for (i = k = 1; i < lg(F.L_jid); i++)
+            if (F.L_jid[i] > mj)
+            {
+              small_multiplier[F.L_jid[i]] = j;
+              F.L_jid[k++] = F.L_jid[i];
+            }
+          setlg(F.L_jid, k);
         }
-        if (lg(F.L_jid) > 1)
-          small_norm(&cache, &F, nf, Nrelid, fact, p0);
+        if (lg(F.L_jid) > 1) small_norm(&cache, &F, nf, Nrelid, fact, j);
         F.L_jid = F.perm; set_avma(av3);
         if (!A && cache.last != last) small_fail = 0; else small_fail++;
         if (LIE)
