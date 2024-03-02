@@ -767,7 +767,7 @@ store(long i, long e, FACT *fact)
   fact[fact[0].pr].ex = e; /* exponent */
 }
 
-/* divide out x by all P|p, where x as in can_factor().  k = v_p(Nx) */
+/* divide out m by all P|p, k = v_p(Nm) */
 static int
 divide_p_elt(GEN LP, long ip, long k, GEN m, FACT *fact)
 {
@@ -783,6 +783,7 @@ divide_p_elt(GEN LP, long ip, long k, GEN m, FACT *fact)
   }
   return 0;
 }
+/* divide out I by all P|p, k = v_p(NI) */
 static int
 divide_p_id(GEN LP, long ip, long k, GEN nf, GEN I, FACT *fact)
 {
@@ -798,6 +799,7 @@ divide_p_id(GEN LP, long ip, long k, GEN nf, GEN I, FACT *fact)
   }
   return 0;
 }
+/* divide out m/I by all P|p, k = v_p(Nm/NI) */
 static int
 divide_p_quo(GEN LP, long ip, long k, GEN nf, GEN I, GEN m, FACT *fact)
 {
@@ -2371,7 +2373,7 @@ ADD_REL:
       k = (rel - cache->base) + cache->missing;
     }
     rel->R  = gclone(R);
-    rel->m  =  m ? gclone(m) : NULL;
+    rel->m  = m ? gclone(m) : NULL;
     rel->nz = nz;
     if (aut)
     {
@@ -2386,6 +2388,7 @@ ADD_REL:
   return k;
 }
 
+/* m a t_INT or primitive t_COL */
 static int
 add_rel(RELCACHE_t *cache, FB_t *F, GEN R, long nz, GEN m, long in_rnd_rel)
 {
@@ -3660,24 +3663,22 @@ trim_list(FB_t *F)
   setlg(v, j); return gerepileuptoleaf(av, v);
 }
 
+/* x t_INT or primitive ZC */
 static void
 try_elt(RELCACHE_t *cache, FB_t *F, GEN nf, GEN x, FACT *fact)
 {
   pari_sp av = avma;
   GEN R, Nx;
-  long nz, tx = typ(x);
+  long nz;
 
-  if (tx == t_INT || tx == t_FRAC) return;
-  if (tx != t_COL) x = algtobasis(nf, x);
-  if (RgV_isscalar(x)) return;
-  x = Q_primpart(x);
+  if (typ(x) == t_INT) return;
   Nx = nfnorm(nf, x);
-  if (!can_factor(F, nf, NULL, x, Nx, fact)) return;
+  if (!can_factor(F, nf, NULL, x, Nx, fact)) return; /* can't happen */
 
   /* smooth element */
   R = set_fact(F, fact, NULL, &nz);
   /* make sure we get maximal rank first, then allow all relations */
-  (void) add_rel(cache, F, R, nz, x, 0);
+  (void)add_rel(cache, F, R, nz, x, 0);
   set_avma(av);
 }
 
