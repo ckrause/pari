@@ -860,10 +860,9 @@ can_factor(FB_t *F, GEN nf, GEN I, GEN m, GEN N, FACT *fact)
 static long
 factorgen(FB_t *F, GEN nf, GEN I, GEN NI, GEN m, FACT *fact)
 {
-  long e, r1 = nf_get_r1(nf);
-  GEN M = nf_get_M(nf);
-  GEN N = divri(embed_norm(RgM_RgC_mul(M,m), r1), NI); /* ~ N(m/I) */
-  N = grndtoi(N, &e);
+  long e;
+  GEN Nm = embed_norm(RgM_RgC_mul(nf_get_M(nf),m), nf_get_r1(nf));
+  GEN N = grndtoi(NI? divri(Nm, NI): Nm, &e); /* ~ N(m/I) */
   if (e > -32)
   {
     if (DEBUGLEVEL > 1) err_printf("+");
@@ -2467,16 +2466,15 @@ fact_update(GEN R, FB_t *F, long ipr, GEN c)
   if (v) R[ipr] -= pr_get_e(pr) * v;
 }
 
-INLINE long
-Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
+static long
+Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I,
     GEN NI, FACT *fact, long Nrelid, FP_t *fp, RNDREL_t *rr, long prec,
     long *Nsmall, long *Nfact)
 {
   pari_sp av;
-  const long N = nf_get_degree(nf), R1 = nf_get_r1(nf);
   GEN G = nf_get_G(nf), G0 = nf_get_roundG(nf), r, u, gx, cgx, inc, ideal;
+  long j, k, skipfirst, relid = 0, try_factor = 0, N = nf_get_degree(nf);
   double BOUND, B1, B2;
-  long j, k, skipfirst, relid=0, try_factor=0;
 
   inc = const_vecsmall(N, 1);
   u = ZM_lll(ZM_mul(G0, I), 0.99, LLL_IM);
@@ -2555,15 +2553,8 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
     }
     else
     {
-      GEN Nx, xembed = RgM_RgC_mul(M, gx);
-      long e;
       if (Nsmall) (*Nsmall)++;
-      Nx = grndtoi(embed_norm(xembed, R1), &e);
-      if (e >= 0) {
-        if (DEBUGLEVEL > 1) err_printf("+");
-        continue;
-      }
-      if (!can_factor(F, nf, NULL, gx, Nx, fact)) continue;
+      if (!factorgen(F,nf,NULL,NULL,gx,fact)) continue;
     }
 
     /* smooth element */
@@ -2604,8 +2595,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN M, GEN I,
 }
 
 static void
-small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, GEN M,
-           FACT *fact, GEN p0)
+small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, FACT *fact, GEN p0)
 {
   const long prec = nf_get_prec(nf);
   FP_t fp;
@@ -2622,7 +2612,7 @@ small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, GEN M,
     if (p0) err_printf("Look in p0 = %Ps\n", vecslice(p0,1,4));
   }
   Nsmall = Nfact = 0;
-  minim_alloc(lg(M), &fp.q, &fp.x, &fp.y, &fp.z, &fp.v);
+  minim_alloc(nf_get_degree(nf)+1, &fp.q, &fp.x, &fp.y, &fp.z, &fp.v);
   if (p0)
   {
     GEN n = pr_norm(p0);
@@ -2640,7 +2630,7 @@ small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, GEN M,
     { Nid = mulii(Np0, pr_norm(id)); id = idealmul(nf, p0, id); }
     else
     { Nid = pr_norm(id); id = pr_hnf(nf, id);}
-    if (Fincke_Pohst_ideal(cache, F, nf, M, id, Nid, fact, Nrelid, &fp,
+    if (Fincke_Pohst_ideal(cache, F, nf, id, Nid, fact, Nrelid, &fp,
                            NULL, prec, &Nsmall, &Nfact)) break;
   }
   if (DEBUGLEVEL && Nsmall)
@@ -2675,7 +2665,7 @@ static void
 rnd_rel(RELCACHE_t *cache, FB_t *F, GEN nf, FACT *fact)
 {
   pari_timer T;
-  GEN L_jid = F->L_jid, M = nf_get_M(nf), R, NR;
+  GEN L_jid = F->L_jid, R, NR;
   long i, l = lg(L_jid), prec = nf_get_prec(nf), Nfact = 0;
   RNDREL_t rr;
   FP_t fp;
@@ -2689,14 +2679,14 @@ rnd_rel(RELCACHE_t *cache, FB_t *F, GEN nf, FACT *fact)
   rr.ex = cgetg(lg(F->subFB), t_VECSMALL);
   R = get_random_ideal(F, nf, rr.ex); /* random product from subFB */
   NR = ZM_det_triangular(R);
-  minim_alloc(lg(M), &fp.q, &fp.x, &fp.y, &fp.z, &fp.v);
+  minim_alloc(nf_get_degree(nf)+1, &fp.q, &fp.x, &fp.y, &fp.z, &fp.v);
   for (av = avma, i = 1; i < l; i++, set_avma(av))
   { /* try P[j] * base */
     long j = L_jid[i];
     GEN P = gel(F->LP, j), Nid = mulii(NR, pr_norm(P));
     if (DEBUGLEVEL>1) err_printf("\n*** Ideal %ld: %Ps\n", j, vecslice(P,1,4));
     rr.jid = j;
-    if (Fincke_Pohst_ideal(cache, F, nf, M, idealHNF_mul(nf, R, P), Nid, fact,
+    if (Fincke_Pohst_ideal(cache, F, nf, idealHNF_mul(nf, R, P), Nid, fact,
                            RND_REL_RELPID, &fp, &rr, prec, NULL, &Nfact)) break;
   }
   if (DEBUGLEVEL)
@@ -2832,7 +2822,6 @@ be_honest(FB_t *F, GEN nf, GEN auts, FACT *fact)
   long i, iz, nbtest;
   long lgsub = lg(F->subFB), KCZ0 = F->KCZ;
   long N = nf_get_degree(nf), prec = nf_get_prec(nf);
-  GEN M = nf_get_M(nf);
   FP_t fp;
   pari_sp av;
 
@@ -2867,7 +2856,7 @@ be_honest(FB_t *F, GEN nf, GEN auts, FACT *fact)
       Nid = pr_norm(gel(P,j));
       for (nbtest=0;;)
       {
-        if (Fincke_Pohst_ideal(NULL, F, nf, M, id, Nid, fact, 0, &fp,
+        if (Fincke_Pohst_ideal(NULL, F, nf, id, Nid, fact, 0, &fp,
                                NULL, prec, NULL, NULL)) break;
         if (++nbtest > maxtry_HONEST)
         {
@@ -3766,12 +3755,11 @@ Buchall_param(GEN P, double cbach, double cbach2, long Nrelid, long flag, long p
   pari_timer T;
   pari_sp av0 = avma, av, av2;
   long PREC, N, R1, R2, RU, low, high, LIMC0, LIMC, LIMC2, LIMCMAX, zc, i;
-  long LIMres, bit = 0, flag_nfinit = 0;
+  long LIMres, bit = 0, flag_nfinit = 0, nfisclone = 0;
   long nreldep, sfb_trials, need, old_need, precdouble = 0, TRIES = 0;
-  long nfisclone = 0;
-  long done_small, small_fail, fail_limit, squash_index, small_norm_prec;
+  long done_small, small_fail, fail_limit, squash_index;
   double LOGD, LOGD2, lim;
-  GEN computed = NULL, fu = NULL, zu, nf, M_sn, D, A, W, R, h, Ce, PERM;
+  GEN computed = NULL, fu = NULL, zu, nf, D, A, W, R, h, Ce, PERM;
   GEN small_multiplier, auts, cyclic, embs, SUnits;
   GEN res, L, invhr, B, C, lambda, dep, clg1, clg2, Vbase;
   const char *precpb = NULL;
@@ -3807,25 +3795,13 @@ Buchall_param(GEN P, double cbach, double cbach2, long Nrelid, long flag, long p
   LOGD = dbllog2(D) * M_LN2;
   LOGD2 = LOGD*LOGD;
   LIMCMAX = (long)(4.*LOGD2);
-  /* In small_norm, LLL reduction produces v0 in I such that
-   *     T2(v0) <= (4/3)^((n-1)/2) NI^(2/n) disc(K)^(1/n)
-   * We consider v with T2(v) <= BMULT * T2(v0)
-   * Hence Nv <= ((4/3)^((n-1)/2) * BMULT / n)^(n/2) NI sqrt(disc(K)).
-   * NI <= LIMCMAX^2 */
   if (nf) PREC = maxss(PREC, nf_get_prec(nf));
   PREC = maxss(PREC, nbits2prec((long)(LOGD2 * 0.02) + N*N));
   if (DEBUGLEVEL) err_printf("PREC = %ld\n", PREC);
-  small_norm_prec = nbits2prec( BITS_IN_LONG +
-    (N/2. * ((N-1)/2.*log(4./3) + log(8/(double)N))
-     + 2*log((double) LIMCMAX) + LOGD/2) / M_LN2 ); /*enough to compute norms*/
-  if (small_norm_prec > PREC) PREC = small_norm_prec;
   if (!nf)
     nf = nfinit_complete(&nfT, flag_nfinit, PREC);
   else if (nf_get_prec(nf) < PREC)
     nf = nfnewprec_shallow(nf, PREC);
-  M_sn = nf_get_M(nf);
-  if (PREC > small_norm_prec) M_sn = gprec_w(M_sn, small_norm_prec);
-
   zu = nfrootsof1(nf);
   gel(zu,2) = nf_to_scalar_or_alg(nf, gel(zu,2));
 
@@ -3988,7 +3964,7 @@ START:
           }
         }
         if (lg(F.L_jid) > 1)
-          small_norm(&cache, &F, nf, Nrelid, M_sn, fact, p0);
+          small_norm(&cache, &F, nf, Nrelid, fact, p0);
         F.L_jid = F.perm; set_avma(av3);
         if (!A && cache.last != last) small_fail = 0; else small_fail++;
         if (LIE)
