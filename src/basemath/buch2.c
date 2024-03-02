@@ -1457,7 +1457,7 @@ SPLIT(FB_t *F, GEN nf, GEN x, GEN Vbase, FACT *fact)
   pari_sp av;
 
   /* try without reduction if x is small */
-  if (gexpo(gcoeff(x,1,1)) < 100 &&
+  if (expi(gcoeff(x,1,1)) < 100 &&
       can_factor(F, nf, x, NULL, Nx, fact)) return NULL;
 
   av = avma;
