@@ -1426,26 +1426,28 @@ genback(GEN z, GEN nf, GEN P, GEN E)
   return I; /* != NULL since a generator */
 }
 
+static GEN
+SPLIT_i(FB_t *F, GEN nf, GEN G, GEN x, GEN xred, GEN Nx, FACT *fact)
+{
+  pari_sp av = avma;
+  GEN L = idealpseudominvec(xred, G);
+  long k, l = lg(L);
+  for(k = 1; k < l; k++)
+    if (factorgen(F, nf, x, Nx, gel(L,k), fact)) return gel(L,k);
+  return gc_NULL(av);
+}
 /* return famat y (principal ideal) such that y / x is smooth [wrt Vbase] */
 static GEN
 SPLIT(FB_t *F, GEN nf, GEN x, GEN Vbase, FACT *fact)
 {
-  GEN vecG, ex, Ly, y, x0, Nx = ZM_det_triangular(x);
-  long nbtest_lim, nbtest, i, j, k, ru, lgsub;
+  GEN vecG, ex, y, x0, Nx = ZM_det_triangular(x);
+  long nbtest_lim, nbtest, i, j, ru, lgsub;
   pari_sp av;
 
   /* try without reduction if x is small */
   if (expi(gcoeff(x,1,1)) < 100 &&
       can_factor(F, nf, x, NULL, Nx, fact)) return NULL;
-
-  av = avma;
-  Ly = idealpseudominvec(x, nf_get_roundG(nf));
-  for(k=1; k<lg(Ly); k++)
-  {
-    y = gel(Ly,k);
-    if (factorgen(F, nf, x, Nx, y, fact)) return y;
-  }
-  set_avma(av);
+  if ((y = SPLIT_i(F, nf, nf_get_roundG(nf), x, x, Nx, fact))) return y;
 
   /* reduce in various directions */
   ru = lg(nf_get_roots(nf));
@@ -1453,21 +1455,13 @@ SPLIT(FB_t *F, GEN nf, GEN x, GEN Vbase, FACT *fact)
   for (j=1; j<ru; j++)
   {
     gel(vecG,j) = nf_get_Gtwist1(nf, j);
-    av = avma;
-    Ly = idealpseudominvec(x, gel(vecG,j));
-    for(k=1; k<lg(Ly); k++)
-    {
-      y = gel(Ly,k);
-      if (factorgen(F, nf, x, Nx, y, fact)) return y;
-    }
-    set_avma(av);
+    if ((y = SPLIT_i(F, nf, gel(vecG,j), x, x, Nx, fact))) return y;
   }
 
   /* tough case, multiply by random products */
-  lgsub = 3;
+  lgsub = 3; nbtest = 1; nbtest_lim = 4;
   ex = cgetg(lgsub, t_VECSMALL);
   x0 = init_famat(x);
-  nbtest = 1; nbtest_lim = 4;
   for(;;)
   {
     GEN Ired, I, NI, id = x0;
@@ -1492,19 +1486,12 @@ SPLIT(FB_t *F, GEN nf, GEN x, GEN Vbase, FACT *fact)
     Ired = ru == 2? I: ZM_lll(I, 0.99, LLL_INPLACE);
     for (j=1; j<ru; j++)
     {
-      pari_sp av2 = avma;
-      Ly = idealpseudominvec(Ired, gel(vecG,j));
-      for (k=1; k < lg(Ly); k++)
+      if ((y = SPLIT_i(F, nf, gel(vecG,j), Ired, I, NI, fact)))
       {
-        y = gel(Ly,k);
-        if (factorgen(F, nf, I, NI, y, fact))
-        {
-          for (i=1; i<lgsub; i++)
-            if (ex[i]) add_to_fact(Vbase_to_FB(F,gel(Vbase,i)), ex[i], fact);
-          return famat_mul_shallow(gel(id,2), y);
-        }
+        for (i=1; i<lgsub; i++)
+          if (ex[i]) add_to_fact(Vbase_to_FB(F,gel(Vbase,i)), ex[i], fact);
+        return famat_mul_shallow(gel(id,2), y);
       }
-      set_avma(av2);
     }
     set_avma(av);
     if (++nbtest > nbtest_lim)
