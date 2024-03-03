@@ -2079,12 +2079,25 @@ ZX_resultant_all(GEN A, GEN B, GEN dB, ulong bound)
   pari_sp av = avma;
   forprime_t S;
   GEN  H, worker;
+  if (!B && degpol(A)==2)
+  {
+    GEN a = gel(A,4), b = gel(A,3), c = gel(A,2);
+    H = mulii(a, subii(shifti(mulii(a, c), 2), sqri(b)));
+    if (dB) H = diviiexact(H, sqri(dB));
+    return gerepileuptoint(av, H);
+  }
   if (B)
   {
     long a = degpol(A), b = degpol(B);
     if (a < 0 || b < 0) return gen_0;
     if (!a) return powiu(gel(A,2), b);
     if (!b) return powiu(gel(B,2), a);
+    if (minss(a, b) <= 1)
+    {
+      H = RgX_resultant_all(A, B, NULL);
+      if (dB) H = diviiexact(H, powiu(dB, a));
+      return gerepileuptoint(av, H);
+    }
     if (!bound) bound = ZX_ZXY_ResBound(A, B, dB);
   }
   worker = snm_closure(is_entry("_ZX_resultant_worker"),
