@@ -1360,15 +1360,16 @@ recover_partFB(FB_t *F, GEN Vbase, long N)
 static void
 add_to_fact(long v, long e, FACT *fact)
 {
-  long i, l = fact[0].pr;
-  for (i=1; i<=l && fact[i].pr < v; i++)/*empty*/;
-  if (i <= l && fact[i].pr == v) fact[i].ex += e; else store(v, e, fact);
+  long i, n = fact[0].pr;
+  for (i=1; i<=n; i++)
+    if (fact[i].pr == v) { fact[i].ex += e; return; }
+  store(v, e, fact);
 }
 static void
 inv_fact(FACT *fact)
 {
-  long i, l = fact[0].pr;
-  for (i=1; i<=l; i++) fact[i].ex = -fact[i].ex;
+  long i, n = fact[0].pr;
+  for (i=1; i<=n; i++) fact[i].ex = -fact[i].ex;
 }
 
 /* L (small) list of primes above the same p including pr. Return pr index */
