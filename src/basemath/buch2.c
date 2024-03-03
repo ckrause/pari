@@ -3653,13 +3653,11 @@ static void
 try_elt(RELCACHE_t *cache, FB_t *F, GEN nf, GEN x, FACT *fact)
 {
   pari_sp av = avma;
-  GEN R, Nx;
   long nz;
+  GEN R;
 
-  if (typ(x) == t_INT) return;
-  Nx = nfnorm(nf, x);
-  if (!can_factor(F, nf, NULL, x, Nx, fact)) return; /* can't happen */
-
+  if (typ(x) == t_INT /* 2nd path can't fail */
+     || !can_factor(F, nf, NULL, x, nfnorm(nf, x), fact)) return;
   /* smooth element */
   R = set_fact(F, fact, NULL, &nz);
   /* make sure we get maximal rank first, then allow all relations */
