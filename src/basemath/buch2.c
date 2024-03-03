@@ -1485,7 +1485,7 @@ SPLIT(FB_t *F, GEN nf, GEN x, GEN Vbase, FACT *fact)
     }
     Ired = ru == 2? I: ZM_lll(I, 0.99, LLL_INPLACE);
     for (j=1; j<ru; j++)
-      if ((y = SPLIT_i(F, nf, gel(vecG,j), Ired, I, NI, fact)))
+      if ((y = SPLIT_i(F, nf, gel(vecG,j), I, Ired, NI, fact)))
       {
         for (i=1; i<lgsub; i++)
           if (ex[i]) add_to_fact(Vbase_to_FB(F,gel(Vbase,i)), ex[i], fact);
