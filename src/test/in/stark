@@ -47,3 +47,11 @@ bnrstark(bnrinit(bnfinit(quadpoly(40,y)),120),matdiagonal([1,1,2,2]))
 
 \\#1776
 quadhilbert(2669)
+
+\\ bnrstarkunit
+
+bnf = bnfinit(y^2-2); id=idealprimedec(bnf,199); bnr=bnrinit(bnf,[id[1],[1,1]]); bnrstarkunit(bnr)
+
+\\ errors
+
+bnf=bnfinit(y^2 - 23); id=idealprimedec(bnf,487); bnr=bnrinit(bnf,[id[1],[1,1]]); bnrstarkunit(bnr)

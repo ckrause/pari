@@ -5471,6 +5471,7 @@ GEN     abmap_subgroup_image(GEN S, GEN H);
 GEN     bnrL1(GEN bnr, GEN sbgrp, long flag, long prec);
 GEN     bnrrootnumber(GEN bnr, GEN chi, long flag, long prec);
 GEN     bnrstark(GEN bnr, GEN subgroup, long prec);
+GEN     bnrstarkunit(GEN bnr, GEN subgroup, long prec);
 GEN     cyc2elts(GEN cyc);
 GEN     qfbforms(GEN D);
 GEN     quadhilbert(GEN D, long prec);

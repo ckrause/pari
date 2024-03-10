@@ -361,7 +361,7 @@ CplxModulus(GEN data, long *newprec)
   pari_sp av = avma;
   for (;;)
   {
-    GEN cpl, pol = AllStark(data, -1, dprec);
+    GEN cpl, pol = AllStark(data, 1, dprec);
     cpl = RgX_fpnorml2(pol, LOWDEFAULTPREC);
     dprec = maxss(dprec, nbits2extraprec(gexpo(pol))) + EXTRAPREC64;
     if (!gequal0(cpl)) { *newprec = dprec; return gexpo(cpl); }
@@ -1575,9 +1575,11 @@ RecCoeff2(GEN nf,  RC_data *d,  long prec)
 
 /* Attempts to find a polynomial with coefficients in nf such that
    its coefficients are close to those of pol at the place v and
-   less than B at all the other places */
+   less than a certain bound at all the other places. This bound is obtained by assuming
+   that the roots at the other places are, in absolute values, less than 2 if flag == 0,
+   and less than 1 if flag = 1. */
 static GEN
-RecCoeff(GEN nf,  GEN pol,  long v, long prec)
+RecCoeff(GEN nf,  GEN pol,  long v, long flag, long prec)
 {
   long j, md, cl = degpol(pol);
   pari_sp av = avma;
@@ -1600,8 +1602,9 @@ RecCoeff(GEN nf,  GEN pol,  long v, long prec)
   { /* start with the coefficients in the middle,
        since they are the harder to recognize! */
     long cf = md + (j%2? j/2: -j/2);
-    GEN t, bound = shifti(binomial(utoipos(cl), cf), cl-cf);
+    GEN t, bound = binomial(utoipos(cl), cf);
 
+    if (flag == 0) bound = shifti(bound, cl-cf);
     if (DEBUGLEVEL>1) err_printf("RecCoeff (cf = %ld, B = %Ps)\n", cf, bound);
     d.beta = real_i( gel(pol,cf+2) );
     d.B    = bound;
@@ -2187,7 +2190,8 @@ GenusFieldQuadImag(GEN disc)
   return polredbest(T, 0);
 }
 
-/* if flag != 0, computes a fast and crude approximation of the result */
+/* if flag = 1, computes a fast and crude approximation of the trace of the Stark unit
+   if flag = 2, computes the Stark unit */
 static GEN
 AllStark(GEN data, long flag, long newprec)
 {
@@ -2216,16 +2220,16 @@ LABDOUB:
   W = AllArtinNumbers(CR, newprec);
   if (DEBUGLEVEL) timer_printf(&ti,"Compute W");
   Lp = cgetg(cl + 1, t_VEC);
-  if (!flag)
+  if (flag != 1)
   {
     GetST(bnr, &S, &T, CR, newprec);
     if (DEBUGLEVEL) timer_printf(&ti, "S&T");
     for (i = 1; i <= cl; i++)
     {
-      GEN chi = gel(dataCR, i), v = gen_0;
+      GEN chi = gel(dataCR, i), vv = gen_0;
       if (ch_comp(chi))
-        v = gel(GetValue(chi, gel(W,i), gel(S,i), gel(T,i), 2, newprec), 2);
-      gel(Lp, i) = v;
+        vv = gel(GetValue(chi, gel(W,i), gel(S,i), gel(T,i), 2, newprec), 2);
+      gel(Lp, i) = vv;
     }
   }
   else
@@ -2264,8 +2268,11 @@ LABDOUB:
   }
 
   p1 = gel(data,3);
-  den = flag ? h: 2*h;
-  vzeta = cgetg(h + 1, t_VEC);
+  den = (flag == 0) ? 2*h: h;
+  if (flag == 2)
+    vzeta = cgetg(2*h + 1, t_VEC);
+  else
+    vzeta = cgetg(h + 1,t_VEC);
   for (i = 1; i <= h; i++)
   {
     GEN z = gen_0, sig = gel(p1,i);
@@ -2276,7 +2283,13 @@ LABDOUB:
       if (chi_get_deg(CHI) != 2) t = gmul2n(t, 1); /* character not real */
       z = gadd(z, t);
     }
-    gel(vzeta,i) = gmul2n(gcosh(gdivgu(z,den), newprec), 1);
+    if (flag == 2)
+    {
+      gel(vzeta, i) = gexp(gmul2n(gdivgu(z,den), 1), newprec);
+      gel(vzeta, i+h) = gexp(gmul2n(gneg(gdivgu(z,den)), 1), newprec);
+    }
+    /* if flag == 0, we first try with the square-root of the Stark unit */
+    else gel(vzeta,i) = gmul2n(gcosh(gdivgu(z,den), newprec), 1);
   }
   polrelnum = roots_to_pol(vzeta, 0);
   if (DEBUGLEVEL)
@@ -2284,20 +2297,18 @@ LABDOUB:
     if (DEBUGLEVEL>1) {
       err_printf("polrelnum = %Ps\n", polrelnum);
       err_printf("zetavalues = %Ps\n", vzeta);
-      if (!flag)
+      if (flag == 0)
         err_printf("Checking the square-root of the Stark unit...\n");
     }
     timer_printf(&ti, "Compute %s", flag? "quickpol": "polrelnum");
   }
-  if (flag) return gerepilecopy(av, polrelnum);
-
+  if (flag == 1) return gerepilecopy(av, polrelnum);
   /* try to recognize this polynomial */
-  polrel = RecCoeff(nf, polrelnum, v, newprec);
-  if (!polrel)
+  polrel = RecCoeff(nf, polrelnum, v, flag, newprec);
+
+  /* if this doesn't work, maybe the Stark unit is not a square */
+  if (!polrel && flag == 0)
   {
-    for (j = 1; j <= h; j++)
-      gel(vzeta,j) = gsubgs(gsqr(gel(vzeta,j)), 2);
-    polrelnum = roots_to_pol(vzeta, 0);
     if (DEBUGLEVEL)
     {
       if (DEBUGLEVEL>1) {
@@ -2306,7 +2317,11 @@ LABDOUB:
       }
       timer_printf(&ti, "Compute polrelnum");
     }
-    polrel = RecCoeff(nf, polrelnum, v, newprec);
+    for (j = 1; j <= h; j++)
+      gel(vzeta,j) = gsubgs(gsqr(gel(vzeta,j)), 2);
+    polrelnum = roots_to_pol(vzeta, 0);
+
+    polrel = RecCoeff(nf, polrelnum, v, 0, newprec);
   }
   if (!polrel) /* FAILED */
   {
@@ -2379,6 +2394,46 @@ bnrstark(GEN bnr, GEN subgrp, long prec)
   if (DEBUGLEVEL>1 && newprec > prec)
     err_printf("new precision: %ld\n", newprec);
   return gerepileupto(av, AllStark(data, 0, newprec));
+}
+
+GEN
+bnrstarkunit(GEN bnr, GEN subgrp, long prec)
+{
+  long newprec, c, i;
+  pari_sp av = avma;
+  GEN nf, data, dtQ, bnf, f, arch, bnrf, Cm, candD, D, QD, CR;
+
+  /* check the input */
+  checkbnr(bnr); nf = bnr_get_nf(bnr);
+  if (!nf_get_varn(nf))
+    pari_err_PRIORITY("bnrstarkunit", nf_get_pol(nf), "=", 0);
+  if (nf_get_degree(nf) == 1) pari_err_IMPL("bnrstarkunit for basefield Q");
+  if (nf_get_r2(nf)) pari_err_DOMAIN("bnrstarkunit", "r2", "!=", gen_0, nf);
+  bnr_subgroup_sanitize(&bnr, &subgrp);
+  arch = gel(bnr_get_mod(bnr), 2);
+  c = 0;
+  for (i = 1; i < lg(arch); i++) { if (gcmp0(gel(arch, i))) c++; }
+  if (c != 1)
+    pari_err_DOMAIN("bnrstarkunit", "number of unramified place", "!=", gen_1, bnr);
+
+  /* initialize the data for AllStark */
+  bnr = shallowcopy(bnr);
+  gel(bnr,1) = shallowcopy(gel(bnr,1));
+  gmael(bnr,1,7) = shallowcopy(gmael(bnr,1,7));
+  bnf  = bnr_get_bnf(bnr);
+  f    = gel(bnr_get_mod(bnr), 1);
+  bnrf = Buchray(bnf, f, nf_INIT);
+  subgrp = abmap_subgroup_image(bnrsurjection(bnr, bnrf), subgrp);
+  dtQ   = InitQuotient(subgrp);
+  Cm    = ComputeKernel(bnr, bnrf, dtQ);
+  candD = subgrouplist_cond_sub(bnr, Cm, mkvec(gen_2));
+  if (lg(candD) != 2) pari_err(e_MISC, "incorrect modulus in bnrstark");
+  D     = gel(candD, 1);
+  QD    = InitQuotient(D);
+  CR    = InitChar(bnr, AllChars(bnr, QD, 1), 0, DEFAULTPREC);
+  data  = mkvec4(bnr, D, subgroup_classes(Cm), CR);
+  CplxModulus(data, &newprec);
+  return gerepileupto(av, AllStark(data, 2, newprec));
 }
 
 /* For each character of Cl(bnr)/subgp, compute L(1, chi) (or equivalently
