@@ -159,7 +159,7 @@ RgXV_RgV_eval(GEN Q, GEN x)
 GEN
 RgX_homogenous_evalpow(GEN P, GEN A, GEN B)
 {
-  pari_sp av = avma;
+  pari_sp av = avma, btop;
   long i, d = degpol(P), o;
   GEN s;
   if (signe(P)==0) return pol_0(varn(P));
@@ -167,13 +167,14 @@ RgX_homogenous_evalpow(GEN P, GEN A, GEN B)
   if (d == 0) return gcopy(s);
   o = RgX_deflate_order(P);
   if (o > 1) A = gpowgs(A, o);
+  btop = avma;
   for (i = d-o; i >= 0; i-=o)
   {
     s = gadd(gmul(s, A), gmul(gel(B,d+1-i), gel(P,i+2)));
-    if (gc_needed(av,1))
+    if (gc_needed(btop,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgX_homogenous_eval(%ld)",i);
-      s = gerepileupto(av, s);
+      s = gerepileupto(btop, s);
     }
   }
   return gerepileupto(av, s);
