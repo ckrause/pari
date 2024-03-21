@@ -357,6 +357,7 @@ typedef struct {
   int secure, simplify, strictmatch, strictargs, chrono;
   pari_timer *T, *Tw;
   ulong primelimit; /* deprecated */
+  ulong factorlimit;
   ulong threadsizemax, threadsize;
 } gp_data;
 extern gp_data *GP_DATA;

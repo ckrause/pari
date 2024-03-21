@@ -113,6 +113,7 @@ usage(char *s)
 static void
 gp_head(void)
 {
+  ulong p, f;
   pari_print_version();
   pari_putc('\n');
   pari_center("Copyright (C) 2000-2024 The PARI Group");
@@ -122,12 +123,14 @@ License, and comes WITHOUT ANY WARRANTY WHATSOEVER.");
   pari_puts("\nType ? for help, \\q to quit.\n");
   pari_printf("Type ?%d for how to get moral"
               " (and possibly technical) support.\n", pari_community());
+  p = GP_DATA->primelimit;
+  f = GP_DATA->factorlimit;
   if (pari_mainstack->vsize)
-    pari_printf("\nparisizemax = %lu, primelimit = %lu",
-                pari_mainstack->vsize,GP_DATA->primelimit);
+    pari_printf("\nparisizemax = %lu, primelimit = %lu, factorlimit = %lu",
+                pari_mainstack->vsize, p, f);
   else
-    pari_printf("\nparisize = %lu, primelimit = %lu",
-                pari_mainstack->rsize,GP_DATA->primelimit);
+    pari_printf("\nparisize = %lu, primelimit = %lu, factorlimit = %lu",
+                pari_mainstack->rsize, p, f);
   if (pari_mt_nbthreads > 1)
     pari_printf(", nbthreads = %lu", pari_mt_nbthreads);
   pari_putc('\n');

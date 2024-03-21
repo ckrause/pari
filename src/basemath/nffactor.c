@@ -355,7 +355,7 @@ fix_nf(GEN *pnf, GEN *pT, GEN *pA)
   long i, l, lim;
 
   if (*pnf) return gen_1;
-  lim = GP_DATA->primelimit + 1;
+  lim = GP_DATA->factorlimit + 1;
   nfmaxord(&S, mkvec2(T, utoipos(lim)), nf_PARTIALFACT);
   NF = nfinit_complete(&S, 0, DEFAULTPREC);
   *pnf = nf = proper_nf(NF);

@@ -357,7 +357,7 @@ static void
 set_prodprimes(void)
 {
   pari_sp ltop = avma, av;
-  ulong b = 1UL << 8, M = maxprime();
+  ulong b = 1UL << 8, M = minuu(maxprime(), GP_DATA->factorlimit);
   GEN W, w, v = primes_interval_zv(3, M);
   long s, j, jold, lv = lg(v), u = 1, m = expu(M) + 1 - 7;
 

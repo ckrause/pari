@@ -3127,6 +3127,7 @@ GEN sd_debugfiles(const char *v, long flag);
 GEN sd_debugmem(const char *v, long flag);
 GEN sd_factor_add_primes(const char *v, long flag);
 GEN sd_factor_proven(const char *v, long flag);
+GEN sd_factorlimit(const char *v, long flag);
 GEN sd_format(const char *v, long flag);
 GEN sd_histsize(const char *v, long flag);
 GEN sd_log(const char *v, long flag);

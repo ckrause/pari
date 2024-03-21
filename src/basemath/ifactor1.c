@@ -3692,12 +3692,12 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
     }
     if (is_pm1(n)) return aux_end(M,n,nb);
     lim = all? all-1: tridiv_bound(n);
-    maxp = maxprime();
     if (!(hint & 16) && lim >= 128) /* expu(lim) >= 7 */
     { /* fast trial division */
       GEN nr, PR = prodprimes();
       long nPR = lg(PR)-1, b = minss(nPR, expu(lim)-6);
-      av = avma; nr = gcdii(gel(PR,b), n);
+      av = avma; maxp = GP_DATA->factorlimit;
+      nr = gcdii(gel(PR,b), n);
       if (is_pm1(nr)) { set_avma(av); av2 = av; }
       else
       {
@@ -3724,7 +3724,7 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
     }
     else
     { /* naive trial division */
-      av = avma;
+      av = avma; maxp = maxprime();
       u_forprime_init(&T, 3, minss(lim, maxp)); av2 = avma;
       /* first pass: known to fit in private prime table */
       while ((p = u_forprime_next_fast(&T)))
@@ -3841,7 +3841,7 @@ factorint(GEN n, long flag)
 GEN
 Z_factor_limit(GEN n, ulong all)
 {
-  if (!all) all = GP_DATA->primelimit + 1;
+  if (!all) all = GP_DATA->factorlimit + 1;
   return ifactor(n, all, decomp_default_hint);
 }
 GEN
@@ -3853,7 +3853,7 @@ absZ_factor_limit_strict(GEN n, ulong all, GEN *pU)
     if (pU) *pU = NULL;
     retmkmat2(mkcol(gen_0), mkcol(gen_1));
   }
-  if (!all) all = GP_DATA->primelimit + 1;
+  if (!all) all = GP_DATA->factorlimit + 1;
   F = ifactor_sign(n, all, decomp_default_hint, 1, &U);
   if (pU) *pU = U;
   return F;
@@ -3862,7 +3862,7 @@ GEN
 absZ_factor_limit(GEN n, ulong all)
 {
   if (!signe(n)) retmkmat2(mkcol(gen_0), mkcol(gen_1));
-  if (!all) all = GP_DATA->primelimit + 1;
+  if (!all) all = GP_DATA->factorlimit + 1;
   return ifactor_sign(n, all, decomp_default_hint, 1, NULL);
 }
 GEN

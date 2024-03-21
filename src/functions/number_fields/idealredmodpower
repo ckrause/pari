@@ -2,7 +2,7 @@ Function: idealredmodpower
 Section: number_fields
 C-Name: idealredmodpower
 Prototype: GGUD0,U,
-Help: idealredmodpower(nf,x,n,{B=primelimit}): return b such that x * b^n = v
+Help: idealredmodpower(nf,x,n,{B=factorlimit}): return b such that x * b^n = v
  is small.
 Doc: let \var{nf} be a number field, $x$ an ideal in \var{nf} and $n > 0$ be a
  positive integer. Return a number field element $b$ such that $x b^{n} = v$

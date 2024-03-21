@@ -60,7 +60,7 @@ Doc: factor $x$ over domain $D$; if $D$ is omitted, it is determined from $x$.
  factors less than $D^{2}$ and primes from the \kbd{addprimes} table
  are actual primes. But (at most) one entry may not verify this criterion,
  and it may be prime or composite: it is only known to be coprime to all
- other entries and not a pure power..
+ other entries and not a pure power.
 
  \bprog
  ? factor(2^2^7 +1, 10^5)
@@ -68,7 +68,7 @@ Doc: factor $x$ over domain $D$; if $D$ is omitted, it is determined from $x$.
  [340282366920938463463374607431768211457 1]
  @eprog\noindent
  \misctitle{Deprecated feature} Setting $D=0$ is the same
- as setting it to $\kbd{primelimit} + 1$.
+ as setting it to $\kbd{factorlimit} + 1$.
  \smallskip
 
  This routine uses trial division and perfect power tests, and should not be

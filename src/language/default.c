@@ -751,6 +751,16 @@ sd_primelimit(const char *v, long flag)
                   0,2*(ulong)(LONG_MAX-1024) + 1,NULL); }
 
 GEN
+sd_factorlimit(const char *v, long flag)
+{
+  GEN z = sd_ulong(v,flag,"factorlimit",&(GP_DATA->factorlimit),
+                   0,2*(ulong)(LONG_MAX-1024) + 1,NULL);
+  if (GP_DATA->primelimit < GP_DATA->factorlimit)
+    GP_DATA->primelimit = GP_DATA->factorlimit;
+  return z;
+}
+
+GEN
 sd_simplify(const char *v, long flag)
 { return sd_toggle(v,flag,"simplify", &(GP_DATA->simplify)); }
 
@@ -1016,7 +1026,7 @@ default_gp_data(void)
   static pari_timer __T, __Tw;
 
   D->flags       = 0;
-  D->primelimit  = 1UL << 20;
+  D->factorlimit = D->primelimit = 1UL << 20;
 
   /* GP-specific */
   D->breakloop   = 1;

@@ -1621,10 +1621,10 @@ The \kbd{flag} is an or-ed combination of the binary flags, both of them
 deprecated:
 
 \tet{nf_PARTIALFACT}: do not try to fully factor \kbd{dT} and only look for
-primes less than \kbd{primelimit}. In that case, the elements in \kbd{dTP}
+primes less than \kbd{factorlimit}. In that case, the elements in \kbd{dTP}
 and \kbd{dKP} need not all be primes. But the resulting \kbd{dK},
 \kbd{index} and \kbd{basis} are correct provided there exists no prime $p >
-\kbd{primelimit}$ such that $p^2$ divides the field discriminant \kbd{dK}.
+\kbd{factorlimit}$ such that $p^2$ divides the field discriminant \kbd{dK}.
 This flag is \emph{deprecated}: the $[T,\var{listP}]$ format is safer and more
 flexible.
 
