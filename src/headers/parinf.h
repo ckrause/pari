@@ -121,7 +121,8 @@ enum {
   LLL_INPLACE    = 0x400,
   LLL_COMPATIBLE = 0x800,  /* attempt same behavior on 32/64bit kernels */
   LLL_UPPER      = 0x1000, /* upper triangular matrix */
-  LLL_NOCERTIFY  = 0x2000  /* allow to return not fully LLL-reduced basis */
+  LLL_NOCERTIFY  = 0x2000, /* allow to return not fully LLL-reduced basis */
+  LLL_NOFLATTER  = 0x4000  /* disable flatter */
 };
 
 /* HNF */

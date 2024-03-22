@@ -2388,7 +2388,7 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
     if (is_lower) L = RgM_flip(B);
   }
   if(DEBUGLEVEL>=4) timer_start(&T);
-  if (n > 2)
+  if (n > 2 && !(flag&LLL_NOFLATTER))
   {
     GEN R = B ? (is_upper ? B : (is_lower ? L : get_gramschmidt(B, rank)))
               : get_gaussred(G, rank);
