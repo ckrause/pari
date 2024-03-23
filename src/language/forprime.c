@@ -359,20 +359,20 @@ set_prodprimes(void)
   pari_sp ltop = avma, av;
   ulong b = 1UL << 8, M = minuu(maxprime(), GP_DATA->factorlimit);
   GEN W, w, v = primes_interval_zv(3, M);
-  long s, j, jold, lv = lg(v), u = 1, m = expu(M) + 1 - 7;
+  long s, u, j, jold, l = lg(v);
 
-  W = cgetg(m+1, t_VEC);
-  for (jold = j = 1; j < lv; j++)
+  W = cgetg(64+1, t_VEC);
+  for (jold = j = u = 1; j < l; j++)
     if (uel(v,j) >= b)
     {
-      long lw = (j == lv-1? lv:j) - jold + 1;
+      long lw = (j == l-1? l: j) - jold + 1;
       w = v+jold-1; w[0] = evaltyp(t_VECSMALL) | _evallg(lw);
       gel(W,u++) = zv_prod_Z(w); /* p_jold ... p_{j-1} */
       jold = j; b *= 2;
       if (b > M) b = M; /* truncate last run */
     }
-  m = u - 1; setlg(W, u);
-  for (j = 2; j <= m; j++) gel(W,j) = mulii(gel(W,j-1), gel(W,j));
+  setlg(W, u);
+  for (j = 2; j < u; j++) gel(W,j) = mulii(gel(W,j-1), gel(W,j));
   s = gsizeword(W);
   w = (GEN)pari_malloc(s*sizeof(long));
   av = (pari_sp)(w + s);
