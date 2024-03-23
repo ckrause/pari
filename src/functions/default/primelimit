@@ -17,7 +17,7 @@ Doc: \kbd{gp} precomputes a list of
  numbers, PARI guarantees that the first 6547 primes, up to and
  including $65557$, are precomputed, even if \kbd{primelimit} is $1$.
 
- The default value is $2^20$.
+ The default value is $2^{20}$.
  A value of $2^{32}$ allows to iterate over primes up to $2^{64}$, and is
  the upper range of what is generally useful. (Allow for a startup time of
  about 6 seconds.) On the other hand, \kbd{factorlimit} is more expensive: it
