@@ -8,24 +8,27 @@ Doc: \kbd{gp} precomputes a list of
  all primes less than \kbd{primelimit} at initialization time, and can build
  fast sieves on demand to quickly iterate over primes up to the \emph{square}
  of \kbd{primelimit}. These are used by functions looping over consecutive
- small primes. A related default is \kbd{factorlimit} deciding an upper
+ small primes. A related default is \kbd{factorlimit}, setting an upper
  bound for the small primes that can be quickly detected through fast trial
- division; note that is \kbd{primelimit} is set to a lower value than
- \kbd{factorlimit}, it is silently increase to match \kbd{factorlimit}.
+ division; you can still trial divide far above \kbd{factorlimit}, through
+ $\kbd{factor}(N, B)$ with large $B$ but a slow algorithm will be used
+ above \kbd{factorlimit}. If \kbd{primelimit} is set to a lower value than
+ \kbd{factorlimit}, it is silently increased to match \kbd{factorlimit}.
 
- Since almost all arithmetic functions eventually require some table of prime
- numbers, PARI guarantees that the first 6547 primes, up to and
- including $65557$, are precomputed, even if \kbd{primelimit} is $1$.
+ The default value is $2^{20}$. Since almost all arithmetic functions
+ eventually require some table of prime numbers, PARI guarantees that the
+ first 6547 primes, up to and including $65557 = 2^{16} + 21$, are precomputed,
+ even if \kbd{primelimit} is $1$.
 
- The default value is $2^{20}$.
- A value of $2^{32}$ allows to iterate over primes up to $2^{64}$, and is
+ A value of $2^{32}$ allows to quickly iterate over consecutive primes up
+ to $2^{64}$, and is
  the upper range of what is generally useful. (Allow for a startup time of
  about 6 seconds.) On the other hand, \kbd{factorlimit} is more expensive: it
  must build a product tree of all primes up to the bound, which can
  considerably increase startup time. A \kbd{factorlimit} of $2^{32}$ will
  increase startup time to about 5 minutes; and is only useful if you
  intend to call \kbd{factor}$(N, D)$ \emph{many} times with values of $D$ about
- $2^{32}$.
+ $2^{32}$ or $2^{33}$.
 
  This default is only used on startup: changing it will not recompute a new
  table. Here are sample timings for startup using increasing
