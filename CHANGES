@@ -11,6 +11,7 @@ BA   3- rnfconductor(...,[P, B]) -> wrong result [#2534]
      8- \o3 [tex2mail]: support \*
      9- rnfpolredabs didn't always return a canonical model [#2538]
     10- weber(I/2+1/3,2) -> SEGV
+BA  11- [mpi] setting datadir or path in .gprc caused crashes
 
   Changed
 BA   1- plotell renamed to plotarc

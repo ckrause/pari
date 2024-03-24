@@ -828,8 +828,9 @@ sd_datadir(const char *v, long flag)
   const char *str;
   if (v)
   {
-    mt_broadcast(snm_closure(is_entry("default"),
-                 mkvec2(strtoGENstr("datadir"), strtoGENstr(v))));
+    if (flag != d_INITRC)
+      mt_broadcast(snm_closure(is_entry("default"),
+                   mkvec2(strtoGENstr("datadir"), strtoGENstr(v))));
     if (pari_datadir) pari_free(pari_datadir);
     pari_datadir = path_expand(v);
   }
@@ -845,7 +846,8 @@ sd_PATH(const char *v, long flag, const char* s, gp_path *p)
 {
   if (v)
   {
-    mt_broadcast(snm_closure(is_entry("default"),
+    if (flag != d_INITRC)
+      mt_broadcast(snm_closure(is_entry("default"),
                  mkvec2(strtoGENstr(s), strtoGENstr(v))));
     pari_free((void*)p->PATH);
     p->PATH = pari_strdup(v);
