@@ -56,10 +56,13 @@ Doc: \kbd{gp} precomputes a list of
  2^26:     296 ms       50 ms      176 ms       233 ms
  2^29:   1,911 ms      266 ms    1,023 ms     1,404 ms
  2^32:  15,505 ms    2,406 ms    6,954 ms    15,264 ms
- @eprog\noindent This data shows that if you are expecting to often trial
- divide above 4 times \kbd{factorlimit}, do not bother changing the default
- value: the extra efficiency up to \kbd{factorlimit} is negligible compared
- to the naive trial division that will follow. Whereas the increase in
- memory usage and startup time are \emph{very} noticeable.
+ @eprog\noindent As expected, matching \kbd{factorlimit}'s fast trial
+ division to the desired trial division bound $D$ is optimal if we do not
+ take precomputation time into account. But this data
+ also shows that if you need to often trial divide above 4 \kbd{factorlimit},
+ then you should not bother and can just as well stick with the default value:
+ the extra efficiency up to \kbd{factorlimit} is negligible compared to the
+ naive trial division that will follow. Whereas the increase in memory usage
+ and startup time are \emph{very} noticeable.
 
  The default value is $2^{20}$.
