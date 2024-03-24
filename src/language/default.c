@@ -755,6 +755,9 @@ sd_factorlimit(const char *v, long flag)
 {
   GEN z = sd_ulong(v,flag,"factorlimit",&(GP_DATA->factorlimit),
                    0,2*(ulong)(LONG_MAX-1024) + 1,NULL);
+  if (v && flag != d_INITRC)
+      mt_broadcast(snm_closure(is_entry("default"),
+                   mkvec2(strtoGENstr("factorlimit"), strtoGENstr(v))));
   if (GP_DATA->primelimit < GP_DATA->factorlimit)
     GP_DATA->primelimit = GP_DATA->factorlimit;
   return z;
