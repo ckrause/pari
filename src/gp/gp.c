@@ -131,8 +131,6 @@ License, and comes WITHOUT ANY WARRANTY WHATSOEVER.");
   else
     pari_printf("\nparisize = %lu, primelimit = %lu, factorlimit = %lu",
                 pari_mainstack->rsize, p, f);
-  if (pari_mt_nbthreads > 1)
-    pari_printf(", nbthreads = %lu", pari_mt_nbthreads);
   pari_putc('\n');
 }
 

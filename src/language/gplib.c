@@ -1797,17 +1797,19 @@ pari_print_version(void)
   pari_sp av = avma;
   char *buf, *ver = what_cc();
   const char *kver = pari_kernel_version();
-  const char *date = paricfg_compiledate;
+  const char *date = paricfg_compiledate, *mt = paricfg_mt_engine;
+  ulong t = pari_mt_nbthreads;
 
   pari_center(paricfg_version);
   buf = stack_malloc(strlen(paricfg_buildinfo) + 2 + strlen(kver));
   (void)sprintf(buf, paricfg_buildinfo, kver);
   pari_center(buf);
-  buf = stack_malloc(strlen(date) + 32 + (ver? strlen(ver): 0));
+  buf = stack_malloc(128 + strlen(date) + (ver? strlen(ver): 0));
   if (ver) (void)sprintf(buf, "compiled: %s, %s", date, ver);
   else     (void)sprintf(buf, "compiled: %s", date);
   pari_center(buf);
-  sprintf(buf, "threading engine: %s",paricfg_mt_engine);
+  if (t > 1) sprintf(buf, "threading engine: %s, nbthreads = %lu",mt,t);
+  else       sprintf(buf, "threading engine: %s",mt);
   pari_center(buf);
   ver = what_readline();
   buf = stack_malloc(strlen(ver) + 64);
