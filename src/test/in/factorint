@@ -10,6 +10,10 @@ factorint(p^3*r,14)
 factorint(p^4*r,14)
 factorint(p^5*r,14)
 
+n=10^15+3;
+factor(n,10^6)
+factor(n,10^8)
+
 \\ #2165
 factor(78857659^4 * 59571877)
 \\ #2469

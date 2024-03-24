@@ -3148,7 +3148,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
 {
   GEN f, E, E2, P, P2;
   pari_sp av;
-  ulong p, lim = 0;
+  ulong p, maxp, lim = 0;
   long i, oldi = -1;
   forprime_t S;
 
@@ -3163,13 +3163,13 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
   E = cgetg(16, t_VECSMALL);
   if (!all || all > 2)
   {
-    ulong maxp = maxprime();
     long v = vals(n);
     if (v)
     {
       P[1] = 2; E[1] = v; i = 2;
       n >>= v; if (n == 1) goto END;
     }
+    maxp = maxprime();
     if (n <= maxp && prime_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
     lim = minss(usqrt(n), all? all-1: tridiv_boundu(n));
     if (!(hint & 16) && lim >= 128) /* expu(lim) >= 7 */
@@ -3192,9 +3192,11 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
         if (n <= maxp
             && prime_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
       }
+      maxp = GP_DATA->factorlimit;
     }
     else
     {
+      maxp = lim;
       u_forprime_init(&S, 3, lim);
       while ( (p = u_forprime_next_fast(&S)) )
       {
@@ -3214,6 +3216,24 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
           if (n != 1) { P[i] = n; E[i] = 1; i++; }
           goto END;
         }
+      }
+    }
+  }
+  if (lim > maxp)
+  { /* second pass usually empty, outside fast trial division range */
+    long v;
+    u_forprime_init(&S, maxp+1, lim);
+    while ((p = u_forprime_next(&S)))
+    {
+      int stop;
+      v = u_lvalrem_stop(&n, p, &stop);
+      if (v) {
+        P[i] = p;
+        E[i] = v; i++;
+      }
+      if (stop) {
+        if (n != 1) { P[i] = n; E[i] = 1; i++; }
+        goto END;
       }
     }
   }
@@ -3754,7 +3774,7 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
     }
     stackdummy(av, av2);
     if (lim > maxp)
-    { /* second pass, usually empty: outside private prime table */
+    { /* second pass usually empty, outside fast trial division range */
       av = avma; u_forprime_init(&T, maxp+1, lim); av2 = avma;
       while ((p = u_forprime_next(&T)))
       {
