@@ -2397,7 +2397,7 @@ bnrstark(GEN bnr, GEN subgrp, long prec)
 }
 
 GEN
-bnrstarkunit(GEN bnr, GEN subgrp, long prec)
+bnrstarkunit(GEN bnr, GEN subgrp)
 {
   long newprec, c, i;
   pari_sp av = avma;

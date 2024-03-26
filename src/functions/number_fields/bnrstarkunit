@@ -1,7 +1,7 @@
 Function: bnrstarkunit
 Section: number_fields
 C-Name: bnrstarkunit
-Prototype: GDGp
+Prototype: GDG
 Help: bnrstarkunit(bnr,{subgroup}): bnr being as output by
  bnrinit, returns the characteristic polynomial of the (conjectural) Stark unit
  corresponding to the module in bnr and the given congruence subgroup (the trivial
