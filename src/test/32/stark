@@ -131,5 +131,5 @@ y^2 - 2)*x^4 + Mod(-74642968*y - 105561124, y^2 - 2)*x^3 + Mod(262460*y + 37
 1189, y^2 - 2)*x^2 + Mod(-484*y - 690, y^2 - 2)*x + Mod(1, y^2 - 2)
   ***   at top-level: ...rinit(bnf,[id[1],[1,1]]);bnrstarkunit(bnr)
   ***                                             ^-----------------
-  *** bnrstarkunit: domain error in bnrstarkunit: number of unramified place != 1
-Total time spent: 4353
+  *** bnrstarkunit: domain error in bnrstarkunit: # unramified places != 1
+Total time spent: 5687

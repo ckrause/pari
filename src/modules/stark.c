@@ -2283,13 +2283,14 @@ LABDOUB:
       if (chi_get_deg(CHI) != 2) t = gmul2n(t, 1); /* character not real */
       z = gadd(z, t);
     }
+    z = gdivgu(z, den);
     if (flag == 2)
     {
-      gel(vzeta, i) = gexp(gmul2n(gdivgu(z,den), 1), newprec);
-      gel(vzeta, i+h) = gexp(gmul2n(gneg(gdivgu(z,den)), 1), newprec);
+      gel(vzeta, i) = gexp(gmul2n(z,1), newprec);
+      gel(vzeta, i+h) = ginv(gel(vzeta,i));
     }
     /* if flag == 0, we first try with the square-root of the Stark unit */
-    else gel(vzeta,i) = gmul2n(gcosh(gdivgu(z,den), newprec), 1);
+    else gel(vzeta,i) = gmul2n(gcosh(z, newprec), 1);
   }
   polrelnum = roots_to_pol(vzeta, 0);
   if (DEBUGLEVEL)
@@ -2399,39 +2400,34 @@ bnrstark(GEN bnr, GEN subgrp, long prec)
 GEN
 bnrstarkunit(GEN bnr, GEN subgrp)
 {
-  long newprec, c, i;
+  long newprec, deg;
   pari_sp av = avma;
-  GEN nf, data, dtQ, bnf, f, arch, bnrf, Cm, candD, D, QD, CR;
+  GEN nf, data, dtQ, bnf, bnrf, Cm, candD, D, QD, CR;
 
   /* check the input */
-  checkbnr(bnr); nf = bnr_get_nf(bnr);
+  checkbnr(bnr); bnf = bnr_get_bnf(bnr); nf = bnf_get_nf(bnf);
   if (!nf_get_varn(nf))
     pari_err_PRIORITY("bnrstarkunit", nf_get_pol(nf), "=", 0);
-  if (nf_get_degree(nf) == 1) pari_err_IMPL("bnrstarkunit for basefield Q");
+  deg = nf_get_degree(nf);
+  if (deg == 1) pari_err_IMPL("bnrstarkunit for basefield Q");
   if (nf_get_r2(nf)) pari_err_DOMAIN("bnrstarkunit", "r2", "!=", gen_0, nf);
   bnr_subgroup_sanitize(&bnr, &subgrp);
-  arch = gel(bnr_get_mod(bnr), 2);
-  c = 0;
-  for (i = 1; i < lg(arch); i++) { if (gcmp0(gel(arch, i))) c++; }
-  if (c != 1)
-    pari_err_DOMAIN("bnrstarkunit", "number of unramified place", "!=", gen_1, bnr);
-
-  /* initialize the data for AllStark */
+  if (lg(bid_get_archp(bnr_get_bid(bnr)))-1 != deg-1)
+    pari_err_DOMAIN("bnrstarkunit", "# unramified places", "!=", gen_1, bnr);
   bnr = shallowcopy(bnr);
   gel(bnr,1) = shallowcopy(gel(bnr,1));
   gmael(bnr,1,7) = shallowcopy(gmael(bnr,1,7));
-  bnf  = bnr_get_bnf(bnr);
-  f    = gel(bnr_get_mod(bnr), 1);
-  bnrf = Buchray(bnf, f, nf_INIT);
+
+  bnrf = Buchray(bnf, gel(bnr_get_mod(bnr), 1), nf_INIT);
   subgrp = abmap_subgroup_image(bnrsurjection(bnr, bnrf), subgrp);
-  dtQ   = InitQuotient(subgrp);
-  Cm    = ComputeKernel(bnr, bnrf, dtQ);
+  dtQ  = InitQuotient(subgrp);
+  Cm   = ComputeKernel(bnr, bnrf, dtQ);
   candD = subgrouplist_cond_sub(bnr, Cm, mkvec(gen_2));
   if (lg(candD) != 2) pari_err(e_MISC, "incorrect modulus in bnrstark");
-  D     = gel(candD, 1);
-  QD    = InitQuotient(D);
-  CR    = InitChar(bnr, AllChars(bnr, QD, 1), 0, DEFAULTPREC);
-  data  = mkvec4(bnr, D, subgroup_classes(Cm), CR);
+  D    = gel(candD, 1);
+  QD   = InitQuotient(D);
+  CR   = InitChar(bnr, AllChars(bnr, QD, 1), 0, DEFAULTPREC);
+  data = mkvec4(bnr, D, subgroup_classes(Cm), CR);
   CplxModulus(data, &newprec);
   return gerepileupto(av, AllStark(data, 2, newprec));
 }
