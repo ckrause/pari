@@ -3148,7 +3148,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
 {
   GEN f, E, E2, P, P2;
   pari_sp av;
-  ulong p, maxp, lim = 0;
+  ulong p, lim = 0;
   long i, oldi = -1;
   forprime_t S;
 
@@ -3163,6 +3163,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
   E = cgetg(16, t_VECSMALL);
   if (!all || all > 2)
   {
+    ulong maxp;
     long v = vals(n);
     if (v)
     {
@@ -3218,22 +3219,22 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
         }
       }
     }
-  }
-  if (lim > maxp)
-  { /* second pass usually empty, outside fast trial division range */
-    long v;
-    u_forprime_init(&S, maxp+1, lim);
-    while ((p = u_forprime_next(&S)))
-    {
-      int stop;
-      v = u_lvalrem_stop(&n, p, &stop);
-      if (v) {
-        P[i] = p;
-        E[i] = v; i++;
-      }
-      if (stop) {
-        if (n != 1) { P[i] = n; E[i] = 1; i++; }
-        goto END;
+    if (lim > maxp)
+    { /* second pass usually empty, outside fast trial division range */
+      long v;
+      u_forprime_init(&S, maxp+1, lim);
+      while ((p = u_forprime_next(&S)))
+      {
+        int stop;
+        v = u_lvalrem_stop(&n, p, &stop);
+        if (v) {
+          P[i] = p;
+          E[i] = v; i++;
+        }
+        if (stop) {
+          if (n != 1) { P[i] = n; E[i] = 1; i++; }
+          goto END;
+        }
       }
     }
   }
