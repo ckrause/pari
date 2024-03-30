@@ -171,5 +171,8 @@ issquare((-1+2*x-x^2)/(-4+4*x-x^2))
 if (ispower(-(1+x)^20/-(2+x)^20,20,&z), z)
 ispower(-(1+x)^20/-(2+x)^20,20)
 
-
-
+\\#2543
+a=22548^7516;
+ispower(a^3, 3)
+ispower(a^5, 5)
+ispower(a^31, 31)
