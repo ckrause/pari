@@ -40,8 +40,8 @@ if ($emacs_mode) {
 } else {
   system('exuberant-ctags', '-f', $tmptags, @files)
     && system('ctags-exuberant', '-f', $tmptags, @files)
-    && system('ctags', '-dT', '-o', $tmptags, @files) # gctags
     && system('ctags', '-f', $tmptags, @files)
+    && system('ctags', '-dT', '-o', $tmptags, @files) # gctags
     && die("ctags failed");
   open(T,"$tmptags");
 
