@@ -1919,6 +1919,7 @@ sqrtnr_abs(GEN a, long n)
   GEN x, b;
   long eextra, eold, n1, n2, prec, B, v;
   ulong mask;
+  double K = n, X;
 
   if (n == 1) return mpabs(a);
   if (n == 2) return sqrtr_abs(a);
@@ -1932,10 +1933,12 @@ sqrtnr_abs(GEN a, long n)
     if (v) shiftr_inplace(x, v);
     return gerepileuptoleaf(av, x);
   }
+  X = rtodbl(x);
+  K = (K*K-1) / (12*X*X); /* |x_{n+1} - x| < K |x_n - x|^3 */
+  eextra = dblexpo(K);
   n1 = n+1;
   n2 = 2*n;
   B = prec2nbits(prec);
-  eextra = expu(n)-1;
   mask = cubic_prec_mask(B + 63);
   eold = 1;
   for(;;)

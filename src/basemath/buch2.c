@@ -2448,11 +2448,12 @@ fact_update(GEN R, FB_t *F, long ipr, GEN c)
 static long
 Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I, GEN NI,
   FACT *fact, long Nrelid, FP_t *fp, GEN rex, long jid, long jid0, long e0,
-  long prec, long *Nsmall, long *Nfact)
+  long *Nsmall, long *Nfact)
 {
   pari_sp av;
   GEN G = nf_get_G(nf), G0 = nf_get_roundG(nf), r, u, gx, cgx, inc, ideal;
-  long j, k, skipfirst, relid = 0, try_factor = 0, N = nf_get_degree(nf);
+  long prec = nf_get_prec(nf), N = nf_get_degree(nf);
+  long j, k, skipfirst, relid = 0, try_factor = 0;
   double BOUND, B1, B2;
 
   inc = const_vecsmall(N, 1);
@@ -2569,7 +2570,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I, GEN NI,
 static void
 small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, FACT *fact, long j0)
 {
-  const long prec = nf_get_prec(nf), N = nf_get_degree(nf);
+  const long N = nf_get_degree(nf);
   FP_t fp;
   pari_sp av;
   GEN L_jid = F->L_jid, Np0 = NULL, p0 = j0? gel(F->LP,j0): NULL;
@@ -2610,7 +2611,7 @@ small_norm(RELCACHE_t *cache, FB_t *F, GEN nf, long Nrelid, FACT *fact, long j0)
     else
     { Nid = pr_norm(id); id = pr_hnf(nf, id);}
     if (Fincke_Pohst_ideal(cache, F, nf, id, Nid, fact, Nrelid, &fp,
-                           NULL, j, j0, e0, prec, &Nsmall, &Nfact)) break;
+                           NULL, j, j0, e0, &Nsmall, &Nfact)) break;
   }
   if (DEBUGLEVEL && Nsmall)
   {
@@ -2645,7 +2646,7 @@ rnd_rel(RELCACHE_t *cache, FB_t *F, GEN nf, FACT *fact)
 {
   pari_timer T;
   GEN L_jid = F->L_jid, R, NR, ex;
-  long i, l = lg(L_jid), prec = nf_get_prec(nf), Nfact = 0;
+  long i, l = lg(L_jid), Nfact = 0;
   FP_t fp;
   pari_sp av;
 
@@ -2664,7 +2665,7 @@ rnd_rel(RELCACHE_t *cache, FB_t *F, GEN nf, FACT *fact)
     GEN P = gel(F->LP, j), Nid = mulii(NR, pr_norm(P));
     if (DEBUGLEVEL>1) err_printf("\n*** Ideal %ld: %Ps\n", j, vecslice(P,1,4));
     if (Fincke_Pohst_ideal(cache, F, nf, idealHNF_mul(nf, R, P), Nid, fact,
-          RND_REL_RELPID, &fp, ex, j, 0, 0, prec, NULL, &Nfact)) break;
+          RND_REL_RELPID, &fp, ex, j, 0, 0, NULL, &Nfact)) break;
   }
   if (DEBUGLEVEL)
   {
@@ -2797,8 +2798,7 @@ static int
 be_honest(FB_t *F, GEN nf, GEN auts, FACT *fact)
 {
   long i, iz, nbtest;
-  long lgsub = lg(F->subFB), KCZ0 = F->KCZ;
-  long N = nf_get_degree(nf), prec = nf_get_prec(nf);
+  long lgsub = lg(F->subFB), KCZ0 = F->KCZ, N = nf_get_degree(nf);
   FP_t fp;
   pari_sp av;
 
@@ -2834,7 +2834,7 @@ be_honest(FB_t *F, GEN nf, GEN auts, FACT *fact)
       for (nbtest=0;;)
       {
         if (Fincke_Pohst_ideal(NULL, F, nf, id, Nid, fact, 0, &fp,
-                               NULL, 0, 0, 0, prec, NULL, NULL)) break;
+                               NULL, 0, 0, 0, NULL, NULL)) break;
         if (++nbtest > maxtry_HONEST)
         {
           if (DEBUGLEVEL)
