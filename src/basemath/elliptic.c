@@ -7864,6 +7864,8 @@ elltrace(GEN E, GEN P)
   checkell(E);
   checkellpt(P);
   if (ell_is_inf(P)) return gcopy(P); /* P == oo */
+  if (!oncurve(E,P))
+    pari_err_DOMAIN("elltrace", "point", "not on", strtoGENstr("E"), P);
   /* More checks */
 
   xP = gel(P,1); yP = gel(P,2);
@@ -7921,8 +7923,8 @@ elltrace(GEN E, GEN P)
   R = gsub(R, gsqr(U));
   /* Discard Galois orbit of P */
   R = RgX_div(R, RgXQ_minpoly(xP,T, 0));
-  /* What is left is either constant -> return oo, or deg 1 -> nontrivial trace. */
-  if(degpol(R)==0) { set_avma(av); retmkvec(gen_0); }
+  /* What is left is either constant -> return 0, or deg 1 -> nontrivial trace. */
+  if(degpol(R)<=0) { set_avma(av); retmkvec(gen_0); }
   /* Recover the trace */
   xQ = gneg(gdiv(gel(R,2), gel(R,3)));
   yQ = gneg(gdiv(poleval(U, xQ), poleval(V, xQ)));
