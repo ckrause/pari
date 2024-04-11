@@ -2377,7 +2377,6 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
     U = ZM2_lll_norms(x, flag, pN);
     if (U) return U;
   }
-  rank = ZM_rank(x);
   if (flag & LLL_GRAM)
   { G = x; B = NULL; U = matid(n); is_upper = 0; is_lower = 0; }
   else
@@ -2387,7 +2386,7 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
     is_lower = !B || is_upper || keepfirst ? 0: ZM_is_lower(B);
     if (is_lower) L = RgM_flip(B);
   }
-  if(DEBUGLEVEL>=4) timer_start(&T);
+  rank = (flag&LLL_NOFLATTER) ? 0: ZM_rank(x);
   if (n > 2 && !(flag&LLL_NOFLATTER))
   {
     GEN R = B ? (is_upper ? B : (is_lower ? L : get_gramschmidt(B, rank)))
@@ -2407,6 +2406,7 @@ ZM_lll_norms(GEN x, double DELTA, long flag, GEN *pN)
     } else
       useflatter = 1;
   } else useflatter = 0;
+  if(DEBUGLEVEL>=4) timer_start(&T);
   if (useflatter)
   {
     if (is_lower)
