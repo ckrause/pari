@@ -7883,7 +7883,7 @@ elltrace(GEN E, GEN P)
   if (!T) pari_err_TYPE("elltrace",yP);
   v = varn(T); n = degpol(T);
   /* Trivial cases */
-  if (n == 1) { set_avma(av); return gcopy(P); }
+  if (n == 1) { return gerepilecopy(av, mkvec2(xP,yP)); }
   xP = to_RgX(xP, v);
   yP = to_RgX(yP, v);
   if (degpol(xP) <= 0)
