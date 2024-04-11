@@ -1122,7 +1122,7 @@ gen_comb(long cdep, GEN A, GEN e, struct qfauto *qf, long lim)
     GEN trans, ccoef, cF, B, BI, sumveclist, sumvecbase;
     GEN list = scpvecs(&sumveclist, i, e, cdep, qf);
     GEN M = zm_to_ZM(sumveclist);
-    GEN T = lllgramint(qf_ZM_apply(A,M));
+    GEN T = ZM_lll(qf_ZM_apply(A,M), .99, LLL_NOFLATTER | LLL_IM | LLL_GRAM);
     if (lim && lg(T)-1>=lim) return NULL;
     B = ZM_mul(M,T);
     BI = RgM_inv(B);
