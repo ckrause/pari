@@ -2454,6 +2454,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I, GEN NI,
   GEN G = nf_get_G(nf), G0 = nf_get_roundG(nf), r, u, gx, cgx, inc, ideal;
   long prec = nf_get_prec(nf), N = nf_get_degree(nf);
   long j, k, skipfirst, relid = 0, try_factor = 0;
+  long try_elt = 0, maxtry_ELEMENT = 4*maxtry_FACT*maxtry_FACT;
   double BOUND, B1, B2;
 
   inc = const_vecsmall(N, 1);
@@ -2502,6 +2503,7 @@ Fincke_Pohst_ideal(RELCACHE_t *cache, FB_t *F, GEN nf, GEN I, GEN NI,
       {
         if (!fl)
         {
+          if (++try_elt > maxtry_ELEMENT) goto END_Fincke_Pohst_ideal;
           p = (double)fp->x[k] + fp->z[k];
           if (fp->y[k] + p*p*fp->v[k] <= BOUND) break;
 
