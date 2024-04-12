@@ -1364,7 +1364,7 @@ ellheegner(GEN E)
     hnaive = hnaive_max(E, ht);
     if (DEBUGLEVEL) err_printf("Naive height <= %Ps\n", hnaive);
     hnaive = gadd(shiftr(hnaive,-1),glog(dAi,prec));
-    bitneeded = itos(gceil(divrr(hnaive, mplog2(prec)))) + 12;
+    bitneeded = itos(gceil(divrr(hnaive, mplog2(prec)))) + 32;
     if (DEBUGLEVEL) err_printf("precision = %ld\n", bitneeded);
     if (bitprec>=bitneeded) break;
     bitprec = bitneeded;
