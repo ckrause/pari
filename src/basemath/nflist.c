@@ -229,10 +229,10 @@ ceildiv(GEN X, GEN Y)
 
 static GEN
 nfY(GEN T)
-{ T = shallowcopy(T); setvarn(T,1); return nfinit(T, DEFAULTPREC); }
+{ T = shallowcopy(T); setvarn(T,1); return nfinit(T, MEDDEFAULTPREC); }
 static GEN
 bnfY(GEN T)
-{ T = shallowcopy(T); setvarn(T,1); return Buchall(T, nf_FORCE, DEFAULTPREC); }
+{ T = shallowcopy(T); setvarn(T,1); return Buchall(T, nf_FORCE, MEDDEFAULTPREC); }
 static GEN
 bnf_get_disc(GEN b) { return nf_get_disc(bnf_get_nf(b)); }
 
@@ -609,7 +609,7 @@ mybnrclassfield_X(GEN bnf, GEN F, long d, GEN X, GEN Xinf, GEN G)
     }
     setlg(L, j); if (j == 1) return L;
   }
-  return shallowconcat1(bnrclassfield(bnr, L, 0, DEFAULTPREC));
+  return shallowconcat1(bnrclassfield(bnr, L, 0, MEDDEFAULTPREC));
 }
 static GEN
 mybnrclassfield_N(GEN bnf, GEN F, GEN N, long d)
@@ -1794,7 +1794,7 @@ makeD4(GEN N, GEN field, long s)
 
     set_avma(av3);
     if (kroiu(D, cond) == -1) continue;
-    bnf = Buchall(Y2m(D), nf_FORCE, DEFAULTPREC);
+    bnf = Buchall(Y2m(D), nf_FORCE, MEDDEFAULTPREC);
     I = ideals_by_norm(bnf_get_nf(bnf), utoipos(cond));
     Arch = signe(D) > 0 ? listarch : archempty;
     /* restrict to fields which are not Galois over Q [eliminate V4/C4] */
@@ -1831,7 +1831,7 @@ nflist_D4_worker(GEN D, GEN X, GEN Xinf, GEN listarch)
   long c0, c1, c2, cond, l = itos(divii(X, D2)) + 1;
   long lmin = itos(ceildiv(Xinf, D2));
 
-  bnf = Buchall(Y2m(D), nf_FORCE, DEFAULTPREC);
+  bnf = Buchall(Y2m(D), nf_FORCE, MEDDEFAULTPREC);
   vI = ideallist(bnf, l-1);
   Arch = signe(D) > 0 ? listarch : mkvec(cgetg(1,t_VECSMALL));
   G = lg(Arch) != 3? mkvec2(galoisinit(bnf, NULL), gen_0): NULL;
@@ -2187,7 +2187,7 @@ S4data(GEN pol, long s)
   long isA4;
 
   if (checkS4data(pol)) return pol;
-  bnf = Buchall(pol, nf_FORCE, DEFAULTPREC);
+  bnf = Buchall(pol, nf_FORCE, MEDDEFAULTPREC);
   nf = bnf_get_nf(bnf); Gid = makeGid(nf);
   lvunit = makevunits(bnf); isA4 = Z_issquare(nf_get_disc(nf));
   sgnu = (s != -1 && nf_get_r1(nf) == 3)? nfsign(nf, lvunit): gen_0;
@@ -2477,7 +2477,7 @@ C5prim(GEN nf, GEN pr5, GEN z, GEN eps, GEN b)
 static GEN
 C5bnf()
 {
-  GEN bnf = Buchall(polcyclo(5,1), nf_FORCE, DEFAULTPREC), nf = bnf_get_nf(bnf);
+  GEN bnf = Buchall(polcyclo(5,1), nf_FORCE, MEDDEFAULTPREC), nf = bnf_get_nf(bnf);
   GEN aut = poltobasis(nf, pol_xn(2, 1));
   GEN p5 = idealprimedec_galois(nf, utoipos(5));
   return mkvec3(bnf, aut, p5);
@@ -2919,7 +2919,7 @@ makeMgen(long ell, long a, GEN N, GEN field, long s)
         F = idealmul(nf, F, idealpows(nf, pell, vell / q));
       }
       G = mkvec2(galoisinit(nf, NULL), gen_2);
-      K = mybnrclassfield_X(Buchall(nf, nf_FORCE, DEFAULTPREC),
+      K = mybnrclassfield_X(Buchall(nf, nf_FORCE, MEDDEFAULTPREC),
                             F, ell, NULL, NULL, G);
       l = lg(K);
       for (k = ck = 1; k < l; k++)
@@ -2954,7 +2954,7 @@ makeMgenresolvent(long ell, long a, GEN pol, long flag)
       long e;
       F2 = divis(F2, 5);
       if (!Z_issquareall(F2, &F)) pari_err_BUG("nfresolvent [F5]");
-      nf = nfinit(R, DEFAULTPREC); pell = getpell(nf, 5, &e);
+      nf = nfinit(R, MEDDEFAULTPREC); pell = getpell(nf, 5, &e);
       if (e == 4) pell = idealsqr(nf, pell);
       F = idealmul(nf, F, pell);
     }
@@ -4913,7 +4913,7 @@ C32D4pol(GEN bnf, GEN id)
   long l, i, c;
 
   if (cyc_is_trivial(bnr_get_cyc(bnr))) return NULL;
-  v = bnrclassfield(bnr, g3, 0, DEFAULTPREC);
+  v = bnrclassfield(bnr, g3, 0, MEDDEFAULTPREC);
   if (typ(v) == t_POL) v = mkvec(v);
   l = lg(v);
   for (i = c = 1; i < l; i++)
