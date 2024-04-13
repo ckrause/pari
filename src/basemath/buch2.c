@@ -316,6 +316,7 @@ subFB_change(FB_t *F)
     for (i = 1; i < lg(L_jid); i++)
     {
       long l = L_jid[i];
+      if (bad_subFB(F, l)) continue;
       yes[iyes++] = l;
       present[l] = 1;
       if (iyes > minsFB) break;
@@ -327,7 +328,7 @@ subFB_change(FB_t *F)
     for ( ; i < lv; i++)
     {
       long l = F->perm[i];
-      if (present[l]) continue;
+      if (present[l] || bad_subFB(F, l)) continue;
       yes[iyes++] = l;
       if (iyes > minsFB) break;
     }

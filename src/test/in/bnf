@@ -129,4 +129,6 @@ localprec(38);bnf=bnfinit(P,1); apply(x->nfeltnorm(bnf,x),bnf.fu)
 bnf=bnfinit(y^6-4*y^5-13*y^4+41*y^3+230*y^2+284*y+184,1);
 apply(x->idealnorm(bnf,x),bnf.fu)
 
+localbitprec(64); setrand(1); bnfinit(x^4 - 330*x^2 + 5445).cyc
+
 \\ ERRORS: keep at end of file
