@@ -11,11 +11,12 @@ Doc: applies the closure \kbd{f} to the image $y$ of $x$ by the map \kbd{M}
  To apply \kbd{f} to all entries of \kbd{M} use \kbd{apply(f, M)} instead.
 
  There are two main use cases:
+
  \item performing a computation on a value without copying it:
  \bprog
  ? M=Map();mapput(~M,"a",mathilbert(100));
  ? for(i=1,1000,matsize(mapget(M,"a"))) \\ Slow
- ? for(i=1,1000,mapapply(M,"a",matsize)) \\ Fast
+ ? for(i=1,1000,mapapply(~M,"a",matsize)) \\ Fast
  @eprog
 
  \item modifying the components of the value in place, for example to append an
