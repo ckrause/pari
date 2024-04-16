@@ -859,7 +859,8 @@ InitChar(GEN bnr, GEN ch, long all, long prec)
   return mkvec2(vChar, dataCR);
 }
 
-/* recompute dataCR with the new precision, modify bnr components in place */
+/* recompute dataCR with the new precision, in place. Don't modify bnr
+ * components in place  */
 static void
 CharNewPrec(GEN data, long prec)
 {
@@ -872,10 +873,11 @@ CharNewPrec(GEN data, long prec)
   C = get_C(nf, prec2); l = lg(dataCR);
   for (j = 1; j < l; j++)
   {
-    GEN f0;
+    GEN f0, bnr;
     D = gel(dataCR,j); f0 = gel(bnr_get_mod(ch_bnr(D)), 1);
     ch_C(D) = mulrr(C, gsqrt(ZM_det_triangular(f0), prec2));
-    gmael(ch_bnr(D), 1, 7) = nf;
+    ch_bnr(D) = bnr = shallowcopy(ch_bnr(D));
+    gel(bnr,1) = shallowcopy(gel(bnr,1)); gmael(bnr,1,7) = nf;
     ch_CHI(D) = get_Char(gel(ch_CHI(D),1), prec2);
     ch_CHI0(D)= get_Char(gel(ch_CHI0(D),1), prec2);
   }
@@ -2414,10 +2416,6 @@ bnrstarkunit(GEN bnr, GEN subgrp)
   bnr_subgroup_sanitize(&bnr, &subgrp);
   if (lg(bid_get_archp(bnr_get_bid(bnr)))-1 != deg-1)
     pari_err_DOMAIN("bnrstarkunit", "# unramified places", "!=", gen_1, bnr);
-  bnr = shallowcopy(bnr);
-  gel(bnr,1) = shallowcopy(gel(bnr,1));
-  gmael(bnr,1,7) = shallowcopy(gmael(bnr,1,7));
-
   bnrf = Buchray(bnf, gel(bnr_get_mod(bnr), 1), nf_INIT);
   subgrp = abmap_subgroup_image(bnrsurjection(bnr, bnrf), subgrp);
   dtQ  = InitQuotient(subgrp);
