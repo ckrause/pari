@@ -1050,9 +1050,8 @@ static GEN
 EvalCoeff(GEN z, int* c, long deg)
 {
   long i,j;
-  GEN e, r;
+  GEN r, e = NULL;
 
-  if (!c) return gen_0;
 #if 0
   /* standard Horner */
   e = stoi(c[deg - 1]);
@@ -1060,7 +1059,6 @@ EvalCoeff(GEN z, int* c, long deg)
     e = gadd(stoi(c[i]), gmul(z, e));
 #else
   /* specific attention to sparse polynomials */
-  e = NULL;
   for (i = deg-1; i >=0; i=j-1)
   {
     for (j=i; c[j] == 0; j--)
