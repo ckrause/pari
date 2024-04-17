@@ -1439,9 +1439,9 @@ GetValue1(GEN bnr, long flag, long prec)
   if (flag)
   {
     GEN diff = divcond(bnr);
-    long i, l;
-    l = lg(diff) - 1; r += l;
-    for (i = 1; i <= l; i++) c = gmul(c, glog(pr_norm(gel(diff,i)), prec));
+    long i, l = lg(diff);
+    r += l - 1;
+    for (i = 1; i < l; i++) c = gmul(c, glog(pr_norm(gel(diff,i)), prec));
   }
   return mkvec2(utoi(r), c);
 }
