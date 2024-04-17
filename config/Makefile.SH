@@ -702,8 +702,7 @@ else
    vcfile=`sed  -n '/gitdir: / { s/gitdir: \(.*\)/\1/;p;q}' $TOP/.git`/index
  fi
 fi
-echo $vcfile
-if  test -n $vcfile && test -f "$vcfile"; then
+if test -n "$vcfile" && test -f "$vcfile"; then
   cat >> $file <<EOT
 paricfg.h: $vcfile $cfg/version
 	-sh $cfg/setversion
