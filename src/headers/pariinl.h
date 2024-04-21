@@ -3069,6 +3069,8 @@ bid_get_fact(GEN bid) { return gmael(bid,3,1); }
 INLINE GEN
 bid_get_fact2(GEN bid) { return gmael(bid,3,2); }
 INLINE GEN
+bid_get_MOD(GEN bid) { GEN y = gel(bid,4); return lg(y) == 4? gel(y,3): NULL; }
+INLINE GEN
 bid_get_sprk(GEN bid) { return gmael(bid,4,1); }
 INLINE GEN
 bid_get_sarch(GEN bid) { return gmael(bid,4,2); }

@@ -194,6 +194,8 @@ q = 6699006819422466883768892064086995621351136527039076083486962476654393027551
 M = 784; f = 13*q;
 bid = idealstar(nf,f,,M); bid.cyc
 ideallog(nf,11,bid)
+\\ #2549
+setrand(1);nf=nfinit(x^2+1);bid=idealstar(nf,49,,2);ideallog(nf,3,bid)
 
 \\ Errors, keep at end of file
 ideallist(x,-300)

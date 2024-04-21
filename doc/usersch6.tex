@@ -415,9 +415,16 @@ as well as the polynomials $T$ and $P$.
 \subsec{Extracting info from a \kbd{bid} structure}
 
 These functions expect a true \var{bid} argument, attached to a modulus $I
-= I_0 I_\infty$ in a number field $K$.
+= I_0 I_\infty$ in a number field $K$. The underlying abelian group is
+$G = (\Z_K/I)^*$. Not that if the \var{bid} was initialized by \kbd{Idealstarmod}
+with a non-\kbd{NULL} \kbd{cycmod} argument, computations take place in
+$G / G^\kbd{cycmod}$ instead.
 
 \fun{GEN}{bid_get_mod}{GEN bid} returns the modulus attached to the \var{bid}.
+
+\fun{GEN}{bid_get_MOD}{GEN bid} returns the integer \kbd{cycmod}
+given as argument to \tet{Idealstarmod}, or \kbd{NULL} if we used \kbd{Idealstar}
+to initialize \kbd{bid}.
 
 \fun{GEN}{bid_get_grp}{GEN bid} returns the abelian group attached
 to $(\Z_K/I)^*$.

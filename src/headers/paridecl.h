@@ -6049,6 +6049,7 @@ INLINE GEN    ZV_ZV_mod(GEN x, GEN y);
 INLINE GEN    abgrp_get_cyc(GEN x);
 INLINE GEN    abgrp_get_gen(GEN x);
 INLINE GEN    abgrp_get_no(GEN x);
+INLINE GEN    bid_get_MOD(GEN bid);
 INLINE GEN    bid_get_U(GEN bid);
 INLINE GEN    bid_get_arch(GEN bid);
 INLINE GEN    bid_get_archp(GEN bid);

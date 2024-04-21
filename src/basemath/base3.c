@@ -3019,12 +3019,13 @@ split_U(GEN U, GEN Sprk)
 static void
 init_zlog_mod(zlog_S *S, GEN bid, GEN mod)
 {
-  GEN fa2 = bid_get_fact2(bid);
+  GEN fa2 = bid_get_fact2(bid), MOD = bid_get_MOD(bid);
   S->U = bid_get_U(bid);
   S->hU = lg(bid_get_cyc(bid))-1;
   S->archp = bid_get_archp(bid);
   S->sprk = bid_get_sprk(bid);
   S->bid = bid;
+  if (MOD) mod = mod? gcdii(mod, MOD): MOD;
   S->mod = mod;
   S->P = gel(fa2,1);
   S->k = gel(fa2,2);
@@ -3385,7 +3386,9 @@ Idealstarmod_i(GEN nf, GEN ideal, long flag, GEN MOD)
   y = bid_grp(nf, u1, cyc, gen, x, sarch);
   if (!(flag & nf_INIT)) return y;
   U = split_U(U, sprk);
-  return mkvec5(mkvec2(x, arch), y, mkvec2(fa,fa2), mkvec2(sprk, sarch), U);
+  return mkvec5(mkvec2(x, arch), y, mkvec2(fa,fa2),
+                MOD? mkvec3(sprk, sarch, MOD): mkvec2(sprk, sarch),
+                U);
 }
 
 static long
