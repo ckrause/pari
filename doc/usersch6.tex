@@ -929,12 +929,21 @@ shallow version of \tet{famat_mulpow} where $e$ is a small integer.
 \fun{GEN}{famat_div_shallow}{GEN f, GEN g} return $f/g$; shallow.
 
 \fun{GEN}{famat_Z_gcd}{GEN M, GEN n} restrict the \var{famat} $M$ to
-the prime power dividing $n$.
+the prime powers dividing $n$.
 
 \fun{GEN}{to_famat}{GEN x, GEN k} given an element $x$ and an exponent
 $k$, returns the \var{famat} $x^k$.
 
 \fun{GEN}{to_famat_shallow}{GEN x, GEN k} same, as a shallow function.
+
+\fun{GEN}{Z_to_famat}{GEN x} converts the \typ{INT} $x$ to a \var{famat}. This
+does not factor $x$ but will replace it by $y^k$ with $y$ integral and $k$
+maximal. Note that $0$ gets converted to $0^1$. Shallow function.
+
+\fun{GEN}{Q_to_famat}{GEN x} converts the \typ{INT} or \typ{FRAC} $x$
+to a \var{famat}. If $x$ is a \typ{INT}, as \tet{Z_to_famat}. Else, this does
+not factor $x$ but will replace it by $y^a z^{-b}$ with integral $y$ and $z$
+and maximal (positive) $a$ and $b$. Shallow function.
 
 \fun{GEN}{famatV_factorback}{GEN v, GEN e} given a vector of \kbd{famat}s
 $v$ and a \kbd{ZV} $e$ return the \kbd{famat} $\prod_i v[i]^{e[i]}$. Shallow
