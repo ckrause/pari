@@ -1075,7 +1075,7 @@ randomprime0(GEN N, GEN q)
   return NULL;
 }
 
-/* cf gen_search; assume 0 <= x <= maxprime() = T[T[0]]. Return i > 0 such that
+/* cf gen_search; assume 0 <= x <= maxprimelim(). Return i > 0 such that
  * x = T[i] or -i < 0 such that T[i-1] < x < T[i]; return -1 for the special
  * case 0 <= x < 2 */
 long
