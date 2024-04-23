@@ -154,7 +154,7 @@ Doc:
  We are given a number field $K = \kbd{nfinit}(T)$, attached to $K = \Q[Y]/(T)$,
  $T \in \Q[Y]$, and a relative extension $L = \kbd{rnfinit}(K, P)$, attached
  to $L = K[X]/(P)$, $P \in K[X]$.
- In all contexts (except \kbd{rnfeltabstorel}, see below), an
+ In all contexts (except \kbd{rnfeltabstorel} and \kbd{rnfeltdown}, see below), an
  \tev{algebraic number} is given as
 
  \item a \typ{INT}, \typ{FRAC} or \typ{POL} in $\Q[Y]$ (implicitly modulo $T$)
@@ -176,10 +176,11 @@ Doc:
  computation of \kbd{nf.zk} is deterministic); but in other cases, the
  integer bases attached to $K$ and \kbd{Labs} may differ.
 
- \misctitle{Special case: \kbd{rnfabstorel}} This function assumes
+ \misctitle{Special case: \kbd{rnfeltabstorel} and \kbd{rnfeltdown}}
+ These two functions assume
  that elements are given in absolute representation (with respect to
  \kbd{Labs.zk} or modulo \kbd{Labs.pol} and converts them to relative
- representation modulo \kbd{$L$.pol}. In that function (only), a \typ{POL} in
+ representation modulo \kbd{$L$.pol}. In these two functions (only), a \typ{POL} in
  $X$ is implicitly understood modulo \kbd{Labs.pol} and a \typ{COL}
  of length $[L:\Q]$ refers to the integral basis \kbd{Labs.zk} in all cases,
  including $L = K$.
