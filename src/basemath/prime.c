@@ -1095,24 +1095,24 @@ prime_search(ulong x)
 ulong
 uprimepi(ulong a)
 {
-  ulong p, n, maxp = maxprime();
-  if (a <= maxp)
+  ulong maxp, p, n;
+  forprime_t S;
+  long i;
+  if (a <= maxprimelim())
   {
-    long i = prime_search(a);
+    i = prime_search(a);
     return (ulong)(i > 0? i: -i-1);
   }
-  else
-  {
-    long i = prime_table_closest_p(a);
-    forprime_t S;
-    p = prime_table[i].p;
-    if (p > a) p = prime_table[--i].p;
-    /* p = largest prime in prime_table <= a */
-    if (p > maxp) n = prime_table[i].n; else { p = maxp; n = maxprimeN(); }
-    (void)u_forprime_init(&S, p+1, a);
-    for (; p; n++) p = u_forprime_next(&S);
-    return n-1;
-  }
+  /* a > maxprimelim >= maxprime */
+  i = prime_table_closest_p(a);
+  p = prime_table[i].p;
+  if (p > a) p = prime_table[--i].p;
+  /* p = largest prime in prime_table <= a and a > maxprime */
+  maxp = maxprime(); /* replace p by maxprime if larger */
+  if (p > maxp) n = prime_table[i].n; else { p = maxp; n = maxprimeN(); }
+  (void)u_forprime_init(&S, p+1, a);
+  for (; p; n++) p = u_forprime_next(&S);
+  return n-1;
 }
 
 GEN
