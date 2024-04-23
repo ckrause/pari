@@ -13,6 +13,5 @@ Doc: $\var{rnf}$ being a relative number field extension $L/K$ as output by
  %2 = Mod(x, x^2 + Mod(-y, y^2 + 1))
  ? rnfeltnorm(L, 2)
  %3 = 4
- ? rnfeltnorm(L, Mod(x, x^2-y))
  @eprog
 

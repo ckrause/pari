@@ -13,6 +13,5 @@ Doc: $\var{rnf}$ being a relative number field extension $L/K$ as output by
  %2 = 0
  ? rnfelttrace(L, 2)
  %3 = 4
- ? rnfelttrace(L, Mod(x, x^2-y))
  @eprog
 
