@@ -15,6 +15,7 @@ BA  11- [mpi] setting datadir or path in .gprc caused crashes
     12- imprecise sqrtnr [#2543]
     13- idealstar(nf,id,,MOD). Need to store MOD in the structure, otherwise
         exceptions may occur [#2549]
+BA  14- ellsaturation was leaking variable numbers
 
   Changed
 BA   1- plotell renamed to plotarc

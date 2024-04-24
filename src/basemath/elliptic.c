@@ -7833,7 +7833,7 @@ ellQ_saturation(GEN E, GEN P, long B, long prec)
       P = Q;
     }
   }
-  return ellQ_genreduce(E, P, M, prec);
+  (void)delete_var(); return ellQ_genreduce(E, P, M, prec);
 }
 
 GEN
