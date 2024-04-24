@@ -147,7 +147,7 @@ rnfeltabstorel(GEN rnf,GEN x)
   }
   switch(lg(x))
   {
-    case 2: set_avma(av); return gen_0;
+    case 2: return gc_const(av, gen_0);
     case 3: return gerepilecopy(av, gel(x,2));
   }
 END:
