@@ -16,6 +16,8 @@ BA  11- [mpi] setting datadir or path in .gprc caused crashes
     13- idealstar(nf,id,,MOD). Need to store MOD in the structure, otherwise
         exceptions may occur [#2549]
 BA  14- ellsaturation was leaking variable numbers
+    15- rnfelttrace(rnf, t_POL in rnf.pol variable): wrong [#2509]
+    16- rnfeltnorm(rnf, t_POL in rnf.pol variable): wrong [#2509]
 
   Changed
 BA   1- plotell renamed to plotarc

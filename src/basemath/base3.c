@@ -162,6 +162,9 @@ rnfelttrace(GEN rnf, GEN x)
 {
   pari_sp av = avma;
   checkrnf(rnf);
+  /* avoid rnfabstorel special t_POL case misinterpretation */
+  if (typ(x) == t_POL && varn(x) == rnf_get_varn(rnf))
+    x = gmodulo(x, rnf_get_pol(rnf));
   x = rnfeltabstorel(rnf, x);
   x = (typ(x) == t_POLMOD)? rnfeltdown(rnf, gtrace(x))
                           : gmulgu(x, rnf_get_degree(rnf));
@@ -279,6 +282,8 @@ rnfeltnorm(GEN rnf, GEN x)
   long v;
   checkrnf(rnf);
   v = rnf_get_varn(rnf);
+  /* avoid rnfabstorel special t_POL case misinterpretation */
+  if (typ(x) == t_POL && varn(x) == v) x = gmodulo(x, rnf_get_pol(rnf));
   x = liftpol_shallow(rnfeltabstorel(rnf, x));
   nf = rnf_get_nf(rnf); pol = rnf_get_pol(rnf);
   x = (typ(x) == t_POL)
