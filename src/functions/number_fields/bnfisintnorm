@@ -32,8 +32,8 @@ Doc: computes a complete system of
 
  ? v = bnfisintnorm(b, 2305843008139952128, 1); #v
  %7 = 31   \\ succeeds instantly
- ? s = v[1]; [type(s), matsize(s)] \\ the first solution is a product of 165 factors
- %8 = ["t_MAT", [165, 2]]
+ ? s = v[1]; [type(s), matsize(s)]
+ %8 = ["t_MAT", [165, 2]]   \\ solution 1 is a product of 165 factors
  ? exponent(s[,2])
  %9 = 105
  @eprog\noindent The \emph{exponents} have $105$ bits, so there is indeed little
