@@ -4,6 +4,11 @@ hyperelldisc(3*x^5+7)
 
 hyperellisoncurve([2*x^6+3*x^5+x^4+x^3-x,x^3+1],[1/3,-14/27])
 hyperellisoncurve([2*x^6+3*x^5+x^4+x^3-x,x^3+1],[1/3,14/27])
+hyperellordinate([2*x^6+3*x^5+x^4+x^3-x,x^3+1],1)
+hyperellordinate([2*x^6+3*x^5+x^4+x^3-x,x^3+1],0)
+hyperellordinate([2*x^6+3*x^5+x^4+x^3-x,x^3+1],1/3)
+hyperellordinate(x^4+30*x^2+25,1)
+hyperellordinate(x^4+30*x^2+25,-2940/1271)
 
 genus(W)=
 {

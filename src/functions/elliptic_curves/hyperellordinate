@@ -1,0 +1,11 @@
+Function: hyperellordinate
+Section: elliptic_curves
+C-Name: hyperellordinate
+Prototype: GG
+Help: hyperellordinate(H,x): y-coordinates corresponding to x-ordinate x on
+ hyperelliptic curve H.
+Doc:
+ gives a 0, 1 or 2-component vector containing
+ the $y$-coordinates of the points of the curve $H$ having $x$ as
+ $x$-coordinate.
+

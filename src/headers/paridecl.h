@@ -4180,6 +4180,7 @@ GEN     hyperelldisc(GEN x);
 int     hyperellisoncurve(GEN W, GEN P);
 GEN     hyperellminimaldisc(GEN x, GEN pr);
 GEN     hyperellminimalmodel(GEN x, GEN *pM, GEN pr);
+GEN     hyperellordinate(GEN W, GEN x);
 GEN     hyperellpadicfrobenius0(GEN x, GEN p, long e);
 GEN     hyperellpadicfrobenius(GEN x, ulong p, long e);
 GEN     hyperellred(GEN P, GEN *pM);

@@ -829,6 +829,30 @@ hyperellisoncurve(GEN W, GEN P)
 }
 
 GEN
+hyperellordinate(GEN W, GEN x)
+{
+  pari_sp av = avma;
+  if (typ(W)==t_POL)
+  {
+    GEN d = poleval(W,x), y;
+    if (gequal0(d)) { return gerepilecopy(av, mkvec(d)); }
+    if (!issquareall(d, &y)) { set_avma(av); return cgetg(1,t_VEC); }
+    return gerepilecopy(av, mkvec2(y, gneg(y)));
+  }
+  else
+  {
+    GEN b, c, d, rd, y;
+    if (typ(W)!=t_VEC || lg(W)!=3) pari_err_TYPE("hyperellisoncurve",W);
+    b = poleval(gel(W,2), x); c = poleval(gel(W,1), x);
+    d = gadd(gsqr(b), gmul2n(c, 2));
+    if (gequal0(d)) { return gerepilecopy(av, mkvec(gmul2n(gneg(b),-1))); }
+    if (!issquareall(d, &rd)) { set_avma(av); return cgetg(1,t_VEC); }
+    y = gmul2n(gsub(rd, b), -1);
+    return gerepilecopy(av, mkvec2(y, gsub(y,rd)));
+  }
+}
+
+GEN
 hyperelldisc(GEN PQ)
 {
   pari_sp av = avma;

@@ -3,6 +3,11 @@
 1400263200000
 1
 0
+[]
+[0, -1]
+[-14/27]
+[]
+[23640005/1615441, -23640005/1615441]
 [-149/108, 852292983271/629856]
 1
 -22876928
@@ -46,4 +51,4 @@
   ***   at top-level: hyperellminimalmodel(15625*x^6+15626*x^3+1,,[x
   ***                 ^----------------------------------------------
   *** hyperellminimalmodel: incorrect type in hyperellminimalmodel (t_VEC).
-Total time spent: 349
+Total time spent: 340
