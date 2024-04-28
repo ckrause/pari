@@ -2071,15 +2071,9 @@ ellordinate_i(GEN E, GEN x, long prec)
       break;
 
     case t_ELL_NF:
-    {
-      GEN T = mkpoln(3, gen_1, gen_0, gneg(D));
-      setvarn(T, fetch_var_higher());
-      d = nfroots(nf, T);
-      delete_var();
-      if (lg(d) == 1) { set_avma(av); return cgetg(1, t_VEC); }
-      d = gel(d,1);
+      if (!nfissquare(nf, D, &d)) { set_avma(av); return cgetg(1,t_VEC); }
+      d = nftoalg(nf, d);
       break;
-    }
 
     case t_ELL_Qp:
       p = ellQp_get_p(E);
