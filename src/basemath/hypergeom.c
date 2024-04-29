@@ -814,20 +814,20 @@ F21taylorlim(GEN N, long m, GEN z, GEN Z, long ind, long prec)
   return gdiv(S, mpfact(m));
 }
 
-/* N = [a,b]; (m-1)! sum_{1 <= k < m} (-z)^k (a)_k (b)_k / k! (m-k)!*/
+/* N = [a,b]; (m-1)! sum_{0 <= k < m} (-z)^k (a)_k (b)_k / k!(m-k)...(m-1) */
 static GEN
 F21finitelim(GEN N, long m, GEN z, long prec)
 {
   GEN C, S, a, b;
-  long j;
+  long k;
   if (!m) return gen_0;
   a = gel(N,1);
   b = gel(N,2);
   S = C = real_1(prec + EXTRAPREC64);
-  for (j = 1; j < m; j++)
+  for (k = 1; k < m; k++)
   {
-    GEN v1 = gaddsg(j-1, a), v2 = gaddsg(j-1, b);
-    C = gdivgs(gmul(C, gmul(gmul(v1, v2), z)), j*(j-m));
+    GEN v1 = gaddsg(k-1, a), v2 = gaddsg(k-1, b);
+    C = gdivgs(gmul(C, gmul(gmul(v1, v2), z)), k*(k-m));
     S = gadd(S, C);
   }
   return gmul(S, mpfact(m-1));
@@ -910,8 +910,9 @@ F21taylor1(GEN a, GEN b, GEN c, GEN z, long prec)
 static GEN
 F21taylor4(GEN a, GEN b, GEN c, GEN z, long prec)
 {
-  GEN bma = gsub(c, gadd(a, b)), coe2, z1, z2, g1, g2, v1, v2;
+  GEN bma = gsub(c, gadd(a, b)), coe2, z1, z2, g1, g2, v1, v2, F = NULL;
   long m;
+  z1 = gsubsg(1, z);
   if (!islong(bma,&m, prec))
   {
     GEN c1, a2, b2, c2;
@@ -919,27 +920,25 @@ F21taylor4(GEN a, GEN b, GEN c, GEN z, long prec)
     a2 = gsub(c, a);
     b2 = gsub(c, b);
     c2 = gaddsg(1, bma);
-    z1 = gsubsg(1, z); coe2 = gneg(gpow(z1, bma, prec));
+    coe2 = gneg(gpow(z1, bma, prec));
     return FBaux1(mkvec3(a,b,c1), mkvec2(a2,b2), gen_1, mkvec3(a2,b2,c2),
                   mkvec2(a,b), coe2, z1, bma, prec, prec);
   }
-  if (m < 0)
-  {
-    GEN F = F21taylor4(gaddgs(a,m), gaddgs(b,m), gaddgs(gadd(a,b), m), z, prec);
-    return gmul(gpowgs(gsubsg(1,z), m), F);
-  }
+  /* c - (a+b) ~ m; if m < 0: 15.8.12 */
+  if (m < 0) { m = -m; a = gsubgs(a, m); b = gsubgs(b, m); F = gpowgs(z1, -m); }
   v2 = g1 = mkvec2(gaddgs(a,m), gaddgs(b,m));
   v1 = g2 = mkvec2(a, b);
-  z1 = gsubgs(z, 1);
-  z2 = gneg(z1); coe2 = gpowgs(z1, m); /* 15.8.10 */
-  return FBaux2(v1, g1, gen_1, m, z1, coe2, g2, v2, z2, z2, 4, prec);
+  z2 = gneg(z1); coe2 = gpowgs(z2, m); /* 15.8.10 */
+  z1 = FBaux2(v1, g1, gen_1, m, z1, coe2, g2, v2, z1, z1, 4, prec);
+  if (F) z1 = gmul(z1, F);
+  return z1;
 }
 
 /* 1 - 1/z */
 static GEN
 F21taylor5(GEN a, GEN b, GEN c, GEN z, long prec)
 {
-  GEN bma = gsub(c, gadd(a,b)), tmp, coe1, coe2, z1, g1, g2, v1, v2, z2;
+  GEN bma = gsub(c, gadd(a,b)), coe1, coe2, z1, g1, g2, v1, v2, z2, F = NULL;
   long m;
   if (!islong(bma,&m, prec))
   {
@@ -956,12 +955,9 @@ F21taylor5(GEN a, GEN b, GEN c, GEN z, long prec)
     return FBaux1(mkvec3(a,b1,c1), mkvec2(d1,e1), coe1,
                   mkvec3(d1,b2,c2), mkvec2(a, b), coe2, z1, bma, prec, prec);
   }
-  /* c - (a + b) ~ m */
+  /* c - (a+b) ~ m; if m < 0: 15.8.12 */
   if (m < 0)
-  {
-    tmp = F21taylor5(gaddgs(a,m), gaddgs(b,m), c, z, prec);
-    return gmul(gpowgs(gsubsg(1, z), m), tmp);
-  }
+  { m = -m; a = gsubgs(a,m); b = gsubgs(b,m); F = gpowgs(gsubsg(1, z), -m); }
   g1 = mkvec2(gaddgs(a,m), gaddgs(b,m));
   v1 = mkvec2(a, gsubsg(1-m, b));
   v2 = mkvec2(gaddgs(a,m), gsubsg(1,b));
@@ -970,7 +966,9 @@ F21taylor5(GEN a, GEN b, GEN c, GEN z, long prec)
   g2 = mkvec2(a, b);
   coe1 = gpow(z, gneg(a), prec);
   coe2 = gmul(coe1, gpowgs(z2, m)); /* 15.8.11 */
-  return FBaux2(v1, g1, coe1, m, z1, coe2, g2, v2, z2, z1, 5, prec);
+  z1 = FBaux2(v1, g1, coe1, m, z1, coe2, g2, v2, z2, z1, 5, prec);
+  if (F) z1 = gmul(z1, F);
+  return z1;
 }
 
 /* 1 / z */
@@ -1010,12 +1008,12 @@ F21taylor6(GEN a, GEN b, GEN c, GEN z, long prec)
 }
 
 /* (new b, new c, new z): given by bind, cind, zind
- * case 1: (c-b,1+a-b,1/(1-z))
- * case 2: (c-b,c,z/(z-1))
+ * case 1: (c-b,1+a-b,1/(1-z))   15.8.3  15.8.6
+ * case 2: (c-b,c,z/(z-1))       15.8.1
  * case 3: (b,c,z)
- * case 4: (b,b-c+a+1,1-z)
- * case 5: (1+a-c,b-c+a+1,1-1/z)
- * case 6: (1+a-c,1+a-b,1/z) */
+ * case 4: (b,b-c+a+1,1-z)       15.8.4  15.8.7  15.8.10
+ * case 5: (1+a-c,b-c+a+1,1-1/z) 15.8.5  15.8.7  15.8.11
+ * case 6: (1+a-c,1+a-b,1/z)     15.8.2  15.8.6 */
 static GEN
 F21taylorind(GEN a, GEN b, GEN c, GEN z, long ind, long prec)
 {
