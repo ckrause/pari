@@ -610,11 +610,12 @@ F21finite(long m, GEN b, GEN c, GEN z, long prec)
     case 1: return F21finite_i(m, b1, c1, z1, b, c, gsubsg(1,z), prec);
     case 2: return gmul(gpowgs(gsubsg(1,z), m),
                         F21finitetaylor(m, b1, c, z1, prec));
+    case 3: return F21finitetaylor(m, b1, c1, z1, prec);
     case 4: return F21finite_i(m, b1, c1, z1, gsub(c,b), c, gen_1, prec);
     case 5: return F21finite_i(m, b1, c1, z1, gsub(c,b), c, z, prec);
     case 6: return F21finite_i(m, b1, c1, z1, b, c, gneg(z), prec);
-    default:return F21finitetaylor(m, b1, c1, z, prec);
   }
+  return NULL; /*LCOV_EXCL_LINE*/
 }
 
 /**********************************************************/
@@ -716,7 +717,7 @@ F21_i(GEN a, GEN b, GEN c, GEN z, long prec)
   b = gprec_wensure(b,prec2);
   c = gprec_wensure(c,prec2);
   z = gprec_wensure(z,prec2);
-  if (ind < 0) return gmul(ggamma(c, prec), F21taylorind(a,b,c, z, ind, prec));
+  if (ind < 0) return gprec_wtrunc(F21taylorind(a,b,c, z, ind, prec), prec);
   if (gsigne(real_i(b)) <= 0)
   {
     if (gsigne(real_i(a)) <= 0)
@@ -1022,14 +1023,17 @@ F21taylorind(GEN a, GEN b, GEN c, GEN z, long ind, long prec)
   switch (labs(ind))
   {
     case 1: res = F21taylor1(a, b, c, z, prec); break;
-    case 2: res = F21taylor(a, gsub(c, b), c, gdiv(z, gsubgs(z, 1)), prec);
-            res = gmul(res, gpow(gsubsg(1,z), gneg(a), prec)); break;
-    case 3: res = F21taylor(a, b, c, z, prec); break;
+    case 2:
+      return gmul(Ftaylor(mkvec2(a, gsub(c, b)), mkvec(c),
+                          gdiv(z, gsubgs(z,1)), prec),
+                  gpow(gsubsg(1,z), gneg(a), prec));
+    case 3:
+      return Ftaylor(mkvec2(a,b), mkvec(c), z, prec);
     case 4: res = F21taylor4(a, b, c, z, prec); break;
     case 5: res = F21taylor5(a, b, c, z, prec); break;
     default:res = F21taylor6(a, b, c, z, prec); break;
   }
-  return gprec_wtrunc(res, prec);
+ return gmul(ggamma(c, prec), res);
 }
 
 static long
