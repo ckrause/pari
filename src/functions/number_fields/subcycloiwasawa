@@ -14,9 +14,9 @@ Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
  $\lambda$-invariants attached to $F_{\infty}$, using the Stickelberger
  elements $\xi_{n}^{\chi}$ belonging to $F_{n}$.
 
- The function is only implemented when $p$ and $f$ are relatively small: both
- $p^{4}$ and $f$ must fit into an \kbd{unsigned long} integer. The argument
- \kbd{fH} encodes the data $[f,H]$ as follows:
+ The function is only implemented when $p$, $n$ and $f$ are relatively small:
+ all of $p^{4}$, $p^{n+1}$ and $f$ must fit into an \kbd{unsigned long} integer.
+ The argument \kbd{fH} encodes the data $[f,H]$ as follows:
 
  \item $\kbd{fH} = [f, H]$, where $H$ is given by a vector of
  integral generators,

@@ -4052,6 +4052,8 @@ subcycloiwasawa_i(GEN FH, GEN P, long n)
     pari_err_IMPL(stack_sprintf("prime p > %ld in %s", B, fun));
   p = itos(P);
   if (p <= 1 || !uisprime(p)) pari_err_PRIME(fun, P);
+  if (!upowuu(p, n+1))
+    pari_err_IMPL(stack_sprintf("p^n > 2^%ld in %s", BITS_IN_LONG, fun));
   f = subcyclo_init(fun, FH, &degF, &H, 1);
   if (degF == 1) return NULL;
   if (degF == 2)
