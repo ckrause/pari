@@ -90,13 +90,7 @@
   ***   at top-level: subcyclopclgp([7],5,64)
   ***                 ^-----------------------
   *** subcyclopclgp: invalid flag in subcyclopclgp.
-  ***   at top-level: subcycloiwasawa(11,2^64)
-  ***                 ^------------------------
-  *** subcycloiwasawa: sorry, prime p > 65536 in subcycloiwasawa is not yet implemented.
-  ***   at top-level: subcycloiwasawa(11,7,22)
-  ***                 ^------------------------
-  *** subcycloiwasawa: sorry, p^n > 2^64 in subcycloiwasawa is not yet implemented.
-  ***   at top-level: subcycloiwasawa(2^64+13,7,1)
-  ***                 ^----------------------------
-  *** subcycloiwasawa: sorry, conductor f > 9223372036854775807 in subcycloiwasawa is not yet implemented.
-Total time spent: 3991
+"e_IMPL"
+"e_IMPL"
+"e_IMPL"
+Total time spent: 3977
