@@ -120,6 +120,39 @@ drop(GEN R)
 }
 
 static long
+potential(GEN R)
+{
+  long i, n = lg(R)-1;
+  long s = 0, mul = n-1;;
+  for (i = 1; i <= n; i++, mul-=2) s += mul * mpexpo(gcoeff(R,i,i));
+  return s;
+}
+
+/*
+ * U upper-triangular invertible:
+ * Bound on the exponent of the condition number of U.
+ * Algo 8.13 in Higham, Accuracy and stability of numercal algorithms.
+ */
+static long
+condition_bound(GEN U, int lower)
+{
+  long n = lg(U)-1, e, i, j;
+  GEN y;
+  pari_sp av = avma;
+  y = cgetg(n+1, t_VECSMALL);
+  e = y[n] = -gexpo(gcoeff(U,n,n));
+  for (i=n-1; i>0; i--)
+  {
+    long s = 0;
+    for (j=i+1; j<=n; j++)
+      s = maxss(s, (lower?gexpo(gcoeff(U,j,i)):gexpo(gcoeff(U,i,j))) + y[j]);
+    y[i] = s - gexpo(gcoeff(U,i,i));
+    e = maxss(e, y[i]);
+  }
+  return gc_long(av, gexpo(U) + e);
+}
+
+static long
 gsisinv(GEN M)
 {
   long i, l = lg(M);
@@ -135,27 +168,34 @@ nbits2prec64(long n)
   return nbits2prec(((n+63)>>6)<<6);
 }
 
+static long spread(GEN R);
+static long
+GS_extraprec(long C, long S, long n)
+{
+  return maxss(2*S+2*n, C-S-2*n); /* = 2*S + 2*n + maxss(0, C-3*S-4*n) */
+}
+
 static GEN
 RgM_Cholesky_dynprec(GEN M)
 {
   pari_sp ltop = avma;
   GEN L;
-  long minprec = 3*(lg(M)-1) + 30, bitprec = minprec, prec;
+  long minprec = lg(M) + 30, bitprec = minprec, prec;
   while (1)
   {
     long mbitprec;
     prec = nbits2prec64(bitprec);
-    L = RgM_Cholesky(RgM_gtofp(M, prec), prec);
+    L = RgM_Cholesky(RgM_gtofp(M, prec), prec); /* upper-triangular */
     if (!L)
     {
       bitprec *= 2;
       set_avma(ltop);
       continue;
     }
-    mbitprec = minprec + 2*drop(L);
+    mbitprec = minprec + GS_extraprec(condition_bound(L,0), spread(L), lg(L)-1);
     if (bitprec >= mbitprec)
       break;
-    bitprec = mbitprec;
+    bitprec = maxss((4*bitprec)/3, mbitprec);
     set_avma(ltop);
   }
   return gerepilecopy(ltop, L);
@@ -164,7 +204,7 @@ RgM_Cholesky_dynprec(GEN M)
 static GEN
 gramschmidt_upper(GEN M)
 {
-  long bitprec = 3*(lg(M)-1) + 30 + 2*drop(M);
+  long bitprec = lg(M) + 30 + GS_extraprec(condition_bound(M,0), spread(M), lg(M)-1);
   return RgM_gtofp(M, nbits2prec64(bitprec));
 }
 
@@ -172,7 +212,7 @@ static GEN
 gramschmidt_dynprec(GEN M)
 {
   pari_sp ltop = avma;
-  long minprec = 3*(lg(M)-1) + 30, bitprec = minprec;
+  long minprec = lg(M) + 30, bitprec = minprec;
   if (ZM_is_upper(M)) return gramschmidt_upper(M);
   while (1)
   {
@@ -184,10 +224,10 @@ gramschmidt_dynprec(GEN M)
       set_avma(ltop);
       continue;
     }
-    mbitprec = minprec + 2*drop(L);
+    mbitprec = minprec + GS_extraprec(condition_bound(L,1), spread(L), lg(L)-1);
     if (bitprec >= mbitprec)
       return gerepilecopy(ltop, shallowtrans(L));
-    bitprec = mbitprec;
+    bitprec = maxss((4*bitprec)/3, mbitprec);
     set_avma(ltop);
   }
 }
@@ -202,7 +242,7 @@ sizered(GEN T1, GEN T3, GEN R1, GEN R2)
 }
 
 static GEN
-flat(GEN M, long flag, GEN *pt_T, long *pt_s)
+flat(GEN M, long flag, GEN *pt_T, long *pt_s, long *pt_pot)
 {
   pari_sp ltop = avma;
   GEN R, R1, R2, R3, T1, T2, T3, T, S;
@@ -229,6 +269,7 @@ flat(GEN M, long flag, GEN *pt_T, long *pt_s)
   M = ZM_mul(M, S);
   if (!inplace) *pt_T = ZM_mul(T, S);
   *pt_s = drop(R);
+  *pt_pot = potential(R);
   return gc_all(ltop, inplace ? 1: 2, &M, pt_T);
 }
 
@@ -237,7 +278,7 @@ ZM_flatter(GEN M, long flag)
 {
   pari_sp ltop = avma, btop;
   long i, n = lg(M)-1;
-  long s = -1;
+  long s = -1, pot = LONG_MAX;
   GEN T;
   pari_timer ti;
   long lti = 1;
@@ -252,12 +293,12 @@ ZM_flatter(GEN M, long flag)
   btop = avma;
   for (i = 1;;i++)
   {
-    long t;
-    GEN U, M2 = flat(M, flag, &U, &t);
+    long t, pot2;
+    GEN U, M2 = flat(M, flag, &U, &t, &pot2);
     if (t==0) { s = t; break; }
     if (s >= 0)
     {
-      if (s==t)
+      if (s==t && pot>=pot2)
         break;
       if (s<t && i > 20)
       {
@@ -268,12 +309,13 @@ ZM_flatter(GEN M, long flag)
     if (DEBUGLEVEL>=3 && (cert || timer_get(&ti) > 1000))
     {
       if (i==lti)
-        timer_printf(&ti, "FLATTER, dim %ld, step %ld: \t slope=%0.10g", n, i, ((double)t)/n);
+        timer_printf(&ti, "FLATTER, dim %ld, step %ld: \t slope=%0.10g \t pot=%0.10g", n, i, ((double)t)/n, ((double)pot2)/(n*(n+1)));
       else
-        timer_printf(&ti, "FLATTER, dim %ld, steps %ld-%ld: \t slope=%0.10g", n, lti,i,((double)t)/n);
+        timer_printf(&ti, "FLATTER, dim %ld, steps %ld-%ld: \t slope=%0.10g \t pot=%0.10g", n, lti,i, ((double)t)/n, ((double)pot2)/(n*(n+1)));
       lti = i+1;
     }
     s = t;
+    pot = pot2;
     M = M2;
     if (!inplace) T = ZM_mul(T, U);
     if (gc_needed(btop, 1))
@@ -282,9 +324,9 @@ ZM_flatter(GEN M, long flag)
   if (DEBUGLEVEL>=3 && (cert || timer_get(&ti) > 1000))
   {
     if (i==lti)
-      timer_printf(&ti, "FLATTER, dim %ld, final \t slope=%0.10g", n, ((double)s)/n);
+      timer_printf(&ti, "FLATTER, dim %ld, final \t slope=%0.10g \t pot=%0.10g", n, ((double)s)/n, ((double)pot)/(n*(n+1)));
     else
-      timer_printf(&ti, "FLATTER, dim %ld, steps %ld-final:\t slope=%0.10g", n, lti, ((double)s)/n);
+      timer_printf(&ti, "FLATTER, dim %ld, steps %ld-final:\t slope=%0.10g \t pot=%0.10g", n, lti, ((double)s)/n, ((double)pot)/(n*(n+1)));
   }
   return  gerepilecopy(ltop, inplace ? M: T);
 }
