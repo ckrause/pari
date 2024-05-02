@@ -1221,8 +1221,10 @@ matsolvemod(GEN M, GEN D, GEN Y, long flag)
   if (typ(Y)==t_INT)
     Y = const_col(m,Y);
   else if (typ(Y)!=t_COL || !RgV_is_ZV(Y)) pari_err_TYPE("matsolvemod (Y)",Y);
+  if (typ(D)==t_COL && typ(Y)==t_COL && lg(D)!=lg(Y))
+    pari_err_DIM("matsolvemod [2]");
   if (!n && !m) m = lg(Y)-1;
-  else if (m != lg(Y)-1) pari_err_DIM("matsolvemod [2]");
+  else if (m != lg(Y)-1) pari_err_DIM("matsolvemod [3]");
   if (typ(D)==t_INT)
   {
     if (signe(D)<0) pari_err_DOMAIN("matsolvemod","D","<",gen_0,D);

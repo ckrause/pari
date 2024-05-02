@@ -311,7 +311,7 @@ invmod
   *** matsolvemod: inconsistent dimensions in matsolvemod [1].
   ***   at top-level: matsolvemod(Mat(1),2,[1,2]~)
   ***                 ^----------------------------
-  *** matsolvemod: inconsistent dimensions in matsolvemod [2].
+  *** matsolvemod: inconsistent dimensions in matsolvemod [3].
   ***   at top-level: matsolvemod(Mat(1),[2],1)
   ***                 ^-------------------------
   *** matsolvemod: incorrect type in matsolvemod (D) (t_VEC).
@@ -342,4 +342,10 @@ invmod
   ***   at top-level: matsolvemod(Mat(1),1,[1/2]~)
   ***                 ^----------------------------
   *** matsolvemod: incorrect type in matsolvemod (Y) (t_COL).
-Total time spent: 683
+  ***   at top-level: matsolvemod([;],[]~,[0]~)
+  ***                 ^-------------------------
+  *** matsolvemod: inconsistent dimensions in matsolvemod [2].
+  ***   at top-level: matsolvemod([;],[1]~,[1,2]~)
+  ***                 ^----------------------------
+  *** matsolvemod: inconsistent dimensions in matsolvemod [2].
+Total time spent: 298
