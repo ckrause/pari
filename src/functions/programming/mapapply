@@ -1,16 +1,19 @@
 Function: mapapply
 Section: programming/specific
 C-Name: mapapply
-Prototype: WGG
-Help: mapapply(~M,x,f): applies the closure f to the image of x by the map M
+Prototype: WGGDG
+Help: mapapply(~M,x,f,{u}): applies the closure f to the image of x by the map M
  and returns the evaluation of f.
 Doc: applies the closure \kbd{f} to the image $y$ of $x$ by the map \kbd{M}
  and returns the evaluation of \kbd{f}. The closure \kbd{f} is eventually
  allowed to modify the components of $y$ in place.
+ If \kbd{M} is not defined at $x$, and the optional argument \kbd{u} is present which
+ must be a closure of arity $0$, define it as the evaluation of the $u$ and
+ return it.
 
  To apply \kbd{f} to all entries of \kbd{M} use \kbd{apply(f, M)} instead.
 
- There are two main use cases:
+ There are two main use-cases:
 
  \item performing a computation on a value without copying it:
  \bprog
@@ -24,8 +27,15 @@ Doc: applies the closure \kbd{f} to the image $y$ of $x$ by the map \kbd{M}
   function declaration.
 
  \bprog
- ? maplistput(~M,k,v) = mapapply(~M,k,(~y)->listput(~y,v));
- ? M = Map(["a",List(); "b",List()]);
- ? maplistput(~M,"a",1234); M
- %3 = Map(["a",List([1234]);"b",List([])])
- @eprog
+ ? maplistput(~M,k,v) = mapapply(~M,k,(~y)->listput(~y,v),()->List(v));
+ ? M = Map(["a",List(); "b",List()])
+ %2 = Map(["a",List([]);"b",List([])])
+ ? maplistput(~M,"a",1); M
+ %3 = Map(["a",List([1]);"b",List([])])
+ ? maplistput(~M,"a",2); M
+ %4 = Map(["a",List([1,2]);"b",List([])])
+ ? maplistput(~M,"c",3); M
+ %5 = Map(["a",List([1,2]);"b",List([]);"c",List([3])])
+ ? maplistput(~M,"c",4); M
+ %6 = Map(["a",List([1,2]);"b",List([]);"c",List([3,4])])
+ \eprog

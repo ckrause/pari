@@ -43,7 +43,17 @@ Map(Mat([2, 3]))
   ***                 ^---------
   *** Vec: incorrect type in gtovec (t_LIST).
 [Map(Mat([0, 0])), [0, 0, 1]]
-Map(["a", List([1234]); "b", List([])])
+Map(["a", List([]); "b", List([])])
+Map(["a", List([1]); "b", List([])])
+Map(["a", List([1, 2]); "b", List([])])
+Map(["a", List([1, 2]); "b", List([]); "c", List([3])])
+Map(["a", List([1, 2]); "b", List([]); "c", List([3, 4])])
+Map(["a", List([1, 2]); "b", List([5]); "c", List([3, 4])])
+  ***   at top-level: maplisterr(~M,"d",6)
+  ***                 ^--------------------
+  ***   in function maplisterr: mapapply(~M,k,(~y)->listput(~y,v))
+  ***                           ^----------------------------------
+  *** mapapply: nonexistent component in mapapply: index not in map
   ***   at top-level: Map([1,2;2,3;1,3;1,4])
   ***                 ^----------------------
   *** Map: domain error in Map: x is not one-to-one
@@ -71,4 +81,4 @@ Map(["a", List([1234]); "b", List([])])
   ***   at top-level: Map(1)
   ***                 ^------
   *** Map: incorrect type in Map (t_INT).
-Total time spent: 6
+Total time spent: 16

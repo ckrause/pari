@@ -4574,9 +4574,10 @@ int     mapisdefined(GEN T, GEN a, GEN *pt_z);
 void    mapput(GEN T, GEN a, GEN b);
 GEN     maptomat(GEN T);
 GEN     maptomat_shallow(GEN T);
-GEN     mapapply(GEN T, GEN a, GEN f);
+GEN     mapapply(GEN T, GEN a, GEN f, GEN u);
 
 /* matperm.c */
+
 GEN     matpermanent(GEN M);
 GEN     zm_permanent(GEN M);
 GEN     ZM_permanent(GEN M);

@@ -328,12 +328,18 @@ mapget(GEN T, GEN a)
 }
 
 GEN
-mapapply(GEN T, GEN a, GEN f)
+mapapply(GEN T, GEN a, GEN f, GEN u)
 {
   GEN x;
   if (!ismap(T)) pari_err_TYPE("mapapply",T);
   x = treesearch(T, a);
-  if (!x) pari_err_COMPONENT("mapapply", "not in", strtoGENstr("map"), a);
+  if (!x)
+  {
+    if (!u) pari_err_COMPONENT("mapapply", "not in", strtoGENstr("map"), a);
+    x = closure_callgen0(u);
+    mapput(T, a, x);
+    return x;
+  }
   return closure_callgen1(f, gel(x,2));
 }
 
