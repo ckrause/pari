@@ -3556,6 +3556,7 @@ GEN     bitprecision00(GEN x,GEN n);
 GEN     break0(long n);
 GEN     call0(GEN fun, GEN args);
 GEN     closure_callgen0prec(GEN C, long prec);
+GEN     closure_callgen0(GEN C);
 GEN     closure_callgen1(GEN C, GEN x);
 GEN     closure_callgen1prec(GEN C, GEN x, long prec);
 GEN     closure_callgen2(GEN C, GEN x, GEN y);

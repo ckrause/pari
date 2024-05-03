@@ -53,6 +53,7 @@ XR   9- new GP function bnrstarkunit
     10- [libpari] bid_get_MOD
     11- [libpari] Z_to_famat, Q_to_famat
 BA  12- new GP function hyperellordinate
+BA  13- [libpari] closure_callgen0
 
 Done for version 2.16.1 (released 04/01/2024):
   Fixed
