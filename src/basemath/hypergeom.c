@@ -725,7 +725,7 @@ F21_i(GEN a, GEN b, GEN c, GEN z, long prec)
     {
       GEN p1,p2;
       if (gcmp(real_i(b), real_i(a)) < 0) swap(a,b);
-      /* FIXME: solve recursion as below with F21auxpol */
+      /* FIXME: solve recursion as below with F21lam */
       p1 = gmul(gsubsg(1, z), F21_i(a, gaddsg(1,b), c, z, prec));
       p2 = gmul(gmul(gsubsg(1, gdiv(a,c)), z),
                 F21_i(a, gaddsg(1,b), gaddsg(1,c), z, prec));
