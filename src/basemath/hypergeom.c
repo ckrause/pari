@@ -429,7 +429,7 @@ precFtaylor(GEN N, GEN D, GEN z, long *pmi)
   }
   /* make up for exponential decrease in exp() */
   if (gsigne(real_i(z)) < 0) wma -= gtodouble(real_i(z)) / M_LN2;
-  *pmi = v[lv-1]; return nbits2extraprec(wma+BITS_IN_LONG);
+  *pmi = maxss(v[lv-1],1); return nbits2extraprec(wma+BITS_IN_LONG);
 }
 
 static GEN
