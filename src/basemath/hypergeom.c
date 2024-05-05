@@ -558,7 +558,7 @@ static GEN
 F21finitetaylor(long m, GEN b, GEN c, GEN z, long prec)
 {
   pari_sp av;
-  GEN C, S;
+  GEN C, P, S;
   long j, ct, pradd, mi, bitmin;
   if (isnegint2(b, &j) && j < m) { b = stoi(-m); m = j; }
   pradd = precFtaylor(mkvec2(stoi(-m), b), mkvec(c), z, &mi);
@@ -570,16 +570,18 @@ F21finitetaylor(long m, GEN b, GEN c, GEN z, long prec)
     z = gprec_wensure(z, prec);
   }
   bitmin = -(prec2nbits(prec) + 10);
-  C = real_1(prec); S = C; ct = 0;
+  C = vecbinomial(m);
+  P = real_1(prec); S = P; ct = 0;
   av = avma;
   for(j = 0; j < m; j++) /* 15.2.4 */
   {
-    C = gmul(C, gdiv(gmulsg(j-m, gaddsg(j, b)), gmulsg(j+1, gaddsg(j, c))));
-    C = gmul(C, z);
+    GEN p;
+    P = gmul(P, gmul(z, gdiv(gaddsg(j,b), gaddsg(j,c)))); /*(b)_j z^j / (c)_j*/
+    p = gmul(P, gel(C, j+1)); /* times binomial(m,j) */
     if (j > mi && !gequal0(S))
-    { if (gexpo(C) - gexpo(S) > bitmin) ct = 0; else if (++ct == 3) break; }
-    S = gadd(S, C);
-    if (gc_needed(av, 1)) gerepileall(av, 2, &S, &C);
+    { if (gexpo(p) - gexpo(S) > bitmin) ct = 0; else if (++ct == 3) break; }
+    S = odd(j)? gsub(S, p): gadd(S, p);
+    if (gc_needed(av, 1)) gerepileall(av, 2, &S, &P);
   }
   return S;
 }
