@@ -538,7 +538,7 @@ fF21neg2(void *E, GEN t)
   GEN z = gel(E,1), a = gel(E,2), b = gel(E,3), c = gel(E,4), T = gel(E,5);
   GEN u = gsubsg(1, gmul(z, t));
   long prec = precision(t);
-  return mul4(gsubst(T, 0, u), gpow(u, a, prec), gpow(t, b, prec),
+  return mul4(poleval(T, u), gpow(u, a, prec), gpow(t, b, prec),
               gpow(gsubsg(1,t), c, prec));
 }
 
