@@ -398,31 +398,30 @@ precFtaylor(GEN N, GEN D, GEN z, long *pmi)
   GEN v, ma, P = vnormpol2(D), Q = vnormpol2(N), Nz = gnorm(z);
   double wma, logNz = (gexpo(Nz) < -27)? -27: dbllog2(Nz) / 2;
   long pr = LOWDEFAULTPREC, prec = precision(z);
-  long lN = lg(N), lD = lg(D), mi, j, i, lv;
+  long lN = lg(N), lD = lg(D), j, i, lv;
 
   P = RgX_shift_shallow(P, 2);
   /* avoid almost cancellation of leading coeff if |z| ~ 1 */
   if (!prec || fabs(logNz) > 1e-38) Q = RgX_Rg_mul(Q,Nz);
-  for (j = 1, ma = NULL; j < lN; ++j)
+  for (j = 1, ma = NULL; j < lN; j++)
   {
     GEN Nj = gel(N,j);
     if (isint(Nj,&Nj) && signe(Nj) <= 0
         && (!ma || abscmpii(ma, Nj) < 0)) ma = Nj;
   }
   /* use less sharp fujiwara_bound_real(,1) ? */
-  v = ground(realroots(gsub(P,Q), mkvec2(gen_0,mkoo()), pr));
-  v = ZV_to_zv(v); lv = lg(v);
+  v = realroots(gsub(P,Q), mkvec2(gen_0,mkoo()), pr);
+  v = ZV_to_zv(ground(v)); lv = lg(v);
   if (ma)
   {
     long sma = is_bigint(ma)? LONG_MAX: maxss(labs(itos(ma))-1, 1);
-    for (i = 1; i < lv; ++i) v[i] = maxss(minss(sma, v[i]), 1);
+    for (i = 1; i < lv; i++) v[i] = maxss(minss(sma, v[i]), 1);
   }
-  for (i = 1, wma = 0., mi = 0; i < lv; ++i)
+  for (i = 1, wma = 0.; i < lv; i++)
   {
     GEN t1 = gen_1, t2 = gen_1;
     long u = v[i];
     double t;
-    mi = maxss(mi, u);
     for (j = 1; j < lN; j++) t1 = gmul(t1, Npoch(gel(N,j), u));
     for (j = 1; j < lD; j++) t2 = gmul(t2, Npochden(gel(D,j), u));
     t = dbllog2(gdiv(t1,t2)) / 2 + u * logNz - dbllog2(mpfactr(u,pr));
@@ -430,7 +429,7 @@ precFtaylor(GEN N, GEN D, GEN z, long *pmi)
   }
   /* make up for exponential decrease in exp() */
   if (gsigne(real_i(z)) < 0) wma -= gtodouble(real_i(z)) / M_LN2;
-  *pmi = mi; return nbits2extraprec(wma+BITS_IN_LONG);
+  *pmi = v[lv-1]; return nbits2extraprec(wma+BITS_IN_LONG);
 }
 
 static GEN
@@ -458,7 +457,7 @@ Ftaylor(GEN N, GEN D, GEN z, long prec)
     C = gmul(C, gmul(gdiv(a, gmulsg(j+1, b)), z));
     if (gequal0(C)) break;
     if (j > mi) tol = gequal0(S)? 0: gexpo(C) - gexpo(S);
-    S = gadd(S, C); ++j;
+    S = gadd(S, C); j++;
     if (j > mi)
     { if (tol > bitmin) ct = 0; else if (++ct >= lN+lD-2) break; }
     if (gc_needed(av, 1)) gerepileall(av, 2, &S, &C);
@@ -554,14 +553,14 @@ F21lam(long N, GEN a, GEN c)
   gel(S,i+1) = gel(vb,N); return RgV_to_RgX(S,0);
 }
 
-/* F(-m,b; c; z), m >= 0 */
+/* F(-m,b; c; z), m >= 0; c != 0, -1, -2, ... */
 static GEN
 F21finitetaylor(long m, GEN b, GEN c, GEN z, long prec)
 {
   pari_sp av;
   GEN C, S;
-  long j, ct, pradd, mi, bitmin, mb;
-  if (isnegint2(b, &mb) && mb < m) { b = stoi(-m); m = mb; }
+  long j, ct, pradd, mi, bitmin;
+  if (isnegint2(b, &j) && j < m) { b = stoi(-m); m = j; }
   pradd = precFtaylor(mkvec2(stoi(-m), b), mkvec(c), z, &mi);
   if (pradd > 0)
   {
@@ -573,7 +572,7 @@ F21finitetaylor(long m, GEN b, GEN c, GEN z, long prec)
   bitmin = -(prec2nbits(prec) + 10);
   C = real_1(prec); S = C; ct = 0;
   av = avma;
-  for(j = 0; j < m; ++j)
+  for(j = 0; j < m; j++) /* 15.2.4 */
   {
     C = gmul(C, gdiv(gmulsg(j-m, gaddsg(j, b)), gmulsg(j+1, gaddsg(j, c))));
     C = gmul(C, z);
