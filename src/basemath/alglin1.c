@@ -3390,7 +3390,7 @@ ZM_gauss_i(GEN A, GEN B)
     {
       GEN MH, c;
       MH = ZM_mul(A, Q_remove_denom(Hr, &c));
-      if (DEBUGLEVEL >= 4) timer_printf(&ti,"ZM_ker: QM_mul");
+      if (DEBUGLEVEL >= 4) timer_printf(&ti,"ZM_gauss: QM_mul");
       if (ZM_equal(MH, c ? ZM_Z_mul(B, c): B)) break;
     }
   }
