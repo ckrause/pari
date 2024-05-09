@@ -38,4 +38,4 @@ Doc: applies the closure \kbd{f} to the image $y$ of $x$ by the map \kbd{M}
  %5 = Map(["a",List([1,2]);"b",List([]);"c",List([3])])
  ? maplistput(~M,"c",4); M
  %6 = Map(["a",List([1,2]);"b",List([]);"c",List([3,4])])
- \eprog
+ @eprog
