@@ -1,26 +1,26 @@
 Function: _parsumprimeWfunboth_worker
-Section: number_theoretical
+Section: programming/internals
 C-Name: parsumprimeWfunboth_worker
 Prototype: GGGGGG
 Help: _parsumprimeWfunboth_worker(gk,s,W1,W2,f,Nsqprec): auxiliary
 Doc: auxiliary
 
 Function: _parsqfboth_worker
-Section: number_theoretical
+Section: programming/internals
 C-Name: parsqfboth_worker
 Prototype: GGGGGG
 Help: _parsqfboth_worker(gk,vZ,vVQ,vV,P,Nsqstep): auxiliary.
 Doc: auxiliary
 
 Function: _serh_worker
-Section: transcendental
+Section: programming/internals
 C-Name: serh_worker
 Prototype: GGGGG
 Help: _serh_worker(gk,V,a,ns,gprec): auxiliary.
 Doc: auxiliary
 
 Function: _serhlong_worker
-Section: transcendental
+Section: programming/internals
 C-Name: serhlong_worker
 Prototype: GGGGG
 Help: _serhlong_worker(gk,z,a,ns,gprec): auxiliary.
