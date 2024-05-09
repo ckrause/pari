@@ -287,7 +287,10 @@ sub treat {
     if ($transl{$_}) { $_ = $transl{$_}; &choose_chap; }
   }
 
+  my ($isdef) = /se:def,/;
   s/(\W)/\\$1/g;
+  # support dbg_* without harming defaults such as prompt_cont
+  s/_/\\\\_/g if (!$isdef);
       ($pipe && open(DOC,"$pipe $docfile |"))
   || (!$pipe && open(DOC,"$docfile")) || die "Cannot open $docfile: $!";
   return &apropos($_) if ($apropos);
@@ -297,10 +300,16 @@ sub treat {
   my ($first);
   my ($pat) = $help;
   if ($pat =~ /[a-zA-Z0-9]$/) { $pat .= '\b'; } else { $pat .= '\}'; }
-  while (<DOC>)
+  if ($isdef)
   {
-    if (/\\(subsubsec[a-z]*|subsec[a-z]*|section|chapter|label)\{$pat/
-        && (!/\\label\{se:def,/ || $pat =~ /se\\:def/)) { $first = $_; last; }
+    while (<DOC>)
+    { if (/\\label\{$pat/) { $first = $_; last; } }
+  }
+  else
+  {
+    while (<DOC>)
+    { if (/\\(subsubsec[a-z]*|subsec[a-z]*|section|chapter|label)\{$pat/
+          && !/\\label\{se:def,/) { $first = $_; last; }}
   }
   if (eof(DOC))
   {
