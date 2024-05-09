@@ -103,10 +103,10 @@ GEN
 airy(GEN z, long prec)
 { pari_sp av = avma; return gerepilecopy(av, airy_i(z, prec)); }
 
-/* Gamma(a)*Gamma(b) */
+/* Gamma(a)*Gamma(b); allow a = NULL [omit] */
 static GEN
 mulgamma2(GEN a, GEN b, long prec)
-{ return gmul(ggamma(a, prec), ggamma(b, prec)); }
+{ GEN gb = ggamma(b, prec); return a? gmul(ggamma(a, prec), gb): gb; }
 /* Gamma(a)/Gamma(b) */
 static GEN
 divgamma2(GEN a, GEN b, long prec)
@@ -472,7 +472,7 @@ bind(GEN a, GEN b, GEN c, long ind)
   {
     case 1: case 2: return gsub(c, b);
     case 5: case 6: return gsub(gaddsg(1, a), c);
-    default: return b;
+    default: return b; /* 3,4 */
   }
 }
 static GEN
@@ -482,7 +482,7 @@ cind(GEN a, GEN b, GEN c, long ind)
   {
     case 1: case 6: return gaddsg(1, gsub(a,b));
     case 4: case 5: return gsub(gaddsg(1, gadd(a,b)), c);
-    default: return c;
+    default: return c; /* 2,3 */
   }
 }
 static GEN
@@ -495,59 +495,47 @@ zind(GEN z, long ind)
     case 4: return gsubsg(1, z);
     case 5: return gsubsg(1, ginv(z));
     case 6: return ginv(z);
+    default: return z; /* 3 */
   }
-  return z;
 }
 
-/* z not 0 or 1, c not a nonpositive integer */
+/* z not 0 or 1, c not a nonpositive integer. Among the generic 6
+ * Kummer transforms 1/(1-z),z/(z-1),z,1-z,1-1/z,1/z, check in this order
+ * which ones are allowed and return the index for the one with smallest
+ * resulting |z|. If that modulus is "far enough" from 1 [we can sum the Taylor
+ * series], return it negated. Otherwise, we'll use integral representations. */
 static long
 F21ind(GEN a, GEN b, GEN c, GEN z, long bit)
 {
   GEN v = const_vec(6, mkoo());
   long ind = 0, B = bit - 5;
   const long LD = LOWDEFAULTPREC;
-  if (!isnegint_approx(cind(a,b,c, 1),B)) gel(v,1) = gabs(zind(z,1), LD);
+  if (!isnegint_approx(cind(a,b,c, 1),B))
+  { /* 1 and 6 are allowed */
+    gel(v,1) = gabs(zind(z,1), LD);
+    gel(v,6) = gabs(zind(z,6), LD);
+  }
   gel(v,2) = gabs(zind(z,2), LD);
   gel(v,3) = gabs(z, LD);
-  if (!isnegint_approx(cind(a,b,c, 4),B)) gel(v,4) = gabs(zind(z,4), LD);
-  if (!isnegint_approx(cind(a,b,c, 5),B)) gel(v,5) = gabs(zind(z,5), LD);
-  if (!isnegint_approx(cind(a,b,c, 6),B)) gel(v,6) = gabs(zind(z,6), LD);
+  if (!isnegint_approx(cind(a,b,c, 4),B))
+  { /* 4 and 5 are allowed */
+    gel(v,4) = gabs(zind(z,4), LD);
+    gel(v,5) = gabs(zind(z,5), LD);
+  }
   ind = vecindexmin(v); /* |znew| <= 1; close to 1 ? */
   return (gexpo(gsubgs(gel(v,ind),1)) > -maxss(bit / 4, 32))? -ind: ind;
 }
 static GEN
-mul4(GEN a, GEN b, GEN c, GEN d) { return gmul(a,gmul(b, gmul(c, d))); }
-static GEN
 mul3(GEN a, GEN b, GEN c) { return gmul(a,gmul(b, c)); }
 
-/* (1 - zt)^a t^b (1-t)^c */
-static GEN
-fF212(void *E, GEN t)
-{
-  GEN z = gel(E,1), a = gel(E,2), b = gel(E,3), c = gel(E,4);
-  GEN u = gsubsg(1, gmul(z, t));
-  long prec = precision(t);
-  return mul3(gpow(u, a, prec), gpow(t, b, prec), gpow(gsubsg(1,t), c, prec));
-}
-
-/* (1 - zt)^a T(1-zt) t^b (1-t)^c */
-static GEN
-fF21neg2(void *E, GEN t)
-{
-  GEN z = gel(E,1), a = gel(E,2), b = gel(E,3), c = gel(E,4), T = gel(E,5);
-  GEN u = gsubsg(1, gmul(z, t));
-  long prec = precision(t);
-  return mul4(poleval(T, u), gpow(u, a, prec), gpow(t, b, prec),
-              gpow(gsubsg(1,t), c, prec));
-}
-
-/* N >= 1 */
+/* return the polynomial of degree N >= 1
+ *   \sum_{i=0} binomial(N,i) (c-a)_i (a)_{N-i} X^i */
 static GEN
 F21lam(long N, GEN a, GEN c)
 {
-  long i;
   GEN C = vecbinomial(N), S = cgetg(N+2, t_VEC);
   GEN vb = vpoch(gsub(c,a), N), va = vpoch(a, N);
+  long i;
   gel(S,1) = gel(va,N);
   for (i = 1; i < N; i++) gel(S,i+1) = mul3(gel(C,i+1), gel(vb,i), gel(va,N-i));
   gel(S,i+1) = gel(vb,N); return RgV_to_RgX(S,0);
@@ -621,6 +609,7 @@ F21finite(long m, GEN b, GEN c, GEN z, long prec)
 
 /**********************************************************/
 
+/* allow a = NULL [omit] */
 static GEN
 multgam(GEN a, GEN b, GEN c, GEN d, long prec)
 {
@@ -635,21 +624,35 @@ intnumsplit(void *E, GEN (*f)(void*, GEN), GEN a, GEN b, GEN z, long prec)
   return gadd(intnum(E, f, a, z, NULL, prec),
               intnum(E, f, z, b, NULL, prec));
 }
+
+/* (1 - zt)^a T(1-zt) t^b (1-t)^c */
+static GEN
+fF21(void *E, GEN t)
+{
+  GEN z = gel(E,1), a = gel(E,2), b = gel(E,3), c = gel(E,4), T = gel(E,5);
+  GEN u = gsubsg(1, gmul(z, t));
+  long prec = precision(t);
+  GEN x = mul3(gpow(u, a, prec), gpow(t, b, prec), gpow(gsubsg(1,t), c, prec));
+  return T? gmul(x, poleval(T, u)): x;
+}
+
 /* z != 1 */
 static GEN
-myint21(void *E, GEN (*f)(void*, GEN), long prec)
+int21(GEN a, GEN b, GEN c, GEN z, GEN T, long prec)
 {
-  GEN z = gel(E,1), a = real_i(gel(E,2)), b = gel(E,3), c = gel(E,4);
-  GEN pz = NULL, p0 = mkendpt(gen_0, b), p1 = mkendpt(gen_1, c);
-  if (gcmpgs(a, 1) <= 0 && is0(imag_i(z), 10))
+  GEN A = gneg(a), B = gsubgs(b,1), C = gsubgs(gsub(c,b), 1), rA = real_i(A);
+  GEN pz = NULL, p0 = mkendpt(gen_0, B), p1 = mkendpt(gen_1, C);
+  GEN E = mkvec5(z, A, B, C, T);
+
+  if (gcmpgs(rA, 1) <= 0 && is0(imag_i(z), 10))
   {
     GEN r;
     pz = ginv(z); r = real_i(pz);
     if (gsigne(r) <= 0 || gcmp(r, gen_1) >= 0) pz = NULL;
   }
-  if (pz) pz = mkendpt(pz,a);
-  else if (gcmpgs(a,-1) <= 0) prec += ((gexpo(a)+1)>>1) * EXTRAPREC64;
-  return intnumsplit(E, f, p0, p1, pz, prec);
+  if (pz) pz = mkendpt(pz,rA);
+  else if (gcmpgs(rA,-1) <= 0) prec += ((gexpo(rA)+1)>>1) * EXTRAPREC64;
+  return intnumsplit((void*)E, fF21, p0, p1, pz, prec);
 }
 
 /* Algorithm used for F21(a,b;c;z)
@@ -668,7 +671,7 @@ F21_i: c is not a non-positive integer
 - compute index, value of z
    if |z| < 1-epsilon return F21taylorind
    if Re(b)<=0, swap and/or recurse
-   so may assume Re(b)>0 and Re(a)>=Re(b) and integrate.
+   so may assume Re(c)>Re(b)>0 and integrate [15.6.1].
 
 F21finite:
 - compute index, value of z
@@ -694,7 +697,7 @@ static GEN F21taylorind(GEN a, GEN b, GEN c, GEN z, long ind, long prec);
 static GEN
 F21_i(GEN a, GEN b, GEN c, GEN z, long prec)
 {
-  GEN res;
+  GEN res, p = NULL, T = NULL;
   long m, ind, prec2, bitprec = prec2nbits(prec);
   if (is0(imag_i(z), bitprec)) z = real_i(z);
   if (is0(z, bitprec)) return real_1(prec);
@@ -703,6 +706,7 @@ F21_i(GEN a, GEN b, GEN c, GEN z, long prec)
     GEN x = gsub(c, gadd(a, b)); check_hyp1(x);
     return multgam(c, x, gsub(c,a), gsub(c,b), prec);
   }
+  /* z != 0,1 */
   if (isnegint2(b, &m)) return F21finite(m, a, c, z, prec);
   if (isnegint2(a, &m)) return F21finite(m, b, c, z, prec);
   if (isnegint(gsub(c, b))) swap(a, b);
@@ -711,18 +715,22 @@ F21_i(GEN a, GEN b, GEN c, GEN z, long prec)
     GEN x = gpow(gsubsg(1, z), gneg(gaddsg(m, b)), prec);
     return gmul(x, F21finite(m, gsub(c, b), c, z, prec));
   }
-  /* Here a, b, c, c-a, c-b are not nonpositive integers */
+  /* None of a, b, c, c-a, c-b is a nonpositive integer.
+   * Try Kummer transforms */
   ind = F21ind(a, b, c, z, bitprec);
   prec2 = prec + EXTRAPREC64;
   a = gprec_wensure(a,prec2);
   b = gprec_wensure(b,prec2);
   c = gprec_wensure(c,prec2);
   z = gprec_wensure(z,prec2);
+  /* can ensure |z| << 1: sum the Taylor series */
   if (ind < 0) return gprec_wtrunc(F21taylorind(a,b,c, z, ind, prec), prec);
+  /* can ensure |z| <= 1, but too close to 1: use integral 15.6.1 for
+   * F21 / Gamma(c) */
   if (gsigne(real_i(b)) <= 0)
   {
     if (gsigne(real_i(a)) <= 0)
-    {
+    { /* 15.5.16 (a and b swapped) divided by c */
       GEN p1,p2;
       if (gcmp(real_i(b), real_i(a)) < 0) swap(a,b);
       /* FIXME: solve recursion as below with F21lam */
@@ -733,23 +741,23 @@ F21_i(GEN a, GEN b, GEN c, GEN z, long prec)
     }
     swap(a,b);
   }
+  /* Here real(b) > 0 */
   if (gcmp(real_i(a), real_i(b)) < 0 && gsigne(real_i(a)) > 0) swap(a,b);
-  /* Here real(b) > 0 and either real(a) <= 0 or real(a) > real(b) */
+  /* further, either real(a) <= 0 or real(a) >= real(b) */
   if (gcmp(real_i(c), real_i(b)) <= 0)
-  {
+  { /* T(x) = sum_i binomial(N,i) (c-a)_i (a)_{N-i} x^i
+     * (c)_N F(a,b,c;z) = sum_{i = 0}^N Ti F(a+N-i,b,c+N;z) for N >= 0,
+     * where F = 2F1 / Gamma(c) */
     long N = 1 + itos(gfloor(gsub(real_i(b),real_i(c)))); /* >= 1 */
-    GEN T = F21lam(N, a, c), c0 = c;
-    void *E;
-    c = gaddsg(N,c);
-    E = (void*)mkvec5(z, gsubsg(-N,a), gsubgs(b,1), gsubgs(gsub(c,b),1), T);
-    res = gdiv(myint21(E, fF21neg2, prec2), poch(c0, N, prec));
+    T = F21lam(N, a, c);
+    p = poch(c, N, prec);
+    c = gaddsg(N,c); /* now real(b) < real(c) */
+    a = gaddsg(N,a);
   }
-  else
-  {
-    void *E = (void*)mkvec4(z, gneg(a), gsubgs(b,1), gsubgs(gsub(c,b),1));
-    res = myint21(E, fF212, prec2);
-  }
-  return gmul(multgam(gen_1, c, b, gsub(c,b), prec), res);
+  /* real(b) < real(c) */
+  res = int21(a, b, c, z, T, prec2); if (p) res = gdiv(res, p);
+  /* res = 2F1(a0,b0,c0; z)*Gamma(b)Gamma(c-b)/Gamma(c) by 15.6.1 */
+  return gdiv(gmul(ggamma(c,prec),res), mulgamma2(b, gsub(c,b), prec));
 }
 
 /* c not a non-positive integer */
