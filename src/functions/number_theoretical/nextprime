@@ -13,7 +13,7 @@ Doc: finds the smallest pseudoprime (see
  \bprog
  ? nextprime(2)
  %1 = 2
- ? precprime(Pi)
+ ? nextprime(Pi)
  %2 = 5
  ? nextprime(-10)
  %3 = 2 \\ primes are positive
