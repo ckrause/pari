@@ -69,7 +69,8 @@ idealtyp(GEN *ideal, GEN *arch)
       t = id_MAT;
       break;
 
-    case t_VEC: if (lg(x)!=6) pari_err_TYPE("idealtyp",x);
+    case t_VEC:
+      if (!checkprid_i(x)) pari_err_TYPE("idealtyp [fake prime ideal]",x);
       t = id_PRIME; break;
 
     case t_POL: case t_POLMOD: case t_COL:
@@ -141,7 +142,7 @@ idealhnf_shallow(GEN nf, GEN x)
   if (tx == t_VEC && lx == 3) { x = gel(x,1); tx = typ(x); lx = lg(x); }
   if (tx == t_VEC && lx == 6)
   {
-    checkprid(x);
+    if (!checkprid_i(x)) pari_err_TYPE("idealhnf [fake prime ideal]",x);
     return pr_hnf(nf,x); /* PRIME */
   }
   switch(tx)

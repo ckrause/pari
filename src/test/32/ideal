@@ -285,7 +285,13 @@ matrix(0,2)
   *** idealaddtoone: incorrect type in idealaddmultoone [integer matrix] (t_MAT).
   ***   at top-level: idealhnf(Q,[x,x,x,x,x])
   ***                 ^-----------------------
-  *** idealhnf: incorrect type in checkprid (t_VEC).
+  *** idealhnf: incorrect type in idealhnf [fake prime ideal] (t_VEC).
+  ***   at top-level: idealval(Q,2,[x,x,x,x,x])
+  ***                 ^-------------------------
+  *** idealval: incorrect type in checkprid (t_VEC).
+  ***   at top-level: idealval(Q,Mat(2),[x,x,x,x,x])
+  ***                 ^------------------------------
+  *** idealval: incorrect type in checkprid (t_VEC).
   ***   at top-level: ideallog(Q,2,zQ)
   ***                 ^----------------
   *** ideallog: elements not coprime in zlog_prk1:
@@ -339,4 +345,4 @@ matrix(0,2)
   ***   at top-level: idealred(K,[4,3,2,1;0,3,2,1;0,0,2,1;0,0,0,1])
   ***                 ^---------------------------------------------
   *** idealred: inconsistent dimensions in idealred.
-Total time spent: 84
+Total time spent: 81
