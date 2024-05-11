@@ -139,7 +139,11 @@ idealhnf_shallow(GEN nf, GEN x)
 
   /* cannot use idealtyp because here we allow nonsquare matrices */
   if (tx == t_VEC && lx == 3) { x = gel(x,1); tx = typ(x); lx = lg(x); }
-  if (tx == t_VEC && lx == 6) return pr_hnf(nf,x); /* PRIME */
+  if (tx == t_VEC && lx == 6)
+  {
+    checkprid(x);
+    return pr_hnf(nf,x); /* PRIME */
+  }
   switch(tx)
   {
     case t_MAT:
