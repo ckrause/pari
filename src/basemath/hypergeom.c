@@ -574,35 +574,30 @@ F21finitetaylor(long m, GEN b, GEN c, GEN z, long prec)
   return S;
 }
 
-/* c not a nonpositive integer */
 static GEN
-F21finite_i(long m, GEN b, GEN c, GEN z, GEN B, GEN C, GEN coe, long prec)
-{
-  return mul3(poch(B, m, prec), gdiv(gpowgs(coe, m), poch(C, m, prec)),
-              F21finitetaylor(m, b, c, z, prec));
-}
+F21finite_i(GEN F, GEN B, GEN C, long m, long prec)
+{ return gdiv(gmul(F, poch(B, m, prec)), poch(C, m, prec)); }
 
 /* F(-m,b; c; z), m >= 0; c not a nonpositive integer */
 static GEN
 F21finite(long m, GEN b, GEN c, GEN z, long prec)
 {
-  GEN a = stoi(-m), b1 = b, c1 = c, z1;
-  long ind = F21ind(a, b, c, z, prec2nbits(prec)), inda = labs(ind);
-  z1 = zind(z, inda);
-  if (ind < 0)
+  GEN a = stoi(-m), b1, c1, z1, F;
+  long ind = F21ind(a, b, c, z, prec2nbits(prec));
+
+  if (ind > 0 || ind == -3) return F21finitetaylor(m, b, c, z, prec);
+  ind = labs(ind);
+  z1 = zind(z, ind);
+  b1 = bind(a, b, c, ind);
+  c1 = cind(a, b, c, ind); /* not a nonpositive integer */
+  F = F21finitetaylor(m, b1, c1, z1, prec);
+  switch (ind)
   {
-    b1 = bind(a, b, c, inda);
-    c1 = cind(a, b, c, inda); /* not a nonpositive integer */
-  }
-  switch (inda)
-  {
-    case 1: return F21finite_i(m, b1, c1, z1, b, c, gsubsg(1,z), prec);
-    case 2: return gmul(gpowgs(gsubsg(1,z), m),
-                        F21finitetaylor(m, b1, c, z1, prec));
-    case 3: return F21finitetaylor(m, b1, c1, z1, prec);
-    case 4: return F21finite_i(m, b1, c1, z1, gsub(c,b), c, gen_1, prec);
-    case 5: return F21finite_i(m, b1, c1, z1, gsub(c,b), c, z, prec);
-    case 6: return F21finite_i(m, b1, c1, z1, b, c, gneg(z), prec);
+    case 1: return F21finite_i(gmul(F, gpowgs(gsubsg(1,z), m)), b, c, m, prec);
+    case 2: return gmul(F, gpowgs(gsubsg(1,z), m));
+    case 4: return F21finite_i(F, gsub(c,b), c, m, prec);
+    case 5: return F21finite_i(gmul(F, gpowgs(z,m)), gsub(c,b), c, m, prec);
+    case 6: return F21finite_i(gmul(F, gpowgs(gneg(z),m)), b, c, m, prec);
   }
   return NULL; /*LCOV_EXCL_LINE*/
 }
@@ -655,43 +650,6 @@ int21(GEN a, GEN b, GEN c, GEN z, GEN T, long prec)
   return intnumsplit((void*)E, fF21, p0, p1, pz, prec);
 }
 
-/* Algorithm used for F21(a,b;c;z)
-Basic transforms:
-  1: (c-b,1+a-b,1/(1-z))
-  2: (c-b,c,z/(z-1))
-  3: (b,c,z)
-  4: (b,b-c+a+1,1-z)
-  5: (1+a-c,b-c+a+1,1-1/z)
-  6: (1+a-c,1+a-b,1/z)
-
-F21: calls F21_i and increase prec if too much cancellation
-F21_i: c is not a non-positive integer
-- z ~ 0 or 1: return special value
-- if a, b, c-b or c-a a non-positive integer: use F21finite
-- compute index, value of z
-   if |z| < 1-epsilon return F21taylorind
-   if Re(b)<=0, swap and/or recurse
-   so may assume Re(c)>Re(b)>0 and integrate [15.6.1].
-
-F21finite:
-- compute index, value of z
-- call F21finitetaylor
-
-F21ind: find best index (1 to 6, -1 to -6 if |z| < 1-epsilon)
-F21finitetaylor: a or b in Z_{<=0}; calls precFtaylor
-
-F21taylorind: in case 2, may lose accuracy, possible bug.
-- calls F21taylor[1456] or F21taylor
-
-F21taylor: calls Ftaylor / gamma: may lose accuracy
-
-FBaux1: F21taylor twice
-FBaux2: F21finitelim + F21taylorlim
-F21taylor[45]: if c-(a+b) integer, calls FBaux1, else calls FBaux2
-F21taylor[16]: if b-a integer, calls FBaux1, else calls FBaux2
-
-F21taylorlim: calls precFtaylor then compute
-F21finitelim: direct */
 static GEN F21taylorind(GEN a, GEN b, GEN c, GEN z, long ind, long prec);
 /* c not a nonpositive integer */
 static GEN
