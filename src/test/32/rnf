@@ -1154,7 +1154,7 @@ error("inconsistent variables in nf_to_scalar_or_basis, x != y.")
 []
 [[;], []]
 [;]
-error("incorrect type in idealtyp (t_VEC).")
+error("incorrect type in idealtyp [fake prime ideal] (t_VEC).")
 [;]
 0
 [0, 0]
@@ -1217,7 +1217,7 @@ error("inconsistent dimensions in idealtwoelt.")
 [[1, -66328; 0, 1], [[280970, 12259, 35869; 0, 1, 0; 0, 0, 1], [1, 1/2, 1/2;
  0, 1/2, 0; 0, 0, 1/2]]]
 [280970, 12259, 35869; 0, 1, 0; 0, 0, 1]
-error("incorrect type in idealtyp (t_VEC).")
+error("incorrect type in idealtyp [fake prime ideal] (t_VEC).")
 [561940, 12259, 316839; 0, 1, 0; 0, 0, 1]
 561940
 [280970, Mod(x + Mod(-140485*y + 110026, y^3 - 21), x^2 + Mod(-y, y^3 - 21))

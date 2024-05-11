@@ -298,7 +298,7 @@ bad inputs
   *** gcharinit: incorrect type in checknf [please apply nfinit()] (t_VEC).
   ***   at top-level: gcharinit(bnfinit(x),[])
   ***                 ^------------------------
-  *** gcharinit: incorrect type in idealtyp (t_VEC).
+  *** gcharinit: incorrect type in idealtyp [fake prime ideal] (t_VEC).
   ***   at top-level: gcharinit(bnfinit(x),[1,[]])
   ***                 ^----------------------------
   *** gcharinit: incorrect type in Idealstar [incorrect archimedean component] (t_VEC).
@@ -319,13 +319,13 @@ bad inputs
   *** gcharidentify: domain error in gcharidentify: v > 2
   ***   at top-level: gcharidentify(gc,[1,[]],[[0,0],[0,0]])
   ***                 ^--------------------------------------
-  *** gcharidentify: incorrect type in idealtyp (t_VEC).
+  *** gcharidentify: incorrect type in idealtyp [fake prime ideal] (t_VEC).
   ***   at top-level: gcharidentify(gc,[1,'x],[[0,0],[0,0]])
   ***                 ^--------------------------------------
   *** gcharidentify: incorrect type in gcharidentify [ideal] (t_POL).
   ***   at top-level: gcharidentify(gc,[[]],[1.])
   ***                 ^---------------------------
-  *** gcharidentify: incorrect type in idealtyp (t_VEC).
+  *** gcharidentify: incorrect type in idealtyp [fake prime ideal] (t_VEC).
   ***   at top-level: gcharidentify(gc,[pr],[1+O(3^7)])
   ***                 ^---------------------------------
   *** gcharidentify: incorrect type in gcharidentify [character value: should be real or complex] (t_PADIC).
@@ -409,4 +409,4 @@ bad inputs
   ***   at top-level: gcharlocal(gc,[0,1,O(5^2)]~,1)
   ***                 ^------------------------------
   *** gcharlocal: incorrect type in check_gchar_i [s] (t_PADIC).
-Total time spent: 3070
+Total time spent: 4230
