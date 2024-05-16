@@ -335,7 +335,7 @@ ZM_flattergram(GEN M, long flag)
   if (DEBUGLEVEL>=3)
   {
     timer_start(&ti);
-    err_printf("FLATTERGRAM dim = %ld size = %ld\n", n, expi(gnorml2(M)));
+    err_printf("FLATTERGRAM dim = %ld size = %ld\n", n, ZM_max_expi(M));
   }
   btop = avma;
   T = matid(n);
