@@ -1060,7 +1060,13 @@ randomprime0(GEN N, GEN q)
   if (!N) N = int2n(31);
   prime_interval(N, &a, &b, &d);
   r = modii(subii(C, a), D);
-  if (signe(r)) { a = addii(a, r); d = subii(d, r); }
+  if (signe(r))
+  {
+    a = addii(a, r);
+    if (cmpii(a,b) > 0)
+      pari_err(e_MISC, "no prime satisfies congruence in interval");
+    d = subii(d, r);
+  }
   if (!equali1(gcdii(C,D)))
   {
     if (isprime(a)) return gerepilecopy(av, a);

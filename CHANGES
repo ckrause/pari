@@ -20,6 +20,7 @@ BA  14- ellsaturation was leaking variable numbers
     16- rnfeltnorm(rnf, t_POL in rnf.pol variable): wrong [#2509]
     17- b=9/10; hypergeom([b+2, b], 2*b, 2/3): wrong [#2551]
     18- overflows not tested in subcycloiwasawa [#2552]
+    19- randomprime([1,2], Mod(1,2)) -> 3
 
   Changed
 BA   1- plotell renamed to plotarc

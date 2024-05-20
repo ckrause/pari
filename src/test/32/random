@@ -43,4 +43,10 @@ Mod(5, 7)*x^3 + Mod(2, 7)*x^2 + Mod(1, 7)*x + Mod(6, 7)
   *** randomprime: elements not coprime in randomprime:
     0
     2
-Total time spent: 1
+  ***   at top-level: randomprime(2,2)
+  ***                 ^----------------
+  *** randomprime: domain error in randomprime: N <= 2
+  ***   at top-level: randomprime(3,2)
+  ***                 ^----------------
+  *** randomprime: no prime satisfies congruence in interval.
+Total time spent: 2
