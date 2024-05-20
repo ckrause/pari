@@ -4572,6 +4572,7 @@ GEN     mapdomain_shallow(GEN T);
 GEN     mapget(GEN T, GEN a);
 int     mapisdefined(GEN T, GEN a, GEN *pt_z);
 void    mapput(GEN T, GEN a, GEN b);
+GEN     mapselect_shallow(void *E, long (*f)(void* E, GEN x), GEN T);
 GEN     maptomat(GEN T);
 GEN     maptomat_shallow(GEN T);
 GEN     mapapply(GEN T, GEN a, GEN f, GEN u);

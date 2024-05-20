@@ -68,6 +68,26 @@ mapdomain_shallow(GEN T)
 }
 
 static void
+treeselect(void *E, long (*f)(void* E, GEN x), GEN t, long i, GEN V, long *n)
+{
+  if (i==0) return;
+  treeselect(E, f, t, tleft(i), V, n);
+  if (f(E, gel(tvalue(i),2))) gel(V, ++*n) = gel(tvalue(i),1);
+  treeselect(E, f, t, tright(i), V, n);
+}
+
+GEN
+mapselect_shallow(void *E, long (*f)(void* E, GEN x), GEN T)
+{
+  GEN V, t = list_data(T);
+  long n = 0;
+  if (!t || lg(t)==1) return cgetg(1, t_VEC);
+  clone_lock(T);
+  V = cgetg(lg(t), t_COL); treeselect(E, f, t, 1, V, &n);
+  clone_unlock_deep(T); fixlg(V, n+1); return V;
+}
+
+static void
 treemat(GEN t, long i, GEN V, long *n)
 {
   if (i==0) return;

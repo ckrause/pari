@@ -230,6 +230,9 @@ in the list (a clone of \kbd{object}).
 
 \fun{GEN}{mapdomain}{GEN T} vector of keys of the map $T$.
 
+\fun{GEN}{mapselect_shallow}{void *E, long (*f)(void* E, GEN x), GEN T}
+vector of keys of the map $T$ whose value matches the predicate $f$.
+
 \fun{GEN}{mapdomain_shallow}{GEN T} shallow version of \kbd{mapdomain}.
 
 \fun{GEN}{maptomat}{GEN T} convert a map to a factorization matrix.
