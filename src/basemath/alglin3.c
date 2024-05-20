@@ -537,6 +537,15 @@ genindexselect(void *E, long (*f)(void* E, GEN x), GEN A)
     case t_LIST:
       z = list_data(A);
       l = z? lg(z): 1;
+      if (list_typ(A)==t_LIST_MAP)
+      {
+        av = avma;
+        v = cgetg(l, t_COL);
+        for (i = lv = 1; i < l; i++) {
+          if (f(E, gmael3(z,i,1,2))) gel(v,lv++) = gmael3(z,i,1,1);
+        }
+        clone_unlock_deep(A); fixlg(v, lv); return gerepilecopy(av, v);
+      }
       break;
     case t_VEC: case t_COL: case t_MAT:
       l = lg(A);
@@ -584,12 +593,32 @@ genselect(void *E, long (*f)(void* E, GEN x), GEN A)
       if (!z) y = mklist();
       else
       {
-        GEN B;
-        y = cgetg(3, t_LIST);
-        v = genindexselect(E, f, z);
-        B = extract_copy(z, v);
-        y[1] = lg(B)-1;
-        list_data(y) = B;
+        if (list_typ(A)==t_LIST_MAP)
+        {
+          long i, l = z? lg(z): 1, lv=1;
+          pari_sp av = avma;
+          GEN v1 = cgetg(l, t_COL);
+          GEN v2 = cgetg(l, t_COL);
+          for (i = lv = 1; i < l; i++) {
+            if (f(E, gmael3(z,i,1,2)))
+           {
+             gel(v1,lv) = gmael3(z,i,1,1);
+             gel(v2,lv) = gmael3(z,i,1,2);
+             lv++;
+           }
+          }
+          clone_unlock_deep(A); fixlg(v1, lv); fixlg(v2, lv);
+          return gerepilecopy(av, gtomap(mkmat2(v1,v2)));
+        }
+        else
+        {
+          GEN B;
+          y = cgetg(3, t_LIST);
+          v = genindexselect(E, f, z);
+          B = extract_copy(z, v);
+          y[1] = lg(B)-1;
+          list_data(y) = B;
+        }
       }
       break;
     case t_VEC: case t_COL: case t_MAT:
