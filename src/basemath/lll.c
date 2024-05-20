@@ -93,15 +93,12 @@ mpabscmp(GEN x, GEN y)
 /****************************************************************************/
 /***                             FLATTER                                  ***/
 /****************************************************************************/
-
 /* Implementation of "FLATTER" algorithm based on
-   <https://eprint.iacr.org/2023/237>
-   Fast Practical Lattice Reduction through Iterated Compression
-
-   Keegan Ryan, University of California, San Diego
-   Nadia Heninger, University of California, San Diego
-BA20230925 */
-
+ * <https://eprint.iacr.org/2023/237>
+ * Fast Practical Lattice Reduction through Iterated Compression
+ *
+ * Keegan Ryan, University of California, San Diego
+ * Nadia Heninger, University of California, San Diego. BA20230925 */
 static long
 drop(GEN R)
 {
@@ -128,11 +125,9 @@ potential(GEN R)
   return s;
 }
 
-/*
- * U upper-triangular invertible:
+/* U upper-triangular invertible:
  * Bound on the exponent of the condition number of U.
- * Algo 8.13 in Higham, Accuracy and stability of numercal algorithms.
- */
+ * Algo 8.13 in Higham, Accuracy and stability of numercal algorithms. */
 static long
 condition_bound(GEN U, int lower)
 {
@@ -145,7 +140,7 @@ condition_bound(GEN U, int lower)
   {
     long s = 0;
     for (j=i+1; j<=n; j++)
-      s = maxss(s, (lower?gexpo(gcoeff(U,j,i)):gexpo(gcoeff(U,i,j))) + y[j]);
+      s = maxss(s, (lower? gexpo(gcoeff(U,j,i)): gexpo(gcoeff(U,i,j))) + y[j]);
     y[i] = s - gexpo(gcoeff(U,i,i));
     e = maxss(e, y[i]);
   }
@@ -157,8 +152,7 @@ gsisinv(GEN M)
 {
   long i, l = lg(M);
   for (i = 1; i < l; ++i)
-    if (signe(gmael(M, i, i))==0)
-      return 0;
+    if (! signe(gmael(M, i, i))) return 0;
   return 1;
 }
 
@@ -168,10 +162,23 @@ nbits2prec64(long n)
   return nbits2prec(((n+63)>>6)<<6);
 }
 
-static long spread(GEN R);
 static long
-GS_extraprec(long C, long S, long n)
+spread(GEN R)
 {
+  long i, n = lg(R)-1, m = mpexpo(gcoeff(R, 1, 1)), M = m;
+  for (i = 2; i <= n; ++i)
+  {
+    long e = mpexpo(gcoeff(R, i, i));
+    if (e < m) m = e;
+    if (e > M) M = e;
+  }
+  return M - m;
+}
+
+static long
+GS_extraprec(GEN L, int lower)
+{
+  long C = condition_bound(L, lower), S = spread(L), n = lg(L)-1;
   return maxss(2*S+2*n, C-S-2*n); /* = 2*S + 2*n + maxss(0, C-3*S-4*n) */
 }
 
@@ -192,7 +199,7 @@ RgM_Cholesky_dynprec(GEN M)
       set_avma(ltop);
       continue;
     }
-    mbitprec = minprec + GS_extraprec(condition_bound(L,0), spread(L), lg(L)-1);
+    mbitprec = minprec + GS_extraprec(L, 0);
     if (bitprec >= mbitprec)
       break;
     bitprec = maxss((4*bitprec)/3, mbitprec);
@@ -204,7 +211,7 @@ RgM_Cholesky_dynprec(GEN M)
 static GEN
 gramschmidt_upper(GEN M)
 {
-  long bitprec = lg(M) + 30 + GS_extraprec(condition_bound(M,0), spread(M), lg(M)-1);
+  long bitprec = lg(M)-1 + 31 + GS_extraprec(M, 0);
   return RgM_gtofp(M, nbits2prec64(bitprec));
 }
 
@@ -224,7 +231,7 @@ gramschmidt_dynprec(GEN M)
       set_avma(ltop);
       continue;
     }
-    mbitprec = minprec + GS_extraprec(condition_bound(L,1), spread(L), lg(L)-1);
+    mbitprec = minprec + GS_extraprec(L, 1);
     if (bitprec >= mbitprec)
       return gerepilecopy(ltop, shallowtrans(L));
     bitprec = maxss((4*bitprec)/3, mbitprec);
@@ -2339,21 +2346,6 @@ fplll_flatter(GEN *pG, GEN *pB, GEN *pU, long rank, long flag)
     if (*pU) *pU = ZM_mul(*pU, T);
     *pG = ZM_mul(shallowtrans(T), ZM_mul(*pG,T));
   }
-}
-
-static long
-spread(GEN R)
-{
-  long i, n = lg(R)-1;
-  GEN m = gcoeff(R, 1, 1), M = m;
-  for (i = 2; i <= n; ++i)
-  {
-    if (mpabscmp(gcoeff(R, i, i), m) < 0)
-      m = gcoeff(R, i, i);
-    if (mpabscmp(gcoeff(R, i, i), M) > 0)
-      M = gcoeff(R, i, i);
-  }
-  return mpexpo(M)-mpexpo(m);
 }
 
 static GEN
