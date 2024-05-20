@@ -974,6 +974,8 @@ prime(long N)
   set_avma(av); return icopy(p);
 }
 
+/* N encodes an interval in which to draw a random uniform prime;
+ * decoded as [a, b], d = b-a+1 */
 static void
 prime_interval(GEN N, GEN *pa, GEN *pb, GEN *pd)
 {
@@ -1021,7 +1023,7 @@ prime_interval(GEN N, GEN *pa, GEN *pb, GEN *pd)
   *pa = a; *pb = b; *pd = d;
 }
 
-/* random b-bit prime */
+/* random prime */
 GEN
 randomprime(GEN N)
 {
