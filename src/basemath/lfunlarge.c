@@ -668,12 +668,14 @@ series_h0l(GEN worker, long n0, GEN s, GEN a, GEN lam, long prec)
 static GEN
 series_h1(GEN worker, long n1, GEN s, GEN a, GEN lam, long prec)
 {
-  GEN pre_factor, z, sn = gsubgs(s, 1);
+  GEN mP, pre_factor, z, sn = gsubgs(s, 1);
   GEN ini = gequal0(lam) ? gen_1 : gen_0;
   pre_factor = gaplus(gneg(sn), prec);
   if (gequal0(pre_factor)) return gen_0;
-  pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
-  z = typ(a) == t_INT ? gen_1 : gexp(gneg(gmul(PiI2(prec), a)), prec);
+  mP = gneg(PiI2(prec));
+  pre_factor = gmul(gmul(pre_factor, gexp(gmul(mP, gmul(a, lam)), prec)),
+                    gpow(Pi2n(1, prec), sn, prec));
+  z = typ(a) == t_INT ? gen_1 : gexp(gmul(mP, a), prec);
   set_arg(worker, z, lam, sn, prec);
   return gmul(pre_factor,  parsum(ini, stoi(n1 - 1), worker));
 }
@@ -681,11 +683,13 @@ series_h1(GEN worker, long n1, GEN s, GEN a, GEN lam, long prec)
 static GEN
 series_h2(GEN worker, long n2, GEN s, GEN a, GEN lam, long prec)
 {
-  GEN pre_factor, z, sn = gsubgs(s, 1);
+  GEN P, pre_factor, z, sn = gsubgs(s, 1);
   pre_factor = gaminus(gneg(sn), prec);
   if (gequal0(pre_factor)) return gen_0;
-  pre_factor = gmul(gmul(pre_factor, gexp(gneg(gmul(PiI2(prec), gmul(a, lam))), prec)), gpow(Pi2n(1, prec), sn, prec));
-  z = typ(a) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), a), prec);
+  P = PiI2(prec);
+  pre_factor = gmul(gmul(pre_factor, gexp(gmul(gneg(P), gmul(a, lam)), prec)),
+                    gpow(Pi2n(1, prec), sn, prec));
+  z = typ(a) == t_INT ? gen_1 : gexp(gmul(P, a), prec);
   set_arg(worker, z, gneg(lam), sn, prec);
   return gmul(pre_factor, parsum(gen_1, stoi(n2), worker));
 }
@@ -693,30 +697,31 @@ series_h2(GEN worker, long n2, GEN s, GEN a, GEN lam, long prec)
 static GEN
 series_residues_h0l(long numpoles, GEN selsm0, GEN s, GEN a, GEN lam, long prec)
 {
-  GEN val = gen_0, ra = real_i(a);
+  GEN P, val = gen_0, ra = real_i(a);
   long n0 = m_n0(selsm0), k;
+  P = PiI2(prec);
   for (k = -numpoles + 1; k <= numpoles; k++)
-  {
     if (gsigne(gaddsg(n0 + k, ra)) > 0)
-      val = gadd(val, gmul(gmul(phi_hat_h(selsm0, k, 0, prec), gexp(gmul(PiI2(prec), gmulgs(lam, n0 + k)), prec)), gpow(gaddsg(n0 + k, a), gneg(s), prec)));
-  }
+      val = gadd(val, gmul(gmul(phi_hat_h(selsm0, k, 0, prec),
+                                gexp(gmul(P, gmulgs(lam, n0 + k)), prec)),
+                           gpow(gaddsg(n0 + k, a), gneg(s), prec)));
   return val;
 }
 
 static GEN
 series_residues_h1(long numpoles, GEN selsm1, GEN s, GEN a, GEN lam, long prec)
 {
-  GEN P, val = gen_0, rlam = real_i(lam), pre_factor, sn = gsubgs(s, 1);
+  GEN mP, val = gen_0, rlam = real_i(lam), pre_factor, sn = gsubgs(s, 1);
   long n1 = m_n0(selsm1), k;
   pre_factor = gaplus(gneg(sn), prec);
   if (gequal0(pre_factor)) return gen_0;
-  P = gneg(PiI2(prec));
-  pre_factor = gmul(gmul(pre_factor, gexp(gmul(P, gmul(a, lam)), prec)),
+  mP = gneg(PiI2(prec));
+  pre_factor = gmul(gmul(pre_factor, gexp(gmul(mP, gmul(a, lam)), prec)),
                     gpow(Pi2n(1, prec), sn, prec));
   for (k = -numpoles; k <= numpoles - 1; k++)
     if (gsigne(gaddsg(n1 + k, rlam)) > 0)
       val = gadd(val, gmul(gmul(phi_hat_h(selsm1, k, 1, prec),
-                                gexp(gmul(P, gmulgs(a, n1 + k)), prec)),
+                                gexp(gmul(mP, gmulgs(a, n1 + k)), prec)),
                            gpow(gaddsg(n1 + k, lam), sn, prec)));
   return gmul(pre_factor, val);
 }
@@ -744,10 +749,11 @@ integrand_h0l(GEN selsm0, GEN s, GEN alam1, GEN x, long prec)
 {
   GEN r0 = gel(selsm0, 2), ale = gel(selsm0, 3), a = gel(selsm0, 4);
   GEN ix = ginv(x), zn = gadd(r0, gmul2n(gmul(ale, gsub(x, ix)), -1));
-  GEN pii = PiI2n(0, prec), den, num;
-  den = gexpm1(gmul(pii, gmul2n(gsub(zn,a), 1)), prec);
-  num = gexp(gmul(gmul(pii, zn), gsub(alam1, zn)), prec);
-  num = gmul(gmul(gmul(num, ale), gmul2n(gadd(x, ix), -1)), gpow(zn, gneg(s), prec));
+  GEN P = PiI2n(0, prec), den, num;
+  den = gexpm1(gmul(P, gmul2n(gsub(zn,a), 1)), prec);
+  num = gexp(gmul(gmul(P, zn), gsub(alam1, zn)), prec);
+  num = gmul(gmul(gmul(num, ale), gmul2n(gadd(x, ix), -1)),
+             gpow(zn, gneg(s), prec));
   return gdiv(num, den);
 }
 
@@ -756,10 +762,11 @@ integrand_h12(GEN selsm1, GEN s, GEN alam1, GEN x, long prec)
 {
   GEN r1 = gel(selsm1, 2), ale = gel(selsm1, 3), lam = gel(selsm1, 4);
   GEN ix = ginv(x), zn = gadd(r1, gmul2n(gmul(ale, gsub(x, ix)), -1));
-  GEN pii = PiI2n(0, prec), den, num, y;
-  den = gexpm1(gmul(pii, gmul2n(gadd(zn,lam), 1)), prec);
-  num = gexp(gmul(gmul(pii, zn), gadd(alam1, zn)), prec);
-  num = gmul(gmul(gmul(num, ale), gmul2n(gadd(x, ix), -1)), gpow(zn, gsubgs(s, 1), prec));
+  GEN P = PiI2n(0, prec), den, num, y;
+  den = gexpm1(gmul(P, gmul2n(gadd(zn,lam), 1)), prec);
+  num = gexp(gmul(gmul(P, zn), gadd(alam1, zn)), prec);
+  num = gmul(gmul(gmul(num, ale), gmul2n(gadd(x, ix), -1)),
+             gpow(zn, gsubgs(s, 1), prec));
   y = gdiv(num, den);
   if (gcmp(garg(zn, prec), Pi2n(-2, prec)) > 0)
     y = gmul(y, gexp(gmul(PiI2(prec), gsubsg(1, s)), prec));
@@ -769,34 +776,39 @@ integrand_h12(GEN selsm1, GEN s, GEN alam1, GEN x, long prec)
 static GEN
 integral_h0l(GEN lin_grid, GEN selsm0, GEN s, GEN a, GEN lam, long prec)
 {
-  GEN alam1 = gaddgs(gmul2n(gadd(a, lam),1), 1), S = gen_0;
+  GEN A = gaddgs(gmul2n(gadd(a, lam),1), 1), S = gen_0;
   pari_sp av = avma;
   long j, l = lg(lin_grid);
+
   for (j = 1; j < l; j++)
   {
-    S = gadd(S, integrand_h0l(selsm0, s, alam1, gel(lin_grid, j), prec));
+    S = gadd(S, integrand_h0l(selsm0, s, A, gel(lin_grid, j), prec));
     if ((j & 0xff) == 0) S = gerepileupto(av, S);
   }
   S = gmul(m_h(selsm0), S);
-  return gmul(S, gexp(gneg(gmul(PiI2n(0, prec), gmul(a, gaddsg(1, gadd(a, gmul2n(lam, 1)))))), prec));
+  A = gmul(a, gaddsg(1, gadd(a, gmul2n(lam, 1))));
+  return gmul(S, gexp(gneg(gmul(PiI2n(0, prec), A)), prec));
 }
 
 /* do not forget a minus sign for index 2 */
 static GEN
 integral_h12(GEN lin_grid, GEN selsm1, GEN s, GEN a, GEN lam, long prec)
 {
-  GEN alam1 = gaddgs(gmul2n(gadd(a,lam), 1), 1), S = gen_0, ga = gaminus(gsubsg(1, s), prec);
+  GEN A, E, S = gen_0, ga = gaminus(gsubsg(1, s), prec);
   pari_sp av = avma;
   long j, l = lg(lin_grid);
+
   if (gequal0(ga)) return S;
+  A = gaddgs(gmul2n(gadd(a,lam), 1), 1);
   for (j = 1; j < l; j++)
   {
-    S = gadd(S, integrand_h12(selsm1, s, alam1, gel(lin_grid, j), prec));
+    S = gadd(S, integrand_h12(selsm1, s, A, gel(lin_grid, j), prec));
     if ((j & 0xff) == 0) S = gerepileupto(av, S);
   }
   if (gequal0(S)) return gen_0;
   S = gmul(m_h(selsm1), S);
-  return gmul(gmul(gmul(S, ga), gexp(gmul(PiI2n(0, prec), gmul(lam, gaddgs(lam, 1))), prec)), gpow(Pi2n(1, prec), gsubgs(s, 1), prec));
+  E = gexp(gmul(PiI2n(0, prec), gmul(lam, gaddgs(lam, 1))), prec);
+  return gmul(gmul(gmul(S, ga), E), gpow(Pi2n(1, prec), gsubgs(s, 1), prec));
 }
 
 struct _fun_q0_t { GEN sel, s, alam1, B; };
@@ -854,24 +866,27 @@ RZLERinit(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
   return mkvec5(sel0, sel1, sel2, lin_grid, numpoles);
 }
 
+static GEN add3(GEN x, GEN y, GEN z) { return gadd(x, gadd(y,z)); }
+static GEN addsub(GEN x, GEN y, GEN z) { return gadd(x, gsub(y,z)); }
+
 static GEN
 lerch_ours(GEN sel, GEN s, GEN a, GEN lam, long prec)
 {
   GEN selsm0 = gel(sel, 1), selsm1 = gel(sel, 2), selsm2 = gel(sel, 3);
-  GEN lin_grid = gel(sel, 4), val_h0, val_h1, val_h2;
-  GEN serandres_h0, serandres_h1, serandres_h2;
+  GEN lin_grid = gel(sel, 4), v0, v1, v2;
   long numpoles = itos(gel(sel, 5));
   GEN worker = snm_closure(is_entry("_serh_worker"),
                            mkvec4(NULL, NULL, NULL, NULL));
-  serandres_h0 = gadd(series_h0l(worker, m_n0(selsm0), s, a, lam, prec),
-                      series_residues_h0l(numpoles, selsm0, s, a, lam, prec));
-  val_h0 = gadd(integral_h0l(lin_grid, selsm0, s, a, lam, prec), serandres_h0);
-  serandres_h1 = gadd(series_h1(worker, m_n0(selsm1), s, a, lam, prec),
-                      series_residues_h1(numpoles, selsm1, s, a, lam, prec));
-  val_h1 = gadd(serandres_h1, integral_h12(lin_grid, selsm1, s, a, lam, prec));  serandres_h2 = gadd(series_h2(worker, m_n0(selsm2), s, a, lam, prec),
-                     series_residues_h2(numpoles, selsm2, s, a, lam, prec));
-  val_h2 = gsub(serandres_h2, integral_h12(lin_grid, selsm2, s, a, lam, prec));
-  return gadd(gadd(val_h0, val_h1), val_h2);
+  v0 = add3(series_h0l(worker, m_n0(selsm0), s, a, lam, prec),
+            series_residues_h0l(numpoles, selsm0, s, a, lam, prec),
+            integral_h0l(lin_grid, selsm0, s, a, lam, prec));
+  v1 = add3(series_h1(worker, m_n0(selsm1), s, a, lam, prec),
+            series_residues_h1(numpoles, selsm1, s, a, lam, prec),
+            integral_h12(lin_grid, selsm1, s, a, lam, prec));
+  v2 = addsub(series_h2(worker, m_n0(selsm2), s, a, lam, prec),
+            series_residues_h2(numpoles, selsm2, s, a, lam, prec),
+            integral_h12(lin_grid, selsm2, s, a, lam, prec));
+  return add3(v0, v1, v2);
 }
 
 static GEN
