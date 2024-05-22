@@ -495,7 +495,7 @@ zind(GEN z, long ind)
     case 4: return gsubsg(1, z);
     case 5: return gsubsg(1, ginv(z));
     case 6: return ginv(z);
-    default: return z; /* 3 */
+    default: return z; /* 3, LCOV_EXCL_LINE*/
   }
 }
 
