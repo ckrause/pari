@@ -873,9 +873,7 @@ GEN lfunloglambdalarge(GEN CHI, GEN s, long bitprec);
 GEN lfunlambdalarge(GEN CHI, GEN s, long bitprec);
 GEN lfunlarge(GEN CHI, GEN s, long bitprec);
 GEN zetahurwitzlarge(GEN s, GEN a, long prec);
-
 GEN serh_worker(GEN gk, GEN V, GEN a, GEN ns, GEN gprec);
-GEN serhlong_worker(GEN gk, GEN z, GEN a, GEN ns, GEN gprec);
 
 /* mftrace.c */
 

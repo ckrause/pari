@@ -18,10 +18,3 @@ C-Name: serh_worker
 Prototype: GGGGG
 Help: _serh_worker(gk,V,a,ns,gprec): auxiliary.
 Doc: auxiliary
-
-Function: _serhlong_worker
-Section: programming/internals
-C-Name: serhlong_worker
-Prototype: GGGGG
-Help: _serhlong_worker(gk,z,a,ns,gprec): auxiliary.
-Doc: auxiliary
