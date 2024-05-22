@@ -362,6 +362,14 @@ error("incorrect type in ffextend (t_POL).")
   ***   at top-level: ffinit(1,1)
   ***                 ^-----------
   *** ffinit: not a prime number in ffinit: 1.
+? ffinit(4,2)
+  ***   at top-level: ffinit(4,2)
+  ***                 ^-----------
+  *** ffinit: not a prime number in ffinit: 4.
+? ffinit(2^64,2)
+  ***   at top-level: ffinit(2^64,2)
+  ***                 ^--------------
+  *** ffinit: not a prime number in ffinit: 18446744073709551616.
 ? ffgen(x^2+x+Mod(1,3))
   ***   at top-level: ffgen(x^2+x+Mod(1,3))
   ***                 ^---------------------
@@ -379,4 +387,4 @@ error("incorrect type in ffextend (t_POL).")
   ***                 ^-------------------
   *** fforder: domain error in fforder: x = 0
 ? print("Total time spent: ",gettime);
-Total time spent: 1188
+Total time spent: 980

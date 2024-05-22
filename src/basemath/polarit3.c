@@ -3080,6 +3080,7 @@ static GEN
 init_Flxq_i(ulong p, long n, long sv)
 {
   GEN P;
+  if (!odd(p) && p != 2) pari_err_PRIME("ffinit", utoi(p));
   if (n == 1) return polx_Flx(sv);
   if (flinit_check(p, n+1, n))
   {
@@ -3145,6 +3146,7 @@ init_Fq_i(GEN p, long n, long v)
   if (n == 1) return pol_x(v);
   if (lgefint(p) == 3)
     return Flx_to_ZX(init_Flxq_i(p[2], n, evalvarn(v)));
+  if (!mpodd(p)) pari_err_PRIME("ffinit", p);
   if (fpinit_check(p, n+1, n)) return polcyclo(n+1, v);
   P = ffinit_fact(p,n);
   setvarn(P, v); return P;
