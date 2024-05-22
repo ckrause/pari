@@ -3070,10 +3070,9 @@ ffinit_fact_Flx(ulong p, long n)
   GEN P, F = factoru_pow(n), Fp = gel(F,1), Fe = gel(F,2), Fm = gel(F,3);
   long i, l = lg(Fm);
   P = cgetg(l, t_VEC);
-  for (i = 1; i < l; ++i)
-    gel(P,i) = p==uel(Fp,i) ?
-                 ffinit_Artin_Schreier(uel(Fp,i), Fe[i])
-               : flinit(p, uel(Fm,i));
+  for (i = 1; i < l; i++)
+    gel(P,i) = p==uel(Fp,i) ? ffinit_Artin_Schreier(p, Fe[i])
+                            : flinit(p, uel(Fm,i));
   return FlxV_composedsum(P, p);
 }
 
