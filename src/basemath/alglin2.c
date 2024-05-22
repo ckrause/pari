@@ -156,10 +156,10 @@ easychar(GEN x, long v)
     {
       GEN A = gel(x,2), T = gel(x,1);
       long vx, vp;
-      if (typ(A) != t_POL) return caract_const(avma, x, v, degpol(T));
+      if (typ(A) != t_POL) return caract_const(avma, A, v, degpol(T));
       vx = varn(A);
       vp = varn(T);
-      if (varncmp(vx, vp) > 0) return caract_const(avma, x, v, degpol(T));
+      if (varncmp(vx, vp) > 0) return caract_const(avma, A, v, degpol(T));
       if (varncmp(vx, vp) < 0) pari_err_PRIORITY("charpoly", x, "<", vp);
       return RgXQ_charpoly(A, T, v);
     }
