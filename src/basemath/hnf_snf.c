@@ -718,7 +718,7 @@ is_RgX(GEN a, long v) { return typ(a) == t_POL && varn(a)==v; }
 static GEN
 gbezout_step(GEN *pa, GEN *pb, GEN *pu, GEN *pv, long vx)
 {
-  GEN a = *pa, b = *pb, d;
+  GEN a = *pa, b = *pb, d, l;
   if (gequal0(a))
   {
     *pa = gen_0; *pu = gen_0;
@@ -727,6 +727,10 @@ gbezout_step(GEN *pa, GEN *pb, GEN *pu, GEN *pv, long vx)
   a = is_RgX(a,vx)? RgX_renormalize(a): scalarpol(a, vx);
   b = is_RgX(b,vx)? RgX_renormalize(b): scalarpol(b, vx);
   d = RgX_extgcd(a,b, pu,pv);
+  l = pollead(d,vx);
+  d = RgX_Rg_div(d,l);
+  *pu = RgX_Rg_div(*pu,l);
+  *pv = RgX_Rg_div(*pv,l);
   if (degpol(d)) { a = RgX_div(a, d); b = RgX_div(b, d); }
   else if (typ(gel(d,2)) == t_REAL && lg(gel(d,2)) <= 3)
 #if 1
