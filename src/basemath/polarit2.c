@@ -1783,9 +1783,14 @@ ggcd(GEN x, GEN y)
   {
     if (ty == t_POLMOD)
     {
-      GEN T = gel(x,1);
+      GEN T = gel(x,1), Ty = gel(y,1);
       z = cgetg(3,t_POLMOD);
-      T = RgX_equal_var(T,gel(y,1))? RgX_copy(T): RgX_gcd(T, gel(y,1));
+      if (varn(T)==varn(Ty))
+        T = RgX_equal(T,Ty)? RgX_copy(T): RgX_gcd(T, Ty);
+      else if(varn(T)<varn(Ty))
+        T = RgX_copy(T);
+      else
+        T = RgX_copy(Ty);
       gel(z,1) = T;
       if (degpol(T) <= 0) gel(z,2) = gen_0;
       else

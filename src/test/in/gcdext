@@ -68,6 +68,7 @@ gcd(4*x,2*x^0)
 gcd(4*x,2*x+1)
 gcd((4*x+2)*(x+1),4*x*(x+1))
 gcd(x-1,(x-1)/x)
+gcd(Mod(1,y^2+1),Mod(1,x^2+Mod(-y,y^2+1)))
 
 gcd(Pol(0.),x)
 (k+1.)/k - (2*k+1.)/k
@@ -78,6 +79,7 @@ gcd(Mod(1,2)*x+Mod(1,2), 0*ffgen(2^3))
 
 lcm(Pol(0),0)
 lcm(0,Mod(0,3))
+lcm(Mod(1,y^2+1),Mod(1,x^2+Mod(-y,y^2+1)))
 
 V=factorback(primes([2^63,2^63+1000]))
 gcd((x+1+V)*(x^3+3*x+1),(x+1)*(x^3+x+1))

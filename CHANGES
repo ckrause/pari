@@ -21,6 +21,7 @@ BA  14- ellsaturation was leaking variable numbers
     17- b=9/10; hypergeom([b+2, b], 2*b, 2/3): wrong [#2551]
     18- overflows not tested in subcycloiwasawa [#2552]
     19- randomprime([1,2], Mod(1,2)) -> 3
+BA  20- b;a;gcd(Mod(1,a^2+1),Mod(1,b^2+Mod(-a,a^2+1))) -> wrong result [#2553]
 
   Changed
 BA   1- plotell renamed to plotarc
