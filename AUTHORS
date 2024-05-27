@@ -73,6 +73,7 @@ Major contributors (large modules written or rewritten from scratch):
     module, linear algebra over Z/NZ, Hecke characters
   Thomas PAPANIKOlAOU: MPQS integration, Pari-Lidia project
   Xavier ROBLOT: MPQS integration, Stark, original nffactor, padicfields
+  Marine ROUGNAND: Documentation quality assurance, Ateliers PARI/GP
   Denis SIMON: Norm equations, S-units, Hilbert symbols, original qfsolve
     implementation, original ellrank implementation
   Nils SKORUPPA: gphtml script, Qt graphics driver
