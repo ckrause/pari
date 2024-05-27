@@ -59,8 +59,8 @@ Major contributors (large modules written or rewritten from scratch):
   Bruno HAIBLE: micro assembly implementations, DOS/Windows support
   Guillaume HANROT: thue, zncoppersmith, initial polrootsreal implementation
   Hamish IVEY-LAW: ellisogeny, ellisogenyapply, ellissupersingular, Sutherland
-  algorithms for class and modular polynomials (polclass, polmodular),
-  Flj_ functions family.
+    algorithms for class and modular polynomials (polclass, polmodular),
+    Flj_ functions family.
   Pascal LETARD: basic number fields (round2, initial round4)
   Jean-Francois MESTRE: original elliptic curves implementation
   Pascal MOLIN: Lfun module, numerical integration, Hecke characters
@@ -92,7 +92,7 @@ Package contributors:
   John JONES and David ROBERTS: nflistdata (A5 fields,
     https://hobbes.la.asu.edu/NFDB/)
   Juergen KLUENERS and Gunter MALLE: nflistdata (regular extensions of Q(t),
-  see G. Malle and B. H. Matzat, Inverse Galois Theory, Springer, 1999)
+    see G. Malle and B. H. Matzat, Inverse Galois Theory, Springer, 1999)
 
 Other contributors: the 2 or 3 letter code refer to the CHANGES file. Please,
 kindly remind us if you have been forgotten!
