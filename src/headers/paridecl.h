@@ -2666,6 +2666,7 @@ GEN     nfreduce(GEN nf, GEN x, GEN ideal);
 GEN     nfsnf(GEN nf, GEN x);
 GEN     nfsnf0(GEN nf, GEN x, long flag);
 GEN     nfsolvemodpr(GEN nf, GEN a, GEN b, GEN modpr);
+GEN     nfweilheight(GEN nf, GEN v, long prec);
 GEN     prV_lcm_capZ(GEN L);
 GEN     prV_primes(GEN v);
 GEN     pr_hnf(GEN nf, GEN pr);

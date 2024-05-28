@@ -1,0 +1,9 @@
+Function: nfweilheight
+Section: number_fields
+C-Name: nfweilheight
+Prototype: GGp
+Help: nfweilheight(nf, v): return the absolute Weil height of the vector v seen
+ as an element of the projective space over the number field nf given by nfinit.
+Doc: return the absolute Weil height of the vector $v$ seen as an element of the
+ projective space of dimension \kbd{length(v)-1} over the number field $\var{nf}$
+ given by \kbd{nfinit}.

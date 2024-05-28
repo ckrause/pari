@@ -132,6 +132,17 @@ vec_mulid(GEN nf, GEN x, long nx, long N)
     for (j=1; j<=N; j++) gel(m, k++) = zk_ei_mul(nf, gel(x,i),j);
   return m;
 }
+
+static GEN
+nfV_idealhnf(GEN nf, GEN v)
+{
+  GEN M = matalgtobasis(nf, v);
+  GEN den, H = ZM_hnf(Q_remove_denom(M, &den));
+  GEN x = vec_mulid(nf, H, lg(H)-1, nf_get_degree(nf));
+  x = ZM_hnfmod(x, ZM_detmult(x));
+  return den? ZM_Q_mul(x, den): x;
+}
+
 /* true nf */
 GEN
 idealhnf_shallow(GEN nf, GEN x)
@@ -192,6 +203,38 @@ idealhnf(GEN nf, GEN x)
   pari_sp av = avma;
   GEN y = idealhnf_shallow(nf, x);
   return (avma == av)? gcopy(y): gerepileupto(av, y);
+}
+
+static GEN
+nfV_eltembed(GEN nf, GEN x, long prec)
+{ pari_APPLY_type(t_VEC, nfeltembed(nf, gel(x,i), NULL, prec)) }
+
+static GEN
+nfweilheight_i(GEN nf, GEN v, long prec)
+{
+  long i, l = lg(v);
+  long r1 = nf_get_r1(nf), r2 = nf_get_r2(nf), r12 = r1+r2;
+  GEN id = nfV_idealhnf(nf, v);
+  GEN V = gabs(nfV_eltembed(nf, v, prec), prec);
+  GEN h = gen_1;
+  for (i = 1; i <= r12; i++)
+  {
+    long j, j0 = 1;
+    for (j = 2; j < l; j++)
+      if (cmprr(gmael(V,j,i),gmael(V,j0,i)) > 0) j0 = j;
+    h = gmul(h, i<=r1 ? gmael(V,j0,i): gsqr(gmael(V,j0,i)));
+  }
+  return gdivgs(glog(gdiv(h, idealnorm(nf, id)), prec), r12+r2);
+}
+
+GEN
+nfweilheight(GEN nf, GEN v, long prec)
+{
+  pari_sp av = avma;
+  checknf(nf);
+  if (!is_vec_t(typ(v)) || lg(v)<2)
+    pari_err_TYPE("nfweilheight",v);
+  return gerepileupto(av, nfweilheight_i(nf, v, prec));
 }
 
 /* GP functions */
