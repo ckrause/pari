@@ -1,4 +1,4 @@
-% Copyright (c) 2007-2016 Karim Belabas.
+% Copyright (c) 2007-2024 Karim Belabas.
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU General Public License
 
@@ -424,15 +424,16 @@ in gp header.\hfil\break
 \subsec{Lattices}
 \li{LLL-algorithm applied to columns of $x$}{qflll$(x,\{\fl\})$}
 \li{\dots for Gram matrix of lattice}{qflllgram$(x,\{\fl\})$}
-\li{find up to $m$ sols of \kbd{qfnorm}$(x,y)\le b$}{qfminim$(x,b,m)$}
-\li{$v$, $v[i]:=$number of $y$ s.t. \kbd{qfnorm}$(x,y)= i$}
+\li{find up to $m$ sols of \kbd{qfeval}$(x,y)\le b$}{qfminim$(x,b,m)$}
+\li{\dots up to $m$ closest vectors to $t$}{qfcvp$(x,t,m)$}
+\li{$v$, $v[i]:=$number of $y$ s.t. \kbd{qfeval}$(x,y)= i$}
     {qfrep$(x,B,\{\fl\})$}
 \li{perfection rank of $x$}{qfperfection$(x)$}
 \li{find isomorphism between $q$ and $Q$}{qfisom$(q,Q)$}
 \li{precompute for isomorphism test with $q$}{qfisominit$(q)$}
-\li{automorphism group of $q$}{qfauto$(q)$}
 \copyrightnotice
 \newcolumn
+\li{automorphism group of $q$}{qfauto$(q)$}
 \li{convert \kbd{qfauto} for GAP/Magma}{qfautoexport$(G,\{\fl\})$}
 \li{orbits of $V$ under $G\subset \text{GL}(V)$}
    {qforbits$(G,V)$}
@@ -503,15 +504,13 @@ $e$ \hfil \kbd{polinterpolate}$(x,\{y\},\{t\},\{\&e\})$\break
 \li{$T = \prod (x - z_i)\mapsto
     \prod (x - \omega(z_i))] \in \ZZ_p[x]$}
    {polteichmuller$(T,p,e)$}
-\li{extensions of $\QQ_p$ of degree $N$}{padicfields$(p,N)$}
-
 \shortcopyrightnotice
 \newcolumn
-
 \title{\TITLE}
-
 \centerline{(PARI-GP version \PARIversion)}
 \bigskip
+
+\li{extensions of $\QQ_p$ of degree $N$}{padicfields$(p,N)$}
 
 \subsec{Roots and Factorization (Miscellaneous)}
 \li{symmetric powers of roots of $f$ up to $n$}{polsym$(f,n)$}
