@@ -1624,7 +1624,7 @@ cvp0_dolll(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
       if (p > maxnorm) maxnorm = p;
     }
     else
-    { /* maxnorm < 0 : only look for closests vectors */
+    { /* maxnorm < 0 : only look for closest vectors */
       if (p * (1+10*eps) < sBORNE) {
         sBORNE = p; set_avma(av1);
         BOUND = sBORNE * (1+eps);
