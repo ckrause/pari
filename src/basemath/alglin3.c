@@ -580,6 +580,7 @@ vecselect(void *E, long (*f)(void* E, GEN x), GEN A)
 GEN
 genselect(void *E, long (*f)(void* E, GEN x), GEN A)
 {
+  pari_sp av  = avma;
   GEN y, z, v;/* v left on stack for efficiency */
   clone_lock(A);
   switch(typ(A))
@@ -592,7 +593,6 @@ genselect(void *E, long (*f)(void* E, GEN x), GEN A)
         if (list_typ(A)==t_LIST_MAP)
         {
           long i, l = z? lg(z): 1, lv=1;
-          pari_sp av = avma;
           GEN v1 = cgetg(l, t_COL);
           GEN v2 = cgetg(l, t_COL);
           for (i = lv = 1; i < l; i++) {
@@ -603,8 +603,7 @@ genselect(void *E, long (*f)(void* E, GEN x), GEN A)
              lv++;
            }
           }
-          clone_unlock_deep(A); fixlg(v1, lv); fixlg(v2, lv);
-          return gerepilecopy(av, gtomap(mkmat2(v1,v2)));
+          fixlg(v1, lv); fixlg(v2, lv); y = gtomap(mkmat2(v1,v2));
         }
         else
         {
@@ -625,7 +624,7 @@ genselect(void *E, long (*f)(void* E, GEN x), GEN A)
       pari_err_TYPE("select",A);
       return NULL;/*LCOV_EXCL_LINE*/
   }
-  clone_unlock_deep(A); return y;
+  clone_unlock_deep(A); return gerepileupto(av, y);
 }
 
 static void
