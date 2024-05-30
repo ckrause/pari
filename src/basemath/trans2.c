@@ -1496,7 +1496,7 @@ GEN
 Qp_gamma(GEN x)
 {
   GEN n, m, N, p = gel(x,2);
-  long s, e = precp(x);
+  long s, e = valp(x) + precp(x);
   if (absequaliu(p, 2) && e == 2) e = 1;
   if (valp(x) < 0) pari_err_DOMAIN("gamma","v_p(x)", "<", gen_0, x);
   n = gtrunc(x);
