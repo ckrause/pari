@@ -37,7 +37,7 @@ Major contributors (large modules written or rewritten from scratch):
     language (next/break/return, local, op=, default()), gphelp, gphtml fork,
     Configure, readline, man pages, documentation layout, reference card and
     user's manuals, the FAQ, the http://pari.math.u-bordeaux.fr website,
-    Lfun module, ModularForms module, nflist, HGM package.
+    Lfun module, ModularForms module, modular symbols, nflist, HGM package.
   Dominique BERNARDI: the original gp interpreter, ECM, original
     elliptic curves implementation
   Peter BRUIN: asymptotically fast linear algebra over finite fields
@@ -72,6 +72,8 @@ Major contributors (large modules written or rewritten from scratch):
   Aurel PAGE: current project leader. Associative and central simple algebras
     module, linear algebra over Z/NZ, Hecke characters
   Thomas PAPANIKOlAOU: MPQS integration, Pari-Lidia project
+  Bernadette PERRIN-RIOU: elliptic curves, modular symbols, p-adic
+    L-functions, documentation, WIMS integration
   Xavier ROBLOT: MPQS integration, Stark, original nffactor, padicfields
   Marine ROUGNAND: Documentation quality assurance, Ateliers PARI/GP
   Denis SIMON: Norm equations, S-units, Hilbert symbols, original qfsolve
