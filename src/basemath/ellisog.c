@@ -1683,3 +1683,64 @@ ellisotree(GEN E)
   for (i = 1; i <= n; i++) obj_free(gel(vE,i));
   return gerepilecopy(av, mkvec2(vE,M));
 }
+
+/* Shortest path between x and y on the adjencc graph of A-A~
+ * Dijkstra algorithm. */
+static GEN
+shortest_path(GEN A, long x, long y)
+{
+  GEN C, v, w;
+  long n = lg(A)-1, i, l, z, t, m;
+  v = const_vecsmall(n, n); v[x] = 0;
+  w = const_vecsmall(n, 0);
+  for (l = 1; l < n; l++)
+    for (z = 1; z <= n; z++)
+    {
+      if (v[z] != l-1) continue;
+      for (t = 1; t <= n; t++)
+        if (!gequal(gcoeff(A,z,t),gcoeff(A,t,z)) && v[t]>l)
+          { v[t]=l; w[t]=z; }
+    }
+  m = v[y]+1; if (m > n) return NULL;
+  C = cgetg(m+1, t_VECSMALL);
+  for (i = 1; i <= m; i++)
+  {
+    C[m+1-i] = y;
+    y = w[y];
+  }
+  return C;
+}
+
+static GEN
+path_to_manin(GEN A, long i, long k)
+{
+  GEN C = shortest_path(A, i, k);
+  long j, lC = lg(C);
+  GEN c = gen_1;
+  for (j = 1; j < lC-1; j++)
+  {
+    GEN t = gsub(gcoeff(A,C[j], C[j+1]), gcoeff(A,C[j+1], C[j]));
+    if (signe(t) < 0) c = gmul(c, gneg(t));
+  }
+  return c;
+}
+
+GEN
+ellmaninconstant(GEN E)
+{
+  pari_sp av = avma;
+  GEN M, A, vS, L;
+  long i, k, lvS, is_ell = checkell_i(E);
+  L = is_ell ? ellisomat(E,0,1): E;
+  A = gel(ellisotree(L), 2);
+  vS = gel(ellweilcurve(L, NULL), 2); lvS = lg(vS);
+  for (i = 1; i < lvS; i++)
+    if (equali1(gmael(vS,i,1) ) && equali1(gmael(vS,i,2)))
+      break;
+  if (is_ell)
+    return gerepileupto(av, path_to_manin(A, i, 1));
+  M = cgetg(lvS, t_VEC);
+  for (k = 1; k < lvS; k++)
+    gel(M,k) = path_to_manin(A, i, k);
+  return gerepileupto(av, M);
+}

@@ -3420,6 +3420,7 @@ long    ellisdivisible(GEN E, GEN P, GEN n, GEN *Q);
 GEN     ellisogenyapply(GEN f, GEN P);
 GEN     ellisogeny(GEN e, GEN G, long only_image, long vx, long vy);
 GEN     ellisomat(GEN E, long p, long flag);
+GEN     ellmaninconstant(GEN E);
 GEN     ellweilcurve(GEN E, GEN *pm);
 
 /* ellsea.c */
