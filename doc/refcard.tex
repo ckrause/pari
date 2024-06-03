@@ -409,6 +409,7 @@ in gp header.\hfil\break
 \li{signature of quad form $^ty*x*y$}{qfsign$(x)$}
 \li{decomp into squares of $^ty*x*y$}{qfgaussred$(x)$}
 \li{eigenvalues/vectors for real symmetric $x$}{qfjacobi$(x)$}
+\li{Cholesky decomposition of $x$}{qfcholesky$(x)$}
 
 \subsec{HNF and SNF}
 \li{upper triangular Hermite Normal Form}{mathnf$(x)$}
@@ -430,9 +431,9 @@ in gp header.\hfil\break
     {qfrep$(x,B,\{\fl\})$}
 \li{perfection rank of $x$}{qfperfection$(x)$}
 \li{find isomorphism between $q$ and $Q$}{qfisom$(q,Q)$}
-\li{precompute for isomorphism test with $q$}{qfisominit$(q)$}
 \copyrightnotice
 \newcolumn
+\li{precompute for isomorphism test with $q$}{qfisominit$(q)$}
 \li{automorphism group of $q$}{qfauto$(q)$}
 \li{convert \kbd{qfauto} for GAP/Magma}{qfautoexport$(G,\{\fl\})$}
 \li{orbits of $V$ under $G\subset \text{GL}(V)$}
@@ -501,15 +502,14 @@ $e$ \hfil \kbd{polinterpolate}$(x,\{y\},\{t\},\{\&e\})$\break
 \li{Newton polygon of $f$ for prime $p$}{newtonpoly$(f,p)$}
 \li{Hensel lift $A/\text{lc}(A) = \prod_i B[i]$ mod $p^e$}
    {polhensellift$(A,B,p,e)$}
-\li{$T = \prod (x - z_i)\mapsto
-    \prod (x - \omega(z_i))] \in \ZZ_p[x]$}
-   {polteichmuller$(T,p,e)$}
 \shortcopyrightnotice
 \newcolumn
 \title{\TITLE}
 \centerline{(PARI-GP version \PARIversion)}
 \bigskip
-
+\li{$T = \prod (x - z_i)\mapsto
+    \prod (x - \omega(z_i))] \in \ZZ_p[x]$}
+   {polteichmuller$(T,p,e)$}
 \li{extensions of $\QQ_p$ of degree $N$}{padicfields$(p,N)$}
 
 \subsec{Roots and Factorization (Miscellaneous)}
