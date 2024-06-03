@@ -2227,9 +2227,10 @@ nfellcharpoly(GEN e, GEN T, GEN p)
 }
 
 static GEN
-genus2_type5(GEN P, long e, GEN p)
+genus2_type5(GEN P, GEN p)
 {
   GEN E, F, T, a, a2, Q;
+  long e = ZX_pval(P, p);
   F = FpX_red(e ? ZX_Z_divexact(P, p): P, p);
   if (degpol(F) < 1) return NULL;
   F = FpX_factor(F, p);
@@ -2289,10 +2290,8 @@ static GEN
 genus2_eulerfact(GEN P, GEN p)
 {
   GEN W;
-  long e = ZX_pval(P, p);
-  GEN R = genus2_type5(P, e, p);
+  GEN R = genus2_type5(P, p);
   if (R) return R;
-  if (e) return genus2_eulerfact_semistable(P,p);
   W = hyperellextremalmodels(P, 2, p);
   if (lg(W) < 3) return genus2_eulerfact_semistable(P,p);
   return gmul(genus2_eulerfact_semistable(gel(W,1),p),

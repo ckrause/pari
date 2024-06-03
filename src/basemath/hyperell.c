@@ -1070,8 +1070,10 @@ algo56bis(GEN W, long g, long inf)
 static GEN
 hyperellextremalmodels2(GEN F, long g)
 {
-  GEN R, W = algo56bis(F, g, 1);
-  long i, l = lg(W);
+  GEN R, W;
+  long i, l;
+  if (get_ep(F) > 0) return mkvec(F);
+  W = algo56bis(F, g, 1); l = lg(W);
   if (l==1) return mkvec(F);
   R = cgetg(3, t_VEC);
   gel(R,2) = F;
@@ -1211,6 +1213,7 @@ hyperellextremalmodels(GEN F, long g, GEN p)
   GEN R, W;
   long i, l;
   if (equaliu(p,2)) return hyperellextremalmodels2(F,g);
+  if (ZX_pval(F,p) > 0) return mkvec(F);
   W = algo57bis(F, g, p, 1); l = lg(W);
   if (l==1) return mkvec(F);
   R = cgetg(3, t_VEC);
