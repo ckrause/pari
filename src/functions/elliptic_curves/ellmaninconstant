@@ -10,4 +10,13 @@ Doc: let $E$ be an elliptic curve over $Q$ given by
  \kbd{ellinit} or a rational isogeny class given by ellisomat. Return the
  Manin constant of the curve, see \kbd{ellweilcurve}.
  The algorithm is slow but unconditional.
- The function also accepts the output of \kbd{ellisomat}, i.e. the isogeny class.
+ The function also accepts the output of \kbd{ellisomat} and returns the list
+ of Manin constants for all the isogeny class.
+ \bprog
+ ? E = ellinit("11a3");
+ ? ellmaninconstant(E)
+ %2 = 5
+ ? L=ellisomat(E,,1);
+ ? ellmaninconstant(L)
+ %4 = [5,1,1]
+ @eprog
