@@ -185,8 +185,7 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
   {
     GEN p = gel(x,2);
     long e = pprec(x);
-    e += itos(gfloor(gdivsg(e, gsubgs(p, 1))));
-    /* e + e/(p-1): can one write this better ? */
+    e += sdivsi(e, gsubgs(p, 1));
     s = gadd(s, zeropadic_shallow(p, e));
     return gerepileupto(av, hurwitzp(s, x));
   }
