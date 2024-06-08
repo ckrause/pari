@@ -183,7 +183,11 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
   if (typ(s) == t_PADIC) return gerepileupto(av, hurwitzp(s, x));
   if (typ(x) == t_PADIC)
   {
-    s = gadd(s, zeropadic_shallow(gel(x,2), pprec(x)));
+    GEN p = gel(x,2);
+    long e = pprec(x);
+    e += itos(gfloor(gdivsg(e, gsubgs(p, 1))));
+    /* e + e/(p-1): can one write this better ? */
+    s = gadd(s, zeropadic_shallow(p, e));
     return gerepileupto(av, hurwitzp(s, x));
   }
   switch(typ(x))
