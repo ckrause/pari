@@ -5,3 +5,6 @@ Prototype: Gp
 Help: psi(x): psi-function at x.
 Doc: the $\psi$-function of $x$, i.e.~the logarithmic derivative
  $\Gamma'(x)/\Gamma(x)$.
+ For $s$ a \typ{PADIC}, evaluates the Morita psi function at $s$.
+Variant: For a \typ{PADIC} $x$, the function \fun{GEN}{Qp_psi}{GEN x} is
+ also available.

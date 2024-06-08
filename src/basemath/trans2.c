@@ -2240,6 +2240,18 @@ psi_n(ulong b)
   if (b <= 1024) return 715;
   return 0.010709 * pow((double)b, 1.631); /* 1.631 ~ log_3(6) */
 }
+
+GEN
+Qp_psi(GEN x)
+{
+  pari_sp av = avma;
+  GEN p = gel(x,2), z;
+  if (valp(x) < 0) pari_err_DOMAIN("psi","v_p(x)", "<", gen_0, x);
+  x = gadd(padic_to_Q(x), zeropadic(p, valp(x)+precp(x)+1));
+  z = zetahurwitz(gen_1, x, 0, DEFAULTPREC);
+  return gerepileupto(av, gsub(gdiv(gsubgs(p,1),p),z));
+}
+
 GEN
 gpsi(GEN x, long prec)
 {
@@ -2254,6 +2266,7 @@ gpsi(GEN x, long prec)
       av = avma; y = mpeuler(prec);
       return gerepileuptoleaf(av, n == 1? negr(y): gsub(harmonic(n-1), y));
     case t_REAL: case t_COMPLEX: return cxpsi(x,prec);
+    case t_PADIC: return Qp_psi(x);
     default:
       av = avma; if (!(y = toser_i(x))) break;
       return gerepileupto(av, serpsi(y,prec));
