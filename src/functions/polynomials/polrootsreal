@@ -28,7 +28,7 @@ Doc: real roots of the polynomial $T$ with real coefficients, multiple
  The algorithm used is a modification of Uspensky's method (relying on
  Descartes's rule of sign), following Rouillier and Zimmerman's article
  ``Efficient isolation of a polynomial real roots''
- (\url{http://hal.inria.fr/inria-00072518/}). Barring bugs, it is guaranteed
+ (\url{https://hal.inria.fr/inria-00072518/}). Barring bugs, it is guaranteed
  to converge and to give the roots to the required accuracy.
 
  \misctitle{Remark} If the polynomial $T$ is of the

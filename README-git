@@ -4,7 +4,7 @@ convenient way to obtain patched versions in between releases, or follow
 development branches. GIT clients are available for all major platforms:
 Unix, MacOS, Windows, see
 
-  http://git-scm.com/download
+  https://git-scm.com/download
 
 In particular, the git command-line client is readily available in all Linux
 distributions.
@@ -27,7 +27,7 @@ working bison and perl installation, as well as the regular build toolchain.
 ==========================================
 To get a working copy, type the following command from the shell
 
-    git clone http://pari.math.u-bordeaux.fr/git/pari.git
+    git clone https://pari.math.u-bordeaux.fr/git/pari.git
 
 This creates a local copy of the distribution from the distant repository in
 local directory pari, which you may move or rename as you wish. From now on,

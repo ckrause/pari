@@ -19,7 +19,7 @@ Doc: Let $PQ$ be a polynomial $P$, resp. a vector $[P,Q]$ of polynomials, with
 
  \noindent This function was rewritten from an implementation of Liu's
  algorithm by Cohen and Liu (1994), \kbd{genus2reduction-0.3}, see
- \url{http://www.math.u-bordeaux.fr/~liu/G2R/}.
+ \url{https://www.math.u-bordeaux.fr/~liu/G2R/}.
 
  \misctitle{CAVEAT} The function interface may change: for the
  time being, it returns $[N,\var{FaN}, [P_{m}, Q_{m}], V]$
