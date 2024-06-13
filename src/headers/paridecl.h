@@ -645,6 +645,7 @@ GEN     FlxqX_div_by_X_x_pre(GEN a, GEN x, GEN T, ulong p, ulong pi, GEN *r);
 GEN     FlxqX_divrem(GEN x, GEN y, GEN T, ulong p, GEN *pr);
 GEN     FlxqX_divrem_pre(GEN x, GEN S, GEN T, ulong p, long pi, GEN *pr);
 GEN     FlxqX_dotproduct(GEN x, GEN y, GEN T, ulong p);
+GEN     FlxqX_eval(GEN x, GEN y, GEN T, ulong p);
 GEN     FlxqX_extgcd(GEN a, GEN b, GEN T, ulong p, GEN *ptu, GEN *ptv);
 GEN     FlxqX_extgcd_pre(GEN x, GEN y, GEN T, ulong p, ulong pi, GEN *ptu, GEN *ptv);
 GEN     FlxqX_fromNewton(GEN P, GEN T, ulong p);

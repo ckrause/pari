@@ -1571,6 +1571,31 @@ FlxqX_saferem(GEN P, GEN Q, GEN T, ulong p, ulong pi)
 }
 
 GEN
+FlxqX_eval(GEN x, GEN y, GEN T, ulong p)
+{
+  pari_sp av;
+  GEN p1, r;
+  long j, i=lg(x)-1;
+  if (i<=2)
+    return (i==2)? gcopy(gel(x,2)): pol0_Flx(get_Flx_var(T));
+  av=avma; p1=gel(x,i);
+  /* specific attention to sparse polynomials (see poleval)*/
+  /*You've guessed it! It's a copy-paste(tm)*/
+  for (i--; i>=2; i=j-1)
+  {
+    for (j=i; lg(gel(x,j))==1; j--)
+      if (j==2)
+      {
+        if (i!=j) y = Flxq_powu(y, i-j+1, T, p);
+        return gerepileupto(av, Flxq_mul(p1,y, T, p));
+      }
+    r = (i==j)? y: Flxq_powu(y, i-j+1, T, p);
+    p1 = Flx_add(Flxq_mul(p1,r,T,p), gel(x,j), p);
+  }
+  return gerepileupto(av, p1);
+}
+
+GEN
 FlxqX_safegcd(GEN P, GEN Q, GEN T, ulong p)
 {
   pari_sp av = avma;
