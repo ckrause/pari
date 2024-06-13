@@ -2058,6 +2058,7 @@ idealismaximal_i(GEN nf, GEN x)
   x = Q_primitive_part(x, &c);
   if (c) return NULL;
   p = zkmultable_capZ(zk_multable(nf, x));
+  if (!BPSW_psp(p)) return NULL;
   L = idealprimedec(nf, p); l = lg(L); pr = NULL;
   for (i = 1; i < l; i++)
   {
