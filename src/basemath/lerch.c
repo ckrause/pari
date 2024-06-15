@@ -20,9 +20,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 /********************************************************/
 /*                   Hurwitz zeta function              */
 /********************************************************/
-struct hurwitzp_t { GEN B, _1, s1; };
+struct Qp_zetahurwitz_t { GEN B, _1, s1; };
 static void
-hurwitzp_init(struct hurwitzp_t *S, long prec, GEN s)
+Qp_zetahurwitz_init(struct Qp_zetahurwitz_t *S, long prec, GEN s)
 {
   GEN B, C = gen_1, s1 = gsubgs(s, 1), p = gel(s, 2);
   long j, J = ((equaliu(p,2)? (prec >> 1): prec) + 2) >> 1;
@@ -41,7 +41,7 @@ hurwitzp_init(struct hurwitzp_t *S, long prec, GEN s)
 
 /* s1 = s-1 or NULL (if s=1) */
 static GEN
-hurwitzp_i(struct hurwitzp_t *S, GEN x)
+Qp_zetahurwitz_i(struct Qp_zetahurwitz_t *S, GEN x)
 {
   GEN z, x2, x2j, s1 = S->s1;
   long j, J = lg(S->B) - 2;
@@ -64,23 +64,23 @@ pprec(GEN x) { return maxss(valp(x) + precp(x), 1); }
 
 /* L_p(s, (D, .)); assume s != 1 if D = 1 */
 static GEN
-zetap_i(GEN s, long D)
+Qp_zeta_i(GEN s, long D)
 {
   pari_sp av = avma;
   GEN z, va, gp = gel(s,2);
   ulong a, p = itou(gp), m;
   long prec = pprec(s);
-  struct hurwitzp_t S;
+  struct Qp_zetahurwitz_t S;
 
   if (D <= 0) pari_err_DOMAIN("p-adic L-function", "D", "<=", gen_0, stoi(D));
   if (!uposisfundamental(D))
     pari_err_TYPE("p-adic L-function [D not fundamental]", stoi(D));
-  hurwitzp_init(&S, prec, s);
+  Qp_zetahurwitz_init(&S, prec, s);
   m = ulcm(D, p == 2? 4: p); va = coprimes_zv(m);
   for (a = 1, z = gen_0; a <= (m >> 1); a++)
     if (va[a])
     {
-      GEN h = hurwitzp_i(&S, uutoQ(a, m));
+      GEN h = Qp_zetahurwitz_i(&S, uutoQ(a, m));
       if (D != 1 && kross(D, a) < 0) h = gneg(h);
       z = gadd(z, h);
     }
@@ -89,16 +89,16 @@ zetap_i(GEN s, long D)
   return gerepileupto(av, z);
 }
 GEN
-Qp_zeta(GEN s) { return zetap_i(s, 1); }
+Qp_zeta(GEN s) { return Qp_zeta_i(s, 1); }
 
 /* s a t_PADIC; gerepileupto-safe */
 static GEN
-hurwitzp(GEN s, GEN x)
+Qp_zetahurwitz(GEN s, GEN x)
 {
   GEN gp = gel(s,2);
   long p = itou(gp), prec = pprec(s);
-  struct hurwitzp_t S;
-  hurwitzp_init(&S, prec, s);
+  struct Qp_zetahurwitz_t S;
+  Qp_zetahurwitz_init(&S, prec, s);
   if (typ(x) != t_PADIC) x = gadd(x, zeropadic_shallow(gp, prec));
   if (valp(x) >= ((p==2)? -1: 0))
   {
@@ -107,12 +107,12 @@ hurwitzp(GEN s, GEN x)
     for (j = 0; j < M; j++)
     {
       GEN y = gaddsg(j, x);
-      if (valp(y) <= 0) z = gadd(z, hurwitzp_i(&S, gdivgu(y, M)));
+      if (valp(y) <= 0) z = gadd(z, Qp_zetahurwitz_i(&S, gdivgu(y, M)));
     }
     return gdivgu(z, M);
   }
-  if (valp(s) < 0) pari_err_DOMAIN("hurwitzp", "v(s)", "<", gen_0, s);
-  return hurwitzp_i(&S, x);
+  if (valp(s) < 0) pari_err_DOMAIN("Qp_zetahurwitz", "v(s)", "<", gen_0, s);
+  return Qp_zetahurwitz_i(&S, x);
 }
 
 static void
@@ -180,14 +180,14 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
     }
     return gerepileupto(av,z);
   }
-  if (typ(s) == t_PADIC) return gerepileupto(av, hurwitzp(s, x));
+  if (typ(s) == t_PADIC) return gerepileupto(av, Qp_zetahurwitz(s, x));
   if (typ(x) == t_PADIC)
   {
     GEN p = gel(x,2);
     long e = pprec(x);
     e += sdivsi(e, gsubgs(p, 1));
     s = gadd(s, zeropadic_shallow(p, e));
-    return gerepileupto(av, hurwitzp(s, x));
+    return gerepileupto(av, Qp_zetahurwitz(s, x));
   }
   switch(typ(x))
   {
