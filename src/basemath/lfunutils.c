@@ -2231,7 +2231,7 @@ genus2_type5(GEN P, GEN p)
 {
   GEN E, F, T, a, a2, Q;
   long e = ZX_pval(P, p);
-  F = FpX_red(e ? ZX_Z_divexact(P, p): P, p);
+  F = FpX_red(e ? ZX_Z_divexact(P, powis(p, e)): P, p);
   if (degpol(F) < 1) return NULL;
   F = FpX_factor(F, p);
   if (mael(F,2,1) != 3 || degpol(gmael(F,1,1)) != 2) return NULL;
@@ -2289,8 +2289,7 @@ genus2_eulerfact_semistable(GEN P, GEN p)
 static GEN
 genus2_eulerfact(GEN P, GEN p)
 {
-  GEN W;
-  GEN R = genus2_type5(P, p);
+  GEN W, R = genus2_type5(P, p);
   if (R) return R;
   W = hyperellextremalmodels(P, 2, p);
   if (lg(W) < 3) return genus2_eulerfact_semistable(P,p);
@@ -2424,10 +2423,12 @@ genus2_eulerfact2_semistable(GEN PQ)
 }
 
 static GEN
-genus2_eulerfact2(GEN P)
+genus2_eulerfact2(GEN F, GEN PQ)
 {
-  GEN W = hyperellextremalmodels(P, 2, gen_2);
-  if (lg(W) < 3) return genus2_eulerfact2_semistable(P);
+  GEN W, R = genus2_type5(F, gen_2);
+  if (R) return R;
+  W = hyperellextremalmodels(PQ, 2, gen_2);
+  if (lg(W) < 3) return genus2_eulerfact2_semistable(PQ);
   return gmul(genus2_eulerfact2_semistable(gel(W,1)),
               genus2_eulerfact2_semistable(gel(W,2)));
 }
@@ -2445,7 +2446,7 @@ lfungenus2(GEN G)
   if (ram2 && equalis(gmael(M,2,1),-1))
     pari_warn(warner,"unknown valuation of conductor at 2");
   e = cgetg(lL+(ram2?0:1), t_VEC);
-  gel(e,1) = mkvec2(gen_2, ram2 ? genus2_eulerfact2(PQ)
+  gel(e,1) = mkvec2(gen_2, ram2 ? genus2_eulerfact2(F, PQ)
            : ginv( RgX_recip(hyperellcharpoly(gmul(PQ,gmodulss(1,2))))) );
   for(i = ram2? 2: 1; i < lL; i++)
   {
