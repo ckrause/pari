@@ -4115,7 +4115,7 @@ mspadicint(GEN oms, long teichi, GEN S)
       }
       s = gadd(s, v);
     }
-    s = gadd(s, zeropadic(gp,nfinal));
+    s = gadd(s, zeropadic_shallow(gp,nfinal));
     gel(res,i) = gerepileupto(av2, s);
   }
   return gerepileupto(av, gmul(alpha, res));

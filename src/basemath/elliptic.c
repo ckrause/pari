@@ -703,7 +703,7 @@ ellinit_Qp(GEN x, GEN p, long prec)
   x = QpV_to_QV(x); /* make entries rational */
   if (!(y = initsmall(x, 2))) return NULL;
   gel(y,14) = mkvecsmall(t_ELL_Qp);
-  gel(y,15) = mkvec(zeropadic(p, prec));
+  gel(y,15) = mkvec(zeropadic_shallow(p, prec));
   return y;
 }
 

@@ -1411,7 +1411,7 @@ gadw(GEN x, long p)
   GEN s, t, u = cgetg(p+1, t_VEC);
   long j, k, kp, n = nboft(precp(x)+valp(x)+1, p);
 
-  t = s = gaddsg(1, zeropadic(gel(x,2), n));
+  t = s = cvtop(gen_1, gel(x,2), n);
   gel(u, 1) = s;
   gel(u, 2) = s;
   for (j = 2; j < p; ++j)
@@ -1465,18 +1465,16 @@ Qp_gamma_Dwork(GEN x, long p)
 static GEN
 Qp_gamma_Morita(long n, GEN p, long e)
 {
-  pari_sp ltop=avma;
-  GEN p2 = gaddsg((n&1)?-1:1, zeropadic(p, e));
-  long i;
-  long pp=is_bigint(p)? 0: itos(p);
+  pari_sp av = avma;
+  GEN p2 = cvtop((n&1)? gen_m1: gen_1, p, e);
+  long i, pp = is_bigint(p)? 0: itos(p);
   for (i = 2; i < n; i++)
     if (!pp || i%pp)
     {
       p2 = gmulgu(p2, i);
-      if ((i&0xFL) == 0xFL)
-        p2 = gerepileupto(ltop, p2);
+      if ((i&0xFL) == 0xFL) p2 = gerepileupto(av, p2);
     }
-  return gerepileupto(ltop, p2);
+  return gerepileupto(av, p2);
 }
 
 /* x\in\N: Gamma(-x)=(-1)^(1+x+x\p)*Gamma(1+x) */

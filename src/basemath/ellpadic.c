@@ -540,7 +540,7 @@ tfromx(GEN e, GEN x, GEN p, long v, GEN N, GEN *pd)
 {
   GEN n = gel(x,1), d2 = gel(x,2), d;
   GEN a1, a3, b2, b4, b6, B, C, d4, d6, Y;
-  if (!signe(n)) { *pd = gen_1; return zeropadic(p, v); }
+  if (!signe(n)) { *pd = gen_1; return zeropadic_shallow(p, v); }
   a1 = ell_get_a1(e);
   b2 = ell_get_b2(e);
   a3 = ell_get_a3(e);
@@ -558,7 +558,7 @@ tfromx(GEN e, GEN x, GEN p, long v, GEN N, GEN *pd)
                 Fp_mul(b6,d6,N));
   C = FpX_eval(C, n, N);
   if (!signe(C))
-    Y = zeropadic(p, v >> 1);
+    Y = zeropadic_shallow(p, v >> 1);
   else
     Y = Qp_sqrt(cvtop(C, p, v - Z_pval(C,p)));
   if (!Y) pari_err_BUG("ellpadicheight");
@@ -814,7 +814,7 @@ ellpadics2(GEN E, GEN p, long n)
   {
     GEN Ep;
     if (ell_get_type(E) == t_ELL_Qp) Ep = E;
-    else Ep = ellinit(E, zeropadic(p,n), 0);
+    else Ep = ellinit(E, zeropadic_shallow(p,n), 0);
     l = ellpadics2_tate(Ep, n);
     if (Ep != E) obj_free(Ep);
     return gerepilecopy(av, l);
@@ -950,7 +950,7 @@ ellpadicbsd(GEN E, GEN p, long n, GEN D)
       U = gdivgu(U, 2);
     else
     { /* ap = 1 */
-      GEN EDp = ellinit(ED, zeropadic(p,n), 0);
+      GEN EDp = ellinit(ED, zeropadic_shallow(p,n), 0);
       U = gdiv(U, ellQp_L(EDp,n));
       obj_free(EDp);
     }
@@ -989,7 +989,7 @@ ellpadicregulator(GEN E, GEN p, long n, GEN S)
     GEN s2;
     if (equali1(ap) && dvdii(ell_get_disc(E),p))
     { /* split multiplicative reduction */
-      GEN Ep = ellinit(E, zeropadic(p,n), 0);
+      GEN Ep = ellinit(E, zeropadic_shallow(p,n), 0);
       GEN q = ellQp_q(Ep,n), u2 = ellQp_u2(Ep,n);
       s2 = ellpadics2_tate(Ep, n);
       s2 = gsub(s2, ginv(gmul(Qp_log(q), u2))); /*extended MW group contrib*/
