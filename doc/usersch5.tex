@@ -14061,7 +14061,13 @@ Return $-1$ if the series does not converge ($ne \leq 1$).
 \fun{GEN}{Qp_zeta}{GEN x} shortcut for \kbd{gzeta(x, /*ignored*/prec)};
 assume that $x\neq 1$.
 
-\fun{GEN}{Qp_log}{GEN x} shortcut for \kbd{glog(x, /*ignored*/prec)}
+\fun{GEN}{Qp_zetahurwitz}{GEN x, GEN y} shortcut for
+ \kbd{zetahurwitz(x, y, 0, /*ignored*/prec)}.
+
+\fun{GEN}{Qp_psi}{GEN x} shortcut fo \kbd{gpsi(x, /*ignored*/prec)}.
+
+
+\fun{GEN}{Qp_log}{GEN x} shortcut for \kbd{glog(x, /*ignored*/prec)}.
 
 \fun{GEN}{Qp_sqrt}{GEN x} shortcut for \kbd{gsqrt(x, /*ignored*/prec)}
 Return \kbd{NULL} if $x$ is not a square.

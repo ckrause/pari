@@ -3940,6 +3940,7 @@ GEN lfunhgm(GEN hgm, GEN t, GEN hint, long bit);
 /* lerch.c */
 
 GEN     Qp_zeta(GEN s);
+GEN     Qp_zetahurwitz(GEN s, GEN x);
 GEN     lerchphi(GEN z, GEN s, GEN a, long bitprec);
 GEN     lerchzeta(GEN s, GEN a, GEN lam, long bitprec);
 GEN     zetahurwitz(GEN s, GEN x, long der, long bitprec);

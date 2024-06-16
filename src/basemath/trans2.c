@@ -2245,11 +2245,12 @@ GEN
 Qp_psi(GEN x)
 {
   pari_sp av = avma;
-  GEN p = gel(x,2), z;
+  GEN p = gel(x,2), p1 = subis(p,1), z;
+  long e = valp(x) + precp(x);
   if (valp(x) < 0) pari_err_DOMAIN("psi","v_p(x)", "<", gen_0, x);
-  x = gadd(padic_to_Q(x), zeropadic(p, valp(x)+precp(x)+1));
-  z = zetahurwitz(gen_1, x, 0, DEFAULTPREC);
-  return gerepileupto(av, gsub(gdiv(gsubgs(p,1),p),z));
+  x = cvtop(x, p, precp(x) + 1);
+  z = Qp_zetahurwitz(cvtop(gen_1, p, e + sdivsi(e,p1)), x);
+  return gerepileupto(av, gsub(mkfrac(p1,p), z));
 }
 
 GEN

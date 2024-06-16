@@ -39,9 +39,9 @@ Qp_zetahurwitz_init(struct Qp_zetahurwitz_t *S, long prec, GEN s)
   S->B = B;
 }
 
-/* s1 = s-1 or NULL (if s=1) */
+/* v_p(x) < (p==2)?-1: 0; s1 = s-1 or NULL (if s=1) */
 static GEN
-Qp_zetahurwitz_i(struct Qp_zetahurwitz_t *S, GEN x)
+Qp_zetahurwitz_0(struct Qp_zetahurwitz_t *S, GEN x)
 {
   GEN z, x2, x2j, s1 = S->s1;
   long j, J = lg(S->B) - 2;
@@ -80,7 +80,7 @@ Qp_zeta_i(GEN s, long D)
   for (a = 1, z = gen_0; a <= (m >> 1); a++)
     if (va[a])
     {
-      GEN h = Qp_zetahurwitz_i(&S, uutoQ(a, m));
+      GEN h = Qp_zetahurwitz_0(&S, uutoQ(a, m));
       if (D != 1 && kross(D, a) < 0) h = gneg(h);
       z = gadd(z, h);
     }
@@ -91,9 +91,9 @@ Qp_zeta_i(GEN s, long D)
 GEN
 Qp_zeta(GEN s) { return Qp_zeta_i(s, 1); }
 
-/* s a t_PADIC; gerepileupto-safe */
+/* s a t_PADIC; gerepileupto-safe. Could be exported */
 static GEN
-Qp_zetahurwitz(GEN s, GEN x)
+Qp_zetahurwitz_i(GEN s, GEN x)
 {
   GEN gp = gel(s,2);
   long p = itou(gp), prec = pprec(s);
@@ -107,12 +107,18 @@ Qp_zetahurwitz(GEN s, GEN x)
     for (j = 0; j < M; j++)
     {
       GEN y = gaddsg(j, x);
-      if (valp(y) <= 0) z = gadd(z, Qp_zetahurwitz_i(&S, gdivgu(y, M)));
+      if (valp(y) <= 0) z = gadd(z, Qp_zetahurwitz_0(&S, gdivgu(y, M)));
     }
     return gdivgu(z, M);
   }
   if (valp(s) < 0) pari_err_DOMAIN("Qp_zetahurwitz", "v(s)", "<", gen_0, s);
-  return Qp_zetahurwitz_i(&S, x);
+  return Qp_zetahurwitz_0(&S, x);
+}
+GEN
+Qp_zetahurwitz(GEN s, GEN x)
+{
+  pari_sp av = avma;
+  return gerepileupto(av, Qp_zetahurwitz_i(s, x));
 }
 
 static void
@@ -180,14 +186,14 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
     }
     return gerepileupto(av,z);
   }
-  if (typ(s) == t_PADIC) return gerepileupto(av, Qp_zetahurwitz(s, x));
+  if (typ(s) == t_PADIC) return gerepileupto(av, Qp_zetahurwitz_i(s, x));
   if (typ(x) == t_PADIC)
   {
     GEN p = gel(x,2);
     long e = pprec(x);
-    e += sdivsi(e, gsubgs(p, 1));
+    e += sdivsi(e, subis(p, 1));
     s = gadd(s, zeropadic_shallow(p, e));
-    return gerepileupto(av, Qp_zetahurwitz(s, x));
+    return gerepileupto(av, Qp_zetahurwitz_i(s, x));
   }
   switch(typ(x))
   {
