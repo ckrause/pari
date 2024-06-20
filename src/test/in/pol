@@ -104,6 +104,9 @@ polroots(4*x^3+4*x^2+28*x+144)
 
 polzagier(-1,1)
 
+\\#2558
+t=Mod(1,13)*a^2+Mod(2,13); Mod(Mod(1,13),t)*x^3
+
 \\ Errors
 polrootsbound(Pol(0))
 polrootsbound(1)

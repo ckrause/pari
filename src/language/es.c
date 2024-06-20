@@ -2395,7 +2395,7 @@ isnull_for_pol(GEN g)
   switch(typ(g))
   {
     case t_INTMOD: return !signe(gel(g,2));
-    case t_POLMOD: return isnull(gel(g,2));
+    case t_POLMOD: return isnull_for_pol(gel(g,2));
     default:       return isnull(g);
   }
 }

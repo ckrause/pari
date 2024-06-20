@@ -23,6 +23,7 @@ BA  14- ellsaturation was leaking variable numbers
     19- randomprime([1,2], Mod(1,2)) -> 3
 BA  20- b;a;gcd(Mod(1,a^2+1),Mod(1,b^2+Mod(-a,a^2+1))) -> wrong result [#2553]
     21- idealismaximal(nf, <some elt>) -> impossible inverse [#2556]
+    22- polynomial coefs which are exact 0 should not be printed [#2558]
 
   Changed
 BA   1- plotell renamed to plotarc
