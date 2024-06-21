@@ -1116,33 +1116,32 @@ Fp_to_mod(GEN z, GEN p)
 GEN
 FpX_to_mod_raw(GEN z, GEN p)
 {
-  long i,l = lg(z);
+  long i, l = lg(z);
   GEN x;
   if (l == 2)
   {
     x = cgetg(3,t_POL); x[1] = z[1];
     gel(x,2) = mkintmod(gen_0,p); return x;
   }
-  x = cgetg(l,t_POL);
+  x = cgetg(l,t_POL); x[1] = z[1];
   for (i=2; i<l; i++) gel(x,i) = to_intmod(gel(z,i), p);
-  x[1] = z[1]; return normalizepol_lg(x,l);
+  return normalizepol_lg(x,l);
 }
 
 /* z in Z[X], return z * Mod(1,p), normalized*/
 GEN
 FpX_to_mod(GEN z, GEN p)
 {
-  long i,l = lg(z);
+  long i, l = lg(z);
   GEN x;
   if (l == 2)
   {
     x = cgetg(3,t_POL); x[1] = z[1];
     gel(x,2) = mkintmod(gen_0,icopy(p)); return x;
   }
-  x = cgetg(l,t_POL);
-  if (l >2) p = icopy(p);
+  x = cgetg(l,t_POL); x[1] = z[1]; p = icopy(p);
   for (i=2; i<l; i++) gel(x,i) = to_intmod(gel(z,i), p);
-  x[1] = z[1]; return normalizepol_lg(x,l);
+  return normalizepol_lg(x,l);
 }
 
 GEN
