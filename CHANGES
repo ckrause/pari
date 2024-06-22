@@ -66,6 +66,7 @@ BA  16- new GP function nfweilheight
 BA  17- [libpari] Qp_psi
 NM  18- [libpari] FlxqX_eval
     19- [libpari] Qp_zetahurwitz
+    20- [libpari] PRIMES_search
 
 Done for version 2.16.1 (released 04/01/2024):
   Fixed

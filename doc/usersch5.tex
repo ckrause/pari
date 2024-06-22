@@ -1080,6 +1080,12 @@ detect small prime divisors of large integers, using a few gcd's.
 call. This is at least $65537$ and the largest prime
 less than or equal to this number is \kbd{maxprime}$()$.
 
+\fun{long}{PRIMES_search}{ulong x} assumes $x \leq \maxprimelim()$. Return
+$i > 0$ such that $x = \kbd{pari\_PRIMES}[i]$ iff $x$ is prime. Else
+return $-i < 0$ such that $x$ lies (strictly) between the $(i-1)$-th and
+the $i$-th prime; this is understood as $i = 1$ when $x < 2$: the statement
+about the non-existing $0$-th prime is disregarded.
+
 \fun{void}{maxprime_check}{ulong B} raise an error if \kbd{maxprime()} is $< B$.
 
 \fun{void}{initprimetable}{ulong maxprime} computes the prime table

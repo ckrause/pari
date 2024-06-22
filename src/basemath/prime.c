@@ -398,7 +398,7 @@ int
 uisprime(ulong n)
 {
   if (!odd(n)) return n == 2;
-  if (n <= maxprimelim()) return prime_search(n) > 0;
+  if (n <= maxprimelim()) return PRIMES_search(n) > 0;
   /* gcd-extraction is much slower */
   return n % 3 && n % 5 && n % 7 && n % 11 && n % 13 && n % 17
       && n % 19 && n % 23 && n % 29 && n % 31 && n % 37 && n % 41
@@ -409,7 +409,7 @@ uisprime(ulong n)
 int
 uisprime_101(ulong n)
 {
-  if (n <= maxprimelim()) return prime_search(n) > 0;
+  if (n <= maxprimelim()) return PRIMES_search(n) > 0;
   if (n < 1016801) return n < 10609? 1: (uispsp(2, n) && !is_2_prp_101(n));
   return _uisprime(n);
 }
@@ -418,7 +418,7 @@ uisprime_101(ulong n)
 int
 uisprime_661(ulong n)
 {
-  if (n <= maxprimelim()) return prime_search(n) > 0;
+  if (n <= maxprimelim()) return PRIMES_search(n) > 0;
   if (n < 1016801) return n < 452929? 1: uispsp(2, n);
   return _uisprime(n);
 }
@@ -1087,7 +1087,7 @@ randomprime0(GEN N, GEN q)
  * x = T[i] or -i < 0 such that T[i-1] < x < T[i]; return -1 for the special
  * case 0 <= x < 2 */
 long
-prime_search(ulong x)
+PRIMES_search(ulong x)
 {
   pari_prime *T = pari_PRIMES;
   ulong i, u = minuu(T[0], (x + 2) >> ((x < 122UL)? 1: 2)), l = 1;
@@ -1108,7 +1108,7 @@ uprimepi(ulong a)
   long i;
   if (a <= maxprimelim())
   {
-    i = prime_search(a);
+    i = PRIMES_search(a);
     return (ulong)(i > 0? i: -i-1);
   }
   /* a > maxprimelim >= maxprime */
@@ -1295,7 +1295,7 @@ primes_interval(GEN a, GEN b)
 static GEN
 PRIMES_interval(ulong a, ulong b)
 {
-  long k, i = prime_search(a), j = prime_search(b);
+  long k, i = PRIMES_search(a), j = PRIMES_search(b);
   GEN y;
   if (i < 0) i = -i;
   if (j < 0) j = -j - 1;

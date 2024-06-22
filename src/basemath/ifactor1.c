@@ -69,7 +69,7 @@ unextprime(ulong n)
   }
   if (n <= maxprime())
   {
-    long i = prime_search(n);
+    long i = PRIMES_search(n);
     return i > 0? n: pari_PRIMES[-i];
   }
   if (unextprime_overflow(n)) return 0;
@@ -152,7 +152,7 @@ uprecprime(ulong n)
   }
   if (n <= maxprimelim())
   {
-    long i = prime_search(n);
+    long i = PRIMES_search(n);
     return i > 0? n: pari_PRIMES[-i-1];
   }
   /* here n >= 11 */
@@ -3171,7 +3171,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
       n >>= v; if (n == 1) goto END;
     }
     maxp = maxprime();
-    if (n <= maxp && prime_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
+    if (n <= maxp && PRIMES_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
     lim = minss(usqrt(n), all? all-1: tridiv_boundu(n));
     if (!(hint & 16) && lim >= 128) /* expu(lim) >= 7 */
     { /* fast trial division */
@@ -3191,7 +3191,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
         }
         if (n == 1) goto END;
         if (n <= maxp
-            && prime_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
+            && PRIMES_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
       }
       maxp = GP_DATA->factorlimit;
     }

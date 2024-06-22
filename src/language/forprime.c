@@ -529,7 +529,7 @@ u_forprime_set_prime_table(forprime_t *T, ulong a)
   }
   else
   {
-    long n = prime_search(a - 1);
+    long n = PRIMES_search(a - 1);
     if (n < 0) n = - n - 1;
     T->n = n;
     T->p = pari_PRIMES[n];
