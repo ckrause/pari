@@ -281,7 +281,7 @@ testing decomposition.
 testing decomposition.
   ***   at top-level: alggroupcenter(['x,'y])
   ***                 ^-----------------------
-  *** alggroupcenter: incorrect type in checkgroupelts (element) (t_POL).
+  *** alggroupcenter: incorrect type in checkgroupelts (t_VEC).
   ***   at top-level: alggroupcenter('x,1)
   ***                 ^--------------------
   *** alggroupcenter: incorrect type in checkgroupelts (t_POL).
@@ -290,14 +290,14 @@ testing decomposition.
   *** alggroup: incorrect type in checkgroupelts (t_STR).
   ***   at top-level: alggroup(["a"])
   ***                 ^---------------
-  *** alggroup: incorrect type in checkgroupelts (element) (t_STR).
+  *** alggroup: incorrect type in checkgroupelts (t_VEC).
   ***   at top-level: alggroup(["a","b","c"])
   ***                 ^-----------------------
-  *** alggroup: incorrect type in checkgroupelts (element) (t_STR).
+  *** alggroup: incorrect type in checkgroupelts (t_VEC).
   ***   at top-level: alggroup([Vecsmall([1]),Vecsmall([1,2]),Vecsma
   ***                 ^----------------------------------------------
   *** alggroup: inconsistent dimensions in checkgroupelts [length of permutations].
   ***   at top-level: alggroup([Vecsmall([1]),Vecsmall([2,3]),Vecsma
   ***                 ^----------------------------------------------
   *** alggroup: inconsistent dimensions in checkgroupelts [length of permutations].
-Total time spent: 533
+Total time spent: 465

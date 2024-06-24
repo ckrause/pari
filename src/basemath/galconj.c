@@ -3347,11 +3347,33 @@ checkgroup(GEN g, GEN *S)
   *S = gal_get_group(g); return galois_group(g);
 }
 
+static GEN
+group_is_elt(GEN G)
+{
+  long i, n = lg(G)-1;
+  if (n==0) pari_err_DIM("checkgroupelts");
+  if (lg(G)==9 && typ(gel(G,1))==t_POL)
+    if (lg(gal_get_gen(G))==1)
+       return gal_get_group(G);
+  if (typ(G)==t_VEC && typ(gel(G,1))==t_VECSMALL)
+  {
+    for (i = 1; i <= n; i++)
+    {
+      if (typ(gel(G,i)) != t_VECSMALL)
+        pari_err_TYPE("checkgroupelts (element)", gel(G,i));
+      if (lg(gel(G,i)) != lg(gel(G,1)))
+        pari_err_DIM("checkgroupelts [length of permutations]");
+    }
+    return G;
+  }
+  return NULL;
+}
+
 GEN
 checkgroupelts(GEN G)
 {
-  long i, n;
-  if (typ(G)!=t_VEC) pari_err_TYPE("checkgroupelts", G);
+  GEN S = group_is_elt(G);
+  if (S) return S;
   if (is_group(G))
   { /* subgroup of S_n */
     if (lg(gel(G,1))==1) return mkvec(mkvecsmall(1));
@@ -3359,17 +3381,8 @@ checkgroupelts(GEN G)
   }
   if (lg(G)==9 && typ(gel(G,1))==t_POL)
     return gal_get_group(G); /* galoisinit */
-  /* vector of permutations ? */
-  n = lg(G)-1;
-  if (n==0) pari_err_DIM("checkgroupelts");
-  for (i = 1; i <= n; i++)
-  {
-    if (typ(gel(G,i)) != t_VECSMALL)
-      pari_err_TYPE("checkgroupelts (element)", gel(G,i));
-    if (lg(gel(G,i)) != lg(gel(G,1)))
-      pari_err_DIM("checkgroupelts [length of permutations]");
-  }
-  return G;
+  pari_err_TYPE("checkgroupelts",G);
+  return NULL; /* LCOV_EXCL_LINE */
 }
 
 GEN
@@ -3440,10 +3453,10 @@ GEN
 galoissubgroups(GEN gal)
 {
   pari_sp av = avma;
-  GEN S, G = checkgroup(gal,&S);
-  if (lg(gel(G,1))==1 && lg(S)>2)
-    return gerepileupto(av,
+  GEN S = group_is_elt(gal), G;
+  if (S) return gerepileupto(av,
       vec_groupelts_to_group_or_elts(groupelts_solvablesubgroups(S)));
+  G = checkgroup(gal, &S);
   return gerepileupto(av, group_subgroups(G));
 }
 

@@ -99,6 +99,7 @@ P=nfsplitting(x^4-x-1);G=galoisinit([P,nfgaloisconj(P)]);
 vecsort(apply(permorder,Vec(G.group)))
 P=x^5-x-1;galoisinit([P,nfgaloisconj(P)])
 G=galoissplittinginit(x^5+20*x+16);#galoissubgroups(G)
+#galoissubgroups(G.group)
 P =x^18-2*x^17-3*x^16+10*x^15-8*x^14-11*x^13+42*x^12-26*x^11-65*x^10+79*x^9+11*x^8-72*x^7+35*x^6+10*x^5-21*x^4+8*x^3+x^2-x+1;
 G=galoissplittinginit(P);galoisidentify(G)
 

@@ -12,5 +12,5 @@ x^2 + (y^3 + y^2 + 1)*x + 1, x^2 + (-y^3 - y^2)*x + 1]~
 x^2 + (-y^3 - y^2)*x + 1, x^2 + (y^3 + y^2 + 1)*x + 1]~
   ***   at top-level: galoischartable(S3)
   ***                 ^-------------------
-  *** galoischartable: incorrect type in checkgroupelts (element) (t_VEC).
-Total time spent: 348
+  *** galoischartable: incorrect type in checkgroupelts (t_VEC).
+Total time spent: 349
