@@ -3353,7 +3353,7 @@ group_is_elt(GEN G)
   long i, n = lg(G)-1;
   if (n==0) pari_err_DIM("checkgroupelts");
   if (lg(G)==9 && typ(gel(G,1))==t_POL)
-    if (lg(gal_get_gen(G))==1)
+    if (lg(gal_get_gen(G))==1 && lg(gal_get_group(G))>2)
        return gal_get_group(G);
   if (typ(G)==t_VEC && typ(gel(G,1))==t_VECSMALL)
   {
