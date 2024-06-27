@@ -3940,7 +3940,7 @@ GEN lfunhgm(GEN hgm, GEN t, GEN hint, long bit);
 /* lerch.c */
 
 GEN     Qp_zeta(GEN s);
-GEN     Qp_zetahurwitz(GEN s, GEN x);
+GEN     Qp_zetahurwitz(GEN s, GEN x, long k);
 GEN     lerchphi(GEN z, GEN s, GEN a, long bitprec);
 GEN     lerchzeta(GEN s, GEN a, GEN lam, long bitprec);
 GEN     zetahurwitz(GEN s, GEN x, long der, long bitprec);
@@ -5627,7 +5627,7 @@ ulong   usqrt(ulong a);
 /* trans2.c */
 
 GEN     Qp_gamma(GEN x);
-GEN     Qp_psi(GEN x);
+GEN     Qp_psi(GEN x, long k);
 GEN     atanhuu(ulong u, ulong v, long prec);
 GEN     atanhui(ulong u, GEN v, long prec);
 GEN     gacosh(GEN x, long prec);
@@ -5643,6 +5643,7 @@ GEN     ggamma(GEN x, long prec);
 GEN     ggamma1m1(GEN x, long prec);
 GEN     glngamma(GEN x, long prec);
 GEN     gpsi(GEN x, long prec);
+GEN     gpsi_der(GEN x, long k, long prec);
 GEN     gsinh(GEN x, long prec);
 GEN     gtanh(GEN x, long prec);
 GEN     mpfactr(long n, long prec);

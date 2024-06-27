@@ -2002,7 +2002,7 @@ dlogE(double s, double t)
   return maxdd(dnorm(rlog,ilog), 1e-6);
 }
 static GEN
-cxpsi(GEN s0, long prec)
+cxpsi(GEN s0, long der, long prec)
 {
   pari_sp av, av2;
   GEN sum, z, a, res, sig, tau, s, unr, s2, sq;
@@ -2011,6 +2011,13 @@ cxpsi(GEN s0, long prec)
   int funeq = 0;
   pari_timer T;
 
+  if (der)
+  {
+    av = avma;
+    res = zetahurwitz(stoi(der + 1), s0, 0, prec2nbits(prec));
+    if(!odd(der)) res = gneg(res);
+    return gerepileupto(av, gmul(mpfact(der), res));
+  }
   if (DEBUGLEVEL>2) timer_start(&T);
   s = trans_fix_arg(&prec,&s0,&sig,&tau,&av,&res);
   if (signe(sig) <= 0) { funeq = 1; s = gsub(gen_1, s); sig = real_i(s); }
@@ -2240,15 +2247,18 @@ psi_n(ulong b)
 }
 
 GEN
-Qp_psi(GEN x)
+Qp_psi(GEN x, long der)
 {
   pari_sp av = avma;
   GEN p = gel(x,2), p1 = subis(p,1), z;
   long e = valp(x) + precp(x);
   if (valp(x) < 0) pari_err_DOMAIN("psi","v_p(x)", "<", gen_0, x);
+  if (der < 0) pari_err_DOMAIN("psi","der","<", gen_0, stoi(der));
   x = cvtop(x, p, e + 1);
-  z = Qp_zetahurwitz(cvtop(gen_1, p, e + sdivsi(e,p1)), x);
-  return gerepileupto(av, gsub(mkfrac(p1,p), z));
+  z = gmul(mpfact(der), Qp_zetahurwitz(cvtop(stoi(der + 1), p, e + sdivsi(e,p1)), x, -der));
+  if (!odd(der)) z = gneg(z);
+  if (!der) z = gadd(mkfrac(p1,p), z);
+  return gerepileupto(av, z);
 }
 
 GEN
@@ -2264,11 +2274,54 @@ gpsi(GEN x, long prec)
       if (lgefint(x) > 3 || (n = itou(x)) > psi_n(prec2nbits(prec))) break;
       av = avma; y = mpeuler(prec);
       return gerepileuptoleaf(av, n == 1? negr(y): gsub(harmonic(n-1), y));
-    case t_REAL: case t_COMPLEX: return cxpsi(x,prec);
-    case t_PADIC: return Qp_psi(x);
+    case t_REAL: case t_COMPLEX: return cxpsi(x,0,prec);
+    case t_PADIC: return Qp_psi(x, 0);
     default:
       av = avma; if (!(y = toser_i(x))) break;
       return gerepileupto(av, serpsi(y,prec));
   }
   return trans_eval("psi",gpsi,x,prec);
+}
+
+static GEN
+_gpsi_der(void *E, GEN x, long prec)
+{
+  return gpsi_der(x, (long) E, prec);
+}
+
+GEN
+gpsi_der(GEN x, long der, long prec)
+{
+  pari_sp av;
+  ulong n;
+  GEN y;
+  if (der < 0) pari_err_DOMAIN("gpsi", "der", "<", gen_0, stoi(der));
+  switch(typ(x))
+  {
+    case t_INT:
+      if (signe(x) <= 0) err_psi(x);
+      if (lgefint(x) > 3 || (n = itou(x)) > psi_n(prec2nbits(prec))) break;
+      av = avma;
+      y = der ? szeta(der + 1, prec): mpeuler(prec);
+      if (n > 1)
+      {
+        y = gsub(y, harmonic0(n - 1, stoi(der + 1)));
+        if (!odd(der)) y = gneg(y);
+        y = gmul(mpfact(der), y);
+        return gerepileuptoleaf(av, y);
+      }
+    case t_REAL: case t_COMPLEX: return cxpsi(x, der, prec);
+    case t_PADIC: return Qp_psi(x, der);
+    default:
+      av = avma; if (!(y = toser_i(x))) break;
+      if (!der) y = serpsi(y,prec);
+      else
+      {
+        y = zetahurwitz(stoi(der + 1), x, 0, prec2nbits(prec));
+        if(!odd(der)) y = gneg(y);
+        y = gmul(mpfact(der), y);
+      }
+      return gerepileupto(av, y);
+  }
+  return trans_evalgen("psi",(void*)der,_gpsi_der,x,prec);
 }

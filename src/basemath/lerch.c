@@ -93,7 +93,7 @@ Qp_zeta(GEN s) { return Qp_zeta_i(s, 1); }
 
 /* s a t_PADIC; gerepileupto-safe. Could be exported */
 static GEN
-Qp_zetahurwitz_i(GEN s, GEN x)
+Qp_zetahurwitz_ii(GEN s, GEN x, long k)
 {
   GEN gp = gel(s,2);
   long p = itou(gp), prec = pprec(s);
@@ -107,18 +107,40 @@ Qp_zetahurwitz_i(GEN s, GEN x)
     for (j = 0; j < M; j++)
     {
       GEN y = gaddsg(j, x);
-      if (valp(y) <= 0) z = gadd(z, Qp_zetahurwitz_0(&S, gdivgu(y, M)));
+      if (valp(y) <= 0)
+      {
+        GEN tmp = Qp_zetahurwitz_0(&S, gdivgu(y, M));
+        if (k) tmp = gmul(tmp, gpowgs(teich(y), k));
+        z = gadd(z, tmp);
+      }
     }
     return gdivgu(z, M);
   }
   if (valp(s) < 0) pari_err_DOMAIN("Qp_zetahurwitz", "v(s)", "<", gen_0, s);
   return Qp_zetahurwitz_0(&S, x);
 }
+
+/* x or s must be p-adic */
+static GEN
+Qp_zetahurwitz_i(GEN s, GEN x, long k)
+{
+  if (typ(x) == t_PADIC)
+  {
+    pari_sp av = avma;
+    GEN p = gel(x,2);
+    long e = pprec(x);
+    e += sdivsi(e, subis(p, 1));
+    s = gadd(s, zeropadic_shallow(p, e));
+    return gerepileupto(av, Qp_zetahurwitz_ii(s, x, k));
+  }
+  return Qp_zetahurwitz_ii(s, x, k);
+}
+
 GEN
-Qp_zetahurwitz(GEN s, GEN x)
+Qp_zetahurwitz(GEN s, GEN x, long k)
 {
   pari_sp av = avma;
-  return gerepileupto(av, Qp_zetahurwitz_i(s, x));
+  return gerepileupto(av, Qp_zetahurwitz_i(s, x, k));
 }
 
 static void
@@ -186,15 +208,8 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
     }
     return gerepileupto(av,z);
   }
-  if (typ(s) == t_PADIC) return gerepileupto(av, Qp_zetahurwitz_i(s, x));
-  if (typ(x) == t_PADIC)
-  {
-    GEN p = gel(x,2);
-    long e = pprec(x);
-    e += sdivsi(e, subis(p, 1));
-    s = gadd(s, zeropadic_shallow(p, e));
-    return gerepileupto(av, Qp_zetahurwitz_i(s, x));
-  }
+  if (typ(s) == t_PADIC || typ(x) == t_PADIC)
+    return gerepileupto(av, Qp_zetahurwitz_i(s, x, 0));
   switch(typ(x))
   {
     case t_INT: case t_REAL: case t_FRAC: case t_COMPLEX: break;
