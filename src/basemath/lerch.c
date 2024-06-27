@@ -264,7 +264,11 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
     C = gmul2n(gabs(C,LOWDEFAULTPREC), bitprec + 1);
     C = gpow(C, ginv(gsubsg(k+1, ra)), LOWDEFAULTPREC);
     /* need |N + x - 1|^2 > C^2 */
-    if (!gequal0(ix)) C = gsqrt(gsub(gsqr(C), gsqr(ix)), LOWDEFAULTPREC);
+    if (!gequal0(ix))
+    {
+      GEN tmp = gsub(gsqr(C), gsqr(ix));
+      if (gsigne(tmp) >= 0) C = gsqrt(tmp, LOWDEFAULTPREC);
+    }
     /* need |N + re(x) - 1| > C */
     C = gceil(gadd(C, gsubsg(1, rx)));
     if (typ(C) != t_INT) pari_err_TYPE("zetahurwitz",s);
