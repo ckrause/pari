@@ -172,6 +172,10 @@ H=hgminit([1/2,1/2,1/2,1/2],[0,0,0,0]);
 L=lfunhgm(H,2^(-8));
 [lfuneuler(L,p)|p<-primes([1,20])]
 
+H=hgminit([1/5,2/5,3/5,4/5],[0,1/6,-1/6,0]);
+hgmeulerfactor(H,7/(3125/432),5)
+hgmeulerfactor(H,-7/(3125/432),5)
+
 \\ ERRORS
 hgminit([0])
 H=hgminit(2, Vecsmall(1))

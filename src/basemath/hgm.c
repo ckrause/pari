@@ -1260,7 +1260,7 @@ hgmU(GEN hgm, long p, long f, GEN t, long dfp)
   long q = vp[f+1], i;
   GEN Q = cgetg(q+1, t_POL);
   Q[1] = evalsigne(1)|evalvarn(0);
-  for (i = 2; i <= q; i++) gel(Q, i) = hgmQ(hgm, p, f, vp, i, ZP);
+  for (i = 2; i <= q; i++) gel(Q, i) = hgmQ(hgm, p, f, vp, i-2, ZP);
   t = p == 2? gen_1: gmul(hgm_get_MVALUE(hgm), t);
   return gerepileupto(av, hgmH(Q, p, f, dfp, t));
 }
