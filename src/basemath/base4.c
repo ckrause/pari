@@ -1752,35 +1752,35 @@ famat_to_nf_moddivisor(GEN nf, GEN g, GEN e, GEN bid)
 GEN
 vecmul(GEN x, GEN y)
 {
-  if (is_scalar_t(typ(x))) return gmul(x,y);
+  if (!is_vec_t(typ(x))) return gmul(x,y);
   pari_APPLY_same(vecmul(gel(x,i), gel(y,i)))
 }
 
 GEN
 vecsqr(GEN x)
 {
-  if (is_scalar_t(typ(x))) return gsqr(x);
+  if (!is_vec_t(typ(x))) return gsqr(x);
   pari_APPLY_same(vecsqr(gel(x,i)))
 }
 
 GEN
 vecinv(GEN x)
 {
-  if (is_scalar_t(typ(x))) return ginv(x);
+  if (!is_vec_t(typ(x))) return ginv(x);
   pari_APPLY_same(vecinv(gel(x,i)))
 }
 
 GEN
 vecpow(GEN x, GEN n)
 {
-  if (is_scalar_t(typ(x))) return powgi(x,n);
+  if (!is_vec_t(typ(x))) return powgi(x,n);
   pari_APPLY_same(vecpow(gel(x,i), n))
 }
 
 GEN
 vecdiv(GEN x, GEN y)
 {
-  if (is_scalar_t(typ(x))) return gdiv(x,y);
+  if (!is_vec_t(typ(x))) return gdiv(x,y);
   pari_APPLY_same(vecdiv(gel(x,i), gel(y,i)))
 }
 
