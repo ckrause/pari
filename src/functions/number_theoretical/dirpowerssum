@@ -19,6 +19,9 @@ Doc: for positive integer $N$ and complex number $x$, return the sum
  assumes that $|f(n)|$ is either $0$ or $1$, which is the case for
  Dirichlet characters.
 
+ A vector-valued multiplicative function $f$ is allowed, in which case the
+ above conditions must be met componentwise.
+
  Unlike variants using \kbd{dirpowers(N,x)}, this function uses $O(\sqrt{N})$
  memory instead of $O(N)$. And it is faster for large $N$. The return value
  is usually a floating point number, but it will be exact if the result
