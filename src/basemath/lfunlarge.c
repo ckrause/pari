@@ -279,12 +279,9 @@ series_h0(long n0, GEN s, GEN VCALL, long fl, long prec)
 {
   GEN C = get_modulus(VCALL) == 1? NULL: get_chivec(VCALL);
   GEN R = pardirpowerssumfun(C, n0, gneg(s), fl, prec);
-  if (fl)
-  {
-    if (C) return R;
-    return mkvec2(mkvec(gel(R,1)), mkvec(gel(R,2)));
-  }
-  return C? gel(R,1): mkvec(gel(R,1));
+  if (C) return R;
+  if (fl) return mkvec2(mkvec(gel(R,1)), mkvec(gel(R,2)));
+  return mkvec(R);
 }
 
 static GEN
@@ -423,23 +420,6 @@ RZinit(GEN s, GEN VCALL, GEN numpoles, long prec)
   return sel;
 }
 
-/* fl = 0: compute only for s; fl = 1 compute for s and 1-conj(s)
-   and put second result in *ptaux; fl = -1 take *ptaux as serh0. */
-static GEN
-total_value(GEN sel, GEN s, GEN VCALL, GEN *ptaux, long fl, long prec)
-{
-  GEN serh0, serh0aux;
-  if (fl == -1) serh0 = *ptaux;
-  else
-  {
-    serh0aux = series_h0(m_n0(sel), s, VCALL, fl, prec);
-    if (fl == 0) serh0 = serh0aux;
-    else { serh0 = gel(serh0aux, 1); *ptaux = gel(serh0aux, 2); }
-  }
-  return gadd(integral_h0(sel, s, VCALL, prec),
-              gsub(serh0, series_residues_h0(sel, s, VCALL, prec)));
-}
-
 static GEN
 xpquo_one(GEN s, GEN cs, GEN ga, long odd, long md, long prec)
 {
@@ -482,19 +462,25 @@ xpquo(GEN s, GEN VCALL, long prec)
 }
 
 static GEN
+total_value(GEN serh0, GEN sel, GEN s, GEN VCALL, long prec)
+{
+  return gadd(integral_h0(sel, s, VCALL, prec),
+              gsub(serh0, series_residues_h0(sel, s, VCALL, prec)));
+}
+static GEN
 dirichlet_ours(GEN s, GEN VCALL, long prec)
 {
+  int fl = !gequal(real_i(s), ghalf);
   GEN sel = RZinit(s, VCALL, gen_1, prec);
-  GEN cs, sum1, sum2, aux, pre_fac = xpquo(s, VCALL, prec);
-  if (gequal(real_i(s), ghalf))
-  { sum1 = total_value(sel, s, VCALL, NULL, 0, prec); sum2 = sum1; }
+  GEN S1, S2, serh0 = series_h0(m_n0(sel), s, VCALL, fl, prec);
+  if (!fl)
+    S2 = S1 = total_value(serh0, sel, s, VCALL, prec);
   else
   {
-    sum1 = total_value(sel, s, VCALL, &aux, 1, prec);
-    cs = gsubsg(1, gconj(s));
-    sum2 = total_value(sel, cs, VCALL, &aux, -1, prec);
+    S1 = total_value(gel(serh0,1), sel, s, VCALL, prec);
+    S2 = total_value(gel(serh0,2), sel, gsubsg(1, gconj(s)), VCALL, prec);
   }
-  return gadd(sum1, vecmul(pre_fac, gconj(sum2)));
+  return gadd(S1, vecmul(xpquo(s, VCALL, prec), gconj(S2)));
 }
 
 /* assume |Im(s)| > 2^-bitprec */

@@ -438,18 +438,30 @@ Qtor(GEN x, long prec)
   return tx == t_FRAC? fractor(x, prec): x;
 }
 
-/* Here N > 0 is small */
 static GEN
-naivedirpowerssum(long N, GEN s, void *E, GEN (*f)(void *, ulong, long),
-                  long prec)
+vecf(long N, void *E, GEN (*f)(void *, ulong, long), long prec)
 {
-  GEN V = vecpowug(N, s, prec), S;
-  if (!f) S = RgV_sum(V);
+  GEN v;
+  long n;
+  if (!f) return NULL;
+  v = cgetg(N + 1, t_VEC);
+  for (n = 1; n <= N; n++) gel(v,n) = f(E, n, prec);
+  return v;
+}
+
+/* Here #V = #F > 0 is small. Analogous to dotproduct, with following
+ * semantic differences: uses V[1] = 1; V has scalar values but F may have
+ * vector values */
+static GEN
+naivedirpowerssum(GEN V, GEN F, long prec)
+{
+  GEN S;
+  if (!F) S = RgV_sum(V);
   else
   {
-    long n;
-    S = f(E, 1, prec);
-    for (n = 2; n <= N; n++) S = gadd(S, gmul(gel(V, n), f(E, n, prec)));
+    long n, l = lg(V);
+    S = gel(F,1); /* V[1] = 1 */
+    for (n = 2; n < l; n++) S = gadd(S, gmul(gel(V, n), gel(F, n)));
   }
   return Qtor(S, prec);
 }
@@ -458,30 +470,58 @@ static GEN
 smalldirpowerssum(long N, GEN s, void *E, GEN (*f)(void *, ulong, long),
                   long both, long prec)
 {
-  GEN S = naivedirpowerssum(N, s, E, f, prec), SB, sb;
+  GEN F, V, S, SB, sb;
+  if (!N)
+  {
+    if (!f) return both? mkvec2(gen_0, gen_0): gen_0;
+    return gmul(gen_0, f(E, 1, prec));
+  }
+  V = vecpowug(N, s, prec);
+  F = vecf(N, E, f, prec);
+  S = naivedirpowerssum(V, F, prec);
   if (!both) return S;
-  sb = gconj(gsubsg(-1, s));
-  SB = both==2 && gequal(s,sb)? S: gconj(naivedirpowerssum(N,sb,E,f,prec));
+
+  sb = conj_i(gsubsg(-1, s));
+  if ((both==2 || !f) && gequal(s,sb))
+    SB = S;
+  else
+  {
+    GEN FB = (both == 1 && F)? conj_i(F): F;
+    GEN VB = cgetg(N+1, t_VEC);
+    long n;
+    gel(VB, 1) = gel(V, 1); /* = 1 */
+    for (n = 2; n <= N; n++) gel(VB, n) = ginv(gmulsg(n, gel(V, n)));
+    SB = naivedirpowerssum(VB, FB, prec);
+  }
   return mkvec2(S, SB);
 }
+
+static void
+v2unpack(GEN v, GEN *pV, GEN *pVB)
+{
+  if (typ(v) == t_COL) { *pV = gel(v,1); *pVB = gel(v,2); }
+  else { *pV = v; *pVB = NULL; }
+}
+static GEN
+v2pack(GEN V, GEN VB) { return VB? mkcol2(V,VB): V; }
 
 static GEN
 dirpowsuminit(GEN s, void *E, GEN (*f)(void *, ulong, long), GEN data,
               long both, long prec)
 {
   GEN onef = gel(data, 1), zervec = gel(data, 2), sqlpp = gel(data, 3);
-  long sq = sqlpp[1], needlog = sqlpp[2], prec0 = sqlpp[3], prec1 = sqlpp[4];
+  long n, sq = sqlpp[1], needlog = sqlpp[2], prec0 = sqlpp[3], prec1 = sqlpp[4];
   GEN V = cgetg(sq+1, t_VEC), W = cgetg(sq+1, t_VEC), Q = cgetg(sq+1, t_VEC);
-  GEN VB = NULL, WB = NULL, QB = NULL, c2, c2B = NULL;
-  GEN Q2, Q3, Q6, Q2B = NULL, Q3B = NULL, Q6B = NULL;
-  GEN logp, R, RB = NULL;
+  GEN VB = NULL, WB = NULL, QB = NULL;
+  GEN c2, Q2, Q3, Q6, c2B = NULL, Q2B = NULL, Q3B = NULL, Q6B = NULL;
+  GEN logp;
   long gp[] = {evaltyp(t_INT)|_evallg(3), evalsigne(1)|evallgefint(3),0};
-  long n;
+
   if (both == 1 || (both == 2 && !gequal(real_i(s), gneg(ghalf))))
   { VB = cgetg(sq+1, t_VEC); WB = cgetg(sq+1, t_VEC); QB = cgetg(sq+1, t_VEC);}
   gel(V, 1) = gel(W, 1) = gel(Q, 1) = onef;
   if (VB) { gel(VB, 1) = gel(WB, 1) = gel(QB, 1) = onef; }
-  c2 = gpow(gen_2, s, prec0); if (VB) c2B = ginv(gmul2n(gconj(c2), 1));
+  c2 = gpow(gen_2, s, prec0); if (VB) c2B = ginv(gmul2n(conj_i(c2), 1));
   if (f)
   {
     GEN tmp2 = f(E, 2, prec);
@@ -518,7 +558,7 @@ dirpowsuminit(GEN s, void *E, GEN (*f)(void *, ulong, long), GEN data,
       else if (zks) u = gpow(gp, s, prec0);
       if (zks)
       {
-        if (VB) uB = gmul(ginv(gmulsg(n, gconj(u))), ks);
+        if (VB) uB = gmul(ginv(gmulsg(n, conj_i(u))), ks);
         u = gmul(u, ks); /* f(n) n^s */
       }
     }
@@ -558,9 +598,8 @@ dirpowsuminit(GEN s, void *E, GEN (*f)(void *, ulong, long), GEN data,
     Q3B = vecmulsqlv(QB, gel(VB,3));
     Q6B = vecmulsqlv(QB, gel(VB,6));
   }
-  R = mkvecn(6, V, W, Q, Q2, Q3, Q6);
-  if (VB) RB = mkvecn(6, VB, WB, QB, Q2B, Q3B, Q6B);
-  return VB ? mkvec2(R, RB) : mkvec(R);
+  return v2pack(mkvecn(6, V, W, Q, Q2, Q3, Q6),
+                VB? mkvecn(6, VB, WB, QB, Q2B, Q3B, Q6B): NULL);
 }
 
 static GEN
@@ -599,7 +638,7 @@ dirpowsumprimeloop(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
     {
       S = gadd(S, vecmul(gel(W, N / p), gmul(ks, u)));
       if (WB)
-        SB = gadd(SB, gdiv(vecmul(ks, gel(WB, N / p)), gmulsg(p, gconj(u))));
+        SB = gadd(SB, gdiv(vecmul(ks, gel(WB, N / p)), gmulsg(p, conj_i(u))));
     }
     precp = p;
     if ((p & 0x1ff) == 1)
@@ -608,23 +647,19 @@ dirpowsumprimeloop(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
       else gerepileall(av2, SB? 3: 2, &S, &logp, &SB);
     }
   }
-  return SB ? mkvec2(S, SB) : mkvec(S);
+  return v2pack(S, SB);
 }
 
 static GEN
-dirpowsumsqfloop(long N, long x1, long x2, long sq, GEN P, GEN allvecs, GEN S,
-                 GEN allvecsB, GEN SB)
+add4(GEN a, GEN b, GEN c, GEN d) { return gadd(gadd(a,b), gadd(c,d)); }
+
+static void
+dirpowsumsqfloop(long N, long x1, long x2, long sq, GEN P,
+  GEN *pS, GEN Z, GEN V, GEN Q, GEN Q2, GEN Q3, GEN Q6,
+  GEN *pSB, GEN ZB, GEN VB, GEN QB, GEN Q2B, GEN Q3B, GEN Q6B)
 {
-  GEN V = gel(allvecs, 1), Q1 = gel(allvecs, 2), Q2 = gel(allvecs, 3);
-  GEN Q3 = gel(allvecs, 4), Q6 = gel(allvecs, 5), Z = gel(allvecs, 6);
-  GEN VB = NULL, QB = NULL, Q2B = NULL, Q3B = NULL, Q6B = NULL, ZB = NULL;
   GEN v = vecfactorsquarefreeu_coprime(x1, x2, P);
   long lv = lg(v), j;
-  if (allvecsB)
-  {
-    VB = gel(allvecsB, 1), QB = gel(allvecsB, 2), Q2B = gel(allvecsB, 3);
-    Q3B = gel(allvecsB, 4), Q6B = gel(allvecsB, 5), ZB = gel(allvecsB, 6);
-  }
   for (j = 1; j < lv; j++)
     if (gel(v,j))
     {
@@ -633,27 +668,25 @@ dirpowsumsqfloop(long N, long x1, long x2, long sq, GEN P, GEN allvecs, GEN S,
       GEN tB = NULL, uB = NULL; /* = d^s */
       long a, b, c, e, q;
       if (!t || gequal0(t)) continue;
-      if (VB) tB = vecinv(gmulsg(d, gconj(t)));
+      if (VB) tB = vecinv(gmulsg(d, conj_i(t)));
       /* warning: gives 1/conj(f(d)) d^(-1-conj(s)), equal to
          f(d) d^(-1-conj(s)) only if |f(d)|=1. */
       /* S += f(d) * d^s * Z[q] */
       q = N / d;
       if (q == 1)
       {
-        S = gadd(S, t); if (VB) SB = gadd(SB, tB);
+        *pS = gadd(*pS, t); if (VB) *pSB = gadd(*pSB, tB);
         continue;
       }
       if (q <= sq) { u = gel(Z, q); if (VB) uB = gel(ZB, q); }
       else
       {
         a = usqrt(q); b = usqrt(q / 2); c = usqrt(q / 3); e = usqrt(q / 6);
-        u = gadd(gadd(gel(Q1,a), gel(Q2,b)), gadd(gel(Q3,c), gel(Q6,e)));
-        if (VB)
-          uB = gadd(gadd(gel(QB,a), gel(Q2B,b)), gadd(gel(Q3B,c), gel(Q6B,e)));
+        u = add4(gel(Q,a), gel(Q2,b), gel(Q3,c), gel(Q6,e));
+        if (VB) uB = add4(gel(QB,a), gel(Q2B,b), gel(Q3B,c), gel(Q6B,e));
       }
-      S = gadd(S, vecmul(t, u)); if (VB) SB = gadd(SB, vecmul(tB, uB));
+      *pS = gadd(*pS, vecmul(t, u)); if (VB) *pSB = gadd(*pSB, vecmul(tB, uB));
     }
-  return VB ? mkvec2(S, SB) : mkvec(S);
 }
 
 static GEN
@@ -697,7 +730,7 @@ dirpowsummakez(GEN V, GEN W, GEN VB, GEN WB, GEN onef, ulong sq)
       if (VB) zB = gadd(zB, gel(VB, ne2)); }
     gel(Z, q) = z; if (VB) gel(ZB, q) = zB;
   }
-  return VB ? mkvec2(Z, ZB) : mkvec(Z);
+  return v2pack(Z, ZB);
 }
 
 static const long step = 2048;
@@ -706,27 +739,20 @@ static const long step = 2048;
  * 0: sum_{n<=N}f(n)n^s
  * 1: sum for (f,s) and (conj(f),-1-s)
  * 2: sum for (f,s) and (f,-1-s), assuming |f(n)| in {0,1} */
-GEN
-dirpowerssumfun(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
+static GEN
+dirpowerssumfun_i(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
                 long both, long prec)
 {
-  pari_sp av = avma, av2;
+  pari_sp av;
   GEN P, V, W, Q, Q2, Q3, Q6, S, Z, onef, zervec;
   GEN VB = NULL, WB = NULL, QB = NULL;
   GEN Q2B = NULL, Q3B = NULL, Q6B = NULL, SB = NULL, ZB = NULL;
-  GEN R, RS, data, allvecs, allvecsB = NULL;
+  GEN R, RB, data;
   ulong x1, sq;
   long prec0, prec1, needlog;
 
   if ((f && N < 49) || (!f && N < 1000))
-  {
-    if (!N)
-    {
-      if (!f) return gen_0;
-      return gerepileupto(av, gmul(gen_0, f(E, 1, prec)));
-    }
-    return gerepilecopy(av, smalldirpowerssum(N, s, E, f, both, prec));
-  }
+    return smalldirpowerssum(N, s, E, f, both, prec);
   onef = f ? f(E, 1, prec) : gen_1;
   zervec = gmul(gen_0, onef);
   sq = usqrt(N);
@@ -735,33 +761,33 @@ dirpowerssumfun(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
   needlog = get_needlog(s);
   if (needlog == 1) prec1 = powcx_prec(log2((double)N), s, prec);
   data = mkvec3(onef, zervec, mkvecsmall4(sq, needlog, prec0, prec1));
-  RS = dirpowsuminit(s, E, f, data, both, prec);
-  R = gel(RS, 1); V = gel(R, 1); W = gel(R, 2); Q = gel(R, 3);
+  v2unpack(dirpowsuminit(s, E, f, data, both, prec), &R, &RB);
+  V = gel(R, 1); W = gel(R, 2); Q = gel(R, 3);
   Q2 = gel(R, 4); Q3 = gel(R, 5); Q6 = gel(R, 6);
-  if (lg(RS) > 2)
+  if (RB)
   {
-    GEN RB = gel(RS, 2);
     VB = gel(RB, 1); WB = gel(RB, 2); QB = gel(RB, 3);
     Q2B = gel(RB, 4); Q3B = gel(RB, 5); Q6B = gel(RB, 6);
   }
-  RS = dirpowsumprimeloop(N, s, E, f, data, W, WB);
-  S = gel(RS, 1); if (VB) SB = gel(RS, 2);
-  RS = dirpowsummakez(V, W, VB, WB, onef, sq);
-  Z = gel(RS, 1); if (VB) ZB = gel(RS, 2);
-  P = mkvecsmall2(2, 3);
-  allvecs = mkvecn(6, V, Q, Q2, Q3, Q6, Z);
-  if (VB) allvecsB = mkvecn(6, VB, QB, Q2B, Q3B, Q6B, ZB);
-  av2 = avma;
+  v2unpack(dirpowsumprimeloop(N, s, E, f, data, W, WB), &S, &SB);
+  v2unpack(dirpowsummakez(V, W, VB, WB, onef, sq), &Z, &ZB);
+  P = mkvecsmall2(2, 3); av = avma;
   for(x1 = 1;; x1 += step)
   { /* beware overflow, fuse last two bins (avoid a tiny remainder) */
     ulong x2 = (N >= 2*step && N - 2*step >= x1)? x1-1 + step: N;
-    RS = dirpowsumsqfloop(N, x1, x2, sq, P, allvecs, S, allvecsB, SB);
-    S = gel(RS, 1); if (VB) SB = gel(RS, 2);
+    dirpowsumsqfloop(N, x1, x2, sq, P, &S, Z, V, Q, Q2, Q3, Q6,
+                                       &SB, ZB, VB, QB, Q2B, Q3B, Q6B);
     if (x2 == N) break;
-    gerepileall(av2, SB? 2: 1, &S, &SB);
+    gerepileall(av, SB? 2: 1, &S, &SB);
   }
-  if (both == 0) return gerepileupto(av, S);
-  return gerepilecopy(av, mkvec2(S, gconj(VB? SB: S)));
+  return both? mkvec2(S, conj_i(VB? SB: S)): S;
+}
+GEN
+dirpowerssumfun(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
+                long both, long prec)
+{
+  pari_sp av = avma;
+  return gerepilecopy(av, dirpowerssumfun_i(N, s, E, f, both, prec));
 }
 
 GEN
@@ -795,20 +821,12 @@ dirpowerssum0(GEN N, GEN s, GEN f, long both, long prec)
  * where we need R(chi,s) and conj(R(chi,1-conj(s))). */
 
 static GEN
-mycallvec(GEN f, ulong n, long prec)
+mycallvec(void *f, ulong n, long prec)
 {
-  if (typ(f) == t_CLOSURE) return gp_callUp((void*)f, n, prec);
-  return gel(f, (n-1) % (lg(f)-1) + 1);
-}
-
-static GEN
-_smalldirpowerssum(long N, GEN s, long fl, long prec)
-{
-  GEN vg = vecpowug(N, s, prec), S1 = _Qtor(RgV_sum(vg), prec);
-  long n;
-  if (!fl) return mkvec2(S1, S1);
-  for (n = 1; n <= N; n++) gel(vg, n) = ginv(gmulsg(n, gconj(gel(vg, n))));
-  return mkvec2(S1, _Qtor(RgV_sum(vg), prec));
+  GEN F = (GEN)f;
+  if (!f) return gen_1;
+  if (typ(F) == t_CLOSURE) return gp_callUp(f, n, prec);
+  return gel(F, (n-1) % (lg(F)-1) + 1);
 }
 
 static GEN
@@ -825,20 +843,20 @@ gmulvecsqlv(GEN Q, GEN V)
 GEN
 parsqfboth_worker(GEN gk, GEN vZ, GEN vVQ, GEN vV, GEN P, GEN Nsq)
 {
-  pari_sp av2 = avma;
-  GEN Z1 = gel(vZ, 1), Z2 = gel(vZ, 2), V1 = gel(vV, 1), V2 = gel(vV, 2);
-  GEN VQ1 = gel(vVQ, 1), VQN, v, S, SB;
-  GEN Q1 = gel(VQ1, 1), Q2 = gel(VQ1, 2), Q3 = gel(VQ1, 3), Q6 = gel(VQ1, 4);
-  GEN QB = NULL, Q2B = NULL, Q3B = NULL, Q6B = NULL;
+  pari_sp av = avma;
+  GEN Z, ZB, V, VB, vQ, Q, Q2, Q3, Q6, vQB, QB, Q2B, Q3B, Q6B, v, S, SB;
   long k = itos(gk), N = Nsq[1];
-  long x1 = 1 + step * k, x2, j, lv, fl = !gcmp0(V2);
+  long x1 = 1 + step * k, x2, j, lv;
   ulong sq = Nsq[2];
-  if (typ(gel(V1, 1)) == t_VEC)
-  { long lvv = lg(gel(V1, 1)) - 1; S = zerovec(lvv); SB = zerovec(lvv); }
-  else { S = gen_0; SB = gen_0; }
-  if (fl)
-  { VQN = gel(vVQ, 2); QB = gel(VQN, 1); Q2B = gel(VQN, 2);
-    Q3B = gel(VQN, 3); Q6B = gel(VQN, 4); }
+  v2unpack(vZ, &Z, &ZB);
+  v2unpack(vV, &V, &VB);
+  v2unpack(vVQ, &vQ, &vQB);
+  S = SB = is_vec_t(typ(gel(V,1))) ? zerovec(lg(gel(V,1)) - 1): gen_0;
+  Q = gel(vQ,1); Q2 = gel(vQ,2); Q3 = gel(vQ,3); Q6 = gel(vQ,4);
+  if (vQB)
+  { QB = gel(vQB,1); Q2B = gel(vQB,2); Q3B = gel(vQB,3); Q6B = gel(vQB,4); }
+  else
+    QB = Q2B = Q3B = Q6B = SB = NULL;
   /* beware overflow, fuse last two bins (avoid a tiny remainder) */
   x2 = (N >= 2*step && N - 2*step >= x1)? x1 - 1 + step: N;
 
@@ -848,59 +866,64 @@ parsqfboth_worker(GEN gk, GEN vZ, GEN vVQ, GEN vV, GEN P, GEN Nsq)
     if (gel(v,j))
     {
       ulong d = x1 - 1 + j; /* squarefree, coprime to 6 */
-      GEN t = smallfact(d, gel(v,j), sq, V1), u;
+      GEN t = smallfact(d, gel(v,j), sq, V), u;
       GEN tB = NULL, uB = NULL; /* = f(d) d^s */
       ulong a, b, c, e, q;
       if (!t || gequal0(t)) continue;
-      if (fl) tB = vecinv(gmulsg(d, gconj(t)));
+      if (VB) tB = vecinv(gmulsg(d, conj_i(t)));
       /* warning: gives 1/conj(f(d)) d^(-1-conj(s)), equal to
          f(d) d^(-1-conj(s)) only if |f(d)|=1. */
       /* S += f(d) d^s * Z[q] */
       q = N / d;
       if (q == 1)
       {
-        S = gadd(S, t); if (fl) SB = gadd(SB, tB);
+        S = gadd(S, t); if (VB) SB = gadd(SB, tB);
         continue;
       }
-      if (q <= sq) { u = gel(Z1, q); if (fl) uB = gel(Z2, q); }
+      if (q <= sq) { u = gel(Z, q); if (VB) uB = gel(ZB, q); }
       else
       {
         a = usqrt(q); b = usqrt(q / 2); c = usqrt(q / 3); e = usqrt(q / 6);
-        u = gadd(gadd(gel(Q1,a), gel(Q2,b)), gadd(gel(Q3,c), gel(Q6,e)));
-        if (fl)
+        u = gadd(gadd(gel(Q,a), gel(Q2,b)), gadd(gel(Q3,c), gel(Q6,e)));
+        if (VB)
           uB = gadd(gadd(gel(QB,a), gel(Q2B,b)), gadd(gel(Q3B,c), gel(Q6B,e)));
       }
-      S = gadd(S, vecmul(t, u)); if (fl) SB = gadd(SB, vecmul(tB, uB));
+      S = gadd(S, vecmul(t, u)); if (VB) SB = gadd(SB, vecmul(tB, uB));
     }
-  return gerepilecopy(av2, mkvec2(S, SB));
+  return gerepilecopy(av, v2pack(S, SB));
 }
 
 GEN
-parsumprimeWfunboth_worker(GEN gk, GEN s, GEN W1, GEN W2, GEN f, GEN Nsqprec)
+parsumprimeWfunboth_worker(GEN gk, GEN s, GEN W, GEN WB, GEN f, GEN Nsqprec)
 {
-  pari_sp av2;
-  GEN S1, S2 = gen_0, logp;
+  pari_sp av;
+  GEN S, SB = NULL, logp, tmp;
   forprime_t T;
   long k = itou(gk), N = Nsqprec[1], sq = Nsqprec[2], precp;
   long STEP = Nsqprec[3], prec0 = Nsqprec[4], prec1 = Nsqprec[5], p;
   long gp[] = {evaltyp(t_INT)|_evallg(3), evalsigne(1)|evallgefint(3),0};
-  long needlog = get_needlog(s), fl = !gequal0(W2), lv;
+  long needlog = get_needlog(s), nv;
 
-  if (f && gequal0(f)) f = NULL;
-  if (!f) lv = 0;
+  if (isintzero(WB)) WB = NULL;
+  if (isintzero(f)) f = NULL;
+  tmp = mycallvec((void*)f, 1, prec1);
+  nv = typ(tmp) == t_VEC ? lg(tmp) - 1 : 0;
+  precp = 0; logp = NULL;
+  if (nv)
+  {
+    S = const_vec(nv, real_0(prec1));
+    if (WB) SB = const_vec(nv, real_0(prec1));
+  }
   else
   {
-    GEN tmp = mycallvec(f, 1, prec1);
-    lv = typ(tmp) == t_VEC ? lg(tmp) - 1 : 0;
+    S = real_0(prec1);
+    if (WB) SB = real_0(prec1);
   }
-  precp = 0; logp = NULL;
-  if (lv) { S1 = const_vec(lv, real_0(prec1)); if (fl) S2 = const_vec(lv, real_0(prec1)); }
-  else { S1 = real_0(prec1); if (fl) S2 = real_0(prec1); }
   u_forprime_init(&T, k * STEP + sq + 1, minss(N, (k + 1) * STEP + sq));
-  av2 = avma;
+  av = avma;
   while ((p = u_forprime_next(&T)))
   {
-    GEN u = gen_0, ks = f ? mycallvec(f, p, prec1) : gen_1;
+    GEN u = gen_0, ks = mycallvec((void*)f, p, prec1);
     long zks = !gequal0(ks);
     gp[2] = p;
     if (needlog)
@@ -919,117 +942,68 @@ parsumprimeWfunboth_worker(GEN gk, GEN s, GEN W1, GEN W2, GEN f, GEN Nsqprec)
     else { if (zks) u = gpow(gp, s, prec0); }
     if (zks)
     {
-      S1 = gadd(S1, vecmul(gel(W1, N / p), gmul(ks, u)));
-      if (fl)
-        S2 = gadd(S2, gdiv(vecmul(ks, gel(W2, N / p)), gmulsg(p, gconj(u))));
+      S = gadd(S, vecmul(gel(W, N / p), gmul(ks, u)));
+      if (WB)
+        SB = gadd(SB, gdiv(vecmul(ks, gel(WB, N / p)), gmulsg(p, conj_i(u))));
     }
     precp = p;
     if ((p & 0x1ff) == 1)
     {
-      if (!logp) gerepileall(av2, 2, &S1, &S2);
-      else gerepileall(av2, 3, &S1, &S2, &logp);
+      if (!logp) gerepileall(av, SB? 2: 1, &S, &SB);
+      else gerepileall(av, SB? 3: 2, &S, &logp, &SB);
     }
   }
-  return gcopy(mkvec2(S1, S2));
+  return gcopy(v2pack(S, SB));
 }
 
 static GEN
-smalldirpowerssumfunvec_i(GEN f, ulong N, GEN s, long prec)
+pardirpowerssumfun_i(GEN f, ulong N, GEN s, long both, long prec)
 {
-  GEN S = real_0(prec);
-  ulong n;
-  if (f && gequal0(f)) f = NULL;
-  if (f)
-  {
-    GEN tmp = mycallvec(f, 1, prec);
-    if (typ(tmp) == t_VEC) S = const_vec(lg(tmp) - 1, real_0(prec));
-  }
-  for (n = 1; n <= N; n++)
-  {
-    GEN ks = mycallvec(f, n, prec);
-    if (!gequal0(ks)) S = gadd(S, gmul(ks, gpow(utoipos(n), s, prec)));
-  }
-  return S;
-}
-
-static GEN
-smalldirpowerssumfunvec(GEN f, ulong N, GEN s, long fl, long prec)
-{
-  GEN tmp = smalldirpowerssumfunvec_i(f, N, s, prec);
-  if (fl) return mkvec2(tmp, smalldirpowerssumfunvec_i(f, N, gsubgs(gneg(gconj(s)), 1), prec));
-  else return mkvec2(tmp, tmp);
-}
-
-static GEN
-getscal(GEN V, long isscal)
-{
-  if (isscal != 1 || typ(V) != t_VEC) return V;
-  switch (lg(V))
-  {
-    case 2: return gel(V,1);
-    case 3: return mkvec2(getscal(gel(V,1), 1), getscal(gel(V,2), 1));
-  }
-  pari_err_TYPE("getscal", V);
-  return NULL; /*LCOV_EXCL_LINE*/
-}
-
-GEN
-pardirpowerssumfun(GEN f, ulong N, GEN s, long both, long prec)
-{
-  pari_sp av = avma;
-  GEN P, V1, W1, Q1, V2 = gen_0, W2 = gen_0, QN = gen_0, c2, c2N;
-  GEN Q2, Q2N = gen_0, Q3, Q3N = gen_0, Q6, Q6N = gen_0;
-  GEN S1, S2, RES, Z1, Z2 = gen_0, logp;
+  GEN P, V, W, Q, VB = NULL, WB = NULL, QB = NULL, c2, c2B = NULL;
+  GEN Q2, Q3, Q6, Q2B = NULL, Q3B = NULL, Q6B = NULL;
+  GEN S1, RES, Z, ZB = NULL, logp;
   long gp[] = {evaltyp(t_INT)|_evallg(3), evalsigne(1)|evallgefint(3),0};
   ulong a, b, c, e, q, n, sq, fl;
-  long prec0, prec1, needlog, lv = 0, isscal = 1;
+  long prec0, prec1, needlog, nv = 0;
   GEN unvec = gen_1, zervec = gen_0, re0, re1, tmp2 = NULL;
 
-  if (f)
+  if ((f && N < 49) || (!f && N < 10000UL))
+    return smalldirpowerssum(N, s, (void*)f, mycallvec, both, prec);
+  tmp2 = mycallvec((void*)f, 2, prec + EXTRAPRECWORD);
+  if (is_vec_t(typ(tmp2)))
   {
-    if (typ(f) == t_CLOSURE) isscal = -1; else isscal = 0;
-    tmp2 = mycallvec(f, 2, prec + EXTRAPRECWORD);
-    if (typ(tmp2) == t_VEC)
-    {
-      lv = lg(tmp2) - 1;
-      unvec = const_vec(lv, gen_1);
-      zervec = const_vec(lv, gen_0);
-    }
+    nv = lg(tmp2) - 1;
+    if (!nv)
+      return both? mkvec2(cgetg(1,t_VEC), cgetg(1,t_VEC)): cgetg(1,t_VEC);
+    unvec = const_vec(nv, gen_1);
+    zervec = const_vec(nv, gen_0);
   }
-  if (N <= 0)
-  { GEN v = mkvec2(gen_0, gen_0); return f ? const_vec(lv, v) : v; }
   fl = both && !gequal(real_i(s), gneg(ghalf));
-  if (f && N < 49)
-    return gerepilecopy(av, getscal(smalldirpowerssumfunvec(f, N, s, fl, prec), isscal));
-  if (!f && N < 10000UL)
-    return gerepilecopy(av, _smalldirpowerssum(N, s, fl, prec));
   sq = usqrt(N);
-  V1 = cgetg(sq+1, t_VEC); W1 = cgetg(sq+1, t_VEC); Q1 = cgetg(sq+1, t_VEC);
+  V = cgetg(sq+1, t_VEC); W = cgetg(sq+1, t_VEC); Q = cgetg(sq+1, t_VEC);
   if (fl)
-  {
-    V2 = cgetg(sq+1, t_VEC); W2 = cgetg(sq+1, t_VEC); QN = cgetg(sq+1, t_VEC);
-  }
+  { VB = cgetg(sq+1, t_VEC); WB = cgetg(sq+1, t_VEC); QB = cgetg(sq+1, t_VEC); }
   prec1 = prec0 = prec + EXTRAPRECWORD;
   s = gprec_w(s, prec0);
   needlog = get_needlog(s);
   if (needlog == 1) prec1 = powcx_prec(log2((double)N), s, prec);
-  gel(V1,1) = gel(W1,1) = gel(Q1,1) = unvec;
-  if (fl) { gel(V2,1) = gel(W2,1) = gel(QN,1) = unvec; }
-  c2 = gpow(gen_2, s, prec0); c2N = ginv(gmul2n(gconj(c2), 1));
+  gel(V,1) = gel(W,1) = gel(Q,1) = unvec;
+  if (VB) { gel(VB,1) = gel(WB,1) = gel(QB,1) = unvec; }
+  c2 = gpow(gen_2, s, prec0); if (VB) c2B = ginv(gmul2n(conj_i(c2), 1));
   re0 = real_0(prec0); re1 = real_1(prec0);
-  if (f) { c2 = gmul(c2, tmp2); c2N = gmul(c2N, tmp2); }
-  gel(V1,2) = c2; /* f(2) 2^s */
-  gel(W1,2) = gmul(re1, gadd(c2, unvec));
-  gel(Q1,2) = gmul(re1, gadd(vecsqr(c2), unvec));
-  if (fl)
+  if (f) { c2 = gmul(c2, tmp2); if (VB) c2B = gmul(c2B, tmp2); }
+  gel(V,2) = c2; /* f(2) 2^s */
+  gel(W,2) = gmul(re1, gadd(c2, unvec));
+  gel(Q,2) = gmul(re1, gadd(vecsqr(c2), unvec));
+  if (VB)
   {
-    gel(V2,2) = c2N; gel(W2,2) = gmul(re1, gadd(c2N, unvec));
-    gel(QN,2) = gmul(re1, gadd(vecsqr(c2N), unvec));
+    gel(VB,2) = c2B; gel(WB,2) = gmul(re1, gadd(c2B, unvec));
+    gel(QB,2) = gmul(re1, gadd(vecsqr(c2B), unvec));
   }
   logp = NULL;
   for (n = 3; n <= sq; n++)
   {
-    GEN u1 = zervec, u2 = zervec, ks = f ? mycallvec(f, n, prec) : gen_1;
+    GEN u = zervec, uB = zervec, ks = mycallvec((void*)f, n, prec);
     long zks = !gequal0(ks);
     if (odd(n))
     {
@@ -1044,109 +1018,110 @@ pardirpowerssumfun(GEN f, ulong N, GEN s, long both, long prec)
           shiftr_inplace(z, 1); logp = addrr(logp, z);
         }
         if (zks)
-          u1 = needlog == 1? powcx(gp, logp, s, prec0) : mpexp(gmul(s, logp));
+          u = needlog == 1? powcx(gp, logp, s, prec0) : mpexp(gmul(s, logp));
       }
-      else { if (zks) u1 = gpow(gp, s, prec0); }
+      else { if (zks) u = gpow(gp, s, prec0); }
       if (zks)
       {
-        if(fl) u2 = gmul(ks, ginv(gmulsg(n, gconj(u1))));
-        u1 = gmul(ks, u1); /* f(n) n^s */
+        if (VB) uB = gmul(ks, ginv(gmulsg(n, conj_i(u))));
+        u = gmul(ks, u); /* f(n) n^s */
       }
     }
     else
     {
-      u1 = vecmul(c2, gel(V1, n >> 1));
-      if (fl) u2 = vecmul(c2N, gel(V2, n >> 1));
+      u = vecmul(c2, gel(V, n >> 1));
+      if (VB) uB = vecmul(c2B, gel(VB, n >> 1));
     }
-    gel(V1,n) = u1; /* f(n) n^s */
-    gel(W1,n) = gadd(gel(W1,n-1), gel(V1,n));       /* = sum_{i<=n} f(i)i^s */
-    gel(Q1,n) = gadd(gel(Q1,n-1), vecsqr(gel(V1,n))); /* = sum_{i<=n} f(i^2)i^2s */
-    if (fl)
+    gel(V,n) = u; /* f(n) n^s */
+    gel(W,n) = gadd(gel(W,n-1), gel(V,n));       /* = sum_{i<=n} f(i)i^s */
+    gel(Q,n) = gadd(gel(Q,n-1), vecsqr(gel(V,n)));/*= sum_{i<=n} f(i^2)i^2s*/
+    if (VB)
     {
-      gel(V2,n) = u2;
-      gel(W2,n) = gadd(gel(W2,n-1), gel(V2,n));
-      gel(QN,n) = gadd(gel(QN,n-1), vecsqr(gel(V2,n)));
+      gel(VB,n) = uB;
+      gel(WB,n) = gadd(gel(WB,n-1), gel(VB,n));
+      gel(QB,n) = gadd(gel(QB,n-1), vecsqr(gel(VB,n)));
     }
   }
-  Q2 = gmulvecsqlv(Q1, gel(V1,2));
-  Q3 = gmulvecsqlv(Q1, gel(V1,3));
-  Q6 = gmulvecsqlv(Q1, gel(V1,6));
-  if (fl)
+  Q2 = gmulvecsqlv(Q, gel(V,2));
+  Q3 = gmulvecsqlv(Q, gel(V,3));
+  Q6 = gmulvecsqlv(Q, gel(V,6));
+  if (VB)
   {
-    Q2N = gmulvecsqlv(QN, gel(V2,2));
-    Q3N = gmulvecsqlv(QN, gel(V2,3));
-    Q6N = gmulvecsqlv(QN, gel(V2,6));
+    Q2B = gmulvecsqlv(QB, gel(VB,2));
+    Q3B = gmulvecsqlv(QB, gel(VB,3));
+    Q6B = gmulvecsqlv(QB, gel(VB,6));
   }
-  S1 = S2 = typ(zervec) == t_VEC? const_vec(lv, re0): re0;
-  RES = mkvec2(S1, S2);
+  S1 = typ(zervec) == t_VEC? const_vec(nv, re0): re0;
+  RES = v2pack(S1, VB? S1: NULL);
   {
-    GEN fspec = f ? f : gen_0;
     long m = mt_nbthreads();
     long STEP = maxss(N / (m * m), 1);
     GEN VS = mkvecsmalln(5, N, sq, STEP, prec0, prec1);
     GEN FUN = snm_closure(is_entry("_parsumprimeWfunboth_worker"),
-                          mkvec5(s, W1, W2, fspec, VS));
+                          mkvec5(s, W, WB? WB: gen_0, f? f: gen_0, VS));
     RES = gadd(RES, parsum(gen_0, utoipos((N - 1) / STEP), FUN));
   }
   P = mkvecsmall2(2, 3);
-  Z1 = cgetg(sq+1, t_VEC);
+  Z = cgetg(sq+1, t_VEC);
   /* a,b,c,e = sqrt(q), sqrt(q/2), sqrt(q/3), sqrt(q/6)
    * Z[q] = Q[a] + 2^s Q[b] + 3^s Q[c] + 6^s Q[e], with Q[0] = 0 */
-  gel(Z1, 1) = unvec;
-  gel(Z1, 2) = gel(W1, 2);
-  gel(Z1, 3) = gel(W1, 3);
-  gel(Z1, 4) = gel(Z1, 5) = gel(W1, 4);
-  gel(Z1, 6) = gel(Z1, 7) = gadd(gel(W1, 4), gel(V1, 6));
-  if (fl)
+  gel(Z, 1) = unvec;
+  gel(Z, 2) = gel(W, 2);
+  gel(Z, 3) = gel(W, 3);
+  gel(Z, 4) = gel(Z, 5) = gel(W, 4);
+  gel(Z, 6) = gel(Z, 7) = gadd(gel(W, 4), gel(V, 6));
+  if (VB)
   {
-    Z2 = cgetg(sq+1, t_VEC);
-    gel(Z2, 1) = unvec;
-    gel(Z2, 2) = gel(W2, 2);
-    gel(Z2, 3) = gel(W2, 3);
-    gel(Z2, 4) = gel(Z2, 5) = gel(W2, 4);
-    gel(Z2, 6) = gel(Z2, 7) = gadd(gel(W2, 4), gel(V2, 6));
+    ZB = cgetg(sq+1, t_VEC);
+    gel(ZB, 1) = unvec;
+    gel(ZB, 2) = gel(WB, 2);
+    gel(ZB, 3) = gel(WB, 3);
+    gel(ZB, 4) = gel(ZB, 5) = gel(WB, 4);
+    gel(ZB, 6) = gel(ZB, 7) = gadd(gel(WB, 4), gel(VB, 6));
   }
   a = 2; b = c = e = 1;
   for (q = 8; q <= sq; q++)
   { /* Gray code: at most one of a,b,c,d differs (by 1) from previous value */
-    GEN z1 = gel(Z1, q - 1), z2 = gen_0;
+    GEN z = gel(Z, q - 1), zB = NULL;
     ulong na, nb, nc, ne, na2, nb2, nc2, ne2;
-    if (fl) z2 = gel(Z2, q - 1);
+    if (VB) zB = gel(ZB, q - 1);
     if ((na = usqrt(q)) != a)
-    { a = na; na2 = na * na; z1 = gadd(z1, gel(V1, na2)); if (fl) z2 = gadd(z2, gel(V2, na2)); }
+    { a = na; na2 = na * na; z = gadd(z, gel(V, na2));
+      if (VB) zB = gadd(zB, gel(VB, na2)); }
     else if ((nb = usqrt(q / 2)) != b)
-    { b = nb; nb2 = 2 * nb * nb; z1 = gadd(z1, gel(V1, nb2)); if (fl) z2 = gadd(z2, gel(V2, nb2)); }
+    { b = nb; nb2 = 2 * nb * nb; z = gadd(z, gel(V, nb2));
+      if (VB) zB = gadd(zB, gel(VB, nb2)); }
     else if ((nc = usqrt(q / 3)) != c)
-    { c = nc; nc2 = 3 * nc * nc; z1 = gadd(z1, gel(V1, nc2)); if (fl) z2 = gadd(z2, gel(V2, nc2)); }
+    { c = nc; nc2 = 3 * nc * nc; z = gadd(z, gel(V, nc2));
+      if (VB) zB = gadd(zB, gel(VB, nc2)); }
     else if ((ne = usqrt(q / 6)) != e)
-    { e = ne; ne2 = 6 * ne * ne; z1 = gadd(z1, gel(V1, ne2)); if (fl) z2 = gadd(z2, gel(V2, ne2)); }
-    gel(Z1,q) = z1; if (fl) gel(Z2,q) = z2;
+    { e = ne; ne2 = 6 * ne * ne; z = gadd(z, gel(V, ne2));
+      if (VB) zB = gadd(zB, gel(VB, ne2)); }
+    gel(Z,q) = z; if (VB) gel(ZB,q) = zB;
   }
   {
-    GEN vQ1 = mkvec4(Q1, Q2, Q3, Q6);
-    GEN vQ2 = fl? mkvec4(QN, Q2N, Q3N, Q6N): gen_0;
+    GEN vQ = mkvec4(Q, Q2, Q3, Q6);
+    GEN vQB = VB? mkvec4(QB, Q2B, Q3B, Q6B): NULL;
     GEN worker = snm_closure(is_entry("_parsqfboth_worker"),
-                   mkvec5(mkvec2(Z1, Z2), mkvec2(vQ1, vQ2), mkvec2(V1, V2),
-                   P, mkvecsmall2(N, sq)));
+                   mkvec5(v2pack(Z, ZB), v2pack(vQ, vQB), v2pack(V, VB),
+                          P, mkvecsmall2(N, sq)));
     RES = gadd(RES, parsum(gen_0, utoipos(maxss((N-1) / step - 1, 0)), worker));
   }
-  if (!fl) gel(RES, 2) = gel(RES, 1);
-  return gerepilecopy(av, getscal(RES, isscal));
+  return RES;
 }
 
+GEN
+pardirpowerssumfun(GEN f, ulong N, GEN s, long both, long prec)
+{
+  pari_sp av = avma;
+  return gerepilecopy(av, pardirpowerssumfun_i(f, N, s, both, prec));
+}
 GEN
 pardirpowerssum0(GEN N, GEN s, GEN f, long both, long prec)
 {
-  pari_sp av = avma;
-  GEN R;
   if (typ(N) != t_INT) pari_err_TYPE("pardirpowerssum", N);
-  R = pardirpowerssumfun(f, itou(N), s, both, prec);
-  return both ? R : gerepilecopy(av, gel(R, 1));
+  return pardirpowerssumfun(f, itou(N), s, both, prec);
 }
-
 GEN
 pardirpowerssum(ulong N, GEN s, long prec)
-{
-  pari_sp av = avma;
-  return gerepilecopy(av, gel(pardirpowerssumfun(NULL, N, s, 0, prec), 1));
-}
+{ return pardirpowerssumfun(NULL, N, s, 0, prec); }
