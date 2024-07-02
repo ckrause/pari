@@ -1,8 +1,8 @@
 Function: _parsumprimeWfunboth_worker
 Section: programming/internals
 C-Name: parsumprimeWfunboth_worker
-Prototype: GGGGGG
-Help: _parsumprimeWfunboth_worker(gk,s,W1,W2,f,Nsqprec): auxiliary
+Prototype: GGGGGGG
+Help: _parsumprimeWfunboth_worker(gk,s,S,W,SB,f,Z): auxiliary
 Doc: auxiliary
 
 Function: _parsqfboth_worker
