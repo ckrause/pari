@@ -492,8 +492,7 @@ smalldirpowerssum(long N, GEN s, void *E, GEN (*f)(void *, ulong, long),
     SB = S;
   else
   {
-    GEN FB = (both == 1 && F)? conj_i(F): F;
-    GEN VB = cgetg(N+1, t_VEC);
+    GEN VB = cgetg(N+1, t_VEC), FB = (both == 1 && F)? conj_i(F): F;
     long n;
     gel(VB, 1) = gel(V, 1); /* = 1 */
     for (n = 2; n <= N; n++) gel(VB, n) = ginv(gmulsg(n, gel(V, n)));
@@ -697,17 +696,22 @@ sumprimeloop(forprime_t *pT, GEN s, long N, GEN data, GEN S, GEN W, GEN WB,
 static GEN
 add4(GEN a, GEN b, GEN c, GEN d) { return gadd(gadd(a,b), gadd(c,d)); }
 
-static void
-mksqfloop(long N, long x1, long x2, GEN R, GEN RB, GEN *pS, GEN *pSB)
+static const long step = 2048;
+static int
+mksqfloop(long N, long x1, GEN R, GEN RB, GEN *pS, GEN *pSB)
 {
   GEN V = gel(R,1), Q = gel(R,3), Q2 = gel(R,4);
   GEN Q3 = gel(R,5), Q6 = gel(R,6), Z = gel(R,7);
-  GEN VB = NULL, QB = NULL, Q2B = NULL, Q3B = NULL, Q6B = NULL, ZB = NULL;
-  GEN v = vecfactorsquarefreeu_coprime(x1, x2, mkvecsmall2(2, 3));
-  long lv = lg(v), sq = lg(V)-1, j;
+  GEN v, VB = NULL, QB = NULL, Q2B = NULL, Q3B = NULL, Q6B = NULL, ZB = NULL;
+  long x2, j, lv, sq = lg(V)-1;
+
   if (RB)
   { VB = gel(RB,1); QB = gel(RB,3); Q2B = gel(RB,4);
     Q3B = gel(RB,5), Q6B = gel(RB,6); ZB = gel(RB,7); }
+  /* beware overflow, fuse last two bins (avoid a tiny remainder) */
+  x2 = (N >= 2*step && N - 2*step >= x1)? x1-1 + step: N;
+  v = vecfactorsquarefreeu_coprime(x1, x2, mkvecsmall2(2, 3));
+  lv = lg(v);
   for (j = 1; j < lv; j++)
     if (gel(v,j))
     {
@@ -735,9 +739,9 @@ mksqfloop(long N, long x1, long x2, GEN R, GEN RB, GEN *pS, GEN *pSB)
       }
       *pS = gadd(*pS, vecmul(t, u)); if (VB) *pSB = gadd(*pSB, vecmul(tB, uB));
     }
+  return x2 == N;
 }
 
-static const long step = 2048;
 static GEN
 mkdata(long N, GEN s, long prec)
 {
@@ -800,13 +804,11 @@ dirpowerssumfun_i(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
   vS = sumprimeloop(&T, s, N, data, zerf, W, WB, E, f);
   v2unpack(vS, &S, &SB);
   for(x1 = 1;; x1 += step)
-  { /* beware overflow, fuse last two bins (avoid a tiny remainder) */
-    ulong x2 = (N >= 2*step && N - 2*step >= x1)? x1-1 + step: N;
-    mksqfloop(N, x1, x2, R, RB, &S, &SB);
-    if (x2 == N) break;
+  {
+    if (mksqfloop(N, x1, R, RB, &S, &SB))
+      return both? mkvec2(S, conj_i(SB? SB: S)): S;
     gerepileall(av, SB? 2: 1, &S, &SB);
   }
-  return both? mkvec2(S, conj_i(SB? SB: S)): S;
 }
 GEN
 dirpowerssumfun(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
@@ -835,12 +837,10 @@ parsqf_worker(GEN gk, GEN vR, GEN gN)
 {
   pari_sp av = avma;
   GEN R, RB, onef, S, SB;
-  long k = itou(gk), N = itou(gN), x1 = 1 + step * k, x2;
+  long k = itou(gk), N = itou(gN), x1 = 1 + step * k;
   v2unpack(vR, &R, &RB); onef = gmael(R,1,1);
   S = SB = is_vec_t(typ(onef)) ? zerovec(lg(onef) - 1): gen_0;
-  /* beware overflow, fuse last two bins (avoid a tiny remainder) */
-  x2 = (N >= 2*step && N - 2*step >= x1)? x1-1 + step: N;
-  mksqfloop(N, x1, x2, R, RB, &S, &SB);
+  (void)mksqfloop(N, x1, R, RB, &S, &SB);
   return gerepilecopy(av, v2pack(S, RB? SB: NULL));
 }
 
@@ -867,27 +867,28 @@ parsumprimefun_worker(GEN gk, GEN s, GEN zerf, GEN data, GEN vW, GEN f)
 }
 
 static GEN
+vR_get_vW(GEN vR)
+{
+  GEN R, RB, W, WB;
+  v2unpack(vR, &R, &RB); W = gel(R,2); WB = RB? gel(RB,2): NULL;
+  return v2pack(W, WB);
+}
+
+static GEN
 pardirpowerssumfun_i(GEN f, ulong N, GEN s, long both, long prec)
 {
-  GEN RES, data, vR, R, RB, onef = gen_1, zerf = gen_0;
+  GEN worker, worker2, data, vR, onef, zerf;
 
   if ((f && N < 49) || (!f && N < 10000UL))
     return smalldirpowerssum(N, s, (void*)f, mycallvec, both, prec);
   if (!mk01((void*)f, mycallvec, prec, &zerf, &onef)) return mktrivial(both);
   data = mkdata(N, s, prec); s = gprec_w(s, prec + EXTRAPRECWORD);
   vR = dirpowsuminit(s, onef, zerf, (void*)f, mycallvec, data, both);
-  v2unpack(vR, &R, &RB);
-  {
-    GEN vW = v2pack(gel(R,2), RB? gel(RB,2): NULL);
-    GEN worker = snm_closure(is_entry("_parsumprimefun_worker"),
-                             mkvecn(5, s, zerf, data, vW, f? f: gen_0));
-    RES = parsum(gen_0, utoipos((N-1) / data[5]), worker);
-  }
-  {
-    GEN worker = snm_closure(is_entry("_parsqf_worker"), mkvec2(vR, utoi(N)));
-    RES = gadd(RES, parsum(gen_0, utoipos(maxss((N-1) / step - 1, 0)), worker));
-  }
-  return RES;
+  worker = snm_closure(is_entry("_parsumprimefun_worker"),
+                       mkvecn(5, s, zerf, data, vR_get_vW(vR), f? f: gen_0));
+  worker2 = snm_closure(is_entry("_parsqf_worker"), mkvec2(vR, utoi(N)));
+  return gadd(parsum(gen_0, utoipos((N-1) / data[5]), worker),
+              parsum(gen_0, utoipos(maxss((N-1) / step - 1, 0)), worker2));
 }
 
 GEN
