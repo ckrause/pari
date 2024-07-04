@@ -843,17 +843,6 @@ mycallvec(void *f, ulong n, long prec)
   return gel(F, (n-1) % (lg(F)-1) + 1);
 }
 
-static GEN
-gmulvecsqlv(GEN Q, GEN V)
-{
-  long lq, i;
-  GEN W;
-  if (typ(V) != t_VEC) return RgV_Rg_mul(Q, V);
-  lq = lg(Q); W = cgetg(lq, t_VEC);
-  for (i = 1; i < lq; i++) gel(W, i) = vecmul(gel(Q, i), V);
-  return W;
-}
-
 GEN
 parsqfboth_worker(GEN gk, GEN vZ, GEN vVQ, GEN vV, GEN P, GEN Nsq)
 {
@@ -975,14 +964,14 @@ pardirpowerssumfun_i(GEN f, ulong N, GEN s, long both, long prec)
       gel(QB,n) = gadd(gel(QB,n-1), vecsqr(gel(VB,n)));
     }
   }
-  Q2 = gmulvecsqlv(Q, gel(V,2));
-  Q3 = gmulvecsqlv(Q, gel(V,3));
-  Q6 = gmulvecsqlv(Q, gel(V,6));
+  Q2 = vecmulsqlv(Q, gel(V,2));
+  Q3 = vecmulsqlv(Q, gel(V,3));
+  Q6 = vecmulsqlv(Q, gel(V,6));
   if (VB)
   {
-    Q2B = gmulvecsqlv(QB, gel(VB,2));
-    Q3B = gmulvecsqlv(QB, gel(VB,3));
-    Q6B = gmulvecsqlv(QB, gel(VB,6));
+    Q2B = vecmulsqlv(QB, gel(VB,2));
+    Q3B = vecmulsqlv(QB, gel(VB,3));
+    Q6B = vecmulsqlv(QB, gel(VB,6));
   }
   {
     long m = mt_nbthreads(), STEP = maxss(N / (m * m), 1);
