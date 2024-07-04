@@ -27,7 +27,11 @@ static long
 vecgroup_sumorders(GEN L)
 {
   long i, s = 0;
-  for(i=1; i<lg(L); i++) s += group_order(gel(L,i));
+  for (i=1; i<lg(L); i++)
+  {
+    GEN G = gel(L,i);
+    s += (lg(G)==3 && typ(gel(G,1))==t_VEC) ? group_order(G): lg(G)-1;
+  }
   return s;
 }
 
@@ -277,7 +281,7 @@ group_ident_i(GEN G, GEN S)
       -1};
     long i;
     const long *t;
-    GEN Z = groupelts_center(S), L = group_subgroups(G);
+    GEN Z = groupelts_center(S), L = galoissubgroups(G);
     long scenter = groupelts_sumorders(Z), svecgroup = vecgroup_sumorders(L);
     long u = svecgroup+10000*scenter; /*This is used as a hash value*/
 
