@@ -758,7 +758,7 @@ void random_curves_with_m_torsion(ulong *a4, ulong *a6, ulong *tx, ulong *ty, lo
 /* dirichlet.c */
 
 GEN direuler_factor(GEN s, long n);
-GEN parsqf_worker(GEN gk, GEN vZ, GEN vR, GEN data);
+GEN parsqf_worker(GEN gk, GEN vR, GEN data);
 GEN parsumprimefun_worker(GEN gk, GEN s, GEN zerf, GEN data, GEN vW, GEN f);
 
 /* ellanal.c */

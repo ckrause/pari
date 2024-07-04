@@ -8,8 +8,8 @@ Doc: auxiliary
 Function: _parsqf_worker
 Section: programming/internals
 C-Name: parsqf_worker
-Prototype: GGGG
-Help: _parsqf_worker(gk,vZ,vR,data): auxiliary.
+Prototype: GGG
+Help: _parsqf_worker(gk,vR,data): auxiliary.
 Doc: auxiliary
 
 Function: _serh_worker
