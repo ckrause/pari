@@ -1,15 +1,15 @@
-Function: _parsumprimeWfunboth_worker
+Function: _parsumprimefun_worker
 Section: programming/internals
-C-Name: parsumprimeWfunboth_worker
-Prototype: GGGGGGG
-Help: _parsumprimeWfunboth_worker(gk,s,S,W,SB,f,Z): auxiliary
+C-Name: parsumprimefun_worker
+Prototype: GGGGGG
+Help: _parsumprimefun_worker(gk,s,zerf,data,vW,f): auxiliary
 Doc: auxiliary
 
-Function: _parsqfboth_worker
+Function: _parsqf_worker
 Section: programming/internals
-C-Name: parsqfboth_worker
-Prototype: GGGGGG
-Help: _parsqfboth_worker(gk,vZ,vVQ,vV,P,Nsqstep): auxiliary.
+C-Name: parsqf_worker
+Prototype: GGGG
+Help: _parsqf_worker(gk,vZ,vR,data): auxiliary.
 Doc: auxiliary
 
 Function: _serh_worker
