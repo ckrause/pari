@@ -1,8 +1,8 @@
-% Copyright (c) 2007-2016 Karim Belabas.
+% Copyright (c) 2007-2024 Karim Belabas.
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU General Public License
 
-% Reference Card for PARI-GP, Algebraic Number Theory.
+% Reference Card for PARI-GP, Elliptic curves
 % Author:
 %  Karim Belabas
 %  Universite de Bordeaux, 351 avenue de la Liberation, F-33405 Talence
@@ -141,6 +141,7 @@ $\bullet$ All domains:
 \li{degree of modular parametrization}{ellmoddegree$(E)$}
 \li{compare with $H^1(X_0(N),\ZZ)$ (for $E'\to E$)}
     {ellweilcurve$(E)$}
+\li{Manin constant of $E$}{ellmaninconstant$(E)$}
 \li{$p$-adic $L$ function $L_p^{(r)}(E,d,\chi^s)$}
    {ellpadicL$(E,p,n,\{s\},\{r\},\{d\})$}
 \li{BSD conjecture for $L_p^{(r)}(E_D,\chi^0)$}
@@ -160,8 +161,8 @@ $\bullet$ All domains:
 \li{db code \kbd{"11a1"} $\leftrightarrow$ $[\var{conductor}, \var{class}, \var{index}]$}{ellconvertname$(s)$}
 \li{generators of Mordell-Weil group}{ellgenerators$(E)$}
 \li{look up $E$ in database}{ellidentify$(E)$}
-\li{all curves matching criterion}{ellsearch$(N)$}
 \newcolumn
+\li{all curves matching criterion}{ellsearch$(N)$}
 \li{loop over curves with cond.~from $a$ to $b$}{forell$(E, a,b,\seq)$}
 
 \section{Curves over number field $K$}
