@@ -4,6 +4,6 @@ C-Name: nfweilheight
 Prototype: GGp
 Help: nfweilheight(nf, v): return the absolute Weil height of the vector v seen
  as an element of the projective space over the number field nf given by nfinit.
-Doc: return the absolute Weil height of the vector $v$ seen as an element of the
- projective space of dimension \kbd{length(v)-1} over the number field $\var{nf}$
- given by \kbd{nfinit}.
+Doc: let \var{nf} be attached to a number field $K$, let $v$ be a vector of
+ elements of $K$, seen as element of the projective space of dimension
+ \kbd{\#v - 1}. Return the absolute Weil height of that element.
