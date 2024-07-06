@@ -791,7 +791,7 @@ dirpowerssumfun_i(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
 {
   forprime_t T;
   pari_sp av;
-  GEN onef, zerf, R, RB, W, WB, vS, S, SB, data;
+  GEN onef, zerf, R, RB, W, WB, S, SB, data;
   ulong x1;
 
   if ((f && N < 49) || (!f && N < 1000))
@@ -801,8 +801,7 @@ dirpowerssumfun_i(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
   v2unpack(dirpowsuminit(s, onef, zerf, E, f, data, both), &R, &RB);
   W = gel(R,2); WB = RB? gel(RB,2): NULL;
   av = avma; u_forprime_init(&T, lg(W), N);
-  vS = sumprimeloop(&T, s, N, data, zerf, W, WB, E, f);
-  v2unpack(vS, &S, &SB);
+  v2unpack(sumprimeloop(&T, s, N, data, zerf, W, WB, E, f), &S, &SB);
   for(x1 = 1;; x1 += step)
   {
     if (mksqfloop(N, x1, R, RB, &S, &SB))
