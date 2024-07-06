@@ -513,12 +513,12 @@ v2pack(GEN V, GEN VB) { return VB? mkcol2(V,VB): V; }
 static GEN
 dirpowsuminit(GEN s, GEN onef, GEN zerf, void *E, GEN (*f)(void *, ulong, long),              GEN data, long both)
 {
-  long n, needlog=data[1], prec0=data[2], prec1=data[3], sq=usqrt(data[4]);
+  long n, needlog = data[1], prec0 = data[2], prec1 = data[3];
+  ulong a, b, c, e, q, sq = usqrt(data[4]);
   GEN V = cgetg(sq+1, t_VEC), W = cgetg(sq+1, t_VEC), VB = NULL, WB = NULL;
   GEN Q = cgetg(sq+1, t_VEC), Z = cgetg(sq+1, t_VEC), QB = NULL, ZB = NULL;
   GEN logp, c2, Q2, Q3, Q6, c2B = NULL, Q2B = NULL, Q3B = NULL, Q6B = NULL;
   long gp[] = {evaltyp(t_INT)|_evallg(3), evalsigne(1)|evallgefint(3),0};
-  ulong a, b, c, e, q;
 
   if (both == 1 || (both == 2 && !gequal(real_i(s), gneg(ghalf))))
   { VB = cgetg(sq+1, t_VEC); WB = cgetg(sq+1, t_VEC); QB = cgetg(sq+1, t_VEC);}
