@@ -266,7 +266,8 @@ $\var{bnr},H$ (congruence subgroup) or $\var{bnr},\chi$ (character on
    {bnrcompositum$(\kbd{[bnr1,H1]}, \kbd{[bnr2,H2]})$}
 \li{class field defined by $H < \text{Cl}_f$}{bnrclassfield$(\var{bnr},H)$}
 \li{\dots low level equivalent, prime degree}{rnfkummer$(\var{bnr},H)$}
-\li{same, using Stark units (real field)}{bnrstark$(\var{bnr},sub,\{\fl\})$}
+\li{same, using Stark units (real field)}{bnrstark$(\var{bnr},\{sub\},\{\fl\})$}
+\li{Stark unit}{bnrstarkunit$(\var{bnr},\{sub\})$}
 \li{is $a$ an $n$-th power in $K_v$ ?}{nfislocalpower$(\var{nf},v,a,n)$}
 \li{cyclic $L/K$ satisf. local conditions}
    {nfgrunwaldwang$(\var{nf},P,D,\var{pl})$}
@@ -302,13 +303,13 @@ where $G$ is \kbd{idealstar}$(f, 1)$, or a minimal polynomial.\hfil\break
 \li{intersection of ideals $x$ and $y$}{idealintersect$(\var{nf},x,y,\{\fl\})$}
 \li{$n$-th power of ideal $x$}{idealpow$(\var{nf},x,n,\{\fl\})$}
 \li{inverse of ideal $x$}{idealinv$(\var{nf},x)$}
-\li{divide ideal $x$ by $y$}{idealdiv$(\var{nf},x,y,\{\fl\})$}
 
 \newcolumn
 \title{\TITLE}
 \centerline{(PARI-GP version \PARIversion)}
 \smallskip
 
+\li{divide ideal $x$ by $y$}{idealdiv$(\var{nf},x,y,\{\fl\})$}
 \li{Find $(a,b)\in x\times y$, $a+b=1$}{idealaddtoone$(\var{nf},x,\{y\})$}
 \li{coprime integral $A,B$ such that $x=A/B$}{idealnumden$(\var{nf},x)$}
 
@@ -370,6 +371,7 @@ where $G$ is \kbd{idealstar}$(f, 1)$, or a minimal polynomial.\hfil\break
 \li{query the package: polynomial}{galoisgetpol(a,b,\{s\})}
 \li{\dots : permutation group}{galoisgetgroup(a,{b})}
 \li{\dots : group description}{galoisgetname(a,b)}
+\medskip
 
 \section{Relative Number Fields (rnf)}
 Extension $L/K$ is defined by $T\in K[x]$.
@@ -380,6 +382,7 @@ Extension $L/K$ is defined by $T\in K[x]$.
 \li{relative {\tt nfalgtobasis}}{rnfalgtobasis$(\var{rnf},x)$}
 \li{relative {\tt nfbasistoalg}}{rnfbasistoalg$(\var{rnf},x)$}
 \li{relative {\tt idealhnf}}{rnfidealhnf$(\var{rnf},x)$}
+\newcolumn
 \li{relative {\tt idealmul}}{rnfidealmul$(\var{rnf},x,y)$}
 \li{relative {\tt idealtwoelt}}{rnfidealtwoelt$(\var{rnf},x)$}
 
@@ -435,6 +438,7 @@ Extension $L/K$ is defined by $T\in K[x]$.
 \li{$n$-basis of $M$, or $(n+1)$-generating set}{rnfbasis$(\var{bnf},M)$}
 \li{is $M$ a free $\ZZ_K$-module?}{rnfisfree$(\var{bnf},M)$}
 
+\vfill
 \copyrightnotice
 \newcolumn
 
@@ -484,7 +488,6 @@ $A$ is a general associative algebra given by a multiplication table \var{mt}
 \li{$\{x\in al\mid lat1\cdot x\subset lat2\}$}{alglatrighttransporter$(\var{al},\var{lat1},\var{lat2})$}
 \li{test~$x\in lat$ (set~$c =$ coord. of~$x$)}{alglatcontains$(\var{al},\var{lat},x,\{\& c\})$}
 \li{element of~$lat$ with coordinates~$c$}{alglatelement$(\var{al},\var{lat},c)$}
-
 
 \subsec{Operations on elements}
 \li{$a+b$, $a-b$, $-a$}{algadd$(\var{al},a,b)${\rm, }algsub{\rm, }algneg}
@@ -559,7 +562,9 @@ $A$ is a central simple algebra over a number field $K$; represented by
 \li{discriminant of order ${\cal O}_0$}{algdisc$(\var{al})$}
 \li{$\ZZ$-basis of natural order in terms ${\cal O}_0$'s basis}
    {alginvbasis$(\var{al})$}
+\newcolumn
+\strut
+\vskip 11cm
 
-\vfill
 \copyrightnotice
 \bye
