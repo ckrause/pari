@@ -1811,6 +1811,7 @@ mulcxpowIs(GEN x, long k)
   return x;
 }
 
+/* caller will assume l > 2 later */
 static GEN
 init_ser(long l, long v, long e)
 {
@@ -1822,13 +1823,15 @@ init_ser(long l, long v, long e)
 static GEN
 fill_ser(GEN z, GEN y)
 {
-  long i, lx = lg(z), ly = lg(y);
+  long i, lx = lg(z), ly = lg(y); /* lx > 2 */
   if (ly >= lx) {
     for (i = 2; i < lx; i++) gel(z,i) = gel(y,i);
   } else {
     for (i = 2; i < ly; i++) gel(z,i) = gel(y,i);
     for (     ; i < lx; i++) gel(z,i) = gen_0;
   }
+  /* dangerous case (already normalized), don't use normalizeser */
+  if (ly == 3 && !signe(y)) { setsigne(z, 0); return z; }
   return normalizeser(z);
 }
 /* assume typ(x) = t_VEC */

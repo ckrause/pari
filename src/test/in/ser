@@ -158,6 +158,9 @@ z==1
 z-1
 s=taylor(1/((x-1)*(y-1)),x,5); taylor(s,y,5) \\ #2452
 
+\\ #2559
+(Mod(0,2)+O(x)) * (1+O(x))
+
 \\ Errors. Keep at end of file
 polcoef(0.+O(x),1)
 polcoef(Mod(0,2)+O(x),1)
