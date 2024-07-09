@@ -363,7 +363,7 @@ set_prodprimes(void)
 
   W = cgetg(64+1, t_VEC);
   for (jold = j = u = 1; j < l; j++)
-    if (uel(v,j) >= b)
+    if (j==l-1 || uel(v,j) >= b)
     {
       long lw = (j == l-1? l: j) - jold + 1;
       w = v+jold-1; w[0] = evaltyp(t_VECSMALL) | _evallg(lw);
