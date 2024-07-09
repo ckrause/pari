@@ -13,7 +13,7 @@ Doc:
  $X$ can be given either by a squarefree polynomial $P$ such that
  $X$ has equation $y^{2} = P(x)$ or by a vector $[P,Q]$ such that
  $X$ has equation $y^{2} + Q(x)\*y = P(x)$ and $Q^{2}+4\*P$ is squarefree.
- \prog
+ \bprog
  ? hyperelldisc([x^3,1])
  %1 = -27
  ? hyperelldisc(x^5+1)
