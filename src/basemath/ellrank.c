@@ -1921,6 +1921,7 @@ ell2selmer(GEN ell, GEN ell_K, GEN help, GEN K, GEN vbnf,
   dim = lg(selmer)-1;
   if (DEBUGLEVEL) err_printf("Selmer rank: %ld\n", dim);
   newselmer = Flm_invimage(Flm_mul(LS2chars, selmer, 2), helpchars, 2);
+  if (!newselmer) pari_err_BUG("ellrank, wrong nfeltsign");
   nbpoints = lg(help) - 1;
   if (flag==1)
   {
