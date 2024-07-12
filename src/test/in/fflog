@@ -13,6 +13,7 @@ test2(precprime(1<<32))
 test2(nextprime(1<<64))
 
 t = ffgen(7^4); fflog(t^6,t^2)
+t = ffgen(11^5)^0; fflog(t, t, 1)
 t = ffprimroot(ffgen(2^61)); fflog(t^1234567891012345678,t)
 t = ffprimroot(ffgen(2^65)); fflog(t^1234567891012345678,t)
 t = ffprimroot(ffgen(3^23)); fflog(t^12345678910,t)

@@ -3438,7 +3438,7 @@ Flxq_log(GEN a, GEN g, GEN ord, GEN T, ulong p)
   pari_sp av = avma;
   const struct bb_group *S = get_Flxq_star(&E,T,p);
   GEN v = get_arith_ZZM(ord), F = gmael(v,2,1);
-  if (Flxq_log_use_index(veclast(F), T, p))
+  if (lg(F) > 1 && Flxq_log_use_index(veclast(F), T, p))
     v = mkvec2(gel(v, 1), ZM_famat_limit(gel(v, 2), int2n(27)));
   return gerepileuptoleaf(av, gen_PH_log(a, g, v, E, S));
 }
