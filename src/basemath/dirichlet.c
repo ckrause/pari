@@ -325,7 +325,7 @@ vecpowuu(long N, ulong B)
   return v;
 }
 
-/* does n^s require log(x) ? */
+/* does x^s require log(x) ? */
 static long
 get_needlog(GEN s)
 {
