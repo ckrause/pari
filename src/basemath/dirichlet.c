@@ -409,11 +409,11 @@ dirpowers(long n, GEN x, long prec)
 static GEN
 vecmulsqlv(GEN Q, GEN V)
 {
-  long lq, i;
+  long l, i;
   GEN W;
   if (typ(V) != t_VEC) return RgV_Rg_mul(Q, V);
-  lq = lg(Q); W = cgetg(lq, t_VEC);
-  for (i = 1; i < lq; i++) gel(W, i) = vecmul(gel(Q, i), V);
+  l = lg(Q); W = cgetg(l, t_VEC);
+  for (i = 1; i < l; i++) gel(W, i) = vecmul(gel(Q, i), V);
   return W;
 }
 
