@@ -3381,7 +3381,7 @@ mpfact(long n)
     long m = n >> (k-1), l;
     if (m <= 2) break;
     l = (1 + (n >> k)) | 1;
-    /* product of odd numbers in ]n / 2^k, 2 / 2^(k-1)] */
+    /* product of odd numbers in ]n / 2^k, n / 2^(k-1)] */
     a = mulu_interval_step(l, m, 2);
     gel(v,k) = k == 1? a: powiu(a, k);
   }
