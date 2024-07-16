@@ -92,8 +92,9 @@
 \\  Blank lines are ignored
 \\  Line starting with #if BOOLEAN is read iff BOOLEAN is TRUE
 \\  Currently recognized booleans:
-\\    EMACS  are we running under Emacs?
-\\    READL  is readline available?
+\\    BITS_IN_LONG == N          gp build for N-bit architecture (N = 32 or 64)
+\\    EMACS                      are we running under Emacs?
+\\    READL                      is readline available?
 \\    VERSION {<,>,<=,>=} a.b.c  does version number satisfy the inequality?
 \\
 \\  This file should be put in $HOME/.gprc or /etc/gprc and contains:
@@ -110,6 +111,7 @@
 \\
 \\  Options settings are overriden by command line switches. For instance
 \\    gp --default parisizemax=1G
-\\  sets parisize to 1 GByte, regardless of what is in .gprc
+\\    gp -D parisizemax=1G
+\\  both set parisize to 1 GByte, regardless of what is in .gprc
 \\  They can also be changed under GP using default(), e.g.
 \\    default(parisize,"10M") 
