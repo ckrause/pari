@@ -71,6 +71,10 @@
 \\ Biggest precomputed prime (= precprime(10^6))
 \\ primelimit = 1M
 
+\\ Fast trial division by primes up to this bound. Raising it will noticeably
+\\ increase startup time (5 minutes for 2^32)
+\\ factorlimit = 1M
+
 \\ Set logfile name and enable logging.
 \\ Uncommenting the next two lines produces a different logfile each day:
 \\ logfile = "~/tmp/pari-%d.%m"
