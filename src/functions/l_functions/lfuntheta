@@ -13,7 +13,7 @@ Doc: compute the value of the $m$-th derivative
  $2^{-B}$, where $B = \text{realbitprecision}$.
 
  The theta function is defined by the formula
- $\Theta(t)=\sum_{n\ge1}a(n)K(nt/\sqrt(N))$, where $a(n)$ are the coefficients
+ $\Theta(t)=\sum_{n\ge1}a(n)K(nt/\sqrt{N})$, where $a(n)$ are the coefficients
  of the Dirichlet series, $N$ is the conductor, and $K$ is the inverse Mellin
  transform of the gamma product defined by the \kbd{Vga} component.
  Its Mellin transform is equal to $\Lambda(s)-P(s)$, where $\Lambda(s)$
