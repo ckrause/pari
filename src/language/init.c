@@ -2422,8 +2422,15 @@ shiftaddress_canon(GEN x, long dec)
       break;
 
     /* one more special case */
-    case t_LIST:
-      if (!list_data(x)) break;
+    case t_LIST: {
+      GEN Lx = list_data(x);
+      if (Lx) {
+        GEN L = (GEN)((long)Lx+dec);
+        shiftaddress_canon(L, dec);
+        list_data(x) = gcopy(L);
+      }
+      break;
+    }
     default: /* Fall through */
       lx = lg(x);
       for (i=lontyp[tx]; i<lx; i++) {
