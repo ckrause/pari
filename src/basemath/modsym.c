@@ -1435,7 +1435,7 @@ msinit_N(ulong N)
     gel(W,11) = mkvecsmall5(0, 0, 1, 1, 2);
     gel(W,12) = mkvec(mat2(1,0,0,1));
     gel(W,8) = mkvec( mkmat22(gen_1,gen_1, mkS(),gen_1) );
-    gel(W,9) = mkvec( mkmat2(mkcol3(gen_1,TAU,ZM_sqr(TAU)),
+    gel(W,9) = mkvec( mkmat2(mkcol3(gen_1,TAU,ZM2_sqr(TAU)),
                              mkcol3(gen_1,gen_1,gen_1)) );
     return W;
   }
@@ -1510,7 +1510,7 @@ msinit_N(ulong N)
   {
     GEN M = path_to_ZM( vecreverse(gel(vecT31,r)) );
     GEN gamma = ZM_mul(ZM_mul(M, TAU), SL2_inv_shallow(M));
-    gel(annT31, r) = mkmat2(mkcol3(gen_1,gamma,ZM_sqr(gamma)),
+    gel(annT31, r) = mkmat2(mkcol3(gen_1,gamma,ZM2_sqr(gamma)),
                             mkcol3(gen_1,gen_1,gen_1));
   }
   gel(W,6) = F_index;
@@ -5306,7 +5306,7 @@ eisCocycle(GEN co, GEN D, GEN f)
       d = gen_1;
     else
     { /* i = Ast[i] */
-      GEN g2 = ZM_sqr(g);
+      GEN g2 = ZM2_sqr(g);
       if (ZM_isdiagonal(g2)) d = gen_2; /* \pm Id */
       else
       {

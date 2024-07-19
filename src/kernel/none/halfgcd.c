@@ -14,6 +14,23 @@ with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 GEN
+ZM2_sqr(GEN A)
+{
+  GEN a = gcoeff(A,1,1), b = gcoeff(A,1,2), c = gcoeff(A,2,1), d = gcoeff(A,2,2);
+  if (equalii(b, c)) /* symetric, 3S + 1M */
+  {
+    GEN b2 = sqri(b), t = mulii(b, addii(a, d));
+    retmkmat2(mkcol2(addii(b2, sqri(a)), t), mkcol2(t, addii(b2, sqri(d))));
+  }
+  else
+  { /* general, 2S + 3M */
+    GEN bc = mulii(b, c), t = addii(a, d);
+    retmkmat2(mkcol2(addii(bc, sqri(a)), mulii(c, t)),
+              mkcol2(mulii(b, t), addii(bc, sqri(d))));
+  }
+}
+
+GEN
 ZM2_mul(GEN A, GEN B)
 {
   const long t = ZM2_MUL_LIMIT+2;
@@ -21,14 +38,14 @@ ZM2_mul(GEN A, GEN B)
   GEN A21=gcoeff(A,2,1),A22=gcoeff(A,2,2), B21=gcoeff(B,2,1),B22=gcoeff(B,2,2);
   if (lgefint(A11) < t || lgefint(B11) < t || lgefint(A22) < t || lgefint(B22) < t
    || lgefint(A12) < t || lgefint(B12) < t || lgefint(A21) < t || lgefint(B21) < t)
-  {
+  { /* 8M */
     GEN a = mulii(A11, B11), b = mulii(A12, B21);
     GEN c = mulii(A11, B12), d = mulii(A12, B22);
     GEN e = mulii(A21, B11), f = mulii(A22, B21);
     GEN g = mulii(A21, B12), h = mulii(A22, B22);
     retmkmat2(mkcol2(addii(a,b), addii(e,f)), mkcol2(addii(c,d), addii(g,h)));
   } else
-  {
+  { /* Strassen: 7M */
     GEN M1 = mulii(addii(A11,A22), addii(B11,B22));
     GEN M2 = mulii(addii(A21,A22), B11);
     GEN M3 = mulii(A11, subii(B12,B22));

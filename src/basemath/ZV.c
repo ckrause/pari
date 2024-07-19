@@ -41,54 +41,66 @@ RgM_check_ZM(GEN A, const char *s)
   }
 }
 
+/* assume m > 1 */
 static long
 ZV_max_lg_i(GEN x, long m)
 {
-  long i, l = 2;
-  for (i = 1; i < m; i++) l = maxss(l, lgefint(gel(x,i)));
+  long i, l = lgefint(gel(x,1));
+  for (i = 2; i < m; i++) l = maxss(l, lgefint(gel(x,i)));
   return l;
 }
 long
-ZV_max_lg(GEN x) { return ZV_max_lg_i(x, lg(x)); }
+ZV_max_lg(GEN x)
+{
+  long m = lg(x);
+  return m == 1? 2: ZV_max_lg_i(x, m);
+}
 
+/* assume n > 1 and m > 1 */
 static long
 ZM_max_lg_i(GEN x, long n, long m)
 {
-  long j, l = 2;
-  for (j = 1; j < n; j++) l = maxss(l, ZV_max_lg_i(gel(x,j), m));
+  long j, l = ZV_max_lg_i(gel(x,1), m);
+  for (j = 2; j < n; j++) l = maxss(l, ZV_max_lg_i(gel(x,j), m));
   return l;
 }
 long
 ZM_max_lg(GEN x)
 {
-  long n = lg(x);
+  long n = lg(x), m;
   if (n == 1) return 2;
-  return ZM_max_lg_i(x, n, lgcols(x));
+  m = lgcols(x); return m == 1? 2: ZM_max_lg_i(x, n, m);
 }
 
+/* assume m > 1 */
 static long
 ZV_max_expi_i(GEN x, long m)
 {
-  long i, prec = 2;
-  for (i = 1; i < m; i++) prec = maxss(prec, expi(gel(x,i)));
+  long i, prec = expi(gel(x,1));
+  for (i = 2; i < m; i++) prec = maxss(prec, expi(gel(x,i)));
   return prec;
 }
 long
-ZV_max_expi(GEN x) { return ZV_max_expi_i(x, lg(x)); }
+ZV_max_expi(GEN x)
+{
+  long m = lg(x);
+  return m == 1? 2: ZV_max_expi_i(x, m);
+}
 
+/* assume n > 1 and m > 1 */
 static long
 ZM_max_expi_i(GEN x, long n, long m)
 {
-  long j, prec = 2;
-  for (j = 1; j < n; j++) prec = maxss(prec, ZV_max_expi_i(gel(x,j), m));
+  long j, prec = ZV_max_expi_i(gel(x,1), m);
+  for (j = 2; j < n; j++) prec = maxss(prec, ZV_max_expi_i(gel(x,j), m));
   return prec;
 }
 long
 ZM_max_expi(GEN x)
 {
-  long n = lg(x);
+  long n = lg(x), m;
   if (n == 1) return 2;
-  return ZM_max_expi_i(x, n, lgcols(x));
+  m = lgcols(x); return m == 1? 2: ZM_max_expi_i(x, n, m);
 }
 
 GEN
@@ -449,11 +461,16 @@ static long
 sw_bound(long s)
 { return s > 60 ? 2: s > 25 ? 4: s > 15 ? 8 : s > 8 ? 16 : 32; }
 
+/* assume lx > 1 and ly > 1; x is (l-1) x (lx-1), y is (lx-1) x (ly-1).
+ * Return x * y */
 static GEN
 ZM_mul_i(GEN x, GEN y, long l, long lx, long ly)
 {
   long sx, sy, B;
-  if (lx==3 && l==3 && ly==3) return ZM2_mul(x,y);
+  if (l == 1) return zeromat(0, ly-1);
+  if (lx==2 && l==2 && ly==2)
+  { retmkmat(mkcol(mulii(gcoeff(x,1,1), gcoeff(y,1,1)))); }
+  if (lx==3 && l==3 && ly==3) return ZM2_mul(x, y);
   sx = ZM_max_lg_i(x, lx, l);
   sy = ZM_max_lg_i(y, ly, lx);
   if ((lx > 70 && ly > 70 && l > 70) && (sx <= 10 * sy && sy <= 10 * sx))
@@ -621,10 +638,14 @@ ZM_transmul(GEN x, GEN y)
   return M;
 }
 
+/* assume l > 1; x is (l-1) x (l-1), return x^2 */
 static GEN
 ZM_sqr_i(GEN x, long l)
 {
-  long s = ZM_max_lg_i(x, l, l);
+  long s;
+  if (l == 2) { retmkmat(mkcol(sqri(gcoeff(x,1,1)))); }
+  if (l == 3) return ZM2_sqr(x);
+  s = ZM_max_lg_i(x, l, l);
   if (l > 70) return ZM_mul_fast(x, x, l, l, s, s);
   if (l <= sw_bound(s))
     return ZM_mul_classical(x, x, l, l, l);

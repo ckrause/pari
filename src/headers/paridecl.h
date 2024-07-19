@@ -4789,6 +4789,7 @@ ulong   Fl_inv(ulong x, ulong p);
 ulong   Fl_invsafe(ulong x, ulong p);
 int     Fp_ratlift(GEN x, GEN m, GEN amax, GEN bmax, GEN *a, GEN *b);
 GEN     ZM2_mul(GEN A, GEN B);
+GEN     ZM2_sqr(GEN A);
 int     abscmpii(GEN x, GEN y);
 int     abscmprr(GEN x, GEN y);
 int     absequalii(GEN x, GEN y);
