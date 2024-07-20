@@ -467,14 +467,21 @@ static GEN
 ZM_mul_i(GEN x, GEN y, long l, long lx, long ly)
 {
   long sx, sy, B;
+#ifdef LONG_IS_64BIT /* From Flm_mul_i */
+  long Flm_sw_bound = 70;
+#else
+  long Flm_sw_bound = 120;
+#endif
   if (l == 1) return zeromat(0, ly-1);
   if (lx==2 && l==2 && ly==2)
   { retmkmat(mkcol(mulii(gcoeff(x,1,1), gcoeff(y,1,1)))); }
   if (lx==3 && l==3 && ly==3) return ZM2_mul(x, y);
   sx = ZM_max_lg_i(x, lx, l);
   sy = ZM_max_lg_i(y, ly, lx);
-  if ((lx > 70 && ly > 70 && l > 70) && (sx <= 10 * sy && sy <= 10 * sx))
-    return ZM_mul_fast(x, y, lx, ly, sx, sy);
+  /* Use modular reconstruction if Flm_mul would use Strassen and the input
+   * sizes look balanced */
+  if (lx > Flm_sw_bound && ly > Flm_sw_bound && l > Flm_sw_bound
+      && sx <= 10 * sy && sy <= 10 * sx) return ZM_mul_fast(x,y, lx,ly, sx,sy);
 
   B = sw_bound(minss(sx, sy));
   if (l <= B || lx <= B || ly <= B)

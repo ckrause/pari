@@ -715,12 +715,12 @@ static GEN
 Flm_mul_i(GEN x, GEN y, long l, long lx, long ly, ulong p, ulong pi)
 {
   ulong e = expu(p);
-#ifdef LONG_IS_64BIT
-  long ZM_sw_bound = e <= 29 ? 140: e <=62 ? 40: 70;
+#ifdef LONG_IS_64BIT /* Beware to update ZM_mul_i if this changes */
+  long Flm_sw_bound = e <= 29 ? 140: e <=62 ? 40: 70;
 #else
-  long ZM_sw_bound = e <= 12 ? 230: e <=14 ? 170 : e <=17 ? 110: 120;
+  long Flm_sw_bound = e <= 12 ? 230: e <=14 ? 170 : e <=17 ? 110: 120;
 #endif
-  if (l <= ZM_sw_bound || lx <= ZM_sw_bound || ly <= ZM_sw_bound)
+  if (l <= Flm_sw_bound || lx <= Flm_sw_bound || ly <= Flm_sw_bound)
     return Flm_mul_classical(x, y, l, lx, ly, p, pi);
   else
     return Flm_mul_sw(x, y, l - 1, lx - 1, ly - 1, p, pi);
