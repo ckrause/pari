@@ -645,7 +645,9 @@ ZM_transmul(GEN x, GEN y)
   return M;
 }
 
-/* assume l > 1; x is (l-1) x (l-1), return x^2 */
+/* assume l > 1; x is (l-1) x (l-1), return x^2.
+ * FIXME: we ultimately rely on Strassen-Winograd which uses 7M + 15A.
+ * Should use Bodrato's variant of Winograd, using 3M + 4S + 11A */
 static GEN
 ZM_sqr_i(GEN x, long l)
 {
@@ -785,6 +787,8 @@ _ZM_mul(void *data /*ignored*/, GEN x, GEN y)
 static GEN
 _ZM_sqr(void *data /*ignored*/, GEN x)
 { (void)data; return ZM_sqr(x); }
+/* FIXME: Using Bodrato's squaring, precomputations attached to fixed
+ * multiplicand should be reused. And some postcomputations can be fused */
 GEN
 ZM_pow(GEN x, GEN n)
 {
