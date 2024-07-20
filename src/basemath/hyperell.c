@@ -1476,6 +1476,179 @@ hyperellchangecurve(GEN W, GEN C)
   return gerepilecopy(av, mkvec2(P,Q));
 }
 
+/****************************************************************************/
+/***                                                                      ***/
+/***                        genus2charpoly                                ***/
+/***                                                                      ***/
+/****************************************************************************/
+
+/* Half stable reduction */
+
+static long
+Zst_val(GEN P, GEN f, GEN p, long vt, GEN *pR)
+{
+  pari_sp av = avma;
+  long v = varn(P);
+  while(1)
+  {
+    long i, j, dm = LONG_MAX;
+    GEN Pm = NULL;
+    long dP = degpol(P);
+    for (i = 0; i <= minss(dP, dm); i++)
+    {
+      GEN Py = gel(P, i+2);
+      if (signe(Py))
+      {
+        if (typ(Py)==t_POL)
+        {
+          long dPy = degpol(Py);
+          for (j = 0; j <= minss(dPy, dm-i); j++)
+          {
+            GEN c = gel(Py, j+2);
+            if (signe(c))
+            {
+                if (i+j < dm)
+                {
+                  dm = i+j;
+                  Pm = monomial(gen_1, dm, v);
+                  gel(Pm,dm+2) = gen_0;
+                }
+                gel(Pm,i+2) = c;
+            }
+          }
+        } else
+        {
+          if (i < dm)
+          {
+            dm = i;
+            Pm = monomial(Py, dm, v);
+          }
+          else
+            gel(Pm, i+2) = Py;
+        }
+      }
+    }
+    Pm = RgX_renormalize(Pm);
+    if (ZX_pval(Pm,p)==0)
+    {
+      *pR = gerepilecopy(av, P);
+      return dm;
+    }
+    Pm = RgX_homogenize_deg(Pm, dm, vt);
+    P = gadd(gsub(P, Pm), gmul(f, ZXX_Z_divexact(Pm, p)));
+  }
+}
+
+static long
+Zst_normval(GEN P, GEN f, GEN p, long vt, GEN *pR)
+{
+  long v = Zst_val(P, f, p, vt, pR);
+  long e = RgX_val(*pR)>>1;
+  if (e > 0)
+  {
+    v -= 2*e;
+    *pR = RgX_shift(*pR, -2*e);
+  }
+  return v;
+}
+
+static GEN
+RgXY_swapsafe(GEN P, long v1, long v2)
+{
+  if (varn(P)==v2)
+  {
+    P = shallowcopy(P); setvarn(P,v1); return P;
+  } else
+    return RgXY_swap(P, RgXY_degreex(P), v2);
+}
+
+static GEN
+Zst_red1(GEN P, GEN f, GEN p, long vt)
+{
+  pari_sp av = avma;
+  GEN r, f1, f2, P1, P2;
+  long vs = varn(P);
+  long w = Zst_normval(P, f, p, vt, &r), ww = w-odd(w);
+  GEN st = monomial(pol_x(vt), 1, vs);
+  f1 = gsubst(f, vt, st);
+  P1 = gsubst(gdiv(r, monomial(gen_1,ww,vs)),vt,st);
+  f2 = gsubst(f, vs, st);
+  P2 = gsubst(gdiv(r, monomial(gen_1,ww,vt)),vs,st);
+  f2 = RgXY_swapsafe(f2, vs, vt);
+  P2 = RgXY_swapsafe(P2, vs, vt);
+  return gerepilecopy(av, mkvec4(P1, f1, P2, f2));
+}
+
+static GEN
+Zst_reduce(GEN P, GEN p, long vt, long *pv)
+{
+  GEN C;
+  long v = RgX_val(P);
+  *pv = v + ZXX_pvalrem(RgX_shift(P, -v), p, &P);
+  C = constant_coeff(P);
+  C = typ(C) == t_POL ? C: scalarpol_shallow(C, vt);
+  return FpX_red(C, p);
+}
+
+static GEN
+Zst_red3(GEN C, GEN p, long vt)
+{
+  while(1)
+  {
+    GEN P1 = gel(C,1) ,f1 = gel(C,2), Poo = gel(C,3), foo= gel(C,4);
+    long e;
+    GEN Qoop = Zst_reduce(Poo, p, vt, &e), Qp, R;
+    if (RgX_val(Qoop) >= 3-e)
+    {
+      C = Zst_red1(Poo, foo, p, vt);
+      continue;
+    }
+    Qp = Zst_reduce(P1, p, vt, &e);
+    R = FpX_roots_mult(Qp, 3-e, p);
+    if (lg(R) > 1)
+    {
+      GEN xz = deg1pol_shallow(gen_1, gel(R,1), vt);
+      C = Zst_red1(gsubst(P1, vt, xz), gsubst(f1, vt, xz), p, vt);
+      continue;
+    }
+    return Qp;
+  }
+}
+
+static GEN
+genus2_halfstablemodel_i(GEN P, GEN p, long vt)
+{
+  GEN Qp, R, Poo, Qoop;
+  long e = ZX_pvalrem(P, p, &Qp);
+  R = FpX_roots_mult(FpX_red(Qp,p), 4-e, p);
+  if (lg(R) > 1)
+  {
+    GEN C = Zst_red1(ZX_translate(P, gel(R,1)), pol_x(vt), p, vt);
+    return Zst_red3(C, p, vt);
+  }
+  Poo = RgXn_recip_shallow(P, 7);
+  e = ZX_pvalrem(Poo, p, &Qoop);
+  Qoop = FpX_red(Qoop,p);
+  if (RgX_val(Qoop)>=4-e)
+  {
+    GEN C = Zst_red1(Poo, pol_x(vt), p, vt);
+    return Zst_red3(C, p, vt);
+  }
+  return gcopy(P);
+}
+
+static GEN
+genus2_halfstablemodel(GEN P, GEN p)
+{
+  pari_sp av = avma;
+  long vt = fetch_var(), vs = varn(P);
+  GEN S = genus2_halfstablemodel_i(P, p, vt);
+  setvarn(S, vs); delete_var();
+  return gerepilecopy(av, S);
+}
+
+/* semi-stable reduction */
+
 static GEN
 genus2_redmodel(GEN P, GEN p)
 {
@@ -1622,17 +1795,29 @@ genus2_eulerfact_semistable(GEN P, GEN p)
 }
 
 GEN
-genus2_eulerfact(GEN P, GEN p)
+genus2_eulerfact(GEN P, GEN p, long ra, long rt)
 {
   pari_sp av = avma;
   GEN W, R = genus2_type5(P, p), E;
   if (R) return R;
   W = hyperellextremalmodels(P, 2, p);
-  if (lg(W) < 3) return genus2_eulerfact_semistable(P,p);
+  if (lg(W) < 3)
+  {
+    GEN F = genus2_eulerfact_semistable(P,p);
+    if (degpol(F)!=2*ra+rt)
+    {
+      GEN S = genus2_halfstablemodel(P, p);
+      F = genus2_eulerfact_semistable(S, p);
+    }
+    if (degpol(F)!=2*ra+rt) pari_err_BUG("genus2charpoly");
+    return F;
+  }
   E =  gmul(genus2_eulerfact_semistable(gel(W,1),p),
             genus2_eulerfact_semistable(gel(W,2),p));
   return gerepileupto(av, E);
 }
+
+/*   p = 2  */
 
 static GEN
 F2x_genus2_find_trans(GEN P, GEN Q, GEN F)
@@ -1771,5 +1956,3 @@ genus2_eulerfact2(GEN F, GEN PQ)
            genus2_eulerfact2_semistable(gel(W,2)));
   return gerepileupto(av, E);
 }
-
-

@@ -2193,8 +2193,8 @@ lfungenus2(GEN G)
   for(i = ram2? 2: 1; i < lL; i++)
   {
     GEN Li = gel(L, i);
-    GEN p = gel(Li, 1);
-    gel(e, ram2 ? i: i+1) = mkvec2(p, ginv(RgX_recip(genus2_eulerfact(F,p))));
+    GEN p = gel(Li, 1), r = gel(Li, 4);
+    gel(e, ram2 ? i: i+1) = mkvec2(p, ginv(RgX_recip(genus2_eulerfact(F,p, r[1],r[2]))));
   }
   Ldata = mkvecn(6, tag(mkvec2(F,e), t_LFUN_GENUS2),
       gen_0, mkvec4(gen_0, gen_0, gen_1, gen_1), gen_2, N, gen_0);

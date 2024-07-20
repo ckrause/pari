@@ -10,6 +10,7 @@ BA   4- nfcompositum(nfinit(y-2),x^2-y,x^3-x-1) -> error [#2605]
         of the documented Mod(a,A) - Mod(b,B) == 0
      7- charpoly: memory leak
      8- normlp(, oo): support components equal to oo or -oo
+BA   9- lfungenus2 could give wrong result at odd primes (#2487)
 
   Added
      3- [libpari] prodprimes, prodprimeslim
