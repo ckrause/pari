@@ -2317,12 +2317,14 @@ genus2_eulerfact_semistable(GEN P, GEN p)
 static GEN
 genus2_eulerfact(GEN P, GEN p)
 {
-  GEN W, R = genus2_type5(P, p);
+  pari_sp av = avma;
+  GEN W, R = genus2_type5(P, p), E;
   if (R) return R;
   W = hyperellextremalmodels(P, 2, p);
   if (lg(W) < 3) return genus2_eulerfact_semistable(P,p);
-  return gmul(genus2_eulerfact_semistable(gel(W,1),p),
-              genus2_eulerfact_semistable(gel(W,2),p));
+  E =  gmul(genus2_eulerfact_semistable(gel(W,1),p),
+            genus2_eulerfact_semistable(gel(W,2),p));
+  return gerepileupto(av, E);
 }
 
 static GEN
@@ -2453,12 +2455,14 @@ genus2_eulerfact2_semistable(GEN PQ)
 static GEN
 genus2_eulerfact2(GEN F, GEN PQ)
 {
-  GEN W, R = genus2_type5(F, gen_2);
+  pari_sp av = avma;
+  GEN W, R = genus2_type5(F, gen_2), E;
   if (R) return R;
   W = hyperellextremalmodels(PQ, 2, gen_2);
   if (lg(W) < 3) return genus2_eulerfact2_semistable(PQ);
-  return gmul(genus2_eulerfact2_semistable(gel(W,1)),
-              genus2_eulerfact2_semistable(gel(W,2)));
+  E = gmul(genus2_eulerfact2_semistable(gel(W,1)),
+           genus2_eulerfact2_semistable(gel(W,2)));
+  return gerepileupto(av, E);
 }
 
 GEN
