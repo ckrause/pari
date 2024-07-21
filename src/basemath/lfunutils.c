@@ -2227,17 +2227,45 @@ nfellcharpoly(GEN e, GEN T, GEN p)
 }
 
 static GEN
+genus2_red5(GEN P, GEN T, GEN p)
+{
+  long vx = varn(P), vy = varn(T);
+  GEN f = shallowcopy(T);
+  setvarn(f, vx);
+  while(1)
+  {
+    GEN Pr, R, r, Rs;
+    (void) ZXX_pvalrem(P, p, &Pr);
+    R = FpXQX_roots_mult(Pr, 3, T, p);
+    if (lg(R)==1) return P;
+    r = FpX_center(gel(R,1), p, shifti(p,-1));
+    r = gel(R,1);
+    P = RgX_affine(P, p, r);
+    setvarn(r, vx);
+    f = RgX_Rg_div(gsub(f, r), p);
+    Rs = RgX_rem(RgXY_swap(P, 3, vy), gsub(f, pol_x(vy)));
+    P = RgXY_swap(Rs, 3, vy);
+    (void) ZXX_pvalrem(P, sqri(p), &P);
+  }
+}
+
+static GEN
 genus2_type5(GEN P, GEN p)
 {
   GEN E, F, T, a, a2, Q;
-  long e = ZX_pval(P, p);
-  F = FpX_red(e ? ZX_Z_divexact(P, powis(p, e)): P, p);
+  long v;
+  (void) ZX_pvalrem(P, p, &F);
+  F = FpX_red(F, p);
   if (degpol(F) < 1) return NULL;
   F = FpX_factor(F, p);
   if (mael(F,2,1) != 3 || degpol(gmael(F,1,1)) != 2) return NULL;
   T = gmael(F, 1, 1);
-  Q = ZX_digits(P, T); a = gel(Q,4); a2 = ZX_sqr(a);
-  E = mkvec5(gen_0, gel(Q,3), gen_0, ZX_mul(gel(Q,2),a), ZX_mul(gel(Q,1),a2));
+  v = fetch_var_higher();
+  Q = RgV_to_RgX(ZX_digits(P, T), v);
+  Q = genus2_red5(Q, T, p);
+  a = gel(Q,5); a2 = ZX_sqr(a);
+  E = mkvec5(gen_0, gel(Q,4), gen_0, ZX_mul(gel(Q,3),a), ZX_mul(gel(Q,2),a2));
+  delete_var();
   return nfellcharpoly(E, T, p);
 }
 
