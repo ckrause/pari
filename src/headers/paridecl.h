@@ -1370,6 +1370,7 @@ GEN     RgX_divs(GEN y, long x);
 long    RgX_equal(GEN x, GEN y);
 void    RgX_even_odd(GEN p, GEN *pe, GEN *po);
 GEN     RgX_homogenize(GEN P, long v);
+GEN     RgX_homogenize_deg(GEN P, long d, long v);
 GEN     RgX_homogenous_evalpow(GEN P, GEN A, GEN B);
 GEN     RgX_inflate(GEN x0, long d);
 GEN     RgX_mul(GEN x,GEN y);

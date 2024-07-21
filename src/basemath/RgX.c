@@ -459,6 +459,16 @@ RgX_deflate(GEN x0, long d)
 }
 
 GEN
+RgX_homogenize_deg(GEN P, long d, long v)
+{
+  long i, l;
+  GEN Q = cgetg_copy(P, &l);
+  Q[1] = P[1];
+  for (i = 2; i < l; i++) gel(Q,i) = monomial(gel(P,i), d--, v);
+  return Q;
+}
+
+GEN
 RgX_homogenize(GEN P, long v)
 {
   long i, l, d;
