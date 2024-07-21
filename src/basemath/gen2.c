@@ -1865,6 +1865,56 @@ ZX_pvalrem(GEN x, GEN p, GEN *px) { return gen_pvalrem(x,p,px, 2); }
 long
 ZV_pvalrem(GEN x, GEN p, GEN *px) { return gen_pvalrem(x,p,px, 1); }
 
+static long
+ZX_gen_pvalrem(GEN x, GEN p, GEN *px, long imin)
+{
+  long i, lx, v;
+  GEN y;
+  y = cgetg_copy(x, &lx);
+  y[1] = x[1];
+  x = leafcopy(x);
+  for (i = imin; i < lx; i++)
+    if (typ(gel(x, i)) != t_INT)
+    {
+      gel(x, i) = leafcopy(gel(x,i));
+      gel(y, i) = leafcopy(gel(x,i));
+    }
+  for(v = 0;; v++)
+  {
+#if 0
+    if (v == VAL_DC_THRESHOLD) /* TODO */
+    {
+      if (is_pm1(p)) pari_err_DOMAIN("ZX_gen_pvalrem", "p", "=", p, p);
+      return v + ZX_gen_pvalrem_DC(x, p, px, imin);
+    }
+#endif
+
+    for (i = imin; i < lx; i++)
+    {
+      GEN r, xi = gel(x,i);
+      if (typ(xi) == t_INT)
+      {
+        gel(y,i) = dvmdii(xi, p, &r);
+        if (r != gen_0) { *px = x; return v; }
+      } else
+      {
+        long j, lxi = lg(xi);
+        for(j = 2; j < lxi; j++)
+        {
+          gmael(y,i,j) = dvmdii(gel(xi,j), p, &r);
+          if (r != gen_0) { *px = x; return v; }
+        }
+      }
+    }
+    swap(x, y);
+  }
+}
+
+long
+ZXX_pvalrem(GEN x, GEN p, GEN *px) { return ZX_gen_pvalrem(x,p,px, 2); }
+long
+ZXV_pvalrem(GEN x, GEN p, GEN *px) { return ZX_gen_pvalrem(x,p,px, 1); }
+
 /*******************************************************************/
 /*                                                                 */
 /*                       NEGATION: Create -x                       */
