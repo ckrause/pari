@@ -1522,6 +1522,19 @@ FpXQX_factor_squarefree(GEN f, GEN T, GEN p)
   return FpXQX_factor_Yun(f, T, p);
 }
 
+GEN
+FpXQX_roots_mult(GEN f, long n, GEN T, GEN p)
+{
+  pari_sp av = avma;
+  GEN V = FpXQX_factor_squarefree(f, T, p), W;
+  long l = lg(V), i;
+  if (l <= n) return cgetg(1,t_COL);
+  W = cgetg(l-n+1,t_VEC);
+  for (i = n; i < l; i++)
+    gel(W,i-n+1) = FpXQX_roots(gel(V,i), T, p);
+  return gerepilecopy(av, shallowconcat1(W));
+}
+
 long
 FpXQX_ispower(GEN f, ulong k, GEN T, GEN p, GEN *pt_r)
 {

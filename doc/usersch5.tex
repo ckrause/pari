@@ -5927,6 +5927,11 @@ of degree $\kbd{n} > 0$ over $\F_p$, in variable \kbd{v}.
 \fun{GEN}{FpXQX_roots}{GEN f, GEN T, GEN p} return the roots of $f$ in
 $\F_p[X]/(T)$. Assumes \kbd{p} is prime and \kbd{T} irreducible in $\F_p[X]$.
 
+\fun{GEN}{FpXQX_roots_mult}{GEN f, long n, GEN T, GEN p}
+returns the roots in \kbd{\Z/p\Z} with multiplicity at least $n$ of
+the \kbd{FpXQX}~\kbd{f} (without multiplicity, as a vector of \kbd{FpXQ}s).
+Assumes \kbd{p} is prime and \kbd{T} irreducible in $\F_p[X]$.
+
 \fun{GEN}{FqX_roots}{GEN f, GEN T, GEN p} same but allow $\kbd{T} = \kbd{NULL}$.
 
 \fun{GEN}{FpXQX_factor}{GEN f, GEN T, GEN p} same output convention as

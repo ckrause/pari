@@ -1089,13 +1089,14 @@ FpX_factor_squarefree(GEN T, GEN p)
 GEN
 FpX_roots_mult(GEN T, long n, GEN p)
 {
-  GEN V = FpX_factor_squarefree(T,p), W;
+  pari_sp av = avma;
+  GEN V = FpX_factor_squarefree(T, p), W;
   long l = lg(V), i;
-  if (l<=n) return cgetg(1,t_COL);
+  if (l <= n) return cgetg(1,t_COL);
   W = cgetg(l-n+1,t_VEC);
   for (i = n; i < l; i++)
     gel(W,i-n+1) = FpX_roots(gel(V,i), p);
-  return shallowconcat1(W);
+  return gerepilecopy(av, shallowconcat1(W));
 }
 
 long

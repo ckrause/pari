@@ -72,6 +72,7 @@ NM  18- [libpari] FlxqX_eval
     20- [libpari] PRIMES_search
 HC  21- psi: support for derivative and t_PADIC
     22- [libpari] ZM2_sqr
+BA  23- [libpari] FpXQX_roots_mult
 
 Done for version 2.16.1 (released 04/01/2024):
   Fixed
