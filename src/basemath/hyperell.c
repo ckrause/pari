@@ -934,13 +934,6 @@ algo52(GEN W, GEN c, long *pt_lambda)
   return mkvec2(P,Q);
 }
 
-static GEN
-algo541(GEN F, GEN p, long ep, long g)
-{
-  GEN Fe = FpX_red(ep ? ZX_Z_divexact(F,p): F, p);
-  return FpX_roots_mult(Fe, g+2-ep, p);
-}
-
 static long
 test53(long lambda, long ep, long g)
 {
@@ -1130,8 +1123,7 @@ algo57(GEN F, long g, GEN pr)
     long ep;
     GEN p = gel(pr, i), ps2 = shifti(p,-1), Fe;
     if (equaliu(p,2) || Z_pval(D,p) < minvd) continue;
-    ep = ZX_pval(F,p);
-    Fe = FpX_red(ep ? ZX_Z_divexact(F,p): F, p);
+    ep = ZX_pvalrem(F,p, &Fe); Fe = FpX_red(Fe, p);
     if (degpol(Fe) < g+1+ep)
     {
       GEN Fi = ZX_unscale(RgXn_recip_shallow(F,2*g+3), p);
@@ -1146,9 +1138,9 @@ algo57(GEN F, long g, GEN pr)
     }
     for(;;)
     {
-      long ep = ZX_pval(F,p);
-      GEN R = algo541(F, p, ep, g);
-      long j, lR = lg(R);
+      GEN Fe, R;
+      long j, lR, ep = ZX_pvalrem(F,p, &Fe);
+      R = FpX_roots_mult(FpX_red(Fe, p), g+2-ep, p); lR = lg(R);
       for (j = 1; j<lR; j++)
       {
         GEN c = Fp_center(gel(R,j), p, ps2);
@@ -1174,10 +1166,9 @@ static GEN
 algo57bis(GEN F, long g, GEN p, long inf)
 {
   pari_sp av = avma;
-  GEN vl = cgetg(3,t_VEC);
-  long nl = 1;
-  long ep = ZX_pval(F,p);
-  GEN Fe = FpX_red(ep ? ZX_Z_divexact(F,p): F, p);
+  GEN vl = cgetg(3,t_VEC), Fe;
+  long nl = 1, ep = ZX_pvalrem(F,p, &Fe);
+  Fe = FpX_red(Fe, p);
   if (inf && degpol(Fe) <= g+1+ep)
   {
     GEN Fi = ZX_unscale(RgXn_recip_shallow(F,2*g+3), p);
