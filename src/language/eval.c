@@ -1962,7 +1962,7 @@ static int negcmp(GEN x, GEN y) { return gcmp(y,x); }
 void
 parforstep(GEN a, GEN b, GEN s, GEN code, void *E, long call(void*, GEN, GEN))
 {
-  pari_sp av = avma;
+  pari_sp av = avma, av2;
   long running, pending = 0;
   long status = br_NONE;
   GEN worker = snm_closure(is_entry("_parfor_worker"), mkvec(code));
@@ -1998,6 +1998,7 @@ parforstep(GEN a, GEN b, GEN s, GEN code, void *E, long call(void*, GEN, GEN))
   i = 0;
   a = mkvec(a);
   mt_queue_start_lim(&pt, worker, itou_or_0(lim));
+  av2 = avma;
   while ((running = (!stop && (!b || cmp(gel(a,1),b) <= 0))) || pending)
   {
     mt_queue_submit(&pt, 0, running ? a: NULL);
@@ -2017,6 +2018,7 @@ parforstep(GEN a, GEN b, GEN s, GEN code, void *E, long call(void*, GEN, GEN))
         s = gel(v,i);
       }
       gel(a,1) = gadd(gel(a,1),s);
+      if (!stop) gel(a,1) = gerepileupto(av2, gel(a,1));
     }
   }
   mt_queue_end(&pt);
