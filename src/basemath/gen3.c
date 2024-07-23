@@ -4387,7 +4387,15 @@ qf_ZM_apply(GEN q, GEN M)
 {
   pari_sp av = avma;
   long l; init_qf_apply(q, M, &l); if (l == 1) return cgetg(1, t_MAT);
-  return gerepileupto(av, ZM_transmultosym(M, ZM_mul(q, M)));
+  /* FIXME: ZM_transmultosym is asymptotically slow, so choose some random
+   * threshold defaulting to default implementation: this is suboptimal but
+   * has the right complexity in the dimension. Should implement M'*q*M as an
+   * atomic operation with the right complexity, see ZM_mul_i. */
+  if (l > 20)
+    M = ZM_mul(shallowtrans(M), ZM_mul(q, M));
+  else
+    M = ZM_transmultosym(M, ZM_mul(q, M));
+  return gerepileupto(av, M);
 }
 
 GEN

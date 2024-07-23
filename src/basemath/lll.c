@@ -406,7 +406,7 @@ ZM_flattergram(GEN M, long flag)
       }
     }
     T = ZM_mul(T, S);
-    M = ZM_transmultosym(S, ZM_mul(M, S));
+    M = qf_ZM_apply(M, S);
     s = t;
     if (DEBUGLEVEL >= 3)
       timer_printf(&ti, "FLATTERGRAM, dim %ld step %ld, slope=%0.10g", n, i, ((double)s)/n);
@@ -435,7 +435,7 @@ ZM_flattergram_rank(GEN M, long rank, long flag)
       timer_printf(&ti,"FLATTERGRAMRANK step %ld: %ld",i,expi(gnorml2(S)));
     if (ZM_isidentity(S)) break;
     T = ZM_mul(T, S);
-    M = ZM_transmultosym(S, ZM_mul(M, S));
+    M = qf_ZM_apply(M, S);
     if (gc_needed(ltop, 1))
       gerepileall(ltop, 2, &M, &T);
   }
@@ -2344,7 +2344,7 @@ fplll_flatter(GEN *pG, GEN *pB, GEN *pU, long rank, long flag)
         gmael(G,j,i) = gmael(G,i,j);
     T = ZM_flattergram_rank(G, rank, flag);
     if (*pU) *pU = ZM_mul(*pU, T);
-    *pG = ZM_transmultosym(T, ZM_mul(*pG,T));
+    *pG = qf_ZM_apply(*pG, T);
   }
 }
 
