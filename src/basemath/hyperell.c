@@ -1169,18 +1169,8 @@ algo57bis(GEN F, long g, GEN p, long inf)
   GEN vl = cgetg(3,t_VEC), Fe;
   long nl = 1, ep = ZX_pvalrem(F,p, &Fe);
   Fe = FpX_red(Fe, p);
-  if (inf && degpol(Fe) <= g+1+ep)
   {
-    GEN Fi = ZX_unscale(RgXn_recip_shallow(F,2*g+3), p);
-    long lambda = ZX_pval(Fi,p);
-    if (lambda > g)
-    {
-      GEN ppr = powiu(p,lambda>>1);
-      gel(vl,nl++) = ZX_Z_divexact(Fi,sqri(ppr));
-    }
-  }
-  {
-    GEN R = FpX_roots_mult(Fe, g+1, p);
+    GEN R = FpX_roots_mult(Fe, g+1-ep, p);
     long j, lR = lg(R);
     for (j = 1; j<lR; j++)
     {
@@ -1192,6 +1182,16 @@ algo57bis(GEN F, long g, GEN p, long inf)
         GEN ppr = powiu(p,lambda>>1);
         gel(vl,nl++) = ZX_Z_divexact(Fi,sqri(ppr));
       }
+    }
+  }
+  if (inf==1 && degpol(Fe) <= g+1+ep)
+  {
+    GEN Fi = ZX_unscale(RgXn_recip_shallow(F,2*g+3), p);
+    long lambda = ZX_pval(Fi,p);
+    if (lambda > g)
+    {
+      GEN ppr = powiu(p,lambda>>1);
+      gel(vl,nl++) = ZX_Z_divexact(Fi,sqri(ppr));
     }
   }
   setlg(vl, nl);
@@ -1214,7 +1214,14 @@ hyperellextremalmodels(GEN F, long g, GEN p)
     GEN G = gel(W,i);
     while(1)
     {
-      GEN Wi = algo57bis(G, g, p, 0);
+      GEN Wi;
+      if (!odd(g))
+      {
+        Wi = algo57bis(G, g, p, 1);
+        if (lg(Wi)==1) pari_err_BUG("hyperellextremalmodels");
+        G = gel(Wi,1);
+      }
+      Wi = algo57bis(G, g, p, 0);
       if (lg(Wi)==1) break;
       G = gel(Wi,1);
     }
