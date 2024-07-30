@@ -1096,7 +1096,7 @@ FpX_roots_mult(GEN T, long n, GEN p)
   W = cgetg(l-n+1,t_VEC);
   for (i = n; i < l; i++)
     gel(W,i-n+1) = FpX_roots(gel(V,i), p);
-  return gerepilecopy(av, shallowconcat1(W));
+  return gerepilecopy(av, sort(shallowconcat1(W)));
 }
 
 long

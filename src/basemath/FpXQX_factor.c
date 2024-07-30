@@ -1532,6 +1532,8 @@ FpXQX_roots_mult(GEN f, long n, GEN T, GEN p)
   W = cgetg(l-n+1,t_VEC);
   for (i = n; i < l; i++)
     gel(W,i-n+1) = FpXQX_roots(gel(V,i), T, p);
+  W = shallowconcat1(W);
+  gen_sort_inplace(W, (void*) &cmp_RgX, &cmp_nodata, NULL);
   return gerepilecopy(av, shallowconcat1(W));
 }
 
