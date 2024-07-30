@@ -1174,25 +1174,16 @@ algo57bis(GEN F, long g, GEN p, long inf)
     long j, lR = lg(R);
     for (j = 1; j<lR; j++)
     {
-      GEN c = gel(R,j);
-      GEN Fi = ZX_affine(F,p,c);
-      long lambda = ZX_pval(Fi,p);
-      if (lambda > g)
-      {
-        GEN ppr = powiu(p,lambda>>1);
-        gel(vl,nl++) = ZX_Z_divexact(Fi,sqri(ppr));
-      }
+      GEN Fj = ZX_affine(F, p, gel(R,j));
+      long lambda = ZX_pvalrem(Fj, p, &Fj);
+      if (lambda > g) gel(vl,nl++) = odd(lambda)? ZX_Z_mul(Fj, p): Fj;
     }
   }
   if (inf==1 && degpol(Fe) <= g+1+ep)
   {
-    GEN Fi = ZX_unscale(RgXn_recip_shallow(F,2*g+3), p);
-    long lambda = ZX_pval(Fi,p);
-    if (lambda > g)
-    {
-      GEN ppr = powiu(p,lambda>>1);
-      gel(vl,nl++) = ZX_Z_divexact(Fi,sqri(ppr));
-    }
+    GEN Fj = ZX_unscale(RgXn_recip_shallow(F,2*g+3), p);
+    long lambda = ZX_pvalrem(Fj, p, &Fj);
+    if (lambda > g) gel(vl,nl++) = odd(lambda)? ZX_Z_mul(Fj, p): Fj;
   }
   setlg(vl, nl);
   return gerepilecopy(av,vl);
