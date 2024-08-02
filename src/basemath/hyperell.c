@@ -1208,8 +1208,8 @@ hyperellextremalmodels(GEN F, long g, GEN p)
       GEN Wi;
       if (!odd(g))
       {
-        Wi = algo57bis(G, g, p, 1);
-        if (lg(Wi)==1) pari_err_BUG("hyperellextremalmodels");
+        Wi = algo57bis(G, g, p, 0);
+        if (lg(Wi)==1) break;
         G = gel(Wi,1);
       }
       Wi = algo57bis(G, g, p, 0);
