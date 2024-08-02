@@ -1,5 +1,5 @@
 Bug numbers refer to the BTS at http://pari.math.u-bordeaux.fr/Bugs/
-Done for version 2.16.2 (released ??/??/2024):
+Done for version 2.16.2 (released 02/08/2024):
   Fixed
 XR   1- rare oo-loop in nfdisc [#2510]
 PB   2- polcoeff(polmodular(2, 0, ffgen([7,2])^0),0).mod -> incorrect [#2533]
@@ -74,6 +74,7 @@ HC  21- psi: support for derivative and t_PADIC
     22- [libpari] ZM2_sqr
 BA  23- [libpari] FpXQX_roots_mult
 BA  24- [libpari] ZXX_pvalrem, ZXV_pvalrem
+BA  25- [libpari] pari_breakloop
 
 Done for version 2.16.1 (released 04/01/2024):
   Fixed
