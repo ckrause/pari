@@ -3203,6 +3203,7 @@ void    str_display_hist(pari_str *S, long n);
 void    gp_load_gprc(void);
 int     gp_meta(const char *buf, int ismain);
 const char **gphelp_keyword_list(void);
+void    pari_breakpoint(void);
 void    pari_center(const char *s);
 long    pari_community(void);
 void    pari_print_version(void);

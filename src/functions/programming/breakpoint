@@ -1,5 +1,4 @@
 Function: breakpoint
-Class: gp
 Section: programming/control
 C-Name: pari_breakpoint
 Prototype: v

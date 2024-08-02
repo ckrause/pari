@@ -2058,3 +2058,12 @@ gp_meta(const char *buf, int ismain)
   }
   return 1;
 }
+
+void
+pari_breakpoint(void)
+{
+  if (!pari_last_was_newline()) pari_putc('\n');
+  closure_err(0);
+  if (cb_pari_break_loop && cb_pari_break_loop(-1)) return;
+  cb_pari_err_recover(e_MISC);
+}
