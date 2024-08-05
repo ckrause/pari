@@ -1,4 +1,8 @@
 Bug numbers refer to the BTS at http://pari.math.u-bordeaux.fr/Bugs/
+Done for version 2.17.0 (released ??/09/2024):
+  Fixed
+
+
 Done for version 2.16.2 (released 02/08/2024):
   Fixed
 XR   1- rare oo-loop in nfdisc [#2510]
