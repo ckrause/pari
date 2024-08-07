@@ -499,6 +499,52 @@ ZM_mul(GEN x, GEN y)
   return ZM_mul_i(x, y, lgcols(x), lx, ly);
 }
 
+static GEN
+ZM_sqr_slice(GEN A, GEN P, GEN *mod)
+{
+  pari_sp av = avma;
+  long i, n = lg(P)-1;
+  GEN H, T;
+  if (n == 1)
+  {
+    ulong p = uel(P,1);
+    GEN a = ZM_to_Flm(A, p);
+    GEN Hp = gerepileupto(av, Flm_to_ZM(Flm_sqr(a, p)));
+    *mod = utoi(p); return Hp;
+  }
+  T = ZV_producttree(P);
+  A = ZM_nv_mod_tree(A, P, T);
+  H = cgetg(n+1, t_VEC);
+  for(i=1; i <= n; i++)
+    gel(H,i) = Flm_sqr(gel(A,i), P[i]);
+  H = nmV_chinese_center_tree_seq(H, P, T, ZV_chinesetree(P, T));
+  *mod = gmael(T, lg(T)-1, 1); return gc_all(av, 2, &H, mod);
+}
+
+GEN
+ZM_sqr_worker(GEN P, GEN A)
+{
+  GEN V = cgetg(3, t_VEC);
+  gel(V,1) = ZM_sqr_slice(A, P, &gel(V,2));
+  return V;
+}
+
+static GEN
+ZM_sqr_fast(GEN A, long l, long s)
+{
+  pari_sp av = avma;
+  forprime_t S;
+  GEN H, worker;
+  long h;
+  if (s == 2) return zeromat(l-1,l-1);
+  h = 1 + (2*s - 4) * BITS_IN_LONG + expu(l-1);
+  init_modular_big(&S);
+  worker = snm_closure(is_entry("_ZM_sqr_worker"), mkvec(A));
+  H = gen_crt("ZM_sqr", worker, &S, NULL, h, 0, NULL,
+              nmV_chinese_center, FpM_center);
+  return gerepileupto(av, H);
+}
+
 GEN
 QM_mul(GEN x, GEN y)
 {
@@ -655,7 +701,7 @@ ZM_sqr_i(GEN x, long l)
   if (l == 2) { retmkmat(mkcol(sqri(gcoeff(x,1,1)))); }
   if (l == 3) return ZM2_sqr(x);
   s = ZM_max_lg_i(x, l, l);
-  if (l > 70) return ZM_mul_fast(x, x, l, l, s, s);
+  if (l > 70) return ZM_sqr_fast(x, l, s);
   if (l <= sw_bound(s))
     return ZM_mul_classical(x, x, l, l, l);
   else

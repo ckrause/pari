@@ -203,6 +203,7 @@ GEN  ZM_det_worker(GEN P, GEN A);
 GEN  ZM_inv_worker(GEN P, GEN A);
 GEN  ZM_ker_worker(GEN P, GEN A);
 GEN  ZM_mul_worker(GEN P, GEN A, GEN B);
+GEN  ZM_sqr_worker(GEN P, GEN A);
 GEN  ZM_gauss_worker(GEN P, GEN A, GEN B);
 GEN  ZabM_inv_worker(GEN P, GEN A, GEN Q);
 GEN  aprcl_step4_worker(ulong q, GEN pC, GEN N, GEN v);
