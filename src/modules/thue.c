@@ -1691,7 +1691,7 @@ bnfisintnorm_i(GEN bnf, GEN a, long sa, GEN z, long flag)
   if (!signe(a)) return z;
   u_forprime_init(&S, flag? bnf_get_lastp(bnf): 3, ULONG_MAX);
   while((p = u_forprime_next(&S)))
-    if (umodiu(f,p)) { Ap = umodiu(A,p); if (Ap) break; }
+    if (umodiu(f,p) && (Ap = umodiu(A,p))) break;
   Tp = ZX_to_Flx(T,p);
   /* p > 2 doesn't divide A nor Q_denom(z in Z_K)*/
 
@@ -1720,9 +1720,13 @@ bnfisintnorm_i(GEN bnf, GEN a, long sa, GEN z, long flag)
         ulong Np;
         for (k = 1; k < lG; k++)
         {
-          g[k] = umodiu(nfnorm(nf, gel(G,k)), p);
+          GEN NGk = nfnorm(nf, gel(G,k));
+          (void)Z_lvalrem(NGk, p, &NGk);
+          g[k] = umodiu(NGk, p);
           e[k] = umodiu(gel(E,k), p-1);
         }
+        /* N.B. p can appear in Norm(G_k), where G = \prod G_k^{e_k},
+         * but total v_p(Norm(G)) = v_p(A) = 0 */
         Np = Flv_factorback(g, e, p);
         sNx = Np == Ap? sa: -sa; break;
       }
