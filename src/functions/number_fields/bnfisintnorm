@@ -25,12 +25,12 @@ Doc: computes a complete system of
  %3 = [-x^3 - 1, x^3 + 2*x^2 + 2*x + 1]
 
  ? bnf = bnfinit(x^2-2305843005992468481, 1);
- ? bnfisintnorm(b, 2305843008139952128)
+ ? bnfisintnorm(bnf, 2305843008139952128)
    \\ stack overflow with 100GB parisize
  ? bnf.reg \\ fundamental unit is huge
  %6 = 14054016.227457155120413774802385952043
 
- ? v = bnfisintnorm(b, 2305843008139952128, 1); #v
+ ? v = bnfisintnorm(bnf, 2305843008139952128, 1); #v
  %7 = 31   \\ succeeds instantly
  ? s = v[1]; [type(s), matsize(s)]
  %8 = ["t_MAT", [165, 2]]   \\ solution 1 is a product of 165 factors
