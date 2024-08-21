@@ -2,6 +2,7 @@ Bug numbers refer to the BTS at http://pari.math.u-bordeaux.fr/Bugs/
 Done for version 2.17.0 (released ??/09/2024):
   Fixed
      1- rare SEGV in sumnumrat [#2566]
+     2- gp -p N did not check for N < 2^32
 
 Done for version 2.16.2 (released 02/08/2024):
   Fixed

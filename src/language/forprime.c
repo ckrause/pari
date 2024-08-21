@@ -476,6 +476,9 @@ void
 initprimetable(ulong maxnum)
 {
   pari_prime *old = pari_PRIMES;
+#ifdef LONG_IS_64BIT
+  maxnum = minuu(maxnum, 4294967295);
+#endif
   pari_PRIMES = initprimes(maxnum);
   if (old) free(old);
   set_prodprimes();
