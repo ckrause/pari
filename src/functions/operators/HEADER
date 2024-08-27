@@ -100,7 +100,7 @@ Doc:
  Multiplication between two \typ{VEC}s or two \typ{COL}s is not
  allowed; to take the \idx{scalar product} of two vectors of the same length,
  transpose one of the vectors (using the operator \kbd{\til} or the function
- \kbd{mattranspose}, see \secref{se:linear_algebra}) and multiply a line vector
+ \kbd{mattranspose}, see \secref{se:linear_algebra}) and multiply a row vector
  by a column vector:
  \bprog
  ? a = [1,2,3];
