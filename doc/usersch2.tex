@@ -1769,6 +1769,8 @@ function:
   ***                                ^----
 @eprog
 
+\misctitle{Call by value, call by reference}
+
 By default, arguments are passed by value, not as variables: modifying a
 function's argument in the function body is allowed, but does not modify its
 value in the calling scope. In fact, a \emph{copy} of the actual parameter is
@@ -1803,7 +1805,7 @@ a tilde, we revert to a call by value.)
 @eprog
 \misctitle{Caveat} In GP, a call by reference means that the function
 accesses the value and may change the original variable content, but only if
-it is a container type (a vector, list or matrice), as shown above with the
+it is a container type (a vector, list or matrix), as shown above with the
 vector $x$. It will not alter its value in other cases !
 \bprog
   ? v = 1  \\ not a container
