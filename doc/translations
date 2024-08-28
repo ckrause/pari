@@ -164,6 +164,8 @@ member          @Member functions@2
 \/              @\bs/
 ^               @\pow
 ~               @mattranspose
+_~              @mattranspose
+~_              @Call by value, call by reference@2
 %               @\%
 <<              @shift
 >>              @shift

@@ -1769,7 +1769,15 @@ function:
   ***                                ^----
 @eprog
 
-\misctitle{Call by value, call by reference}
+\misctitle{Finishing touch}
+You can add a specific help message for your function using \kbd{addhelp},
+but the online help system already handles it. By default \kbd{?\var{name}}
+will print the definition of the function \var{name}: the list of arguments,
+as well as their default values, the text of \var{seq} as you input it.
+Just as \b{c} prints the list of all built-in commands, \b{u} outputs the
+list of all user-defined functions.
+
+\subsec{Call by value, call by reference}
 
 By default, arguments are passed by value, not as variables: modifying a
 function's argument in the function body is allowed, but does not modify its
@@ -1816,7 +1824,7 @@ vector $x$. It will not alter its value in other cases !
   %4 = 1
 @eprog
 
-\misctitle{Functions taking an unlimited number of arguments}
+\subsec{Functions taking an unlimited number of arguments}
 
 A function taking an unlimited number of arguments is called \emph{variadic}.
 To create such a function, use the syntax
@@ -1836,22 +1844,14 @@ indicate a call by reference.
 1:2:3
 @eprog
 
-\misctitle{Finishing touch}
-You can add a specific help message for your function using \kbd{addhelp},
-but the online help system already handles it. By default \kbd{?\var{name}}
-will print the definition of the function \var{name}: the list of arguments,
-as well as their default values, the text of \var{seq} as you input it.
-Just as \b{c} prints the list of all built-in commands, \b{u} outputs the
-list of all user-defined functions.
-
-\misctitle{Backward compatibility (lexical scope)} Lexically scoped
+\subsec{Backward compatibility (lexical scope)} Lexically scoped
 variables were introduced in version~2.4.2. Before that, the formal
 parameters were dynamically scoped. If your script depends on this behavior,
 you may use the following trick: replace the initial \kbd{f(x) =} \ by
 \bprog
 f(x_orig) = local(x = x_orig)
 @eprog
-\misctitle{Backward compatibility (disjoint namespaces)} Before version
+\subsec{Backward compatibility (disjoint namespaces)} Before version
 2.4.2, variables and functions lived in disjoint namespaces and it was not
 possible to have a variable and a function share the same name. Hence the
 need for a \kbd{kill} function allowing to reuse symbols. This is no longer
