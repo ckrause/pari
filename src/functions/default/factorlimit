@@ -32,7 +32,7 @@ Doc: \kbd{gp} precomputes a list of
  although softly linear in the bound, and the ones attached to
  \kbd{factorlimit} more so. So neither should be taken too large. Here are
  sample timings: in the first column are the increasing
- values of \kbd{primilimit}, in the second column is the startup time
+ values of \kbd{primelimit}, in the second column is the startup time
  keeping \kbd{factorlimit} at its default value, and the third column
  is the startup time with $\kbd{factorlimit} = \kbd{primelimit}$.
  \bprog
