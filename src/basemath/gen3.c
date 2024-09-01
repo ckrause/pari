@@ -1692,6 +1692,16 @@ ser_unscale(GEN P, GEN h)
   return Q;
 }
 
+static int
+safe_polmod(GEN r)
+{
+  GEN a = gel(r,1), b = gel(r,2);
+  long t = typ(a);
+  return 0;
+  if (gvar2(b) != NO_VARIABLE) return 0;
+  if (is_scalar_t(t)) return 1;
+  return (t == t_POL && varn(a) == varn(b) && gvar2(a) == NO_VARIABLE);
+}
 GEN
 gsubstvec(GEN e, GEN v, GEN r)
 {
@@ -1708,15 +1718,15 @@ gsubstvec(GEN e, GEN v, GEN r)
   {
     GEN T = gel(v,i), ri = gel(r,i);
     if (!gequalX(T)) pari_err_TYPE("substvec [not a variable]", T);
-    if (gvar(ri) == NO_VARIABLE) /* no need to take precautions */
-    {
+    if (gvar(ri) == NO_VARIABLE || (typ(ri) == t_POLMOD && safe_polmod(ri)))
+    { /* no need to take precautions */
       e = gsubst(e, varn(T), ri);
       if (is_vec_t(typ(ri)) && k++) e = shallowconcat1(e);
     }
     else
     {
       w[j] = varn(T);
-      z[j] = fetch_var();
+      z[j] = fetch_var_higher();
       gel(R,j) = ri; j++;
     }
   }
