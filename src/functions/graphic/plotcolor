@@ -24,7 +24,7 @@ Doc: set default color to $c$ in rectwindow $w$. Return [R,G,B] value attached
 
  0=white, 1=black, 2=blue, 3=violetred, 4=red, 5=green, 6=grey, 7=gainsborough
 
- and the color index is a non-negative integer in $[0,7)$.
+ and the color index is a non-negative integer in $[0,7]$.
  But this can be changed (see \kbd{??graphcolormap}); note that for historical
  reasons, \kbd{graphcolormap} is 0-based, so the color $c$ is a non-negative
  integer, strictly less than the length of the colormap.

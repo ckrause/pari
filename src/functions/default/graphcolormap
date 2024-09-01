@@ -22,10 +22,10 @@ Doc: a vector of colors, to be used by hi-res graphing routines. Its length is
  \kbd{"gainsboro"}].
 
  The colormap elements can not be changed individually as in a vector (you must
- either leave the colormap alone or change it globally). All color function
- either allow you to hardcode a color given its descriptive name or RGB code,
+ either leave the colormap alone or change it globally). All color functions
+ allow you either to hardcode a color given its descriptive name or RGB code,
  or to use a relative color scheme by changing the colormap and referring to an
  index in that table: for historical and compatibility reasons,
  the indexing is $0$-based (as in C) and not $1$-based as would be expected in
- a GP vector. This the index $0$ in the default colormap represents
+ a GP vector. This means that the index~$0$ in the default colormap represents
  \kbd{"white"}, $1$ is \kbd{"black"}, and so on.
