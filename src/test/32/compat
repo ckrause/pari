@@ -4202,8 +4202,8 @@ New syntax: color(w,c) ===> plotcolor(w,c)
 
 plotcolor(w,c): in rectwindow w, set default color to c. Possible values for c 
 are [R,G,B] values, a color name or an index in the graphcolormap default: 
-factory settings are 1=black, 2=blue, 3=sienna, 4=red, 5=green, 6=grey, 
-7=gainsborough. Return [R,G,B] value attached to color.
+factory settings are 0=white, 1=black, 2=blue, 3=sienna, 4=red, 5=green, 
+6=grey, 7=gainsborough. Return [R,G,B] value attached to color.
 
 
   ***   at top-level: cursor()
@@ -4499,4 +4499,4 @@ New syntax: texprint(x) ===> printtex(x)
 printtex({str}*): outputs its string arguments in TeX format.
 
 
-Total time spent: 6
+Total time spent: 8
