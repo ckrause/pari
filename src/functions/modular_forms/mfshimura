@@ -3,11 +3,11 @@ Section: modular_forms
 C-Name: mfshimura
 Prototype: GGD1,L,
 Help: mfshimura(mf,F,{D=1}): F being a modular form of
- half-integral weight k >= 3/2 and t a positive squarefree integer,
+ half-integral weight k >= 3/2 and D a positive squarefree integer,
  computes the Shimura lift G of weight 2k-1 corresponding to D. This function
  returns [mf2,G,v], where mf2 is a modular form space containing G, and v the
  vector of coefficients of G on mf.
-Doc: $F$ being a modular form of half-integral weight $k\geq 3/2$ and $t$ a
+Doc: $F$ being a modular form of half-integral weight $k\geq 3/2$ and $D$ a
  positive squarefree integer, returns the Shimura lift $G$ of weight $2k-1$
  corresponding to $D$. This function returns $[\var{mf2},G,v]$
  where \var{mf2} is a modular form space containing $G$ and $v$ expresses $G$
