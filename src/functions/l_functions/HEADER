@@ -84,7 +84,7 @@ Doc:
  half-line. The functional equation for $\Lambda$ translates into
  $$ \theta(a,1/t) - \epsilon t^{k}\theta(a^{*},t) = P_{\Lambda}(t), $$
  where $P_{\Lambda}$ is an explicit polynomial in $t$ and $\log t$ given by the
- Taylor development of the polar part of $\Lambda$: there are no $\log$'s if
+ Taylor expansion of the polar part of $\Lambda$: there are no $\log$'s if
  all poles are simple, and $P = 0$ if $\Lambda$ is entire. The values
  $\theta(t)$ are generally easier to compute than the $L(s)$, and this
  functional equation provides a fast way to guess possible values for
@@ -156,7 +156,7 @@ Doc:
  \kbd{lfuninit}:
  \bprog
  ? L = lfun(1, 1/2, 1); \\ zeta'(1/2)
- ? L = lfun(1, 1+x+O(x^5)); \\ first 5 terms of Taylor development at 1
+ ? L = lfun(1, 1+x+O(x^5)); \\ first 5 terms of Taylor expansion at 1
  @eprog\noindent Both give the desired results with no warning.
 
  \misctitle{Complexity}
