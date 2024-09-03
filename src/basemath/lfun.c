@@ -628,7 +628,7 @@ lfunrtoR_i(GEN ldata, GEN r, GEN eno, long prec)
   r = normalizepoles(r, k);
   if (typ(r) == t_COL) return gerepilecopy(av, r);
   if (typ(ldata_get_dual(ldata)) != t_INT)
-    pari_err(e_MISC,"please give the Taylor development of Lambda");
+    pari_err(e_MISC,"please give the Taylor expansion of Lambda");
   vr = lfunrtopoles(r); lr = lg(vr);
   FVga = gammafactor(Vga);
   R = cgetg(2*lr, t_COL);
@@ -639,7 +639,7 @@ lfunrtoR_i(GEN ldata, GEN r, GEN eno, long prec)
     GEN b = gsub(k, conj_i(a));
     if (lg(Ra)-2 < -valser(Ra))
       pari_err(e_MISC,
-        "please give more terms in L function's Taylor development at %Ps", a);
+        "please give more terms in L function's Taylor expansion at %Ps", a);
     gel(R,jR++) = mkvec2(a, Ra);
     if (!tablesearch(vr, b, (int (*)(GEN,GEN))&cmp_universal))
     {
@@ -2314,7 +2314,7 @@ get_eno(GEN R, GEN k, GEN t, GEN v, GEN vi, long vx, long bitprec, long force)
 
 }
 /* Return w using theta(1/t) - w t^k \bar{theta}(t) = polar_part(t,w).
- * The full Taylor development of L must be known */
+ * The full Taylor expansion of L must be known */
 GEN
 lfunrootno(GEN linit, long bitprec)
 {
