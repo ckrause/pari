@@ -2377,9 +2377,11 @@ static GEN
 sumlogzeta(GEN ser, GEN s, GEN P, long N, double rs, double lN, long vF,
            long lim, long prec)
 {
-  GEN z = gen_0, v = vecfactoru_i(vF,lim);
-  pari_sp av = avma;
+  GEN z = gen_0, v;
+  pari_sp av;
   long i, n;
+  if (vF > lim) return z;
+  v = vecfactoru_i(vF,lim); av = avma;
   if (typ(s) == t_INT) constbern((itos(s) * lim + 1) >> 1);
   for (n = lim, i = lg(v)-1; n >= vF; n--, i--)
   {
