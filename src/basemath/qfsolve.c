@@ -555,7 +555,7 @@ qfminimize_fact(GEN G, GEN P, GEN E, GEN d, long loc)
   if (!U) U = matid(n);
   else
   { /* apply LLL to avoid coefficient explosion */
-    GEN u = lllint(Q_primpart(U));
+    GEN u = ZM_lll(Q_primpart(U), .99, LLL_IM);
     G = qf_ZM_apply(G, u);
     U = QM_mul(U, u);
   }
