@@ -30,6 +30,8 @@
 27445984873295867753636930661164748046781
 1
 1
+1.00000000003455714882589776991578586241344576868248838364476436375813494006
+9816721677621808292508510275513147053341
   ***   at top-level: sumnumrat(1/x^2,oo)
   ***                 ^-------------------
   *** sumnumrat: incorrect type in sumnumrat (t_INFINITY).
@@ -60,4 +62,4 @@
   ***   at top-level: sumeulerrat(x^2/(1+x),2)
   ***                 ^------------------------
   *** sumeulerrat: sum diverges in sumeulerrat.
-Total time spent: 1596
+Total time spent: 1532
