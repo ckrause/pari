@@ -243,51 +243,19 @@ size of your \kbd{long} integers might matter. Here are the most important
 ones:
 
 \settabs\+ -----------------------------&---------------&------------&\cr \+
-& 64-bit  & 32-bit \cr\+ \tet{BITS_IN_LONG}  & 64      & 32 \cr\+
-\tet{LONG_IS_64BIT} & defined & undefined \cr\+
-\tet{DEFAULTPREC}   & 3       & 4 & ($\approx$ 19 decimal digits, %
-see formula below) \cr\+
-\tet{MEDDEFAULTPREC}& 4       & 6 & ($\approx$ 38 decimal digits) \cr\+
-\tet{BIGDEFAULTPREC}& 5       & 8 & ($\approx$ 57 decimal digits) \cr
+\tet{DEFAULTPREC}   & 64       & ($\approx$ 19 decimal digits) \cr\+
+\tet{MEDDEFAULTPREC}& 128      & ($\approx$ 38 decimal digits) \cr\+
+\tet{BIGDEFAULTPREC}& 192      & ($\approx$ 57 decimal digits) \cr
 \noindent For instance, suppose you call a transcendental function, such as
 
 \kbd{GEN \key{gexp}(GEN x, long prec)}.
 
-\noindent The last argument \kbd{prec} is an integer $\geq 3$, corresponding
-to the default floating point precision required. It is \emph{only} used if
+\noindent The last argument \kbd{prec} is an integer multiple of $\tet{BITS_IN_LONG}$,
+corresponding to the default floating point precision required. It is \emph{only} used if
 \kbd{x} is an exact object, otherwise the relative precision is determined by
-the precision of~\kbd{x}. Since the parameter \kbd{prec} sets the size of the
-inexact result counted in (\kbd{long}) \emph{words} (including codewords),
-the same value of \kbd{prec} will yield different results on 32-bit and
-64-bit machines. Real numbers have two codewords (see~\secref{se:impl}), so
-the formula for computing the bit accuracy is
-$$ \tet{bit_accuracy}(\kbd{prec}) = (\kbd{prec} - 2) * \tet{BITS_IN_LONG}$$
-(this is actually the definition of an inline function). The corresponding
-accuracy expressed in decimal digits would be
-%
-$$ \kbd{bit\_accuracy(prec)} * \log(2) / \log(10).$$
-%
-For example if the value of \kbd{prec} is 5, the corresponding accuracy for
-32-bit machines is $(5-2)*\log(2^{32})/\log(10)\approx 28$ decimal digits,
-while for 64-bit machines it is $(5-2)*\log(2^{64})/\log(10)\approx 57$
-decimal digits.
-
-Thus, you must take care to change the \kbd{prec} parameter you are supplying
-according to the bit size, either using the default precisions given by the
-various \kbd{DEFAULTPREC}s, or by using conditional constructs of the form:
-%
-\bprog
-#ifndef LONG_IS_64BIT
-  prec = 4;
-#else
-  prec = 6;
-#endif
-@eprog
-\noindent which is in this case equivalent to the statement
-\kbd{prec = MEDDEFAULTPREC;}.
-
-Note that for parity reasons, half the accuracies available on 32-bit
-architectures (the odd ones) have no precise equivalents on 64-bit machines.
+the precision of~\kbd{x}. Note that for parity reasons, half the accuracies
+available on $32$-bit architectures (the odd multiples of $32$) have no precise
+equivalents on $64$-bit machines.
 
 \subsec{Using \kbd{malloc} / \kbd{free}}
 You should make use of the PARI stack as much as possible, and avoid
@@ -1204,14 +1172,8 @@ an infinity (\typ{INFINITY}) or a \typ{QUAD} of positive discriminant.
 The real zero is characterized by having its sign equal to 0. If \kbd{z} is
 not equal to~0, then it is represented as $2^e M$, where $e$ is the exponent,
 and $M\in [1, 2[$ is the mantissa of $z$, whose digits are stored in
-$\kbd{z[2]},\dots, \kbd{z[lg(z)-1]}$. For historical reasons, the \kbd{prec}
-parameter attached to floating point functions is measured in \B-bit words
-and is equal to the length of \kbd{x}: yes, this includes the two code words
-and depends on \kbd{sizeof(long)}. For clarity we advise to use
-\kbd{bit\_accuracy}, which computes the true length of the mantissa in bits,
-and convert between bits and \kbd{prec} using the \kbd{prec2nbits} and
-\kbd{nbits2prec} macros. But keep in mind that the accuracy of \typ{REAL}
-actually increases by increments of \B bits.
+$\kbd{z[2]},\dots, \kbd{z[lg(z)-1]}$. But keep in mind that the accuracy of
+\typ{REAL} actually increases by increments of \B bits.
 
 More precisely, let $m$ be the integer (\kbd{z[2]},\dots, \kbd{z[lg(z)-1]})
 in base \kbd{2\pow BITS\_IN\_LONG}; here, \kbd{z[2]} is the most significant
@@ -1219,10 +1181,9 @@ longword and is normalized, i.e.~its most significant bit is~1. Then we have
 $M := m / 2^{\kbd{bit\_accuracy(lg(z))} - 1 - \kbd{expo}(z)}$.
 
 \fun{GEN}{mantissa_real}{GEN z, long *e} returns the mantissa $m$ of $z$, and
-sets \kbd{*e} to the exponent $\kbd{bit\_accuracy(lg(z))}-1-\kbd{expo}(z)$,
-so that $z = m / 2^e$.
+sets \kbd{*e} to the exponent $\kbd{realprec(z)}-1-\kbd{expo}(z)$, so that $z = m / 2^e$.
 
-Thus, the real number $3.5$ to accuracy \kbd{bit\_accuracy(lg(z))} is
+Thus, the real number $3.5$ to accuracy \kbd{realprec(z)} is
 represented as \kbd{z[0]} (encoding $\kbd{type} = \typ{REAL}$, \kbd{lg(z)}),
 \kbd{z[1]} (encoding $\kbd{sign} = 1$, $\kbd{expo} = 1$), $\kbd{z[2]} =
 \kbd{0xe0000000}$, $\kbd{z[3]} =\dots = \kbd{z[lg(z)-1]} = \kbd{0x0}$.
