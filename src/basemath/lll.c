@@ -2719,7 +2719,7 @@ qflll0(GEN x, long flag)
   switch(flag)
   {
     case 0: return lll(x);
-    case 1: RgM_check_ZM(x,"qflll"); return lllint(x);
+    case 1: return lllfp(x, LLLDFT, LLL_IM | LLL_NOFLATTER);
     case 2: RgM_check_ZM(x,"qflll"); return lllintpartial(x);
     case 3: RgM_check_ZM(x,"qflll"); return lllall(x, LLL_INPLACE);
     case 4: RgM_check_ZM(x,"qflll"); return lllkerim(x);
@@ -2737,7 +2737,7 @@ qflllgram0(GEN x, long flag)
   switch(flag)
   {
     case 0: return qflllgram(x);
-    case 1: RgM_check_ZM(x,"qflllgram"); return lllgramint(x);
+    case 1: return lllfp(x, LLLDFT, LLL_IM | LLL_GRAM | LLL_NOFLATTER);
     case 4: RgM_check_ZM(x,"qflllgram"); return lllgramkerim(x);
     case 5: return lllgramkerimgen(x);
     case 8: return lllgramgen(x);

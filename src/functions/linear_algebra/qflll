@@ -4,14 +4,13 @@ C-Name: qflll0
 Prototype: GD0,L,
 Help: qflll(x,{flag=0}): LLL reduction of the vectors forming the matrix x
  (gives the unimodular transformation matrix T such that x*T is LLL-reduced).
- flag is optional, and can be 0: default, 1: assumes x is integral, 2: assumes x
+ flag is optional, and can be 0: default, 1: disable FLATTER, 2: assumes x
  is integral, returns a partially reduced basis, 3: assumes x is integral, in
  place (return x*T), 4: assumes x is integral, returns [K,T] where K is the
  integer kernel of x and T the LLL reduced image, 5: same as 4 but x may have
  polynomial coefficients, 8: same as 0 but x may have polynomial coefficients.
 Description:
  (vec, ?0):vec       lll($1)
- (vec, 1):vec        lllint($1)
  (vec, 2):vec        lllintpartial($1)
  (vec, 4):vec        lllkerim($1)
  (vec, 5):vec        lllkerimgen($1)
@@ -30,11 +29,13 @@ Doc: \idx{LLL} algorithm applied to the
  If $\fl=0$ (default), assume that $x$ has either exact (integral or
  rational) or real floating point entries. The matrix is rescaled, converted
  to integers and the behavior is then as in $\fl = 1$.
-
- If $\fl=1$, assume that $x$ is integral. Computations involving Gram-Schmidt
+ Computations involving Gram-Schmidt
  vectors are approximate, with precision varying as needed (Lehmer's trick,
  as generalized by Schnorr). Adapted from Nguyen and Stehl\'e's algorithm
- and Stehl\'e's code (\kbd{fplll-1.3}).
+ and Stehl\'e's code (\kbd{fplll-1.3}), and FLATTER algorithm for
+ Heninger and Ryan.
+
+ If $\fl=1$, disable use of FLATTER algorithm.
 
  If $\fl=2$, $x$ should be an integer matrix whose columns are linearly
  independent. Returns a partially reduced basis for $x$, using an unpublished

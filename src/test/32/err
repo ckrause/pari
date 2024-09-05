@@ -100,9 +100,11 @@
   ***   at top-level: v[Pi]=1
   ***                   ^-----
   ***   incorrect type in gtos [integer expected] (t_REAL).
-  ***   at top-level: M=[1.,0;0,1];qflll(M,1)
-  ***                              ^----------
-  *** qflll: incorrect type in qflll [integer matrix] (t_MAT).
+
+[1 0]
+
+[0 1]
+
   ***   at top-level: addprimes(1.)
   ***                 ^-------------
   *** addprimes: incorrect type in addprimes [integer vector] (t_VEC).
