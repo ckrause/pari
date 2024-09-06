@@ -32,10 +32,14 @@ Doc: \idx{LLL} algorithm applied to the
  Computations involving Gram-Schmidt
  vectors are approximate, with precision varying as needed (Lehmer's trick,
  as generalized by Schnorr). Adapted from Nguyen and Stehl\'e's algorithm
- and Stehl\'e's code (\kbd{fplll-1.3}), and FLATTER algorithm for
- Heninger and Ryan.
+ and Stehl\'e's code (\kbd{fplll-1.3}) as building blocks for the FLATTER
+ (block recursive) algorithm of Heninger and Ryan.
 
- If $\fl=1$, disable use of FLATTER algorithm.
+ If $\fl=1$, disable use of FLATTER algorithm; use \kbd{fplll}. This flag
+ is provided to experiment with the concrete speed-ups allowed by FLATTER,
+ as well as to genuinely disable it on the rare classes of lattices for which
+ it turns out it performs badly: many such classes are detected in the code,
+ which then restricts to stock \kbd{fplll}, but new exemples may turn up.
 
  If $\fl=2$, $x$ should be an integer matrix whose columns are linearly
  independent. Returns a partially reduced basis for $x$, using an unpublished
