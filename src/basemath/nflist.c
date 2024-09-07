@@ -3948,7 +3948,7 @@ makeS46M(GEN N, GEN field, long s)
       GEN f2 = sqri(gel(F, j)), P;
       long k, lP;
       if (!(P = makeDL(3, mulii(D2a, f2), NULL, minss(snew, 1)))) continue;
-      lP = lg(P); F = divii(NSD4, f2); LC = glco46M(F, D2a);
+      lP = lg(P); LC = glco46M(divii(NSD4, f2), D2a);
       for (k = 1; k < lP; k++) gel(P,k) = doA4S4(gel(P,k), LC, snew);
       gel(v, c++) = makeS46Mpols(shallowconcat1(P), N, NULL);
     }
