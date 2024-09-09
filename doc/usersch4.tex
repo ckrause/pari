@@ -1253,11 +1253,11 @@ to \kbd{e}.
 
 In addition to this codeword, \kbd{z[2]} points to the prime $p$,
 \kbd{z[3]} points to $p^{\text{precp(z)}}$, and \kbd{z[4]} points to
-a\typ{INT} representing the $p$-adic unit attached to \kbd{z} modulo
+a \typ{INT} representing the $p$-adic unit attached to \kbd{z} modulo
 \kbd{z[3]} (and to zero if \kbd{z} is zero). To summarize, if $z\neq
 0$, we have the equality:
 $$ \kbd{z} = p^{\text{valp(z)}} * (\kbd{z[4]} + O(\kbd{z[3]})),\quad
-\text{where}\quad \kbd{z[3]} = O(p^{\text{precp(z)}}). $$
+\text{where}\quad \kbd{z[3]} = p^{\text{precp(z)}}. $$
 
 \subsec{Type \typ{QUAD} (quadratic number)}
 \sidx{quadratic number}\kbdsidx{t_QUAD}\kbd{z[1]} points to the canonical
@@ -1391,8 +1391,9 @@ terms).
 \subsec{Type \typ{RFRAC} (rational function)}%
 \kbdsidx{t_RFRAC}\sidx{rational function} \kbd{z[1]} points to the
 numerator $n$, and \kbd{z[2]} on the denominator $d$. The denominator must be
-of type \typ{POL}, with variable of higher priority than the numerator. The
-numerator $n$ is not an exact $0$ and $(n,d) = 1$ (see \tet{gred_rfac2}).
+of type \typ{POL}, with variable of priority at least as high as that of the
+numerator. The numerator $n$ is not an exact $0$ and $(n,d) = 1$ (see
+\tet{gred_rfac2}).
 
 \subsec{Type \typ{QFB} (binary quadratic form)}%
 \kbdsidx{t_QFB}\sidx{binary quadratic form} \kbd{z[1]}, \kbd{z[2]},
@@ -1820,7 +1821,7 @@ error handling routine \tet{pari_err}. The basic syntax is
 \bprog
   pari_err(e_MISC, "error message");
 @eprog\noindent
-This prints the corresponding error message and exit the program (in
+This prints the corresponding error message and exits the program (in
 library mode; go back to the \kbd{gp} prompt otherwise).\label{se:err} You can
 also use it in the more versatile guise
 \bprog
@@ -2081,7 +2082,7 @@ yourself.
   over the permutations of $k$ (\typ{INT}, \typ{VEC} or \typ{VECSMALL}).
 
   \fun{GEN}{forperm_next}{forperm_t *T} returns the next permutation
-  as a \typ{VECSMALL} or \kbd{NULL} whell all permutations have been
+  as a \typ{VECSMALL} or \kbd{NULL} when all permutations have been
   exhausted. The permutation must be used or copied before the next call
   since it is returned from a state array which will be modified in place.
 
@@ -2384,7 +2385,7 @@ use the library mode is to study a detailed example. We want to write a
 program which computes the gcd of two integers, together with the Bezout
 coefficients. We shall use the standard quadratic algorithm which is not
 optimal but is not too far from the one used in the PARI function
-\teb{bezout}.
+\teb{gcdext}.
 
 Let $x,y$ two integers and initially
 $ \pmatrix{s_x & s_y \cr t_x & t_y } =
