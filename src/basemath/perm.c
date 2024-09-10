@@ -872,19 +872,22 @@ group_rightcoset(GEN G, GEN g)
 GEN
 group_elts(GEN G, long n)
 {
-  GEN gen = grp_get_gen(G), ord = grp_get_ord(G);
-  GEN res = cgetg(group_order(G)+1, t_VEC);
-  long i, j, k;
-  gel(res,1) = identity_perm(n);
-  k = 1;
-  for (i = 1; i < lg(gen); i++)
+  if (lg(G)==3 && typ(gel(G,1))==t_VEC)
   {
-    long c = k * (ord[i] - 1);
-    /* j = 1, use res[1] = identity */
-    gel(res,++k) = vecsmall_copy(gel(gen,i));
-    for (j = 2; j <= c; j++) gel(res,++k) = perm_mul(gel(res,j), gel(gen,i));
-  }
-  return res;
+    GEN gen = grp_get_gen(G), ord = grp_get_ord(G);
+    GEN res = cgetg(group_order(G)+1, t_VEC);
+    long i, j, k;
+    gel(res,1) = identity_perm(n);
+    k = 1;
+    for (i = 1; i < lg(gen); i++)
+    {
+      long c = k * (ord[i] - 1);
+      /* j = 1, use res[1] = identity */
+      gel(res,++k) = vecsmall_copy(gel(gen,i));
+      for (j = 2; j <= c; j++) gel(res,++k) = perm_mul(gel(res,j), gel(gen,i));
+    }
+    return res;
+  } else return gcopy(G);
 }
 
 GEN

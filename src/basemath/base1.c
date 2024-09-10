@@ -1052,7 +1052,7 @@ idealramgroups_aut(GEN nf, GEN gal, GEN pr, GEN aut)
   if (e%p) return idealramgroupstame(nf, gal, aut, pr);
   (void) u_lvalrem(e,p,&et);
   idx = idealramgroupswild(nf, gal, aut, pr);
-  sub = group_subgroups(galois_group(gal));
+  sub = galoissubgroups(gal);
   tbl = subgroups_tableset(sub, n);
   maxm = vecsmall_max(idx)+1;
   res = cgetg(maxm+1,t_VEC);
