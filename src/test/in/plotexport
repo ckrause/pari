@@ -22,3 +22,4 @@ test(plotexport("svg",[0,0,0]))
 plotmove(0,100,100);plotstring(0,Pi);
 plotmove(0,200,200);plotstring(0,"(0,0)");
 test(plotexport("svg",[0,10,10]))
+localbitprec(64); s = plothexport("svg", X=-1,1,sin(1/X), "Recursive");
