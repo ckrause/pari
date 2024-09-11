@@ -23,7 +23,7 @@ Doc:
  which saves time). The curves $E_{i}$ are given in $[a_{4},a_{6}]$ form and
  the first curve $E_{1}$ is isomorphic to $E$ by $f_{1}$.
 
- The set of isomorphism classes is finite except when $E$ has CM over an
+ The set of isomorphism classes is finite except when $E$ has CM over a
  quadratic order contained in $K$. In that case the function only returns the
  discriminant of the quadratic order.
 
