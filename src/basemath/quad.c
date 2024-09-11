@@ -731,8 +731,8 @@ quadclassnoF_fact(GEN D, GEN P, GEN E)
   }
   else
   {
-    GEN fa = mkmat2(P, E);
-    H = diviiexact(H, quadunitindex_i(D, factorback(fa), fa));
+    GEN fa = mkvec2(P, E);
+    H = diviiexact(H, quadunitindex_i(D, factorback2(P, E), fa));
   }
   return H;
 }
