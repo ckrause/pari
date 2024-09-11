@@ -1599,7 +1599,8 @@ groupelts_cyclic_subgroups(GEN G)
   setlg(gen, j);
   setlg(ord, j);
   f = vecsmall_indexsort(ord);
-  return gerepilecopy(av, mkvec2(vecpermute(gen, f), vecpermute(ord, f)));
+  return gerepilecopy(av, mkvec2(vecsmallpermute(gen, f),
+                                 vecsmallpermute(ord, f)));
 }
 
 GEN

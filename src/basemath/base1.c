@@ -1391,7 +1391,7 @@ nfsplitting_auto(GEN g, GEN R)
   for (i=1; i<=d; i++)
   {
     GEN r = perm_mul(vecsmall_indexsort(gel(N,i)), q);
-    gel(G,i) = FlxV_Flc_mul(Rp, vecpermute(K, r), p);
+    gel(G,i) = FlxV_Flc_mul(Rp, vecsmallpermute(K, r), p);
   }
   return mkvec3(g, G, utoi(p));
 }
