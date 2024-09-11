@@ -975,6 +975,7 @@ frobpoltrunc(GEN hgm, GEN t, long c, long p, long B, long *pF)
   m = (mi == D && c == C_TAME1 && !odd(DEG))? mi: mi+1;
   s = cgetg(m+1, t_POL); s[1] = evalsigne(1)|evalvarn(0);
   for (f = 1; f < m; f++) gel(s, f+1) = negi( hgmtrace(hgm, p, f, t, c) );
+  s = RgX_renormalize_lg(s, m+1);
   *pF = 0; s = RgXn_expint(s, m);
   if (mi == D) return s;
   if (c == C_TAME1)
