@@ -198,7 +198,7 @@ famat_cba(GEN fa)
   GEN Q, F, P = gel(fa, 1), E = gel(fa, 2);
   long i, j, lQ, l = lg(P);
   if (l == 1) return fa;
-  Q = ZV_cba(P); lQ = lg(Q);
+  Q = ZV_cba(P); lQ = lg(Q); settyp(Q, t_COL);
   F = cgetg(lQ, t_COL);
   for (j = 1; j < lQ; j++)
   {

@@ -1229,7 +1229,7 @@ gcharlog_conductor_f(GEN gc, GEN chi, GEN *faN)
   Lsprk = locs_get_Lsprk(zm);
   ufil = locs_get_Lgenfil(zm);
   P = gel(locs_get_famod(zm), 1);
-  l = lg(Lsprk); E = cgetg(l, t_VEC);
+  l = lg(Lsprk); E = cgetg(l, t_COL);
   for (i = 1, ic = gchar_get_ns(gc); i < l ; i++)
   {
     GEN gens = gel(ufil, i), chip;
