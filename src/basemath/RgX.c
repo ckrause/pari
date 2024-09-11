@@ -416,7 +416,7 @@ ZX_unscale_divpow(GEN P, GEN h, long k)
 GEN
 RgXV_unscale(GEN x, GEN h)
 {
-  if (isint1(h)) return RgX_copy(x);
+  if (isint1(h)) return gcopy(x);
   pari_APPLY_same(RgX_unscale(gel(x,i), h));
 }
 
