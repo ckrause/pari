@@ -4150,7 +4150,8 @@ START:
       if (DEBUGLEVEL) timer_printf(&T, "units LLL");
       AU = RgM_ZM_mul(A, U);
       A = cleanarchunit(AU, N, NULL, PREC);
-      if (!A || lg(A) < RU || expo(gsub(get_regulator(A), R)) > -1)
+      if (RU > 1 /* if there are fund units, test we have correct regulator */
+          && (!A || lg(A) < RU || expo(subrr(get_regulator(A), R)) > -1))
       {
         long add = nbits2extraprec( gexpo(AU) + 64 ) - gprecision(AU);
         long t = maxss(PREC * 0.15, add);
