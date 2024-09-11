@@ -1205,14 +1205,7 @@ hyperellextremalmodels(GEN F, long g, GEN p)
     GEN G = gel(W,i);
     while(1)
     {
-      GEN Wi;
-      if (!odd(g))
-      {
-        Wi = algo57bis(G, g, p, 0);
-        if (lg(Wi)==1) break;
-        G = gel(Wi,1);
-      }
-      Wi = algo57bis(G, g, p, 0);
+      GEN Wi = algo57bis(G, g, p, 0);
       if (lg(Wi)==1) break;
       G = gel(Wi,1);
     }
