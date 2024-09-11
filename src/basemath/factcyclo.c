@@ -45,6 +45,7 @@ ZX_to_nx(GEN z)
 {
   long i, r = lg(z);
   GEN x = cgetg(r, t_VECSMALL);
+  x[1] = ((ulong) z[1])&VARNBITS;
   for (i = 2; i < r; i++) x[i] = itou(gel(z, i));
   return x;
 }
@@ -1538,6 +1539,7 @@ Flx_1st_lift_2(GEN z, ulong p)
 {
   long i, r = lg(z);
   GEN x = cgetg(r, t_VECSMALL);
+  x[1] = z[1];
   if (odd(r))
     for (i = 2; i<r; i++) uel(x,i) = odd(i)? Fl_neg(uel(z,i), p) : uel(z,i);
   else
