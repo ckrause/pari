@@ -9,6 +9,10 @@ This file lists the incompatible changes between Version 2.x and older versions
    - change behaviour of Vec(v, n) when n < 0 and |n| < #v
        Vec([1,2,3], -2) -> [2,3]  (was [1,2])
      Same for Vecrev, Vecsmall, Col, and Colrev.
+   - alginit: the previous behaviour of alginit(,,,0) (compute Hasse invariants
+     but not a maximal order) is now obtained with alginit(,,,2); the previous
+     behaviour of alginit(,,,1) (compute Hasse invariants and a maximal order)
+     is now obtained with alginit(,,,3).
 
 * Specific to the PARI library:
 ===============================
