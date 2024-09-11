@@ -1564,10 +1564,8 @@ cvp0_dolll(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
   else
   {
     GEN B = gcoeff(a,1,1);
-    for (i=2; i<=n; i++)
-    {
-      B = addrr(B,gcoeff(a,i,i));
-    }
+    for (i = 2; i <= n; i++)
+      B = addii(B, gcoeff(a,i,i));
     maxnorm = -1.; /* don't update maxnorm */
     if (is_bigint(B)) return NULL;
     sBORNE = 0.;
