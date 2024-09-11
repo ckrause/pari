@@ -3468,7 +3468,7 @@ GEN
 bnfinit0(GEN P, long flag, GEN data, long prec)
 {
   double c1 = 0., c2 = 0.;
-  long fl, relpid = degpol(P)==2 ? 0: BNF_RELPID;
+  long fl, relpid = BNF_RELPID;
 
   if (data)
   {
@@ -3748,6 +3748,7 @@ Buchall_param(GEN P, double cbach, double cbach2, long Nrelid, long flag, long p
 
   if (DEBUGLEVEL) timer_start(&T);
   P = get_nfpol(P, &nf);
+  if (degpol(P)==2) Nrelid = 0;
   if (nf)
     D = nf_get_disc(nf);
   else
