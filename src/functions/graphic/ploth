@@ -58,10 +58,18 @@ Doc: high precision plot of the function $y=f(x)$ represented by the expression
  curve. Otherwise, add the middle point to the reference points. This is
  fast, and usually more precise than usual plot. Compare the results of
  \bprog
- ploth(X=-1,1, sin(1/X), "Recursive")
+ \pb 64
  ploth(X=-1,1, sin(1/X))
+ ploth(X=-1,1, sin(1/X), "Recursive")
  @eprog\noindent
- for instance. But beware that if you are extremely unlucky, or choose too few
+ for instance. Note that this example is pathological as it is impossible to
+ evaluate $\sin(1/X)$ close to~$0$. It is better to avoid the singularity as
+ follows.
+ \bprog
+ ploth(X=1e-10,1, sin(1/X), "Recursive")
+ @eprog
+
+ Beware that if you are extremely unlucky, or choose too few
  reference points, you may draw some nice polygon bearing little resemblance
  to the original curve. For instance you should \emph{never} plot recursively
  an odd function in a symmetric interval around 0. Try
