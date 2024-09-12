@@ -173,9 +173,10 @@ typedef struct {
     ulong arena;
     double power;
     double cutoff;
+    ulong bigarena;
 } cache_model_t;
 
-static cache_model_t cache_model = { CACHE_ARENA, CACHE_ALPHA, CACHE_CUTOFF };
+static cache_model_t cache_model = { CACHE_ARENA, CACHE_ALPHA, CACHE_CUTOFF, 0 };
 
 /* Assume that some calculation requires a chunk of memory to be
    accessed often in more or less random fashion (as in sieving).
@@ -282,7 +283,8 @@ good_arena_size(ulong slow2_size, ulong total, ulong fixed_to_cache,
 /* Use as in
     install(set_optimize,lLDG)          \\ Through some M too?
     set_optimize(2,1) \\ disable dependence on limit
-    \\ 1: how much cache usable, 2: slowdown of setup, 3: alpha, 4: cutoff
+    \\ 1: how much cache usable, 2: slowdown of setup, 3: alpha, 4: cutoff,
+    \\ 5: cache size (typically whole L2 or L3) in bytes to use in forprime()
     \\ 2,3,4 are in units of 0.001
 
     { time_primes_arena(ar,limit) =     \\ ar = arena size in K
@@ -312,6 +314,9 @@ set_optimize(long what, GEN g)
   case 4:
     ret = (long)(cache_model.cutoff * 1000);
     break;
+  case 5:
+    ret = (long)(cache_model.bigarena);
+    break;
   default:
     pari_err_BUG("set_optimize");
     break;
@@ -324,6 +329,7 @@ set_optimize(long what, GEN g)
     case 2: slow2_in_roots     = (double)val / 1000.; break;
     case 3: cache_model.power  = (double)val / 1000.; break;
     case 4: cache_model.cutoff = (double)val / 1000.; break;
+    case 5: cache_model.bigarena = val; break;
     }
   }
   return ret;
@@ -496,7 +502,8 @@ optimize_chunk(ulong a, ulong b)
 {
   /* TODO: Optimize size (surely < 512k to stay in L2 cache, but not so large
    * as to force recalculating too often). */
-  ulong chunk = 0x80000UL;
+  /* bigarena is in bytes, we use bits, and only odds */
+  ulong chunk = (cache_model.bigarena ? cache_model.bigarena : 0x80000UL)<<4;
   ulong tmp = (b - a) / chunk + 1;
 
   if (tmp == 1)
