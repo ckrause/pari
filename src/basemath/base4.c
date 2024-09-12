@@ -235,11 +235,11 @@ nfweilheight_i(GEN nf, GEN v, long prec)
   {
     long j0 = 1;
     for (j = 2; j < l; j++)
-      if (gcmp(gmael(V,j,i), gmael(V,j0,i)) > 0) j0 = j;
-    h = gmul(h, gmael(V,j0,i));
+      if (mpcmp(gmael(V,j,i), gmael(V,j0,i)) > 0) j0 = j;
+    h = mpmul(h, gmael(V,j0,i));
   }
-  if (den) h = gmul(h, powiu(den, N));
-  return gdivgs(glog(gdiv(h, idealnorm(nf, id)), prec), N);
+  if (den) h = mpmul(h, powiu(den, N));
+  return divru(glog(mpdiv(h, idealnorm(nf, id)), prec), N);
 }
 
 GEN
