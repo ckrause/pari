@@ -41,7 +41,7 @@ $datadir= "@datadir@";
 #  GPDOCDIR: where is manual (by default, where make install will put it).
 #  GPXDVI: which 'xdvi' program to call (xdvi by default)
 #
-$wwwsite= "http://pari.math.u-bordeaux.fr/";
+$wwwsite= "https://pari.math.u-bordeaux.fr/";
 
 $xdvi = $ENV{GPXDVI} || "xdvi";
 $xdviref = $ENV{GPXDVIREF} || "$xdvi -paper 29.7x21cm";
