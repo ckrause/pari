@@ -2316,6 +2316,7 @@ pari_plot_by_file(const char *env, const char *suf, const char *img)
 {
   const char *cmd, *s = pari_unique_filename_suffix("plotfile", suf);
   FILE *f = fopen(s, "w");
+  pari_timer ti;
   if (!f) pari_err_FILE("image file", s);
   fputs(img, f); (void)fclose(f);
   cmd = os_getenv(env);
@@ -2325,8 +2326,12 @@ pari_plot_by_file(const char *env, const char *suf, const char *img)
   if (!cmd) cmd = "open -W";
 #endif
   cmd = pari_sprintf("%s \"%s\" 2>/dev/null", cmd, s);
+  walltimer_start(&ti);
   gpsystem(cmd);
-  pari_unlink(s);
+  /* Some image viewers will return immediately and will not display
+     files that have been deleted. In that case we have to leak the file.
+   */
+  if (walltimer_delay(&ti)>1000) pari_unlink(s);
   pari_free((char*)s);
 }
 
