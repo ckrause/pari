@@ -58,7 +58,7 @@ Doc: high precision plot of the function $y=f(x)$ represented by the expression
  curve. Otherwise, add the middle point to the reference points. This is
  fast, and usually more precise than usual plot. Compare the results of
  \bprog
- \pb 64
+ \pb 32
  ploth(X=-1,1, sin(1/X))
  ploth(X=-1,1, sin(1/X), "Recursive")
  @eprog\noindent
