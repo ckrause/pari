@@ -2840,6 +2840,22 @@ exponent(algpow(C,mc22,-3) - mc22^(-3)) < -100
 algpow(C,mc22,0) == matid(2)
 exponent(algpoleval(C,x^3-x+1,z) - (z^3-z+1)) < -100
 
+print("algnewprec:");
+nf = nfinit(y^2-5);
+alg = alginit(nf,[-1,-y]); \\cyclic
+bitprecision(alg) < 256
+localbitprec(256); alg = algnewprec(alg);
+bitprecision(alg) >= 256
+alg = algtableinit([Mat(1)],0); \\table
+localbitprec(256); alg = algnewprec(alg);
+alg = alginit(nf,[Mat(1)]); \\CSA
+bitprecision(alg) < 256
+localbitprec(256); alg = algnewprec(alg);
+bitprecision(alg) >= 256
+R == algnewprec(R)
+C == algnewprec(C)
+H == algnewprec(H)
+
 print("nfgrunwaldwang SEGV #1669");
 nfgrunwaldwang(nfinit(y),[2,3],[1,2],Vecsmall(1))
 nfgrunwaldwang(nfinit(x),[2,3],[1,2],Vecsmall(1))

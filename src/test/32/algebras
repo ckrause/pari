@@ -3085,6 +3085,14 @@ Vecsmall([])
 1
 1
 1
+algnewprec:
+1
+1
+1
+1
+1
+1
+1
 nfgrunwaldwang SEGV #1669
 x^2 + Mod(-17, y)
   ***   at top-level: nfgrunwaldwang(nfinit(x),[2,3],[1,2],Vecsmall(
@@ -3153,4 +3161,4 @@ maxord flag
 1
 1
   *** nfinit: Warning: nonmonic polynomial. Result of the form [nf,c].
-Total time spent: 2864
+Total time spent: 2235

@@ -457,7 +457,7 @@ al:
 3- b in nf
 4- infinite hasse invariants (mod n) : VECSMALL of size r1, values only 0 or n/2 (if integral)
 5- finite hasse invariants (mod n) : VEC[VEC of primes, VECSMALL of hasse inv mod n]
-6- nf of the splitting field (absolute)
+6- currently unused (gen_0 placeholder)
 7* dn^2*dn^2 matrix expressing the integral basis in terms of the natural basis
 8* dn^2*dn^2 matrix expressing the natural basis in terms of the integral basis
 9* VEC of dn^2 matrices giving the dn^2*dn^2 left multiplication tables of the integral basis
@@ -465,6 +465,7 @@ al:
 11* trace of basis elements
 
 If al is given by a multiplication table (al_TABLE), only the * fields are present.
+The other ones are filled with gen_0 placeholders.
 */
 
 /* assumes same center and same variable */
@@ -1715,6 +1716,25 @@ algramifiedplaces(GEN al)
     }
   setlg(ram, count+1);
   return gerepilecopy(av, ram);
+}
+
+GEN
+algnewprec_shallow(GEN al, long prec)
+{
+  GEN al2;
+  long t = algtype(al);
+  if (t != al_CYCLIC && t != al_CSA) return al;
+  al2 = shallowcopy(al);
+  gel(al2,1) = rnfnewprec_shallow(gel(al2,1), prec);
+  return al2;
+};
+
+GEN
+algnewprec(GEN al, long prec)
+{
+  pari_sp av = avma;
+  GEN al2 = algnewprec_shallow(al, prec);
+  return gerepilecopy(av, al2);
 }
 
 /** OPERATIONS ON ELEMENTS operations.c **/

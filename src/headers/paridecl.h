@@ -1763,6 +1763,8 @@ GEN     alglatlefttransporter(GEN al, GEN lat1, GEN lat2);
 GEN     alglatrighttransporter(GEN al, GEN lat1, GEN lat2);
 int     alglatsubset(GEN al, GEN lat1, GEN lat2, GEN* ptindex);
 GEN     algneg(GEN al, GEN x);
+GEN     algnewprec(GEN al, long prec);
+GEN     algnewprec_shallow(GEN al, long prec);
 GEN     algnorm(GEN al, GEN x, long abs);
 GEN     algpoleval(GEN al, GEN pol, GEN x);
 GEN     algpow(GEN al, GEN x, GEN n);
