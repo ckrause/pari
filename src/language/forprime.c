@@ -503,7 +503,8 @@ optimize_chunk(ulong a, ulong b)
   /* TODO: Optimize size (surely < 512k to stay in L2 cache, but not so large
    * as to force recalculating too often). */
   /* bigarena is in bytes, we use bits, and only odds */
-  ulong chunk = (cache_model.bigarena ? cache_model.bigarena : 0x80000UL)<<4;
+  ulong defchunk = (a>>31) > 1 ? 0x80000UL : 0x8000;
+  ulong chunk = (cache_model.bigarena ? cache_model.bigarena : defchunk)<<4;
   ulong tmp = (b - a) / chunk + 1;
 
   if (tmp == 1)
