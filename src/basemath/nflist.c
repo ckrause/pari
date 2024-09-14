@@ -4429,7 +4429,7 @@ doC32C4_i(GEN bnf, GEN L, GEN GAL)
     }
     gel(v,i) = gtoset_shallow(w);
   }
-  return myshallowconcat1(v);
+  return gtoset_shallow(myshallowconcat1(v));
 }
 static GEN
 doC32C4(GEN N, GEN P4, GEN GAL)
