@@ -4427,7 +4427,7 @@ doC32C4_i(GEN bnf, GEN L, GEN GAL)
         if (okgal(P, GAL)) w = vec_append(w, polredabs(P));
       }
     }
-    gel(v,i) = gtoset_shallow(w);
+    gel(v,i) = w;
   }
   return gtoset_shallow(myshallowconcat1(v));
 }
