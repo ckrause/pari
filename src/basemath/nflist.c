@@ -3324,11 +3324,12 @@ makeC6(GEN N, GEN field, long s)
       D = divisorsdisc(cored(gcdii(N, powiu(q,3)), 3), s);
     }
   }
+  D = gtoset(gabs(D,DEFAULTPREC));
   s2 = maxss(s, -1); if (s2 == 3) s2 = 1;
   lD = lg(D); R = cgetg(lD, t_VEC);
   for (i = c = 1; i < lD; i++)
   {
-    GEN R0, D2 = gel(D, i), D2a = absi_shallow(D2);
+    GEN R0, D2a = gel(D,i);
     GEN M = diviiexact(N, powiu(D2a, 3)), F, L, V2;
     long l, l2;
     if (!Z_issquareall(M, &F)) continue;
