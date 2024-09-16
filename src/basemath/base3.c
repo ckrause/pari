@@ -1775,15 +1775,15 @@ oksigns2(long l, GEN signs, long i, long s)
 static int
 nfchecksigns_i(GEN nf, GEN x, GEN embx, GEN signs, GEN archp)
 {
-  long l = lg(archp), i;
+  long i, l = lg(archp), np = -1;
+  long bigx = embx? 0: gexpo(x) >= nf_get_prec(nf);
   GEN M = nf_get_M(nf), sarch = NULL;
-  long np = -1;
   for (i = 1; i < l; i++)
   {
-    long s;
+    long s = -1;
     if (embx)
       s = eval_sign_embed(gel(embx,i));
-    else
+    else if (!bigx)
       s = eval_sign(M, x, archp[i]);
     /* 0 / + or 1 / -; -1 for FAIL */
     if (s < 0) /* failure */
@@ -2206,7 +2206,7 @@ GEN
 nfsign_arch(GEN nf, GEN x, GEN arch)
 {
   GEN sarch, M, V, archp = vec01_to_indices(arch);
-  long i, s, np, n = lg(archp)-1;
+  long i, s, np, bigx, n = lg(archp)-1;
   pari_sp av;
 
   if (!n) return cgetg(1,t_VECSMALL);
@@ -2232,10 +2232,11 @@ nfsign_arch(GEN nf, GEN x, GEN arch)
       s = signe(gel(x,1));
       set_avma(av); return const_vecsmall(n, (s < 0)? 1: 0);
   }
-  x = Q_primpart(x); M = nf_get_M(nf); sarch = NULL; np = -1;
+  x = Q_primpart(x); M = nf_get_M(nf); sarch = NULL;
+  np = -1; bigx = gexpo(x) >= nf_get_prec(nf);
   for (i = 1; i <= n; i++)
   {
-    long s = eval_sign(M, x, archp[i]);
+    long s = bigx ? -1: eval_sign(M, x, archp[i]);
     if (s < 0) /* failure */
     {
       long ni, r1 = nf_get_r1(nf);
