@@ -1355,6 +1355,7 @@ alg_finite_csa_split(GEN al, long v)
     ro = gel(ro,1);
     primelt = algpoleval(al,ro,primelt);
     T = T2;
+    delete_var();
   }
 
   /* descend al*e to a vector space over the center */
