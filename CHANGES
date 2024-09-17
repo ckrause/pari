@@ -4,4 +4,5 @@ Done for version 2.17.0 (released ??/09/2024):
      1- rare SEGV in sumnumrat [#2566]
      2- gp -p N did not check for N < 2^32
      3- nflist([6,8],12167) -> SEGV [#2567]
-AP   4- variable leak in algsplit
+     4- nflist([6,1],1229312), nflist([6,10],36192256) -> duplicate fields
+AP   5- variable leak in algsplit
