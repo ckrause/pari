@@ -118,8 +118,9 @@ nflist("D5")
 nflist("F5")
 
 \\ #2567
-nflist([6,8],12167);
 nflist([6,1],64827)
+nflist([6,8],12167);
+nflist([6,10],36192256)
 
 \\ ERRORS
 nflist("S3",-1)

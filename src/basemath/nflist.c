@@ -405,8 +405,10 @@ ufund_pm(ulong N, int p, int m)
   return NULL;
 }
 
+/* return of fundamental discriminant divisors of N filtering by signature s.
+ * if abs is set, only return their absolute values */
 static GEN
-divisorsdisc(GEN N, long s)
+divisorsdisc_i(GEN N, long s, long abs)
 {
   GEN D, V;
   long l, c = 1, i;
@@ -422,14 +424,23 @@ divisorsdisc(GEN N, long s)
   V = cgetg(2 * l - 1, t_VEC);
   for (i = 2; i < l; i++)
   {
-    GEN d = gel(D, i);
+    GEN d = gel(D, i), A = gel(d, 1);
     int p, m;
-    fa_is_fundamental_pm(gel(d,1), gel(d,2), s, &p, &m);
-    if (p) gel(V, c++) = gel(d,1);
-    if (m) gel(V, c++) = negi(gel(d,1));
+    fa_is_fundamental_pm(A, gel(d,2), s, &p, &m);
+    if (abs)
+    { if (p || m) gel(V, c++) = A; }
+    else
+    {
+      if (p) gel(V, c++) = gel(d,1);
+      if (m) gel(V, c++) = negi(gel(d,1));
+    }
   }
   setlg(V, c); return V;
 }
+static GEN
+divisorsdisc(GEN N, long s) { return divisorsdisc_i(N, s, 0); }
+static GEN
+divisorsabsdisc(GEN N, long s) { return divisorsdisc_i(N, s, 1); }
 
 static int
 usum2sq(ulong m)
@@ -1406,7 +1417,7 @@ makeC4(GEN N, GEN field, long s)
     if (signe(d) < 0 || !divissquare(N, powiu(d,3))) return NULL;
     D = mkvec(d);
   }
-  else D = divisorsdisc(cored(N, 3), 0);
+  else D = divisorsabsdisc(cored(N, 3), 0);
   for (i = c = 1; i < lg(D); i++)
   {
     GEN cond, v, d = gel(D, i);
@@ -3305,32 +3316,27 @@ makeC6(GEN N, GEN field, long s)
   long i, j, lD, s2, c;
 
   if (s == 1 || s == 2) return NULL;
-  if (!field) D = divisorsdisc(cored(N, 3), s);
+  if (!field) D = divisorsabsdisc(cored(N, 3), s);
+  else if (degpol(field) == 2)
+  {
+    GEN D2 = nfdisc(field);
+    long si = signe(D2);
+    if ((s == 3 && si > 0) || (s == 0 && si < 0)
+        || !divissquare(N, powiu(D2,3))) return NULL;
+    D = mkvec(absi_shallow(D2));
+  }
   else
   {
-    if (degpol(field) == 2)
-    {
-      GEN D2 = nfdisc(field);
-      long si = signe(D2);
-      if ((s == 3 && si > 0) || (s == 0 && si < 0)
-          || !divissquare(N, powiu(D2,3))) return NULL;
-      D = mkvec(D2);
-    }
-    else
-    {
-      GEN q, D3 = checkfield(field, 3);
-      if (!Z_issquareall(D3, &d3)) pari_err_TYPE("makeC6 [field]", field);
-      if (!(q = divide(N, sqri(D3)))) return NULL;
-      D = divisorsdisc(cored(gcdii(N, powiu(q,3)), 3), s);
-    }
+    GEN q, D3 = checkfield(field, 3);
+    if (!Z_issquareall(D3, &d3)) pari_err_TYPE("makeC6 [field]", field);
+    if (!(q = divide(N, sqri(D3)))) return NULL;
+    D = divisorsabsdisc(cored(gcdii(N, powiu(q,3)), 3), s);
   }
-  D = gtoset(gabs(D,DEFAULTPREC));
   s2 = maxss(s, -1); if (s2 == 3) s2 = 1;
   lD = lg(D); R = cgetg(lD, t_VEC);
   for (i = c = 1; i < lD; i++)
   {
-    GEN R0, D2a = gel(D,i);
-    GEN M = diviiexact(N, powiu(D2a, 3)), F, L, V2;
+    GEN F, L, V2, R0, D2a = gel(D, i), M = diviiexact(N, powiu(D2a, 3));
     long l, l2;
     if (!Z_issquareall(M, &F)) continue;
     if (d3) { L = mkvec(mkvec(field)); l = 2; }
@@ -3935,12 +3941,11 @@ makeS46M(GEN N, GEN field, long s)
     LC = glco46M(F, D2a);
     t = doA4S4(field, LC, snew); return makeS46Mpols(t, N, NULL);
   }
-  D = divisorsdisc(cored(N, 3), snew);
+  D = divisorsabsdisc(cored(N, 3), snew);
   l = lg(D); v = cgetg(l*l, t_VEC);
   for (i = c = 1; i < l; i++)
   {
-    GEN D2 = gel(D, i), D2a = absi_shallow(D2);
-    GEN NSD2 = divii(N, powiu(D2a, 3)), NSD4, F;
+    GEN D2a = gel(D, i), NSD2 = divii(N, powiu(D2a, 3)), NSD4, F;
     long j;
     if (!Z_issquareall(NSD2, &NSD4)) continue;
     F = divisors(cored(NSD2, 4));

@@ -475,6 +475,7 @@ x^2 + 223*x + 49]
 x^3 + 8*x^2 - x - 10, x^5 + 2*x^3 - 4*x^2 - x - 4, x^5 - x^4 + 2*x^3 - 4*x^2
  + x - 1, x^5 - x^4 + x^2 + 3*x + 1]
 [x^6 - x^5 - 2*x^4 + x^3 + 7*x^2 + 7]
+[x^6 - 2*x^5 - 5*x^4 - 16*x^3 + 8*x + 28]
   ***   at top-level: nflist("S3",-1)
   ***                 ^---------------
   *** nflist: domain error in nflist: Xinf <= 0
@@ -541,4 +542,4 @@ x^3 + 8*x^2 - x - 10, x^5 + 2*x^3 - 4*x^2 - x - 4, x^5 - x^4 + 2*x^3 - 4*x^2
   ***   at top-level: nflist("C3",[x])
   ***                 ^----------------
   *** nflist: incorrect type in nflist (t_VEC).
-Total time spent: 41623
+Total time spent: 45508
