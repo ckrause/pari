@@ -4526,6 +4526,9 @@ $0$.
 \kbd{y} (assumed to have compatible dimensions), assuming \var{pi} is the
 pseudoinverse of $p$, or $0$ in which case we assume \kbd{SMALL\_ULONG}$(p)$.
 
+\fun{GEN}{Flm_sqr}{GEN x, ulong p} squares \kbd{x}
+(assumed to be square).
+
 \fun{GEN}{Flm_powers}{GEN x, ulong n, ulong p} returns
 $[\kbd{x}^0, \dots, \kbd{x}^\kbd{n}]$ as a \typ{VEC} of \kbd{Flm}s.
 

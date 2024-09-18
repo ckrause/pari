@@ -7,5 +7,8 @@ Done for version 2.17.0 (released ??/09/2024):
      4- nflist([6,1],1229312), nflist([6,10],36192256) -> duplicate fields
 AP   5- variable leak in algsplit
 
+  Added
+BA   1- [libpari] Flm_sqr
+
   Changed
 BA   1- qflll(,1), qfllgram(,1): disable FLATTER algorithm.

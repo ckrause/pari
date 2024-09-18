@@ -744,6 +744,14 @@ Flm_mul(GEN x, GEN y, ulong p)
   return Flm_mul_i(x, y, lgcols(x), lx, ly, p, get_Fl_red(p));
 }
 
+GEN
+Flm_sqr(GEN x, ulong p)
+{
+  long lx = lg(x);
+  if (lx==1) return cgetg(1,t_MAT);
+  return Flm_mul_i(x, x, lx, lx, lx, p, get_Fl_red(p));
+}
+
 struct _Flm
 {
   ulong p;
@@ -755,7 +763,7 @@ _Flm_mul(void *E , GEN x, GEN y)
 { return Flm_mul(x,y,((struct _Flm*)E)->p); }
 static GEN
 _Flm_sqr(void *E, GEN x)
-{ return Flm_mul(x,x,((struct _Flm*)E)->p); }
+{ return Flm_sqr(x,((struct _Flm*)E)->p); }
 static GEN
 _Flm_one(void *E)
 { return matid_Flm(((struct _Flm*)E)->n); }

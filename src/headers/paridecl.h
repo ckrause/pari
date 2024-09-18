@@ -1102,6 +1102,7 @@ GEN     Flm_mul_pre(GEN x, GEN y, ulong p, ulong pi);
 GEN     Flm_neg(GEN y, ulong p);
 GEN     Flm_powers(GEN x, ulong n, ulong p);
 GEN     Flm_powu(GEN x, ulong n, ulong p);
+GEN     Flm_sqr(GEN x, ulong p);
 GEN     Flm_sub(GEN x, GEN y, ulong p);
 GEN     Flm_to_mod(GEN z, ulong p);
 GEN     Flm_transpose(GEN x);
