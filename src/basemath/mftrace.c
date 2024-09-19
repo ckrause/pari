@@ -11395,8 +11395,7 @@ bestapprnf2(GEN V, long m, GEN D, long prec)
   if (f == m) return gmodulo(gdiv(V, D), P);
   Pf = polcyclo(f, vt);
   Tinit = Qab_trace_init(m, f, P, Pf);
-  Vl = QabV_tracerel(Tinit, 0, Vl);
-  return gmodulo(gdiv(Vl, muliu(D, degpol(P)/degpol(Pf))), Pf);
+  return gmodulo(gdiv(QabV_tracerel(Tinit, 0, Vl), D), Pf);
 }
 
 /* f | ga expansion; [f, mf_eisendec(f)]~ allowed */
