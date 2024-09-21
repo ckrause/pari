@@ -1677,18 +1677,26 @@ sarch_get_lambda(GEN sarch) { return gel(sarch,4); }
 static GEN
 sarch_get_F(GEN sarch) { return gel(sarch,5); }
 
-/* x not a scalar, true nf, return number of positive roots of char_x */
+/* true nf, x non-zero algebraic integer; return number of positive real roots
+ * of char_x */
 static long
 num_positive(GEN nf, GEN x)
 {
   GEN T = nf_get_pol(nf), B, charx;
-  long dnf, vnf, N;
-  x = nf_to_scalar_or_alg(nf, x); /* not a scalar */
+  long dnf, vnf, N, r1 = nf_get_r1(nf);
+  x = nf_to_scalar_or_alg(nf, x);
+  if (typ(x) != t_POL) return (signe(x) < 0)? 0: degpol(T);
+  /* x not a scalar */
+  if (r1 == 1)
+  {
+    long s = signe(ZX_resultant(T, Q_primpart(x)));
+    return s > 0? 1: 0;
+  }
   charx = ZXQ_charpoly(x, T, 0);
   charx = ZX_radical(charx);
   N = degpol(T) / degpol(charx);
   /* real places are unramified ? */
-  if (N == 1 || ZX_sturm(charx) * N == nf_get_r1(nf))
+  if (N == 1 || ZX_sturm(charx) * N == r1)
     return ZX_sturmpart(charx, mkvec2(gen_0,mkoo())) * N;
   /* painful case, multiply by random square until primitive */
   dnf = nf_get_degree(nf);
@@ -1700,7 +1708,7 @@ num_positive(GEN nf, GEN x)
     y = RgXQ_mul(x, y, T);
     charx = ZXQ_charpoly(y, T, 0);
     if (ZX_is_squarefree(charx))
-      return ZX_sturmpart(charx, mkvec2(gen_0,mkoo())) * N;
+      return ZX_sturmpart(charx, mkvec2(gen_0,mkoo()));
   }
 }
 
@@ -1734,25 +1742,6 @@ zk_embed(GEN M, GEN x, long k)
   return z;
 }
 
-/* Given floating point approximation z of sigma_k(x), decide its sign
- * [0/+, 1/- and -1 for FAIL] */
-static long
-eval_sign_embed(GEN z)
-{
-  if (typ(z) == t_REAL)
-  {
-    long l = realprec(z);
-    if (l <= LOWDEFAULTPREC
-      || (l == LOWDEFAULTPREC + 1 && !z[l-1])) return -1; /* dubious, fail */
-    if (expo(z) < 16 - l) return -1; /* same */
-  }
-  return (signe(z) < 1)? 1: 0;
-}
-/* return v such that (-1)^v = sign(sigma_k(x)), x primitive ZC */
-static long
-eval_sign(GEN M, GEN x, long k)
-{ return eval_sign_embed( zk_embed(M, x, k) ); }
-
 /* check that signs[i..#signs] == s; signs = NULL encodes "totally positive" */
 static int
 oksigns(long l, GEN signs, long i, long s)
@@ -1770,40 +1759,27 @@ oksigns2(long l, GEN signs, long i, long s)
   return signs[i] == s && oksigns(l, signs, i+1, 1-s);
 }
 
-/* true nf, x a ZC (primitive for efficiency) which is not a scalar; embx its
- * embeddings or NULL */
+/* true nf, x a ZC (primitive for efficiency) which is not a scalar */
 static int
-nfchecksigns_i(GEN nf, GEN x, GEN embx, GEN signs, GEN archp)
+nfchecksigns_i(GEN nf, GEN x, GEN signs, GEN archp)
 {
-  long i, l = lg(archp), np = -1;
-  long bigx = embx? 0: gexpo(x) >= nf_get_prec(nf);
-  GEN M = nf_get_M(nf), sarch = NULL;
+  long i, np, l = lg(archp), r1 = nf_get_r1(nf);
+  GEN sarch;
+
+  if (r1 == 0) return 1;
+  np = num_positive(nf, x);
+  if (np == 0)  return oksigns(l, signs, 1, 1);
+  if (np == r1) return oksigns(l, signs, 1, 0);
+  sarch = nfarchstar(nf, NULL, identity_perm(r1));
   for (i = 1; i < l; i++)
   {
-    long s = -1;
-    if (embx)
-      s = eval_sign_embed(gel(embx,i));
-    else if (!bigx)
-      s = eval_sign(M, x, archp[i]);
-    /* 0 / + or 1 / -; -1 for FAIL */
-    if (s < 0) /* failure */
-    {
-      long ni, r1 = nf_get_r1(nf);
-      GEN xi;
-      if (np < 0)
-      {
-        np = num_positive(nf, x);
-        if (np == 0)  return oksigns(l, signs, i, 1);
-        if (np == r1) return oksigns(l, signs, i, 0);
-        sarch = nfarchstar(nf, NULL, identity_perm(r1));
-      }
-      xi = set_sign_mod_divisor(nf, vecsmall_ei(r1, archp[i]), gen_1, sarch);
-      xi = Q_primpart(xi);
-      ni = num_positive(nf, nfmuli(nf,x,xi));
-      if (ni == 0)  return oksigns2(l, signs, i, 0);
-      if (ni == r1) return oksigns2(l, signs, i, 1);
-      s = ni < np? 0: 1;
-    }
+    GEN xi = set_sign_mod_divisor(nf, vecsmall_ei(r1, archp[i]), gen_1, sarch);
+    long ni, s;
+    xi = Q_primpart(xi);
+    ni = num_positive(nf, nfmuli(nf,x,xi));
+    if (ni == 0)  return oksigns2(l, signs, i, 0);
+    if (ni == r1) return oksigns2(l, signs, i, 1);
+    s = ni < np? 0: 1;
     if (s != (signs? signs[i]: 0)) return 0;
   }
   return 1;
@@ -1840,7 +1816,7 @@ nfchecksigns(GEN nf, GEN x, GEN pl)
     return gc_bool(av,1);
   }
   pl_convert(pl, &signs, &archp);
-  return gc_bool(av, nfchecksigns_i(nf, x, NULL, signs, archp));
+  return gc_bool(av, nfchecksigns_i(nf, x, signs, archp));
 }
 
 /* signs = NULL: totally positive, else sign[i] = 0 (+) or 1 (-) */
@@ -1860,7 +1836,7 @@ static GEN
 nfsetsigns(GEN nf, GEN signs, GEN x, GEN sarch)
 {
   long i, l = lg(sarch_get_archp(sarch));
-  GEN ex;
+  GEN ex = NULL;
   /* Is signature already correct ? */
   if (typ(x) != t_COL)
   {
@@ -1874,17 +1850,20 @@ nfsetsigns(GEN nf, GEN signs, GEN x, GEN sarch)
       for (i = 1; i < l; i++)
         if (signs[i] != s) break;
     }
-    ex = (i < l)? const_col(l-1, x): NULL;
+    if (i < l) ex = const_col(l-1, x);
   }
   else
   { /* inefficient if x scalar, wrong if x = 0 */
     pari_sp av = avma;
     GEN cex, M = nf_get_M(nf), archp = sarch_get_archp(sarch);
     GEN xp = Q_primitive_part(x,&cex);
-    ex = cgetg(l,t_COL);
-    for (i = 1; i < l; i++) gel(ex,i) = zk_embed(M,xp,archp[i]);
-    if (nfchecksigns_i(nf, xp, ex, signs, archp)) { ex = NULL; set_avma(av); }
-    else if (cex) ex = RgC_Rg_mul(ex, cex); /* put back content */
+    if (nfchecksigns_i(nf, xp, signs, archp)) set_avma(av);
+    else
+    {
+      ex = cgetg(l,t_COL);
+      for (i = 1; i < l; i++) gel(ex,i) = zk_embed(M,xp,archp[i]);
+      if (cex) ex = RgC_Rg_mul(ex, cex); /* put back content */
+    }
   }
   if (ex)
   { /* If no, fix it */
@@ -2205,8 +2184,8 @@ indices_to_vec01(GEN p, long r)
 GEN
 nfsign_arch(GEN nf, GEN x, GEN arch)
 {
-  GEN sarch, M, V, archp = vec01_to_indices(arch);
-  long i, s, np, bigx, n = lg(archp)-1;
+  GEN sarch, V, archp = vec01_to_indices(arch);
+  long i, s, np, r1, n = lg(archp)-1;
   pari_sp av;
 
   if (!n) return cgetg(1,t_VECSMALL);
@@ -2232,30 +2211,19 @@ nfsign_arch(GEN nf, GEN x, GEN arch)
       s = signe(gel(x,1));
       set_avma(av); return const_vecsmall(n, (s < 0)? 1: 0);
   }
-  x = Q_primpart(x); M = nf_get_M(nf); sarch = NULL;
-  np = -1; bigx = gexpo(x) >= nf_get_prec(nf);
+  r1 = nf_get_r1(nf); x = Q_primpart(x); np = num_positive(nf, x);
+  if (np == 0) { set_avma(av); return const_vecsmall(n, 1); }
+  if (np == r1){ set_avma(av); return const_vecsmall(n, 0); }
+  sarch = nfarchstar(nf, NULL, identity_perm(r1));
   for (i = 1; i <= n; i++)
   {
-    long s = bigx ? -1: eval_sign(M, x, archp[i]);
-    if (s < 0) /* failure */
-    {
-      long ni, r1 = nf_get_r1(nf);
-      GEN xi;
-      if (np < 0)
-      {
-        np = num_positive(nf, x);
-        if (np == 0) { set_avma(av); return const_vecsmall(n, 1); }
-        if (np == r1){ set_avma(av); return const_vecsmall(n, 0); }
-        sarch = nfarchstar(nf, NULL, identity_perm(r1));
-      }
-      xi = set_sign_mod_divisor(nf, vecsmall_ei(r1, archp[i]), gen_1, sarch);
-      xi = Q_primpart(xi);
-      ni = num_positive(nf, nfmuli(nf,x,xi));
-      if (ni == 0) { set_avma(av); V = const_vecsmall(n, 1); V[i] = 0; return V; }
-      if (ni == r1){ set_avma(av); V = const_vecsmall(n, 0); V[i] = 1; return V; }
-      s = ni < np? 0: 1;
-    }
-    V[i] = s;
+    GEN xi = set_sign_mod_divisor(nf, vecsmall_ei(r1, archp[i]), gen_1, sarch);
+    long ni;
+    xi = Q_primpart(xi);
+    ni = num_positive(nf, nfmuli(nf,x,xi));
+    if (ni == 0) { set_avma(av); V = const_vecsmall(n, 1); V[i] = 0; return V; }
+    if (ni == r1){ set_avma(av); V = const_vecsmall(n, 0); V[i] = 1; return V; }
+    V[i] = ni < np? 0: 1;
   }
   set_avma((pari_sp)V); return V;
 }
