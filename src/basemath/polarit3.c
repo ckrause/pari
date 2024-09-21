@@ -1976,7 +1976,7 @@ ZXQ_charpoly_sqf(GEN A, GEN T, long *lambda, long v)
       return gerepileupto(av, gpowgs(gsub(pol_x(v), A), degpol(T)));
   }
   delvar = 0;
-  if (varn(T) == 0)
+  if (varncmp(varn(T), 0) <= 0)
   {
     long v0 = fetch_var(); delvar = 1;
     T = leafcopy(T); setvarn(T,v0);
