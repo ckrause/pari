@@ -1751,19 +1751,12 @@ oksigns(long l, GEN signs, long i, long s)
     if (signs[i] != s) return 0;
   return 1;
 }
-/* check that signs[i] = s and signs[i+1..#signs] = 1-s */
-static int
-oksigns2(long l, GEN signs, long i, long s)
-{
-  if (!signs) return s == 0 && i == l-1;
-  return signs[i] == s && oksigns(l, signs, i+1, 1-s);
-}
 
 /* true nf, x a ZC (primitive for efficiency) which is not a scalar */
 static int
 nfchecksigns_i(GEN nf, GEN x, GEN signs, GEN archp)
 {
-  long i, np, l = lg(archp), r1 = nf_get_r1(nf);
+  long i, np, npc, l = lg(archp), r1 = nf_get_r1(nf);
   GEN sarch;
 
   if (r1 == 0) return 1;
@@ -1771,16 +1764,29 @@ nfchecksigns_i(GEN nf, GEN x, GEN signs, GEN archp)
   if (np == 0)  return oksigns(l, signs, 1, 1);
   if (np == r1) return oksigns(l, signs, 1, 0);
   sarch = nfarchstar(nf, NULL, identity_perm(r1));
-  for (i = 1; i < l; i++)
+  for (i = 1, npc = 0; i < l; i++)
   {
     GEN xi = set_sign_mod_divisor(nf, vecsmall_ei(r1, archp[i]), gen_1, sarch);
     long ni, s;
     xi = Q_primpart(xi);
     ni = num_positive(nf, nfmuli(nf,x,xi));
-    if (ni == 0)  return oksigns2(l, signs, i, 0);
-    if (ni == r1) return oksigns2(l, signs, i, 1);
     s = ni < np? 0: 1;
     if (s != (signs? signs[i]: 0)) return 0;
+    if (!s) npc++; /* found a positive root */
+    if (npc == np)
+    { /* found all positive roots */
+      if (!signs) return i == l-1;
+      for (i++; i < l; i++)
+        if (signs[i] != 1) return 0;
+      return 1;
+    }
+    if (i - npc == r1 - np)
+    { /* found all negative roots */
+      if (!signs) return 1;
+      for (i++; i < l; i++)
+        if (signs[i]) return 0;
+      return 1;
+    }
   }
   return 1;
 }
@@ -2185,7 +2191,7 @@ GEN
 nfsign_arch(GEN nf, GEN x, GEN arch)
 {
   GEN sarch, V, archp = vec01_to_indices(arch);
-  long i, s, np, r1, n = lg(archp)-1;
+  long i, s, np, npc, r1, n = lg(archp)-1;
   pari_sp av;
 
   if (!n) return cgetg(1,t_VECSMALL);
@@ -2215,15 +2221,24 @@ nfsign_arch(GEN nf, GEN x, GEN arch)
   if (np == 0) { set_avma(av); return const_vecsmall(n, 1); }
   if (np == r1){ set_avma(av); return const_vecsmall(n, 0); }
   sarch = nfarchstar(nf, NULL, identity_perm(r1));
-  for (i = 1; i <= n; i++)
+  for (i = 1, npc = 0; i <= n; i++)
   {
     GEN xi = set_sign_mod_divisor(nf, vecsmall_ei(r1, archp[i]), gen_1, sarch);
     long ni;
     xi = Q_primpart(xi);
     ni = num_positive(nf, nfmuli(nf,x,xi));
-    if (ni == 0) { set_avma(av); V = const_vecsmall(n, 1); V[i] = 0; return V; }
-    if (ni == r1){ set_avma(av); V = const_vecsmall(n, 0); V[i] = 1; return V; }
     V[i] = ni < np? 0: 1;
+    if (!V[i]) npc++; /* found a positive root */
+    if (npc == np)
+    { /* found all positive roots */
+      for (i++; i <= n; i++) V[i] = 1;
+      break;
+    }
+    if (i - npc == r1 - np)
+    { /* found all negative roots */
+      for (i++; i <= n; i++) V[i] = 0;
+      break;
+    }
   }
   set_avma((pari_sp)V); return V;
 }
