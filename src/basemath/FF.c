@@ -175,23 +175,20 @@ GEN
 Fq_to_FF(GEN x, GEN ff)
 {
   ulong pp;
-  GEN r, T, p, z=_initFF(ff,&T,&p,&pp);
-  int is_int = typ(x)==t_INT;
-  switch(ff[1])
+  GEN r, T, p, z = _initFF(ff,&T,&p,&pp);
+  if (typ(x) == t_INT) switch(ff[1])
   {
-  case t_FF_FpXQ:
-    r= is_int ? scalarpol(x, varn(T)): ZX_copy(x);
-    if (!is_int) setvarn(r, varn(T)); /* paranoia */
-    break;
-  case t_FF_F2xq:
-    r= is_int ? Z_to_F2x(x,T[1]): ZX_to_F2x(x);
-    if (!is_int) r[1] = T[1]; /* paranoia */
-    break;
-  default:
-    r= is_int ? Z_to_Flx(x,pp,T[1]): ZX_to_Flx(x,pp);
-    if (!is_int) r[1] = T[1]; /* paranoia */
+    case t_FF_FpXQ: r = scalarpol(x, varn(T)); break;
+    case t_FF_F2xq: r = Z_to_F2x(x,T[1]); break;
+    default: r = Z_to_Flx(x,pp,T[1]);
   }
-  return _mkFF_i(ff,z,r);
+  else switch(ff[1])
+  {
+    case t_FF_FpXQ: r = ZX_copy(x); setvarn(r, varn(T)); break;
+    case t_FF_F2xq: r = ZX_to_F2x(x); r[1] = T[1]; break;
+    default: r = ZX_to_Flx(x,pp); r[1] = T[1];
+  }
+  return _mkFF_i(ff, z, r);
 }
 
 /*************************************************************************/
