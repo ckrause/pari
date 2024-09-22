@@ -329,9 +329,9 @@ integral_h0(GEN sel, GEN s, GEN VCALL, long prec)
   return gerepileupto(av, gmul(m_h(sel), S));
 }
 
-/* log |x| */
+/* a + log |x| */
 static GEN
-mylog(GEN x, long prec)
+myaddlog(GEN a, GEN x, long prec)
 {
   if (gequal0(x)) return gneg(powis(stoi(10), 20)); /* FIXME ! */
   switch(typ(x))
@@ -340,7 +340,7 @@ mylog(GEN x, long prec)
     case t_REAL: break;
     default: x = gtofp(x, prec);
   }
-  return logr_abs(x);
+  return addrr(a, logr_abs(x));
 }
 
 struct fun_q_t { GEN sel, s, VCALL, B; };
@@ -351,7 +351,7 @@ fun_q(void *E, GEN x)
   long prec = DEFAULTPREC;
   GEN z = integrand_h0(S->sel, S->s, S->VCALL, gexp(x, prec), prec);
   if (typ(z) == t_VEC) z = vecsum(z);
-  return addrr(S->B, mylog(z, prec));
+  return myaddlog(S->B, z, prec);
 }
 static GEN
 brent_q(void *E, GEN (*f)(void*,GEN), GEN q_low, GEN q_hi)
@@ -803,14 +803,14 @@ _fun_q0(void *E, GEN x)
 {
   struct _fun_q0_t *S = (struct _fun_q0_t*)E;
   GEN z = integrand_h0l(S->sel, S->s, S->alam1, x, DEFAULTPREC);
-  return addrr(S->B, mylog(z, DEFAULTPREC));
+  return myaddlog(S->B, z, DEFAULTPREC);
 }
 static GEN
 _fun_q12(void *E, GEN x)
 {
   struct _fun_q0_t *S = (struct _fun_q0_t*)E;
   GEN z = integrand_h12(S->sel, S->s, S->alam1, x, DEFAULTPREC);
-  return addrr(S->B, mylog(z, DEFAULTPREC));
+  return myaddlog(S->B, z, DEFAULTPREC);
 }
 
 static GEN
