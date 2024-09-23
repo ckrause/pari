@@ -329,11 +329,12 @@ integral_h0(GEN sel, GEN s, GEN VCALL, long prec)
   return gerepileupto(av, gmul(m_h(sel), S));
 }
 
-/* a + log |x| */
+/* a + log |x|, a t_REAL, low accuracy */
 static GEN
-myaddlog(GEN a, GEN x, long prec)
+addrlogabs(GEN a, GEN x)
 {
-  if (gequal0(x)) return gneg(powis(stoi(10), 20)); /* FIXME ! */
+  long prec = DEFAULTPREC;
+  if (gequal0(x)) return real_m2n(64, prec); /* -oo */
   switch(typ(x))
   {
     case t_COMPLEX: return gmul2n(glog(cxnorm(x), prec), -1);
@@ -348,16 +349,14 @@ static GEN
 fun_q(void *E, GEN x)
 {
   struct fun_q_t *S = (struct fun_q_t *)E;
-  long prec = DEFAULTPREC;
-  GEN z = integrand_h0(S->sel, S->s, S->VCALL, gexp(x, prec), prec);
+  GEN z = integrand_h0(S->sel,S->s,S->VCALL, gexp(x,DEFAULTPREC), DEFAULTPREC);
   if (typ(z) == t_VEC) z = vecsum(z);
-  return myaddlog(S->B, z, prec);
+  return addrlogabs(S->B, z);
 }
 static GEN
 brent_q(void *E, GEN (*f)(void*,GEN), GEN q_low, GEN q_hi)
 {
-  GEN low_val = f(E, q_low), high_val = f(E, q_hi);
-  if (gsigne(low_val) * gsigne(high_val) >= 0) return NULL;
+  if (gsigne(f(E, q_low)) * gsigne(f(E, q_hi)) >= 0) return NULL;
   return zbrent(E, f, q_low, q_hi, LOWDEFAULTPREC);
 }
 static GEN
@@ -803,14 +802,14 @@ _fun_q0(void *E, GEN x)
 {
   struct _fun_q0_t *S = (struct _fun_q0_t*)E;
   GEN z = integrand_h0l(S->sel, S->s, S->alam1, x, DEFAULTPREC);
-  return myaddlog(S->B, z, DEFAULTPREC);
+  return addrlogabs(S->B, z);
 }
 static GEN
 _fun_q12(void *E, GEN x)
 {
   struct _fun_q0_t *S = (struct _fun_q0_t*)E;
   GEN z = integrand_h12(S->sel, S->s, S->alam1, x, DEFAULTPREC);
-  return myaddlog(S->B, z, DEFAULTPREC);
+  return addrlogabs(S->B, z);
 }
 
 static GEN
