@@ -626,10 +626,9 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   sieveb = b; if (P2 && P2 < b) sieveb = P2;
   /* maxprime^2 >= sieveb */
   Y = sieveb - a; /* length of sievable interval */
-  P = usqrt(sieveb); /* largest sieving prime */
   /* FIXME: should sieve as well if q != 1, adapt sieve code */
   if (q != 1 || (P2 && P2 <= a)
-             || Y < P / expu(sieveb))
+             || Y < usqrt(sieveb) / expu(sieveb))
   { if (T->strategy==PRST_none) T->strategy = PRST_unextprime; }
   else
   { /* worth sieving */
