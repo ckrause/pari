@@ -574,7 +574,13 @@ static int
 u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
                             ulong a, ulong b, ulong c, ulong q)
 {
-  ulong maxp, maxp2;
+#ifdef LONG_IS_64BIT
+  const ulong UPRIME_MAX = 18446744073709551557UL;
+#else
+  const ulong UPRIME_MAX = 4294967291UL;
+#endif
+  ulong P, P2, Y, sieveb;
+
   if (!odd(b) && b > 2) b--;
   if (a > b || b < 2)
   {
@@ -584,7 +590,8 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
     T->n = 0;
     return 0;
   }
-  maxp = maxprime();
+  P = maxprime();
+  if (b > UPRIME_MAX) b = UPRIME_MAX;
   if (q != 1)
   {
     ulong D;
@@ -602,12 +609,12 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   T->psieve = psieve; /* unused for now */
   T->isieve = NULL; /* unused for now */
   T->b = b;
-  if (maxp >= b) { /* [a,b] \subset prime table */
+  if (P >= b) { /* [a,b] \subset prime table */
     u_forprime_set_prime_table(T, a);
     return 1;
   }
-  /* b > maxp */
-  if (a >= maxp)
+  /* b > P */
+  if (a >= P)
   {
     T->p = a - 1;
     if (T->q != 1) arith_set(T);
@@ -615,24 +622,19 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   else
     u_forprime_set_prime_table(T, a);
 
-  maxp2 = (maxp & HIGHMASK)? 0 : maxp*maxp;
+  P2 = (P & HIGHMASK)? 0 : P*P;
+  sieveb = b; if (P2 && P2 < b) sieveb = P2;
+  /* maxprime^2 >= sieveb */
+  Y = sieveb - a; /* length of sievable interval */
+  P = usqrt(sieveb); /* largest sieving prime */
   /* FIXME: should sieve as well if q != 1, adapt sieve code */
-  if (q != 1 || (maxp2 && maxp2 <= a)
-             || T->b - maxuu(a,maxp) < maxp / expu(b))
+  if (q != 1 || (P2 && P2 <= a)
+             || Y < P / expu(sieveb))
   { if (T->strategy==PRST_none) T->strategy = PRST_unextprime; }
   else
   { /* worth sieving */
-#ifdef LONG_IS_64BIT
-    const ulong UPRIME_MAX = 18446744073709551557UL;
-#else
-    const ulong UPRIME_MAX = 4294967291UL;
-#endif
-    ulong sieveb;
-    if (b > UPRIME_MAX) b = UPRIME_MAX;
-    sieveb = b;
-    if (maxp2 && maxp2 < b) sieveb = maxp2;
     if (T->strategy==PRST_none) T->strategy = PRST_sieve;
-    sieve_init(T, maxuu(maxp+2, a), sieveb);
+    sieve_init(T, maxuu(P+2, a), sieveb);
   }
   return 1;
 }
