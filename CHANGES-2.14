@@ -287,6 +287,10 @@ BA  98- rnfabelianconjgen
 TF 101- GP function znsubgroupgenerators
    102- [libpari] RgV_is_prV
    103- improve idealfactorback [using ideamulpowprime]
+AP 104- New GP functions for Hecke characters
++PMo     gchareval        gcharalgebraic   gcharconductor
+         gcharduallog     gcharidentify    gcharinit        gcharisalgebraic
+         gcharlocal       gcharlog         gcharnewprec
 
   Changed
 HC   1- faster implementation of eulervec + cache result
