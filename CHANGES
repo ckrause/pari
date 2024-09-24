@@ -14,3 +14,4 @@ BA   1- [libpari] Flm_sqr
 
   Changed
 BA   1- qflll(,1), qfllgram(,1): disable FLATTER algorithm.
+     2- tunings of forprime over "short" intervals (use sieve more frequently)

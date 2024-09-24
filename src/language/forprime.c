@@ -628,8 +628,13 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   Y = sieveb - maxprimelim(); /* length of sievable interval */
   P = usqrt(sieveb); /* largest sieving prime */
   /* FIXME: should sieve as well if q != 1, adapt sieve code */
-  if (q != 1 || (P2 && P2 <= a)
-             || Y < P / expu(sieveb))
+  if (q != 1 || (P2 && P2 <= a) || 3/M_LN2 * Y < uprimepi(P))
+  /* Sieve unimplemented/impossible/too costly. Cost model is
+   * - nextprime: about Y / log(b) primes to test [neglect cost for composites]
+   *   individual cost average = 3 log2(b) mulmod, total = 3 Y / log(2) mulmod
+   * - sieve: pi(P) mod + Y loglog(b) add
+   * Since loglog(b) < 4, and add < 10*mulmod, we neglect the Y loglog(b) term.
+   * We have mod < mulmod < 2*mod; for now, assume mulmod ~ mod. */
   { if (T->strategy==PRST_none) T->strategy = PRST_unextprime; }
   else
   { /* worth sieving */
