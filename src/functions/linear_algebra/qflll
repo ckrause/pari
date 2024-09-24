@@ -53,19 +53,19 @@ Doc: \idx{LLL} algorithm applied to the
  applying LLL to the partially reduced matrix is significantly \emph{slower}
  than starting from a knapsack-type lattice.
 
- If $\fl=3$, as $\fl=1$, but the reduction is performed in place: the
+ If $\fl=3$, as $\fl=0$, but the reduction is performed in place: the
  routine returns $x \cdot T$. This is usually faster for knapsack-type
  lattices.
 
- If $\fl=4$, as $\fl=1$, returning a vector $[K, T]$ of matrices: the
+ If $\fl=4$, as $\fl=0$, returning a vector $[K, T]$ of matrices: the
  columns of $K$ represent a basis of the integer kernel of $x$
  (not LLL-reduced in general) and $T$ is the transformation
  matrix such that $x\cdot T$ is an LLL-reduced $\Z$-basis of the image
  of the matrix $x$.
 
- If $\fl=5$, case as case $4$, but $x$ may have polynomial coefficients.
+ If $\fl=5$, case as $\fl=4$, but $x$ may have polynomial coefficients.
 
- If $\fl=8$, same as case $0$, but $x$ may have polynomial coefficients.
+ If $\fl=8$, same as $\fl=0$, but $x$ may have polynomial coefficients.
 
  \bprog
  ? \p500
