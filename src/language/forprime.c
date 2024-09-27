@@ -569,7 +569,10 @@ arith_set(forprime_t *T)
   set_avma(av);
 }
 
-/* run through primes in arithmetic progression = c (mod q) */
+/* Run through primes in arithmetic progression = c (mod q).
+ * Warning: b = ULONG_MAX may signal that we are called by higher level
+ * function handling a continuation for larger b; this sentinel value
+ * must not be modified */
 static int
 u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
                             ulong a, ulong b, ulong c, ulong q)
@@ -591,12 +594,12 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
     return 0;
   }
   P = maxprime();
-  if (b > UPRIME_MAX) b = UPRIME_MAX;
+  if (b != ULONG_MAX && b > UPRIME_MAX) b = UPRIME_MAX;
   if (q != 1)
   {
     ulong D;
     c %= q; D = ugcd(c, q);
-    if (D != 1) { a = maxuu(a,D); b = minuu(b,D); }
+    if (D != 1) { a = maxuu(a,D); if (b != ULONG_MAX) b = minuu(b,D); }
     if (odd(q) && (a > 2 || c != 2))
     { /* only *odd* primes. If a <= c = 2, then p = 2 must be included :-( */
       if (!odd(c)) c += q;
