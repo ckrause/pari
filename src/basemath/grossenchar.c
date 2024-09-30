@@ -1397,7 +1397,7 @@ gcharlocal(GEN gc, GEN chi, GEN v, long prec, GEN* pbid)
       for (i = 1; i < lg(w); i++)
         gel(w,i) = modii(gmul(gel(w,i), gel(cyc,i)), gel(cyc,i));
       chiv = vec_append(w, chiv);
-      if (pbid) { *pbid = bid; gerepileall(av, 2, &chiv, pbid); return chiv; }
+      if (pbid) { *pbid = bid; return gc_all(av, 2, &chiv, pbid); }
     }
   }
   return gerepilecopy(av, chiv);

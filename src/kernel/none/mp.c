@@ -2054,7 +2054,7 @@ sqrtremi(GEN N, GEN *r)
     S = sqrtispec(n, l2, &R);
 
   if (!r) { set_avma((pari_sp)S); return gerepileuptoint(av, S); }
-  gerepileall(av, 2, &S, &R); *r = R; return S;
+  *r = R; return gc_all(av, 2, &S, r);
 }
 
 /* compute sqrt(|a|), assuming a != 0 */

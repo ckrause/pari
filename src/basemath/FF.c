@@ -1791,9 +1791,8 @@ static GEN
 gc_gcdext(pari_sp av, GEN r, GEN *u, GEN *v)
 {
   if (!u && !v) return gerepilecopy(av, r);
-  if (u  &&  v) gerepileall(av, 3, &r, u, v);
-  else          gerepileall(av, 2, &r, u ? u: v);
-  return r;
+  if (u  &&  v) return gc_all(av, 3, &r, u, v);
+  else          return gc_all(av, 2, &r, u ? u: v);
 }
 
 GEN
