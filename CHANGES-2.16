@@ -1,3 +1,20 @@
+Bug numbers refer to the BTS at http://pari.math.u-bordeaux.fr/Bugs/
+Done for version 2.17.0 (released 30/09/2024):
+  Fixed
+     1- rare SEGV in sumnumrat [#2566]
+     2- gp -p N did not check for N < 2^32
+     3- nflist([6,8],12167) -> SEGV [#2567]
+     4- nflist([6,1],1229312), nflist([6,10],36192256) -> duplicate fields
+AP   5- variable leak in algsplit
+     6- mfslashexpansion: possible extra rational factor [#2572]
+     7- nfeltsign: possible wrong result
+
+  Added
+BA   1- [libpari] Flm_sqr
+
+  Changed
+BA   1- qflll(,1), qfllgram(,1): disable FLATTER algorithm.
+     2- tunings of forprime over "short" intervals (use sieve more frequently)
 Done for version 2.16.2 (released 02/08/2024):
   Fixed
 XR   1- rare oo-loop in nfdisc [#2510]
