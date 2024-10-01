@@ -737,7 +737,7 @@ mpqs_self_init(mpqs_handle_t *h)
   mpqs_FB_entry_t *FB = h->FB;
   mpqs_inv_A_H_t *inv_A_H = h->inv_A_H;
   const pari_sp av = avma;
-  GEN p1, A = h->A, B = h->B;
+  GEN p1, A = h->A, B = h->B, mC;
   mpqs_per_A_prime_t *per_A_pr = h->per_A_pr;
   long i, j;
 
@@ -860,17 +860,17 @@ mpqs_self_init(mpqs_handle_t *h)
    * so don't bother setting them. */
 
   /* compute zeros of polynomials that have only one zero mod p since p | A */
-  p1 = diviiexact(subii(h->kN, sqri(B)), shifti(A, 2)); /* coefficient -C */
+  mC = diviiexact(subii(h->kN, sqri(B)), shifti(A, 2)); /* coefficient -C */
   for (i = 0; i < h->omega_A; i++)
   {
-    ulong p = MPQS_AP(i), s = h->M + Fl_div(umodiu(p1, p), umodiu(B, p), p);
+    ulong p = MPQS_AP(i), s = h->M + Fl_div(umodiu(mC, p), umodiu(B, p), p);
     FB[MPQS_I(i)].fbe_start1 = FB[MPQS_I(i)].fbe_start2 = (mpqs_int32_t)(s % p);
   }
 #ifdef MPQS_DEBUG
   for (j = 3; j <= size_of_FB; j++)
   {
-    check_root(h, p1, FB[j].fbe_p, FB[j].fbe_start1);
-    check_root(h, p1, FB[j].fbe_p, FB[j].fbe_start2);
+    check_root(h, mC, FB[j].fbe_p, FB[j].fbe_start1);
+    check_root(h, mC, FB[j].fbe_p, FB[j].fbe_start2);
   }
 #endif
   if (MPQS_DEBUGLEVEL >= 6)
