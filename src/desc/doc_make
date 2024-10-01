@@ -106,6 +106,7 @@ sub library_syntax { my ($fun, $args) = @_;
   for (my $i = 0; $i <= $#proto; )
   {
     my ($c) = $proto[$i++];
+    if ($c eq 'i') { $type = "int"; next; }
     if ($c eq 'l') { $type = "long"; next; }
     if ($c eq 'v') { $type = "void"; next; }
     if ($c =~ /^[GWIJE]$/) {$args .= ", GEN " . shift(@ARGS); next;}
