@@ -9,7 +9,7 @@ Help: intnumromb(X=a,b,expr,{flag=0}): numerical integration of expr (smooth in
  limits at a or b.
 Wrapper: (,,G)
 Description:
-  (gen,gen,gen,?small):gen:prec intnumromb_bitprec(${3 cookie}, ${3 wrapper}, $1, $2, $4, $bitprec)
+  (gen,gen,gen,?small):gen:prec intnumromb(${3 cookie}, ${3 wrapper}, $1, $2, $4, $bitprec)
 Doc: numerical integration of \var{expr} (smooth in $]a,b[$), with respect to
  $X$. Suitable for low accuracy; if \var{expr} is very regular (e.g. analytic
  in a large region) and high accuracy is desired, try \tet{intnum} first.
