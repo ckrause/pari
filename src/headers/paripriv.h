@@ -396,7 +396,6 @@ void forpath_init(forpath_t *T, gp_path *path, const char *s);
 char *forpath_next(forpath_t *T);
 
 /* GP output && output format */
-void gpwritebin(const char *s, GEN x);
 extern char *current_logfile;
 
 /* colors */

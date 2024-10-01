@@ -3444,6 +3444,7 @@ GEN     externstr(const char *cmd);
 char    *gp_filter(const char *s);
 GEN     gpextern(const char *cmd);
 long    gpsystem(const char *s);
+void    gpwritebin(const char *s, GEN x);
 GEN     readstr(const char *s);
 GEN     GENtoGENstr_nospace(GEN x);
 GEN     GENtoGENstr(GEN x);
