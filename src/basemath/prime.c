@@ -567,7 +567,7 @@ BPSW_try_PL(GEN N)
   return NULL; /* not smooth enough */
 }
 
-static GEN isprimePL(GEN N);
+static GEN primecertPL(GEN N);
 /* F is a vector whose entries are primes. For each of them, find a PL
  * witness. Return 0 if caller lied and F contains a composite */
 static long
@@ -594,7 +594,7 @@ PL_certificate(GEN N, GEN F)
 
     if (BPSW_isprime_small(p)) { gel(C,i) = p; continue; }
     w = pl831(N,p); if (!w) return gen_0;
-    C0 = isprimePL(p);
+    C0 = primecertPL(p);
     if (isintzero(C0))
     { /* composite in prime factorisation ! */
       err_printf("Not a prime: %Ps", p);
@@ -656,7 +656,7 @@ PL_isvalid(GEN v)
  * b[i] witness for a[i] as in pl831
  * c[i] check_prime(a[i]) */
 static GEN
-isprimePL(GEN N)
+primecertPL(GEN N)
 {
   GEN cbrtN, N_1, F, f;
   if (BPSW_isprime_small(N)) return N;
@@ -677,6 +677,12 @@ isprimePL(GEN N)
   return PL_certificate(N, F);
 }
 
+static long
+isprimePL(GEN x)
+{
+  pari_sp av = avma;
+  return gc_long(av, !isintzero(primecertPL(x)));
+}
 /* assume N a BPSW pseudoprime, in particular, it is odd > 2. Prove N prime */
 long
 BPSW_isprime(GEN N)
@@ -698,10 +704,10 @@ BPSW_isprime(GEN N)
 static long
 _isprimePL(GEN x)
 {
-  pari_sp av = avma;
   if (!BPSW_psp(x)) return 0;
-  return gc_long(av, !isintzero(isprimePL(x)));
+  return isprimePL(x);
 }
+
 GEN
 gisprime(GEN x, long flag)
 {
@@ -726,7 +732,7 @@ primecert0(GEN x, long flag, long stopat)
   switch(flag)
   {
     case 0: return ecpp0(x, stopat);
-    case 1: { pari_sp av = avma; return gerepilecopy(av, isprimePL(x)); }
+    case 1: { pari_sp av = avma; return gerepilecopy(av, primecertPL(x)); }
   }
   pari_err_FLAG("primecert");
   return NULL;/*LCOV_EXCL_LINE*/
