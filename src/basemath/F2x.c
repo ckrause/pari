@@ -902,19 +902,19 @@ F2x_valrem(GEN x, GEN *Z)
   l -= i-2;
   y = cgetg(l, t_VECSMALL); y[1] = x[1];
   if (v2 == 0)
-    for (i=2; i<l; i++) y[i] = x[i+v];
+    for (i=2; i<l; i++) uel(y,i) = uel(x,i+v);
   else if (l == 3)
-    y[2] = ((ulong)x[2+v]) >> v2;
+    y[2] = uel(x,2+v) >> v2;
   else
   {
     const ulong sh = BITS_IN_LONG - v2;
-    ulong r = x[2+v];
+    ulong r = uel(x,2+v);
     for (i=3; i<l; i++)
     {
-      y[i-1] = (x[i+v] << sh) | (r >> v2);
-      r = x[i+v];
+      uel(y,i-1) = (uel(x,i+v)<< sh) | (r >> v2);
+      r = uel(x,i+v);
     }
-    y[l-1] = r >> v2;
+    uel(y,l-1) = r >> v2;
     (void)F2x_renormalize(y,l);
   }
   *Z = y; return (v << TWOPOTBITS_IN_LONG) + v2;
