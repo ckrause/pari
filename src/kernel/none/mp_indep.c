@@ -92,7 +92,7 @@ mulsi(long x, GEN y)
 GEN
 mulss(long x, long y)
 {
-  long p1;
+  ulong p1;
   LOCAL_HIREMAINDER;
 
   if (!x || !y) return gen_0;
@@ -108,7 +108,7 @@ mulss(long x, long y)
 GEN
 sqrs(long x)
 {
-  long p1;
+  ulong p1;
   LOCAL_HIREMAINDER;
 
   if (!x) return gen_0;
@@ -118,7 +118,7 @@ sqrs(long x)
 GEN
 muluu(ulong x, ulong y)
 {
-  long p1;
+  ulong p1;
   LOCAL_HIREMAINDER;
 
   if (!x || !y) return gen_0;
@@ -127,7 +127,7 @@ muluu(ulong x, ulong y)
 GEN
 sqru(ulong x)
 {
-  long p1;
+  ulong p1;
   LOCAL_HIREMAINDER;
 
   if (!x) return gen_0;
