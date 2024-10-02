@@ -32,6 +32,10 @@ case "$arch" in
            4) asmarch=mips;             prettya='MIPS';;
            8) asmarch=mips64;           prettya='MIPS64';;
            esac;;
+   loongarch|loongarch64) case "$sizeof_long" in
+           4) asmarch=none;             prettya='LoongArch';;
+           8) asmarch=loongarch64;      prettya='LoongArch64';;
+           esac;;
   alpha)         asmarch=$arch;         prettya=Alpha ;;
   ppc|ppc64|ppc64le)  case "$sizeof_long" in
         4) asmarch=ppc;;
