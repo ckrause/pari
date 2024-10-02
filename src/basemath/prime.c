@@ -682,12 +682,14 @@ long
 BPSW_isprime(GEN N)
 {
   pari_sp av;
-  long t;
+  long t, e;
   GEN P;
   if (BPSW_isprime_small(N)) return 1;
+  e = expi(N);
+  if (e <= 90) return isprimePL(N);
   av = avma; P = BPSW_try_PL(N);
   if (!P) /* not smooth enough */
-    t = expi(N) < 768? isprimeAPRCL(N): isprimeECPP(N);
+    t = e < 768? isprimeAPRCL(N): isprimeECPP(N);
   else
     t = (typ(P) == t_INT)? 0: PL_certify(N,P);
   return gc_long(av,t);
