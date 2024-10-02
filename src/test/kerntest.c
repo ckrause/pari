@@ -14,7 +14,7 @@ void mt_sigint_block(void) { }
 void mt_sigint_unblock(void) { }
 void new_chunk_resize(size_t x) {(void)x;}
 
-void specinit()
+void specinit(void)
 {
   long size = 100000L;
   pari_mainstack = malloc(sizeof(*pari_mainstack));
@@ -54,7 +54,7 @@ void _voirr(GEN x)
   printf("\n");
 }
 
-int main()
+int main(void)
 {
   GEN x,y,r,z, xr,yr;
   specinit();
