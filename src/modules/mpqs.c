@@ -781,11 +781,11 @@ mpqs_self_init(mpqs_handle_t *h)
       affii(t, MPQS_H(i));
       b = b? addii(b, t): t;
     }
-    affii(b, B); set_avma(av);
+    /* ensure b = 1 mod 4 */
+    if (mod2(b) == 0)
+      b = addii(b, mului(mod4(A), A)); /* b += (A % 4) * A; */
 
-    /* ensure B = 1 mod 4 */
-    if (mod2(B) == 0)
-      affii(addii(B, mului(mod4(A), A)), B); /* B += (A % 4) * A; */
+    affii(b, B); set_avma(av);
 
     A2 = shifti(A, 1);
     /* compute the roots z1, z2, of the polynomial Q(x) mod p_j and
