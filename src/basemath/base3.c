@@ -821,7 +821,7 @@ idmul(void *nf, GEN x, GEN y) { return idealmul((GEN) nf, x, y); }
 static GEN
 idpow(void *nf, GEN x, GEN n) { return idealpow((GEN) nf, x, n); }
 GEN
-idealfactorback(GEN nf, GEN L, GEN e, int red)
+idealfactorback(GEN nf, GEN L, GEN e, long red)
 {
   nf = checknf(nf);
   if (red) return gen_factorback(L, e, (void*)nf, &idmulred, &idpowred, NULL);

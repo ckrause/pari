@@ -7,3 +7,4 @@ AP   1- new GP function algnewprec
 BA   2- [loongarch64] add loongarch64 assembly kernel
 
   Changed
+BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP code.

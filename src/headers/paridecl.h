@@ -2471,7 +2471,7 @@ GEN     ei_multable(GEN nf, long i);
 const struct bb_field *get_nf_field(void **E, GEN nf);
 GEN     famat_nfvalrem(GEN nf, GEN x, GEN pr, GEN *py);
 GEN     gpnfvalrem(GEN nf, GEN x, GEN pr, GEN *py);
-GEN     idealfactorback(GEN nf, GEN L, GEN e, int red);
+GEN     idealfactorback(GEN nf, GEN L, GEN e, long red);
 GEN     ideallist(GEN nf,long bound);
 GEN     ideallist0(GEN nf,long bound, long flag);
 GEN     gideallist(GEN nf, GEN bound, long flag);
@@ -3044,7 +3044,7 @@ GEN     subgrouplist0(GEN bnr, GEN indexbound, long all);
 
 GEN     bnfisnorm(GEN bnf,GEN x,long flag);
 GEN     rnfisnorm(GEN S, GEN x, long flag);
-GEN     rnfisnorminit(GEN bnf, GEN R, int galois);
+GEN     rnfisnorminit(GEN bnf, GEN R, long galois);
 
 /* char.c */
 

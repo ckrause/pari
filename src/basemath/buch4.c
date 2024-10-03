@@ -76,7 +76,7 @@ hash_create_INT(ulong s)
 { return hash_create(s, (ulong(*)(void*))&hash_GEN,
                         (int(*)(void*,void*))&equalii, 1); }
 GEN
-rnfisnorminit(GEN T, GEN R, int galois)
+rnfisnorminit(GEN T, GEN R, long galois)
 {
   pari_sp av = avma;
   long i, l, dR;
