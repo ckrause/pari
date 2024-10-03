@@ -316,6 +316,10 @@ kerntest: $KERNOBJS dummy\$(_O) kerntest\$(_O)
 mpinl\$(_O): .headers parilvl0.h parilvl1.h $knone/mpinl.c
 	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) \$(DLCFLAGS) -o mpinl\$(_O) $knone/mpinl.c
 
+test-proto: .headers
+	-cd $doc; \$(MAKE) usersch3.tex
+	@\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) $src/desc/proto.c -o proto && echo OK || echo BUG
+
 test-kernel:: kerntest
 	@./kerntest > gp.out;\
 	diff -c gp.out $src/test/32/kernel > kern.dif;\
@@ -344,7 +348,7 @@ clean_pari_ps::
 cleantest:
 	\$(RM) *.dif gp.out io-testfile pari.ps
 cleanobj:
-	-\$(RM) *\$(_O) mpker.c *.s parimt.h mpinl.h parilvl0.h parilvl1.h libpari* $exec kerntest
+	-\$(RM) *\$(_O) mpker.c *.s parimt.h mpinl.h parilvl0.h parilvl1.h libpari* $exec kerntest proto
 	-\$(RM) gmon.out
 	-\$(RM) *.gcno *.gcda
 cleandesc:
