@@ -1,7 +1,7 @@
 Function: mftocoset
 Section: modular_forms
 C-Name: mftocoset
-Prototype: LGG
+Prototype: UGG
 Help: mftocoset(N,M,Lcosets): M being a matrix in SL_2(Z) and Lcosets being
  mfcosets(N), find the right coset of G_0(N) to which M belongs. The output
  is a pair [ga,i] such that M = ga * Lcosets[i], with ga in G_0(N).

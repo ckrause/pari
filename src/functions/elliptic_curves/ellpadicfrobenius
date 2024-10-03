@@ -1,7 +1,7 @@
 Function: ellpadicfrobenius
 Section: elliptic_curves
 C-Name: ellpadicfrobenius
-Prototype: GLL
+Prototype: GUL
 Help: ellpadicfrobenius(E,p,n): matrix of the Frobenius at p>2 in the standard
  basis of H^1_dR(E) to absolute p-adic precision p^n.
 Doc: If $p>2$ is a prime and $E$ is an elliptic curve on $\Q$ with good

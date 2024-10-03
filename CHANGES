@@ -1,10 +1,11 @@
 Bug numbers refer to the BTS at http://pari.math.u-bordeaux.fr/Bugs/
 Done for version 2.18.0 (released ??/01/2025):
   Fixed
+BA   1- incorrect GP proto for ellpadicfrobenius, mftocoset, qfcvp [#2575]
 
   Added
 AP   1- new GP function algnewprec
 BA   2- [loongarch64] add loongarch64 assembly kernel
 
   Changed
-BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP code.
+BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
