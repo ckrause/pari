@@ -97,8 +97,8 @@ sub library_syntax { my ($fun, $args) = @_;
   my ($Proto) = $fun->{Prototype};
   $Proto =~ s/\\n.*//; # delete Mnemonics
   my (@proto) = split(//, $Proto);
+  $args =~ s/\{([^\}]*)=[^\}]*\}/$1/g; # delete default value
   $args =~ s/[{}&]//g;
-  $args =~ s/ *=[^,\)]*//g; # delete default values
   my (@ARGS) = split(/[,^] */, $args); # ^ for O(p^e)
   my ($type) = "GEN";
   my (@vars)=();
