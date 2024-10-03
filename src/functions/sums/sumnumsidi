@@ -35,3 +35,4 @@ Doc: Numerical summation of $f(n)$ from $n=a$ to $+\infty$ using Sidi
  absolute error less than $2^{-b}$. The function $f$ is evaluated at $O(b)$
  consecutive integer arguments at bit accuracy $1.56 b$ (resp.~$b$) in safe
  (resp.~unsafe) mode.
+ %\syn{NO}

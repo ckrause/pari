@@ -8,3 +8,4 @@ Prototype: V=GGED0,M,D0,L,p\nParametric|1; Recursive|2; no_Rescale|4; no_X_axis|
 Obsolete: 2018-02-01
 Help: psploth(X=a,b,expr,{flags=0},{n=0}): obsolete function.
 Doc: This function is obsolete, use plothexport and write the result to file.
+ %\syn{NO}

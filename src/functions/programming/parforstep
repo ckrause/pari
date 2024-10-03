@@ -49,3 +49,4 @@ Doc: evaluates in parallel the expression \kbd{expr1} in the formal
  [7, 14]
  [8, 16]
  @eprog
+ %\syn{NO}
