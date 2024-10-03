@@ -2,8 +2,8 @@ Function: gcharalgebraic
 Section: number_fields
 C-Name: gcharalgebraic
 Prototype: GDG
-Help: gcharalgebraic(gc,{type}): returns a matrix whose columns form a basis of
- the algebraic Grossencharacters in gc. If type is specified as a vector of
+Help: gcharalgebraic(gc,{typ}): returns a matrix whose columns form a basis of
+ the algebraic Grossencharacters in gc. If typ is specified as a vector of
  integer exponents [p,q] for each complex place, returns a vector containing
  an algebraic character of that infinity type (or the empty vector if such a
  character does not exist).
@@ -12,7 +12,7 @@ Doc: \var{gc} being the structure returned by \kbd{gcharinit}, returns a \typ{MA
  \var{gc} (Weil type A0). The last component is interpreted as a power of the
  norm.
 
- If \var{type} is a \typ{VEC} of length $\var{gc}\kbd{.r1}+\var{gc}\kbd{.r2}$,
+ If \var{typ} is a \typ{VEC} of length $\var{gc}\kbd{.r1}+\var{gc}\kbd{.r2}$,
  containing a pair of integers $[p_{\tau},q_{\tau}]$ for each complex
  embedding~$\tau$, returns a \typ{VEC} containing a character whose infinity type
  at~$\tau$ is
