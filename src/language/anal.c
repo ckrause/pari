@@ -362,7 +362,7 @@ kill0(const char *e)
 }
 
 void
-addhelp(const char *e, char *s)
+addhelp(const char *e, const char *s)
 {
   entree *ep = fetch_entry(e);
   void *f = (void *) ep->help;

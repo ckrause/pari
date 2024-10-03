@@ -2028,7 +2028,7 @@ GEN     zv_diagonal(GEN x);
 
 /* anal.c */
 
-void    addhelp(const char *e, char *s);
+void    addhelp(const char *e, const char *s);
 GEN     arity0(GEN C);
 void    alias0(const char *s, const char *old);
 GEN     compile_str(const char *s);
@@ -3465,10 +3465,10 @@ void    err_printf(const char* pat, ...);
 long    gp_embedded(const char *s);
 void    gp_embedded_init(long rsize, long vsize);
 void    gp_fileclose(long n);
-long    gp_fileextern(char *s);
+long    gp_fileextern(const char *s);
 void    gp_fileflush(long n);
 void    gp_fileflush0(GEN n);
-long    gp_fileopen(char *s, char *mode);
+long    gp_fileopen(const char *s, const char *mode);
 GEN     gp_fileread(long n);
 GEN     gp_filereadstr(long n);
 void    gp_filewrite(long n, const char *s);
@@ -3477,7 +3477,7 @@ GEN     gp_getenv(const char *s);
 GEN     gp_read_file(const char *s);
 GEN     gp_read_str_multiline(const char *s, char *last);
 GEN     gp_read_stream(FILE *f);
-GEN     gp_readvec_file(char *s);
+GEN     gp_readvec_file(const char *s);
 GEN     gp_readvec_stream(FILE *f);
 void    gpinstall(const char *s, const char *code,
                   const char *gpname, const char *lib);
@@ -5085,7 +5085,7 @@ void    plotrline(long ne, GEN x2, GEN y2);
 void    plotrmove(long ne, GEN x, GEN y);
 void    plotrpoint(long ne, GEN x, GEN y);
 void    plotscale(long ne, GEN x1, GEN x2, GEN y1, GEN y2);
-void    plotstring(long ne, char *x, long dir);
+void    plotstring(long ne, const char *x, long dir);
 void    psdraw(GEN list, long flag);
 GEN     psploth(void *E, GEN(*f)(void*,GEN), GEN a, GEN b, long flags, long n, long prec);
 GEN     psplothraw(GEN listx, GEN listy, long flag);

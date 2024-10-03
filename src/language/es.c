@@ -464,7 +464,7 @@ gp_readvec_stream(FILE *fi)
 }
 
 GEN
-gp_readvec_file(char *s)
+gp_readvec_file(const char *s)
 {
   GEN x = NULL;
   FILE *f = switchin(s);
@@ -5005,7 +5005,7 @@ check_compress(const char *name)
 #endif
 
 long
-gp_fileopen(char *s, char *mode)
+gp_fileopen(const char *s, const char *mode)
 {
   FILE *f;
   if (mode[0]==0 || mode[1]!=0)
@@ -5035,7 +5035,7 @@ gp_fileopen(char *s, char *mode)
 }
 
 long
-gp_fileextern(char *s)
+gp_fileextern(const char *s)
 {
 #ifndef HAVE_PIPES
   pari_err(e_ARCH,"pipes");

@@ -703,7 +703,7 @@ plotlines(long ne, GEN X, GEN Y, long flag)
 
 /* ROt_ST */
 void
-plotstring(long ne, char *str, long dir)
+plotstring(long ne, const char *str, long dir)
 {
   PariRect *e = check_rect_init(ne);
   RectObj *z = (RectObj*) pari_malloc(sizeof(RectObjST));
