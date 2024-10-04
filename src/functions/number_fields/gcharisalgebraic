@@ -2,8 +2,8 @@ Function: gcharisalgebraic
 Section: number_fields
 C-Name: gcharisalgebraic
 Prototype: iGGD&
-Help: gcharisalgebraic(gc,chi,{&type}): returns 1 if chi is an algebraic (type A0)
- character. If type is present, it is set to the infinity type [p,q] of chi.
+Help: gcharisalgebraic(gc,chi,{&typ}): returns 1 if chi is an algebraic (type A0)
+ character. If typ is present, it is set to the infinity type [p,q] of chi.
 Doc: \var{gc} being the structure returned by \kbd{gcharinit} and \var{chi}
  a character on \var{gc}, returns 1 if and only if \var{chi} is an algebraic
  (Weil type A0) character, so that its infinity type at every complex
@@ -11,7 +11,7 @@ Doc: \var{gc} being the structure returned by \kbd{gcharinit} and \var{chi}
  $$ z \mapsto z^{-p_{\tau}}\bar{z}^{-q_{\tau}} $$
  for some pair of integers $(p_{\tau},q_{\tau})$.
 
- If \var{type} is given, it is set to the \typ{VEC} of exponents
+ If \var{typ} is given, it is set to the \typ{VEC} of exponents
  $[p_{\tau},q_{\tau}]$.
 
  \bprog
