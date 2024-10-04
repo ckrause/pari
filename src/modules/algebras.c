@@ -1493,6 +1493,7 @@ algisassociative(GEN mt0, GEN p)
   GEN M, mt;
 
   if (checkalg_i(mt0)) { p = alg_get_char(mt0); mt0 = alg_get_multable(mt0); }
+  if (!p) p = gen_0;
   if (typ(p) != t_INT) pari_err_TYPE("algisassociative",p);
   mt = check_mt_noid(mt0, isintzero(p)? NULL: p);
   if (!mt) pari_err_TYPE("algisassociative (mult. table)", mt0);

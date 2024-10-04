@@ -1,8 +1,8 @@
 Function: algisassociative
 Section: algebras
 C-Name: algisassociative
-Prototype: iGD0,G,
-Help: algisassociative(mt,p=0): true (1) if the multiplication table mt is
+Prototype: iGDG
+Help: algisassociative(mt,{p=0}): true (1) if the multiplication table mt is
  suitable for algtableinit(mt,p), false (0) otherwise.
 Doc: Returns 1 if the multiplication table \kbd{mt} is suitable for
  \kbd{algtableinit(mt,p)}, 0 otherwise. More precisely, \kbd{mt} should be
