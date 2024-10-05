@@ -5556,6 +5556,7 @@ alglathnf(GEN al, GEN m, GEN d)
   pari_sp av = avma;
   long N,i,j;
   GEN m2, c;
+  if (!d) d = gen_0;
   checkalg(al);
   if (alg_type(al) == al_REAL) pari_err_TYPE("alglathnf [real algebra]", al);
   N = alg_get_absdim(al);
