@@ -148,7 +148,7 @@ sub library_syntax { my ($fun, $args) = @_;
     if ($c eq 'D') {
       $c = $proto[$i++];
       if ($c =~ /^[GEIJrs]$/) {  my $v = shift(@ARGS);
-                        if (!defined($v)) { print STDERR "*** ?$gpname: missing default\n"; next; }
+                        if (!defined($v)) { die "*** ?$gpname: missing default\n"; next; }
                         ($v =~ s/\{([^\}]*)=[^\}]*\}/$1/g) or ($v =~ s/[{}]//g); # delete default value
                         $args .= ", $p2c{$c} " . $v ." = NULL"; next;}
       if ($c eq '&') { my $v = shift(@ARGS);
@@ -167,7 +167,7 @@ sub library_syntax { my ($fun, $args) = @_;
       while (defined($c = $proto[$i++]) && $c ne ',') {}
       $c = $proto[$i++];
       if ($c =~ /^[LMUrs]$/ ) {  my $v = shift(@ARGS); my $w = $v;
-                        if (!defined($v)) { print STDERR "*** ?$gpname: missing default\n"; next; }
+                        if (!defined($v)) { die "*** ?$gpname: missing default\n"; next; }
                         ($v =~ s/\{([^\}]*)=[^\}]*\}/$1/g) or ($v =~ s/[{}]//g); # delete default value
                         $args .= ", $p2c{$c} " . $v; next;}
       $c = $proto[$i++];

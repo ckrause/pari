@@ -317,8 +317,8 @@ mpinl\$(_O): .headers parilvl0.h parilvl1.h $knone/mpinl.c
 	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) \$(DLCFLAGS) -o mpinl\$(_O) $knone/mpinl.c
 
 test-proto: .headers
-	-cd $doc; \$(MAKE) usersch3.tex
-	@\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) $src/desc/proto.c -o proto && echo OK || echo BUG
+	@(cd $doc; \$(MAKE) usersch3.tex) && \
+	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) $src/desc/proto.c -o proto && echo OK || echo BUG
 
 test-kernel:: kerntest
 	@./kerntest > gp.out;\
