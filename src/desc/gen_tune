@@ -53,7 +53,7 @@ EOF
   }
   print TUNE "#endif\n";
   close TUNE;
-  
+
   open TUNE, ">src/kernel/none/tune-gen.h";
   print TUNE "#ifdef PARI_TUNE\n";
   for (@list)
@@ -91,7 +91,7 @@ sub gendescfile
   my %hlist=map {$_=>1} (keys %none32, keys %none64, keys %gmp32, keys %gmp64);
   my @list = sort keys %hlist;
   printf "%-30s %7s %7s %7s %7s\n","#LIMIT","none32","gmp32","none64","gmp64";
-  
+
   for $_ (@list)
   {
     printf "%-30s %7s %7s %7s %7s\n",$_,cc($none32{$_}),cc($gmp32{$_}),

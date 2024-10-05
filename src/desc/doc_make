@@ -30,7 +30,7 @@ PARI::822::read(\%funcs, "pari.desc");
 );
 
 for (keys %funcs)
-{ 
+{
   my ($s) = $funcs{$_}->{Section};
   next if (!$s);
   my ($c) = $funcs{$_}->{Class};

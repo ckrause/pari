@@ -43,14 +43,14 @@ mode&2: new functions are not allowed.
 sub read
 {
 
-	local $/="\n";
+        local $/="\n";
         local *FILE;
 
-	my ($ret,$file,$check)=@_;
+        my ($ret,$file,$check)=@_;
         $check=0 if (!defined($check));
-	my $invars=0;
-	my ($key, $value);
-	my $last_was_void=0;
+        my $invars=0;
+        my ($key, $value);
+        my $last_was_void=0;
         my $entry;
         my ($store) = sub {
                 $value =~ s/\s*$//;
@@ -65,9 +65,9 @@ sub read
         };
 
         open FILE,"<$file";
-	while (my $line = <FILE>)
+        while (my $line = <FILE>)
         {
-		chomp $line;
+                chomp $line;
                 if ($invars && $line =~ /^\s/)
                 {
                         $line =~ s/^\s//;
@@ -79,15 +79,15 @@ sub read
 
                 $store->() if ($invars);
 
-		($key, $value)=split(/:\s*/, $line, 2);
+                ($key, $value)=split(/:\s*/, $line, 2);
                 die("Bad entry in $file: $key") if (!defined($value));
-		if ($key eq 'Function')
+                if ($key eq 'Function')
                 {
                         $entry=$value;
                         die("New function $value") if (($check&2) and !defined($ret->{$entry}));
-		}
+                }
                 $invars=1;
-	}
+        }
         $store->() if ($invars);
         return 0;
 }
@@ -117,27 +117,27 @@ sub write
                    "Obsolete","Help", "Iterator","Wrapper","Description",
                    "Doc","Variant");
         my %knowfields=map {$_ => 1}  @order;
-	my %data=%{shift()};
+        my %data=%{shift()};
         my $STREAM=shift;
         defined($STREAM) or $STREAM=*STDOUT;
-	foreach my $func (sort keys %data)
+        foreach my $func (sort keys %data)
         {
-	        foreach my $field (@order)
+                foreach my $field (@order)
                 {
-		        my $val=$data{$func}->{$field};
+                        my $val=$data{$func}->{$field};
                         next if (!defined($val));
                         $val =~ s/\n/\n /g;
-		        print $STREAM $field.": $val\n";
+                        print $STREAM $field.": $val\n";
                 }
-	        foreach my $field (sort keys %{$data{$func}})
+                foreach my $field (sort keys %{$data{$func}})
                 {
-			next if ($knowfields{$field});
-			warn("Unknown field $field in $func");
-		        my $val=$data{$func}->{$field};
+                        next if ($knowfields{$field});
+                        warn("Unknown field $field in $func");
+                        my $val=$data{$func}->{$field};
                         $val =~ s/\n/\n /g;
-		        print $STREAM $field.": $val\n";
+                        print $STREAM $field.": $val\n";
                 }
                 print $STREAM "\n";
-	}
+        }
 }
 1;
