@@ -29,6 +29,7 @@ GEN dbg_err(void);
 void gp_quit(long exitcode);
 void pari_breakpoint(void);
 int  whatnow(PariOUT *out, const char *s, int silent);
+void whatnow0(char *s);
 
 extern void (*cb_gp_output)(GEN z);
 extern void (*cb_pari_end_output)(void);
