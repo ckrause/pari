@@ -5754,7 +5754,7 @@ GEN     msnew(GEN W);
 GEN     mspetersson(GEN W, GEN F1, GEN F2);
 GEN     mspolygon(GEN M, long flag);
 GEN     msstar(GEN W, GEN);
-GEN     msqexpansion(GEN W, GEN proV, ulong B);
+GEN     msqexpansion(GEN W, GEN proV, long B);
 GEN     mssplit(GEN W, GEN H, long deglim);
 GEN     mstooms(GEN W, GEN phi);
 

@@ -274,7 +274,10 @@ ellweilcurve(ellisomat(E,,1)) == [e,s]
 \\ Errors, keep at end of file
 ms=msinit(57,2,1);M=mssplit(ms);msdim(M)
 E = ellinit([1,2]); [W,xpm] = msfromell(E); mseval(W,xpm[1],[1])
-W = msinit(6,4); msatkinlehner(W,4)
+W = msinit(6,4);
+msatkinlehner(W,4)
+msqexpansion(W,0,-1)
+msqexpansion(W,0,1)
 msinit(-11,2,0)
 msinit(11,1,0)
 msinit(1/2,2,0)

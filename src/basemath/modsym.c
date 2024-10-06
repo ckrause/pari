@@ -767,12 +767,13 @@ msqexpansion_i(GEN W, GEN proV, ulong B)
   return L;
 }
 GEN
-msqexpansion(GEN W, GEN proV, ulong B)
+msqexpansion(GEN W, GEN proV, long B)
 {
   pari_sp av = avma;
   checkms(W);
+  if (B < 0) pari_err_DOMAIN("msqexpansion", "B", "<", gen_0, stoi(B));
   proV = Qevproj_init0(proV);
-  return gerepilecopy(av, msqexpansion_i(W,proV,B));
+  return gerepilecopy(av, msqexpansion_i(W,proV,(ulong)B));
 }
 
 static GEN

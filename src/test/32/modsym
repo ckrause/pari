@@ -541,9 +541,15 @@ O(11^7) + (10 + 3*11 + 6*11^2 + 9*11^3 + 8*11^4 + 5*11^5 + O(11^6))*x + (6 +
   ***   at top-level: ...2]);[W,xpm]=msfromell(E);mseval(W,xpm[1],[1])
   ***                                             ^--------------------
   *** mseval: incorrect type in mspathlog (t_VEC).
-  ***   at top-level: W=msinit(6,4);msatkinlehner(W,4)
-  ***                               ^------------------
+  ***   at top-level: msatkinlehner(W,4)
+  ***                 ^------------------
   *** msatkinlehner: domain error in msatkinlehner: N % Q != 0
+  ***   at top-level: msqexpansion(W,0,-1)
+  ***                 ^--------------------
+  *** msqexpansion: domain error in msqexpansion: B < 0
+  ***   at top-level: msqexpansion(W,0,1)
+  ***                 ^-------------------
+  *** msqexpansion: incorrect type in Qevproj_init (t_INT).
   ***   at top-level: msinit(-11,2,0)
   ***                 ^---------------
   *** msinit: domain error in msinit: N <= 0
@@ -562,4 +568,4 @@ O(11^7) + (10 + 3*11 + 6*11^2 + 9*11^3 + 8*11^4 + 5*11^5 + O(11^6))*x + (6 +
   ***   at top-level: msinit(11,2,-2)
   ***                 ^---------------
   *** msinit: domain error in msinit: |sign| > 1
-Total time spent: 1954
+Total time spent: 2748
