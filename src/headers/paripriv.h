@@ -71,7 +71,6 @@ GEN setloop(GEN a);
 #define EXPR_ARGBOOL __E, &gp_evalbool
 #define EXPR_ARGVOID __E, &gp_evalvoid
 
-GEN  dirpowerssum0(GEN N, GEN s, GEN f, long both, long prec);
 GEN  iferrpari(GEN a, GEN b, GEN c);
 void forfactored(GEN a, GEN b, GEN code);
 void forpari(GEN a, GEN b, GEN node);
@@ -84,7 +83,6 @@ GEN  andpari(GEN a, GEN b);
 GEN  orpari(GEN a, GEN b);
 void ifpari_void(GEN g, GEN a, GEN b);
 GEN  ifpari_multi(GEN g, GEN a);
-GEN  geval_gp(GEN x, GEN t);
 
 GEN  gadde(GEN *x, GEN y);
 GEN  gadd1e(GEN *x);
@@ -99,8 +97,6 @@ GEN  gsube(GEN *x, GEN y);
 GEN  gsub1e(GEN *x);
 GEN  gshift_right(GEN x, long n);
 
-GEN  asympnum0(GEN u, GEN alpha, long prec);
-GEN  asympnumraw0(GEN u, long LIM, GEN alpha, long prec);
 GEN  derivnum0(GEN a, GEN code, GEN ind, long prec);
 GEN  derivfun0(GEN args, GEN def, GEN code, long k, long prec);
 GEN  direuler0(GEN a, GEN b, GEN code, GEN c);
@@ -123,8 +119,6 @@ GEN  intnum0(GEN a, GEN b, GEN code, GEN tab, long prec);
 GEN  intnumgauss0(GEN a, GEN b, GEN code, GEN tab, long prec);
 GEN  intnumosc0(GEN a, GEN H, GEN code, long flag, GEN tab, long prec);
 GEN  intnumromb0(GEN a, GEN b, GEN code, long flag, long bit);
-GEN  laurentseries0(GEN f, long M, long v, long prec);
-GEN  limitnum0(GEN u, GEN alpha, long prec);
 GEN  matrice(GEN nlig, GEN ncol, GEN code);
 void pariplot0(GEN a, GEN b, GEN code, GEN ysmlu, GEN ybigu, long prec);
 GEN  prodeuler0(GEN a, GEN b, GEN code, long prec);
@@ -153,8 +147,6 @@ GEN  ploth0(GEN a, GEN b, GEN code, long flag, long n, long prec);
 GEN  plothexport0(GEN fmt, GEN a, GEN b, GEN code, long flags, long n, long prec);
 GEN  psploth0(GEN a,GEN b,GEN code,long flag,long n,long prec);
 GEN  plotrecth0(long ne,GEN a,GEN b,GEN code,ulong flags,long n,long prec);
-
-GEN  listcreate_gp(long n);
 
 /* mt */
 void mt_sigint(void);
@@ -633,8 +625,6 @@ void pari_thread_close_files(void);
 void export_add(const char *str, GEN val);
 void export_del(const char *str);
 GEN  export_get(const char *str);
-void exportall(void);
-void unexportall(void);
 
 /* BY FILES */
 
