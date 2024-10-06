@@ -3971,8 +3971,6 @@ GEN     Ser0(GEN x, long v, GEN d, long prec);
 
 /* gen3.c */
 
-GEN     padic_to_Q(GEN x);
-GEN     padic_to_Q_shallow(GEN x);
 GEN     QpV_to_QV(GEN v);
 GEN     RgC_RgV_mulrealsym(GEN x, GEN y);
 GEN     RgM_mulreal(GEN x, GEN y);
@@ -4094,6 +4092,8 @@ GEN     mulreal(GEN x, GEN y);
 GEN     numer(GEN x);
 GEN     numer_i(GEN x);
 GEN     numerator(GEN x, GEN D);
+GEN     padic_to_Q(GEN x);
+GEN     padic_to_Q_shallow(GEN x);
 long    padicprec(GEN x, GEN p);
 long    padicprec_relative(GEN x);
 GEN     polcoef(GEN x, long n, long v);
