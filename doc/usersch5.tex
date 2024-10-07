@@ -15823,6 +15823,10 @@ numerical derivative of the closure \kbd{code}.
 \fun{GEN}{closure_derivn}{GEN code, long n} returns a closure corresponding to
 the numerical derivative of order $n > 0$ of the closure \kbd{code}.
 
+\fun{GEN}{closuretoinl}{GEN code} convert the closure \kbd{code} to
+an pseudo-inline closure suitable to use with the prototype codes \kbd{I} and
+\kbd{E}.
+
 \fun{GEN}{snm_closure}{entree *ep, GEN data}
 Let \kbd{data} be a vector of length $m$, \kbd{ep} be an \kbd{entree}
 pointing to a C function $f$ of arity $n+m$, returns a \typ{CLOSURE} object

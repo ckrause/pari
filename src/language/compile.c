@@ -2052,6 +2052,24 @@ strtoclosure(const char *s, long n,  ...)
 }
 
 GEN
+closuretoinl(GEN C)
+{
+  long i, n = closure_arity(C);
+  GEN text = closure_get_text(C);
+  struct codepos pos;
+  const char *loc;
+  getcodepos(&pos);
+  if (typ(text)==t_VEC) text = gel(text, 2);
+  loc = GSTR(text);
+  dbgstart = loc;
+  op_push_loc(OCpushgen, data_push(C), loc);
+  for (i = n; i >= 1 ; i--)
+    op_push_loc(OCpushlex, -i, loc);
+  op_push_loc(OCcalluser, n, loc);
+  return getfunction(&pos,0,0,text,0);
+}
+
+GEN
 strtofunction(const char *s) { return strtoclosure(s, 0); }
 
 GEN
