@@ -13,3 +13,6 @@ Doc: permanent of the square matrix $x$ using Ryser's formula in Gray code
  %3 = 895014631192902121
  @eprog\noindent This function runs in time $O(2^{n} n)$ for a matrix of size
  $n$ and is not implemented for $n$ large.
+
+ To compute the permanent of a sparse matrix for which \kbd{matpermanent} is too slow,
+ the script \kbd{parpermanent.gp} in the \kbd{examples} directory can be of use.

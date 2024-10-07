@@ -87,6 +87,11 @@ imaginary quadratic fields (written by Fernando Rodriguez Villegas)
 Lucas-Lehmer primality test on the Mersenne number 2^p-1. If the result is 1,
 the Mersenne number is prime, otherwise not.
 
+-- parpermanent.gp: The function parmatpermanent(M) use parallel algorithm
+to compute the permanent of the (assumed sparse) matrix M.
+It uses a two-stage descent process that can be controlled by the optionnal
+arguments t an k.
+
 -- rho.gp: a simple implementation of Pollard's rho method. The function
 rho(n) outputs the complete factorization of n in the same format as factor.
 
