@@ -69,7 +69,7 @@ regulator. These are tentative values. Then use
    check({lim = 100})
 
 to check if the value is consistent with the value of the L-series (the value
-returned should be close to 1). Finally, 
+returned should be close to 1). Finally,
 
    fu() (no parameters)
 
