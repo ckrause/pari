@@ -2030,13 +2030,18 @@ chron(const char *s)
     const char *t;
     if (*s == '#') s++;
     if (*s) return 0;
-    t = gp_format_time(pari_get_histtime(0));
-    if (pari_mt_nbthreads==1)
-      pari_printf("  ***   last result computed in %s.\n", t);
+    if (pari_nb_hist()==0)
+      pari_printf("  ***   no last result.\n");
     else
     {
-      const char *r = gp_format_time(pari_get_histrtime(0));
-      pari_printf("  ***   last result: cpu time %s, real time %s.\n", t,r);
+      t = gp_format_time(pari_get_histtime(0));
+      if (pari_mt_nbthreads==1)
+        pari_printf("  ***   last result computed in %s.\n", t);
+      else
+      {
+        const char *r = gp_format_time(pari_get_histrtime(0));
+        pari_printf("  ***   last result: cpu time %s, real time %s.\n", t,r);
+      }
     }
   }
   else { GP_DATA->chrono ^= 1; (void)sd_timer(NULL,d_ACKNOWLEDGE); }
