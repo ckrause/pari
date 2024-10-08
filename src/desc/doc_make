@@ -172,34 +172,35 @@ sub library_syntax { my ($fun, $args) = @_;
     if ($c eq 'P') {$args .= ", long precdl"; next;}
     if ($c eq 'C') {$args .= ", GEN ctx"; next;}
     if ($c eq '') { next; }
-    if ($c eq 'V') {  $vargs  = shift(@ARGS); next; }
-    if ($c eq '=') {  my (@v) =  split('=',$vargs); $i++;
+    if ($c eq 'V') { $vargs  = shift(@ARGS); next; }
+    if ($c eq '=') { my (@v) =  split('=',$vargs); $i++;
                     $args .= ", GEN " . $v[1]; next; }
     if ($c eq 'D') {
       $c = $proto[$i++];
-      if ($c =~ /^[GEIJrs]$/) {  my $v = shift(@ARGS);
-                        if (!defined($v)) { die "*** ?$gpname: missing default\n"; next; }
-                        ($v =~ s/\{([^\}]*)=[^\}]*\}/$1/g) or ($v =~ s/[{}]//g); # delete default value
-                        $args .= ", $p2c{$c} " . $v ." = NULL"; next;}
+      if ($c =~ /^[GEIJrs]$/) { my $v = shift(@ARGS);
+        if (!defined($v)) { die "*** ?$gpname: missing default\n"; next; }
+        # delete default value
+        ($v =~ s/\{([^\}]*)=[^\}]*\}/$1/g) or ($v =~ s/[{}]//g);
+        $args .= ", $p2c{$c} " . $v ." = NULL"; next; }
       if ($c eq '&') { my $v = shift(@ARGS);
-                       $v =~ s/[{}]//g;
-                       $v =~ s/^&// or die("missing & in ?$gpname");
-                       $args .= ", GEN *". $v ." = NULL"; next; }
-      if ($c eq 'P') {$args .= ", long precdl"; next;}
+        $v =~ s/[{}]//g;
+        $v =~ s/^&// or die("missing & in ?$gpname");
+        $args .= ", GEN *". $v ." = NULL"; next; }
+      if ($c eq 'P') { $args .= ", long precdl"; next; }
       if ($c eq 'V') { next; }
       if ($c eq 'n') {
         my ($v) = shift(@ARGS);
-        ($v =~ s/\{([^\}]*)=[^\}]*\}/$1/g) or ($v =~ s/[{}]//g); # delete default value
+        # delete default value
+        ($v =~ s/\{([^\}]*)=[^\}]*\}/$1/g) or ($v =~ s/[{}]//g);
         $args .= ", long $v = -1";
-        push @vars,"\\kbd{$v}";
-        next;
-      }
+        push @vars,"\\kbd{$v}"; next; }
       while (defined($c = $proto[$i++]) && $c ne ',') {}
       $c = $proto[$i++];
       if ($c =~ /^[LMUrs]$/ ) {  my $v = shift(@ARGS); my $w = $v;
-                        if (!defined($v)) { die "*** ?$gpname: missing default\n"; next; }
-                        ($v =~ s/\{([^\}]*)=[^\}]*\}/$1/g) or ($v =~ s/[{}]//g); # delete default value
-                        $args .= ", $p2c{$c} " . $v; next;}
+        if (!defined($v)) { die "*** ?$gpname: missing default\n"; next; }
+        # delete default value
+        ($v =~ s/\{([^\}]*)=[^\}]*\}/$1/g) or ($v =~ s/[{}]//g);
+        $args .= ", $p2c{$c} " . $v; next;}
       $c = $proto[$i++];
     }
   }
