@@ -2020,7 +2020,7 @@ idealismaximal_int(GEN nf, GEN p)
   if (!dvdii(nf_get_index(nf), p) &&
       !FpX_is_irred(FpX_red(nf_get_pol(nf),p), p)) return NULL;
   L = idealprimedec(nf, p);
-  return lg(L) == 2? gel(L,1): NULL;
+  return (lg(L) == 2 && pr_get_e(gel(L,1))==1) ? gel(L,1): NULL;
 }
 /* true nf */
 static GEN

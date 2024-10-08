@@ -65,6 +65,8 @@ pr = idealprimedec(K,31)[2];
 idealismaximal(K,idealhnf(K,pr)) == pr
 idealismaximal(K, x^2+1)
 idealismaximal(nfinit(x^5-x-1), [330,241,183,-175,348]~) \\ #2556
+\\ https://github.com/sagemath/sage/issues/38766 :
+idealismaximal(nfinit(x^4 - 18*x^2 + 9), 3)
 
 K=nfinit(x^4+26);
 A=idealhnf(K,7,x^3+2*x^2-3*x+1);
