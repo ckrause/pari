@@ -1,6 +1,5 @@
 Function: global
 Section: programming/specific
-Obsolete: 2007-10-03
-Help: global(list of variables): obsolete. Scheduled for deletion.
-Doc: obsolete. Scheduled for deletion.
- % \syn{NO}
+Help: global(list of variables): Declare global variables for GP2C.
+Doc: Declare global variables for GP2C. This should appear before any use of
+ the variables in a function.
