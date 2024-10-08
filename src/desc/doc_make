@@ -223,6 +223,7 @@ sub library_syntax { my ($fun, $args) = @_;
   $proto =~ s/= -1//g;
   print PROTO $proto;
   return "" if ($class eq 'gp');
+  return "" if ($Proto =~ /[IE]/);
   my ($txt) = "\n\nThe library syntax is \\fun{$type}{$Cname}{$args}$post.";
   $txt .= "\n$Variant" if ($Variant);
   return $txt;
