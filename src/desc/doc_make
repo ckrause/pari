@@ -3,7 +3,7 @@ BEGIN { @INC=(".",@INC); }
 use warnings FATAL => 'all';
 use strict;
 use PARI::822;
-use vars qw(%cproto %cprotopriv %cprotogp %p2c);
+use vars qw(%cproto %cprotogp %p2c);
 
 sub readproto { my($file) = @_;
   my %c = ();
@@ -17,7 +17,6 @@ sub readproto { my($file) = @_;
 }
 
 %cproto = readproto "../headers/paridecl.h";
-%cprotopriv = readproto "../headers/paripriv.h";
 %cprotogp = readproto "../gp/gp.h";
 %p2c = ('G' => 'GEN', 'I' => 'GEN', 'J' => 'GEN',  'E' => 'GEN', '&' => 'GEN *',
         'L' => 'long', 'M' => 'long', U => 'ulong',
@@ -136,12 +135,7 @@ sub library_syntax { my ($fun, $args) = @_;
   {
     if (!defined($cproto{$fun->{'C-Name'}}))
     {
-      if ($Proto =~ /[IE]/)
-      {
-        if(!defined($cprotopriv{$fun->{'C-Name'}}))
-        { die "$fun->{Function} : prototype $fun->{'C-Name'} not found in paripriv.h"; }
-      } else
-      { die "$fun->{Function} : prototype $fun->{'C-Name'} not found in paridecl.h"; }
+      die "$fun->{Function} : prototype $fun->{'C-Name'} not found in paridecl.h";
     }
   } elsif ($class eq 'gp' && !defined($cprotogp{$fun->{'C-Name'}}))
   { die "$fun->{Function} : prototype $fun->{'C-Name'} not found in gp.h"; }
@@ -223,7 +217,6 @@ sub library_syntax { my ($fun, $args) = @_;
   $proto =~ s/= -1//g;
   print PROTO $proto;
   return "" if ($class eq 'gp');
-  return "" if ($Proto =~ /[IE]/);
   my ($txt) = "\n\nThe library syntax is \\fun{$type}{$Cname}{$args}$post.";
   $txt .= "\n$Variant" if ($Variant);
   return $txt;
