@@ -9,3 +9,6 @@ BA   2- [loongarch64] add loongarch64 assembly kernel
 
   Changed
 BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
+     2- polsturm obsolete undocumented form polsturm(pol, a, b) where a or b
+        could be omitted is now disabled. Use polsturm(pol, [a,b]), where
+        a = -oo and b = +oo can be used instead of an omitted argument.

@@ -98,8 +98,6 @@ Mod(38, 41), Mod(40, 41)]~
 7*41^5 + O(41^6)]~
 ? polsturm(zpol)
 4
-? polsturm(zpol,0.91,1)
-1
 ? polsylvestermatrix(a2*x^2+a1*x+a0,b1*x+b0)
 
 [a2 b1  0]
@@ -149,5 +147,6 @@ x + x^2 - 1/6*x^3 - 1/2*x^4 - 59/120*x^5 - 1/8*x^6 + 419/5040*x^7 + 59/720*x
 ? variable(name^4-other)
 name
 ? if(getheap()!=HEAP,getheap())
+[60, 4876]
 ? print("Total time spent: ",gettime);
-Total time spent: 5
+Total time spent: 4

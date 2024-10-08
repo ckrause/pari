@@ -13456,6 +13456,11 @@ function, simple complex variant of \tet{conjvec}.
 be the $n$-th Legendre polynomial in variable $v$. Return $p\in \Z[t]$
 such that $2^n P_n(t) = p(t^2)$ ($n$ even) or $t p(t^2)$ ($n$ odd).
 
+\subsec{Obsolete functions}
+
+\fun{long}{sturmpart}{GEN x, GEN a, GEN b}. Please use \tet{RgX_sturmpart}
+instead, and preferably \tet{ZX_sturmpart} with exact rational endpoints.
+
 \section{Power series}
 
 \fun{GEN}{sertoser}{GEN x, long prec} return the \typ{SER} $x$ truncated

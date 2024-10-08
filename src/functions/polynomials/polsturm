@@ -1,7 +1,7 @@
 Function: polsturm
 Section: polynomials
-C-Name: sturmpart
-Prototype: lGDGDG
+C-Name: RgX_sturmpart
+Prototype: lGDG
 Help: polsturm(T,{ab}): number of distinct real roots of the polynomial
  T (in the interval ab = [a,b] if present).
 Doc: number of distinct real roots of the real polynomial \var{T}. If
@@ -33,8 +33,6 @@ Doc: number of distinct real roots of the real polynomial \var{T}. If
  ? polsturm(T^2, [0, 4])  \\ not squarefree: roots are not repeated!
  %7 = 3
  @eprog
- %\syn{NO}
-
- The library syntax is \fun{long}{RgX_sturmpart}{GEN T, GEN ab} or
+Variant: Also available is
  \fun{long}{sturm}{GEN T} (for the case \kbd{ab = NULL}). The function
  \fun{long}{sturmpart}{GEN T, GEN a, GEN b} is obsolete and deprecated.
