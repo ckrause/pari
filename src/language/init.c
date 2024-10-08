@@ -1986,23 +1986,6 @@ errname(GEN err)
   return strtoGENstr(numerr_name(err_get_num(err)));
 }
 
-/* Try f (trapping error e), recover using r (break_loop, if NULL) */
-GEN
-trap0(const char *e, GEN r, GEN f)
-{
-  long numerr = CATCH_ALL;
-  GEN x;
-  if (!e || !*e) numerr = CATCH_ALL;
-  else numerr = name_numerr(e);
-  if (!f) {
-    pari_warn(warner,"default handlers are no longer supported --> ignored");
-    return gnil;
-  }
-  x = closure_trapgen(f, numerr);
-  if (x == (GEN)1L) x = r? closure_evalgen(r): gnil;
-  return x;
-}
-
 /*******************************************************************/
 /*                                                                */
 /*                       CLONING & COPY                            */

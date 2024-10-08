@@ -615,12 +615,6 @@
   ***   at top-level: iferr(1/0,E,1,break())
   ***                               ^--------
   ***   break not allowed here.
-(x)->trap(e_INV,INFINITY,1/x)
-1/2
-INFINITY
-  ***   at top-level: trap(e_INV,INFINITY,log(0))
-  ***                                     ^-------
-  *** log: domain error in log: argument = 0
   ***   at top-level: notafunc('a)
   ***                 ^------------
   ***   not a function in function call

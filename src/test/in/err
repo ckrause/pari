@@ -257,11 +257,6 @@ warning(1)
 iferr(1/0,E,1,errname(E)=="e_DOMAIN")
 iferr(1/0,E,return(4))
 iferr(1/0,E,1,break())
-\\ backward compatibility. Eventually remove
-inv(x) = trap (e_INV, INFINITY, 1/x)
-inv(2)
-inv(0)
-trap (e_INV, INFINITY, log(0))
 a=1;
 notafunc('a)
 a

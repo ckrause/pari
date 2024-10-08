@@ -19,3 +19,5 @@ BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
         polred0(x, flag, fa = NULL) is no longer possible. Use
           polred0(mkvec2(x, gel(fa,1)), flag)
         instead. And preferably polredbest!
+  Removed
+BA   1- GP function trap, use iferr instead.

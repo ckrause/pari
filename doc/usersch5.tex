@@ -15778,11 +15778,6 @@ The difference with \kbd{closure\_evalgen} being that, if the flow end by a
 but set \kbd{status} to a nonzero value if a flow change occurred. This
 variant is not stack clean. Used by the break loop.
 
-\fun{GEN}{closure_trapgen}{long numerr, GEN code} evaluates closure, while
-trapping error \kbd{numerr}. Return \kbd{(GEN)1L} if error trapped, and the
-result otherwise, or \kbd{NULL} if a flow change occurred. Used by trap.
-
-
 \subsec{Functions to handle control flow changes}
 
 \fun{long}{loop_break}{void} processes an eventual flow changes inside an
