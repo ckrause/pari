@@ -3161,4 +3161,6 @@ maxord flag
 1
 1
   *** nfinit: Warning: nonmonic polynomial. Result of the form [nf,c].
-Total time spent: 2235
+segfault in algsubalg for invalid input
+3
+Total time spent: 2130

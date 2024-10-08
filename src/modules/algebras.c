@@ -997,10 +997,10 @@ static GEN
 alg_subalg(GEN al, GEN basis)
 {
   GEN invbasis, mt, p = alg_get_char(al);
-  long i, j, n = lg(basis)-1;
+  long i, j, n;
 
   if (!signe(p)) p = NULL;
-  basis = shallowmatconcat(mkvec2(col_ei(n,1), basis));
+  basis = shallowmatconcat(mkvec2(col_ei(alg_get_absdim(al),1), basis));
   if (p)
   {
     basis = image_keep_first(basis,p);
@@ -1011,6 +1011,7 @@ alg_subalg(GEN al, GEN basis)
     basis = QM_ImQ_hnf(basis);
     invbasis = RgM_inv(basis);
   }
+  n = lg(basis)-1;
   mt = cgetg(n+1,t_VEC);
   gel(mt,1) = matid(n);
   for (i = 2; i <= n; i++)

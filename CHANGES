@@ -3,6 +3,7 @@ Done for version 2.18.0 (released ??/01/2025):
   Fixed
 BA   1- incorrect GP proto for ellpadicfrobenius, mftocoset, qfcvp [#2575]
 AP   2- fix idealismaximal for ideal p*ZK [Sage issue 38766]
+AP   3- segfault in algsubalg when input is linearly dependent
 
   Added
 AP   1- new GP function algnewprec
