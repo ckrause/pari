@@ -1711,14 +1711,20 @@ be quoted using \kbd{'\bs'}\cr
 \+&&\quad Unquoted components can be of any PARI type, converted to string
           following\cr
 \+&&\quad current output format\cr
-\+& \kbd{I} & closure whose value is ignored, as in \kbd{for} loops,\cr
+\+& \kbd{I} & inline closure whose value is ignored, as in \kbd{for} loops,\cr
 \+&&\quad to be processed by \fun{void}{closure_evalvoid}{GEN C}\cr
-\+& \kbd{E} & closure whose value is used, as in \kbd{sum} loops,\cr
+\+& \kbd{E} & inline closure whose value is used, as in \kbd{sum} loops,\cr
 \+&&\quad to be processed by \fun{void}{closure_evalgen}{GEN C}\cr
-\+& \kbd{J} & implicit function of arity $1$, as in \kbd{parsum} loops,\cr
+\+& \kbd{J} & closure of arity $1$, as in \kbd{parsum} loops,\cr
 \+&&\quad to be processed by \fun{void}{closure_callgen1}{GEN C}\cr
 
+Closures are \kbd{GEN} of type \typ{CLOSURE}.
+
 \noindent A \tev{closure} is a GP function in compiled (bytecode) form. It
+can be efficiently evaluated using the \kbd{closure\_call}$xxx$ functions.
+A C function can be converted to a closure using \kbd{strtoclosure}.
+
+\noindent An \tev{inline closure} is a GP expression in compiled (bytecode) form. It
 can be efficiently evaluated using the \kbd{closure\_eval}$xxx$ functions.
 
 \noindent\item Automatic arguments:
@@ -15756,21 +15762,21 @@ evaluation of the closure to be interrupted; this is called below a
 
 \item handles the flow change.
 
-\fun{GEN}{closure_evalgen}{GEN code} evaluates a closure and returns the result,
-or \kbd{NULL} if a flow change occurred.
+\fun{GEN}{closure_evalgen}{GEN code} evaluates an inline closure and returns
+the result, or \kbd{NULL} if a flow change occurred.
 
 \fun{GEN}{closure_evalnobrk}{GEN code} as \kbd{closure\_evalgen} but raise
 an exception if a flow change occurs. Meant for iterators where
 interrupting the closure is meaningless, e.g.~\kbd{intnum} or \kbd{sumnum}.
 
-\fun{void}{closure_evalvoid}{GEN code} evaluates a closure whose return
+\fun{void}{closure_evalvoid}{GEN code} evaluates an inline closure whose return
 value is ignored. The caller has to deal with eventual flow changes by
 calling \kbd{loop\_break}.
 
 The remaining functions below are for exceptional situations:
 
-\fun{GEN}{closure_evalres}{GEN code} evaluates a closure and returns the result.
-The difference with \kbd{closure\_evalgen} being that, if the flow end by a
+\fun{GEN}{closure_evalres}{GEN code} evaluates an inline closure and returns
+the result. The difference with \kbd{closure\_evalgen} being that, if the flow end by a
 \kbd{return} statement, the result will be the returned value instead of
 \kbd{NULL}. Used by the main GP loop.
 
