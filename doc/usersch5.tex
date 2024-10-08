@@ -1668,11 +1668,11 @@ creation of the library. If possible, compile it as a shared library (see
 the \kbd{Makefile} coming with the \kbd{extgcd} example in the
 distribution). It is however still inaccessible from \kbd{gp}.\smallskip
 
-\subsec{GP prototypes, parser codes}
+\subsec{GP prototypes}
 \label{se:gp.interface}
-A \tev{GP prototype} is a character string describing all the GP parser needs
-to know about the function prototype. It contains a sequence of the following
-atoms:
+A \tev{GP prototype} is a character string describing all the GP bytecode
+compiler needs to know about the function prototype. It contains a sequence of
+the following atoms:
 
 \settabs\+\indent&\kbd{Dxxx}\quad&\cr
 
@@ -1815,13 +1815,13 @@ void f(GEN x, long y, long prec) ----> "vGLp"
 long f(GEN x)                    ----> "lG"
 int f(long x)                    ----> "iL"
 @eprog\noindent
-If you want more examples, \kbd{gp} gives you easy access to the parser codes
+If you want more examples, \kbd{gp} gives you easy access to the prototype
 attached to all GP functions: just type \kbd{\b{h} \var{function}}. You
 can then compare with the C prototypes as they stand in \kbd{paridecl.h}.
 
 \misctitle{Remark} If you need to implement complicated control statements
 (probably for some improved summation functions), you need to know
-how the parser implements closures and lexicals and how the evaluator lets
+how the bytecode evaluator implements closures and lexicals and how the evaluator lets
 you deal with them, in particular the \tet{push_lex} and \tet{pop_lex}
 functions. Check their descriptions and adapt the source code in
 \kbd{language/sumiter.c} and \kbd{language/intnum.c}.
@@ -1840,7 +1840,7 @@ has to be a valid GP identifier, i.e.~use only alphabetic characters, digits
 and the underscore character (\kbd{\_}), the first character being
 alphabetic.
 
-Then figure out the correct \idx{parser code} corresponding to the function
+Then figure out the correct \idx{prototype code} corresponding to the function
 prototype (as explained in~\secref{se:gp.interface}) and write a GP script
 like the following:
 \bprog
@@ -1892,7 +1892,7 @@ user could explicitly supply an empty vector!
 \subsec{Library interface for \kbd{install}}
 
 There is a corresponding library interface for this \kbd{install}
-functionality, letting you expand the GP parser/evaluator available in the
+functionality, letting you expand the GP evaluator available in the
 library with new functions from your C source code. Functions such as
 \tet{gp_read_str} may then evaluate a GP expression sequence involving calls
 to these new function!
