@@ -2040,6 +2040,7 @@ GEN     fetch_var_value(long vx, GEN t);
 GEN     gp_read_str(const char *t);
 GEN     gp_read_str_bitprec(const char *s, long bitprec);
 GEN     gp_read_str_prec(const char *s, long prec);
+GEN     ifpari(GEN g, GEN a, GEN b);
 entree* install(void *f, const char *name, const char *code);
 entree* is_entry(const char *s);
 void    kill0(const char *e);
@@ -3254,6 +3255,7 @@ GEN     ellidentify(GEN E);
 GEN     ellsearch(GEN A);
 GEN     ellsearchcurve(GEN name);
 void    forell(void *E, long call(void*, GEN), long a, long b, long flag);
+void    forell0(long a, long b, GEN code, long flag);
 
 /* ellfromeqn.c */
 
@@ -3608,6 +3610,12 @@ void    localbitprec(GEN p);
 long    loop_break(void);
 GEN     next0(long n);
 GEN     pareval(GEN C);
+void    parfor0(GEN a, GEN b, GEN code, GEN code2);
+void    parforeach0(GEN x, GEN code, GEN code2);
+void    parforprime0(GEN a, GEN b, GEN code, GEN code2);
+void    parforprimestep0(GEN a, GEN b, GEN q, GEN code, GEN code2);
+void    parforstep0(GEN a, GEN b, GEN s, GEN code, GEN code2);
+void    parforvec0(GEN a, GEN code, GEN code2, long flag);
 GEN     pari_self(void);
 GEN     parsum(GEN a, GEN b, GEN code);
 GEN     parvector(long n, GEN code);
@@ -3623,10 +3631,13 @@ void    set_lex(long vn, GEN x);
 
 /* forprime.c */
 
+void    forcomposite(GEN a, GEN b, GEN code);
 int     forcomposite_init(forcomposite_t *C, GEN a, GEN b);
 GEN     forcomposite_next(forcomposite_t *C);
+void    forprime(GEN a, GEN b, GEN code);
 GEN     forprime_next(forprime_t *T);
 int     forprime_init(forprime_t *T, GEN a, GEN b);
+void    forprimestep(GEN a, GEN b, GEN q, GEN code);
 int     forprimestep_init(forprime_t *T, GEN a, GEN b, GEN q);
 void    initprimetable(ulong maxnum);
 ulong   maxprime(void);
@@ -4402,27 +4413,38 @@ long    walltimer_get(pari_timer *ti);
 GEN     contfraceval(GEN CF, GEN t, long nlim);
 GEN     contfracinit(GEN M, long lim);
 GEN     intcirc(void *E, GEN (*eval) (void *, GEN), GEN a, GEN R, GEN tab, long prec);
+GEN     intcirc0(GEN a, GEN R, GEN code, GEN tab, long prec);
 GEN     intfuncinit(void *E, GEN (*eval) (void *, GEN), GEN a, GEN b, long m, long prec);
+GEN     intfuncinit0(GEN a, GEN b, GEN code, long m, long prec);
 GEN     intnum(void *E, GEN (*eval) (void *, GEN), GEN a, GEN b, GEN tab, long prec);
+GEN     intnum0(GEN a, GEN b, GEN code, GEN tab, long prec);
 GEN     intnumgauss(void *E, GEN (*eval)(void*, GEN), GEN a, GEN b, GEN tab, long prec);
+GEN     intnumgauss0(GEN a, GEN b, GEN code, GEN tab, long prec);
 GEN     intnumgaussinit(long n, long prec);
 GEN     intnuminit(GEN a, GEN b, long m, long prec);
 GEN     intnumosc(void *E, GEN (*f)(void*, GEN), GEN a, GEN H, long flag, GEN tab, long prec);
+GEN     intnumosc0(GEN a, GEN H, GEN code, long flag, GEN tab, long prec);
 GEN     intnumromb(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long flag, long prec);
+GEN     intnumromb0(GEN a, GEN b, GEN code, long flag, long bit);
 GEN     prodeulerrat(GEN F, GEN s, long a, long prec);
 GEN     prodnumrat(GEN F, long a, long prec);
 GEN     quodif(GEN M, long n);
 GEN     sumeulerrat(GEN F, GEN s, long a, long prec);
 GEN     sumnum(void *E, GEN (*eval)(void*, GEN), GEN a, GEN tab, long prec);
+GEN     sumnum0(GEN a, GEN code, GEN tab, long prec);
 GEN     sumnumap(void *E, GEN (*eval)(void*,GEN), GEN a, GEN tab, long prec);
+GEN     sumnumap0(GEN a, GEN code, GEN tab, long prec);
 GEN     sumnumapinit(GEN fast, long prec);
 GEN     sumnuminit(GEN fast, long prec);
-GEN     sumnumlagrangeinit(GEN al, GEN c1, long prec);
 GEN     sumnumlagrange(void *E, GEN (*eval)(void*,GEN,long), GEN a, GEN tab, long prec);
+GEN     sumnumlagrange0(GEN a, GEN code, GEN tab, long prec);
+GEN     sumnumlagrangeinit(GEN al, GEN c1, long prec);
 GEN     sumnummonien(void *E, GEN (*eval)(void*, GEN), GEN a, GEN tab, long prec);
+GEN     sumnummonien0(GEN a, GEN code, GEN tab, long prec);
 GEN     sumnummonieninit(GEN asymp, GEN w, GEN n0, long prec);
 GEN     sumnumrat(GEN F, GEN a, long prec);
 GEN     sumnumsidi(void *E, GEN (*f)(void*, GEN, long), GEN a, double mu, long prec);
+GEN     sumnumsidi0(GEN a, GEN code, long safe, long prec);
 
 /* ispower.c */
 
@@ -4925,6 +4947,7 @@ void    forpart(void *E, long call(void*,GEN), long k, GEN nbound, GEN abound);
 void    forpart_init(forpart_t *T, long k, GEN abound, GEN nbound);
 GEN     forpart_next(forpart_t *T);
 GEN     forpart_prev(forpart_t *T);
+void    forpart0(GEN k, GEN code , GEN nbound, GEN abound);
 GEN     numbpart(GEN x);
 GEN     partitions(long k, GEN nbound, GEN abound);
 
@@ -4933,13 +4956,15 @@ GEN     partitions(long k, GEN nbound, GEN abound);
 void    forperm(void *E, long call(void *, GEN), GEN k);
 void    forperm_init(forperm_t *T, GEN k);
 GEN     forperm_next(forperm_t *T);
+void    forperm0(GEN k, GEN code);
 
 /* forsubset.c */
 
-void forallsubset_init(forsubset_t *T, long n);
-void forksubset_init(forsubset_t *T, long n, long k);
-GEN forsubset_next(forsubset_t *T);
-void forsubset_init(forsubset_t *T, GEN nk);
+void    forallsubset_init(forsubset_t *T, long n);
+void    forksubset_init(forsubset_t *T, long n, long k);
+GEN     forsubset_next(forsubset_t *T);
+void    forsubset_init(forsubset_t *T, GEN nk);
+void    forsubset0(GEN nk, GEN code);
 
 /* lambert.c */
 
@@ -5069,7 +5094,9 @@ GEN     plotcursor(long ne);
 void    plotdraw(GEN list, long flag);
 GEN     plotexport(GEN fmt, GEN wxy, long flag);
 GEN     ploth(void *E, GEN(*f)(void*,GEN), GEN a, GEN b, long flags,long n, long prec);
+GEN     ploth0(GEN a, GEN b, GEN code, long flag, long n, long prec);
 GEN     plothexport(GEN fmt, void *E, GEN(*f)(void*,GEN), GEN a,GEN b, long flags, long n, long prec);
+GEN     plothexport0(GEN fmt, GEN a, GEN b, GEN code, long flags, long n, long prec);
 GEN     plothraw(GEN listx, GEN listy, long flag);
 GEN     plothrawexport(GEN fmt, GEN X, GEN Y, long flags);
 GEN     plothsizes(long flag);
@@ -5084,6 +5111,7 @@ void    plotpointsize(long ne, GEN size);
 void    plotpointtype(long ne, long t);
 void    plotrbox(long ne, GEN x2, GEN y2, long fl);
 GEN     plotrecth(void *E, GEN(*f)(void*,GEN), long ne, GEN a,GEN b, long flags,long n, long prec);
+GEN     plotrecth0(long ne,GEN a,GEN b,GEN code, long flags,long n,long prec);
 GEN     plotrecthraw(long ne, GEN data, long flags);
 void    plotrline(long ne, GEN x2, GEN y2);
 void    plotrmove(long ne, GEN x, GEN y);
@@ -5092,6 +5120,7 @@ void    plotscale(long ne, GEN x1, GEN x2, GEN y1, GEN y2);
 void    plotstring(long ne, const char *x, long dir);
 void    psdraw(GEN list, long flag);
 GEN     psploth(void *E, GEN(*f)(void*,GEN), GEN a, GEN b, long flags, long n, long prec);
+GEN     psploth0(GEN a,GEN b,GEN code,long flag,long n,long prec);
 GEN     psplothraw(GEN listx, GEN listy, long flag);
 char*   rect2ps(GEN w, GEN x, GEN y, PARI_plot *T);
 char*   rect2ps_i(GEN w, GEN x, GEN y, PARI_plot *T, int plotps);
@@ -5100,6 +5129,7 @@ char*   rect2svg(GEN w, GEN x, GEN y, PARI_plot *T);
 /* plottty.c */
 
 void    pariplot(void* E, GEN (*fun)(void *E, GEN x), GEN a, GEN b, GEN ysmlu,GEN ybigu, long prec);
+void    pariplot0(GEN a, GEN b, GEN code, GEN ysmlu, GEN ybigu, long prec);
 
 /* polarit1.c */
 
@@ -5485,6 +5515,7 @@ GEN     nfresolvent(GEN pol, long flag);
 
 GEN     subgrouplist(GEN cyc, GEN bound);
 void    forsubgroup(void *E, long fun(void*,GEN), GEN cyc, GEN B);
+void    forsubgroup0(GEN cyc, GEN bound, GEN code);
 
 /* stark.c */
 
@@ -5522,27 +5553,55 @@ GEN     asympnum0(GEN u, GEN alpha, long prec);
 GEN     asympnumraw(void *E, GEN (*f)(void *,GEN,long), long LIM, GEN alpha, long prec);
 GEN     asympnumraw0(GEN u, long LIM, GEN alpha, long prec);
 GEN     derivnum(void *E, GEN (*eval)(void *, GEN, long prec), GEN x, long prec);
+GEN     derivnum0(GEN a, GEN code, GEN ind, long prec);
 GEN     derivnumk(void *E, GEN (*eval)(void *, GEN, long), GEN x, GEN ind0, long prec);
 GEN     derivfun(void *E, GEN (*eval)(void *, GEN, long prec), GEN x, long prec);
 GEN     derivfunk(void *E, GEN (*eval)(void *, GEN, long), GEN x, GEN ind0, long prec);
+GEN     direuler0(GEN a, GEN b, GEN code, GEN c);
+void    fordiv(GEN a, GEN code);
+void    fordivfactored(GEN a, GEN code);
+void    foreachpari(GEN a, GEN node);
+void    forfactored(GEN a, GEN b, GEN code);
+void    forpari(GEN a, GEN b, GEN node);
+void    forsquarefree(GEN a, GEN b, GEN code);
+void    forstep(GEN a, GEN b, GEN s, GEN code);
+void    forvec(GEN x, GEN code, long flag);
 int     forvec_init(forvec_t *T, GEN x, long flag);
 GEN     forvec_next(forvec_t *T);
+GEN     iferrpari(GEN a, GEN b, GEN c);
 GEN     laurentseries(void *E, GEN (*f)(void*,GEN x, long), long M, long v, long prec);
 GEN     laurentseries0(GEN f, long M, long v, long prec);
 GEN     limitnum(void *E, GEN (*f)(void *,GEN,long), GEN alpha, long prec);
 GEN     limitnum0(GEN u, GEN alpha, long prec);
+GEN     matrice(GEN nlig, GEN ncol, GEN code);
 GEN     polzag(long n, long m);
 GEN     prodeuler(void *E, GEN (*eval)(void *, GEN), GEN ga, GEN gb, long prec);
+GEN     prodeuler0(GEN a, GEN b, GEN code, long prec);
 GEN     prodinf(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
+GEN     prodinf0(GEN a, GEN code, long flag, long prec);
 GEN     prodinf1(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
+GEN     produit(GEN a, GEN b, GEN code, GEN x);
 GEN     solvestep(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, GEN step, long flag, long prec);
+GEN     solvestep0(GEN a, GEN b, GEN step, GEN code, long flag, long prec);
+GEN     somme(GEN a, GEN b, GEN code, GEN x);
 GEN     sumalt(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
+GEN     sumalt0(GEN a, GEN code,long flag, long prec);
 GEN     sumalt2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
-GEN     sumpos(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
-GEN     sumpos2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
-GEN     suminf(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
+GEN     sumdivexpr(GEN num, GEN code);
 GEN     sumdivmultexpr(void *D, GEN (*fun)(void*, GEN), GEN num);
+GEN     sumdivmultexpr0(GEN num, GEN code);
+GEN     suminf(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
+GEN     suminf0(GEN a, GEN code, long bit);
+GEN     sumpos(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
+GEN     sumpos0(GEN a, GEN code, long flag,long prec);
+GEN     sumpos2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
+void    untilpari(GEN a, GEN b);
+GEN     vecteursmall(GEN nmax, GEN code);
+GEN     vecteur(GEN nmax, GEN n);
+GEN     vvecteur(GEN nmax, GEN n);
+void    whilepari(GEN a, GEN b);
 GEN     zbrent(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long prec);
+GEN     zbrent0(GEN a, GEN b, GEN code, long prec);
 
 /* thue.c */
 

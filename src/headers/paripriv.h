@@ -71,14 +71,6 @@ GEN setloop(GEN a);
 #define EXPR_ARGBOOL __E, &gp_evalbool
 #define EXPR_ARGVOID __E, &gp_evalvoid
 
-GEN  iferrpari(GEN a, GEN b, GEN c);
-void forfactored(GEN a, GEN b, GEN code);
-void forpari(GEN a, GEN b, GEN node);
-void foreachpari(GEN a, GEN node);
-void forsquarefree(GEN a, GEN b, GEN code);
-void untilpari(GEN a, GEN b);
-void whilepari(GEN a, GEN b);
-GEN  ifpari(GEN g, GEN a, GEN b);
 GEN  andpari(GEN a, GEN b);
 GEN  orpari(GEN a, GEN b);
 void ifpari_void(GEN g, GEN a, GEN b);
@@ -97,56 +89,10 @@ GEN  gsube(GEN *x, GEN y);
 GEN  gsub1e(GEN *x);
 GEN  gshift_right(GEN x, long n);
 
-GEN  derivnum0(GEN a, GEN code, GEN ind, long prec);
 GEN  derivfun0(GEN args, GEN def, GEN code, long k, long prec);
-GEN  direuler0(GEN a, GEN b, GEN code, GEN c);
 GEN  direuler_bad(void *E, GEN (*eval)(void *, GEN, long), GEN a, GEN b, GEN c, GEN Sbad);
-void forcomposite(GEN a, GEN b, GEN code);
-void fordiv(GEN a, GEN code);
-void fordivfactored(GEN a, GEN code);
-void forell0(long a, long b, GEN code, long flag);
-void forperm0(GEN k, GEN code);
-void forprime(GEN a, GEN b, GEN code);
-void forprimestep(GEN a, GEN b, GEN q, GEN code);
-void forstep(GEN a, GEN b, GEN s, GEN code);
-void forsubgroup0(GEN cyc, GEN bound, GEN code);
-void forsubset0(GEN nk, GEN code);
-void forvec(GEN x, GEN code, long flag);
-void forpart0(GEN k, GEN code , GEN nbound, GEN abound);
-GEN  intcirc0(GEN a, GEN R, GEN code, GEN tab, long prec);
-GEN  intfuncinit0(GEN a, GEN b, GEN code, long m, long prec);
-GEN  intnum0(GEN a, GEN b, GEN code, GEN tab, long prec);
-GEN  intnumgauss0(GEN a, GEN b, GEN code, GEN tab, long prec);
-GEN  intnumosc0(GEN a, GEN H, GEN code, long flag, GEN tab, long prec);
-GEN  intnumromb0(GEN a, GEN b, GEN code, long flag, long bit);
-GEN  matrice(GEN nlig, GEN ncol, GEN code);
-void pariplot0(GEN a, GEN b, GEN code, GEN ysmlu, GEN ybigu, long prec);
-GEN  prodeuler0(GEN a, GEN b, GEN code, long prec);
-GEN  prodinf0(GEN a, GEN code, long flag, long prec);
-GEN  produit(GEN a, GEN b, GEN code, GEN x);
-GEN  somme(GEN a, GEN b, GEN code, GEN x);
-GEN  sumalt0(GEN a, GEN code,long flag, long prec);
-GEN  sumdivexpr(GEN num, GEN code);
-GEN  sumdivmultexpr0(GEN num, GEN code);
-GEN  suminf0(GEN a, GEN code, long bit);
-GEN  sumnum0(GEN a, GEN code, GEN tab, long prec);
-GEN  sumnumap0(GEN a, GEN code, GEN tab, long prec);
-GEN  sumnumlagrange0(GEN a, GEN code, GEN tab, long prec);
-GEN  sumnummonien0(GEN a, GEN code, GEN tab, long prec);
-GEN  sumnumsidi0(GEN a, GEN code, long safe, long prec);
-GEN  sumpos0(GEN a, GEN code, long flag,long prec);
 GEN  vecexpr0(GEN nmax, GEN code, GEN pred);
 GEN  vecexpr1(GEN nmax, GEN code, GEN pred);
-GEN  vecteursmall(GEN nmax, GEN code);
-GEN  vecteur(GEN nmax, GEN n);
-GEN  vvecteur(GEN nmax, GEN n);
-GEN  zbrent0(GEN a, GEN b, GEN code, long prec);
-GEN  solvestep0(GEN a, GEN b, GEN step, GEN code, long flag, long prec);
-
-GEN  ploth0(GEN a, GEN b, GEN code, long flag, long n, long prec);
-GEN  plothexport0(GEN fmt, GEN a, GEN b, GEN code, long flags, long n, long prec);
-GEN  psploth0(GEN a,GEN b,GEN code,long flag,long n,long prec);
-GEN  plotrecth0(long ne,GEN a,GEN b,GEN code, long flags,long n,long prec);
 
 /* mt */
 void mt_sigint(void);
@@ -160,13 +106,7 @@ void mt_thread_init(void);
 
 GEN  eisker_worker(GEN Ei, GEN M, GEN D, GEN co, GEN CD);
 GEN  pareval_worker(GEN code);
-void parfor0(GEN a, GEN b, GEN code, GEN code2);
-void parforstep0(GEN a, GEN b, GEN s, GEN code, GEN code2);
 GEN  parfor_worker(GEN i, GEN C);
-void parforeach0(GEN x, GEN code, GEN code2);
-void parforprime0(GEN a, GEN b, GEN code, GEN code2);
-void parforprimestep0(GEN a, GEN b, GEN q, GEN code, GEN code2);
-void parforvec0(GEN a, GEN code, GEN code2, long flag);
 GEN  parvector_worker(GEN i, GEN C);
 GEN  polmodular_worker(GEN pt, ulong L, GEN hilb, GEN factu,
        GEN vne, GEN vinfo, long compute_derivs, GEN j_powers, GEN G_surface,
