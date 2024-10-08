@@ -1722,10 +1722,16 @@ Closures are \kbd{GEN} of type \typ{CLOSURE}.
 
 \noindent A \tev{closure} is a GP function in compiled (bytecode) form. It
 can be efficiently evaluated using the \kbd{closure\_call}$xxx$ functions.
-A C function can be converted to a closure using \kbd{strtoclosure}.
+A C function can be converted to a closure by using \kbd{strtoclosure}.
 
 \noindent An \tev{inline closure} is a GP expression in compiled (bytecode) form. It
 can be efficiently evaluated using the \kbd{closure\_eval}$xxx$ functions.
+A C function can be converted to a closure by using \kbd{strtoclosure}.
+and then to a pseudo-inline closure suitable for \kbd{I} and \kbd{E}
+by using \kbd{closuretoinl}.
+
+In both case, the arity of the closure need to match the number of \kbd{V}
+appearing before the code \kbd{I}, \kbd{E} or \kbd{J} in the prototype.
 
 \noindent\item Automatic arguments:
 %
