@@ -1,4 +1,4 @@
-#line 2 "../src/kernel/mips64/asm0.h"
+#line 2 "../src/kernel/loongarch64/asm0.h"
 /* Copyright (C) 2013  The PARI group.
 
 This file is part of the PARI/GP package.
