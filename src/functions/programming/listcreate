@@ -10,4 +10,3 @@ Doc: This function is obsolete, use \kbd{List}.
 
  Creates an empty list. This routine used to have a mandatory argument,
  which is now ignored (for backward compatibility).
- % \syn{NO}

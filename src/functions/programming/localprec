@@ -49,4 +49,3 @@ Doc: set the real precision to $p$ in the dynamic scope and return $p$.
  \kbd{localprec} scope, so \kbd{Pi} is computed to a low accuracy. And when
  we leave \kbd{localprec} scope, \kbd{realprecision} only regains precedence,
  it is not ``restored'' to the original value.
- %\syn{NO}

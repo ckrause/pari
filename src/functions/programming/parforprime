@@ -42,5 +42,3 @@ Doc:
  It is allowed fo \kbd{expr2} to exit the loop using
  \kbd{break}/\kbd{next}/\kbd{return}; see the remarks in the documentation
  of \kbd{parfor} for details.
-
- %\syn{NO}

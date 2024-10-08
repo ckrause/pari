@@ -12,4 +12,3 @@ Doc: creation of the
  goes from 1 to $m$, $Y$ goes from 1 to $n$. If one of the last 3 parameters
  is omitted, fill the matrix with zeroes. If $n$ is omitted, return a
  square $m \times m$ matrix.
- %\syn{NO}

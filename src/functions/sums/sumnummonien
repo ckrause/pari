@@ -19,4 +19,3 @@ Doc: numerical summation $\sum_{n\geq a} f(n)$ at high accuracy, the variable
  $$f(n) = \sum_{i\geq 2} a_{i} n^{-i}$$
  at infinity. To handle more complicated behaviors and allow time-saving
  precomputations (for a given \kbd{realprecision}), see \kbd{sumnummonieninit}.
- %\syn{NO}

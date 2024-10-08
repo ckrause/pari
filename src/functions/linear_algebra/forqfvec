@@ -18,7 +18,6 @@ Doc: $q$ being a square and symmetric integral matrix representing a positive
  [1, 0]~
  [-1, 1]~
  @eprog
- %\syn{NO}
 Variant: The following functions are also available:
  \fun{void}{forqfvec}{void *E, long (*fun)(void *, GEN, GEN, double), GEN q, GEN b}:
  Evaluate \kbd{fun(E,U,v,m)} on all $v$ such that $q(U\*v)<b$, where $U$ is a

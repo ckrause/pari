@@ -13,7 +13,6 @@ Doc: As \kbd{vector(N,i,expr)} but the evaluations of \kbd{expr} are done in
  parvector(10,i,quadclassunit(2^(100+i)+1).no)
  @eprog\noindent
  computes the class numbers in parallel.
- %\syn{NO}
 
 Function: _parvector_worker
 Section: programming/internals

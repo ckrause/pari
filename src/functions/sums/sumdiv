@@ -11,4 +11,3 @@ Doc: sum of expression \var{expr} over the positive divisors of $n$.
    sum (i = 1, #D, my(X = D[i]); eval(expr))
  @eprog\noindent
  If \var{expr} is a multiplicative function, use \tet{sumdivmult}.
- %\syn{NO}

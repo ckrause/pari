@@ -76,7 +76,6 @@ Doc: evaluates in parallel the expression \kbd{expr1} in the formal
  ? parfor (i=1000, , isprime (i), r, if (r, return (i)))
  %1 = 1009
  @eprog
- %\syn{NO}
 
 Function: _parfor_worker
 Section: programming/internals

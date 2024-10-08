@@ -10,5 +10,3 @@ Help: plotrecth(w,X=a,b,expr,{flag=0},{n=0}):
  ploth(w,X=a,b,expr,flag,n). Returns a vector for the bounding box.
 Doc: writes to rectwindow $w$ the curve output of
  \kbd{ploth}$(w,X=a,b,\var{expr},\fl,n)$. Returns a vector for the bounding box.
-
- %\syn{NO}

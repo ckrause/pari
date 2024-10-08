@@ -18,5 +18,3 @@ Doc: sum of expression \var{expr},
  time = 8 ms.
  %2 = 9.787606036044382264178477904
  @eprog
-
- % \syn{NO}
