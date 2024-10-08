@@ -146,7 +146,7 @@ GEN  solvestep0(GEN a, GEN b, GEN step, GEN code, long flag, long prec);
 GEN  ploth0(GEN a, GEN b, GEN code, long flag, long n, long prec);
 GEN  plothexport0(GEN fmt, GEN a, GEN b, GEN code, long flags, long n, long prec);
 GEN  psploth0(GEN a,GEN b,GEN code,long flag,long n,long prec);
-GEN  plotrecth0(long ne,GEN a,GEN b,GEN code,ulong flags,long n,long prec);
+GEN  plotrecth0(long ne,GEN a,GEN b,GEN code, long flags,long n,long prec);
 
 /* mt */
 void mt_sigint(void);

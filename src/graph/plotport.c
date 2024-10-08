@@ -1669,10 +1669,10 @@ plotrecth_i(GEN fmt, void *E, GEN(*f)(void*,GEN), PARI_plot *T, long ne,
 }
 GEN
 plotrecth(void *E, GEN(*f)(void*,GEN), long ne, GEN a,GEN b,
-          ulong flags, long n, long prec)
+           long flags, long n, long prec)
 { return plotrecth_i(NULL, E,f, NULL, ne, a,b, flags&~PLOT_PARA, n, prec); }
 GEN
-plotrecth0(long ne, GEN a,GEN b,GEN code,ulong flags,long n, long prec)
+plotrecth0(long ne, GEN a,GEN b,GEN code, long flags,long n, long prec)
 { EXPR_WRAP(code, plotrecth(EXPR_ARG, ne, a,b, flags, n, prec)); }
 static GEN
 _ploth(void *E, GEN(*f)(void*,GEN), GEN a, GEN b,long flags, long n, long prec)

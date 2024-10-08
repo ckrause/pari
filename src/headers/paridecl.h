@@ -5083,7 +5083,7 @@ void    plotpoints(long ne, GEN listx, GEN listy);
 void    plotpointsize(long ne, GEN size);
 void    plotpointtype(long ne, long t);
 void    plotrbox(long ne, GEN x2, GEN y2, long fl);
-GEN     plotrecth(void *E, GEN(*f)(void*,GEN), long ne, GEN a,GEN b, ulong flags,long n, long prec);
+GEN     plotrecth(void *E, GEN(*f)(void*,GEN), long ne, GEN a,GEN b, long flags,long n, long prec);
 GEN     plotrecthraw(long ne, GEN data, long flags);
 void    plotrline(long ne, GEN x2, GEN y2);
 void    plotrmove(long ne, GEN x, GEN y);
