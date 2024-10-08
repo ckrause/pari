@@ -2652,16 +2652,6 @@ polredbest(GEN T, long flag)
   if (flag < 0 || flag > 1) pari_err_FLAG("polredbest");
   return gerepilecopy(av, polredbest_i(T, flag));
 }
-/* DEPRECATED: backward compatibility */
-GEN
-polred0(GEN x, long flag, GEN fa)
-{
-  long fl = 0;
-  if (flag & 1) fl |= nf_PARTIALFACT;
-  if (flag & 2) fl |= nf_ORIG;
-  return Polred(x, fl, fa);
-}
-
 GEN
 polredord(GEN x)
 {
@@ -2693,6 +2683,16 @@ polredord(GEN x)
       if (Q_denom(gel(v,i)) == gen_1) gel(v,i) = pol_xn(i-1, vx);
   }
   return gerepileupto(av, polred(mkvec2(x, v)));
+}
+
+/* DEPRECATED: backward compatibility */
+GEN
+polred0(GEN x, long flag)
+{
+  long fl = 0;
+  if (flag & 1) fl |= nf_PARTIALFACT;
+  if (flag & 2) fl |= nf_ORIG;
+  return Polred(x, fl, NULL);
 }
 
 GEN

@@ -4,12 +4,20 @@ This file lists the incompatible changes between Version 2.x and older versions
   - polsturm obsolete undocumented form polsturm(pol, a, b) where a or b
     could be omitted is now disabled. Use polsturm(pol, [a,b]), where
     a = -oo and b = +oo can be used instead of an omitted argument.
+  - undocumented deprecated 3-arguments form of deprecated function
+    polred is now disabled. Use polredbest !
 
 * Specific to the PARI library:
 ===============================
    - idealfactorback, rnfisnorminit: flag is now a long to match GP code.
    - the function sturmpart is obsolete, use RgX_sturmart and preferably
      ZX_sturmpart with exact rational endpoints.
+   - deprecated function polred0 implementing deprecated polred function now
+     accepts only two arguments: the 3 argument form
+        polred0(x, flag, fa = NULL)
+     is no longer possible. Use
+        polred0(mkvec2(x, gel(fa,1)), flag)
+     instead. And preferably polredbest!
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.16 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - binomial changed to agree with Loeb's definition

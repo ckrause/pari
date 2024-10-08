@@ -2356,7 +2356,7 @@ GEN     nfsplitting0(GEN T, GEN D, long flag);
 long    nftyp(GEN x);
 GEN     polredord(GEN x);
 GEN     polred(GEN x);
-GEN     polred0(GEN x, long flag, GEN fa);
+GEN     polred0(GEN x, long flag);
 GEN     polred2(GEN x);
 GEN     polredabs(GEN x);
 GEN     polredabs0(GEN x, long flag);

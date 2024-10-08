@@ -12,3 +12,10 @@ BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
      2- polsturm obsolete undocumented form polsturm(pol, a, b) where a or b
         could be omitted is now disabled. Use polsturm(pol, [a,b]), where
         a = -oo and b = +oo can be used instead of an omitted argument.
+     3- undocumented deprecated 3-arguments form of deprecated function
+        polred is now disabled. Use polredbest !
+     4- [libpari] deprecated function polred0 implementing deprecated polred
+        function now accepts only two arguments: the 3 argument form
+        polred0(x, flag, fa = NULL) is no longer possible. Use
+          polred0(mkvec2(x, gel(fa,1)), flag)
+        instead. And preferably polredbest!
