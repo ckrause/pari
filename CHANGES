@@ -9,8 +9,8 @@ AP   3- segfault in algsubalg when input is linearly dependent
 AP   1- new GP function algnewprec
 BA   2- [loongarch64] add loongarch64 assembly kernel
 BA   3- [libpari] closuretoinl
-BA   4- [libpari] all functions implementing GP functions using the codes E/I
-        Closures can be converted to be usable with E/I with closuretoinl
+BA   4- [libpari] using closuretoinl, closures can be made usable with E/I
+        GP prototype codes
 
   Changed
 BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
