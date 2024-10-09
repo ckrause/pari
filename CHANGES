@@ -27,3 +27,4 @@ BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
         instead. And preferably polredbest!
   Removed
 BA   1- GP function trap, use iferr instead.
+BA   2- GP functions listcreate, listkill, use L = List() instead.

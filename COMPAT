@@ -6,7 +6,9 @@ This file lists the incompatible changes between Version 2.x and older versions
     a = -oo and b = +oo can be used instead of an omitted argument.
   - undocumented deprecated 3-arguments form of deprecated function
     polred is now disabled. Use polredbest !
-  - deprecated function trap. Use iferr() instead.
+  - Removed deprecated functions:
+     trap: use iferr() instead.
+     listcreate, listkill: use L = List().
 
 * Specific to the PARI library:
 ===============================

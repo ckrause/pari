@@ -2899,21 +2899,6 @@ ensure_nb(GEN L, long l)
   L[1] = evaltyp(list_typ(L))|evallg(nmax);
 }
 
-void
-listkill(GEN L)
-{
-
-  if (typ(L) != t_LIST) pari_err_TYPE("listkill",L);
-  if (list_nmax(L)) {
-    GEN v = list_data(L);
-    long i, l = lg(v);
-    for (i=1; i<l; i++) gunclone_deep(gel(v,i));
-    killblock(v);
-    L[1] = evaltyp(list_typ(L));
-    list_data(L) = NULL;
-  }
-}
-
 GEN
 mklist_typ(long t)
 {
@@ -2941,12 +2926,6 @@ mklistcopy(GEN x)
   GEN y = mklist();
   list_data(y) = mkveccopy(x);
   return y;
-}
-
-GEN
-listcreate_gp(long n)
-{
-  (void) n; return mklist();
 }
 
 GEN
