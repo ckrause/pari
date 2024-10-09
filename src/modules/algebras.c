@@ -5628,10 +5628,18 @@ alglataddinter(GEN al, GEN lat1, GEN lat2, GEN *sum, GEN *inter)
   if (inter)
   {
     di = diviiexact(mulii(d1,d2),ds);
-    K = matkermod(M,di,sum);
-    K = rowslice(K,1,lg(m1));
-    *inter = hnfmodid(FpM_mul(m1,K,di),di);
-    if (sum) *sum = hnfmodid(*sum,ds);
+    if (equali1(di))
+    {
+      *inter = matid(lg(m1)-1);
+      if (sum) *sum = matid(lg(m1)-1);
+    }
+    else
+    {
+      K = matkermod(M,di,sum);
+      K = rowslice(K,1,lg(m1));
+      *inter = hnfmodid(FpM_mul(m1,K,di),di);
+      if (sum) *sum = hnfmodid(*sum,ds);
+    }
   }
   else *sum = hnfmodid(M,ds);
   return d;

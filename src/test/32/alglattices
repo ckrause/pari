@@ -77,6 +77,15 @@ integral subalg
 
 bug in subalg when first vector is not 1
 1
+bug trivial intersection
+[Mat(1), 1]
+[Mat(1), 1]
+[Mat(1), 1]
+[Mat(1), 1]
+[[1, 0; 0, 1], 1]
+[[1, 0; 0, 1], 1]
+[[1, 0; 0, 1], 1]
+[[1, 0; 0, 1], 1]
 image of lifts in algsimpledec
 1
 1
@@ -162,4 +171,4 @@ bad inputs
   ***   at top-level: alglatmul(al,lat1,[matdiagonal([1,1,0,1,1,1,1,
   ***                 ^----------------------------------------------
   *** alglatmul: incorrect type in checklat [please apply alglathnf()] (t_VEC).
-Total time spent: 1266
+Total time spent: 1009

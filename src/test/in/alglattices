@@ -178,6 +178,21 @@ A = algtableinit(mt,2);
 B = algsubalg(A,[0,1; 0,0; 1,0]);
 algissimple(B[1])
 
+print("bug trivial intersection");
+al = alginit(nfinit(y),1);
+lat = [Mat(1),1];
+alglatinter(al,lat,lat)
+alglatinter(al,lat,lat,&s)
+s
+alglatadd(al,lat,lat)
+al = alginit(nfinit(y^2-2),1);
+lat = [[1,1;0,1],1];
+alglatinter(al,lat,lat)
+alglatadd(al,lat,lat)
+alglatinter(al,lat,lat,&s)
+s
+
+
 print("image of lifts in algsimpledec");
 testidem(al)={
   dec = algsimpledec(al,1)[2];
