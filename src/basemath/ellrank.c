@@ -934,13 +934,14 @@ first_divisor(GEN x, GEN P)
 
 /* find point (x:y:z) on y^2 = pol, return [x,z]~ and set *py = y */
 static GEN
-projratpointxz2(GEN pol, long lim, GEN *py)
+projratpointxz2(GEN pol, long lim, long effort, GEN *py)
 {
   pari_sp av = avma;
   GEN list = mkvec(mkvec4(pol, matid(2), gen_1, gen_1));
   long i, j, c;
+  long ntry = effort * 10;
 
-  for (i = 1, c = 1; i < lg(list); i++,c++)
+  for (i = 1, c = 1; i < lg(list) && c <= ntry; i++,c++)
   {
     GEN K, k, ff, co, p, M, C, r, pol, L = gel(list, i);
     long lr;
@@ -1701,7 +1702,7 @@ liftselmer(GEN b, GEN expo, GEN sbase, GEN LS2, GEN pol, GEN discF, GEN K, long 
     xz = projratpointxz(Q, lim, &zz);
     if (!xz)
     {
-      xz = projratpointxz2(Q, lim, &zz);
+      xz = projratpointxz2(Q, lim, ntry, &zz);
       if (!xz)
       {
         if (pt_Q) return NULL; else continue;
