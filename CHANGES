@@ -14,7 +14,7 @@ BA   3- [libpari] closuretoinl
 BA   4- [libpari] using closuretoinl, closures can be made usable with E/I
         GP prototype codes
 BA   5- quadclassunit now use MPQS for negative discriminant.
-AP   6- [libpari] FqC_red, FqM_red
+AP   6- [libpari] FqC_red, FqM_red, FqC_to_FFC, FqM_to_FFM
 
   Changed
 BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.

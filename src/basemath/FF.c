@@ -2052,6 +2052,14 @@ FqX_to_FFX(GEN x, GEN ff)
 }
 
 GEN
+FqC_to_FFC(GEN x, GEN ff)
+{ pari_APPLY_type(t_COL, Fq_to_FF(gel(x,i), ff)) }
+
+GEN
+FqM_to_FFM(GEN x, GEN ff)
+{ pari_APPLY_same(FqC_to_FFC(gel(x,i), ff)) }
+
+GEN
 ffgen(GEN T, long v)
 {
   GEN A, p = NULL, ff = cgetg(5,t_FFELT);
