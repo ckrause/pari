@@ -848,7 +848,15 @@ FqV_roots_to_pol(GEN V, GEN T, GEN p, long v)
 
 GEN
 FqV_red(GEN x, GEN T, GEN p)
-{ pari_APPLY_same(Fq_red(gel(x,i), T, p)) }
+{ pari_APPLY_type(t_VEC, Fq_red(gel(x,i), T, p)) }
+
+GEN
+FqC_red(GEN x, GEN T, GEN p)
+{ pari_APPLY_type(t_COL, Fq_red(gel(x,i), T, p)) }
+
+GEN
+FqM_red(GEN x, GEN T, GEN p)
+{ pari_APPLY_same(FqC_red(gel(x,i), T, p)) }
 
 GEN
 FqC_add(GEN x, GEN y, GEN T, GEN p)

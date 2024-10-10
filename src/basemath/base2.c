@@ -3026,7 +3026,7 @@ _sqr(void *data, GEN x)
   rnfeltmod_muldata *D = (rnfeltmod_muldata *) data;
   GEN z = x? tablesqr(D->multab,x)
            : tablemul_ei_ej(D->multab,D->h,D->h);
-  return FqV_red(z,D->T,D->p);
+  return FqC_red(z,D->T,D->p);
 }
 static GEN
 _msqr(void *data, GEN x)
@@ -3034,7 +3034,7 @@ _msqr(void *data, GEN x)
   GEN x2 = _sqr(data, x), z;
   rnfeltmod_muldata *D = (rnfeltmod_muldata *) data;
   z = tablemul_ei(D->multab, x2, D->h);
-  return FqV_red(z,D->T,D->p);
+  return FqC_red(z,D->T,D->p);
 }
 
 /* Compute W[h]^n mod (T,p) in the extension, assume n >= 0. T a ZX */

@@ -5324,7 +5324,15 @@ reduce it to an \kbd{Fq} ($\kbd{T} = \kbd{NULL}$ is allowed iff \kbd{x} is a
 whose coefficients are \kbd{ZX}s or \typ{INT}s, reduce them to \kbd{Fq}s. (If
 $\kbd{T} = \kbd{NULL}$, as \kbd{FpXX\_red(x, p)}.)
 
+\fun{GEN}{FqC_red}{GEN x, GEN T, GEN p}, \kbd{x} a vector of \kbd{ZX}s or
+\typ{INT}s, reduce them to a \typ{COL} of \kbd{Fq}s. (If $\kbd{T} = \kbd{NULL}$, only
+reduce components mod \kbd{p} to \kbd{FpX}s or \kbd{Fp}s.)
+
 \fun{GEN}{FqV_red}{GEN x, GEN T, GEN p}, \kbd{x} a vector of \kbd{ZX}s or
+\typ{INT}s, reduce them to a \typ{VEC} of \kbd{Fq}s. (If $\kbd{T} = \kbd{NULL}$, only
+reduce components mod \kbd{p} to \kbd{FpX}s or \kbd{Fp}s.)
+
+\fun{GEN}{FqM_red}{GEN x, GEN T, GEN p}, \kbd{x} a matrix of \kbd{ZX}s or
 \typ{INT}s, reduce them to \kbd{Fq}s. (If $\kbd{T} = \kbd{NULL}$, only
 reduce components mod \kbd{p} to \kbd{FpX}s or \kbd{Fp}s.)
 
