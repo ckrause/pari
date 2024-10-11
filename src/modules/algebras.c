@@ -6194,4 +6194,146 @@ algmodprlift(GEN al, GEN x, GEN data)
   return gerepilecopy(av, res);
 }
 
+/* e in al such that e mod pr is a non-invertible idempotent of maximal rank */
+static GEN
+eichleridempotent(GEN al, GEN pr)
+{
+  long i, k, n, nk, j;
+  GEN data, mapi, e;
+  data = algmodprinit(al, pr, -1);
+  mapi = algmodpr_get_lift(data);
+  k = algmodpr_get_k(data);
+  n = pr_get_f(pr);
+  nk = n*(k+1);
+  if (k==1) return zerocol(alg_get_absdim(al));
+  e = gel(mapi,1+nk);
+  for (i = 2, j = 1+2*nk; i < k; i++, j += nk) e = ZC_add(e,gel(mapi,j));
+  return e;
+}
+
+static GEN
+mat_algeltfromnf(GEN al, GEN x)
+{
+  pari_APPLY_type(t_MAT, algeltfromnf_i(al, gel(x,i)));
+}
+static GEN
+eichlerprimepower(GEN al, GEN pr, long m, GEN prm)
+{
+  pari_sp av = avma;
+  GEN p, e, polidem, Me, Mzk, nf, Mprm, H;
+  long ep, i;
+  ulong mask;
+  polidem = mkpoln(4, gen_m2, utoi(3), gen_0, gen_0);
+  p = pr_get_p(pr); ep = pr_get_e(pr);
+  e = eichleridempotent(al, pr); /* ZC */
+  mask = quadratic_prec_mask(m);
+  i = 1;
+  while (mask > 1)
+  {
+    i *=2;
+    if (mask & 1UL) i--;
+    mask >>= 1;
+    e = algpoleval(al, polidem, e);
+    e = FpC_red(e, powiu(p,(i+ep-1)/ep));
+  }
+  Me = algbasisrightmultable(al, e);
+  nf = algcenter(al);
+  Mzk = mat_algeltfromnf(al, nf_get_zk(nf));
+  prm = idealtwoelt(nf, prm);
+  Mprm = algbasismultable(al, algeltfromnf_i(al,gel(prm,2)));
+  H = hnfmodid(shallowmatconcat(mkvec3(Me,Mzk,Mprm)), gel(prm,1));
+  return gerepileupto(av, H);
+}
+
+GEN
+algeichlerbasis(GEN al, GEN N)
+{
+  pari_sp av = avma;
+  GEN nf, faN, LH = NULL, Cpr = NULL, Cm = NULL, pr, mZ, Lpp, M, H, p, pp,
+      LH2, U, e, prm;
+  long i, k, n, m, ih, lh, np, k2;
+  checkalg(al);
+  nf = alg_get_center(al);
+  if (checkprid_i(N)) return gerepileupto(av, eichlerprimepower(al,N,1,N));
+  if (is_nf_factor(N))
+  {
+    faN = sort_factor(shallowcopy(N), (void*)&cmp_prime_ideal, &cmp_nodata);
+    N = factorbackprime(nf, gel(faN,1), gel(faN,2));
+  }
+  else faN = idealfactor(nf, N);
+  n = nbrows(faN);
+  if (!n) return gerepileupto(av, matid(alg_get_absdim(al)));
+  if (n==1)
+  {
+    pr = gcoeff(faN,1,1);
+    mZ = gcoeff(faN,1,2);
+    return gerepileupto(av, eichlerprimepower(al,pr,itos(mZ),N));
+  }
+
+  /* collect prime power Eichler orders */
+  Lpp = cgetg(n+1,t_VEC);
+  LH2 = cgetg(n+1, t_VEC);
+  np = 0;
+  ih = 1;
+  lh = 1;
+  for (k=1; k<=n; k++)
+  {
+    pr = gcoeff(faN,k,1);
+    if (ih==lh) /* done with previous p, prepare next */
+    {
+      p = pr_get_p(pr);
+      np++;
+      gel(Lpp,np) = gen_0;
+      lh = 2;
+      k2 = k+1;
+      /* count the pr|p in faN */
+      while (k2<=n && equalii(p,pr_get_p(gcoeff(faN,k2,1)))) { lh++; k2++; }
+      LH = cgetg(lh, t_VEC);
+      Cpr = cgetg(lh, t_VEC);
+      Cm = cgetg(lh, t_VEC);
+      ih = 1;
+    }
+
+    mZ = gcoeff(faN,k,2);
+    m = itos(mZ);
+    prm = idealpow(nf, pr, mZ);
+    H = eichlerprimepower(al, pr, m, prm);
+    pp = gcoeff(prm,1,1);
+    if (cmpii(pp,gel(Lpp,np))>0) gel(Lpp,np) = pp;
+    gel(LH,ih) = H;
+    gel(Cpr,ih) = pr;
+    gel(Cm,ih) = mZ;
+    ih++;
+
+    if (ih==lh) /* done with this p */
+    {
+      if (lh==2) gel(LH2,np) = gel(LH,1);
+      else
+      {
+        /* put together the pr|p */
+        U = gmael(idealchineseinit(nf, mkmat2(Cpr,Cm)),1,2);
+        for (i=1; i<lh; i++)
+        {
+          e = gel(U,i);
+          e = algeltfromnf_i(al, e);
+          e = algbasismultable(al, e);
+          gel(LH,i) = ZM_mul(e, gel(LH,i));
+        }
+        gel(LH2,np) = hnfmodid(shallowmatconcat(LH), gel(Lpp,np));
+      }
+    }
+  }
+  setlg(Lpp,np+1);
+  setlg(LH2,np+1);
+
+  if (np==1) H = gel(LH2,1);
+  else
+  {
+    /* put together all p */
+    H = nmV_chinese_center(LH2, Lpp, &M);
+    H = hnfmodid(H, M);
+  }
+  return gerepilecopy(av, H);
+}
+
 /** IDEALS **/

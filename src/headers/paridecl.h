@@ -1731,6 +1731,7 @@ GEN     algcharpoly(GEN al, GEN x, long v, long abs);
 GEN     algdisc(GEN al);
 GEN     algdivl(GEN al, GEN x, GEN y);
 GEN     algdivr(GEN al, GEN x, GEN y);
+GEN     algeichlerbasis(GEN al, GEN N);
 GEN     algeltfromnf(GEN al, GEN x);
 GEN     alggroup(GEN gal, GEN p);
 GEN     alggroupcenter(GEN gal, GEN p, GEN* ptr_conjclasses);
