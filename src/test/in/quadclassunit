@@ -36,6 +36,11 @@ quadunitindex(76,3) \\ #2491
 
 default(echo,1);
 
+setrand(1);quadclassunit(1-2^81)
+setrand(1);quadclassunit(5-2^81)
+setrand(1);quadclassunit(-4-2^81)
+setrand(1);quadclassunit(-8-2^81)
+
 \\#1180
 setrand(1);quadclassunit(572).no
 
