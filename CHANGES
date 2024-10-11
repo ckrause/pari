@@ -13,7 +13,7 @@ BA   2- [loongarch64] add loongarch64 assembly kernel
 BA   3- [libpari] closuretoinl
 BA   4- [libpari] using closuretoinl, closures can be made usable with E/I
         GP prototype codes
-BA   5- quadclassunit now use MPQS for negative discriminant.
+BA   5- quadclassunit now uses MPQS for negative discriminants.
 AP   6- [libpari] FqC_red, FqM_red, FqC_to_FFC, FqM_to_FFM
 
   Changed
