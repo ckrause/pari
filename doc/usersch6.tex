@@ -3475,6 +3475,30 @@ of~$L$.
 \fun{GEN}{alglat_get_scalar}{GEN lat} from the description of \kbd{lat}
 as~$\lambda L$ with~$L\subset{\cal O}_0$ and~$\lambda\in\Q$, returns~$\lambda$.
 
+Accessors for \tet{algmodpr} data (reduction map from algebra to~$M_k(\F_{p^m})$,
+see \tet{algmodprinit}).
+
+\fun{GEN}{algmodpr_get_pr}{GEN data} corresponding prime ideal.
+
+\fun{long}{algmodpr_get_k}{GEN data} matrix degree~$k$.
+
+\fun{long}{algmodpr_get_m}{GEN data} field degree~$m$.
+
+\fun{GEN}{algmodpr_get_ff}{GEN data} \typ{FFELT} $1$ in the image finite field.
+
+\fun{GEN}{algmodpr_get_proj}{GEN data} \typ{MAT} representing the projection map.
+
+\fun{GEN}{algmodpr_get_lift}{GEN data} \typ{MAT} representing the lifting map.
+
+\fun{GEN}{algmodpr_get_tau}{GEN data} multiplication matrix of an
+anti-uniformizer.
+
+\fun{GEN}{algmodpr_get_p}{GEN data} prime~$p$.
+
+\fun{GEN}{algmodpr_get_T}{GEN data} polynomial~$T$ defining the image finite
+field.
+
+
 \subsec{Other low-level functions}
 
 \fun{GEN}{conjclasses_algcenter}{GEN cc, GEN p} low-level function underlying

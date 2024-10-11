@@ -352,6 +352,26 @@ alglat_get_primbasis(GEN lat) { return gel(lat,1); }
 GEN
 alglat_get_scalar(GEN lat) { return gel(lat,2); }
 
+/* algmodpr */
+GEN
+algmodpr_get_pr(GEN data) { return gel(data,1); }
+long
+algmodpr_get_k(GEN data) { return gel(data,2)[1]; } /* target M_k(F_p^m) */
+long
+algmodpr_get_m(GEN data) { return gel(data,2)[2]; } /* target M_k(F_p^m) */
+GEN
+algmodpr_get_ff(GEN data) { return gel(data,3); }
+GEN
+algmodpr_get_proj(GEN data) { return gel(data,4); }
+GEN
+algmodpr_get_lift(GEN data) { return gel(data,5); }
+GEN
+algmodpr_get_tau(GEN data) { return gel(data,6); }
+GEN
+algmodpr_get_p(GEN data) { return pr_get_p(algmodpr_get_pr(data)); }
+GEN
+algmodpr_get_T(GEN data) { return gel(data,2)[2]==1 ? NULL : gel(data,7); }
+
 /** ADDITIONAL **/
 
 /* is N=smooth*prime? */
@@ -1305,6 +1325,25 @@ Fq_mat2col(GEN M, long d, long n)
         gel(C,n*(d*(i-1)+j-1)+k+1) = polcoef_i(gcoeff(M,i,j),k,-1);
   return C;
 }
+/* inverse isomorphism */
+static GEN
+Fq_col2mat(GEN C, long d, long n, long v)
+{
+  long i, j, start;
+  GEN M = cgetg(d+1, t_MAT), cM;
+  for (j=1; j<=d; j++)
+  {
+    cM = cgetg(d+1, t_COL);
+    for (i=1; i<=d; i++)
+    {
+      start = n*(d*(i-1)+j-1)+1;
+      if (n==1) gel(cM,i) = gel(C, start);
+      else gel(cM,i) = RgV_to_RgX(vecslice(C, start, start+n-1), v);
+    }
+    gel(M,j) = cM;
+  }
+  return M;
+}
 
 static GEN
 alg_finite_csa_split(GEN al, long v)
@@ -1398,7 +1437,7 @@ alg_finite_csa_split(GEN al, long v)
   }
   mapi = FpM_inv(M,p);
   if (!mapi) pari_err(e_MISC, "the algebra must be simple (alg_finite_csa_split 3)");
-  return mkvec3(T,map,mapi);
+  return mkvec4(T,map,mapi,M);
 }
 
 GEN
@@ -5938,5 +5977,221 @@ algmakeintegral(GEN mt0, long maps)
 
 /** ORDERS **/
 
-/** IDEALS **/
+/*
+ * algmodpr data:
+ * 1. pr
+ * 2. Vecsmall([k,m]) s.t. target is M_k(F_p^m). /!\ m can differ from pr.f
+ * 3. t_FFELT 1 representing the finite field F_q
+ * 4. proj: O -> M_k(F_q)
+ * 5. lift: M_k(F_q) -> O
+ * 6. tau: anti uniformizer (left multiplication matrix)
+ * 7. T s.t. F_q = F_p[x]/T
+ */
+GEN
+algmodprinit(GEN al, GEN pr, long v)
+{
+  pari_sp av = avma;
+  GEN p, alp, g, Q, pro, lif, map, mapi, alpr, spl, data, nf, T, J, tau;
+  long tal, k, m;
+  checkalg(al); checkprid(pr);
+  tal = alg_type(al);
+  if (tal!=al_CYCLIC && tal!=al_CSA)
+    pari_err_TYPE("algmodprinit [use alginit]", al);
+  nf = alg_get_center(al);
+  p = pr_get_p(pr);
+  alp = alg_ordermodp(al, p);
+  g = algeltfromnf_i(al, pr_get_gen(pr));
+  g = algbasismultable(alp, g);
+  g = FpM_image(g, p);
+  alpr = alg_quotient(alp, g, 1);
+  Q = gel(alpr, 1);
+  pro = gel(alpr, 2);
+  lif = gel(alpr, 3);
+  J = algradical(Q); /* could skip if we knew the order is maximal at unramified pr */
+  if (!gequal0(J))
+  {
+    Q = alg_quotient(Q, J, 1);
+    pro = ZM_mul(gel(Q,2), pro);
+    lif = ZM_mul(lif, gel(Q,3));
+    Q = gel(Q,1);
+  }
+  spl = alg_finite_csa_split(Q, v);
+  T = gel(spl, 1); /* t_POL, possibly of degree 1 */
+  mapi = gel(spl, 3);
+  map = gel(spl, 4);
+  tau = pr_anti_uniformizer(nf, pr);
+  m = degpol(T);
+  k = lg(gmael(spl,2,1)) - 1;
+  if (typ(tau) != t_INT) tau = algbasismultable(al,algeltfromnf_i(al,tau));
+  data = mkvecn(7,
+    pr,
+    mkvecsmall2(k, m),
+    Tp_to_FF(T,p),
+    FpM_mul(map, pro, p),
+    FpM_mul(lif, mapi, p),
+    tau,
+    T
+  );
+  return gerepilecopy(av, data);
+}
 
+static int
+checkalgmodpr_i(GEN data)
+{
+  GEN compo;
+  if (typ(data)!=t_VEC || lg(data)!=8) return 0;
+  checkprid(gel(data,1));
+  compo = gel(data,2);
+  if (typ(compo)!=t_VECSMALL || lg(compo)!=3) return 0;
+  if (typ(gel(data,3))!=t_FFELT) return 0;
+  if (typ(gel(data,4))!=t_MAT) return 0;
+  if (typ(gel(data,5))!=t_MAT) return 0;
+  compo = gel(data,6);
+  if (typ(compo)!=t_MAT && (typ(compo)!=t_INT || !equali1(compo))) return 0;
+  if (typ(gel(data,7))!=t_POL) return 0;
+  return 1;
+}
+static void
+checkalgmodpr(GEN data)
+{
+  if(!checkalgmodpr_i(data))
+    pari_err_TYPE("checkalgmodpr [use algmodprinit()]", data);
+}
+
+/* x belongs to the stored order of al, no GC */
+static GEN
+algmodpr_integral(GEN x, GEN data, long reduce)
+{
+  GEN res, T, p;
+  long k, m, v = -1;
+  T = algmodpr_get_T(data);
+  if (T) v = varn(T);
+  p = algmodpr_get_p(data);
+  k = algmodpr_get_k(data);
+  m = algmodpr_get_m(data);
+  res = ZM_ZC_mul(algmodpr_get_proj(data), x);
+  res = Fq_col2mat(res, k, m, v);
+  return reduce? FqM_red(res, T, p) : res;
+}
+
+/* x in basis form */
+static GEN
+algmodpr_i(GEN al, GEN x, GEN data)
+{
+  GEN T, p, res, den, tau;
+  long v, i, j;
+  x = Q_remove_denom(x, &den);
+  T = algmodpr_get_T(data);
+  p = algmodpr_get_p(data);
+  tau = algmodpr_get_tau(data);
+  if (den)
+  {
+    v = Z_pvalrem(den, p, &den);
+    if (v && typ(tau)!=t_INT)
+    {
+      /* TODO not always better to exponentiate the matrix */
+      x = ZM_ZC_mul(ZM_powu(tau, v), x);
+      v -= ZV_pvalrem(x, p, &x);
+    }
+    if (v>0) pari_err_INV("algmodpr", mkintmod(gen_0,p));
+    if (v<0)
+    {
+      long k = algmodpr_get_k(data);
+      return zeromatcopy(k,k);
+    }
+    if (equali1(den)) den = NULL;
+  }
+  res = algmodpr_integral(x, data, 0);
+  if (den)
+  {
+    GEN d = Fp_inv(den, p);
+    for (j=1; j<lg(res); j++)
+      for (i=1; i<lg(res); i++)
+        gcoeff(res,i,j) = Fq_Fp_mul(gcoeff(res,i,j), d, T, p);
+  }
+  else res = FqM_red(res, T, p);
+  return res;
+}
+
+static GEN
+algmodpr_mat(GEN al, GEN x, GEN data)
+{
+  GEN res, cx, c;
+  long i, j;
+  res = cgetg(lg(x),t_MAT);
+  for (j=1; j<lg(x); j++)
+  {
+    cx = gel(x,j);
+    c = cgetg(lg(cx), t_COL);
+    for (i=1; i<lg(cx); i++) gel(c,i) = algmodpr(al, gel(cx,i), data);
+    gel(res, j) = c;
+  }
+  return shallowmatconcat(res);
+}
+
+GEN
+algmodpr(GEN al, GEN x, GEN data)
+{
+  pari_sp av = avma;
+  GEN res, ff;
+  checkalgmodpr(data);
+  if (typ(x) == t_MAT) return gerepilecopy(av, algmodpr_mat(al,x,data));
+  x = algalgtobasis(al, x);
+  res = algmodpr_i(al, x, data);
+  ff = algmodpr_get_ff(data);
+  return gerepilecopy(av, FqM_to_FFM(res,ff));
+}
+
+static GEN
+algmodprlift_i(GEN al, GEN x, GEN data)
+{
+  GEN lift, C, p, c, T = NULL;
+  long i, j, k, m;
+  lift = algmodpr_get_lift(data);
+  p = algmodpr_get_p(data);
+  k = algmodpr_get_k(data);
+  m = algmodpr_get_m(data); /* M_k(F_p^m) */
+  if (m > 1) T = algmodpr_get_T(data);
+  x = gcopy(x);
+  for (i=1; i<=k; i++)
+    for (j=1; j<=k; j++)
+    {
+      c = gcoeff(x,i,j);
+      if (typ(c) == t_FFELT)    gcoeff(x,i,j) = FF_to_FpXQ(c);
+      else if (m == 1)          gcoeff(x,i,j) = scalarpol(Rg_to_Fp(c,p), -1);
+      else                      gcoeff(x,i,j) = Rg_to_FpXQ(c, T, p);
+    }
+  C = Fq_mat2col(x, k, m);
+  return FpM_FpC_mul(lift, C, p);
+}
+
+GEN
+algmodprlift(GEN al, GEN x, GEN data)
+{
+  pari_sp av = avma;
+  GEN res, blk;
+  long k, nc, nr, i, j;
+  checkalg(al);
+  checkalgmodpr(data);
+  k = algmodpr_get_k(data); /* M_k(F_p^m) */
+  if (typ(x) != t_MAT) pari_err_TYPE("algmodprlift [matrix x]",x);
+  if ((lg(x)-1)%k) pari_err_DIM("algmodprlift [matrix x, nb cols]");
+  nc = (lg(x)-1)/k;
+  if (!nc) return gerepileupto(av, zeromat(0,0));
+  if ((lgcols(x)-1)%k) pari_err_DIM("algmodprlift [matrix x, nb rows]");
+  nr = nbrows(x)/k;
+  if (nr==1 && nc==1) res = algmodprlift_i(al, x, data);
+  else
+  {
+    res = zeromatcopy(nr, nc);
+    for (i=1; i<=nr; i++)
+      for(j=1; j<=nc; j++)
+      {
+        blk = matslice(x, (i-1)*k+1, i*k, (j-1)*k+1, j*k);
+        gcoeff(res,i,j) = algmodprlift_i(al, blk, data);
+      }
+  }
+  return gerepilecopy(av, res);
+}
+
+/** IDEALS **/

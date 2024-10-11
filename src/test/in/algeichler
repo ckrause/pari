@@ -35,9 +35,59 @@ testalgeltfromnf(A) =
    d == algadd(A,a,b)] \\map is additive
 };
 
+vec2mat(d,n,V,g) =
+{
+  my(M = matrix(d,d), c);
+  for(i=0,d^2*n-1,
+    c = V[i+1];
+    M[i\(n*d) + 1, (i\n)%d + 1] += c*g^(i%n)
+  );
+  M
+};
+
+testalgmodpr(A) =
+{
+  my(map,mapi,nf,dec,pr,N,x,y,xy,fx,fy,fxy,d,n,L,M1,M2,g,pr2,ffone,tau,km,modP);
+  L = List();
+  nf = algcenter(A);
+  forprime(p=1,10,
+    dec = idealprimedec(nf,p);
+    pr = dec[#dec];
+    if(algtype(A)==2,
+      if(algdisc(A)%p==0, next);
+    ,\\else
+      if(algisramified(A,pr), next);
+    );
+    d = algdegree(A);
+    n = pr.f;
+    modP = algmodprinit(A,pr);
+    [pr2,km,ffone,map,mapi,tau] = modP;
+    listput(~L, pr2 == pr && km[1]==d && km[2]==n);
+    listput(~L, matsize(mapi)[2] == n*d^2);
+    N = algdim(A,1);
+    x = vectorv(N,i,random(-10));
+    y = vectorv(N,i,random(-10));
+    fx = algmodpr(A,x,modP);
+    fy = algmodpr(A,y,modP);
+    listput(~L, fx == algmodpr(A,algbasistoalg(A,x),modP)); \\works on alg form
+    xy = algmul(A,x,y);
+    fxy = algmodpr(A,xy,modP);
+    listput(~L, fxy == fx*fy); \\map is multiplicative
+    x = vectorv(d^2*n,i,random(p));
+    g = ffgen(ffone);
+    M2 = vec2mat(d,n,x,g);
+    M1 = algmodpr(A,algmodprlift(A,M2,modP),modP);
+    listput(~L, M1 == M2); \\maps are inverse of each other
+    x = idealhnf(nf,pr)*vectorv(poldegree(nf.pol),i,random(p));
+    listput(~L,algmodpr(A, algeltfromnf(A,x), modP) == 0); \\pr maps to 0
+  );
+  Vec(L);
+};
+
 alltests(A) =
 {
   print1("eltfromnf: "); print(testalgeltfromnf(A));
+  print1("modpr: "); print(testalgmodpr(A));
 };
 
 nf = nfinit(y);
@@ -87,6 +137,117 @@ print("degree 5 alg/IQF");
 alltests(A);
 
 
+print("algmodpr");
+setrand(1);
+nf = nfinit(y^2+7);
+alg = alginit(nf,[-1,-1]);
+[pr1,pr2] = idealprimedec(nf,2);
+g1 = pr1.gen[2];
+g2 = pr2.gen[2];
+modP = algmodprinit(alg,pr1);
+a = algrandom(alg,20);
+b = algmul(alg,algeltfromnf(alg,g1),a);
+c = algdivl(alg,algeltfromnf(alg,g2),b);
+m = algmodpr(alg,b,modP);
+m == 0
+type(m[1,1]) == "t_FFELT"
+m = algmodpr(alg,c,modP);
+m == 0
+type(m[1,1]) == "t_FFELT"
+pr = idealprimedec(nf,3)[1];
+modP = algmodprinit(alg,pr); \\tau == 1
+algmodpr(alg,a/3,modP);
+
+print("algmodpr for matrices");
+nf = nfinit(y^3-3*y-1);
+alg = alginit(nf, [-1,-3]);
+pr1 = idealprimedec(nf,3)[1];
+pr2 = idealprimedec(nf,5)[1];
+modP1 = algmodprinit(alg,pr1);
+modP2 = algmodprinit(alg,pr2);
+M = matrix(4,5,i,j,algrandom(alg,10));
+matsize(M)
+modP1[2]
+matsize(algmodpr(alg,M,modP1))
+modP2[2]
+m = algmodpr(alg,M,modP2);
+matsize(m)
+Mod(algmodprlift(alg,m,modP2)-M,5) == 0
+algmodprlift(alg,[;],modP1)
+algmodprlift(alg,matrix(0,5),modP1)
+m = matrix(2,3,i,j,random(modP1[3]));
+matsize(m)
+M = algmodprlift(alg,m,modP1);
+matsize(M)
+algmodpr(alg,M,modP1) == m
+m = matrix(14,4,i,j,random(modP2[3]));
+matsize(m)
+M = algmodprlift(alg,m,modP2);
+matsize(M)
+algmodpr(alg,M,modP2) == m
+
+
+print("doc algmodprinit");
+nf = nfinit(y^2-5);
+al = alginit(nf, [-1,-1]); \\quaternion algebra unramified at all primes
+pr = idealprimedec(nf, 3)[1]; pr.f
+modP = algmodprinit(al, pr, 'a);
+modP[2] \\image in M_2(F_{3^2})
+type(modP[3])
+m = algmodpr(al,algrandom(al,3),modP);
+matsize(m)
+type(m[1,1])
+m[1,1].p
+m[1,1].mod
+nf = nfinit(y); \\ Q
+al = alginit(nf, [-1,-1]); \\ quaternion algebra ramified at 2 and oo
+pr = idealprimedec(nf, 2)[1];
+modP = algmodprinit(al, pr, 'a);
+modP[2] \\ image in M_1(F_{2^2})
+m = algmodpr(al,algrandom(al,10),modP);
+matsize(m)
+type(m[1,1])
+m[1,1].p
+m[1,1].mod
+
+print("doc algmodpr");
+nf = nfinit(y^2-2);
+alg = alginit(nf, [-1,-1]);
+pr = idealprimedec(nf,7)[1];
+modP = algmodprinit(alg,pr);
+a = algrandom(alg,10);
+algmodpr(alg,a,modP)^2 == algmodpr(alg,algsqr(alg,a),modP)
+algmodpr(alg,a/3,modP) == algmodpr(alg,a,modP)/3
+algmodpr(alg,a/7,modP) \\should fail
+pr2 = idealprimedec(nf,7)[2];
+c = algeltfromnf(alg,pr2.gen[2]);
+b = algdivl(alg, c, a);
+denominator(b) % 7 == 0
+algmodpr(alg,c,modP)*algmodpr(alg,b,modP) == algmodpr(alg,a,modP)
+algmodpr(alg,algmul(alg,a,algeltfromnf(alg,pr.gen[2])),modP)==0
+
+print("doc algmodprlift");
+z='z;
+nf = nfinit(y^2+2);
+alg = alginit(nf,[-1,-3]);
+pr = idealprimedec(nf,5)[1];
+modP = algmodprinit(alg,pr,'z);
+m = [1,2;3,4];
+li = algmodprlift(alg,m,modP);
+algmodpr(alg,li,modP) == m
+m = [0,z;1,0];
+li = algmodprlift(alg,m,modP);
+algmodpr(alg,li,modP) == subst(m,'z,ffgen(modP[3]))
+m = ['z,1;2,1+'z];
+li = algmodprlift(alg,m,modP);
+algmodpr(alg,li,modP) == subst(m,'z,ffgen(modP[3]))
+pr = idealprimedec(nf,2)[1];
+modP = algmodprinit(alg,pr,'z);
+m = [1,0;1,0];
+li = algmodprlift(alg,m,modP);
+algmodpr(alg,li,modP) == m
+
+
 \\bad inputs
 algeltfromnf([], [1]~);
 nf = nfinit(y^2-5);
@@ -94,3 +255,30 @@ A = alginit(nf,[-1,y]);
 pr2 = idealprimedec(nf,2)[1];
 pr3 = idealprimedec(nf,3)[1];
 algeltfromnf(A, [1,2,3]~);
+algmodprinit([], pr2);
+tA = algtableinit(algmultable(A),0);
+rA = alginit(0.,1/2);
+algmodprinit(tA, pr2);
+algmodprinit(rA, pr2);
+algmodprinit(A,[]);
+modP = algmodprinit(A,pr3);
+a = algrandom(A,10);
+algmodpr([],a,modP)
+algmodpr(tA,a,modP)
+algmodpr(rA,a,modP)
+algmodpr(A,[]~,modP)
+algmodpr(A,a,[1..10])
+algmodpr(A,a,[1..7])
+algmodpr(A,a,[modP[1],2,3,4,5,6,7])
+algmodpr(A,a,concat([modP[1..2],[3..7]]))
+algmodpr(A,a,concat([modP[1..3],[4..7]]))
+algmodpr(A,a,concat([modP[1..4],[5..7]]))
+algmodpr(A,a,concat([modP[1..5],[6..7]]))
+algmodpr(A,a,concat([modP[1..6],[7..7]]))
+m = algmodpr(A,a,modP);
+algmodprlift([],m,modP)
+algmodprlift(A,[],modP)
+algmodprlift(A,[1,2,3;1,2,3],modP)
+algmodprlift(A,[1,2;1,2;1,2],modP)
+algmodprlift(A,['a,'b;'c,'d],modP)
+algmodprlift(A,m,[])
