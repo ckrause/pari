@@ -943,21 +943,30 @@ projratpointxz2(GEN pol, long lim, long effort, GEN *py)
 
   for (i = 1, c = 1; i < lg(list) && c <= ntry; i++,c++)
   {
-    GEN K, k, ff, co, p, M, C, r, pol, L = gel(list, i);
+    GEN K, k, ff, co, p, M, C, r, pol, L;
+    pari_sp av2;
     long lr;
 
+    if (gc_needed(av, 1))
+    {
+      if (DEBUGMEM > 1)
+        pari_warn(warnmem, "projratpointxz2: %ld/%ld",i,lg(list)-1);
+      gerepileall(av, 2, &pol, &list);
+    }
+    L = gel(list, i);
     list = vecsplice(list, i); i--;
     pol = Q_primitive_part(gel(L,1), &K);
+    av2 = avma;
     M = gel(L,2);
     K = K? mulii(gel(L,3), K): gel(L,3);
     C = gel(L,4);
     if (Z_issquareall(K, &k))
     {
       GEN xz, y, aux, U;
-      if (c==1) continue;
+      if (c==1) { set_avma(av2); continue; }
       pol = ZX_hyperellred(pol, &U);
       if (DEBUGLEVEL>1) err_printf("  reduced quartic(%ld): Y^2 = %Ps\n", i, pol);
-      xz = projratpointxz(pol, lim, &y); if (!xz) continue;
+      xz = projratpointxz(pol, lim, &y); if (!xz) { set_avma(av2); continue; }
       *py = gmul(y, mulii(C, k));
       aux = RgM_RgC_mul(ZM2_mul(M, U), xz);
       if (gequal0(gel(aux, 2))) return mkcol2(gel(aux,1), gen_0);
@@ -981,14 +990,12 @@ projratpointxz2(GEN pol, long lim, long effort, GEN *py)
     r = FpC_center(FpX_roots(pol, p), p, shifti(p,-1)); lr = lg(r);
     for (j = 1; j < lr; j++)
     {
-      GEN U = ZM2_mul(M, mkmat22(p, gel(r, j), gen_0, gen_1));
-      if (equali1(content(U)))
-      {
-        GEN t = ZX_unscale_div(ZX_translate(pol, gel(r,j)), p);
-        list = vec_append(list, mkvec4(t, U, K, C));
-      }
+      pari_sp av3 = avma;
+      GEN t, U = ZM2_mul(M, mkmat22(p, gel(r, j), gen_0, gen_1));
+      if (!equali1(content(U))) { set_avma(av3); continue; }
+      t = ZX_unscale_div(ZX_translate(pol, gel(r,j)), p);
+      list = vec_append(list, mkvec4(t, U, K, C));
     }
-    if (gc_needed(av, 1)) gerepileall(av, 2, &pol, &list);
   }
   return NULL;
 }
