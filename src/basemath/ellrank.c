@@ -921,15 +921,21 @@ projratpointxz(GEN pol, long lim, GEN *py)
   P = gel(P,1); *py = gel(P,2); return mkcol2(gel(P,1), gen_1);
 }
 
-/* P a list of integers (actually primes) one of which divides x; return
- * the first one */
+/* N = K f^2 where K = core(N) is assumed > 1; let p = P^-(K)
+ * Return p, K/p and f*p */
 static GEN
-first_divisor(GEN x, GEN P)
+first_core_prime(GEN N, GEN *Kp, GEN *fp)
 {
-  long i, n = lg(P);
-  for (i = 1; i < n; i++)
-    if (dvdii(x, gel(P,i))) return gel(P,i);
-  return gel(P,i);
+  GEN v, p = NULL, fa = Z_factor(N), P = gel(fa,1), E = gel(fa,2);
+  long i, j, l = lg(P);
+  for (i = 1; i < l; i++)
+    if (mpodd(gel(E,i))) { p = gel(P,i); break; }
+  v = cgetg(l-1, t_VEC);
+  for (j = 1, i++; i < l; i++)
+    if (mpodd(gel(E,i))) gel(v,j++) = gel(P,i);
+  setlg(v, j); *Kp = ZV_prod(v);
+  *fp = mulii(p, sqrtint(diviiexact(N, mulii(*Kp,p))));
+  return p;
 }
 
 /* find point (x:y:z) on y^2 = T, return [x,z]~ and set *py = y */
@@ -942,7 +948,7 @@ projratpointxz2(GEN T, long lim, long effort, GEN *py)
 
   for (c = 1; lg(list) > 1 && c <= ntry; c++)
   {
-    GEN K, k, ff, co, p, M, C, r, pol, L;
+    GEN K, k, f, p, M, C, r, pol, L;
     pari_sp av2;
     long lr;
 
@@ -956,7 +962,7 @@ projratpointxz2(GEN T, long lim, long effort, GEN *py)
     list = vecsplice(list, 1);
     av2 = avma;
     pol = Q_primitive_part(gel(L,1), &K);
-    M = gel(L,2);
+    M = gel(L,2); /* content = 1 */
     K = K? mulii(gel(L,3), K): gel(L,3);
     C = gel(L,4);
     if (Z_issquareall(K, &k))
@@ -972,26 +978,23 @@ projratpointxz2(GEN T, long lim, long effort, GEN *py)
       *py = gdiv(*py, gpowgs(gel(aux, 2), degpol(pol)>>1));
       return mkcol2(gdiv(gel(aux, 1), gel(aux, 2)), gen_1);
     }
-    ff = Z_factor(K); co = core2(mkvec2(K, ff)); K = gel(co,1); /* > 1 */
-    p = first_divisor(K, gel(ff,1));
-    K = diviiexact(K, p);
-    C = mulii(mulii(C, gel(co,2)), p);
+    p = first_core_prime(K, &K, &f);
+    C = mulii(C, f);
     /* root at infinity */
-    if (dvdii(leading_coeff(pol), p))
+    if (dvdii(leading_coeff(pol), p) &&
+        (!dvdii(gcoeff(M,1,1), p) || !dvdii(gcoeff(M,2,1), p)))
     {
       GEN U = mkmat2(gel(M,1), ZC_Z_mul(gel(M,2), p));
-      if (equali1(content(U)))
-      {
-        GEN t = ZX_rescale(pol, p);
-        list = vec_append(list, mkvec4(ZX_Z_divexact(t,p), U, K, C));
-      }
+      GEN t = ZX_Z_divexact(ZX_rescale(pol, p), p);
+      list = vec_append(list, mkvec4(t, U, K, C));
     }
     r = FpC_center(FpX_roots(pol, p), p, shifti(p,-1)); lr = lg(r);
     for (j = 1; j < lr; j++)
     {
       pari_sp av3 = avma;
-      GEN t, U = ZM2_mul(M, mkmat22(p, gel(r, j), gen_0, gen_1));
-      if (!equali1(content(U))) { set_avma(av3); continue; }
+      GEN t, U = ZM2_mul(M, mkmat22(p, gel(r,j), gen_0, gen_1));
+      if (dvdii(gcoeff(U,1,2), p) && dvdii(gcoeff(U,2,2), p))
+      { set_avma(av3); continue; } /* content(U) != 1 (in fact p) */
       t = ZX_unscale_div(ZX_translate(pol, gel(r,j)), p);
       list = vec_append(list, mkvec4(t, U, K, C));
     }
