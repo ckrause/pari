@@ -5071,7 +5071,7 @@ algtableinit_i(GEN mt0, GEN p)
   gel(al,8) = matid(n);
   gel(al,9) = mt;
   gel(al,10) = p? p: gen_0;
-  gel(al,11)= algtracebasis(al);
+  gel(al,11) = algtracebasis(al);
   return al;
 }
 GEN
