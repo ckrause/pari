@@ -789,7 +789,7 @@ for dir in basemath modules language gp graph systems mt; do
     cflags="$cflags \$(DLCFLAGS)"
     ;;
   mpqs)
-    depend="$src/modules/mpqs.h"
+    depend="$src/basemath/mpqs.h"
     cflags="$cflags \$(DLCFLAGS)"
     ;;
   ratpoints)

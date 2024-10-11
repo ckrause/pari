@@ -13,7 +13,7 @@ with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #include "pari.h"
 #include "paripriv.h"
-#include "../modules/mpqs.h"
+#include "mpqs.h"
 
 #define DEBUGLEVEL DEBUGLEVEL_quadclassunit
 
