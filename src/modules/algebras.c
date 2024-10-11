@@ -5378,7 +5378,7 @@ alg_change_overorder_shallow(GEN al, GEN ord)
 }
 
 static GEN
-algfromcenter(GEN al, GEN x)
+algeltfromnf_i(GEN al, GEN x)
 {
   GEN nf = alg_get_center(al);
   long n;
@@ -5394,14 +5394,22 @@ algfromcenter(GEN al, GEN x)
   return algalgtobasis(al, scalarcol(basistoalg(nf, x), n));
 }
 
+GEN
+algeltfromnf(GEN al, GEN x)
+{
+  pari_sp av = avma;
+  checkalg(al);
+  return gerepileupto(av, algeltfromnf_i(al,x));
+}
+
 /* x is an ideal of the center in hnf form */
 static GEN
-algfromcenterhnf(GEN al, GEN x)
+algeltfromnf_hnf(GEN al, GEN x)
 {
   GEN res;
   long i;
   res = cgetg(lg(x), t_MAT);
-  for (i=1; i<lg(x); i++) gel(res,i) = algfromcenter(al, gel(x,i));
+  for (i=1; i<lg(x); i++) gel(res,i) = algeltfromnf_i(al, gel(x,i));
   return res;
 }
 
@@ -5432,7 +5440,7 @@ algcenter_prad(GEN al, GEN p, GEN pre)
   GEN nfprad, zprad, mtprad;
   long i;
   nfprad = gel(pre,1);
-  zprad = algfromcenterhnf(al, nfprad);
+  zprad = algeltfromnf_hnf(al, nfprad);
   zprad = FpM_image(zprad, p);
   mtprad = cgetg(lg(zprad), t_VEC);
   for (i=1; i<lg(zprad); i++) gel(mtprad, i) = algbasismultable(al, gel(zprad,i));
@@ -5448,7 +5456,7 @@ algcenter_p_projs(GEN al, GEN p, GEN pre)
   long i;
   projs = gel(pre,2);
   zprojs = cgetg(lg(projs), t_VEC);
-  for (i=1; i<lg(projs); i++) gel(zprojs,i) = FpC_red(algfromcenter(al, gel(projs,i)),p);
+  for (i=1; i<lg(projs); i++) gel(zprojs,i) = FpC_red(algeltfromnf_i(al, gel(projs,i)),p);
   return zprojs;
 }
 

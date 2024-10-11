@@ -1,0 +1,28 @@
+  ***   Warning: new stack size = 64000000 (61.035 Mbytes).
+trivial algebra
+eltfromnf: [1, 1, 1]
+quatalg/Q
+eltfromnf: [1, 1, 1]
+table quatalg/Q
+eltfromnf: [1, 1, 1]
+degree 3 alg/Q
+eltfromnf: [1, 1, 1]
+degree 5 alg/Q
+eltfromnf: [1, 1, 1]
+degree 1 alg/IQF
+eltfromnf: [1, 1, 1]
+quatalg/IQF
+eltfromnf: [1, 1, 1]
+table quatalg/IQF
+eltfromnf: [1, 1, 1]
+degree 3 alg/IQF
+eltfromnf: [1, 1, 1]
+degree 5 alg/IQF
+eltfromnf: [1, 1, 1]
+  ***   at top-level: algeltfromnf([],[1]~)
+  ***                 ^---------------------
+  *** algeltfromnf: incorrect type in checkalg [please apply alginit()] (t_VEC).
+  ***   at top-level: algeltfromnf(A,[1,2,3]~)
+  ***                 ^------------------------
+  *** algeltfromnf: incorrect type in nf_to_scalar_or_alg (t_COL).
+Total time spent: 1578

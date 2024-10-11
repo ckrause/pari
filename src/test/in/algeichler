@@ -1,0 +1,96 @@
+default(parisize,"64M");
+
+qamt(a,b) =
+{
+  my(m_i,m_j,m_k);
+  m_i = [0,a,0,0;
+         1,0,0,0;
+         0,0,0,a;
+         0,0,1,0];
+  m_j = [0, 0,b, 0;
+         0, 0,0,-b;
+         1, 0,0, 0;
+         0,-1,0, 0];
+  m_k = [0, 0,0,-a*b;
+         0, 0,b,   0;
+         0,-a,0,   0;
+         1, 0,0,   0];
+  [matid(4), m_i, m_j, m_k]
+};
+
+testalgeltfromnf(A) =
+{
+  my(nf,n,x,a,pol,y,b,c,d);
+  nf = algcenter(A);
+  n = poldegree(nf.pol);
+  x = vectorv(n,i,random(-10));
+  a = algeltfromnf(A,x);
+  pol = minpoly(nfbasistoalg(nf,x));
+  y = vectorv(n,i,random(-10));
+  b = algeltfromnf(A,y);
+  c = algeltfromnf(A,nfeltmul(nf,x,y));
+  d = algeltfromnf(A,x+y);
+  [algpoleval(A,pol,a) == 0, \\image vanishes on minpoly
+   c == algmul(A,a,b), \\map is multiplicative
+   d == algadd(A,a,b)] \\map is additive
+};
+
+alltests(A) =
+{
+  print1("eltfromnf: "); print(testalgeltfromnf(A));
+};
+
+nf = nfinit(y);
+A = alginit(nf,1);
+print("trivial algebra");
+alltests(A);
+
+A = alginit(nf,[-1,-1]);
+print("quatalg/Q");
+alltests(A);
+
+A = alginit(nf,algmultable(A));
+print("table quatalg/Q");
+alltests(A);
+
+pr1 = idealprimedec(nf,3)[1];
+pr2 = idealprimedec(nf,5)[1];
+A = alginit(nf, [3,[[pr1,pr2],[1/3,-1/3]],[0]]);
+print("degree 3 alg/Q");
+alltests(A);
+
+A = alginit(nf, [5,[[pr1,pr2],[1/5,-1/5]],[0]]);
+print("degree 5 alg/Q");
+alltests(A);
+
+nf = nfinit(y^2+3);
+A = alginit(nf,1);
+print("degree 1 alg/IQF");
+alltests(A);
+
+A = alginit(nf,[y,7+9*y]);
+print("quatalg/IQF");
+alltests(A);
+
+A = alginit(nf,qamt(y,3+5*y)); \\ramified at pr2 and pr7
+print("table quatalg/IQF");
+alltests(A);
+
+pr1 = idealprimedec(nf,3)[1];
+pr2 = idealprimedec(nf,7)[1];
+A = alginit(nf, [3,[[pr1,pr2],[1/3,-1/3]],[]]);
+print("degree 3 alg/IQF");
+alltests(A);
+
+A = alginit(nf, [5,[[pr1,pr2],[1/5,-1/5]],[]],,1);
+print("degree 5 alg/IQF");
+alltests(A);
+
+
+\\bad inputs
+algeltfromnf([], [1]~);
+nf = nfinit(y^2-5);
+A = alginit(nf,[-1,y]);
+pr2 = idealprimedec(nf,2)[1];
+pr3 = idealprimedec(nf,3)[1];
+algeltfromnf(A, [1,2,3]~);
