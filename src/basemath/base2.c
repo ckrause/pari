@@ -2421,8 +2421,8 @@ lift_to_zk(GEN v, GEN c, long N)
 }
 
 /* return t = 1 mod pr, t = 0 mod p / pr^e(pr/p) */
-static GEN
-anti_uniformizer(GEN nf, GEN pr)
+GEN
+pr_anti_uniformizer(GEN nf, GEN pr)
 {
   long N = nf_get_degree(nf), e = pr_get_e(pr);
   GEN p, b, z;
@@ -2514,7 +2514,7 @@ modprinit(GEN nf, GEN pr, int zk, long vT)
   f = pr_get_f(pr);
   N = nf_get_degree(nf);
   prh = pr_hnf(nf, pr);
-  tau = zk? gen_0: anti_uniformizer(nf, pr);
+  tau = zk? gen_0: pr_anti_uniformizer(nf, pr);
   p = pr_get_p(pr);
 
   if (f == 1)
@@ -2699,7 +2699,7 @@ GEN
 nf_to_Fq_init(GEN nf, GEN *pr, GEN *T, GEN *p) {
   GEN modpr = to_ff_init(nf,pr,T,p,0);
   GEN tau = modpr_TAU(modpr);
-  if (!tau) gel(modpr,mpr_TAU) = anti_uniformizer(nf, *pr);
+  if (!tau) gel(modpr,mpr_TAU) = pr_anti_uniformizer(nf, *pr);
   return modpr;
 }
 GEN

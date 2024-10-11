@@ -1312,6 +1312,12 @@ $\goth{p} / p$ and $F$ in $\Z$ divisible exactly by $p$, return an
 $F$-uniformizer for \kbd{pr}, i.e. a $t$ in $\Z_K$ such that $v_{\goth{p}}(t)
 = 1$ and $(t, F/\goth{p}) = 1$. Not \kbd{gerepile}-safe.
 
+\fun{GEN}{pr_anti_uniformizer}{GEN nf, GEN pr} given a number field \kbd{nf} and
+a \var{prid} attached to a prime ideal $\goth{p} / p$ of ramification index~$e$,
+return an anti-uniformizer for \kbd{pr}, i.e. a $t$ in $\Z_K$ such that~$t = 1
+\bmod{\goth{p}}$ and~$t = 0 \bmod{p \goth{p}^{-e}}$.
+Not \kbd{gerepile}-safe.
+
 \subsec{Decomposition groups}
 
 \fun{GEN}{idealramfrobenius}{GEN nf, GEN gal, GEN pr, GEN ram}
