@@ -750,7 +750,6 @@ mpqs_relations(struct buch_quad *B, long need, long *pc, ulong LIMC, GEN mat, mp
     rel_to_col(B, col, rel, b);
   }
   if (DEBUGLEVEL>2) timer_printf(&T, "MPQS rel [#rel = %ld]", i-1);
-  *pc = 1;
 }
 
 static int
