@@ -10,8 +10,7 @@ Doc: Given an element \var{x} in \var{al} (Hamilton quaternions if omitted),
  the left multiplication table on the integral basis; if \var{al} is a central
  simple algebra and~$abs=0$, returns~$\phi(x)$ where~$\phi : A\otimes_{K} L \to
  M_{d}(L)$ (where $d$ is the degree of the algebra and $L$ is an extension of $L$
- with~$[L:K]=d$) is an isomorphism stored in~\var{al}. Also accepts a square
- matrix with coefficients in~\var{al}.
+ with~$[L:K]=d$) is an isomorphism stored in~\var{al}.
 
  \bprog
  ? A = alginit(nfinit(y), [-1,-1]);
@@ -54,4 +53,4 @@ Doc: Given an element \var{x} in \var{al} (Hamilton quaternions if omitted),
  [0  0 1  0]
  @eprog
 
- Also accepts matrices with coefficients in \var{al}.
+ Also accepts a matrix with coefficients in \var{al}.

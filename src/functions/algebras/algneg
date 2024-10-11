@@ -11,4 +11,4 @@ Doc: Given an element $x$ in \var{al}, computes its opposite $-x$ in the
  %2 = [-1, -1, 0, 0]~
  @eprog
 
- Also accepts matrices with coefficients in \var{al}.
+ Also accepts a matrix with coefficients in \var{al}.
