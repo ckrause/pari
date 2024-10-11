@@ -932,16 +932,15 @@ first_divisor(GEN x, GEN P)
   return gel(P,i);
 }
 
-/* find point (x:y:z) on y^2 = pol, return [x,z]~ and set *py = y */
+/* find point (x:y:z) on y^2 = T, return [x,z]~ and set *py = y */
 static GEN
-projratpointxz2(GEN pol, long lim, long effort, GEN *py)
+projratpointxz2(GEN T, long lim, long effort, GEN *py)
 {
   pari_sp av = avma;
-  GEN list = mkvec(mkvec4(pol, matid(2), gen_1, gen_1));
-  long i, j, c;
-  long ntry = effort * 10;
+  GEN list = mkvec(mkvec4(T, matid(2), gen_1, gen_1));
+  long j, c, ntry = effort * 10;
 
-  for (i = 1, c = 1; i < lg(list) && c <= ntry; i++,c++)
+  for (c = 1; lg(list) > 1 && c <= ntry; c++)
   {
     GEN K, k, ff, co, p, M, C, r, pol, L;
     pari_sp av2;
@@ -950,13 +949,13 @@ projratpointxz2(GEN pol, long lim, long effort, GEN *py)
     if (gc_needed(av, 1))
     {
       if (DEBUGMEM > 1)
-        pari_warn(warnmem, "projratpointxz2: %ld/%ld",i,lg(list)-1);
-      gerepileall(av, 2, &pol, &list);
+        pari_warn(warnmem, "projratpointxz2: #list = %ld",lg(list)-1);
+      list = gerepilecopy(av, list);
     }
-    L = gel(list, i);
-    list = vecsplice(list, i); i--;
-    pol = Q_primitive_part(gel(L,1), &K);
+    L = gel(list, 1);
+    list = vecsplice(list, 1);
     av2 = avma;
+    pol = Q_primitive_part(gel(L,1), &K);
     M = gel(L,2);
     K = K? mulii(gel(L,3), K): gel(L,3);
     C = gel(L,4);
@@ -965,7 +964,7 @@ projratpointxz2(GEN pol, long lim, long effort, GEN *py)
       GEN xz, y, aux, U;
       if (c==1) { set_avma(av2); continue; }
       pol = ZX_hyperellred(pol, &U);
-      if (DEBUGLEVEL>1) err_printf("  reduced quartic(%ld): Y^2 = %Ps\n", i, pol);
+      if (DEBUGLEVEL>1) err_printf("  reduced quartic: Y^2 = %Ps\n", pol);
       xz = projratpointxz(pol, lim, &y); if (!xz) { set_avma(av2); continue; }
       *py = gmul(y, mulii(C, k));
       aux = RgM_RgC_mul(ZM2_mul(M, U), xz);
