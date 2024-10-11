@@ -736,8 +736,11 @@ imag_relations(struct buch_quad *B, long need, long *pc, ulong LIMC, GEN mat)
 static void
 mpqs_relations(struct buch_quad *B, long need, long *pc, ulong LIMC, GEN mat, mpqs_handle_t *H, GEN missing_primes)
 {
+  pari_timer T;
   long i, lV;
-  GEN V = mpqs_class_rels(H, need, missing_primes);
+  GEN V;
+  if (DEBUGLEVEL>2) timer_start(&T);
+  V = mpqs_class_rels(H, need, missing_primes);
   if (!V) { imag_relations(B, need, pc, LIMC, mat); return; }
   lV = lg(V);
   for (i = 1; i < lV && i <= need; i++)
@@ -746,6 +749,7 @@ mpqs_relations(struct buch_quad *B, long need, long *pc, ulong LIMC, GEN mat, mp
     GEN col = gel(mat,i);
     rel_to_col(B, col, rel, b);
   }
+  if (DEBUGLEVEL>2) timer_printf(&T, "MPQS rel [#rel = %ld]", i-1);
   *pc = 1;
 }
 

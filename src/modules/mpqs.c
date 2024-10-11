@@ -1861,6 +1861,5 @@ mpqs_class_rels(mpqs_handle_t *H, ulong nb, GEN missing_primes)
     break;
   }
   if (DEBUGLEVEL >= 4) err_printf("\n");
-  if (DEBUGLEVEL >= 3) err_printf("MPQS found %u relations\n", frel.nb);
   return gerepilecopy(av, rels_to_quad(H, hash_keys(&frel)));
 }
