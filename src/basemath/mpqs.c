@@ -97,7 +97,6 @@ const mpqs_bit_array mpqs_mask = 0x80808080UL;
 #endif
 #endif
 
-static GEN rel_q(GEN c) { return gel(c,3); }
 static GEN rel_Y(GEN c) { return gel(c,1); }
 static GEN rel_p(GEN c) { return gel(c,2); }
 
@@ -1079,13 +1078,12 @@ mpqs_factorback(mpqs_handle_t *h, GEN relp)
   return Q;
 }
 static void
-mpqs_check_rel(mpqs_handle_t *h, GEN c)
+mpqs_check_rel(mpqs_handle_t *h, GEN c, ulong q)
 {
   pari_sp av = avma;
-  int LP = (lg(c) == 4);
   GEN rhs = mpqs_factorback(h, rel_p(c));
   GEN Y = rel_Y(c), Qx_2 = remii(sqri(Y), h->N);
-  if (LP) rhs = modii(mulii(rhs, rel_q(c)), h->N);
+  if (q) rhs = modii(muliu(rhs, q), h->N);
   if (!equalii(Qx_2, rhs))
   {
     GEN relpp, relpc;
@@ -1093,10 +1091,10 @@ mpqs_check_rel(mpqs_handle_t *h, GEN c)
     err_printf("MPQS: %Ps : %Ps %Ps\n", Y, relpp,relpc);
     err_printf("\tQx_2 = %Ps\n", Qx_2);
     err_printf("\t rhs = %Ps\n", rhs);
-    pari_err_BUG(LP? "MPQS: wrong large prime relation found"
+    pari_err_BUG(q ? "MPQS: wrong large prime relation found"
                    : "MPQS: wrong full relation found");
   }
-  PRINT_IF_VERBOSE(LP? "\b(;)": "\b(:)");
+  PRINT_IF_VERBOSE(q? "\b(;)": "\b(:)");
   set_avma(av);
 }
 #endif
@@ -1150,18 +1148,18 @@ zv_is_even(GEN V)
 }
 
 static GEN
-combine_large_primes(mpqs_handle_t *h, GEN rel1, GEN rel2, int mode)
+combine_large_primes(mpqs_handle_t *h, ulong q, GEN rel1, GEN rel2, int mode)
 {
   GEN new_Y, new_Y1, Y1 = rel_Y(rel1), Y2 = rel_Y(rel2);
   long l, lei = h->size_of_FB + 1, nb = 0;
-  GEN ei, relp, iq, q = rel_q(rel1);
+  GEN ei, relp, iq;
 
-  if (!invmod(q, h->N, &iq)) return equalii(iq, h->N)? NULL: iq; /* rare */
+  if (!invmod(utoi(q), h->N, &iq)) return equalii(iq, h->N)? NULL: iq; /* rare */
   ei = zero_zv(lei);
   if (mode == MPQS_MODE_CLASSGROUP)
   {
      rel_add_ei(h, ei, rel_p(rel1), Y1);
-    if (equalii(modii(Y1,q), modii(Y2,q)))
+    if (umodiu(Y1, q) == umodiu(Y2,q))
       rel_sub_ei(h, ei, rel_p(rel2), Y2);
     else
       rel_add_ei(h, ei, rel_p(rel2), Y2);
@@ -1353,26 +1351,26 @@ mpqs_eval_cand(mpqs_handle_t *h, long nc, hashtable *frel, hashtable *lprel, int
     {
       GEN rel = gerepilecopy(btop, mkvec2(absi_shallow(Y), relp));
 #ifdef MPQS_DEBUG
-      mpqs_check_rel(h, rel);
+      mpqs_check_rel(h, rel, 0);
 #endif
       frel_add(frel, rel);
     }
     else if (cmpiu(Qx, h->lp_bound) <= 0)
     {
       ulong q = itou(Qx);
-      GEN rel = mkvec3(absi_shallow(Y),relp,Qx);
+      GEN rel = mkvec2(absi_shallow(Y), relp);
       GEN col = hash_haskey_GEN(lprel, (void*)q);
 #ifdef MPQS_DEBUG
-      mpqs_check_rel(h, rel);
+      mpqs_check_rel(h, rel, q);
 #endif
       if (!col) /* relation up to large prime */
         hash_insert(lprel, (void*)q, (void*)gerepilecopy(btop,rel));
-      else if ((rel = combine_large_primes(h, rel, col, mode)))
+      else if ((rel = combine_large_primes(h, q, rel, col, mode)))
       {
         if (typ(rel) == t_INT) return rel; /* very unlikely */
 #ifdef MPQS_DEBUG
         if (signe(rel_Y(rel)))
-          mpqs_check_rel(h, rel);
+          mpqs_check_rel(h, rel, 0);
 #endif
         frel_add(frel, gerepilecopy(btop,rel));
       }
