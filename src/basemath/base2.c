@@ -325,7 +325,7 @@ Z_fac(GEN n)
 {
   GEN p = icopy(n), part = ifac_start(p, 0);
   long e;
-  ifac_next(&part , &p, &e); n = diviiexact(n, powiu(p, e));
+  ifac_next(&part, &p, &e); n = diviiexact(n, powiu(p, e));
   (void)Z_isanypower(n, &n); return mkvec2(p, n);
 }
 
