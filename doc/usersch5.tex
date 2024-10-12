@@ -3673,7 +3673,7 @@ is either a \typ{INT} or is given by its factorization matrix.  Return
 
 \fun{GEN}{Zn_quad_roots}{GEN N, GEN B, GEN C} solves the equation $X^2 + B X
 + C$ modulo $N$. Return \kbd{NULL} if there are no solutions. Else returns
- $[v, M]$ where $M \mid N$ and the \kbd{FpV} $v$ of distinct integers
+ $[M, v]$ where $M \mid N$ and the \kbd{FpV} $v$ of distinct integers
 (reduced, implicitly modulo $M$) is such that $x$ modulo $N$ is a solution to
 the equation if and only if $x$ modulo $M$ belongs to $v$. If the
 discriminant $B^2-4C$ is coprime to $N$, we have $M = N$ but in general $M$
