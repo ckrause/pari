@@ -571,7 +571,7 @@ chk_fact(struct buch_quad *B, GEN col)
     long k = col[i];
     Q = qfbcomp(qfbpowraw(qfi_pf(B->q->D, p),k),Q);
   }
-  if (!gequal1(gel(Q,1))) pari_err_BUG("chk_fact");}
+  if (!gequal1(gel(Q,1))) pari_err_BUG("chk_fact");
 }
 #endif
 
