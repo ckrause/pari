@@ -515,8 +515,8 @@ Zn_ispower(GEN a, GEN q, GEN K, GEN *pt)
       if (!handle_pe(&a, q, L, K, q, 1)) return gc_long(av,0);
     }
     else
-    {
-      GEN part = ifac_start(q, 0);
+    { /* icopy needed: ifac_next would destroy q */
+      GEN part = ifac_start(icopy(q), 0);
       for(;;)
       {
         long e;

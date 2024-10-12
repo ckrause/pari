@@ -6,6 +6,7 @@ AP   2- fix idealismaximal for ideal p*ZK [Sage issue 38766]
 AP   3- segfault in algsubalg when input is linearly dependent
 AP   4- fix alglatinter trivial intersection (misuse of matkermod(,1))
 BA   5- ellrank could try many more curves than requested by effort [#2577]
+     6- wrong result in issquare(Mod(a, composite)) [#2578]
 
   Added
 AP   1- new GP function algnewprec
