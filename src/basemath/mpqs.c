@@ -1659,6 +1659,8 @@ mpqs(GEN N)
     err_printf("MPQS: factoring number of %ld decimal digits\n", size_N);
   }
   H.N = N;
+  H.two_is_norm = 0; /* Not used */
+  H.two_is_bad = 0;
   H.bin_index = 0;
   H.index_i = 0;
   H.index_j = 0;
