@@ -1073,17 +1073,21 @@ mpqs_factorback(mpqs_handle_t *h, GEN relp)
   {
     long e = relp[j] >> REL_OFFSET, i = relp[j] & REL_MASK;
     if (i == 1) Q = Fp_neg(Q,N); /* special case -1 */
-    else Q = Fp_mul(Q, Fp_powu(utoipos(h->FB[i].fbe_p), e, N), N);
+    else Q = Fp_mul(Q, Fp_pows(utoipos(h->FB[i].fbe_p), e, N), N);
   }
   return Q;
 }
 static void
-mpqs_check_rel(mpqs_handle_t *h, GEN c, ulong q)
+mpqs_check_rel(mpqs_handle_t *h, GEN c, ulong q, long mode)
 {
   pari_sp av = avma;
-  GEN rhs = mpqs_factorback(h, rel_p(c));
-  GEN Y = rel_Y(c), Qx_2 = remii(sqri(Y), h->N);
-  if (q) rhs = modii(muliu(rhs, q), h->N);
+  GEN Y = rel_Y(c), Qx_2 = remii(sqri(Y), h->N), rhs;
+  if (mode == MPQS_MODE_CLASSGROUP)
+  {
+    if (signe(Y)==0 || q!=1) { set_avma(av); return; }
+    q = 4;
+  }
+  rhs = Fp_mulu(mpqs_factorback(h, rel_p(c)), q, h->N);
   if (!equalii(Qx_2, rhs))
   {
     GEN relpp, relpc;
@@ -1351,7 +1355,7 @@ mpqs_eval_cand(mpqs_handle_t *h, long nc, hashtable *frel, hashtable *lprel, int
     {
       GEN rel = gerepilecopy(btop, mkvec2(absi_shallow(Y), relp));
 #ifdef MPQS_DEBUG
-      mpqs_check_rel(h, rel, 0);
+      mpqs_check_rel(h, rel, 1, mode);
 #endif
       frel_add(frel, rel);
     }
@@ -1367,7 +1371,7 @@ mpqs_eval_cand(mpqs_handle_t *h, long nc, hashtable *frel, hashtable *lprel, int
       GEN rel = mkvec2(absi_shallow(Y), relp);
       GEN col = hash_haskey_GEN(lprel, (void*)q);
 #ifdef MPQS_DEBUG
-      mpqs_check_rel(h, rel, q);
+      mpqs_check_rel(h, rel, q, mode);
 #endif
       if (!col) /* relation up to large prime */
         hash_insert(lprel, (void*)q, (void*)gerepilecopy(btop,rel));
@@ -1375,8 +1379,7 @@ mpqs_eval_cand(mpqs_handle_t *h, long nc, hashtable *frel, hashtable *lprel, int
       {
         if (typ(rel) == t_INT) return rel; /* very unlikely */
 #ifdef MPQS_DEBUG
-        if (signe(rel_Y(rel)))
-          mpqs_check_rel(h, rel, 0);
+        mpqs_check_rel(h, rel, 1, mode);
 #endif
         frel_add(frel, gerepilecopy(btop,rel));
       }
