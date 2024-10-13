@@ -1410,10 +1410,12 @@ static GEN
 rels_to_quad(mpqs_handle_t *h, GEN rel)
 {
   long i, cols = lg(rel)-1;
-  GEN m = cgetg(cols+1, t_VEC);
+  GEN m, idx;
+  idx = gen_indexsort(rel, cmp_universal, cmp_nodata);
+  m = cgetg(cols+1, t_VEC);
   for (i = 1; i <= cols; i++)
   {
-    GEN r = gel(rel, i), re = gel(r,2);
+    GEN r = gel(rel, idx[i]), re = gel(r,2);
     GEN R = rels_to_pairs(h, re);
     gel(m, i) = mkvec2(gel(r, 1), R);
   }
@@ -1861,5 +1863,5 @@ mpqs_class_rels(mpqs_handle_t *H, ulong nb, GEN missing_primes)
     break;
   }
   if (DEBUGLEVEL >= 4) err_printf("\n");
-  return gerepilecopy(av, rels_to_quad(H, hash_keys(&frel)));
+  return gerepilecopy(av, rels_to_quad(H, hash_keys_GEN(&frel)));
 }
