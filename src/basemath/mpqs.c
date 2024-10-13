@@ -1355,7 +1355,13 @@ mpqs_eval_cand(mpqs_handle_t *h, long nc, hashtable *frel, hashtable *lprel, int
 #endif
       frel_add(frel, rel);
     }
-    else if (cmpiu(Qx, h->lp_bound) <= 0)
+    else if (cmpiu(Qx, h->lp_bound) <= 0 && (mode!=MPQS_MODE_CLASSGROUP
+#ifdef CLASSGROUP_LARGE_PRIME
+/* primes dividing the index are excluded from FB, so they can still divide Qx.
+   Add a crude check */
+            || is_pm1(gcdii(h->N, Qx))
+#endif
+            ))
     {
       ulong q = itou(Qx);
       GEN rel = mkvec2(absi_shallow(Y), relp);
