@@ -1420,7 +1420,7 @@ rels_to_quad(mpqs_handle_t *h, GEN rel)
 {
   long i, cols = lg(rel)-1;
   GEN m, idx;
-  idx = gen_indexsort(rel, cmp_universal, cmp_nodata);
+  idx = gen_indexsort(rel, (void *) cmp_universal, cmp_nodata);
   m = cgetg(cols+1, t_VEC);
   for (i = 1; i <= cols; i++)
   {
