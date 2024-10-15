@@ -31,7 +31,7 @@ Doc: computes the list of all ideals of norm less or equal to \var{bound} in
 
  \item 4: give only the ideal (in HNF), else a \var{bid}.
 
- \item 8: omit ideals which cannot be conductors, i.e. divisible exactly my
+ \item 8: omit ideals which cannot be conductors, i.e. divisible exactly by
  a prime ideal of norm $2$.
 
  \bprog
