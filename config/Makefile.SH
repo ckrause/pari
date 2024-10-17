@@ -704,9 +704,13 @@ if test -f "$TOP/.git/index"; then
 else
  if test -f "$TOP/.git"; then
    vcfile=`sed  -n '/gitdir: / { s/gitdir: \(.*\)/\1/;p;q}' $TOP/.git`/index
+   if test ! -f $vcfile; then
+     echo "Warning: GIT index file not found: $vcfile"
+     vcfile=
+   fi
  fi
 fi
-if test -n "$vcfile" && test -f "$vcfile"; then
+if test -n "$vcfile"; then
   cat >> $file <<EOT
 paricfg.h: $vcfile $cfg/version
 	-sh $cfg/setversion
