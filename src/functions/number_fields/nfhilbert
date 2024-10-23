@@ -10,6 +10,9 @@ Doc: if \var{pr} is omitted,
  is $1$ if $x^{2} - a y^{2} - b z^{2}$ has a non trivial solution $(x,y,z)$ in
  $\var{nf}$, and $-1$ otherwise. Otherwise compute the local symbol modulo
  the prime ideal \var{pr}, as output by \kbd{idealprimedec}.
+
+ The quaternion algebra~$(a,b)$ over \var{nf} can be created with
+ \kbd{alginit(nf,[a,b])} (see \tet{alginit}).
 Variant:
  Also available is \fun{long}{nfhilbert}{GEN nf,GEN a,GEN b} (global
  quadratic Hilbert symbol), where \kbd{nf} is a true \var{nf} structure.
