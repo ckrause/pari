@@ -2999,10 +2999,14 @@ gener_FpXQ(GEN T, GEN p, GEN *po)
 GEN
 gener_FpXQ_local(GEN T, GEN p, GEN L)
 {
-  GEN Lp, Lq, p_1 = subiu(p,1), q_1, N, Q;
-  long f, i, ip, iq, l = lg(L);
+  GEN Lp, Lq, p_1, q_1, N, Q;
+  long f, i, ip, iq, l;
+
   T = get_FpX_mod(T);
   f = degpol(T);
+  if (f == 1) return pgener_Fp_local(p, L);
+  l = lg(L);
+  p_1 = subiu(p,1);
   q_1 = subiu(powiu(p,f), 1);
   N = diviiexact(q_1, p_1);
 
