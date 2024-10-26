@@ -629,6 +629,11 @@ matrix(0,2)
 
 [1 1]
 
+
+[2 1]
+
+[1 1]
+
   ***   at top-level: 1/Mat([0,0]~)
   ***                  ^------------
   *** _/_: impossible inverse in ginv: 0.
@@ -689,4 +694,4 @@ matrix(0,2)
   ***   at top-level: Mat(0)/Mat(0)
   ***                       ^-------
   *** _/_: impossible inverse in gdiv: Mat(0).
-Total time spent: 361
+Total time spent: 788

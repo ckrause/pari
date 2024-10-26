@@ -16,17 +16,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 GEN
 ZM2_sqr(GEN A)
 {
-  GEN a = gcoeff(A,1,1), b = gcoeff(A,1,2), c = gcoeff(A,2,1), d = gcoeff(A,2,2);
+  GEN a = gcoeff(A,1,1), b = gcoeff(A,1,2), a2 = sqri(a);
+  GEN c = gcoeff(A,2,1), d = gcoeff(A,2,2), d2 = sqri(d), t = addii(a,d);
   if (equalii(b, c)) /* symetric, 3S + 1M */
   {
-    GEN b2 = sqri(b), t = mulii(b, addii(a, d));
-    retmkmat2(mkcol2(addii(b2, sqri(a)), t), mkcol2(t, addii(b2, sqri(d))));
+    GEN b2 = sqri(b), M = cgetg(3, t_MAT), tb = mulii(b, t);
+    gel(M,1) = mkcol2(addii(a2, b2), tb);
+    gel(M,2) = mkcol2(tb, addii(b2, d2)); return M;
   }
   else
   { /* general, 2S + 3M */
-    GEN bc = mulii(b, c), t = addii(a, d);
-    retmkmat2(mkcol2(addii(bc, sqri(a)), mulii(c, t)),
-              mkcol2(mulii(b, t), addii(bc, sqri(d))));
+    GEN bc = mulii(b, c);
+    retmkmat2(mkcol2(addii(bc, a2), mulii(c, t)),
+              mkcol2(mulii(b, t), addii(bc, d2)));
   }
 }
 
