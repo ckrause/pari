@@ -1327,7 +1327,7 @@ RgM_mat2col(GEN M, long d, long n)
 }
 /* inverse isomorphism */
 static GEN
-Fq_col2mat(GEN C, long d, long n, long v)
+RgC_col2mat(GEN C, long d, long n, long v)
 {
   long i, j, start;
   GEN M = cgetg(d+1, t_MAT), cM;
@@ -6070,7 +6070,7 @@ algmodpr_integral(GEN x, GEN data, long reduce)
   k = algmodpr_get_k(data);
   m = algmodpr_get_m(data);
   res = ZM_ZC_mul(algmodpr_get_proj(data), x);
-  res = Fq_col2mat(res, k, m, v);
+  res = RgC_col2mat(res, k, m, v);
   return reduce? FqM_red(res, T, p) : res;
 }
 
