@@ -256,6 +256,29 @@ p3 = idealprimedec(nf,3)[1];
 al = alginit(nf, [2,[[p3],[1/2]], [1/2,0,0,1/2,1/2,0,0,0]]);
 algramifiedplaces(al)
 
+print("quaternion from ramification shortcut");
+setrand(1);
+nf = nfinit(y^2-2);
+P1 = idealprimedec(nf,17)[1];
+P2 = idealprimedec(nf,2)[1];
+alg = alginit(nf,[[P1,P2],[0,0]]);
+a = poldisc(algsplittingfield(alg).pol);
+b = algb(alg);
+alg = alginit(nf,[a,b]);
+alghasse(alg,P1) == 1/2
+alghasse(alg,P2) == 1/2
+alghasse(alg,1) == 0
+alghasse(alg,2) == 0
+algdisc(alg) == nf.disc^4 * (2*17)^2 * 2^8
+alg = alginit(nf,[[],[1,1]]);
+a = poldisc(algsplittingfield(alg).pol);
+b = algb(alg);
+alg = alginit(nf,[a,b]);
+alghasse(alg,1) == 1/2
+alghasse(alg,2) == 1/2
+algdisc(alg) == nf.disc^4 * 2^8
+
+
 print("degree bug");
 nf = nfinit(y); p2 = idealprimedec(nf,2)[1]; p3 = idealprimedec(nf,3)[1];
 al = alginit(nf, [4,[[p2,p3],[1/2,1/2]],[0]]); algdegree(al)

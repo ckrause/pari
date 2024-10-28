@@ -4682,6 +4682,15 @@ alg_hilbert(GEN nf, GEN a, GEN b, long v, long flag)
   return gerepileupto(av, alg_cyclic(rnf, aut, b, flag));
 }
 
+/* shortcut for alg_hasse in quaternion case */
+static GEN
+alg_quatramif(GEN nf, GEN Lpr, GEN hi, long var, long flag)
+{
+  pari_sp av = avma;
+  GEN hf = mkvec2(Lpr, const_vecsmall(lg(Lpr)-1,1));
+  return gerepileupto(av, alg_hasse(nf, 2, hf, hi, var, flag));
+}
+
 /* return a structure representing the algebra of real numbers */
 static GEN
 mk_R()
@@ -4764,7 +4773,10 @@ alginit(GEN A, GEN B, long v, long flag)
           if (nB && typ(gel(B,1)) == t_MAT) return alg_csa_table(A,B,v,flag);
           switch(nB)
           {
-            case 2: return alg_hilbert(A, gel(B,1), gel(B,2), v, flag);
+            case 2:
+              if (typ(gel(B,1)) == t_VEC)
+                return alg_quatramif(A, gel(B,1), gel(B,2), v, flag);
+              return alg_hilbert(A, gel(B,1), gel(B,2), v, flag);
             case 3:
               if (typ(gel(B,1))!=t_INT)
                   pari_err_TYPE("alginit [degree should be an integer]", gel(B,1));

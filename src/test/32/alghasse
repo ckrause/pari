@@ -166,6 +166,15 @@ tests with splitting field that does not descend
 , 0, 0, 0, 0, -3, -3, 6; 1, 1, -2, -4, 1, 6, 3, -3; 1, -1, 0, 3, -1, -5, 0, 
 3; 0, 1, -1, -2, 1, 4, 0, -3; 0, -2, 2, 1, 1, -2, 0, 3; -1, -1, 2, 1, -1, 0,
  0, 0; 1, 2, 0, 0, -1, 1, 0, 0]]]
+quaternion from ramification shortcut
+1
+1
+1
+1
+1
+1
+1
+1
 degree bug
   ***   at top-level: al=alginit(nf,[4,[[p2,p3],[1/2,1/2]],[0]]);alg
   ***                    ^-------------------------------------------
@@ -178,4 +187,4 @@ degree bug
 infinite loop in GW
 inefficiency in backtrackfacto
 bug: alg_complete at ramified primes
-Total time spent: 1990
+Total time spent: 2007
