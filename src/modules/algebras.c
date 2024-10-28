@@ -1315,7 +1315,7 @@ descend(GEN M, long n, GEN p, long v)
 
 /* isomorphism of Fp-vector spaces M_d(F_p^n) -> (F_p)^(d^2*n) */
 static GEN
-Fq_mat2col(GEN M, long d, long n)
+RgM_mat2col(GEN M, long d, long n)
 {
   long N = d*d*n, i, j, k;
   GEN C = cgetg(N+1, t_COL);
@@ -1433,7 +1433,7 @@ alg_finite_csa_split(GEN al, long v)
     mx = FpM_mul(mx,B,p);
     mx = FqM_mul(C,mx,T,p);
     gel(map,i) = mx;
-    gel(M,i) = Fq_mat2col(mx,d,n);
+    gel(M,i) = RgM_mat2col(mx,d,n);
   }
   mapi = FpM_inv(M,p);
   if (!mapi) pari_err(e_MISC, "the algebra must be simple (alg_finite_csa_split 3)");
@@ -6161,7 +6161,7 @@ algmodprlift_i(GEN al, GEN x, GEN data)
       else if (m == 1)          gcoeff(x,i,j) = scalarpol(Rg_to_Fp(c,p), -1);
       else                      gcoeff(x,i,j) = Rg_to_FpXQ(c, T, p);
     }
-  C = Fq_mat2col(x, k, m);
+  C = RgM_mat2col(x, k, m);
   return FpM_FpC_mul(lift, C, p);
 }
 
