@@ -17,10 +17,11 @@ Doc:
  dimension over~$\Q$ or~$\F_{p}$. We represent them by the left multiplication
  table on a basis over the prime subfield; the function \kbd{algtableinit}
  creates the object representing an associative algebra. We also provide
- functions to handle central simple algebras over a number field $K$. We
- represent them either by the left multiplication table on a basis over the
- center $K$ or by a cyclic algebra (see below); the function~\kbd{alginit}
- creates the object representing a central simple algebra.
+ functions to handle central simple algebras (CSA) over a number field $K$,
+ including quaternion algebras as a special case. We represent them either by
+ the left multiplication table on a basis over the center $K$ or by a cyclic
+ algebra (see below); the function~\kbd{alginit} creates the object representing
+ a central simple algebra.
 
  The set of elements of an algebra~$A$ that annihilate every simple left
  $A$-module is a two-sided ideal, called the \emph{Jacobson radical} of~$A$.
@@ -28,9 +29,10 @@ Doc:
  isomorphic to a direct product of simple algebras. The
  dimension of a CSA over its center $K$ is always a
  square $d^{2}$ and the integer $d$ is called the \emph{degree} of the
- algebra over~$K$. A CSA over a field~$K$ is always isomorphic to~$M_{k}(D)$
- for some integer~$k$ and some central division algebra~$D$ of degree~$e$:
- the integer~$e$ is the \emph{index} of the algebra.
+ algebra over~$K$, quaternion algebras corresponding to the case~$d=2$. A CSA
+ over a field~$K$ is always isomorphic to~$M_{k}(D)$ for some integer~$k$ and
+ some central division algebra~$D$ of degree~$e$: the integer~$e$ is the
+ \emph{index} of the algebra.
 
  Let $L/K$ be a cyclic extension of degree $d$, let $\sigma$ be a
  generator of $\text{Gal}(L/K)$ and let $b\in K^{*}$. Then the
@@ -40,6 +42,12 @@ Doc:
  of degree~$d$, and it is an $L$-vector space. Left multiplication is
  $L$-linear and induces a $K$-algebra isomorphism
  $(L/K,\sigma,b)\otimes_{K} L\to M_{d}(L)$.
+ This contains quaternion algebras as a special case: for $d=2$ the
+ extension~$L/K$ is of the form~$L = K(i)$ with~$i^2=a\in K^{*}$ and
+ $\sigma(i)=-i$, and using the more common notation $j$ for the $x$ above, we
+ have~$j^2=b$ and the relation~$ij = j\sigma(i)=-ji$, so that the cyclic algebra
+ $(L/K,\sigma,b) = K(i)+jK(i) = K+Ki+Kj+Kji$ is the quaternion
+ algebra~$(a,b)_{K}$.
 
  Let $K$ be a nonarchimedean local field with uniformizer $\pi$, and let
  $L/K$ be the unique unramified extension of degree $d$. Then every central
@@ -55,6 +63,10 @@ Doc:
  to~$M_{d}(\R)$ or $M_{d/2}({\bf H})$. We define the \emph{Hasse invariant}
  of~$A$ to be~$0\in\Q/\Z$ in the first case and~$1/2\in\Q/\Z$ in the second
  case.
+
+ A place is \emph{split} in~$A$ if the Hasse invariant is~$0$ and
+ \emph{ramified} otherwise. In the quaternion algebra case, the Hasse invariants
+ can only be~$0$ or~$1/2$ and the set of ramified places has even cardinality.
 
  \subsec{Orders in algebras} %GPHELPskip
 

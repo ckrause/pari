@@ -56,7 +56,6 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
           1, 0, 0, 0];
    A = alginit(nfinit(y), [matid(4), mi,mj,mk], , 0); }
  @eprog represents (in a complicated way) the quaternion algebra $(-1,-1)_{\Q}$.
- See below for a simpler solution.
 
  \item (algebra/$K$ defined by local Hasse invariants)
  $B$ is an \kbd{nf} structure attached to a number field $K$,
@@ -94,6 +93,19 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
   ? A = alginit(nf, [3,hf,hi]);
   ? algsplittingfield(A).pol
   %6 = x^3 - 21*x + 7
+ @eprog
+
+ For the special case of a quaternion algebra given by its ramification set, we
+ allow the shortcut $C = [\kbd{PR},h_i]$, where~\kbd{PR} is the list of ramified
+ primes and $h_i$ describes ramification at infinity.
+
+ \bprog
+ ? nf = nfinit(y^2-2);
+ ? PR = idealprimedec(nf,2); \\ramified at the prime above 2
+ ? hi = [1,0]; \\ramified at one place at infinity
+ ? A = alginit(nf, [PR,hi]); \\quaternion algebra from ramification
+ ? #algramifiedplaces(A)
+ % = 2
  @eprog
 
  \item (matrix algebra, toy example) $B$ is an \kbd{nf} structure attached
