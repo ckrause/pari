@@ -1317,12 +1317,26 @@ descend(GEN M, long n, GEN p, long v)
 static GEN
 RgM_mat2col(GEN M, long d, long n)
 {
-  long N = d*d*n, i, j, k;
+  long nd = d*n,  N = d*nd, i, j, ni, nj;
   GEN C = cgetg(N+1, t_COL);
-  for (i=1; i<=d; i++)
-    for (j=1; j<=d; j++)
-      for (k=0; k<n; k++)
-        gel(C,n*(d*(i-1)+j-1)+k+1) = polcoef_i(gcoeff(M,i,j),k,-1);
+  for (i=1, ni = 0; i<=d; i++, ni += nd)
+    for (j=1, nj = 0; j<=d; j++, nj += n)
+    {
+      GEN P = gcoeff(M,i,j);
+      long k, e = ni + nj + 1;
+      if (typ(P)==t_POL)
+      {
+        long dP = degpol(P);
+        for (k = 0; k <= dP; k++)
+          gel(C,e+k) = gel(P,k+2);
+      } else
+      {
+        gel(C,e) = P;
+        k = 1;
+      }
+      for (  ; k < n; k++)
+        gel(C,e+k) = gen_0;
+    }
   return C;
 }
 /* inverse isomorphism */
