@@ -36,24 +36,13 @@ static GEN alg_maximal(GEN al);
 static GEN algtracematrix(GEN al);
 static GEN algtableinit_i(GEN mt0, GEN p);
 static GEN algbasisrightmultable(GEN al, GEN x);
-static GEN algabstrace(GEN al, GEN x);
 static GEN algbasismul(GEN al, GEN x, GEN y);
 static GEN algbasismultable(GEN al, GEN x);
 static GEN algbasismultable_Flm(GEN mt, GEN x, ulong m);
 
-static void H_compo(GEN x, GEN* a, GEN* b, GEN* c, GEN* d);
-static GEN H_add(GEN x, GEN y);
-static GEN H_charpoly(GEN x, long v, long abs);
-static GEN H_divl_i(GEN x, GEN y);
 static GEN H_inv(GEN x);
-static GEN H_mul(GEN x, GEN y);
-static GEN H_neg(GEN x);
 static GEN H_norm(GEN x, long abs);
-static GEN H_random(GEN b);
-static GEN H_sqr(GEN x);
-static GEN H_tomatrix(GEN x, long abs);
 static GEN H_trace(GEN x, long abs);
-static GEN mk_C();
 
 static int
 checkalg_i(GEN al)
