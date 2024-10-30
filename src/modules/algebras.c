@@ -6267,9 +6267,9 @@ GEN
 algeichlerbasis(GEN al, GEN N)
 {
   pari_sp av = avma;
-  GEN nf, faN, LH = NULL, Cpr = NULL, Cm = NULL, pr, mZ, Lpp, M, H, p, pp,
-      LH2, U, e, prm;
-  long i, k, n, m, ih, lh, np, k2;
+  GEN nf, faN, LH = NULL, Cpr = NULL, Cm = NULL, Lpp, M, H, pp, LH2;
+  long k, n, ih, lh, np;
+
   checkalg(al);
   nf = alg_get_center(al);
   if (checkprid_i(N)) return eichlerprimepower(al,N,1,N);
@@ -6283,9 +6283,9 @@ algeichlerbasis(GEN al, GEN N)
   if (!n) { set_avma(av); return matid(alg_get_absdim(al)); }
   if (n==1)
   {
-    pr = gcoeff(faN,1,1);
-    mZ = gcoeff(faN,1,2);
-    return gerepileupto(av, eichlerprimepower_i(al,pr,itos(mZ),N));
+    GEN pr = gcoeff(faN,1,1), mZ = gcoeff(faN,1,2);
+    long m = itos(mZ);
+    return gerepileupto(av, eichlerprimepower_i(al, pr, m, N));
   }
 
   /* collect prime power Eichler orders */
@@ -6294,16 +6294,18 @@ algeichlerbasis(GEN al, GEN N)
   np = 0;
   ih = 1;
   lh = 1;
-  for (k=1; k<=n; k++)
+  for (k = 1; k <= n; k++)
   {
-    pr = gcoeff(faN,k,1);
-    if (ih==lh) /* done with previous p, prepare next */
+    GEN pr = gcoeff(faN,k,1), mZ = gcoeff(faN,k,2), prm;
+    long m = itos(mZ);
+
+    if (ih == lh) /* done with previous p, prepare next */
     {
-      p = pr_get_p(pr);
+      GEN p = pr_get_p(pr);
+      long k2 = k + 1;
       np++;
       gel(Lpp,np) = gen_0;
       lh = 2;
-      k2 = k+1;
       /* count the pr|p in faN */
       while (k2<=n && equalii(p,pr_get_p(gcoeff(faN,k2,1)))) { lh++; k2++; }
       LH = cgetg(lh, t_VEC);
@@ -6311,29 +6313,25 @@ algeichlerbasis(GEN al, GEN N)
       Cm = cgetg(lh, t_VEC);
       ih = 1;
     }
-
-    mZ = gcoeff(faN,k,2);
-    m = itos(mZ);
     prm = idealpow(nf, pr, mZ);
     H = eichlerprimepower(al, pr, m, prm);
     pp = gcoeff(prm,1,1);
-    if (cmpii(pp,gel(Lpp,np))>0) gel(Lpp,np) = pp;
+    if (cmpii(pp,gel(Lpp,np)) > 0) gel(Lpp,np) = pp;
     gel(LH,ih) = H;
     gel(Cpr,ih) = pr;
     gel(Cm,ih) = mZ;
     ih++;
 
-    if (ih==lh) /* done with this p */
+    if (ih == lh) /* done with this p */
     {
-      if (lh==2) gel(LH2,np) = gel(LH,1);
+      if (lh == 2) gel(LH2,np) = gel(LH,1);
       else
-      {
-        /* put together the pr|p */
-        U = gmael(idealchineseinit(nf, mkmat2(Cpr,Cm)),1,2);
-        for (i=1; i<lh; i++)
+      { /* put together the pr|p */
+        GEN U = gmael(idealchineseinit(nf, mkmat2(Cpr,Cm)),1,2);
+        long i;
+        for (i = 1; i < lh; i++)
         {
-          e = gel(U,i);
-          e = algeltfromnf_i(al, e);
+          GEN e = algeltfromnf_i(al, gel(U,i));
           e = algbasismultable(al, e);
           gel(LH,i) = ZM_mul(e, gel(LH,i));
         }
