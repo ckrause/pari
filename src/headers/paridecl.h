@@ -1782,6 +1782,7 @@ GEN     algnorm(GEN al, GEN x, long abs);
 GEN     algpoleval(GEN al, GEN pol, GEN x);
 GEN     algpow(GEN al, GEN x, GEN n);
 GEN     algprimesubalg(GEN al);
+GEN     algquattobasis(GEN al, GEN x);
 GEN     algramifiedplaces(GEN al);
 GEN     algrandom(GEN al, GEN b);
 GEN     algsplit(GEN al, long v);

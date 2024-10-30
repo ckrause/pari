@@ -3582,6 +3582,47 @@ algalgtobasis(GEN al, GEN x)
   return gerepileupto(av, x);
 }
 
+/*
+ Quaternion algebras special case:
+ al = (L/F, sigma, b) with L quadratic
+ > v^2-a: i = v
+ > v^2+A*v+B: i = 2*v+A: i^2 = a = A^2-4*B
+ al ~ (a,b)_F
+*/
+GEN
+algquattobasis(GEN al, GEN x)
+{
+  pari_sp av = avma;
+  GEN L1, L2, pol, A, x2, nf;
+  long v, i, ta;
+  checkalg(al);
+  ta = alg_type(al);
+  if (ta != al_CYCLIC || alg_get_degree(al)!=2)
+    pari_err_TYPE("algquattobasis [not a quaternion algebra]", al);
+  if (typ(x)!=t_COL && typ(x)!=t_VEC) pari_err_TYPE("algquattobasis", x);
+  if (lg(x)!=5) pari_err_DIM("algquattobasis [quaternions have 4 components]");
+  nf = alg_get_center(al);
+  x2 = cgetg(5, t_COL);
+  for (i=1; i<=4; i++) gel(x2,i) = basistoalg(nf, gel(x,i));
+  gel(x2,4) = gneg(gel(x2,4));
+  pol = alg_get_splitpol(al);
+  v = varn(pol);
+  A = gel(pol,3); /* coeff of v^1 */
+  if (gequal0(A))
+  {
+    L1 = deg1pol_shallow(gel(x2,2), gel(x2,1), v);
+    L2 = deg1pol_shallow(gel(x2,4), gel(x2,3), v);
+  }
+  else
+  {
+    L1 = deg1pol_shallow(gshift(gel(x2,2),1),
+        gadd(gel(x2,1),gmul(A,gel(x2,2))), v);
+    L2 = deg1pol_shallow(gshift(gel(x2,4),1),
+        gadd(gel(x2,3),gmul(A,gel(x2,4))), v);
+  }
+  return gerepileupto(av, algalgtobasis(al,mkcol2(L1,L2)));
+}
+
 static GEN
 algbasistoalg_mat(GEN al, GEN x) /* componentwise */
 {

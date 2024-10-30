@@ -2918,6 +2918,56 @@ w = algrandom(al,20);
 algpoleval(al, algcharpoly(al,w), w) == 0
 algtomatrix(al,algeltfromnf(al,y)) == y
 
+print("algquattobasis / algbasistoquat");
+nf = nfinit(y^2-2);
+a = -2;
+b = -1-y;
+alg = alginit(nf,[a,b]);
+algquattobasis(alg,[1,0,0,0]~) == 1
+i = algquattobasis(alg,[0,1,0,0]~);
+algsqr(alg,i) == algeltfromnf(alg,a)
+j = algquattobasis(alg,[0,0,1,0]~);
+algsqr(alg,j) == algeltfromnf(alg,b)
+algmul(alg,i,j) == - algmul(alg,j,i)
+algmul(alg,i,j) == algquattobasis(alg,[0,0,0,1]~)
+print("linearity");
+q1 = vectorv(4,i,vectorv(2,j,random([-10,10]))/random([2,5]));
+w1 = algquattobasis(alg,q1);
+#w1 == 8
+q2 = vectorv(4,i,vectorv(2,j,random([-10,10]))/random([2,5]));
+w2 = algquattobasis(alg,q2);
+#w2 == 8
+algadd(alg,w1,w2) == algquattobasis(alg,q1+q2)
+print("quadratic with linear term");
+v = varhigher("v",y);
+rnf = rnfinit(nf, v^2-v-y);
+sig = 1-v;
+b = y-5;
+alg = alginit(rnf, [sig,b]);
+a = poldisc(rnf.pol);
+algquattobasis(alg,[1,0,0,0]~) == 1
+i = algquattobasis(alg,[0,1,0,0]~);
+algsqr(alg,i) == algeltfromnf(alg,a)
+j = algquattobasis(alg,[0,0,1,0]~);
+algsqr(alg,j) == algeltfromnf(alg,b)
+algmul(alg,i,j) == - algmul(alg,j,i)
+algmul(alg,i,j) == algquattobasis(alg,[0,0,0,1]~)
+print("linearity");
+q1 = vectorv(4,i,vectorv(2,j,random([-10,10])));
+w1 = algquattobasis(alg,q1);
+#w1 == 8
+q2 = vectorv(4,i,vectorv(2,j,random([-10,10])));
+w2 = algquattobasis(alg,q2);
+#w2 == 8
+algadd(alg,w1,w2) == algquattobasis(alg,q1+q2)
+
+print("doc algquattobasis");
+nf = nfinit(y^2+1);
+alg = alginit(nf, [2,3*y+1]);
+#algquattobasis(alg,[1,2,y,0]~)
+algsqr(alg,algquattobasis(alg,[0,1,0,0]~))
+
+
 print("nfgrunwaldwang SEGV #1669");
 nfgrunwaldwang(nfinit(y),[2,3],[1,2],Vecsmall(1))
 nfgrunwaldwang(nfinit(x),[2,3],[1,2],Vecsmall(1))
@@ -3031,3 +3081,20 @@ alt = algtableinit(algmultable(al),3);
 B = [1, 0, 0, 0; 0, 7625597484987, 6608353175723, 6996189950772; 0, 0, 1, 0; 0, 0, 0, 1];
 alB = algsubalg(alt,B)[1];
 algdim(alB)
+
+print("bad inputs algquattobasis / algbasistoquat");
+nf = nfinit(y);
+alg = alginit(nf,[-1,-1]);
+algquattobasis(alg,[1,2,3]~);
+algquattobasis(alg,1+x-x^2);
+algquattobasis(alg,[1+'u,0,0,0]~);
+algquattobasis([],[1,y,0,-1]~);
+mt = algmultable(alg);
+alg = alginit(nf, mt);
+algquattobasis(alg,[1,y,0,-1]~);
+talg = algtableinit(mt);
+algquattobasis(talg,[1,y,0,-1]~);
+H = alginit(1.,1/2);
+algquattobasis(H,[1,2,0,-1]~);
+alg = alginit(nf,3);
+algquattobasis(alg,[1,2,0,-1]~);

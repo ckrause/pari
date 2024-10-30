@@ -3125,6 +3125,29 @@ algnewprec:
 1
 1
 1
+algquattobasis / algbasistoquat
+1
+1
+1
+1
+1
+linearity
+1
+1
+1
+quadratic with linear term
+1
+1
+1
+1
+1
+linearity
+1
+1
+1
+doc algquattobasis
+8
+[2, 0, 0, 0, 0, 0, 0, 0]~
 nfgrunwaldwang SEGV #1669
 x^2 + Mod(-17, y)
   ***   at top-level: nfgrunwaldwang(nfinit(x),[2,3],[1,2],Vecsmall(
@@ -3193,4 +3216,29 @@ maxord flag
   *** nfinit: Warning: nonmonic polynomial. Result of the form [nf,c].
 segfault in algsubalg for invalid input
 3
-Total time spent: 2252
+bad inputs algquattobasis / algbasistoquat
+  ***   at top-level: algquattobasis(alg,[1,2,3]~)
+  ***                 ^----------------------------
+  *** algquattobasis: inconsistent dimensions in algquattobasis [quaternions have 4 components].
+  ***   at top-level: algquattobasis(alg,1+x-x^2)
+  ***                 ^---------------------------
+  *** algquattobasis: incorrect type in algquattobasis (t_POL).
+  ***   at top-level: algquattobasis(alg,[1+'u,0,0,0]~)
+  ***                 ^---------------------------------
+  *** algquattobasis: inconsistent variables in basistoalg, u != y.
+  ***   at top-level: algquattobasis([],[1,y,0,-1]~)
+  ***                 ^------------------------------
+  *** algquattobasis: incorrect type in checkalg [please apply alginit()] (t_VEC).
+  ***   at top-level: algquattobasis(alg,[1,y,0,-1]~)
+  ***                 ^-------------------------------
+  *** algquattobasis: incorrect type in algquattobasis [not a quaternion algebra] (t_VEC).
+  ***   at top-level: algquattobasis(talg,[1,y,0,-1]~)
+  ***                 ^--------------------------------
+  *** algquattobasis: incorrect type in algquattobasis [not a quaternion algebra] (t_VEC).
+  ***   at top-level: algquattobasis(H,[1,2,0,-1]~)
+  ***                 ^-----------------------------
+  *** algquattobasis: incorrect type in algquattobasis [not a quaternion algebra] (t_VEC).
+  ***   at top-level: algquattobasis(alg,[1,2,0,-1]~)
+  ***                 ^-------------------------------
+  *** algquattobasis: incorrect type in algquattobasis [not a quaternion algebra] (t_VEC).
+Total time spent: 2200
