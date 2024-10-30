@@ -6231,10 +6231,9 @@ mat_algeltfromnf(GEN al, GEN x)
   pari_APPLY_type(t_MAT, algeltfromnf_i(al, gel(x,i)));
 }
 static GEN
-eichlerprimepower(GEN al, GEN pr, long m, GEN prm)
+eichlerprimepower_i(GEN al, GEN pr, long m, GEN prm)
 {
-  pari_sp av = avma;
-  GEN p, e, polidem, Me, Mzk, nf, Mprm, H;
+  GEN p, e, polidem, Me, Mzk, nf, Mprm;
   long ep, i;
   ulong mask;
   polidem = mkpoln(4, gen_m2, utoi(3), gen_0, gen_0);
@@ -6255,8 +6254,13 @@ eichlerprimepower(GEN al, GEN pr, long m, GEN prm)
   Mzk = mat_algeltfromnf(al, nf_get_zk(nf));
   prm = idealtwoelt(nf, prm);
   Mprm = algbasismultable(al, algeltfromnf_i(al,gel(prm,2)));
-  H = hnfmodid(shallowmatconcat(mkvec3(Me,Mzk,Mprm)), gel(prm,1));
-  return gerepileupto(av, H);
+  return hnfmodid(shallowmatconcat(mkvec3(Me,Mzk,Mprm)), gel(prm,1));
+}
+static GEN
+eichlerprimepower(GEN al, GEN pr, long m, GEN prm)
+{
+  pari_sp av = avma;
+  return gerepileupto(av, eichlerprimepower_i(al, pr, m, prm));
 }
 
 GEN
@@ -6268,7 +6272,7 @@ algeichlerbasis(GEN al, GEN N)
   long i, k, n, m, ih, lh, np, k2;
   checkalg(al);
   nf = alg_get_center(al);
-  if (checkprid_i(N)) return gerepileupto(av, eichlerprimepower(al,N,1,N));
+  if (checkprid_i(N)) return eichlerprimepower(al,N,1,N);
   if (is_nf_factor(N))
   {
     faN = sort_factor(shallowcopy(N), (void*)&cmp_prime_ideal, &cmp_nodata);
@@ -6281,7 +6285,7 @@ algeichlerbasis(GEN al, GEN N)
   {
     pr = gcoeff(faN,1,1);
     mZ = gcoeff(faN,1,2);
-    return gerepileupto(av, eichlerprimepower(al,pr,itos(mZ),N));
+    return gerepileupto(av, eichlerprimepower_i(al,pr,itos(mZ),N));
   }
 
   /* collect prime power Eichler orders */
