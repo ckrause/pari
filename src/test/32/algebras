@@ -3125,7 +3125,8 @@ algnewprec:
 1
 1
 1
-algquattobasis / algbasistoquat
+algquattobasis / algbasistoquat / algisquatalg
+1
 1
 1
 1
@@ -3144,6 +3145,7 @@ quadratic with linear term
 1
 1
 1
+1
 linearity
 1
 1
@@ -3151,11 +3153,20 @@ linearity
 inverses
 1
 1
+isquatalg
+[-1, -1]
+1
+1
+1
+1
+1
 doc algquattobasis
 8
 [2, 0, 0, 0, 0, 0, 0, 0]~
 doc algbasistoquat
 ["t_POLMOD", "t_POLMOD", "t_POLMOD", "t_POLMOD"]~
+doc algisquatalg
+1
 nfgrunwaldwang SEGV #1669
 x^2 + Mod(-17, y)
   ***   at top-level: nfgrunwaldwang(nfinit(x),[2,3],[1,2],Vecsmall(
@@ -3224,7 +3235,7 @@ maxord flag
   *** nfinit: Warning: nonmonic polynomial. Result of the form [nf,c].
 segfault in algsubalg for invalid input
 3
-bad inputs algquattobasis / algbasistoquat
+bad inputs algquattobasis / algbasistoquat / algisquatalg
   ***   at top-level: algquattobasis(alg,[1,2,3]~)
   ***                 ^----------------------------
   *** algquattobasis: inconsistent dimensions in algquattobasis [quaternions have 4 components].
@@ -3270,4 +3281,7 @@ bad inputs algquattobasis / algbasistoquat
   ***   at top-level: algbasistoquat(alg,[1..4]~)
   ***                 ^---------------------------
   *** algbasistoquat: incorrect type in algbasistoquat [not a quaternion algebra] (t_VEC).
-Total time spent: 2312
+  ***   at top-level: algisquatalg([])
+  ***                 ^----------------
+  *** algisquatalg: incorrect type in checkalg [please apply alginit()] (t_VEC).
+Total time spent: 2301

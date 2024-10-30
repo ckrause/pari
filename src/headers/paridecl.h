@@ -1744,6 +1744,7 @@ int     algisassociative(GEN mt0, GEN p);
 int     algiscommutative(GEN al);
 int     algisdivision(GEN al, GEN pl);
 int     algisramified(GEN al, GEN pl);
+GEN     algisquatalg(GEN al);
 int     algissemisimple(GEN al);
 int     algissimple(GEN al, long ss);
 int     algissplit(GEN al, GEN pl);

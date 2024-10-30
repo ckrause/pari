@@ -3660,6 +3660,22 @@ algbasistoquat(GEN al, GEN x)
   }
   return gerepilecopy(av, q);
 }
+GEN
+algisquatalg(GEN al)
+{
+  pari_sp av = avma;
+  GEN pol, a;
+  long ta;
+  checkalg(al);
+  ta = alg_type(al);
+  if (ta == al_REAL && algreal_dim(al)==4)
+    return gerepilecopy(av, mkvec2(gen_m1,gen_m1));
+  if (ta != al_CYCLIC || alg_get_degree(al)!=2) return gc_const(av, gen_0);
+  pol = alg_get_splitpol(al);
+  if (gequal0(gel(pol,3))) a = gneg(gel(pol,2)); /* coeffs of v^1 and v^0 */
+  else a = RgX_disc(pol);
+  return gerepilecopy(av, mkvec2(a,lift_shallow(alg_get_b(al))));
+}
 
 static GEN
 algbasistoalg_mat(GEN al, GEN x) /* componentwise */
