@@ -6276,7 +6276,7 @@ algeichlerbasis(GEN al, GEN N)
   }
   else faN = idealfactor(nf, N);
   n = nbrows(faN);
-  if (!n) return gerepileupto(av, matid(alg_get_absdim(al)));
+  if (!n) { set_avma(av); return matid(alg_get_absdim(al)); }
   if (n==1)
   {
     pr = gcoeff(faN,1,1);
@@ -6337,17 +6337,12 @@ algeichlerbasis(GEN al, GEN N)
       }
     }
   }
+  if (np == 1) return gerepilecopy(av, gel(LH2,1));
+  /* put together all p */
   setlg(Lpp,np+1);
   setlg(LH2,np+1);
-
-  if (np==1) H = gel(LH2,1);
-  else
-  {
-    /* put together all p */
-    H = nmV_chinese_center(LH2, Lpp, &M);
-    H = hnfmodid(H, M);
-  }
-  return gerepilecopy(av, H);
+  H = nmV_chinese_center(LH2, Lpp, &M);
+  return gerepileupto(av, hnfmodid(H, M));
 }
 
 /** IDEALS **/
