@@ -3142,3 +3142,32 @@ alg = alginit(nf,3);
 algquattobasis(alg,[1,2,0,-1]~);
 algbasistoquat(alg,[1..4]~);
 algisquatalg([]);
+
+print("integral coefficients in alginit");
+fewops(alg) =
+{
+  my(a,b,nrd);
+  algramifiedplaces(alg);
+  a = algrandom(al,10);
+  b = algrandom(al,10);
+  algmul(al,a,b);
+  algadd(al,a,b);
+  nrd = algnorm(al,a);
+  trd = algtrace(al,a);
+  algcharpoly(al,b);
+  print(algcharpoly(al,a) == x^2 - trd*x + nrd);
+  algtomatrix(al,a);
+  print(algsqr(al,a) - algmul(al,algeltfromnf(al,trd),a) + algeltfromnf(al,nrd) == 0);
+  1
+};
+nf = nfinit(y^2-5);
+alg = alginit(nf, [-1,(1+y)/2]);
+fewops(alg);
+alg = alginit(nf, [(1+y)/2, -1]);
+fewops(alg);
+rnf = rnfinit(nf, x^2-(1+y)/2);
+alg = alginit(rnf, [-x,-1]);
+fewops(alg);
+rnf = rnfinit(nf, x^2+1);
+alg = alginit(rnf, [-x,(1+y)/2]);
+fewops(alg);

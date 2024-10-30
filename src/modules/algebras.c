@@ -4764,9 +4764,9 @@ alg_hilbert(GEN nf, GEN a, GEN b, long v, long flag)
   pari_sp av = avma;
   GEN rnf, aut, rnfpol;
   dbg_printf(1)("alg_hilbert\n");
-  if (!isint1(Q_denom(a)))
+  if (!isint1(Q_denom(algtobasis(nf,a))))
     pari_err_DOMAIN("alg_hilbert", "denominator(a)", "!=", gen_1,a);
-  if (!isint1(Q_denom(b)))
+  if (!isint1(Q_denom(algtobasis(nf,b))))
     pari_err_DOMAIN("alg_hilbert", "denominator(b)", "!=", gen_1,b);
 
   if (v < 0) v = 0;

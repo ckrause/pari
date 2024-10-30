@@ -16,6 +16,8 @@ BA  10- paridecl.h could conflict with complex.h [#2583]
         forprime(p=1048607,1048617,1) -> oo loop
     12- printf("%10.6f", tiny rational) -> undefined result [#2576]
     13- argument checks in ellchangepoint, ellchangepointinv
+AP  14- alginit(nf,[a,b]) was only allowing a,b integral over the power basis
+        instead of arbitrary algebraic integers.
 
   Added
 AP   1- new GP function algnewprec
