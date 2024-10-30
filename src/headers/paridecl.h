@@ -1727,6 +1727,7 @@ long    alg_type(GEN al);
 GEN     algadd(GEN al, GEN x, GEN y);
 GEN     algalgtobasis(GEN al, GEN x);
 GEN     algbasistoalg(GEN al, GEN x);
+GEN     algbasistoquat(GEN al, GEN x);
 GEN     algcharpoly(GEN al, GEN x, long v, long abs);
 GEN     algdisc(GEN al);
 GEN     algdivl(GEN al, GEN x, GEN y);

@@ -3589,6 +3589,7 @@ algalgtobasis(GEN al, GEN x)
  > v^2+A*v+B: i = 2*v+A: i^2 = a = A^2-4*B
  al ~ (a,b)_F
 */
+/* We could improve efficiency, but these functions are just for convenience. */
 GEN
 algquattobasis(GEN al, GEN x)
 {
@@ -3610,17 +3611,54 @@ algquattobasis(GEN al, GEN x)
   A = gel(pol,3); /* coeff of v^1 */
   if (gequal0(A))
   {
+    /* i = v */
     L1 = deg1pol_shallow(gel(x2,2), gel(x2,1), v);
     L2 = deg1pol_shallow(gel(x2,4), gel(x2,3), v);
   }
   else
   {
+    /* i = 2*v+A */
     L1 = deg1pol_shallow(gshift(gel(x2,2),1),
         gadd(gel(x2,1),gmul(A,gel(x2,2))), v);
     L2 = deg1pol_shallow(gshift(gel(x2,4),1),
         gadd(gel(x2,3),gmul(A,gel(x2,4))), v);
   }
   return gerepileupto(av, algalgtobasis(al,mkcol2(L1,L2)));
+}
+GEN
+algbasistoquat(GEN al, GEN x)
+{
+  pari_sp av = avma;
+  GEN pol, A, x2, q;
+  long v, ta;
+  checkalg(al);
+  ta = alg_type(al);
+  if (ta != al_CYCLIC || alg_get_degree(al)!=2)
+    pari_err_TYPE("algbasistoquat [not a quaternion algebra]", al);
+  pol = alg_get_splitpol(al);
+  v = varn(pol);
+  A = gel(pol,3); /* coeff of v^1 */
+  x2 = algbasistoalg(al, x);
+  x2 = lift0(x2, v);
+  q = cgetg(5, t_COL);
+  if (gequal0(A))
+  {
+    /* v = i */
+    gel(q,1) = gmael(x2,1,2); /* coeff v^0 of x2[1] */
+    gel(q,2) = gmael(x2,1,3); /* coeff v^1 of x2[1] */
+    gel(q,3) = gmael(x2,2,2); /* coeff v^0 of x2[2] */
+    gel(q,4) = gmael(x2,2,3); /* coeff v^1 of x2[2] */
+    gel(q,4) = gneg(gel(q,4));
+  }
+  else
+  {
+    /* v = (i-A)/2 */
+    gel(q,2) = gshift(gmael(x2,1,3),-1);
+    gel(q,1) = gsub(gmael(x2,1,2), gmul(A,gel(q,2)));
+    gel(q,4) = gneg(gshift(gmael(x2,2,3),-1));
+    gel(q,3) = gadd(gmael(x2,2,2),gmul(A,gel(q,4)));
+  }
+  return gerepilecopy(av, q);
 }
 
 static GEN

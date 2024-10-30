@@ -2938,6 +2938,9 @@ q2 = vectorv(4,i,vectorv(2,j,random([-10,10]))/random([2,5]));
 w2 = algquattobasis(alg,q2);
 #w2 == 8
 algadd(alg,w1,w2) == algquattobasis(alg,q1+q2)
+print("inverses");
+q1 == apply(c->nfalgtobasis(nf,c),algbasistoquat(alg,w1))
+q2 == apply(c->nfalgtobasis(nf,c),algbasistoquat(alg,w2))
 print("quadratic with linear term");
 v = varhigher("v",y);
 rnf = rnfinit(nf, v^2-v-y);
@@ -2960,12 +2963,20 @@ q2 = vectorv(4,i,vectorv(2,j,random([-10,10])));
 w2 = algquattobasis(alg,q2);
 #w2 == 8
 algadd(alg,w1,w2) == algquattobasis(alg,q1+q2)
+print("inverses");
+q1 == apply(c->nfalgtobasis(nf,c),algbasistoquat(alg,w1))
+q2 == apply(c->nfalgtobasis(nf,c),algbasistoquat(alg,w2))
 
 print("doc algquattobasis");
 nf = nfinit(y^2+1);
 alg = alginit(nf, [2,3*y+1]);
 #algquattobasis(alg,[1,2,y,0]~)
 algsqr(alg,algquattobasis(alg,[0,1,0,0]~))
+
+print("doc algbasistoquat");
+nf = nfinit(y^2+1);
+alg = alginit(nf, [3,2*y-1]);
+apply(type,algbasistoquat(alg, [1..8]~))
 
 
 print("nfgrunwaldwang SEGV #1669");
@@ -3089,12 +3100,19 @@ algquattobasis(alg,[1,2,3]~);
 algquattobasis(alg,1+x-x^2);
 algquattobasis(alg,[1+'u,0,0,0]~);
 algquattobasis([],[1,y,0,-1]~);
+algbasistoquat(alg,[1,2,3]~);
+algbasistoquat(alg,[1..4]);
+algbasistoquat([],[1..4]~);
 mt = algmultable(alg);
 alg = alginit(nf, mt);
 algquattobasis(alg,[1,y,0,-1]~);
+algbasistoquat(alg,[1..4]~);
 talg = algtableinit(mt);
 algquattobasis(talg,[1,y,0,-1]~);
+algbasistoquat(talg,[1..4]~);
 H = alginit(1.,1/2);
 algquattobasis(H,[1,2,0,-1]~);
+algbasistoquat(H,[1..4]~);
 alg = alginit(nf,3);
 algquattobasis(alg,[1,2,0,-1]~);
+algbasistoquat(alg,[1..4]~);
