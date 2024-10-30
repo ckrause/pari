@@ -276,7 +276,7 @@ alg_get_center(GEN al)
   if (ta == al_REAL)
   {
     if (algreal_dim(al) != 4) return alg_get_splittingfield(al);
-    return stor(1,3);
+    return stor(1, LOWDEFAULTPREC);
   }
   if (ta != al_CSA && ta != al_CYCLIC)
     pari_err_TYPE("alg_get_center [use alginit]",al);
@@ -4698,7 +4698,7 @@ mk_R()
   pari_sp av = avma;
   GEN al;
   al = zerovec(11);
-  gel(al,1) = stor(1,3);
+  gel(al,1) = stor(1, LOWDEFAULTPREC);
   gel(al,2) = mkvec(gel(al,1));
   gel(al,3) = gen_1;
   gel(al,4) = mkvecsmall(0);
