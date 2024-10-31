@@ -31,6 +31,7 @@ AP   6- [libpari] FqC_red, FqM_red, FqC_to_FFC, FqM_to_FFM
 AP   8- new GP functions algeltfromnf, algmodprinit, algmodpr, algmodprlift,
         algeichlerbasis
      9- [libpari] checkellpt_i
+AP  10- new GP functions algquattobasis, algbasistoquat, algisquatalg
 
   Changed
 BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
@@ -45,6 +46,8 @@ BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
           polred0(mkvec2(x, gel(fa,1)), flag)
         instead. And preferably polredbest!
 AP   5- allow algpoleval(al, basis form, relative polynomial).
+AP   6- alginit: construction from Hasse invariants now allows a shortcut in the
+        quaternion case, giving only the ramification set.
 
   Removed
 BA   1- GP function trap, use iferr instead.
