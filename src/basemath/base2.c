@@ -3419,7 +3419,9 @@ Rg_nffix(const char *f, GEN T, GEN c, int lift)
   RgX_check_QX(c, f);
   return lift? c: mkpolmod(c, T);
 }
-/* check whether P is a polynomials with coeffs in number field Q[y]/(T) */
+/* check whether P is a polynomials with coeffs in number field Q[y]/(T)
+ * and returned a normalized copy. If 'lift' is set return lifted coefs
+ * (t_POL/t_FRAC/t_INT) else t_POLMOD/t_FRAC/t_INT */
 GEN
 RgX_nffix(const char *f, GEN T, GEN P, int lift)
 {
