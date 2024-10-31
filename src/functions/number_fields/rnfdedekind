@@ -3,10 +3,10 @@ Section: number_fields
 C-Name: rnfdedekind
 Prototype: GGDGD0,L,
 Help: rnfdedekind(nf,pol,{pr},{flag=0}): relative Dedekind criterion over the
- number field K, represented by nf, applied to the order O_K[X]/(P),
+ number field K, represented by nf, applied to the order Z_K[X]/(P),
  modulo the prime ideal pr (at all primes if pr omitted, in which case
  flag is automatically set to 1).
- P is assumed to be monic, irreducible, in O_K[X].
+ P is assumed to be monic, irreducible, in Z_K[X].
  Returns [max,basis,v], where basis is a pseudo-basis of the
  enlarged order, max is 1 iff this order is pr-maximal, and v is the
  valuation at pr of the order discriminant. If flag is set, just return 1 if
