@@ -1737,8 +1737,48 @@ al = algtableinit(mt);
 B = [1,0;0,0;0,1/2;0,0]
 al2 = algsubalg(al,B);
 
+print("algpoleval relative poly in basis form");
+pol = y^2-2;
+nf = nfinit(pol);
+a = 1+y;
+b = -3-y;
+al = alginit(nf, [a,b]);
+ii = algalgtobasis(al,[x,0]~);
+algpoleval(al, x^2-a, ii) == 0
+jj = algalgtobasis(al,[0,1]~);
+algpoleval(al, x^2-b, jj) == 0
+kk = algalgtobasis(al,[0,-x]~);
+algpoleval(al, x^2+Mod(a,pol)*b, kk) == 0
+w = algrandom(al,10);
+T = x^3 + 7*x^2 - y^5*x + (8-2*y);
+{algpoleval(al,T,w) == algpow(al,w,3) + 7*algsqr(al,w) -
+ algmul(al,algeltfromnf(al,y^5),w) + algeltfromnf(al,8-2*y)}
+al = alginit(nf, qamt(a,b));
+ii = algalgtobasis(al,[0,1,0,0]~);
+algpoleval(al, x^2-a, ii) == 0
+jj = algalgtobasis(al,[0,0,1,0]~);
+algpoleval(al, x^2-b, jj) == 0
+kk = algalgtobasis(al,[0,0,0,1]~);
+algpoleval(al, x^2+Mod(a,pol)*b, kk) == 0
+{algpoleval(al,T,w) == algpow(al,w,3) + 7*algsqr(al,w) -
+ algmul(al,algeltfromnf(al,y^5),w) + algeltfromnf(al,8-2*y)}
+
+print("doc algpoleval");
+nf = nfinit(y^2-5);
+al = alginit(nf,[y,-1]);
+b = [1..8]~;
+pol = algcharpoly(al,b,,1); \\absolute characteristic polynomial
+algpoleval(al,pol,b)==0
+mb = algtomatrix(al,b,1);
+algpoleval(al,pol,[b,mb])==0
+pol = algcharpoly(al,b); \\reduced characteristic polynomial
+algpoleval(al,pol,b) == 0
+exponent(algpoleval(,polcyclo(8),[1,0,0,1]~/sqrt(2))) < -100
+
 
 \\ bad inputs
+a = [12]~;
+b = [-1/7]~;
 m_i = [0,-1,0, 0;\
        1, 0,0, 0;\
        0, 0,0,-1;\

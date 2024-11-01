@@ -1696,6 +1696,20 @@ testing simplify: quatalg csa over Q
 
 [0   0]
 
+algpoleval relative poly in basis form
+1
+1
+1
+1
+1
+1
+1
+1
+doc algpoleval
+1
+1
+1
+1
   ***   at top-level: algsplittingfield(almt)
   ***                 ^-----------------------
   *** algsplittingfield: incorrect type in alg_get_splittingfield [use alginit] (t_VEC).
@@ -3125,9 +3139,7 @@ GW modified arguments
 1
 rnf/gchar confusion (#2473)
 "t_POL"
-  ***   at top-level: algpoleval(al,pol,a)==0
-  ***                 ^-----------------------
-  *** algpoleval: sorry, algpoleval with x in basis form and pol not in Q[x] is not yet implemented.
+1
   ***   at top-level: algpoleval(al,pol,[;])
   ***                 ^----------------------
   *** algpoleval: incorrect type in algpoleval (t_MAT).
@@ -3163,4 +3175,4 @@ maxord flag
   *** nfinit: Warning: nonmonic polynomial. Result of the form [nf,c].
 segfault in algsubalg for invalid input
 3
-Total time spent: 2130
+Total time spent: 2241

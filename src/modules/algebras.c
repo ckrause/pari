@@ -39,6 +39,7 @@ static GEN algbasisrightmultable(GEN al, GEN x);
 static GEN algbasismul(GEN al, GEN x, GEN y);
 static GEN algbasismultable(GEN al, GEN x);
 static GEN algbasismultable_Flm(GEN mt, GEN x, ulong m);
+static GEN algeltfromnf_i(GEN al, GEN x);
 
 static GEN H_inv(GEN x);
 static GEN H_norm(GEN x, long abs);
@@ -3696,8 +3697,8 @@ GEN
 algpoleval(GEN al, GEN pol, GEN x)
 {
   pari_sp av = avma;
-  GEN p, mx = NULL, res;
-  long i;
+  GEN p, mx = NULL, res, c;
+  long i, xalg = 0;
   if (typ(pol) != t_POL) pari_err_TYPE("algpoleval", pol);
   checkalg(al);
   if (alg_type(al)==al_REAL) return H_poleval(pol,x);
@@ -3714,9 +3715,8 @@ algpoleval(GEN al, GEN pol, GEN x)
   {
     switch(alg_model(al,x))
     {
-      case al_ALGEBRAIC: mx = algalgmultable(al,x); break;
-      case al_BASIS: if (!RgX_is_QX(pol))
-        pari_err_IMPL("algpoleval with x in basis form and pol not in Q[x]");
+      case al_ALGEBRAIC: mx = algalgmultable(al,x); xalg=1; break;
+      case al_BASIS:
       case al_TRIVIAL: mx = algbasismultable(al,x); break;
       default: pari_err_TYPE("algpoleval", x);
     }
@@ -3732,7 +3732,9 @@ algpoleval(GEN al, GEN pol, GEN x)
   else {
     for (i=lg(pol)-1; i>1; i--)
     {
-      gel(res,1) = gadd(gel(res,1), gel(pol,i));
+      c = gel(pol,i);
+      if (xalg || is_rational_t(typ(c))) gel(res,1) = gadd(gel(res,1), c);
+      else res = RgC_add(res, algeltfromnf_i(al,c));
       if (i>2) res = RgM_RgC_mul(mx, res);
     }
   }
