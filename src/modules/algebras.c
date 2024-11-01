@@ -40,6 +40,8 @@ static GEN algbasismul(GEN al, GEN x, GEN y);
 static GEN algbasismultable(GEN al, GEN x);
 static GEN algbasismultable_Flm(GEN mt, GEN x, ulong m);
 static GEN algeltfromnf_i(GEN al, GEN x);
+static void computesplitting(GEN al, long d, long v, long flag);
+static GEN alg_change_overorder_shallow(GEN al, GEN ord);
 
 static GEN H_inv(GEN x);
 static GEN H_norm(GEN x, long abs);
@@ -115,6 +117,9 @@ alg_type(GEN al)
 long
 algtype(GEN al)
 { return checkalg_i(al)? alg_type(al): al_NULL; }
+
+static long /* is a square special case? */
+alg_is_asq(GEN al) { return typ(gmael(al,6,1)) == t_VEC; }
 
 /* absdim == dim for al_TABLE. */
 static long
@@ -295,7 +300,8 @@ alg_get_hasse_i(GEN al)
   long ta = alg_type(al);
   if (ta != al_CYCLIC && ta != al_CSA && ta != al_REAL)
     pari_err_TYPE("alg_get_hasse_i [use alginit]",al);
-  if (ta == al_CSA) pari_err_IMPL("computation of Hasse invariants over table CSA");
+  if (ta == al_CSA && !alg_is_asq(al))
+    pari_err_IMPL("computation of Hasse invariants over table CSA");
   return gel(al,4);
 }
 GEN
@@ -307,7 +313,8 @@ alg_get_hasse_f(GEN al)
   GEN hf;
   if (ta != al_CYCLIC && ta != al_CSA)
     pari_err_TYPE("alg_get_hasse_f [use alginit]",al);
-  if (ta == al_CSA) pari_err_IMPL("computation of Hasse invariants over table CSA");
+  if (ta == al_CSA && !alg_is_asq(al))
+    pari_err_IMPL("computation of Hasse invariants over table CSA");
   hf = gel(al,5);
   if (typ(hf) == t_INT) /* could be computed on the fly */
     pari_err(e_MISC, "Hasse invariants were not computed for this algebra");
@@ -1666,7 +1673,7 @@ alghasse_0(GEN al, GEN pl)
   if (ta == al_REAL) return algreal_dim(al)!=1;
   if (!pl)
     pari_err(e_MISC, "must provide a place pl");
-  if (ta == al_CSA)
+  if (ta == al_CSA && !alg_is_asq(al))
     pari_err_IMPL("computation of Hasse invariants over table CSA");
   if ((pr = get_prid(pl))) return alghasse_pr(al, pr);
   nf = alg_get_center(al);
@@ -3597,6 +3604,12 @@ algquattobasis(GEN al, GEN x)
   GEN L1, L2, pol, A, x2, nf;
   long v, i, ta;
   checkalg(al);
+  if (alg_is_asq(al))
+  {
+    x = algalgtonat(al,x);
+    x = RgM_RgC_mul(alg_get_invbasis(al),x);
+    return gerepileupto(av,x);
+  }
   ta = alg_type(al);
   if (ta != al_CYCLIC || alg_get_degree(al)!=2)
     pari_err_TYPE("algquattobasis [not a quaternion algebra]", al);
@@ -3632,6 +3645,12 @@ algbasistoquat(GEN al, GEN x)
   GEN pol, A, x2, q;
   long v, ta;
   checkalg(al);
+  if (alg_is_asq(al))
+  {
+    x = RgM_RgC_mul(alg_get_basis(al),x);
+    x = algnattoalg(al,x);
+    return gerepileupto(av, x);
+  }
   ta = alg_type(al);
   if (ta != al_CYCLIC || alg_get_degree(al)!=2)
     pari_err_TYPE("algbasistoquat [not a quaternion algebra]", al);
@@ -3670,6 +3689,8 @@ algisquatalg(GEN al)
   ta = alg_type(al);
   if (ta == al_REAL && algreal_dim(al)==4)
     return gerepilecopy(av, mkvec2(gen_m1,gen_m1));
+  if (alg_is_asq(al))
+    return gerepilecopy(av, mkvec2(gmael3(al,6,1,1),gmael3(al,6,1,2)));
   if (ta != al_CYCLIC || alg_get_degree(al)!=2) return gc_const(av, gen_0);
   pol = alg_get_splitpol(al);
   if (gequal0(gel(pol,3))) a = gneg(gel(pol,2)); /* coeffs of v^1 and v^0 */
@@ -4519,7 +4540,7 @@ alg_complete0(GEN rnf, GEN aut, GEN hf, GEN hi, long flag)
   settyp(Lpr,t_VEC);
   hf = mkvec2(Lpr, shallowconcat(hfe, const_vecsmall(lg(Lpr)-lg(hfe), 0)));
   gel(al,5) = hf;
-  gel(al,6) = gen_0;
+  gel(al,6) = mkvec(gen_0);
   gel(al,7) = matid(D);
   gel(al,8) = matid(D); /* TODO modify 7, 8 et 9 once LLL added */
   gel(al,9) = algnatmultable(al,D);
@@ -4758,16 +4779,85 @@ alg_matrix(GEN nf, long n, long v, long flag)
   return gerepileupto(av, alg_cyclic(rnf, aut, gen_1, flag));
 }
 
+static GEN
+alg_hilbert_asquare(GEN nf, GEN a, GEN sa, GEN b, long v, long flag)
+{
+  GEN mt, al, ord, z1, z2, den;
+  long d = nf_get_degree(nf), i;
+  mt = mkvec4(
+      matid(4),
+      mkmat4(
+        mkcol4(gen_0,gen_1,gen_0,gen_0),
+        mkcol4(a,gen_0,gen_0,gen_0),
+        mkcol4(gen_0,gen_0,gen_0,gen_1),
+        mkcol4(gen_0,gen_0,a,gen_0)
+      ),
+      mkmat4(
+        mkcol4(gen_0,gen_0,gen_1,gen_0),
+        mkcol4(gen_0,gen_0,gen_0,gen_m1),
+        mkcol4(b,gen_0,gen_0,gen_0),
+        mkcol4(gen_0,gneg(b),gen_0,gen_0)
+      ),
+      mkmat4(
+        mkcol4(gen_0,gen_0,gen_0,gen_1),
+        mkcol4(gen_0,gen_0,gneg(a),gen_0),
+        mkcol4(gen_0,b,gen_0,gen_0),
+        mkcol4(gneg(gmul(a,b)),gen_0,gen_0,gen_0)
+      )
+  );
+  al = alg_csa_table(nf, mt, v, al_NOSPLITTING);
+
+  /* set trivial Hasse invariants */
+  gel(al,4) = zero_zv(nf_get_r1(nf));
+  gel(al,5) = mkvec2(cgetg(1,t_VEC),cgetg(1,t_VECSMALL));
+
+  /* remember special case */
+  sa = basistoalg(nf,sa);
+  gmael(al,6,1) = mkvec3(a,b,sa);
+
+  if (flag & al_MAXORD)
+  {
+    ord = cgetg(4,t_VEC);
+
+    z1 = mkfracss(1,2); /* 1/2 */
+    z2 = gmul2n(ginv(sa),-1); /* 1/(2*sa) */
+    /* (1+i/sa)/2 */
+    gel(ord,1) = algleftmultable(al,mkcol4(z1,z2,gen_0,gen_0));
+    /* (j-ij/sa)/2 */
+    gel(ord,2) = algleftmultable(al,mkcol4(gen_0,gen_0,z1,gneg(z2)));
+    z1 = basistoalg(nf,nfdiv(nf,z1,b));
+    z2 = basistoalg(nf,nfdiv(nf,z2,b));
+    /* (j/b + ij/(b*sa))/2 */
+    gel(ord,3) = algleftmultable(al,mkcol4(gen_0,gen_0,z1,z2));
+
+    /* multiply by nf.zk == d first vectors of natural basis */
+    for (i=1; i<=3; i++) gel(ord,i) = vecslice(gel(ord,i),1,d);
+
+    ord = shallowmatconcat(ord);
+    ord = Q_remove_denom(ord, &den);
+    ord = hnfmodid(ord, den);
+    ord = ZM_Z_div(ord, den);
+    al = alg_change_overorder_shallow(al, ord);
+  }
+  /* could take splitting field == nf */
+  computesplitting(al, 2, v, flag);
+  return al;
+}
+
 GEN
 alg_hilbert(GEN nf, GEN a, GEN b, long v, long flag)
 {
   pari_sp av = avma;
-  GEN rnf, aut, rnfpol;
+  GEN rnf, aut, rnfpol, sa;
   dbg_printf(1)("alg_hilbert\n");
+  if (gequal0(a)) pari_err_DOMAIN("alg_hilbert", "a", "=", gen_0, a);
+  if (gequal0(b)) pari_err_DOMAIN("alg_hilbert", "b", "=", gen_0, b);
   if (!isint1(Q_denom(algtobasis(nf,a))))
     pari_err_DOMAIN("alg_hilbert", "denominator(a)", "!=", gen_1,a);
   if (!isint1(Q_denom(algtobasis(nf,b))))
     pari_err_DOMAIN("alg_hilbert", "denominator(b)", "!=", gen_1,b);
+  if (nfissquare(nf,a,&sa))
+    return gerepilecopy(av, alg_hilbert_asquare(nf,a,sa,b,v,flag));
 
   if (v < 0) v = 0;
   rnfpol = deg2pol_shallow(gen_1, gen_0, gneg(a), v);
@@ -4797,6 +4887,7 @@ mk_R()
   gel(al,2) = mkvec(gel(al,1));
   gel(al,3) = gen_1;
   gel(al,4) = mkvecsmall(0);
+  gel(al,6) = mkvec(gen_0);
   gel(al,8) = gel(al,7) = matid(1);
   gel(al,9) = mkvec(matid(1));
   return gerepilecopy(av,al);
@@ -4813,6 +4904,7 @@ mk_C()
   gel(al,2) = mkvec(I);
   gel(al,3) = gen_1;
   gel(al,4) = cgetg(1,t_VECSMALL);
+  gel(al,6) = mkvec(gen_0);
   gel(al,8) = gel(al,7) = matid(2);
   gel(al,9) = mkvec2(
     matid(2),
@@ -4832,6 +4924,7 @@ mk_H()
   gel(al,2) = mkvec(gconj(I));
   gel(al,3) = gen_m1;
   gel(al,4) = mkvecsmall(1);
+  gel(al,6) = mkvec(gen_0);
   gel(al,8) = gel(al,7) = matid(4);
   gel(al,9) = mkvec4(
     matid(4),
@@ -5059,7 +5152,7 @@ alg_cyclic(GEN rnf, GEN aut, GEN b, long flag)
   gel(al,2) = allauts(rnf, aut);
   gel(al,3) = basistoalg(nf,b);
   rnf_build_nfabs(rnf, nf_get_prec(nf));
-  gel(al,6) = gen_0;
+  gel(al,6) = mkvec(gen_0);
   gel(al,7) = matid(D);
   gel(al,8) = matid(D); /* TODO modify 7, 8 et 9 once LLL added */
   gel(al,9) = algnatmultable(al,D);
@@ -5160,7 +5253,6 @@ computesplitting(GEN al, long d, long v, long flag)
   /* since pol is irreducible over Q, we have k=0 in rnf. */
   if (!gequal0(rnf_get_k(rnf)))
     pari_err_BUG("computesplitting (k!=0)"); /*LCOV_EXCL_LINE*/
-  gel(al,6) = gen_0;
   rnf_build_nfabs(rnf, nf_get_prec(nf));
 
   /* construct splitting data */
@@ -5201,13 +5293,13 @@ alg_csa_table(GEN nf, GEN mt0, long v, long flag)
   gel(al,2) = mt;
   gel(al,3) = gen_0; /* placeholder */
   gel(al,4) = gel(al,5) = gen_0; /* TODO Hasse invariants if flag&al_FACTOR */
-  gel(al,5) = gel(al,6) = gen_0; /* placeholder */
+  gel(al,6) = mkvec(gen_0);
   gel(al,7) = matid(D);
   gel(al,8) = matid(D);
   gel(al,9) = algnatmultable(al,D);
   gel(al,11)= algtracebasis(al);
   if (flag & al_MAXORD) al = alg_maximal(al);
-  computesplitting(al, d, v, flag);
+  if (!(flag & al_NOSPLITTING)) computesplitting(al, d, v, flag);
   return gerepilecopy(av, al);
 }
 
@@ -5224,7 +5316,8 @@ algtableinit_i(GEN mt0, GEN p)
     pari_err_DOMAIN("algtableinit", "denominator(mt)", "!=", gen_1, mt0);
   n = lg(mt)-1;
   al = cgetg(12, t_VEC);
-  for (i=1; i<=6; i++) gel(al,i) = gen_0;
+  for (i=1; i<=5; i++) gel(al,i) = gen_0;
+  gel(al,6) = mkvec(gen_0);
   gel(al,7) = matid(n);
   gel(al,8) = matid(n);
   gel(al,9) = mt;

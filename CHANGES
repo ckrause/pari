@@ -48,6 +48,7 @@ BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
 AP   5- allow algpoleval(al, basis form, relative polynomial).
 AP   6- alginit: construction from Hasse invariants now allows a shortcut in the
         quaternion case, giving only the ramification set.
+AP   7- alginit(nf,[a,b]) now allows a to be a square in nf.
 
   Removed
 BA   1- GP function trap, use iferr instead.

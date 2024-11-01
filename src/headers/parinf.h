@@ -53,7 +53,8 @@ enum {
 /* flags for alginit */
 enum {
   al_MAXORD = 1,
-  al_FACTOR = 2
+  al_FACTOR = 2,
+  al_NOSPLITTING = 4
 };
 
 /* models for elements of M_n(Hamilton quaternions) */

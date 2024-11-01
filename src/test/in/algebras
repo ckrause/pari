@@ -1984,7 +1984,8 @@ mt = [matid(4), m_i, m_j, m_k];}
 al = alginit(nfinit(y), mt);
 algsqr(al,[Mod(1,y),Mod(2,y)]~)
 
-alfail = alginit(nf, [0,0], 'x);
+alfail = alginit(nf, [0,-12345], 'x);
+alfail = alginit(nf, [-12345,0], 'x);
 algb(al);
 algaut(al);
 algtableinit([Mat(1)],1)
@@ -3171,3 +3172,84 @@ fewops(alg);
 rnf = rnfinit(nf, x^2+1);
 alg = alginit(rnf, [-x,(1+y)/2]);
 fewops(alg);
+
+print("quaternion algebra (a,b) with a square");
+testasq(pol) =
+{
+  print("pol=",pol);
+  my(nf,a,b,al,d,pr,ii,jj,kk,w,data,relmt,mt,w2,talg);
+  nf = nfinit(pol);
+  d = poldegree(pol);
+  a = (3+y)^2;
+  b = -y-7;
+  al = alginit(nf, [a,b]);
+  print(algdegree(al)==2);
+  print(algdim(al)==4);
+  print(algdim(al,1)==4*d);
+  iferr(algaut(al); print(0), E, print(1));
+  iferr(algb(al); print(0), E, print(1));
+  print(poldegree(algsplittingfield(al).pol)==2);
+  print("splitting data");
+  data = algsplittingdata(al);
+  relmt = algrelmultable(al);
+  print(algramifiedplaces(al)==[]);
+  print(alghassef(al)==[[],Vecsmall([])]);
+  print(alghassei(al)==Vecsmall(vector(nf.r1,i,0)));
+  print("pr");
+  pr = idealprimedec(nf,2)[1];
+  print(alghasse(al,pr)==0);
+  print(alghasse(al,1)==0);
+  print(algindex(al,pr)==1);
+  print(algindex(al,1)==1);
+  print(algindex(al)==1);
+  print(algisdivision(al,pr)==0);
+  print(algisdivision(al,1)==0);
+  print(algisdivision(al)==0);
+  print(algisramified(al,pr)==0);
+  print(algisramified(al,1)==0);
+  print(algisramified(al)==0);
+  print(algissplit(al,pr)==1);
+  print(algissplit(al,1)==1);
+  print(algissplit(al)==1);
+  print("i j k");
+  ii = algquattobasis(al,[0,1,0,0]~);
+  jj = algquattobasis(al,[0,0,1,0]~);
+  kk = algquattobasis(al,[0,0,0,1]~);
+  w = algrandom(al,10);
+  mt = algmultable(al);
+  print(#mt==4*d);
+  print(algisassociative(mt));
+  talg = algtableinit(mt);
+  print(!algiscommutative(talg));
+  print(algissimple(talg));
+  print(algsqr(al,ii) == algeltfromnf(al,a));
+  print(algsqr(al,jj) == algeltfromnf(al,b));
+  print(algsqr(al,kk) == algeltfromnf(al,-a*b));
+  print(algmul(al,ii,jj) == kk);
+  print(algmul(al,jj,ii) == -kk);
+  print(algnorm(al,ii) == -Mod(a,pol));
+  print(algtrace(al,ii) == 0);
+  print(algcharpoly(al,jj) == x^2 - Mod(b,pol));
+  print(algpoleval(al, algcharpoly(al,w), w) == 0);
+  print("w w2 algtomatrix");
+  w2 = algrandom(al,20);
+  print(algtomatrix(al,w)*algtomatrix(al,w2)
+    == algtomatrix(al,algmul(al,w,w2)));
+  print(algtomatrix(al,w)+algtomatrix(al,w2)
+    == algtomatrix(al,algadd(al,w,w2)));
+  print(algtomatrix(al,w,1)*algtomatrix(al,w2,1)
+    == algtomatrix(al,algmul(al,w,w2),1));
+  print(algtomatrix(al,w,1)+algtomatrix(al,w2,1)
+    == algtomatrix(al,algadd(al,w,w2),1));
+  \\print(algdisc(al,1) == matrix(0,2));
+  print(matsize(algbasis(al))==[4*d,4*d]);
+  print(algbasis(al)*alginvbasis(al) == 1);
+  print(algbasis(al)!=1);
+  print(abs(algdisc(al)) == 2^(4*d)*nf.disc^4);
+  print(algisquatalg(al) == [a,b]);
+  print(algquattobasis(al, algbasistoquat(al,w)) == w);
+  localbitprec(256); algnewprec(al);
+};
+testasq(y);
+testasq(y^2-2);
+testasq(y^3-y-1);

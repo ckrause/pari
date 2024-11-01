@@ -10,11 +10,14 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
 
  \item (quaternion algebra) $B$ is an \kbd{nf}
  structure attached to a number field $K$, $C = [a,b]$ is a vector
- containing two elements of $K^{*}$ with $a$ not a square in $K$, returns the
- quaternion algebra $(a,b)_{K}$. The elements~$a$ and~$b$ have to be integral.
+ containing two elements of $K^{*}$, returns the quaternion algebra $(a,b)_{K}$.
+ The elements~$a$ and~$b$ must be integral.
+ The algebra is represented as a cyclic algebra (see general case below)
+ $(K(\sqrt{a})/K,\sigma,b)$ if~$a$ is not a square in $K$, and as a table CSA
+ otherwise.
  The variable $v$ (\kbd{'x} by default) must have higher priority than the
- variable of $K$\kbd{.pol} and is used to represent elements in the splitting
- field $L = K[x]/(x^{2}-a)$.
+ variable of $K$\kbd{.pol} and is used to represent elements in a splitting
+ field ($K[x]/(x^{2}-a)$ if $a$ is not a square in $K$).
  \bprog
   ? Q = nfinit(y); A = alginit(Q, [-1,-1]);  \\@com $(-1,-1)_{\Q}$
  @eprog
