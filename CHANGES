@@ -9,6 +9,8 @@ BA   5- ellrank could try many more curves than requested by effort [#2577]
      6- wrong result in issquare(Mod(a, composite)) [#2578]
      7- gener_FpXQ_local(t_POL of degre 1) -> oo loop [#2581]
      8- GC error when squaring integer 2x2 matrices [#2582]
+AP   9- algebras: fix splitting field for CSA, algtomatrix / algnorm / algtrace
+        / algcharpoly were sometimes wrong by an automorphism of the center.
 
   Added
 AP   1- new GP function algnewprec
@@ -35,6 +37,7 @@ BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
           polred0(mkvec2(x, gel(fa,1)), flag)
         instead. And preferably polredbest!
 AP   5- allow algpoleval(al, basis form, relative polynomial).
+
   Removed
 BA   1- GP function trap, use iferr instead.
 BA   2- GP functions listcreate, listkill, use L = List() instead.

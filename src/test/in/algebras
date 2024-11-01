@@ -1690,6 +1690,8 @@ test(str,al)={
  print(algpow(al,x,42) == algpow(sal,x,42));
  print(algmul(al,x,y) == algmul(sal,x,y));
  print(algdivl(al,x,y) == algdivl(sal,x,y));
+ print(algpoleval(al,algcharpoly(al,x),x) == 0);
+ print(algpoleval(al,algcharpoly(al,y),y) == 0);
 
  print(algbasistoalg(al,x) == algbasistoalg(sal,x));
  x = algbasistoalg(al,x);
@@ -1774,6 +1776,23 @@ algpoleval(al,pol,[b,mb])==0
 pol = algcharpoly(al,b); \\reduced characteristic polynomial
 algpoleval(al,pol,b) == 0
 exponent(algpoleval(,polcyclo(8),[1,0,0,1]~/sqrt(2))) < -100
+
+print("splitting field bug for CSA");
+setrand(1);
+pol = y^2-2;
+nf = nfinit(pol);
+a = (3+y)^2;
+b = -y-7;
+al = alginit(nf, qamt(a,b));
+ii = [0,1,0,0]~;
+algnorm(al,ii) == -Mod(a,pol)
+algtomatrix(al,algeltfromnf(al,y)) == Mod(y,pol)*matid(2)
+rnf = algsplittingfield(al);
+spld = algsplittingdata(al);
+t = spld[1];
+algpoleval(al, minpoly(rnfeltabstorel(rnf,x)), t) == 0
+
+
 
 
 \\ bad inputs
@@ -2895,6 +2914,9 @@ bitprecision(alg) >= 256
 R == algnewprec(R)
 C == algnewprec(C)
 H == algnewprec(H)
+w = algrandom(al,20);
+algpoleval(al, algcharpoly(al,w), w) == 0
+algtomatrix(al,algeltfromnf(al,y)) == y
 
 print("nfgrunwaldwang SEGV #1669");
 nfgrunwaldwang(nfinit(y),[2,3],[1,2],Vecsmall(1))

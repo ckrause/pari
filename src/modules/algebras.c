@@ -5039,8 +5039,15 @@ computesplitting(GEN al, long d, long v, long flag)
   Pi = gel(basis, 2);
 
   /* construct rnf of splitting field */
-  pol = nffactor(nf,polabs);
-  pol = gcoeff(pol,1,1);
+  pol = gel(nffactor(nf,polabs),1);
+  for (i=1; i<lg(pol); i++)
+    /* select relative factor that vanishes on x */
+    if (gequal0(algpoleval(al, gel(pol,i), x)))
+    {
+      pol = gel(pol,i);
+      break;
+    }
+  if (typ(pol) != t_POL) pari_err_BUG("computesplitting (no valid factor)");
   if (!(flag & al_FACTOR)) pol = mkvec2(pol, stoi(1<<20));
   gel(al,1) = rnf = rnfinit(nf, pol);
   /* since pol is irreducible over Q, we have k=0 in rnf. */
