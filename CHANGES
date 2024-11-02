@@ -11,6 +11,7 @@ BA   5- ellrank could try many more curves than requested by effort [#2577]
      8- GC error when squaring integer 2x2 matrices [#2582]
 AP   9- algebras: fix splitting field for CSA, algtomatrix / algnorm / algtrace
         / algcharpoly were sometimes wrong by an automorphism of the center.
+BA  10- paridecl.h could conflict with complex.h [#2583]
 
   Added
 AP   1- new GP function algnewprec

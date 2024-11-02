@@ -3173,7 +3173,7 @@ INLINE GEN
 rnf_get_invzk(GEN rnf) { return gel(rnf,8); }
 
 INLINE GEN
-idealred(GEN nf, GEN I) { return idealred0(nf, I, NULL); }
+idealred(GEN nf, GEN id) { return idealred0(nf, id, NULL); }
 
 INLINE GEN
 idealchineseinit(GEN nf, GEN x)

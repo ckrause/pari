@@ -26,6 +26,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #  undef  _GNU_SOURCE
 #  define _GNU_SOURCE
 #  include <fenv.h>
+/* check for cpp symbol conflict */
+#  include <complex.h>
 #endif
 #include "pari.h"
 #include "paripriv.h"
