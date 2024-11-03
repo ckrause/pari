@@ -625,6 +625,7 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   else
     u_forprime_set_prime_table(T, a);
   if (T->strategy==PRST_none) T->strategy = PRST_unextprime;
+  /* now strategy is either PRST_diffptr or PRST_unextprime */
 
   P2 = (P & HIGHMASK)? 0 : P*P;
   sieveb = b; if (P2 && P2 < b) sieveb = P2;
@@ -643,7 +644,7 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
    * Since loglog(b) < 4, and add < 10*mulmod, we neglect the Y loglog(b) term.
    * We have mod < mulmod < 2*mod; for now, assume mulmod ~ mod. */
   {
-    if (T->strategy==PRST_none) T->strategy = PRST_sieve;
+    if (T->strategy == PRST_unextprime) T->strategy = PRST_sieve;
     sieve_init(T, a, sieveb);
   }
   return 1;

@@ -29,6 +29,7 @@ precprime(2.5)
 
 \\ #2584
 forprime(p=524288,1048576,1)
+forprime(p=1048607,1048617,1)
 
 \\ Errors, keep at end of file
 \\#1668
