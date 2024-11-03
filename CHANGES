@@ -13,6 +13,7 @@ AP   9- algebras: fix splitting field for CSA, algtomatrix / algnorm / algtrace
         / algcharpoly were sometimes wrong by an automorphism of the center.
 BA  10- paridecl.h could conflict with complex.h [#2583]
     11- forprime(p=524288,1048576,1) -> crash [#2584]
+        forprime(p=1048607,1048617,1) -> oo loop
 
   Added
 AP   1- new GP function algnewprec
