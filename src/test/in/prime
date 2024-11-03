@@ -27,6 +27,8 @@ nextprime(2^64-1)
 nextprime(2.5)
 precprime(2.5)
 
+\\ #2584
+forprime(p=524288,1048576,1)
 
 \\ Errors, keep at end of file
 \\#1668

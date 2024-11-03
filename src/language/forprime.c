@@ -582,7 +582,7 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
 #else
   const ulong UPRIME_MAX = 4294967291UL;
 #endif
-  ulong P, P2, Y, sieveb;
+  ulong Plim, P, P2, Y, sieveb;
 
   if (!odd(b) && b > 2) b--;
   if (a > b || b < 2)
@@ -628,7 +628,9 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   P2 = (P & HIGHMASK)? 0 : P*P;
   sieveb = b; if (P2 && P2 < b) sieveb = P2;
   /* maxprime^2 >= sieveb */
-  Y = sieveb - maxprimelim(); /* length of sievable interval */
+  Plim = maxprimelim();
+  if (sieveb <= Plim) return 1;
+  Y = sieveb - Plim; /* length of sievable interval */
   P = usqrt(sieveb); /* largest sieving prime */
   /* FIXME: should sieve as well if q != 1, adapt sieve code */
   if (q != 1 || (P2 && P2 <= a) || 3/M_LN2 * Y < uprimepi(P))
@@ -642,7 +644,7 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   else
   { /* worth sieving */
     if (T->strategy==PRST_none) T->strategy = PRST_sieve;
-    sieve_init(T, maxuu(maxprimelim()+1, a), sieveb);
+    sieve_init(T, maxuu(Plim+1, a), sieveb);
   }
   return 1;
 }
