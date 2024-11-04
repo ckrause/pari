@@ -1245,7 +1245,9 @@ get_sigd(GEN gvalue, char ch, int maxwidth)
     case 'E': case 'e': return maxwidth+1;
     case 'F': case 'f':
       e = gexpo(gvalue);
-      return (e == -(long)HIGHEXPOBIT)? 0: ex10(e) + 1 + maxwidth;
+      if (e == -(long)HIGHEXPOBIT) return 0;
+      e = ex10(e); if (e < 0) e = 0;
+      return e + 1 + maxwidth;
   }
   return maxwidth? maxwidth: 1; /* 'g', 'G' */
 }
