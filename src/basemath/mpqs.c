@@ -168,20 +168,9 @@ mpqs_FB_ctor(mpqs_handle_t *h)
   long size_FB_chunk = (h->size_of_FB + 3) * sizeof(mpqs_FB_entry_t);
   /* like FB, except this one does not have a sentinel slot at the end */
   long size_IAH_chunk = (h->size_of_FB + 2) * sizeof(mpqs_inv_A_H_t);
-  char *fbp = (char*)stack_malloc(size_FB_chunk + 64);
-  char *iahp = (char*)stack_malloc(size_IAH_chunk + 64);
-  long fbl, iahl;
-
-  h->FB_chunk = (void *)fbp;
-  h->invAH_chunk = (void *)iahp;
-  /* round up to next higher 64-bytes-aligned address */
-  fbl = (((long)fbp) + 64) & ~0x3FL;
-  /* and put the actual array there */
-  h->FB = (mpqs_FB_entry_t *)fbl;
-
-  iahl = (((long)iahp) + 64) & ~0x3FL;
-  h->inv_A_H = (mpqs_inv_A_H_t *)iahl;
-  return (mpqs_FB_entry_t *)fbl;
+  h->FB = (void *) stack_malloc_align(size_FB_chunk, 64);
+  h->inv_A_H = (void *) stack_malloc_align(size_IAH_chunk, 64);
+  return (mpqs_FB_entry_t *)h->FB;
 }
 
 /* sieve array constructor;  also allocates the candidates array

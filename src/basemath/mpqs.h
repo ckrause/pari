@@ -245,9 +245,6 @@ typedef struct mpqs_handle {
   double l2sqrtkN;           /* ~log2(sqrt(kN)) */
   double l2M;                /* ~log2(M) (cf. below) */
   /* TODO: need an index2_FB here to remember where to start picking primes */
-  /* bookkeeping pointers to containers of aligned memory chunks: */
-  void *FB_chunk;            /* (unaligned) chunk containing the FB */
-  void *invAH_chunk;         /* (unaligned) chunk for self-init array */
 } mpqs_handle_t;
 
 int  mpqs_class_init(mpqs_handle_t *H, GEN D, long L);
