@@ -624,7 +624,7 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   }
   else
     u_forprime_set_prime_table(T, a);
-  if (T->strategy==PRST_none) T->strategy = PRST_unextprime;
+  if (T->strategy == PRST_none) T->strategy = PRST_unextprime;
   /* now strategy is either PRST_diffptr or PRST_unextprime */
 
   P2 = (P & HIGHMASK)? 0 : P*P;
@@ -632,8 +632,8 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   /* maxprime^2 >= sieveb */
   Plim = maxprimelim();
   if (a <= Plim) a = Plim + 1;
-  if (sieveb < a) return 1;
-  Y = sieveb - a + 1; /* length of sievable interval */
+  if (sieveb < a + 15) return 1;
+  Y = sieveb - a + 1; /* length of sievable interval >= 16 */
   P = usqrt(sieveb); /* largest sieving prime */
   /* FIXME: should sieve as well if q != 1, adapt sieve code */
   if (q == 1 && (!P2 || P2 > a) && 3/M_LN2 * Y >= uprimepi(P))
@@ -864,7 +864,7 @@ u_forprime_next(forprime_t *T)
     }
   }
   if (T->strategy == PRST_sieve)
-  {
+  { /* require sieveb - a >= 16 */
     ulong n;
     if (T->cache[0]) return shift_cache(T);
 NEXT_CHUNK:
@@ -936,7 +936,7 @@ NEXT_CHUNK:
       /* end and a are odd; sieve[k] contains the a + 8*2k + (0,2,...,14).
        * The largest k is (end-a) >> 4 */
       T->pos = 0;
-      T->maxpos = (T->end - T->a) >> 4;
+      T->maxpos = (T->end - T->a) >> 4; /* >= 1 */
       sieve_block(T->a, T->end, T->maxpos, T->sieve);
       goto NEXT_CHUNK;
     }
