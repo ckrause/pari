@@ -632,8 +632,8 @@ u_forprime_sieve_arith_init(forprime_t *T, struct pari_sieve *psieve,
   /* maxprime^2 >= sieveb */
   Plim = maxprimelim();
   if (a <= Plim) a = Plim + 1;
-  if (sieveb < a + 15) return 1;
-  Y = sieveb - a + 1; /* length of sievable interval >= 16 */
+  if (sieveb < a + 16) return 1;
+  Y = sieveb - a + 1; /* number of integers in sievable interval > 16 */
   P = usqrt(sieveb); /* largest sieving prime */
   /* FIXME: should sieve as well if q != 1, adapt sieve code */
   if (q == 1 && (!P2 || P2 > a) && 3/M_LN2 * Y >= uprimepi(P))
