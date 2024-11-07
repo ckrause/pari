@@ -6088,7 +6088,7 @@ algmodpr_integral(GEN x, GEN data, long reduce)
 
 /* x in basis form */
 static GEN
-algmodpr_i(GEN al, GEN x, GEN data)
+algmodpr_i(GEN x, GEN data)
 {
   GEN T, p, res, den, tau;
   long v, i, j;
@@ -6149,13 +6149,13 @@ algmodpr(GEN al, GEN x, GEN data)
   checkalgmodpr(data);
   if (typ(x) == t_MAT) return gerepilecopy(av, algmodpr_mat(al,x,data));
   x = algalgtobasis(al, x);
-  res = algmodpr_i(al, x, data);
+  res = algmodpr_i(x, data);
   ff = algmodpr_get_ff(data);
   return gerepilecopy(av, FqM_to_FFM(res,ff));
 }
 
 static GEN
-algmodprlift_i(GEN al, GEN x, GEN data)
+algmodprlift_i(GEN x, GEN data)
 {
   GEN lift, C, p, c, T = NULL;
   long i, j, k, m;
@@ -6192,7 +6192,7 @@ algmodprlift(GEN al, GEN x, GEN data)
   if (!nc) return gerepileupto(av, zeromat(0,0));
   if ((lgcols(x)-1)%k) pari_err_DIM("algmodprlift [matrix x, nb rows]");
   nr = nbrows(x)/k;
-  if (nr==1 && nc==1) res = algmodprlift_i(al, x, data);
+  if (nr==1 && nc==1) res = algmodprlift_i(x, data);
   else
   {
     res = zeromatcopy(nr, nc);
@@ -6200,7 +6200,7 @@ algmodprlift(GEN al, GEN x, GEN data)
       for(j=1; j<=nc; j++)
       {
         blk = matslice(x, (i-1)*k+1, i*k, (j-1)*k+1, j*k);
-        gcoeff(res,i,j) = algmodprlift_i(al, blk, data);
+        gcoeff(res,i,j) = algmodprlift_i(blk, data);
       }
   }
   return gerepilecopy(av, res);
