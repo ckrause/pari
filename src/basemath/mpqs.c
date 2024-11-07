@@ -168,9 +168,9 @@ mpqs_FB_ctor(mpqs_handle_t *h)
   long size_FB_chunk = (h->size_of_FB + 3) * sizeof(mpqs_FB_entry_t);
   /* like FB, except this one does not have a sentinel slot at the end */
   long size_IAH_chunk = (h->size_of_FB + 2) * sizeof(mpqs_inv_A_H_t);
-  h->FB = (void *) stack_malloc_align(size_FB_chunk, 64);
-  h->inv_A_H = (void *) stack_malloc_align(size_IAH_chunk, 64);
-  return (mpqs_FB_entry_t *)h->FB;
+  h->FB = (mpqs_FB_entry_t *) stack_malloc_align(size_FB_chunk, 64);
+  h->inv_A_H = (mpqs_inv_A_H_t *) stack_malloc_align(size_IAH_chunk, 64);
+  return h->FB;
 }
 
 /* sieve array constructor;  also allocates the candidates array
