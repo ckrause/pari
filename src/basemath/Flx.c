@@ -3294,19 +3294,16 @@ bounded_order(ulong p, GEN b, long k)
   return 0;
 }
 
-/*
-  n = (p^d-a)\b
-  b = bb*p^vb
-  p^k = 1 [bb]
-  d = m*k+r+vb
-  u = (p^k-1)/bb;
-  v = (p^(r+vb)-a)/b;
-  w = (p^(m*k)-1)/(p^k-1)
-  n = p^r*w*u+v
-  w*u = p^vb*(p^(m*k)-1)/b
-  n = p^(r+vb)*(p^(m*k)-1)/b+(p^(r+vb)-a)/b
-*/
-
+/* n = (p^d-a)\b
+ * b = bb*p^vb
+ * p^k = 1 [bb]
+ * d = m*k+r+vb
+ * u = (p^k-1)/bb;
+ * v = (p^(r+vb)-a)/b;
+ * w = (p^(m*k)-1)/(p^k-1)
+ * n = p^r*w*u+v
+ * w*u = p^vb*(p^(m*k)-1)/b
+ * n = p^(r+vb)*(p^(m*k)-1)/b+(p^(r+vb)-a)/b */
 static GEN
 Flxq_pow_Frobenius(GEN x, GEN n, GEN aut, GEN T, ulong p, ulong pi)
 {

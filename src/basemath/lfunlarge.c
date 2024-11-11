@@ -19,10 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 /*      for Im(s) large, chi primitive Dirichlet character       */
 /*      In the present branch, only Tyagi's method is used      */
 /*****************************************************************/
-/*
-   In addition, C can also be a polynomial defining an abelian
-   extension of Q.
-*/
+/* In addition, C can also be a polynomial defining an abelian
+ * extension of Q. */
 
 /*****************************************************************/
 /*                      Character programs                       */

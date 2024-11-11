@@ -2706,14 +2706,11 @@ addifsmooth2(struct Fp_log_rel *r, GEN z, long u, long v)
   gel(r->rel,++r->nbrel) = gerepileupto(av, F);
 }
 
-/*
-Let p=C^2+c
-Solve h = (C+x)*(C+a)-p = 0 [mod l]
-h= -c+x*(C+a)+C*a = 0  [mod l]
-x = (c-C*a)/(C+a) [mod l]
-h = -c+C*(x+a)+a*x
-*/
-
+/* Let p=C^2+c
+ * Solve h = (C+x)*(C+a)-p = 0 [mod l]
+ * h= -c+x*(C+a)+C*a = 0  [mod l]
+ * x = (c-C*a)/(C+a) [mod l]
+ * h = -c+C*(x+a)+a*x */
 GEN
 Fp_log_sieve_worker(long a, long prmax, GEN C, GEN c, GEN Ci, GEN ci, GEN pi, GEN sz)
 {

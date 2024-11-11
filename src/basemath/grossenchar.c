@@ -23,26 +23,21 @@ static GEN gchari_eval(GEN gc, GEN chi, GEN x, long flag, GEN logchi, GEN s0, lo
 /**         contributed by Pascal Molin and Aurel Page (2022)       **/
 /**                                                                 **/
 /*********************************************************************/
+/* characters can be represented by:
+ * - t_COL of coordinates on the snf basis (mostly for gp use): prefix gchar_
+ * - t_VEC of coordinates on the internal basis: prefix gchari_
+ * - t_VEC of R/Z components (logs): prefix gcharlog_
+ *
+ * see gchar_internal for SNF -> internal
+ * and gchari_duallog for internal -> R/Z components */
 
-/*
-  characters can be represented by:
-   - t_COL of coordinates on the snf basis (mostly for gp use): prefix gchar_
-   - t_VEC of coordinates on the internal basis: prefix gchari_
-   - t_VEC of R/Z components (logs): prefix gcharlog_
-
-   see gchar_internal for SNF -> internal
-   and gchari_duallog for internal -> R/Z components
-*/
-
-/*
-localstar: represent (Z_F/m)^* . {+-1}^r + generators of U_{i-1}(p)/U_i
-structure:
-- [ sprk for p^k | m ] , size np
-- [ Ufil_p for p | m ], size np
-- m_oo, t_VECSMALL of size nci <= r1 (indices of real places)
-
-where Ufil_p = [ Mat([gen[j], t_COL of size ncp]_j) ]_{1<=i<=k}
-*/
+/* localstar: represent (Z_F/m)^* . {+-1}^r + generators of U_{i-1}(p)/U_i
+ *  structure:
+ *  - [ sprk for p^k | m ] , size np
+ *  - [ Ufil_p for p | m ], size np
+ *  - m_oo, t_VECSMALL of size nci <= r1 (indices of real places)
+ *
+ * where Ufil_p = [ Mat([gen[j], t_COL of size ncp]_j) ]_{1<=i<=k} */
 
 #define GC_LENGTH   12
 #define LOCS_LENGTH 4

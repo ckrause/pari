@@ -24,23 +24,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 /**                              FpJ                                  **/
 /**                                                                   **/
 /***********************************************************************/
-
 /* Arithmetic is implemented using Jacobian coordinates, representing
  * a projective point (x : y : z) on E by [z*x , z^2*y , z].  This is
  * probably not the fastest representation available for the given
  * problem, but they're easy to implement and up to 60% faster than
- * the school-book method used in FpE_mulu().
- */
+ * the school-book method used in FpE_mulu(). */
 
 static GEN
 ellinf_FpJ(void)
 { return mkvec3(gen_1, gen_1, gen_0); }
 
-/*
- * Cost: 1M + 8S + 1*a + 10add + 1*8 + 2*2 + 1*3.
- * Source: http://www.hyperelliptic.org/EFD/g1p/auto-shortw-jacobian.html#doubling-dbl-2007-bl
- */
-
+/* Cost: 1M + 8S + 1*a + 10add + 1*8 + 2*2 + 1*3.
+ * Source: http://www.hyperelliptic.org/EFD/g1p/auto-shortw-jacobian.html#doubling-dbl-2007-bl */
 GEN
 FpJ_dbl(GEN P, GEN a4, GEN p)
 {
@@ -65,11 +60,8 @@ FpJ_dbl(GEN P, GEN a4, GEN p)
   return Q;
 }
 
-/*
- * Cost: 11M + 5S + 9add + 4*2.
- * Source: http://www.hyperelliptic.org/EFD/g1p/auto-shortw-jacobian.html#addition-add-2007-bl
- */
-
+/* Cost: 11M + 5S + 9add + 4*2.
+ * Source: http://www.hyperelliptic.org/EFD/g1p/auto-shortw-jacobian.html#addition-add-2007-bl */
 GEN
 FpJ_add(GEN P, GEN Q, GEN a4, GEN p)
 {
@@ -175,12 +167,10 @@ FpJ_mul(GEN P, GEN n, GEN a4, GEN p)
 /**                              FpE                                  **/
 /**                                                                   **/
 /***********************************************************************/
-
 /* These functions deal with point over elliptic curves over Fp defined
  * by an equation of the form y^2=x^3+a4*x+a6.
  * Most of the time a6 is omitted since it can be recovered from any point
- * on the curve.
- */
+ * on the curve. */
 
 GEN
 RgE_to_FpE(GEN x, GEN p)
@@ -703,11 +693,9 @@ FpX_quad_root(GEN x, GEN p)
   return Fp_halve(Fp_sub(s, b, p), p);
 }
 
-/*
- * pol is the modular polynomial of level 2 modulo p.
+/* pol is the modular polynomial of level 2 modulo p.
  *
- * (T, p) defines the field FF_{p^2} in which j_prev and j live.
- */
+ * (T, p) defines the field FF_{p^2} in which j_prev and j live. */
 static long
 Fq_path_extends_to_floor(GEN j_prev, GEN j, GEN T, GEN p, GEN Phi2, long max_len)
 {
@@ -1503,12 +1491,10 @@ Fp_ellgens(GEN a4, GEN a6, GEN ch, GEN D, GEN m, GEN p)
 /**                              FpXQE                                  **/
 /**                                                                   **/
 /***********************************************************************/
-
-/* Theses functions deal with point over elliptic curves over FpXQ defined
+/* These functions deal with point over elliptic curves over FpXQ defined
  * by an equation of the form y^2=x^3+a4*x+a6.
  * Most of the time a6 is omitted since it can be recovered from any point
- * on the curve.
- */
+ * on the curve. */
 
 GEN
 RgE_to_FpXQE(GEN x, GEN T, GEN p)

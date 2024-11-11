@@ -23,14 +23,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 /**                                                                   **/
 /***********************************************************************/
 /* F2v objects are defined as follows:
-   An F2v is a t_VECSMALL:
-   v[0] = codeword
-   v[1] = number of components
-   x[2] = a_0...a_31 x[3] = a_32..a_63, etc.  on 32bit
-   x[2] = a_0...a_63 x[3] = a_64..a_127, etc. on 64bit
-
-   where the a_i are bits.
-*/
+ * An F2v is a t_VECSMALL:
+ * v[0] = codeword
+ * v[1] = number of components
+ * x[2] = a_0...a_31 x[3] = a_32..a_63, etc.  on 32bit
+ * x[2] = a_0...a_63 x[3] = a_64..a_127, etc. on 64bit
+ * where the a_i are bits. */
 
 int
 F2v_equal0(GEN V)

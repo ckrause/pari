@@ -839,13 +839,11 @@ fill_pols(long n, const long *v, long m, const long *vn,
   *act = mkmat2(N,D); return M;
 }
 
-/*
-  These polynomials were extracted from the ECHIDNA databases
-  available at <http://echidna.maths.usyd.edu.au/echidna/>
-  and computed by David R. Kohel.
-  Return the matrix of the modular polynomial, set act to the parametrization,
-  and set dj to the opposite of the supersingular j-invariant.
-*/
+/* These polynomials were extracted from the ECHIDNA databases
+ * available at <http://echidna.maths.usyd.edu.au/echidna/>
+ * and computed by David R. Kohel.
+ * Return the matrix of the modular polynomial, set act to the parametrization,
+ * and set dj to the opposite of the supersingular j-invariant. */
 static GEN
 get_Kohel_polynomials(ulong p, GEN *act, long *dj)
 {

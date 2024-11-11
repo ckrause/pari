@@ -152,9 +152,7 @@ random_distinct_neighbours_of(ulong *nhbr1, ulong *nhbr2,
   set_avma(av);
 }
 
-/*
- * This is Sutherland 2009 Algorithm Descend (p12).
- */
+/* This is Sutherland 2009 Algorithm Descend (p12) */
 ulong
 descend_volcano(GEN phi, ulong j, ulong p, ulong pi,
   long level, long L, long depth, long steps)

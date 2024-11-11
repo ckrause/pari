@@ -125,14 +125,12 @@ map_X1_points(GEN r, GEN s, const X1_info *X1, long ncurves, ulong p, ulong pi)
   set_avma(ltop);
 }
 
-/*
- * A curve y^2 = x^3 + a2 x^2 + a4 x is isomorphic to the curve
+/* A curve y^2 = x^3 + a2 x^2 + a4 x is isomorphic to the curve
  *
  *   y^2 = x^3 + (a4 - 1/3*a2^2) x + (2/27*a2^3 - 1/3*a4*a2)
  *       = x^3 + (a4 - a2 c) x + (2 c^3 - a4 c)
  *
- * (where c = a2/3) which is in short form.
- */
+ * (where c = a2/3) which is in short form. */
 INLINE void
 a2a4_to_a4a6(ulong *a4, ulong *a6, ulong A2, ulong A4, ulong inv3, ulong p, ulong pi)
 {
@@ -142,14 +140,12 @@ a2a4_to_a4a6(ulong *a4, ulong *a6, ulong A2, ulong A4, ulong inv3, ulong p, ulon
                  Fl_mul_pre(A4, c, p, pi), p);
 }
 
-/*
- * A curve y^2 + a1 xy + a3 y = x^3 is isomorphic to the curve
+/* A curve y^2 + a1 xy + a3 y = x^3 is isomorphic to the curve
  *
- *   y^2 = x^3 + (1/2*a3*a1 -1/48*a1^4) x + (1/864*a1^6 - 1/24*a3*a1^3 + 1/4*a3^2
- *       = x^3 + c (a3 - 1/3 * c^3) x + 1/3 * c^3(1/9 c^2 a1 - a3) + 1/4 a3^2
+ *  y^2 = x^3 + (1/2*a3*a1 -1/48*a1^4) x + (1/864*a1^6 - 1/24*a3*a1^3 + 1/4*a3^2
+ *      = x^3 + c (a3 - 1/3 * c^3) x + 1/3 * c^3(1/9 c^2 a1 - a3) + 1/4 a3^2
  *
- * (where c = a1/2) which is in short form.
- */
+ * (where c = a1/2) which is in short form. */
 INLINE void
 a1a3_to_a4a6(
   ulong *a4, ulong *a6,
@@ -642,9 +638,7 @@ static const long FLX_m1[3] = { evaltyp(t_VECSMALL) | _evallg(3), vZ, -1 };
 static const long FLX_Z[4] = { evaltyp(t_VECSMALL) | _evallg(4), vZ, 0, 1 };
 static const long FLX_mZ[4] = { evaltyp(t_VECSMALL) | _evallg(4), vZ, 0, -1 };
 
-/*
- * X1 Curves database follows!
- */
+/* X1 Curves database follows! */
 
 /* x^2 + (z^3 + z^2 + 1)*x + (-z^2 - z) */
 static const long X1_13_crv_0[5] = {

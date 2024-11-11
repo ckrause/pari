@@ -405,10 +405,8 @@ gen_matmul_classical(GEN A, GEN B, long l, long la, long lb,
 
 /* Strassen-Winograd algorithm */
 
-/*
-  Return A[ma+1..ma+da, na+1..na+ea] - B[mb+1..mb+db, nb+1..nb+eb]
-  as an (m x n)-matrix, padding the input with zeroes as necessary.
-*/
+/* Return A[ma+1..ma+da, na+1..na+ea] - B[mb+1..mb+db, nb+1..nb+eb]
+ * as an (m x n)-matrix, padding the input with zeroes as necessary. */
 static GEN
 add_slices(long m, long n,
            GEN A, long ma, long da, long na, long ea,
@@ -452,10 +450,8 @@ add_slices(long m, long n,
   return M;
 }
 
-/*
-  Return A[ma+1..ma+da, na+1..na+ea] - B[mb+1..mb+db, nb+1..nb+eb]
-  as an (m x n)-matrix, padding the input with zeroes as necessary.
-*/
+/* Return A[ma+1..ma+da, na+1..na+ea] - B[mb+1..mb+db, nb+1..nb+eb]
+ * as an (m x n)-matrix, padding the input with zeroes as necessary. */
 static GEN
 subtract_slices(long m, long n,
                 GEN A, long ma, long da, long na, long ea,

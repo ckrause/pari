@@ -158,13 +158,11 @@ Flx_renormalize_inplace(GEN x, long lx)
   setlg(x, i+1);
 }
 
-/*
-   Let T*X^e=C^3-R
-   a+b+c = 0
-   (C+a)*(C+b)*(C+c) = C^3+ (a*b+a*c+b*c)*C+a*b*c
-   = R + (a*b+a*c+b*c)*C+a*b*c
-   = R + (a*b-c^2)*C+a*b*c
- */
+/* Let T*X^e=C^3-R
+ *  a+b+c = 0
+ * (C+a)*(C+b)*(C+c) = C^3+ (a*b+a*c+b*c)*C+a*b*c
+ *  = R + (a*b+a*c+b*c)*C+a*b*c
+ *  = R + (a*b-c^2)*C+a*b*c */
 static void
 Flxq_log_cubic(struct Flxq_log_rel *r, GEN C, GEN R, ulong p, ulong pi)
 {

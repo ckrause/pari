@@ -24,15 +24,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 /**                              F2xqE                                **/
 /**                                                                   **/
 /***********************************************************************/
-
-/* Theses functions deal with point over elliptic curves over F_2^n defined
+/* These functions deal with points over elliptic curves over F_2^n defined
  * by an equation of the form:
- ** y^2+x*y=x^3+a_2*x^2+a_6 if the curve is ordinary.
- ** y^2+a_3*y=x^3+a_4*x+a_6 if the curve is supersingular.
+ *  y^2+x*y = x^3+a_2*x^2+a_6 if the curve is ordinary.
+ *  y^2+a_3*y = x^3+a_4*x+a_6 if the curve is supersingular.
  * Most of the time a6 is omitted since it can be recovered from any point
  * on the curve.
- * For supersingular curves, the parameter a2 is replaced by [a3,a4,a3^-1].
- */
+ * For supersingular curves, the parameter a2 is replaced by [a3,a4,a3^-1]. */
 
 GEN
 RgE_to_F2xqE(GEN x, GEN T)
@@ -685,7 +683,6 @@ _lift_iter(void *E, GEN x2, GEN q)
 }
 
 /* H -> Dx*H+Dy*S(H) */
-
 static GEN
 _lift_invd(void *E, GEN V, GEN v, GEN qM, long M)
 {
@@ -702,16 +699,13 @@ _lift_invd(void *E, GEN V, GEN v, GEN qM, long M)
   return gen_Z2X_Dixon(r, V, M, E, _frob_lin, _frob_lins, _frob_invls);
 }
 
-/*
-  Let P(X,Y)=(X+2*Y+8*X*Y)^2+Y+4*X*Y
-  Solve   P(x,S(x))=0 [mod 2^n,T]
-  assuming  x = x0    [mod 2,T]
-
-  we set s = X+2*Y+8*X*Y, P = s^2+Y+4*X*Y
-  Dx = dP/dx = (16*s+4)*x+(4*s+1)
-  Dy = dP/dy = (16*y+2)*s+4*y
-*/
-
+/* Let P(X,Y)=(X+2*Y+8*X*Y)^2+Y+4*X*Y
+ * Solve   P(x,S(x))=0 [mod 2^n,T]
+ * assuming  x = x0    [mod 2,T]
+ *
+ * we set s = X+2*Y+8*X*Y, P = s^2+Y+4*X*Y
+ * Dx = dP/dx = (16*s+4)*x+(4*s+1)
+ * Dy = dP/dy = (16*y+2)*s+4*y */
 static GEN
 solve_AGM_eqn(GEN x0, long n, GEN T, GEN sqx)
 {

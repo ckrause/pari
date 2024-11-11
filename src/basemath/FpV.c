@@ -529,10 +529,8 @@ Flm_mul_classical(GEN x, GEN y, long l, long lx, long ly, ulong p, ulong pi)
   return z;
 }
 
-/*
-  Return A[ma+1..ma+da, na+1..na+ea] - B[mb+1..mb+db, nb+1..nb+eb]
-  as an (m x n)-matrix, padding the input with zeroes as necessary.
-*/
+/* Return A[ma+1..ma+da, na+1..na+ea] - B[mb+1..mb+db, nb+1..nb+eb]
+ * as an (m x n)-matrix, padding the input with zeroes as necessary. */
 static void
 add_slices_ip(long m, long n,
            GEN A, long ma, long da, long na, long ea,
@@ -589,10 +587,8 @@ add_slices(long m, long n,
   return M;
 }
 
-/*
-  Return A[ma+1..ma+da, na+1..na+ea] - B[mb+1..mb+db, nb+1..nb+eb]
-  as an (m x n)-matrix, padding the input with zeroes as necessary.
-*/
+/* Return A[ma+1..ma+da, na+1..na+ea] - B[mb+1..mb+db, nb+1..nb+eb]
+ * as an (m x n)-matrix, padding the input with zeroes as necessary. */
 static GEN
 subtract_slices(long m, long n,
                 GEN A, long ma, long da, long na, long ea,

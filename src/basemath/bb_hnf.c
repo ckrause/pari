@@ -24,30 +24,29 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 /**                 contributed by Aurel Page (2017)               **/
 /**                                                                **/
 /********************************************************************/
+/* bb_hermite R:
+ *  - add(a,b): a+b
+ *  - neg(a): -a
+ *  - mul(a,b): a*b
+ *  - extgcd(a,b,&small): [d,U] with d in R and U in GL_2(R)
+ *      such that [0;d] = [a;b]*U. Set small==1 to assert that U is a 'small'
+ *      operation (no red needed).
+ *  - rann(a): b in R such that b*R = {x in R | a*x==0}
+ *  - lquo(a,b,&r): q in R such that r=a-b*q is a canonical representative
+ *      of the image of a in R/b*R. The canonical lift of 0 must be 0.
+ *  - unit(a): u unit in R^* such that a*u is a canonical generator of
+ *      the ideal a*R
+ *  - equal0(a): a==0?
+ *  - equal1(a): a==1?
+ *  - s(n): image of the small integer n in R
+ *  - red(a): unique representative of a as an element of R
 
-/*
-  bb_hermite R:
-    - add(a,b): a+b
-    - neg(a): -a
-    - mul(a,b): a*b
-    - extgcd(a,b,&small): [d,U] with d in R and U in GL_2(R) such that [0;d] = [a;b]*U.
-      set small==1 to assert that U is a 'small' operation (no red needed).
-    - rann(a): b in R such that b*R = {x in R | a*x==0}
-    - lquo(a,b,&r): q in R such that r=a-b*q is a canonical representative
-      of the image of a in R/b*R. The canonical lift of 0 must be 0.
-    - unit(a): u unit in R^* such that a*u is a canonical generator of the ideal a*R
-    - equal0(a): a==0?
-    - equal1(a): a==1?
-    - s(n): image of the small integer n in R
-    - red(a): unique representative of a as an element of R
-
-  op encoding of elementary operations:
-    - t_VECSMALL: the corresponding permutation (vecpermute)
-    - [Vecsmall([i,j])]: the transposition Ci <-> Cj
-    - [Vecsmall([i]),u], u in R^*: Ci <- Ci*u
-    - [Vecsmall([i,j]),a], a in R: Ci <- Ci + Cj*a
-    - [Vecsmall([i,j,0]),U], U in GL_2(R): (Ci|Cj) <- (Ci|Cj)*U
-*/
+ * op encoding of elementary operations:
+ *  - t_VECSMALL: the corresponding permutation (vecpermute)
+ *  - [Vecsmall([i,j])]: the transposition Ci <-> Cj
+ *  - [Vecsmall([i]),u], u in R^*: Ci <- Ci*u
+ *  - [Vecsmall([i,j]),a], a in R: Ci <- Ci + Cj*a
+ *  - [Vecsmall([i,j,0]),U], U in GL_2(R): (Ci|Cj) <- (Ci|Cj)*U */
 
 struct bb_hermite
 {
@@ -917,10 +916,8 @@ gen_inv(GEN A, void* data, const struct bb_hermite *R)
   return U;
 }
 
-/*
-  H true Howell form (no zero columns).
-  Compute Z = Y - HX canonical representative of R^m mod H(R^n)
-*/
+/* H true Howell form (no zero columns).
+ * Compute Z = Y - HX canonical representative of R^m mod H(R^n) */
 static GEN
 gen_reduce_mod_howell(GEN H, GEN Y, GEN *X, void* data, const struct bb_hermite *R)
 {
@@ -994,8 +991,8 @@ matimagemod(GEN A, GEN d, GEN* U)
   return gen_matimage(A, U, data, R);
 }
 
+#if 0
 /* for testing purpose */
-/*
 GEN
 ZM_hnfmodid2(GEN A, GEN d)
 {
@@ -1011,7 +1008,7 @@ ZM_hnfmodid2(GEN A, GEN d)
     if (!signe(gcoeff(H,i,i))) gcoeff(H,i,i) = d;
   return gerepilecopy(av,H);
 }
-*/
+#endif
 
 GEN
 matdetmod(GEN A, GEN d)

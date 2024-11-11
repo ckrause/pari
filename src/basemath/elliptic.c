@@ -1816,13 +1816,9 @@ ellminimaltwist(GEN e)
   return gerepileuptoleaf(av, D);
 }
 
-/*
-Reference:
-William A. Stein and Mark Watkins
-A Database of Elliptic Curves-First Report
-ANTS 5
-<http://modular.math.washington.edu/papers/stein-watkins/ants.pdf>
-*/
+/* Reference: William A. Stein and Mark Watkins
+ * A Database of Elliptic Curves-First Report, ANTS 5
+ * http://modular.math.washington.edu/papers/stein-watkins/ants.pdf */
 static GEN localred_23(GEN e, long p);
 GEN
 ellminimaltwistcond(GEN e)
