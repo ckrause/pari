@@ -833,4 +833,28 @@ x^2 - 2
   ***   at top-level: ellpointtoz(E3,[1,[0]])
   ***                 ^-----------------------
   *** ellpointtoz: incorrect type in ellpointtoz (t_VEC).
-Total time spent: 1204
+  ***   at top-level: ellchangepoint([1],[1,2,3,4])
+  ***                 ^-----------------------------
+  *** ellchangepoint: incorrect type in ellchangepoint (t_VEC).
+  ***   at top-level: ellchangepoint([1,2,3],[1,2,3,4])
+  ***                 ^---------------------------------
+  *** ellchangepoint: incorrect type in ellchangepoint (t_VEC).
+  ***   at top-level: ellchangepointinv([1],[1,2,3,4])
+  ***                 ^--------------------------------
+  *** ellchangepointinv: incorrect type in ellchangepointinv (t_VEC).
+  ***   at top-level: ellchangepointinv([1,2,3],[1,2,3,4])
+  ***                 ^------------------------------------
+  *** ellchangepointinv: incorrect type in ellchangepointinv (t_VEC).
+  ***   at top-level: ellchangepoint([;],[1,2,3,4])
+  ***                 ^-----------------------------
+  *** ellchangepoint: incorrect type in ellchangepoint (t_MAT).
+  ***   at top-level: ellchangepointinv([;],[1,2,3,4])
+  ***                 ^--------------------------------
+  *** ellchangepointinv: incorrect type in ellchangepointinv (t_MAT).
+  ***   at top-level: ellchangepoint(Mat(1),[1,2,3,4])
+  ***                 ^--------------------------------
+  *** ellchangepoint: incorrect type in ellchangepoint (t_MAT).
+  ***   at top-level: ellchangepointinv(Mat(1),[1,2,3,4])
+  ***                 ^-----------------------------------
+  *** ellchangepointinv: incorrect type in ellchangepointinv (t_MAT).
+Total time spent: 1769

@@ -368,7 +368,8 @@ ellisdivisible(GEN E, GEN Q, GEN n, GEN *pQ)
   GEN P = NULL, N = NULL, K = NULL;
   long v;
 
-  checkell(E); checkellpt(Q);
+  checkell(E);
+  if (!checkellpt_i(Q)) pari_err_TYPE("ellisdivisible",Q);
   switch(ell_get_type(E))
   {
     case t_ELL_Q: break;
@@ -745,7 +746,8 @@ ellorder(GEN E, GEN P, GEN o)
 {
   pari_sp av = avma;
   GEN fg, r, E0 = E;
-  checkell(E); checkellpt(P);
+  checkell(E);
+  if (!checkellpt_i(P)) pari_err_TYPE("ellorder",P);
   if (ell_is_inf(P)) return gen_1;
   if (ell_get_type(E)==t_ELL_Q)
   {

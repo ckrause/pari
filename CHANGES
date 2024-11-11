@@ -15,6 +15,7 @@ BA  10- paridecl.h could conflict with complex.h [#2583]
     11- forprime(p=524288,1048576,1) -> crash [#2584]
         forprime(p=1048607,1048617,1) -> oo loop
     12- printf("%10.6f", tiny rational) -> undefined result [#2576]
+    13- argument checks in ellchangepoint, ellchangepointinv
 
   Added
 AP   1- new GP function algnewprec
@@ -27,6 +28,7 @@ AP   6- [libpari] FqC_red, FqM_red, FqC_to_FFC, FqM_to_FFM
      7- [libpari] pr_anti_uniformizer
 AP   8- new GP functions algeltfromnf, algmodprinit, algmodpr, algmodprlift,
         algeichlerbasis
+     9- [libpari] checkellpt_i
 
   Changed
 BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.

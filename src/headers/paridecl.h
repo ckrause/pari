@@ -3286,6 +3286,7 @@ void    checkell_Q(GEN e);
 void    checkell_Qp(GEN e);
 void    checkellisog(GEN v);
 void    checkellpt(GEN z);
+int     checkellpt_i(GEN z);
 void    checkell5(GEN e);
 GEN     cxredsl2(GEN t, GEN *U);
 GEN     cxredsl2_i(GEN z, GEN *pU, GEN *czd);

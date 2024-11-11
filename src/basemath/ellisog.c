@@ -191,7 +191,7 @@ ellisogenyapply(GEN phi, GEN P)
   long vx, vy;
   if (lg(P) == 4) return ellcompisog(phi,P);
   checkellisog(phi);
-  checkellpt(P);
+  if (!checkellpt_i(P)) pari_err_TYPE("ellisogenyapply",P);
   if (ell_is_inf(P)) return ellinf();
   f = gel(phi, 1);
   g = gel(phi, 2);
@@ -642,7 +642,7 @@ ellisogeny(GEN E, GEN G, long only_image, long vx, long vy)
   switch(typ(G))
   {
   case t_VEC:
-    checkellpt(G);
+    if (!checkellpt_i(G)) pari_err_TYPE("ellisogeny",G);
     if (!ell_is_inf(G))
     {
       GEN x =  gel(G,1), y = gel(G,2);

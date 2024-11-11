@@ -125,18 +125,16 @@ nftoalg(GEN nf, GEN x)
   }
 }
 
+int
+checkellpt_i(GEN z)
+{
+  long l;
+  if (typ(z)!=t_VEC) return 0;
+  l = lg(z); return l == 3 || (l == 2 && isintzero(gel(z,1)));
+}
 void
 checkellpt(GEN z)
-{
-  if (typ(z)!=t_VEC) pari_err_TYPE("checkellpt", z);
-  switch(lg(z))
-  {
-    case 3: break;
-    case 2: if (isintzero(gel(z,1))) break;
-    /* fall through */
-    default: pari_err_TYPE("checkellpt", z);
-  }
-}
+{ if (!checkellpt_i(z)) pari_err_TYPE("checkellpt", z); }
 void
 checkell5(GEN E)
 {
@@ -1573,11 +1571,10 @@ nf_compose_u(GEN nf, GEN *vtotal, GEN *e, GEN u, GEN uinv)
 /* X = (x-r)/u^2
  * Y = (y - s(x-r) - t) / u^3 */
 static GEN
-ellchangepoint0(GEN P, GEN v2, GEN v3, GEN r, GEN s, GEN t)
+ellchangepoint_i(GEN P, GEN v2, GEN v3, GEN r, GEN s, GEN t)
 {
   GEN a, x, y;
-  long l = lg(P);
-  if (typ(P) != t_VEC || l == 1 || l > 4) pari_err_TYPE("ellchangepoint", P);
+  if (!checkellpt_i(P)) pari_err_TYPE("ellchangepoint",P);
   if (ell_is_inf(P)) return P;
   x = gel(P,1); y = gel(P,2); a = gsub(x,r);
   retmkvec2(gmul(v2, a), gmul(v3, gsub(y, gadd(gmul(s,a),t))));
@@ -1597,23 +1594,24 @@ ellchangepoint(GEN x, GEN ch)
   u = gel(ch,1); r = gel(ch,2); s = gel(ch,3); t = gel(ch,4);
   v = ginv(u); v2 = gsqr(v); v3 = gmul(v,v2);
   tx = typ(gel(x,1));
-  if (is_matvec_t(tx))
+  if (is_vec_t(tx))
   {
     y = cgetg(lx,tx);
     for (i=1; i<lx; i++)
-      gel(y,i) = ellchangepoint0(gel(x,i),v2,v3,r,s,t);
+      gel(y,i) = ellchangepoint_i(gel(x,i),v2,v3,r,s,t);
   }
   else
-    y = ellchangepoint0(x,v2,v3,r,s,t);
+    y = ellchangepoint_i(x,v2,v3,r,s,t);
   return gerepilecopy(av,y);
 }
 
 /* x = u^2*X + r
  * y = u^3*Y + s*u^2*X + t */
 static GEN
-ellchangepointinv0(GEN P, GEN u2, GEN u3, GEN r, GEN s, GEN t)
+ellchangepointinv_i(GEN P, GEN u2, GEN u3, GEN r, GEN s, GEN t)
 {
   GEN a, X, Y;
+  if (!checkellpt_i(P)) pari_err_TYPE("ellchangepointinv",P);
   if (ell_is_inf(P)) return P;
   X = gel(P,1); Y = gel(P,2); a = gmul(u2,X);
   return mkvec2(gadd(a, r), gadd(gmul(u3, Y), gadd(gmul(s, a), t)));
@@ -1632,14 +1630,14 @@ ellchangepointinv(GEN x, GEN ch)
   u = gel(ch,1); r = gel(ch,2); s = gel(ch,3); t = gel(ch,4);
   u2 = gsqr(u); u3 = gmul(u,u2);
   tx = typ(gel(x,1));
-  if (is_matvec_t(tx))
+  if (is_vec_t(tx))
   {
     y = cgetg(lx,tx);
     for (i=1; i<lx; i++)
-      gel(y,i) = ellchangepointinv0(gel(x,i),u2,u3,r,s,t);
+      gel(y,i) = ellchangepointinv_i(gel(x,i),u2,u3,r,s,t);
   }
   else
-    y = ellchangepointinv0(x,u2,u3,r,s,t);
+    y = ellchangepointinv_i(x,u2,u3,r,s,t);
   return gerepilecopy(av,y);
 }
 
@@ -1891,7 +1889,8 @@ oncurve(GEN e, GEN z)
   long pl, pr, ex, expx;
   pari_sp av;
 
-  checkellpt(z); if (ell_is_inf(z)) return 1; /* oo */
+  if (!checkellpt_i(z)) return 0;
+  if (ell_is_inf(z)) return 1; /* oo */
   if (ell_get_type(e) == t_ELL_NF) z = nfVtoalg(ellnf_get_nf(e), z);
   av = avma;
   LHS = ec_LHS_evalQ(e,z);
@@ -1954,7 +1953,9 @@ elladd(GEN e, GEN z1, GEN z2)
   GEN s, z, x, y, x1, x2, y1, y2;
   pari_sp av = avma;
 
-  checkell(e); checkellpt(z1); checkellpt(z2);
+  checkell(e);
+  if (!checkellpt_i(z1)) pari_err_TYPE("elladd", z1);
+  if (!checkellpt_i(z2)) pari_err_TYPE("elladd", z2);
   if (ell_is_inf(z1)) return gcopy(z2);
   if (ell_is_inf(z2)) return gcopy(z1);
 
@@ -1985,7 +1986,7 @@ elladd(GEN e, GEN z1, GEN z2)
 static GEN
 ellneg_i(GEN e, GEN z)
 {
-  GEN t, x, y;
+  GEN x, y;
   if (ell_is_inf(z)) return z;
   x = gel(z,1);
   y = gel(z,2);
@@ -1995,10 +1996,7 @@ ellneg_i(GEN e, GEN z)
     x = nftoalg(nf,x);
     y = nftoalg(nf,y);
   }
-  t = cgetg(3,t_VEC);
-  gel(t,1) = x;
-  gel(t,2) = gneg_i(gadd(y, ec_h_evalx(e,x)));
-  return t;
+  retmkvec2(x, gneg_i(gadd(y, ec_h_evalx(e,x))));
 }
 
 GEN
@@ -2006,7 +2004,8 @@ ellneg(GEN e, GEN z)
 {
   pari_sp av;
   GEN t, y;
-  checkell(e); checkellpt(z);
+  checkell(e);
+  if (!checkellpt_i(z)) pari_err_TYPE("ellneg", z);
   if (ell_is_inf(z)) return z;
   t = cgetg(3,t_VEC);
   gel(t,1) = gcopy(gel(z,1));
@@ -2020,7 +2019,9 @@ GEN
 ellsub(GEN e, GEN z1, GEN z2)
 {
   pari_sp av = avma;
-  checkell(e); checkellpt(z2);
+  checkell(e);
+  if (!checkellpt_i(z1)) pari_err_TYPE("ellsub", z1);
+  if (!checkellpt_i(z2)) pari_err_TYPE("ellsub", z2);
   return gerepileupto(av, elladd(e, z1, ellneg_i(e,z2)));
 }
 
@@ -2322,7 +2323,8 @@ ellmul(GEN e, GEN z, GEN n)
 {
   pari_sp av = avma;
 
-  checkell(e); checkellpt(z);
+  checkell(e);
+  if (!checkellpt_i(z)) pari_err_TYPE("ellmul", z);
   if (ell_is_inf(z)) return ellinf();
   switch(typ(n))
   {
@@ -2610,7 +2612,8 @@ GEN
 zell(GEN E, GEN P, long prec)
 {
   pari_sp av = avma;
-  checkell(E); checkellpt(P);
+  checkell(E);
+  if (!checkellpt_i(P)) pari_err_TYPE("ellpointtoz", P);
   switch(ell_get_type(E))
   {
     case t_ELL_Qp:
@@ -6855,7 +6858,8 @@ ellQ_height(GEN e, GEN a, long prec)
 GEN
 ellheight(GEN e, GEN a, long prec)
 {
-  checkell(e); checkellpt(a);
+  checkell(e);
+  if (!checkellpt_i(a)) pari_err_TYPE("ellheight", a);
   switch(ell_get_type(e))
   {
     case t_ELL_Q:
@@ -7062,7 +7066,9 @@ elllog(GEN E, GEN a, GEN g, GEN o)
 {
   pari_sp av = avma;
   GEN p;
-  checkell_Fq(E); checkellpt(a); checkellpt(g);
+  checkell_Fq(E);
+  if (!checkellpt_i(a)) pari_err_TYPE("elllog", a);
+  if (!checkellpt_i(g)) pari_err_TYPE("elllog", g);
   p = ellff_get_field(E);
   if (!o) o = ellff_get_o(E);
   if (typ(p)==t_FFELT) return FF_elllog(E, a, g, o);
@@ -7078,8 +7084,9 @@ GEN
 ellweilpairing(GEN E, GEN P, GEN Q, GEN m)
 {
   GEN p;
-  checkell_Fq(E); checkellpt(P); checkellpt(Q);
-  if (typ(m)!=t_INT) pari_err_TYPE("ellweilpairing",m);
+  checkell_Fq(E);
+  if (!checkellpt_i(P)) pari_err_TYPE("ellweilpairing", P);
+  if (!checkellpt_i(Q)) pari_err_TYPE("ellweilpairing", Q);
   p = ellff_get_field(E);
   if (typ(p)==t_FFELT) return FF_ellweilpairing(E, P, Q, m);
   else
@@ -7096,7 +7103,9 @@ GEN
 elltatepairing(GEN E, GEN P, GEN Q, GEN m)
 {
   GEN p;
-  checkell_Fq(E); checkellpt(P); checkellpt(Q);
+  checkell_Fq(E);
+  if (!checkellpt_i(P)) pari_err_TYPE("elltatepairing", P);
+  if (!checkellpt_i(Q)) pari_err_TYPE("elltatepairing", Q);
   if (typ(m)!=t_INT) pari_err_TYPE("elltatepairing",m);
   p = ellff_get_field(E);
   if (typ(p)==t_FFELT) return FF_elltatepairing(E, P, Q, m);
@@ -7856,7 +7865,7 @@ elltrace(GEN E, GEN P)
   long v, n, i, j, d;
 
   checkell(E);
-  checkellpt(P);
+  if (!checkellpt_i(P)) pari_err_TYPE("elltrace", P);
   if (ell_is_inf(P)) return gcopy(P); /* P == oo */
   if (!oncurve(E,P))
     pari_err_DOMAIN("elltrace", "point", "not on", strtoGENstr("E"), P);

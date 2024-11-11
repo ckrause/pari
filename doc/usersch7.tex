@@ -55,6 +55,9 @@ or an \var{ell5}.
 \fun{void}{checkellpt}{GEN z} raise an error unless $z$ is a point
 (either finite or at infinity).
 
+\fun{int}{checkellpt_i}{GEN z} return $1$ if $z$ is a point
+(either finite or at infinity) and $0$ otherwise.
+
 \fun{long}{ell_get_type}{GEN e} returns the domain type over which the curve
 is defined, one of
 

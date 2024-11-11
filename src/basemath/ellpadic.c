@@ -630,7 +630,7 @@ ellnonsingularmultiple(GEN e, GEN P)
   pari_sp av = avma;
   GEN ch, E = ellanal_globalred(e, &ch), NP, L, S, d, g = gen_1;
   long i, l;
-  checkellpt(P);
+  if (!checkellpt_i(P)) pari_err_TYPE("ellnonsingularmultiple",P);
   if (ell_is_inf(P)) retmkvec2(gcopy(P), gen_1);
   if (E != e) P = ellchangepoint(P, ch);
   S = obj_check(E, Q_GLOBALRED);
@@ -679,7 +679,7 @@ ellpadicheight(GEN e, GEN p, long v0, GEN P)
   GEN N, H, h, t, ch, g, E, x, D, ls, lt, S, a,b;
   long v, vd;
   int is2;
-  checkellpt(P);
+  if (!checkellpt_i(P)) pari_err_TYPE("ellpadicheight",P);
   if (v0<=0) pari_err_DOMAIN("ellpadicheight","precision","<=",gen_0,stoi(v0));
   checkell_Q(e);
   if (typ(p) != t_INT) pari_err_TYPE("ellpadicheight",p);
@@ -755,7 +755,7 @@ ellpadiclog(GEN E, GEN p, long n, GEN P)
   pari_sp av = avma;
   long vt;
   GEN t, x, y, L;
-  checkellpt(P);
+  if (!checkellpt_i(P)) pari_err_TYPE("ellpadiclog",P);
   if (ell_is_inf(P)) return gen_0;
   x = gel(P,1);
   y = gel(P,2); t = gneg(gdiv(x,y));
