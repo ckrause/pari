@@ -4963,7 +4963,7 @@ void    forpart(void *E, long call(void*,GEN), long k, GEN nbound, GEN abound);
 void    forpart_init(forpart_t *T, long k, GEN abound, GEN nbound);
 GEN     forpart_next(forpart_t *T);
 GEN     forpart_prev(forpart_t *T);
-void    forpart0(GEN k, GEN code , GEN nbound, GEN abound);
+void    forpart0(GEN k, GEN code, GEN nbound, GEN abound);
 GEN     numbpart(GEN x);
 GEN     partitions(long k, GEN nbound, GEN abound);
 
@@ -5578,9 +5578,9 @@ GEN     derivfunk(void *E, GEN (*eval)(void *, GEN, long), GEN x, GEN ind0, long
 GEN     direuler0(GEN a, GEN b, GEN code, GEN c);
 void    fordiv(GEN a, GEN code);
 void    fordivfactored(GEN a, GEN code);
-void    foreachpari(GEN a, GEN node);
+void    foreachpari(GEN a, GEN code);
 void    forfactored(GEN a, GEN b, GEN code);
-void    forpari(GEN a, GEN b, GEN node);
+void    forpari(GEN a, GEN b, GEN code);
 void    forsquarefree(GEN a, GEN b, GEN code);
 void    forstep(GEN a, GEN b, GEN s, GEN code);
 void    forvec(GEN x, GEN code, long flag);
@@ -5603,7 +5603,7 @@ GEN     solvestep(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, GEN step, lon
 GEN     solvestep0(GEN a, GEN b, GEN step, GEN code, long flag, long prec);
 GEN     somme(GEN a, GEN b, GEN code, GEN x);
 GEN     sumalt(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
-GEN     sumalt0(GEN a, GEN code,long flag, long prec);
+GEN     sumalt0(GEN a, GEN code, long flag, long prec);
 GEN     sumalt2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
 GEN     sumdivexpr(GEN num, GEN code);
 GEN     sumdivmultexpr(void *D, GEN (*fun)(void*, GEN), GEN num);
@@ -5611,7 +5611,7 @@ GEN     sumdivmultexpr0(GEN num, GEN code);
 GEN     suminf(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
 GEN     suminf0(GEN a, GEN code, long bit);
 GEN     sumpos(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
-GEN     sumpos0(GEN a, GEN code, long flag,long prec);
+GEN     sumpos0(GEN a, GEN code, long flag, long prec);
 GEN     sumpos2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec);
 void    untilpari(GEN a, GEN b);
 GEN     vecteursmall(GEN nmax, GEN code);

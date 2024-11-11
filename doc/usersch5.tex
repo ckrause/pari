@@ -15806,6 +15806,85 @@ the result. The difference with \kbd{closure\_evalgen} being that, if the flow e
 but set \kbd{status} to a nonzero value if a flow change occurred. This
 variant is not stack clean. Used by the break loop.
 
+\subsec{Control flow functions}
+
+\fun{GEN}{derivnum0}{GEN a, GEN code, GEN ind, long prec}
+
+\fun{GEN}{direuler0}{GEN a, GEN b, GEN code, GEN c}
+
+\fun{GEN}{dirpowerssum0}{GEN N, GEN s, GEN code, long both, long prec}
+
+\fun{void}{fordiv}{GEN a, GEN code}
+
+\fun{void}{fordivfactored}{GEN a, GEN code}
+
+\fun{void}{foreachpari}{GEN a, GEN code}
+
+\fun{void}{forell0}{long a, long b, GEN code, long flag}
+
+\fun{void}{forfactored}{GEN a, GEN b, GEN code}
+
+\fun{void}{forpari}{GEN a, GEN b, GEN code}
+
+\fun{void}{forpart0}{GEN k, GEN code, GEN nbound, GEN abound}
+
+\fun{void}{forperm0}{GEN k, GEN code}
+
+\fun{void}{forsquarefree}{GEN a, GEN b, GEN code}
+
+\fun{void}{forstep}{GEN a, GEN b, GEN s, GEN code}
+
+\fun{void}{forsubgroup0}{GEN cyc, GEN bound, GEN code}
+
+\fun{void}{forsubset0}{GEN nk, GEN code}
+
+\fun{GEN}{iferrpari}{GEN a, GEN b, GEN c}
+
+\fun{GEN}{ifpari}{GEN g, GEN a, GEN b}
+
+\fun{GEN}{intcirc0}{GEN a, GEN R, GEN code, GEN tab, long prec}
+
+\fun{GEN}{intfuncinit0}{GEN a, GEN b, GEN code, long m, long prec}
+
+\fun{GEN}{intnum0}{GEN a, GEN b, GEN code, GEN tab, long prec}
+
+\fun{GEN}{laurentseries0}{GEN code, long M, long v, long prec}
+
+\fun{void}{pari_breakpoint}{void}
+
+\fun{void}{pariplot0}{GEN a, GEN b, GEN code, GEN ysmlu, GEN ybigu, long prec}
+
+\fun{GEN}{ploth0}{GEN a, GEN b, GEN code, long flag, long n, long prec}
+
+\fun{GEN}{plothexport0}{GEN fmt, GEN a, GEN b, GEN code, long flags, long n, long prec}
+
+\fun{GEN}{prodeuler0}{GEN a, GEN b, GEN code, long prec}
+
+\fun{GEN}{prodinf0}{GEN a, GEN code, long flag, long prec}
+
+\fun{GEN}{solvestep0}{GEN a, GEN b, GEN step, GEN code, long flag, long prec}
+
+\fun{GEN}{sumalt0}{GEN a, GEN code, long flag, long prec}
+
+\fun{GEN}{sumdivmultexpr0}{GEN num, GEN code}
+
+\fun{GEN}{suminf0}{GEN a, GEN code, long bit}
+
+\fun{GEN}{sumnum0}{GEN a, GEN code, GEN tab, long prec}
+
+\fun{GEN}{sumnumap0}{GEN a, GEN code, GEN tab, long prec}
+
+\fun{GEN}{sumnumlagrange0}{GEN a, GEN code, GEN tab, long prec}
+
+\fun{GEN}{sumpos0}{GEN a, GEN code, long flag, long prec}
+
+\fun{void}{untilpari}{GEN a, GEN code}
+
+\fun{void}{whilepari}{GEN a, GEN code}
+
+\fun{GEN}{zbrent0}{GEN a, GEN b, GEN code, long prec}
+
+
 \subsec{Functions to handle control flow changes}
 
 \fun{long}{loop_break}{void} processes an eventual flow changes inside an
