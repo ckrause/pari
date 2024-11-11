@@ -26,4 +26,4 @@ Doc: sets debug level for domain $D$ to $n$ ($0 \leq n \leq 20$).
  @eprog
 
 Variant: Also available is
-  \fun{void}{setalldebug(long n): sets all debug domains to level \var{n}.
+  \fun{void}{setalldebug}{long n}: sets all debug domains to level \var{n}.
