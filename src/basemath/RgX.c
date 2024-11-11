@@ -829,7 +829,7 @@ RgXY_swapspec(GEN x, long n, long w, long nx)
     for (k=0; k<nx; k++)
     {
       GEN xk = gel(x,k);
-      if (typ(xk)==t_POL)
+      if (typ(xk)==t_POL && varn(xk)==w)
         gel(a,k+2) = j<lg(xk)? gel(xk,j): gen_0;
       else
         gel(a,k+2) = j==2 ? xk: gen_0;
