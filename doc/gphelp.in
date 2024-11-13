@@ -900,6 +900,7 @@ sub basic_subst {
   s/ *\\Rightarrow */ ==$tr{gt} /g;
   s/\\rangle(?![a-zA-Z])\s*/$tr{startcode}$tr{gt}$tr{endcode}/g;
   s/\\langle(?![a-zA-Z])\s*/$tr{startcode}$tr{lt}$tr{endcode}/g;
+  s/\\rightarrow(?![a-zA-Z])\s*/$tr{startcode}--$tr{gt}$tr{endcode}/g;
   s/\\longrightarrow(?![a-zA-Z])\s*/$tr{startcode}---$tr{gt}$tr{endcode}/g;
   s/\\mapsto(?![a-zA-Z])\s*/$tr{startcode}:---$tr{gt}$tr{endcode}/g;
   s/ *\\geq?(?![a-zA-Z]) *([^ ])/ $tr{startcode}$tr{gt}=$tr{endcode} $1/g;
