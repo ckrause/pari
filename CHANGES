@@ -17,6 +17,7 @@ BA   9- lfungenus2 could give wrong result at odd primes (#2487)
 BA   2- New GP functions ellcharpoly, genus2charpoly
 BA   3- [libpari] Flm_hess_pre
 BA   4- New default doctest and meta-command \z
+BA   5- ellfromeqn: option to return the map to the curve
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b)

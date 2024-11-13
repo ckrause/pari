@@ -3286,6 +3286,7 @@ void    forell0(long a, long b, GEN code, long flag);
 /* ellfromeqn.c */
 
 GEN     ellfromeqn(GEN s);
+GEN     ellfromeqn0(GEN s, GEN p);
 
 /* elliptic.c */
 
