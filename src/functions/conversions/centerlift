@@ -24,5 +24,5 @@ Doc: Same as \tet{lift}, except that \typ{INTMOD} and \typ{PADIC} components
 
  For backward compatibility, \kbd{centerlift(x,'v)} is allowed as an alias
  for \kbd{lift(x,'v)}.
-
- \synt{centerlift}{GEN x}.
+Variant: Also available is \fun{GEN}{centerlift}{GEN x} corresponding to
+ \kbd{centerlift0(x,-1)}.
