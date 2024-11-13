@@ -41,7 +41,6 @@ Doc: \idx{field discriminant} of the number field defined by the integral,
  ? globaldisc(x^2 + 6, [2, 3, 5])
  %1 = -24
  @eprog
-
- \synt{nfdisc}{GEN T}. Also available is \fun{GEN}{nfbasis}{GEN T, GEN *d},
+Variant: Also available is \fun{GEN}{nfbasis}{GEN T, GEN *d},
  which returns the order basis, and where \kbd{*d} receives the order
  discriminant.
