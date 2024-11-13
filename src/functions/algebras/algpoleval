@@ -15,13 +15,13 @@ Doc: Given an element $b$ in \var{al} (Hamilton quaternions if omitted) and a
  ? nf = nfinit(y^2-5);
  ? al = alginit(nf,[y,-1]);
  ? b = [1..8]~;
- ? pol = algcharpoly(al,b,,1); \\absolute characteristic polynomial
+ ? pol = algcharpoly(al,b,,1); \\ absolute characteristic polynomial
  ? algpoleval(al,pol,b)==0
  % = 1
  ? mb = algtomatrix(al,b,1);
  ? algpoleval(al,pol,[b,mb])==0
  % = 1
- ? pol = algcharpoly(al,b); \\reduced characteristic polynomial
+ ? pol = algcharpoly(al,b); \\ reduced characteristic polynomial
  ? algpoleval(al,pol,b) == 0
  % = 1
  ? algpoleval(,polcyclo(8),[1,0,0,1]~/sqrt(2)) \\ Hamilton quaternions

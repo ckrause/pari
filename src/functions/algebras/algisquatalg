@@ -10,7 +10,7 @@ Doc: Given a central simple algebra \var{al} over a field $F$, output by
  \bprog
  ? nf = nfinit(y^2-2);
  ? pr = idealprimedec(nf,2)[1];
- ? al = alginit(nf, [[pr],[1,0]]); \\quaternion algebra from ramification
+ ? al = alginit(nf, [[pr],[1,0]]); \\ quaternion algebra from ramification
  ? algisquatalg(al)
  % = [y + 1, y + 1]
  @eprog

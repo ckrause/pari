@@ -104,9 +104,9 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
 
  \bprog
  ? nf = nfinit(y^2-2);
- ? PR = idealprimedec(nf,2); \\ramified at the prime above 2
- ? hi = [1,0]; \\ramified at one place at infinity
- ? A = alginit(nf, [PR,hi]); \\quaternion algebra from ramification
+ ? PR = idealprimedec(nf,2); \\ ramified at the prime above 2
+ ? hi = [1,0];               \\ ramified at one place at infinity
+ ? A = alginit(nf, [PR,hi]); \\ quaternion algebra from ramification
  ? #algramifiedplaces(A)
  % = 2
  @eprog
