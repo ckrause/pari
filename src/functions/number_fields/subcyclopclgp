@@ -47,7 +47,7 @@ Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
  $v[5]$ is the number of cyclic subfields $K$ of $F$ except for $\Q$.
 
  $v[6]$ is the number of $\Q_{p}$-conjugacy classes of injective
- characters $\chi:\text{Gal}(K/\Q)\rightarrow\overline{\Q}_{p}^{\times}$.
+ characters $\chi:\text{Gal}(K/\Q) \rightarrow \overline{\Q}_{p}^{\times}$.
 
  \noindent A vector of primes $p$ is also accepted and the result is then a
  vector of vectors as above, in the same order as the primes.
@@ -117,7 +117,7 @@ Doc: Let $F$ be the abelian number field contained in $\Q(\zeta_{f})$
  $\text{Gal}(F/\Q)$ is $\Z/100\Z\oplus\Z/20\Z\oplus\Z/2\Z\oplus\Z/2\Z$.
  The field $F$ has 479 cyclic subfields different from $\Q$ and
  there are 7999 $\Q_{101}$-conjugacy classes of injective characters
- $\chi:\text{Gal}(K/\Q)\rightarrow\overline{\Q}_{101}^{\times}$.
+ $\chi:\text{Gal}(K/\Q) \rightarrow \overline{\Q}_{101}^{\times}$.
 
  \bprog
  ? subcyclopclgp(22220, 11)
