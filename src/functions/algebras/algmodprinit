@@ -9,7 +9,7 @@ Doc: Consider a central simple algebra \var{al} output by \tet{alginit} and a
  for all primes, see \kbd{alginit}). This function returns a data structure
  \var{modP} representing a reduction mod $\goth{p}$ map
  $$
-  {\cal O} / \goth{p} {\cal O}\longrightarrow {\cal O} / \goth{P} \cong M_k(\F_{p^m})
+  {\cal O} / \goth{p}{\cal O} \longrightarrow {\cal O} / \goth{P} \cong M_k(\F_{p^m})
  $$
  where~$\goth{P}$ is the unique maximal two-sided ${\cal O}$-ideal above~$\goth{p}$,
  $m = e \times pr.f$ with~$e$ the ramification index of~\var{al}
