@@ -14119,10 +14119,10 @@ Return $-1$ if the series does not converge ($ne \leq 1$).
 assume that $x\neq 1$.
 
 \fun{GEN}{Qp_zetahurwitz}{GEN x, GEN y, long k} shortcut for
- \kbd{zetahurwitz(x, y, k, /*ignored*/prec)}.
+ \kbd{zetahurwitz(x, y, -k, /*ignored*/prec)}.
 
-\fun{GEN}{Qp_psi}{GEN x} shortcut fo \kbd{gpsi(x, /*ignored*/prec)}.
-
+\fun{GEN}{Qp_psi}{GEN x, long der} shortcut for
+ \kbd{gpsi\_der(x, der, /*ignored*/prec)}.
 
 \fun{GEN}{Qp_log}{GEN x} shortcut for \kbd{glog(x, /*ignored*/prec)}.
 

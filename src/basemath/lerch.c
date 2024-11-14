@@ -190,6 +190,8 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
   long j, k, m, N, prec0 = nbits2prec(bitprec), prec = prec0, fli = 0;
   pari_timer T;
 
+  if (typ(s) == t_PADIC || typ(x) == t_PADIC)
+    return gerepileupto(av, Qp_zetahurwitz_i(s, x, der));
   if (der < 0) pari_err_DOMAIN("zetahurwitz", "der", "<", gen_0, stoi(der));
   if (der)
   {
@@ -208,8 +210,6 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
     }
     return gerepileupto(av,z);
   }
-  if (typ(s) == t_PADIC || typ(x) == t_PADIC)
-    return gerepileupto(av, Qp_zetahurwitz_i(s, x, 0));
   switch(typ(x))
   {
     case t_INT: case t_REAL: case t_FRAC: case t_COMPLEX: break;

@@ -16,6 +16,8 @@ zetahurwitz(7+O(7^5),2)
 zetahurwitz(3+O(2^5),1/2)
 zetahurwitz(3+O(2^5),1/4)
 zetahurwitz(3,2+O(5^5))
+zetahurwitz(3+O(7^12),0,-2)
+zetahurwitz(7+O(17^120),0,-6) == psi(O(17^120),6)/-6!
 zetahurwitz(-2.3,Pi+I*log(2))
 zetahurwitz(-1+x^2,1)
 zetahurwitz(1+x + O(x^7),2)
