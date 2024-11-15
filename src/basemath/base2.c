@@ -2719,9 +2719,9 @@ zk_to_Fq(GEN x, GEN modpr)
 
 /* REDUCTION Modulo a prime ideal */
 
-/* nf a true nf */
+/* nf a true nf, not GC-clean, OK for gerepileupto */
 static GEN
-Rg_to_ff(GEN nf, GEN x0, GEN modpr)
+nf_to_Fq_i(GEN nf, GEN x0, GEN modpr)
 {
   GEN x = x0, den, pr = modpr_get_pr(modpr), p = pr_get_p(pr);
   long tx = typ(x);
@@ -2782,7 +2782,7 @@ nfreducemodpr(GEN nf, GEN x, GEN modpr)
 {
   pari_sp av = avma;
   nf = checknf(nf); checkmodpr(modpr);
-  return gerepileupto(av, algtobasis(nf, Fq_to_nf(Rg_to_ff(nf,x,modpr),modpr)));
+  return gerepileupto(av, algtobasis(nf, Fq_to_nf(nf_to_Fq_i(nf,x,modpr),modpr)));
 }
 
 GEN
@@ -2801,7 +2801,7 @@ nfmodpr(GEN nf, GEN x, GEN pr)
     x = FqV_factorback(nfV_to_FqV(gel(y,1), nf, modpr), gel(y,2), T, p);
     return gerepileupto(av, x);
   }
-  x = Rg_to_ff(nf, x, modpr);
+  x = nf_to_Fq_i(nf, x, modpr);
   x = Fq_to_FF(x, Tp_to_FF(T,p));
   return gerepilecopy(av, x);
 }
@@ -2859,57 +2859,51 @@ FqM_to_nfM(GEN A, GEN modpr)
   return B;
 }
 GEN
-FqX_to_nfX(GEN A, GEN modpr)
+FqX_to_nfX(GEN x, GEN modpr)
 {
-  long i, l;
-  GEN B;
-
-  if (typ(A)!=t_POL) return icopy(A); /* scalar */
-  B = cgetg_copy(A, &l); B[1] = A[1];
-  for (i=2; i<l; i++) gel(B,i) = Fq_to_nf(gel(A,i), modpr);
-  return B;
+  if (typ(x) != t_POL) return icopy(x); /* scalar */
+  pari_APPLY_pol(Fq_to_nf(gel(x,i), modpr));
 }
 
-/* reduce A to residue field */
-GEN
-nf_to_Fq(GEN nf, GEN A, GEN modpr)
+/* true nf */
+static GEN
+gc_nf_to_Fq(GEN nf, GEN A, GEN modpr)
 {
   pari_sp av = avma;
-  return gerepileupto(av, Rg_to_ff(checknf(nf), A, modpr));
+  return gerepileupto(av, nf_to_Fq_i(nf, A, modpr));
 }
+GEN
+nf_to_Fq(GEN nf, GEN A, GEN modpr)
+{ return gc_nf_to_Fq(checknf(nf), A, modpr); }
 /* A t_VEC/t_COL */
 GEN
-nfV_to_FqV(GEN A, GEN nf,GEN modpr)
+nfV_to_FqV(GEN x, GEN nf, GEN modpr)
 {
-  long i,l = lg(A);
-  GEN B = cgetg(l,typ(A));
-  for (i=1; i<l; i++) gel(B,i) = nf_to_Fq(nf,gel(A,i), modpr);
-  return B;
+  nf = checknf(nf);
+  pari_APPLY_same(gc_nf_to_Fq(nf, gel(x,i), modpr));
 }
 /* A  t_MAT */
 GEN
-nfM_to_FqM(GEN A, GEN nf,GEN modpr)
+nfM_to_FqM(GEN A, GEN nf, GEN modpr)
 {
   long i,j,h,l = lg(A);
   GEN B = cgetg(l,t_MAT);
 
   if (l == 1) return B;
-  h = lgcols(A);
+  h = lgcols(A); nf = checknf(nf);
   for (j=1; j<l; j++)
   {
     GEN Aj = gel(A,j), Bj = cgetg(h,t_COL); gel(B,j) = Bj;
-    for (i=1; i<h; i++) gel(Bj,i) = nf_to_Fq(nf, gel(Aj,i), modpr);
+    for (i=1; i<h; i++) gel(Bj,i) = gc_nf_to_Fq(nf, gel(Aj,i), modpr);
   }
   return B;
 }
 /* A t_POL */
 GEN
-nfX_to_FqX(GEN A, GEN nf,GEN modpr)
+nfX_to_FqX(GEN x, GEN nf, GEN modpr)
 {
-  long i,l = lg(A);
-  GEN B = cgetg(l,t_POL); B[1] = A[1];
-  for (i=2; i<l; i++) gel(B,i) = nf_to_Fq(nf,gel(A,i),modpr);
-  return normalizepol_lg(B, l);
+  nf = checknf(nf);
+  pari_APPLY_pol(gc_nf_to_Fq(nf, gel(x,i), modpr));
 }
 
 /*******************************************************************/
@@ -3354,10 +3348,11 @@ rnfmaxord(GEN nf, GEN pol, GEN pr, long vdisc)
     {
       GEN mek = vecslice(MW, (k-1)*n+1, k*n), Ck;
       gel(C,k) = Ck = cgetg(nn+1, t_COL);
-      for (j=1; j<=n; j++)
+      for (j = 1; j <= n; j++)
       {
         GEN z = nfM_nfC_mul(nf, mek, gel(A,j));
-        for (i=1; i<=n; i++) gel(Ck, (j-1)*n+i) = nf_to_Fq(nf,gel(z,i),modpr);
+        for (i = 1; i <= n; i++)
+          gel(Ck, (j-1)*n+i) = gc_nf_to_Fq(nf,gel(z,i),modpr);
       }
     }
     G = FqM_to_nfM(FqM_ker(C,T,p), modpr);
