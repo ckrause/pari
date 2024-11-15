@@ -29,3 +29,5 @@ lfun(polsubcyclo(13,3),1/2+10^10*I)
 L=lfuninit(1, []); lfun(L,1/2+10^10*I)
 L=lfuninit(Mod(3,5), []); lfun(L,1/2+10^10*I)
 L=lfuninit(polsubcyclo(13,3),[]); lfun(L,1/2+10^10*I)
+
+zeta(1/2+10^(-10)+3000*I)-zeta(1/2+3000*I)
