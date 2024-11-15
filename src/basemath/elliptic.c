@@ -935,6 +935,32 @@ ellchangeinvert(GEN w)
 }
 
 static GEN
+ellchangecompose_i(GEN v, GEN w)
+{
+  GEN u = gel(v,1), r = gel(v,2), s = gel(v,3), t = gel(v,4);
+  GEN uu = gel(w,1), rr = gel(w,2), ss = gel(w,3), tt = gel(w,4);
+  GEN u2 = gsqr(u), u3 = gmul(u, u2);
+  GEN R = gmul(rr,u2), S = gmul(ss,u);
+  GEN T = gadd(gmul(tt,u3), gmul(s,R));
+  retmkvec4(gmul(u,uu),gadd(r,R),gadd(s,S),gadd(t,T));
+}
+
+GEN
+ellchangecompose(GEN v, GEN w)
+{
+  pari_sp av = avma;
+  if (isint1(v))
+  {
+    if (isint1(w)) return gen_1;
+    checkcoordch(w); return gcopy(w);
+  }
+  checkcoordch(v);
+  if (isint1(w)) return gcopy(v);
+  checkcoordch(w);
+  return gerepileupto(av, ellchangecompose_i(v, w));
+}
+
+static GEN
 ell_to_nfell10(GEN e)
 {
   long i;

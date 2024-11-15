@@ -1,0 +1,16 @@
+Function: ellchangecompose
+Section: elliptic_curves
+C-Name: ellchangecompose
+Prototype: GG
+Help: ellchangecompose(v,w): composes the transformations given
+ by v=[u,r,s,t] and w=[U,R,S,T].
+Doc:
+ Compose the transformations given by \kbd{v=[u,r,s,t]} and \kbd{w=[U,R,S,T]}
+ and return \kbd{[u*U,r+R*u\^{}2,s+S*u,t+T*u\^{}3+R*s*u\^{}2]}.
+ \bprog
+ ? v = [u,r,s,t]; w = [U,R,S,T]; P = [x,y];
+ ? vw = ellchangecompose(v,w)
+ %2 = [U*u,R*u^2+r,S*u+s,T*u^3+R*s*u^2+t]
+ ? ellchangepoint(ellchangepoint(P,v),w) == ellchangepoint(P,vw)
+ %3 = 1
+ @eprog

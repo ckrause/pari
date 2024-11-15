@@ -3331,6 +3331,7 @@ long    ellap_CM_fast(GEN E, ulong p, long CM);
 GEN     ellbasechar(GEN E);
 GEN     ellbsd(GEN e, long prec);
 GEN     ellcard(GEN E, GEN p);
+GEN     ellchangecompose(GEN v, GEN w);
 GEN     ellchangecurve(GEN e, GEN ch);
 GEN     ellchangeinvert(GEN w);
 GEN     ellchangepoint(GEN x, GEN ch);
