@@ -653,6 +653,7 @@ sumprimeloop(forprime_t *pT, GEN s, long N, GEN data, GEN S, GEN W, GEN WB,
     {
       ks = f(E, p, prec1);
       if (gequal0(ks)) ks = NULL;
+      if (ks && gequal1(ks)) ks = gen_1;
     }
     gp[2] = p;
     if (needlog)
@@ -873,6 +874,10 @@ vR_get_vW(GEN vR)
 }
 
 static GEN
+halfconj(long both, GEN V)
+{ return both ? mkvec2(gel(V, 1), gconj(gel(V, 2))) : V; }
+
+static GEN
 pardirpowerssumfun_i(GEN f, ulong N, GEN s, long both, long prec)
 {
   GEN worker, worker2, data, vR, onef, zerf;
@@ -885,8 +890,9 @@ pardirpowerssumfun_i(GEN f, ulong N, GEN s, long both, long prec)
   worker = snm_closure(is_entry("_parsumprimefun_worker"),
                        mkvecn(5, s, zerf, data, vR_get_vW(vR), f? f: gen_0));
   worker2 = snm_closure(is_entry("_parsqf_worker"), mkvec2(vR, utoi(N)));
-  return gadd(parsum(gen_0, utoipos((N-1) / data[5]), worker),
-              parsum(gen_0, utoipos(maxss((N-1) / step - 1, 0)), worker2));
+  return halfconj(both,
+                  gadd(parsum(gen_0, utoipos((N-1) / data[5]), worker),
+                       parsum(gen_0, utoipos(maxss((N-1) / step - 1, 0)), worker2)));
 }
 
 GEN
