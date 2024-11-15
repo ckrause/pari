@@ -476,7 +476,7 @@ static GEN
 smalldirpowerssum(long N, GEN s, void *E, GEN (*f)(void *, ulong, long),
                   long both, long prec)
 {
-  GEN F, V, S, SB, sb;
+  GEN F, V, S, SB;
   if (!N)
   {
     if (!f) return both? mkvec2(gen_0, gen_0): gen_0;
@@ -486,17 +486,14 @@ smalldirpowerssum(long N, GEN s, void *E, GEN (*f)(void *, ulong, long),
   F = vecf(N, E, f, prec);
   S = naivedirpowerssum(V, F, prec);
   if (!both) return S;
-
-  sb = conj_i(gsubsg(-1, s));
-  if ((both==2 || !f) && gequal(s,sb))
+  if ((both==2 || !f) && gequalm1(gmul2n(real_i(s), 1)))
     SB = S;
   else
   {
-    GEN VB = cgetg(N+1, t_VEC), FB = (both == 1 && F)? conj_i(F): F;
+    GEN FB = (both == 1 && F)? conj_i(F): F;
     long n;
-    gel(VB, 1) = gel(V, 1); /* = 1 */
-    for (n = 2; n <= N; n++) gel(VB, n) = ginv(gmulsg(n, gel(V, n)));
-    SB = naivedirpowerssum(VB, FB, prec);
+    for (n = 2; n <= N; n++) gel(V, n) = ginv(gmulsg(n, gel(V, n)));
+    SB = naivedirpowerssum(V, FB, prec);
   }
   return mkvec2(S, SB);
 }
