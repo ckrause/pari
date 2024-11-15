@@ -917,21 +917,23 @@ gcomposev(GEN *vtotal, GEN w)
 }
 
 /* [u,r,s,t]^-1 = [ 1/u,-r/u^2,-s/u, (rs-t)/u^3 ] */
-GEN
-ellchangeinvert(GEN w)
+static GEN
+ellchangeinvert_i(GEN w)
 {
-  GEN u,r,s,t, u2,u3, U,R,S,T;
-  if (typ(w) == t_INT) return w;
-  u = gel(w,1);
-  r = gel(w,2);
-  s = gel(w,3);
-  t = gel(w,4);
-  u2 = gsqr(u); u3 = gmul(u2,u);
-  U = ginv(u);
-  R = gdiv(gneg(r), u2);
-  S = gdiv(gneg(s), u);
-  T = gdiv(gsub(gmul(r,s), t), u3);
-  return mkvec4(U,R,S,T);
+  GEN u = gel(w,1), r = gel(w,2), s = gel(w,3), t = gel(w,4);
+  GEN u2 = gsqr(u), u3 = gmul(u2,u);
+  GEN R = gneg(r), S = gneg(s);
+  GEN T = gsub(gmul(r,s), t);
+  retmkvec4(ginv(u),gdiv(R, u2), gdiv(S, u), gdiv(T, u3));
+}
+
+GEN
+ellchangeinvert(GEN v)
+{
+  pari_sp av = avma;
+  if (isint1(v)) return gen_1;
+  checkcoordch(v);
+  return gerepileupto(av, ellchangeinvert_i(v));
 }
 
 static GEN

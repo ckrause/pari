@@ -619,6 +619,8 @@ O(2^15)
 [0, 1]
 [U*u, R*u^2 + r, S*u + s, u^3*T + (R*s*u^2 + t)]
 1
+[1/u, -r/u^2, -s/u, (s*r - t)/u^3]
+1
 [1, 0, 0, 0]
 0.035247504442186170440172838583518049039
 error("incorrect type in ellheight [not a rational point] (t_VEC).")
@@ -859,4 +861,4 @@ x^2 - 2
   ***   at top-level: ellchangepointinv(Mat(1),[1,2,3,4])
   ***                 ^-----------------------------------
   *** ellchangepointinv: incorrect type in ellchangepointinv (t_MAT).
-Total time spent: 1210
+Total time spent: 1208

@@ -32,7 +32,7 @@ AP   8- new GP functions algeltfromnf, algmodprinit, algmodpr, algmodprlift,
         algeichlerbasis
      9- [libpari] checkellpt_i
 AP  10- new GP functions algquattobasis, algbasistoquat, algisquatalg
-BA  11- new GP function ellchangecompose
+BA  11- new GP functions ellchangecompose, ellchangeinvert
 
   Changed
 BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.

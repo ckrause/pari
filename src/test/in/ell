@@ -379,6 +379,8 @@ ellchangepointinv(P,[1,2,3,4])
 v = ['u,'r,'s,'t]; w = ['U,'R,'S,'T]; P = ['x,'y];
 vw = ellchangecompose(v,w)
 ellchangepoint(ellchangepoint(P,v),w) == ellchangepoint(P,vw)
+iv = ellchangeinvert(v)
+ellchangepointinv(P,v) == ellchangepoint(P, iv)
 
 \\#1416
 E=ellinit([155818018413/16,-78179511999813417/32]);
