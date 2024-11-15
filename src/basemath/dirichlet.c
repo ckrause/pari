@@ -855,14 +855,16 @@ mycallvec(void *f, ulong n, long prec)
 GEN
 parsumprimefun_worker(GEN gk, GEN s, GEN zerf, GEN data, GEN vW, GEN f)
 {
+  pari_sp av = avma;
   forprime_t T;
-  GEN W, WB;
+  GEN W, WB, S;
   long k = itou(gk), sq, N = data[4], STEP = data[5];
 
   v2unpack(vW, &W, &WB); sq = lg(W)-1;
   if (isintzero(f)) f = NULL;
   u_forprime_init(&T, k * STEP + sq + 1, minss(N, (k + 1) * STEP + sq));
-  return sumprimeloop(&T, s, N, data, zerf, W, WB, (void*)f, mycallvec);
+  S = sumprimeloop(&T, s, N, data, zerf, W, WB, (void*)f, mycallvec);
+  return gerepilecopy(av, S);
 }
 
 static GEN
