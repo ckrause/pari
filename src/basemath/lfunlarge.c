@@ -278,7 +278,7 @@ series_h0(long n0, GEN s, GEN VCALL, long fl, long prec)
   GEN C = get_modulus(VCALL) == 1? NULL: get_chivec(VCALL);
   GEN R = pardirpowerssumfun(C, n0, gneg(s), fl, prec);
   if (C) return R;
-  if (fl) return mkvec2(mkvec(gel(R,1)), mkvec(gconj(gel(R,2))));
+  if (fl) return mkvec2(mkvec(gel(R,1)), mkvec(gel(R,2)));
   return mkvec(R);
 }
 
@@ -475,7 +475,7 @@ dirichlet_ours(GEN s, GEN VCALL, long prec)
   else
   {
     S1 = total_value(gel(serh0,1), sel, s, VCALL, prec);
-    S2 = total_value(gel(serh0,2), sel, gsubsg(1, gconj(s)), VCALL, prec);
+    S2 = total_value(gconj(gel(serh0,2)), sel, gsubsg(1, gconj(s)), VCALL, prec);
   }
   return gadd(S1, vecmul(xpquo(s, VCALL, prec), gconj(S2)));
 }
