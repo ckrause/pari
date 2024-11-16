@@ -18,6 +18,8 @@ BA  10- paridecl.h could conflict with complex.h [#2583]
     13- argument checks in ellchangepoint, ellchangepointinv
 AP  14- alginit(nf,[a,b]) was only allowing a,b integral over the power basis
         instead of arbitrary algebraic integers.
+    15- missing type checks for change of variables in ellchangecurve,
+        ellchangepoint, ellchangepointinv
 
   Added
 AP   1- new GP function algnewprec

@@ -861,4 +861,13 @@ x^2 - 2
   ***   at top-level: ellchangepointinv(Mat(1),[1,2,3,4])
   ***                 ^-----------------------------------
   *** ellchangepointinv: incorrect type in ellchangepointinv (t_MAT).
-Total time spent: 1208
+  ***   at top-level: ellchangecurve(E,chbug)
+  ***                 ^-----------------------
+  *** ellchangecurve: incorrect type in checkcoordch (t_VECSMALL).
+  ***   at top-level: ellchangepoint([0,0],chbug)
+  ***                 ^---------------------------
+  *** ellchangepoint: incorrect type in checkcoordch (t_VECSMALL).
+  ***   at top-level: ellchangepointinv([0,0],chbug)
+  ***                 ^------------------------------
+  *** ellchangepointinv: incorrect type in checkcoordch (t_VECSMALL).
+Total time spent: 1340
