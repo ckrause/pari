@@ -125,13 +125,16 @@ nftoalg(GEN nf, GEN x)
   }
 }
 
+/* typ(z) == t_VEC. Is it a point ? */
+static int
+vecispt(GEN z)
+{
+  long l = lg(z);
+  return l == 3 || (l == 2 && isintzero(gel(z,1)));
+}
 int
 checkellpt_i(GEN z)
-{
-  long l;
-  if (typ(z)!=t_VEC) return 0;
-  l = lg(z); return l == 3 || (l == 2 && isintzero(gel(z,1)));
-}
+{ return typ(z) == t_VEC && vecispt(z); }
 void
 checkellpt(GEN z)
 { if (!checkellpt_i(z)) pari_err_TYPE("checkellpt", z); }
@@ -191,10 +194,6 @@ ell_is_integral(GEN E)
       && typ(ell_get_a4(E)) == t_INT
       && typ(ell_get_a6(E)) == t_INT;
 }
-
-static void
-checkcoordch(GEN z)
-{ if (typ(z)!=t_VEC || lg(z) != 5) pari_err_TYPE("checkcoordch",z); }
 
 /* 4 X^3 + b2 X^2 + 2b4 X + b6 */
 GEN
@@ -876,13 +875,21 @@ ellinit(GEN x, GEN D, long prec)
 /* [1,0,0,0] */
 static GEN
 init_ch(void) { return mkvec4(gen_1,gen_0,gen_0,gen_0); }
+/* if fun != NULL, check whether w is a valid change of variables
+ * (raise type exception in 'fun' if not). Otherwise assume valid.
+ * Return 1 if trivial change, 0 otherwise */
 static int
-is_trivial_change(GEN v)
+is_trivial_change(GEN w, char *fun)
 {
-  GEN u, r, s, t;
-  if (typ(v) == t_INT) return 1;
-  u = gel(v,1); r = gel(v,2); s = gel(v,3); t = gel(v,4);
-  return isint1(u) && isintzero(r) && isintzero(s) && isintzero(t);
+  if (fun)
+  {
+    if (isint1(w)) return 1;
+    if (typ(w) != t_VEC || lg(w) != 5) pari_err_TYPE(fun, w);
+  }
+  else
+    if (typ(w) == t_INT) return 1;
+  return isint1(gel(w,1)) && isintzero(gel(w,2))
+                          && isintzero(gel(w,3)) && isintzero(gel(w,4));
 }
 
 /* Accumulate the effects of variable changes w o v, where
@@ -931,8 +938,7 @@ GEN
 ellchangeinvert(GEN v)
 {
   pari_sp av = avma;
-  if (isint1(v)) return gen_1;
-  checkcoordch(v);
+  if (is_trivial_change(v, "ellchangeinvert")) return gen_1;
   return gerepileupto(av, ellchangeinvert_i(v));
 }
 
@@ -951,14 +957,12 @@ GEN
 ellchangecompose(GEN v, GEN w)
 {
   pari_sp av = avma;
-  if (isint1(v))
+  if (is_trivial_change(v, "ellchangecompose"))
   {
-    if (isint1(w)) return gen_1;
-    checkcoordch(w); return gcopy(w);
+    if (is_trivial_change(w, "ellchangecompose")) return gen_1;
+    return gcopy(w);
   }
-  checkcoordch(v);
-  if (isint1(w)) return gcopy(v);
-  checkcoordch(w);
+  if (is_trivial_change(w, "ellchangecompose")) return gcopy(v);
   return gerepileupto(av, ellchangecompose_i(v, w));
 }
 
@@ -1242,7 +1246,7 @@ coordch_rst(GEN e, GEN r, GEN s, GEN t)
   e = coordch_r(e, r);
   return coordch_st(e, s, t);
 }
-/* apply w = [u,r,s,t] */
+/* apply valid change of variable w */
 static GEN
 coordch(GEN e, GEN w)
 {
@@ -1304,6 +1308,7 @@ ch_Rg(GEN E, GEN e, GEN w)
   ch_R(E, e, w); return E;
 }
 
+/* w valid change of variables */
 static GEN
 ch_NF(GEN E, GEN e, GEN w)
 {
@@ -1314,13 +1319,14 @@ ch_NF(GEN E, GEN e, GEN w)
   {
     if (lg(S) == 1)
     { /* model was minimal */
-      if (!is_trivial_change(w)) /* no longer minimal */
+      if (!is_trivial_change(w, NULL)) /* no longer minimal */
         S = mkvec2(ellchangeinvert(w), e);
     }
     else if (lg(S)==3)
     {
       GEN v = gel(S,1);
-      if (gequal(v, w) || (is_trivial_change(v) && is_trivial_change(w)))
+      if (gequal(v, w) ||
+          (is_trivial_change(v, NULL) && is_trivial_change(w, NULL)))
         S = cgetg(1,t_VEC); /* now minimal */
       else
       {
@@ -1340,7 +1346,7 @@ ch_NF(GEN E, GEN e, GEN w)
   return E;
 }
 
-
+/* w valid change of variable */
 static GEN
 ch_Q(GEN E, GEN e, GEN w)
 {
@@ -1354,13 +1360,14 @@ ch_Q(GEN E, GEN e, GEN w)
   {
     if (lg(S) == 2)
     { /* model was minimal */
-      if (!is_trivial_change(w)) /* no longer minimal */
+      if (!is_trivial_change(w, NULL)) /* no longer minimal */
         S = mkvec3(gel(S,1), ellchangeinvert(w), e);
     }
     else
     {
       GEN v = gel(S,2);
-      if (gequal(v, w) || (is_trivial_change(v) && is_trivial_change(w)))
+      if (gequal(v, w)
+          || (is_trivial_change(v, NULL) && is_trivial_change(w, NULL)))
         S = mkvec(gel(S,1)); /* now minimal */
       else
       {
@@ -1423,8 +1430,7 @@ ellchangecurve(GEN e, GEN w)
   pari_sp av = avma;
   GEN E;
   checkell5(e);
-  if (isint1(w)) return gcopy(e);
-  checkcoordch(w);
+  if (is_trivial_change(w, "ellchangecurve")) return gcopy(e);
   E = coordch(leafcopy(e), w);
   if (lg(E) != 6)
   {
@@ -1596,76 +1602,77 @@ nf_compose_u(GEN nf, GEN *vtotal, GEN *e, GEN u, GEN uinv)
   *e = nf_coordch_uinv(nf, *e,uinv); gel(v,1) = nfmul(nf,gel(v,1), u);
 }
 
+/* raise a type exception in fun unless x is a point or a t_VEC of points */
+static void
+checkellpts(GEN x, char *fun)
+{
+  long i, lx;
+  if (typ(x) != t_VEC) pari_err_TYPE(fun, x);
+  if (vecispt(x)) return;
+  lx = lg(x);
+  for (i = 1; i < lx; i++)
+    if (!checkellpt_i(gel(x,i))) pari_err_TYPE(fun, gel(x,i));
+}
+
 /* X = (x-r)/u^2
- * Y = (y - s(x-r) - t) / u^3 */
+ * Y = (y - s(x-r) - t) / u^3; P a point */
 static GEN
-ellchangepoint_i(GEN P, GEN v2, GEN v3, GEN r, GEN s, GEN t)
+ellchangept(GEN P, GEN v2, GEN v3, GEN r, GEN s, GEN t)
 {
   GEN a, x, y;
-  if (!checkellpt_i(P)) pari_err_TYPE("ellchangepoint",P);
   if (ell_is_inf(P)) return P;
   x = gel(P,1); y = gel(P,2); a = gsub(x,r);
   retmkvec2(gmul(v2, a), gmul(v3, gsub(y, gadd(gmul(s,a),t))));
 }
-
+static GEN
+ellchangevecpt(GEN x, GEN v2, GEN v3, GEN r, GEN s, GEN t)
+{ pari_APPLY_same(ellchangept(gel(x,i), v2,v3,r,s,t));}
 GEN
 ellchangepoint(GEN x, GEN ch)
 {
   GEN y, v, v2, v3, r, s, t, u;
-  long tx, i, lx = lg(x);
   pari_sp av = avma;
 
-  if (typ(x) != t_VEC) pari_err_TYPE("ellchangepoint",x);
-  if (isint1(ch)) return gcopy(x);
-  checkcoordch(ch);
-  if (lx == 1) return cgetg(1, t_VEC);
+  checkellpts(x, "ellchangepoint");
+  if (is_trivial_change(ch, "ellchangepoint")) return gcopy(x);
+  if (lg(x) == 1) return cgetg(1, t_VEC);
   u = gel(ch,1); r = gel(ch,2); s = gel(ch,3); t = gel(ch,4);
   v = ginv(u); v2 = gsqr(v); v3 = gmul(v,v2);
-  tx = typ(gel(x,1));
-  if (is_vec_t(tx))
-  {
-    y = cgetg(lx,tx);
-    for (i=1; i<lx; i++)
-      gel(y,i) = ellchangepoint_i(gel(x,i),v2,v3,r,s,t);
-  }
+  if (typ(gel(x,1)) != t_VEC)
+    y = ellchangept(x,v2,v3,r,s,t);
   else
-    y = ellchangepoint_i(x,v2,v3,r,s,t);
+    y = ellchangevecpt(x,v2,v3,r,s,t);
   return gerepilecopy(av,y);
 }
 
 /* x = u^2*X + r
- * y = u^3*Y + s*u^2*X + t */
+ * y = u^3*Y + s*u^2*X + t; P a point */
 static GEN
-ellchangepointinv_i(GEN P, GEN u2, GEN u3, GEN r, GEN s, GEN t)
+ellchangeptinv(GEN P, GEN u2, GEN u3, GEN r, GEN s, GEN t)
 {
   GEN a, X, Y;
-  if (!checkellpt_i(P)) pari_err_TYPE("ellchangepointinv",P);
   if (ell_is_inf(P)) return P;
   X = gel(P,1); Y = gel(P,2); a = gmul(u2,X);
   return mkvec2(gadd(a, r), gadd(gmul(u3, Y), gadd(gmul(s, a), t)));
 }
+static GEN
+ellchangevecptinv(GEN x, GEN v2, GEN v3, GEN r, GEN s, GEN t)
+{ pari_APPLY_same(ellchangeptinv(gel(x,i), v2,v3,r,s,t));}
 GEN
 ellchangepointinv(GEN x, GEN ch)
 {
   GEN y, u, r, s, t, u2, u3;
-  long tx, i, lx = lg(x);
   pari_sp av = avma;
 
-  if (typ(x) != t_VEC) pari_err_TYPE("ellchangepointinv",x);
-  if (isint1(ch)) return gcopy(x);
-  checkcoordch(ch);
-  if (lx == 1) return cgetg(1, t_VEC);
+  checkellpts(x, "ellchangepointinv");
+  if (is_trivial_change(ch, "ellchangepointinv")) return gcopy(x);
+  if (lg(x) == 1) return cgetg(1, t_VEC);
   u = gel(ch,1); r = gel(ch,2); s = gel(ch,3); t = gel(ch,4);
   u2 = gsqr(u); u3 = gmul(u,u2);
-  tx = typ(gel(x,1));
-  if (is_vec_t(tx))
-  {
-    y = cgetg(lx,tx);
-    for (i=1; i<lx; i++)
-      gel(y,i) = ellchangepointinv_i(gel(x,i),u2,u3,r,s,t);
-  }
+  if (typ(gel(x,1)) != t_VEC)
+    y = ellchangeptinv(x,u2,u3,r,s,t);
   else
-    y = ellchangepointinv_i(x,u2,u3,r,s,t);
+    y = ellchangevecptinv(x,u2,u3,r,s,t);
   return gerepilecopy(av,y);
 }
 
@@ -4334,7 +4341,7 @@ elllocalred(GEN E, GEN p)
   if (v)
   { /* compose local change of variables with v */
     GEN u = gel(v,1), w = gel(q,3);
-    if (is_trivial_change(w))
+    if (is_trivial_change(w, NULL))
       gel(q,3) = mkvec4(u,gen_0,gen_0,gen_0);
     else
       gel(w,1) = gmul(u, gel(w,1));
@@ -4911,7 +4918,7 @@ ellminimalmodel_i(GEN E, GEN *ptv, GEN *pS)
   v = min_get_v(&M, e);
   y = min_to_ell(&M, e);
   if (v0) { gcomposev(&v0, v); v = v0; }
-  if (is_trivial_change(v))
+  if (is_trivial_change(v, NULL))
   {
     v = init_ch();
     S = mkvec(DP);
@@ -4928,7 +4935,7 @@ ellQminimalmodel(GEN E, GEN *ptv)
 {
   pari_sp av = avma;
   GEN S, DP, v, y = ellminimalmodel_i(E, &v, &S);
-  if (!is_trivial_change(v)) ch_Q(y, E, v);
+  if (!is_trivial_change(v, NULL)) ch_Q(y, E, v);
   DP = gel(S,1);
   obj_insert_shallow(y, Q_MINIMALMODEL, mkvec(DP));
   if (!ptv) return gerepilecopy(av, y);
@@ -4965,7 +4972,7 @@ ellnfminimalmodel_i(GEN E, GEN *ptv)
   /* copy to avoid inserting twice in y = E */
   y = obj_reinit(y);
   gcomposev(&v, v2);
-  if (is_trivial_change(v))
+  if (is_trivial_change(v, NULL))
   {
     v = init_ch();
     S = cgetg(1,t_VEC);
@@ -7871,8 +7878,8 @@ ellsaturation(GEN E, GEN P, long B, long prec)
 
   if (lg(P) == 1) return cgetg(1, t_VEC);
   E = ellminimalmodel(E, &urst);
-  if (is_trivial_change(urst)) urst = NULL;
-  if (urst) P = ellchangepoint(P, urst);
+  if (is_trivial_change(urst, NULL)) urst = NULL;
+  else P = ellchangepoint(P, urst);
   P = ellQ_saturation(E, P, B, prec);
   if (urst) P = ellchangepoint(P, ellchangeinvert(urst));
   obj_free(E); return gerepilecopy(av, P);

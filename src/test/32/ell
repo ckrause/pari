@@ -839,16 +839,16 @@ x^2 - 2
   *** ellpointtoz: incorrect type in ellpointtoz (t_VEC).
   ***   at top-level: ellchangepoint([1],[1,2,3,4])
   ***                 ^-----------------------------
-  *** ellchangepoint: incorrect type in ellchangepoint (t_VEC).
+  *** ellchangepoint: incorrect type in ellchangepoint (t_INT).
   ***   at top-level: ellchangepoint([1,2,3],[1,2,3,4])
   ***                 ^---------------------------------
-  *** ellchangepoint: incorrect type in ellchangepoint (t_VEC).
+  *** ellchangepoint: incorrect type in ellchangepoint (t_INT).
   ***   at top-level: ellchangepointinv([1],[1,2,3,4])
   ***                 ^--------------------------------
-  *** ellchangepointinv: incorrect type in ellchangepointinv (t_VEC).
+  *** ellchangepointinv: incorrect type in ellchangepointinv (t_INT).
   ***   at top-level: ellchangepointinv([1,2,3],[1,2,3,4])
   ***                 ^------------------------------------
-  *** ellchangepointinv: incorrect type in ellchangepointinv (t_VEC).
+  *** ellchangepointinv: incorrect type in ellchangepointinv (t_INT).
   ***   at top-level: ellchangepoint([;],[1,2,3,4])
   ***                 ^-----------------------------
   *** ellchangepoint: incorrect type in ellchangepoint (t_MAT).
@@ -863,11 +863,11 @@ x^2 - 2
   *** ellchangepointinv: incorrect type in ellchangepointinv (t_MAT).
   ***   at top-level: ellchangecurve(E,chbug)
   ***                 ^-----------------------
-  *** ellchangecurve: incorrect type in checkcoordch (t_VECSMALL).
+  *** ellchangecurve: incorrect type in ellchangecurve (t_VECSMALL).
   ***   at top-level: ellchangepoint([0,0],chbug)
   ***                 ^---------------------------
-  *** ellchangepoint: incorrect type in checkcoordch (t_VECSMALL).
+  *** ellchangepoint: incorrect type in ellchangepoint (t_VECSMALL).
   ***   at top-level: ellchangepointinv([0,0],chbug)
   ***                 ^------------------------------
-  *** ellchangepointinv: incorrect type in checkcoordch (t_VECSMALL).
-Total time spent: 1340
+  *** ellchangepointinv: incorrect type in ellchangepointinv (t_VECSMALL).
+Total time spent: 1326
