@@ -358,14 +358,14 @@ brent_q(void *E, GEN (*f)(void*,GEN), GEN q_low, GEN q_hi)
   return zbrent(E, f, q_low, q_hi, LOWDEFAULTPREC);
 }
 static GEN
-findq(void *E, GEN (*f)(void*,GEN), GEN lq, long B)
+findq(void *E, GEN (*f)(void*,GEN), GEN lq, long prec)
 {
   GEN q_low, q_hi, q_right, q_left, q_est = gasinh(lq, LOWDEFAULTPREC);
   q_low = gdivgs(gmulsg(4, q_est), 5);
   q_hi = gdivgs(gmulsg(3, q_est), 2);
   q_right = brent_q(E, f, q_low, q_hi); if (!q_right) q_right = q_est;
   q_left = brent_q(E, f, gneg(q_low), gneg(q_hi)); if (!q_left) q_left = q_est;
-  return bitprecision0(gmax(q_right, q_left), B);
+  return gprec_w(gmax(q_right, q_left), prec);
 }
 
 static GEN
@@ -396,7 +396,7 @@ setlin_grid_exp(GEN h, long m, long prec)
 static long
 get_m(GEN q, long prec)
 {
-  GEN t = divrr(mulur(4 * prec2nbits(prec), mplog2(prec)), sqrr(mppi(prec)));
+  GEN t = divrr(mulur(4 * prec, mplog2(prec)), sqrr(mppi(prec)));
   return 2*itos(gfloor(mulrr(q, t))) + 1;
 }
 
@@ -434,7 +434,7 @@ xpquo(GEN s, GEN VCALL, long prec)
 {
   long md = get_modulus(VCALL), n, lve, i;
   GEN cd = NULL, z, pz, cs, VC = get_chivec(VCALL), ve, R;
-  if (!gequal0(s)) prec = nbits2prec(prec2nbits(prec) + maxss(gexpo(s), 0));
+  if (!gequal0(s)) prec = nbits2prec(prec + maxss(gexpo(s), 0));
   z = gexp(gdivgs(PiI2(prec), -md), prec);
   if (md == 1)
     return gmul(gpow(mppi(prec), gsub(s, ghalf), prec),
@@ -603,29 +603,26 @@ phi_hat_h(GEN selsm, long m, long ind, long prec)
 { return phi_hat(double_exp_residue_pos_h(selsm, m, ind, prec), prec); }
 
 static long
-myex(GEN is)
-{ return gequal0(is) ? 0 : maxss(0, 2 + gexpo(is)); }
-
+myex(GEN is) { return gequal0(is) ? 0 : maxss(0, 2 + gexpo(is)); }
 static GEN
 gaminus(GEN s, long prec)
 {
   GEN is = imag_i(s), tmp;
-  long B = prec2nbits(prec);
-  if (gcmpgs(is, -5*B) < 0) return gen_0;
-  prec = nbits2prec(B + myex(is));
-  tmp = gexp(gsub(glngamma(s, prec), gmul(PiI2n(-1, prec), s)), prec);
-  return bitprecision0(tmp, B);
+  long prec2;
+  if (gcmpgs(is, -5*prec) < 0) return gen_0;
+  prec2 = nbits2prec(prec + myex(is));
+  tmp = gexp(gsub(glngamma(s, prec2), gmul(PiI2n(-1, prec2), s)), prec2);
+  return gprec_w(tmp, prec);
 }
-
 static GEN
 gaplus(GEN s, long prec)
 {
   GEN is = imag_i(s), tmp;
-  long B = prec2nbits(prec);
-  if (gcmpgs(is, 5*B) > 0) return gen_0;
-  prec = nbits2prec(B + myex(is));
-  tmp = gexp(gadd(glngamma(s, prec), gmul(PiI2n(-1, prec), s)), prec);
-  return bitprecision0(tmp, B);
+  long prec2;
+  if (gcmpgs(is, 5*prec) > 0) return gen_0;
+  prec2 = nbits2prec(prec + myex(is));
+  tmp = gexp(gadd(glngamma(s, prec2), gmul(PiI2n(-1, prec2), s)), prec2);
+  return gprec_w(tmp, prec);
 }
 
 GEN
@@ -637,7 +634,7 @@ serh_worker(GEN k, GEN z, GEN a, GEN ns, GEN gprec)
 
 static void
 set_arg(GEN worker, GEN z, GEN a, GEN ns, long prec)
-{ gel(worker, 7) = mkvec4(z, a, ns, stoi(prec)); }
+{ gel(worker, 7) = mkvec4(z, a, ns, utoi(prec)); }
 
 
 static GEN
@@ -877,8 +874,8 @@ RZlerch_easy(GEN s, GEN a, GEN lam, long prec)
 {
   pari_sp av = avma;
   GEN z, y, N;
-  long B = prec2nbits(prec), LD = LOWDEFAULTPREC;
-  N = gdiv(gmulsg(B + 5, mplog2(LD)), gmul(Pi2n(1, LD), imag_i(lam)));
+  N = gdiv(gmulsg(prec + 5, mplog2(LOWDEFAULTPREC)),
+           gmul(Pi2n(1, LOWDEFAULTPREC), imag_i(lam)));
   if (gexpo(N) > 40) pari_err_IMPL("precision too large in lerchzeta");
   N = gceil(N); prec += EXTRAPREC64;
   z = typ(lam) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), lam), prec);
