@@ -1423,7 +1423,7 @@ ellchangecurve(GEN e, GEN w)
   pari_sp av = avma;
   GEN E;
   checkell5(e);
-  if (typ(w) == t_INT && equali1(w)) return gcopy(e);
+  if (isint1(w)) return gcopy(e);
   checkcoordch(w);
   E = coordch(leafcopy(e), w);
   if (lg(E) != 6)
@@ -1616,7 +1616,7 @@ ellchangepoint(GEN x, GEN ch)
   pari_sp av = avma;
 
   if (typ(x) != t_VEC) pari_err_TYPE("ellchangepoint",x);
-  if (typ(ch) == t_INT && equali1(ch)) return gcopy(x);
+  if (isint1(ch)) return gcopy(x);
   checkcoordch(ch);
   if (lx == 1) return cgetg(1, t_VEC);
   u = gel(ch,1); r = gel(ch,2); s = gel(ch,3); t = gel(ch,4);
@@ -1652,7 +1652,7 @@ ellchangepointinv(GEN x, GEN ch)
   pari_sp av = avma;
 
   if (typ(x) != t_VEC) pari_err_TYPE("ellchangepointinv",x);
-  if (typ(ch) == t_INT && equali1(ch)) return gcopy(x);
+  if (isint1(ch)) return gcopy(x);
   checkcoordch(ch);
   if (lx == 1) return cgetg(1, t_VEC);
   u = gel(ch,1); r = gel(ch,2); s = gel(ch,3); t = gel(ch,4);
