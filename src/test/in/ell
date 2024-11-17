@@ -568,7 +568,7 @@ ellchangepoint([;],[1,2,3,4])
 ellchangepointinv([;],[1,2,3,4])
 ellchangepoint(Mat(1),[1,2,3,4])
 ellchangepointinv(Mat(1),[1,2,3,4])
-E=ellinit([0,1]); chbug = Vecsmall([2^62+3,1]); \\ mimic gen_1
+E=ellinit([0,1]); chbug = Vecsmall([if(sizebyte(0)==16,2^62,2^30)+3,1]); \\ mimic gen_1
 ellchangecurve(E, chbug)
 ellchangepoint([0,0], chbug)
 ellchangepointinv([0,0], chbug)
