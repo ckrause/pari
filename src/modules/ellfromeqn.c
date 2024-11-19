@@ -47,12 +47,22 @@ PDF: http://www.sciencedirect.com/science/article/pii/S0001870805001775
 static GEN
 jac_cubic(GEN t0, GEN s0, GEN s1, GEN r0, GEN r1, GEN r2, GEN q0, GEN q1, GEN q2, GEN q3)
 {
+  GEN t0_2 = gsqr(t0);
+  GEN s0_2 = gsqr(s0), s0_3 = gmul(s0, s0_2);
+  GEN s1_2 = gsqr(s1), s1_3 = gmul(s1, s1_2);
+  GEN r0_2 = gsqr(r0), r0_3 = gmul(r0, r0_2);
+  GEN r1_2 = gsqr(r1), r1_3 = gmul(r1, r1_2);
+  GEN r2_2 = gsqr(r2), r2_3 = gmul(r2, r2_2);
+  GEN q0_2 = gsqr(q0);
+  GEN q1_2 = gsqr(q1), q1_3 = gmul(q1, q1_2);
+  GEN q2_2 = gsqr(q2), q2_3 = gmul(q2, q2_2);
+  GEN q3_2 = gsqr(q3);
   GEN p1 = cgetg(6, t_VEC);
-  gel(p1, 1) = gcopy(r1);
+  gel(p1, 1) = r1;
   gel(p1, 2) = gneg(gadd(gadd(gmul(s0, q2), gmul(s1, q1)), gmul(r0, r2)));
   gel(p1, 3) = gadd(gmul(gsub(gmul(gmulsg(9, t0), q0), gmul(s0, r0)), q3), gadd(gmul(gsub(gmul(gneg(t0), q1), gmul(s1, r0)), q2), gsub(gmul(gmul(gneg(s0), r2), q1), gmul(gmul(s1, r2), q0))));
-  gel(p1, 4) = gadd(gmul(gadd(gmul(gadd(gmul(gmulsg(-3, t0), r0), gsqr(s0)), q1), gadd(gmul(gmul(gmulsg(-3, s1), s0), q0), gmul(s1, gsqr(r0)))), q3), gadd(gadd(gmul(gmul(t0, r0), gsqr(q2)), gmul(gadd(gmul(gmul(s1, s0), q1), gadd(gmul(gadd(gmul(gmulsg(-3, t0), r2), gsqr(s1)), q0), gmul(gmul(s0, r0), r2))), q2)), gadd(gadd(gmul(gmul(t0, r2), gsqr(q1)), gmul(gmul(gmul(s1, r0), r2), q1)), gmul(gmul(s0, gsqr(r2)), q0))));
-  gel(p1, 5) = gadd(gadd(gmul(gsub(gadd(gmul(gmulsg(-27, gsqr(t0)), gsqr(q0)), gmul(gsub(gmul(gmul(gmulsg(9, t0), s0), r0), gpowgs(s0, 3)), q0)), gmul(t0, gpowgs(r0, 3))), gsqr(q3)), gmul(gadd(gmul(gadd(gmul(gsub(gmul(gmulsg(9, gsqr(t0)), q0), gmul(gmul(t0, s0), r0)), q1), gadd(gmul(gadd(gmul(gmul(gmulsg(-3, t0), s0), r1), gadd(gmul(gmul(gmulsg(3, t0), s1), r0), gmul(gmulsg(2, s1), gsqr(s0)))), q0), gsub(gmul(gmul(t0, gsqr(r0)), r1), gmul(gmul(s1, s0), gsqr(r0))))), q2), gadd(gadd(gadd(gmul(gneg(gsqr(t0)), gpowgs(q1, 3)), gmul(gadd(gmul(gmul(t0, s0), r1), gsub(gmul(gmul(gmulsg(2, t0), s1), r0), gmul(s1, gsqr(s0)))), gsqr(q1))), gmul(gadd(gmul(gadd(gmul(gmul(gmulsg(3, t0), s0), r2), gadd(gmul(gmul(gmulsg(-3, t0), s1), r1), gmul(gmulsg(2, gsqr(s1)), s0))), q0), gadd(gmul(gsub(gmul(gmulsg(2, t0), gsqr(r0)), gmul(gsqr(s0), r0)), r2), gsub(gadd(gmul(gmul(gneg(t0), r0), gsqr(r1)), gmul(gmul(gmul(s1, s0), r0), r1)), gmul(gsqr(s1), gsqr(r0))))), q1)), gadd(gmul(gsub(gmul(gmul(gmulsg(9, t0), s1), r2), gpowgs(s1, 3)), gsqr(q0)), gmul(gadd(gmul(gsub(gmul(gadd(gmul(gmulsg(-3, t0), r0), gsqr(s0)), r1), gmul(gmul(s1, s0), r0)), r2), gadd(gsub(gmul(t0, gpowgs(r1, 3)), gmul(gmul(s1, s0), gsqr(r1))), gmul(gmul(gsqr(s1), r0), r1))), q0)))), q3)), gadd(gadd(gadd(gmul(gmul(gneg(gsqr(t0)), q0), gpowgs(q2, 3)), gmul(gadd(gmul(gmul(gmul(gneg(t0), s1), r0), q1), gsub(gmul(gadd(gmul(gmul(gmulsg(2, t0), s0), r2), gsub(gmul(gmul(t0, s1), r1), gmul(gsqr(s1), s0))), q0), gmul(gmul(t0, gsqr(r0)), r2))), gsqr(q2))), gmul(gadd(gadd(gmul(gmul(gmul(gneg(t0), s0), r2), gsqr(q1)), gmul(gadd(gmul(gmul(gmul(gneg(t0), s1), r2), q0), gmul(gsub(gmul(gmul(t0, r0), r1), gmul(gmul(s1, s0), r0)), r2)), q1)), gmul(gadd(gmul(gsub(gmul(gmulsg(2, t0), r0), gsqr(s0)), gsqr(r2)), gmul(gsub(gadd(gmul(gneg(t0), gsqr(r1)), gmul(gmul(s1, s0), r1)), gmul(gsqr(s1), r0)), r2)), q0)), q2)), gsub(gadd(gmul(gmul(gmul(gneg(t0), r0), gsqr(r2)), gsqr(q1)), gmul(gmul(gmul(gsub(gmul(t0, r1), gmul(s1, s0)), gsqr(r2)), q0), q1)), gmul(gmul(t0, gpowgs(r2, 3)), gsqr(q0)))));
+  gel(p1, 4) = gadd(gmul(gadd(gmul(gadd(gmul(gmulsg(-3, t0), r0), s0_2), q1), gadd(gmul(gmul(gmulsg(-3, s1), s0), q0), gmul(s1, r0_2))), q3), gadd(gadd(gmul(gmul(t0, r0), q2_2), gmul(gadd(gmul(gmul(s1, s0), q1), gadd(gmul(gadd(gmul(gmulsg(-3, t0), r2), s1_2), q0), gmul(gmul(s0, r0), r2))), q2)), gadd(gadd(gmul(gmul(t0, r2), q1_2), gmul(gmul(gmul(s1, r0), r2), q1)), gmul(gmul(s0, r2_2), q0))));
+  gel(p1, 5) = gadd(gadd(gmul(gsub(gadd(gmul(gmulsg(-27, t0_2), q0_2), gmul(gsub(gmul(gmul(gmulsg(9, t0), s0), r0), s0_3), q0)), gmul(t0, r0_3)), q3_2), gmul(gadd(gmul(gadd(gmul(gsub(gmul(gmulsg(9, t0_2), q0), gmul(gmul(t0, s0), r0)), q1), gadd(gmul(gadd(gmul(gmul(gmulsg(-3, t0), s0), r1), gadd(gmul(gmul(gmulsg(3, t0), s1), r0), gmul(gmulsg(2, s1), s0_2))), q0), gsub(gmul(gmul(t0, r0_2), r1), gmul(gmul(s1, s0), r0_2)))), q2), gadd(gadd(gadd(gmul(gneg(t0_2), q1_3), gmul(gadd(gmul(gmul(t0, s0), r1), gsub(gmul(gmul(gmulsg(2, t0), s1), r0), gmul(s1, s0_2))), q1_2)), gmul(gadd(gmul(gadd(gmul(gmul(gmulsg(3, t0), s0), r2), gadd(gmul(gmul(gmulsg(-3, t0), s1), r1), gmul(gmulsg(2, s1_2), s0))), q0), gadd(gmul(gsub(gmul(gmulsg(2, t0), r0_2), gmul(s0_2, r0)), r2), gsub(gadd(gmul(gmul(gneg(t0), r0), r1_2), gmul(gmul(gmul(s1, s0), r0), r1)), gmul(s1_2, r0_2)))), q1)), gadd(gmul(gsub(gmul(gmul(gmulsg(9, t0), s1), r2), s1_3), q0_2), gmul(gadd(gmul(gsub(gmul(gadd(gmul(gmulsg(-3, t0), r0), s0_2), r1), gmul(gmul(s1, s0), r0)), r2), gadd(gsub(gmul(t0, r1_3), gmul(gmul(s1, s0), r1_2)), gmul(gmul(s1_2, r0), r1))), q0)))), q3)), gadd(gadd(gadd(gmul(gmul(gneg(t0_2), q0), q2_3), gmul(gadd(gmul(gmul(gmul(gneg(t0), s1), r0), q1), gsub(gmul(gadd(gmul(gmul(gmulsg(2, t0), s0), r2), gsub(gmul(gmul(t0, s1), r1), gmul(s1_2, s0))), q0), gmul(gmul(t0, r0_2), r2))), q2_2)), gmul(gadd(gadd(gmul(gmul(gmul(gneg(t0), s0), r2), q1_2), gmul(gadd(gmul(gmul(gmul(gneg(t0), s1), r2), q0), gmul(gsub(gmul(gmul(t0, r0), r1), gmul(gmul(s1, s0), r0)), r2)), q1)), gmul(gadd(gmul(gsub(gmul(gmulsg(2, t0), r0), s0_2), r2_2), gmul(gsub(gadd(gmul(gneg(t0), r1_2), gmul(gmul(s1, s0), r1)), gmul(s1_2, r0)), r2)), q0)), q2)), gsub(gadd(gmul(gmul(gmul(gneg(t0), r0), r2_2), q1_2), gmul(gmul(gmul(gsub(gmul(t0, r1), gmul(s1, s0)), r2_2), q0), q1)), gmul(gmul(t0, r2_3), q0_2))));
   return p1;
 }
 
@@ -62,12 +72,18 @@ jac_cubic(GEN t0, GEN s0, GEN s1, GEN r0, GEN r1, GEN r2, GEN q0, GEN q1, GEN q2
 static GEN
 jac_quart(GEN t0, GEN s0, GEN s1, GEN s2, GEN r0, GEN r1, GEN r2, GEN r3, GEN r4)
 {
+  GEN t0_2 = gsqr(t0), t0_3 = gmul(t0, t0_2);
+  GEN s0_2 = gsqr(s0);
+  GEN s1_2 = gsqr(s1);
+  GEN s2_2 = gsqr(s2);
+  GEN r1_2 = gsqr(r1);
+  GEN r3_2 = gsqr(r3);
   GEN p1 = cgetg(6, t_VEC);
-  gel(p1, 1) = gcopy(s1);
+  gel(p1, 1) = s1;
   gel(p1, 2) = gsub(gmul(gneg(t0), r2), gmul(s0, s2));
   gel(p1, 3) = gsub(gmul(gmul(gneg(t0), s2), r1), gmul(gmul(t0, s0), r3));
-  gel(p1, 4) = gadd(gadd(gadd(gmul(gneg(gsub(gmul(gmulsg(4, gsqr(t0)), r4), gmul(t0, gsqr(s2)))), r0), gmul(gmul(gsqr(t0), r1), r3)), gmul(gmul(gmul(t0, s0), s2), r2)), gmul(gmul(t0, gsqr(s0)), r4));
-  gel(p1, 5) = gsub(gsub(gsub(gmul(gneg(gadd(gsub(gadd(gmul(gneg(gsub(gmul(gmulsg(4, gpowgs(t0, 3)), r4), gmul(gsqr(t0), gsqr(s2)))), r2), gmul(gpowgs(t0, 3), gsqr(r3))), gmul(gmul(gmul(gsqr(t0), s1), s2), r3)), gmul(gmul(gsqr(t0), gsqr(s1)), r4))), r0), gmul(gmul(gpowgs(t0, 3), gsqr(r1)), r4)), gmul(gsub(gmul(gmul(gmul(gsqr(t0), s0), s2), r3), gmul(gmul(gmul(gsqr(t0), s0), s1), r4)), r1)), gmul(gmul(gmul(gsqr(t0), gsqr(s0)), r2), r4));
+  gel(p1, 4) = gadd(gadd(gadd(gmul(gneg(gsub(gmul(gmulsg(4, t0_2), r4), gmul(t0, s2_2))), r0), gmul(gmul(t0_2, r1), r3)), gmul(gmul(gmul(t0, s0), s2), r2)), gmul(gmul(t0, s0_2), r4));
+  gel(p1, 5) = gsub(gsub(gsub(gmul(gneg(gadd(gsub(gadd(gmul(gneg(gsub(gmul(gmulsg(4, t0_3), r4), gmul(t0_2, s2_2))), r2), gmul(t0_3, r3_2)), gmul(gmul(gmul(t0_2, s1), s2), r3)), gmul(gmul(t0_2, s1_2), r4))), r0), gmul(gmul(t0_3, r1_2), r4)), gmul(gsub(gmul(gmul(gmul(t0_2, s0), s2), r3), gmul(gmul(gmul(t0_2, s0), s1), r4)), r1)), gmul(gmul(gmul(t0_2, s0_2), r2), r4));
   return p1;
 }
 
@@ -78,12 +94,21 @@ static GEN
 jac_biquadr(GEN t0, GEN t1, GEN t2, GEN r0, GEN r1, GEN r2,
                                     GEN s0, GEN s1, GEN s2)
 {
+  GEN t0_2 = gsqr(t0);
+  GEN t1_2 = gsqr(t1);
+  GEN t2_2 = gsqr(t2);
+  GEN s0_2 = gsqr(s0);
+  GEN s1_2 = gsqr(s1);
+  GEN s2_2 = gsqr(s2);
+  GEN r0_2 = gsqr(r0);
+  GEN r1_2 = gsqr(r1);
+  GEN r2_2 = gsqr(r2);
   GEN p1 = cgetg(6, t_VEC);
-  gel(p1, 1) = gcopy(r1);
+  gel(p1, 1) = r1;
   gel(p1, 2) = gneg(gadd(gadd(gadd(gmul(s2, t0), gmul(t2, s0)), gmul(t1, s1)), gmul(r2, r0)));
   gel(p1, 3) = gadd(gmul(gmul(gneg(r2), s1), t0), gadd(gmul(gmul(gneg(t1), r2), s0), gsub(gmul(gmul(gneg(t2), r0), s1), gmul(gmul(t1, r0), s2))));
-  gel(p1, 4) = gadd(gmul(gadd(gmul(gadd(gmul(gmulsg(-4, t2), s2), gsqr(r2)), s0), gadd(gadd(gmul(t2, gsqr(s1)), gmul(gmul(t1, s2), s1)), gmul(gmul(r2, r0), s2))), t0), gadd(gmul(gadd(gmul(gmul(t2, t1), s1), gadd(gmul(gsqr(t1), s2), gmul(gmul(t2, r2), r0))), s0), gadd(gmul(gmul(gmul(t1, r2), r0), s1), gmul(gmul(t2, gsqr(r0)), s2))));
-  gel(p1, 5) = gadd(gadd(gmul(gsub(gmul(gsub(gmul(gmulsg(4, t2), gsqr(s2)), gmul(gsqr(r2), s2)), s0), gmul(gmul(t2, s2), gsqr(s1))), gsqr(t0)), gmul(gadd(gadd(gmul(gsub(gmul(gmulsg(4, gsqr(t2)), s2), gmul(t2, gsqr(r2))), gsqr(s0)), gmul(gadd(gadd(gmul(gneg(gsqr(t2)), gsqr(s1)), gmul(gsub(gmul(gmul(t2, r2), r1), gmul(t1, gsqr(r2))), s1)), gadd(gmul(gneg(gsqr(t1)), gsqr(s2)), gmul(gadd(gmul(gneg(t2), gsqr(r1)), gmul(gmul(t1, r2), r1)), s2))), s0)), gsub(gadd(gmul(gmul(gmul(gneg(t2), r2), r0), gsqr(s1)), gmul(gmul(gmul(gsub(gmul(t2, r1), gmul(t1, r2)), r0), s2), s1)), gmul(gmul(t2, gsqr(r0)), gsqr(s2)))), t0)), gsub(gadd(gmul(gmul(gmul(gneg(t2), gsqr(t1)), s2), gsqr(s0)), gmul(gadd(gmul(gmul(gmul(gmul(gneg(t2), t1), r2), r0), s1), gmul(gadd(gmul(gneg(gsqr(t2)), gsqr(r0)), gmul(gsub(gmul(gmul(t2, t1), r1), gmul(gsqr(t1), r2)), r0)), s2)), s0)), gmul(gmul(gmul(gmul(t2, t1), gsqr(r0)), s2), s1)));
+  gel(p1, 4) = gadd(gmul(gadd(gmul(gadd(gmul(gmulsg(-4, t2), s2), r2_2), s0), gadd(gadd(gmul(t2, s1_2), gmul(gmul(t1, s2), s1)), gmul(gmul(r2, r0), s2))), t0), gadd(gmul(gadd(gmul(gmul(t2, t1), s1), gadd(gmul(t1_2, s2), gmul(gmul(t2, r2), r0))), s0), gadd(gmul(gmul(gmul(t1, r2), r0), s1), gmul(gmul(t2, r0_2), s2))));
+  gel(p1, 5) = gadd(gadd(gmul(gsub(gmul(gsub(gmul(gmulsg(4, t2), s2_2), gmul(r2_2, s2)), s0), gmul(gmul(t2, s2), s1_2)), t0_2), gmul(gadd(gadd(gmul(gsub(gmul(gmulsg(4, t2_2), s2), gmul(t2, r2_2)), s0_2), gmul(gadd(gadd(gmul(gneg(t2_2), s1_2), gmul(gsub(gmul(gmul(t2, r2), r1), gmul(t1, r2_2)), s1)), gadd(gmul(gneg(t1_2), s2_2), gmul(gadd(gmul(gneg(t2), r1_2), gmul(gmul(t1, r2), r1)), s2))), s0)), gsub(gadd(gmul(gmul(gmul(gneg(t2), r2), r0), s1_2), gmul(gmul(gmul(gsub(gmul(t2, r1), gmul(t1, r2)), r0), s2), s1)), gmul(gmul(t2, r0_2), s2_2))), t0)), gsub(gadd(gmul(gmul(gmul(gneg(t2), t1_2), s2), s0_2), gmul(gadd(gmul(gmul(gmul(gmul(gneg(t2), t1), r2), r0), s1), gmul(gadd(gmul(gneg(t2_2), r0_2), gmul(gsub(gmul(gmul(t2, t1), r1), gmul(t1_2, r2)), r0)), s2)), s0)), gmul(gmul(gmul(gmul(t2, t1), r0_2), s2), s1)));
   return p1;
 }
 
@@ -161,5 +186,5 @@ ellfromeqn(GEN P)
   }
   if (r==gen_0)
     pari_err_DOMAIN("ellfromeqn", "genus", "!=", gen_1,P);
-  return gerepileupto(av, r);
+  return gerepilecopy(av, r);
 }
