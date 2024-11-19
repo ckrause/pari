@@ -268,10 +268,6 @@ ecsmall([1]), [Vecsmall([128, -1])], [0, 0, 0, 0, 0, 0, 0, 0]]
 12
 a
 a
-[5, -66, 148, 665, -15802]
-[3, -15, -40, 40, -181]
-[3, -15, -40, 40, -181]
-[5, -70, -300, 1956, -28305]
 8*x^9 + 54*x^8 + 393*x^7 + 2373*x^6 + 6993*x^5 + 15267*x^4 + 19998*x^3 + 473
 4*x^2 - 25880*x - 30932
 -1
@@ -870,4 +866,4 @@ x^2 - 2
   ***   at top-level: ellchangepointinv([0,0],chbug)
   ***                 ^------------------------------
   *** ellchangepointinv: incorrect type in ellchangepointinv (t_VECSMALL).
-Total time spent: 1326
+Total time spent: 1206

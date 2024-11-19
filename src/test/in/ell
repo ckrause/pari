@@ -123,11 +123,6 @@ ellminimaltwist(ellinit([216,-432]),1)
 a=ffgen(2^5,'a);ellinit([a]).j
 a=ffgen(3^5,'a);ellinit([a]).j
 
-ellfromeqn(y^3+(3+2*x)*y^2 +(6+5*x+4*x^2)*y+(10+9*x+8*x^2+7*x^3))
-ellfromeqn(y^2+(2*x^2+3*x+4)*y+(5*x^4+6*x^3+7*x^2+8*x+9))
-ellfromeqn(x^2+(2*y^2+3*y+4)*x+(5*y^4+6*y^3+7*y^2+8*y+9))
-ellfromeqn((x^2+2*x+3)*y^2+(4*x^2+5*x+6)*y+(7*x^2+8*x+9))
-
 e = ellinit([1,2,3,5,7]);
 elldivpol(e,4)
 elldivpol(e,-1)
