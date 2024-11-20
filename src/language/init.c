@@ -336,9 +336,10 @@ clone_unlock_deep(GEN x)
 GEN
 newblock(size_t n)
 {
-  BLOCK_SIGINT_START
   long d = 0;
-  long *x = (long *) pari_malloc((n + BL_HEAD)*sizeof(long)) + BL_HEAD;
+  long *x;
+  BLOCK_SIGINT_START
+  x = (long *) pari_malloc((n + BL_HEAD)*sizeof(long)) + BL_HEAD;
 
   bl_size(x) = n;
   bl_refc(x) = 1;
