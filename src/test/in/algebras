@@ -3253,3 +3253,12 @@ testasq(pol) =
 testasq(y);
 testasq(y^2-2);
 testasq(y^3-y-1);
+
+print("segfault algquattobasis"); \\ James Rickards
+setrand(7);
+F=nfinit(y);
+A=alginit(F, [-133, 1461405]);
+algbasistoquat(A, [-64899, -75545, -8782, 138586]~);
+algbasistoquat(A, algquattobasis(A, [1,0,1,1]~))
+algbasistoquat(A, algquattobasis(A, [1,1,1,0]~))
+

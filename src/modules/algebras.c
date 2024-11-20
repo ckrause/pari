@@ -3663,19 +3663,19 @@ algbasistoquat(GEN al, GEN x)
   if (gequal0(A))
   {
     /* v = i */
-    gel(q,1) = gmael(x2,1,2); /* coeff v^0 of x2[1] */
-    gel(q,2) = gmael(x2,1,3); /* coeff v^1 of x2[1] */
-    gel(q,3) = gmael(x2,2,2); /* coeff v^0 of x2[2] */
-    gel(q,4) = gmael(x2,2,3); /* coeff v^1 of x2[2] */
+    gel(q,1) = polcoef_i(gel(x2,1),0,v);
+    gel(q,2) = polcoef_i(gel(x2,1),1,v);
+    gel(q,3) = polcoef_i(gel(x2,2),0,v);
+    gel(q,4) = polcoef_i(gel(x2,2),1,v);
     gel(q,4) = gneg(gel(q,4));
   }
   else
   {
     /* v = (i-A)/2 */
-    gel(q,2) = gshift(gmael(x2,1,3),-1);
-    gel(q,1) = gsub(gmael(x2,1,2), gmul(A,gel(q,2)));
-    gel(q,4) = gneg(gshift(gmael(x2,2,3),-1));
-    gel(q,3) = gadd(gmael(x2,2,2),gmul(A,gel(q,4)));
+    gel(q,2) = gshift(polcoef_i(gel(x2,1),1,v),-1);
+    gel(q,1) = gsub(polcoef_i(gel(x2,1),0,v), gmul(A,gel(q,2)));
+    gel(q,4) = gneg(gshift(polcoef_i(gel(x2,2),1,v),-1));
+    gel(q,3) = gadd(polcoef_i(gel(x2,2),0,v),gmul(A,gel(q,4)));
   }
   return gerepilecopy(av, q);
 }

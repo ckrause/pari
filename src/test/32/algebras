@@ -3450,4 +3450,7 @@ w w2 algtomatrix
 1
 1
 1
+segfault algquattobasis
+[1, 0, 1, 1]~
+[1, 1, 1, 0]~
 Total time spent: 2243
