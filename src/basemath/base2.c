@@ -2796,9 +2796,11 @@ nfmodpr(GEN nf, GEN x, GEN pr)
   {
     GEN y, v = famat_nfvalrem(nf, x, pr, &y);
     long s = signe(v);
-    if (s < 0) pari_err_INV("Rg_to_ff", mkintmod(gen_0,p));
-    if (s > 0) return gc_const(av, gen_0);
-    x = FqV_factorback(nfV_to_FqV(gel(y,1), nf, modpr), gel(y,2), T, p);
+    if (s < 0) pari_err_INV("nfmodpr", mkintmod(gen_0,p));
+    if (s > 0)
+      x = gen_0;
+    else
+      x = FqV_factorback(nfV_to_FqV(gel(y,1), nf, modpr), gel(y,2), T, p);
   }
   else
     x = nf_to_Fq_i(nf, x, modpr);

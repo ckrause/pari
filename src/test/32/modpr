@@ -1,6 +1,3 @@
-  ***   at top-level: nfeltmulmodpr(nfinit(x),x,x,1)
-  ***                 ^------------------------------
-  *** nfeltmulmodpr: incorrect type in checkprid (t_INT).
 [Mod(0, 2), Mod(1, 2), error("inconsistent variables in poltobasis, t != y."
 ), Mod(1, 2), error("inconsistent variables in poltobasis, z != y."), Mod(0,
  2), error("incorrect type in Rg_to_ff (t_COL).")]
@@ -106,8 +103,8 @@ error("incorrect type in Rg_to_ff (t_COL).")
 *7:
 error("impossible inverse in Rg_to_ff: Mod(0, 3).")
 Mod(1, 3)
-0
-0
+Mod(0, 3)
+Mod(0, 3)
 [0, 1, error("inconsistent variables in poltobasis, t != y."), t, error("inc
 onsistent variables in poltobasis, z != y."), error("incorrect type in Rg_to
 _ff (t_COL)."), 0]
@@ -190,7 +187,12 @@ y
 2*t
 2*y
 Mod(0, 2)
+Mod(0, 2)
+Mod(0, 2)
   ***   at top-level: nfmodpr(Kerr,[y,2;y^2/9,3],Perr)
   ***                 ^--------------------------------
-  *** nfmodpr: impossible inverse in Rg_to_ff: Mod(0, 3).
-Total time spent: 86
+  *** nfmodpr: impossible inverse in nfmodpr: Mod(0, 3).
+  ***   at top-level: nfeltmulmodpr(nfinit(x),x,x,1)
+  ***                 ^------------------------------
+  *** nfeltmulmodpr: incorrect type in checkprid (t_INT).
+Total time spent: 91
