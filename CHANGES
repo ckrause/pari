@@ -20,6 +20,7 @@ AP  14- alginit(nf,[a,b]) was only allowing a,b integral over the power basis
         instead of arbitrary algebraic integers.
     15- missing type checks for change of variables in ellchangecurve,
         ellchangepoint, ellchangepointinv
+    16- nfmodpr at deg 1 prime: "wrong" invisible variable in t_FFELT [#2580]
 
   Added
 AP   1- new GP function algnewprec
@@ -52,6 +53,7 @@ AP   5- allow algpoleval(al, basis form, relative polynomial).
 AP   6- alginit: construction from Hasse invariants now allows a shortcut in the
         quaternion case, giving only the ramification set.
 AP   7- alginit(nf,[a,b]) now allows a to be a square in nf.
+     8- nfmodpr now returns a t_INTMOD when the residue field is Z/pZ
 
   Removed
 BA   1- GP function trap, use iferr instead.

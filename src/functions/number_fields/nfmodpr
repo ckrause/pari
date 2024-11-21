@@ -3,7 +3,8 @@ Section: number_fields
 C-Name: nfmodpr
 Prototype: GGG
 Help: nfmodpr(nf,x,pr): map x to the residue field mod pr.
-Doc: map $x$ to a \typ{FFELT} in the residue field modulo \var{pr}.
+Doc: map $x$ to the residue field modulo \var{pr}: the result is a
+ \typ{INTMOD} when \var{pr} has degree $1$ and a \typ{FFELT} otherwise.
  The argument \var{pr} is either a maximal ideal in \kbd{idealprimedec}
  format or, preferably, a \var{modpr} structure from \tet{nfmodprinit}. The
  function \tet{nfmodprlift} allows to lift back to $\Z_{K}$.

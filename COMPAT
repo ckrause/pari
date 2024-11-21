@@ -9,6 +9,7 @@ This file lists the incompatible changes between Version 2.x and older versions
   - Removed deprecated functions:
      trap: use iferr() instead.
      listcreate, listkill: use L = List().
+  - nfmodpr now returns a t_INTMOD when the residue field is Z/pZ
 
 * Specific to the PARI library:
 ===============================

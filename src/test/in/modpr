@@ -55,10 +55,11 @@ nfeltreducemodpr(K,P.gen[2],nfmodprinit(K,P))
 nfmodpr(nfinit(x),[],[]~)
 
 nf = nfinit(y^4-2);
-pr = idealprimedec(nf,3)[1];
-modpr = nfmodprinit(nf,pr,t);
+pr = idealprimedec(nf,3)[1]; modpr = nfmodprinit(nf,pr,t);
 a = nfmodpr(nf,y^5,modpr)
 nfmodprlift(nf,a,modpr)
+pr = idealprimedec(nf,2)[1]; modpr = nfmodprinit(nf,pr,t);
+a = nfmodpr(nf,y,modpr) \\ #2580
 
 \\ ERRORS
 nfmodpr(Kerr, [y, 2; y^2/9, 3], Perr)

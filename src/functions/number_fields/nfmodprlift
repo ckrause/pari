@@ -3,9 +3,10 @@ Section: number_fields
 C-Name: nfmodprlift
 Prototype: GGG
 Help: nfmodprlift(nf,x,pr): lift x from residue field mod pr to nf.
-Doc: lift the \typ{FFELT} $x$ (from \tet{nfmodpr}) in the residue field
- modulo \var{pr} to the ring of integers. Vectors and matrices are also
- supported. For polynomials, use \kbd{apply} and the present function.
+Doc: lift an element $x$ from in the residue field modulo \var{pr} to the ring
+ of integers; $x$ is a \typ{INTMOD} or \typ{FFELT} from \tet{nfmodpr}.
+ Vectors and matrices of such elements are also supported. For polynomials,
+ use \kbd{apply} and the present function.
 
  The argument \var{pr} is either a maximal ideal in \kbd{idealprimedec}
  format or, preferably, a \var{modpr} structure from \tet{nfmodprinit}.

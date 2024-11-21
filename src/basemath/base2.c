@@ -2799,9 +2799,10 @@ nfmodpr(GEN nf, GEN x, GEN pr)
     if (s < 0) pari_err_INV("Rg_to_ff", mkintmod(gen_0,p));
     if (s > 0) return gc_const(av, gen_0);
     x = FqV_factorback(nfV_to_FqV(gel(y,1), nf, modpr), gel(y,2), T, p);
-    return gerepileupto(av, x);
   }
-  x = nf_to_Fq_i(nf, x, modpr);
+  else
+    x = nf_to_Fq_i(nf, x, modpr);
+  if (!T) return gerepileupto(av, Fp_to_mod(x, p));
   x = Fq_to_FF(x, Tp_to_FF(T,p));
   return gerepilecopy(av, x);
 }
@@ -2815,6 +2816,7 @@ nfmodprlift(GEN nf, GEN x, GEN pr)
   switch(typ(x))
   {
     case t_INT: return icopy(x);
+    case t_INTMOD: return icopy(gel(x,2));
     case t_FFELT: break;
     case t_VEC: case t_COL: case t_MAT:
       y = cgetg_copy(x,&l);
