@@ -1108,29 +1108,25 @@ ser_powfrac(GEN x, GEN q, long prec)
 }
 
 static GEN
-gpow0(GEN x, GEN n, long prec)
+gpow0(GEN z, GEN x, long prec)
 {
   pari_sp av = avma;
-  long i, lx;
-  GEN y;
-  switch(typ(n))
+  switch(typ(x))
   {
     case t_INT: case t_REAL: case t_FRAC: case t_COMPLEX: case t_QUAD:
       break;
     case t_VEC: case t_COL: case t_MAT:
-      y = cgetg_copy(n, &lx);
-      for (i=1; i<lx; i++) gel(y,i) = gpow0(x,gel(n,i),prec);
-      return y;
-    default: pari_err_TYPE("gpow(0,n)", n);
+      pari_APPLY_same(gpow0(z,gel(x,i),prec));
+    default: pari_err_TYPE("gpow(0,x)", x);
   }
-  n = real_i(n);
-  if (gsigne(n) <= 0) pari_err_DOMAIN("gpow(0,n)", "n", "<=", gen_0, n);
-  if (!precision(x)) return gcopy(x);
+  x = real_i(x);
+  if (gsigne(x) <= 0) pari_err_DOMAIN("gpow(0,x)", "x", "<=", gen_0, x);
+  if (!precision(z)) return gcopy(z);
 
-  x = ground(gmulsg(gexpo(x),n));
-  if (is_bigint(x) || uel(x,2) >= HIGHEXPOBIT)
+  z = ground(gmulsg(gexpo(z),x));
+  if (is_bigint(z) || uel(z,2) >= HIGHEXPOBIT)
     pari_err_OVERFLOW("gpow");
-  set_avma(av); return real_0_bit(itos(x));
+  set_avma(av); return real_0_bit(itos(z));
 }
 
 /* centermod(x, log(2)), set *sh to the quotient */
@@ -1240,18 +1236,13 @@ powcx(GEN x, GEN logx, GEN n, long prec)
 GEN
 gpow(GEN x, GEN n, long prec)
 {
-  long prec0, i, lx, tx, tn = typ(n);
+  long i, prec0, tx, tn = typ(n);
   pari_sp av;
   GEN y;
 
   if (tn == t_INT) return powgi(x,n);
   tx = typ(x);
-  if (is_matvec_t(tx))
-  {
-    y = cgetg_copy(x, &lx);
-    for (i=1; i<lx; i++) gel(y,i) = gpow(gel(x,i),n,prec);
-    return y;
-  }
+  if (is_matvec_t(tx)) pari_APPLY_same(gpow(gel(x,i),n,prec));
   av = avma;
   switch (tx)
   {
@@ -2093,7 +2084,7 @@ rootsof1_cx(GEN d, long prec)
 GEN
 gsqrtn(GEN x, GEN n, GEN *zetan, long prec)
 {
-  long i, lx, tx;
+  long i, tx;
   pari_sp av;
   GEN y, z;
   if (typ(n)!=t_INT) pari_err_TYPE("sqrtn",n);
@@ -2105,12 +2096,7 @@ gsqrtn(GEN x, GEN n, GEN *zetan, long prec)
   }
   if (zetan) *zetan = gen_0;
   tx = typ(x);
-  if (is_matvec_t(tx))
-  {
-    y = cgetg_copy(x, &lx);
-    for (i=1; i<lx; i++) gel(y,i) = gsqrtn(gel(x,i),n,NULL,prec);
-    return y;
-  }
+  if (is_matvec_t(tx)) pari_APPLY_same(gsqrtn(gel(x,i),n,NULL,prec));
   av = avma;
   switch(tx)
   {

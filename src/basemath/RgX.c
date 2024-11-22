@@ -2553,18 +2553,10 @@ RgXn_inv(GEN f, long e)
   return gerepileupto(av, RgXn_inv_i(f, e));
 }
 
-/* Compute intformal(x^n*S)/x^(n+1) */
+/* intformal(x^n*S) / x^(n+1) */
 static GEN
 RgX_integXn(GEN x, long n)
-{
-  long i, lx = lg(x);
-  GEN y;
-  if (lx == 2) return RgX_copy(x);
-  y = cgetg(lx, t_POL); y[1] = x[1];
-  for (i=2; i<lx; i++)
-    gel(y,i) = gdivgs(gel(x,i), n+i-1);
-  return RgX_renormalize_lg(y, lx);;
-}
+{ pari_APPLY_pol_normalized(gdivgs(gel(x,i), n+i-1)); }
 
 GEN
 RgXn_expint(GEN h, long e)

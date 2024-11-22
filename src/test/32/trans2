@@ -16,7 +16,7 @@ O(x^0)
 1 + 0.50000000000000000000000000000000000000*x + O(x^2)
 error("overflow in sqrtn [valuation].")
 error("incorrect type in gpow (t_STR).")
-error("incorrect type in gpow(0,n) (t_INTMOD).")
+error("incorrect type in gpow(0,x) (t_INTMOD).")
 x^196608
 error("overflow in pow_monome [degree].")
 error("overflow in gpow.")
@@ -191,4 +191,4 @@ zeta: [320, 320, 320]
   ***   at top-level: atanh(1-2^(-if(sizebyte(0)==16,63,31)))
   ***                 ^---------------------------------------
   *** atanh: overflow in atanhuu.
-Total time spent: 15
+Total time spent: 31
