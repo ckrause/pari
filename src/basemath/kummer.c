@@ -140,7 +140,7 @@ powtau(GEN x, long m, tau_s *tau)
 }
 /* x^lambda */
 static GEN
-lambdaofelt(GEN x, toK_s *T)
+Rg_lambda(GEN x, toK_s *T)
 {
   tau_s *tau = T->tau;
   long i, m = T->m;
@@ -153,13 +153,8 @@ lambdaofelt(GEN x, toK_s *T)
   return famat_mul_shallow(y, x);
 }
 static GEN
-lambdaofvec(GEN x, toK_s *T)
-{
-  long i, l;
-  GEN y = cgetg_copy(x, &l);
-  for (i=1; i<l; i++) gel(y,i) = lambdaofelt(gel(x,i), T);
-  return y;
-}
+RgV_lambda(GEN x, toK_s *T)
+{ pari_APPLY_same(Rg_lambda(gel(x,i), T)); }
 
 static int
 prconj(GEN P, GEN Q, tau_s *tau)
@@ -1016,7 +1011,7 @@ rnfkummer_ell(struct rnfkummer *kum, GEN bnr, GEN H)
     isprincipalell(bnfz, gel(Sp,j), cycgenmod,ell,rc, &e, &a);
     gel(matP,j) = e;
     gel(vecBp,j) = famat_mul_shallow(famatV_zv_factorback(vecC, zv_neg(e)), a);
-    gel(vecAp,j) = lambdaofelt(gel(vecBp,j), T);
+    gel(vecAp,j) = Rg_lambda(gel(vecBp,j), T);
   }
   if (DEBUGLEVEL>2) err_printf("Step 13\n");
   vecWA = shallowconcat(vecW, vecAp);
@@ -1029,7 +1024,7 @@ rnfkummer_ell(struct rnfkummer *kum, GEN bnr, GEN H)
     GEN QtP = Flm_mul(kum->tQ, matP, ell);
     M = vconcat(M, shallowconcat(zero_Flm(lgcols(kum->tQ)-1,lW-1), QtP));
   }
-  lambdaWB = shallowconcat(lambdaofvec(vecW, T), vecAp);/*vecWB^lambda*/
+  lambdaWB = shallowconcat(RgV_lambda(vecW, T), vecAp);/*vecWB^lambda*/
   M = vconcat(M, subgroup_info(bnfz, Lpr, gell, lambdaWB));
   if (DEBUGLEVEL>2) err_printf("Step 16\n");
   K = Flm_ker(M, ell);
