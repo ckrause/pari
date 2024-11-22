@@ -97,14 +97,7 @@ extern const long CATCH_ALL;
     return normalizeser(_y);\
   }
 
-#define pari_APPLY_ser_normalized(EXPR)\
-  { \
-    long i, _l; \
-    GEN _y = cgetg_copy(x, &_l); _y[1] = x[1];\
-    if (_l == 2) return _y;\
-    for (i=2; i<_l; i++) gel(_y,i) = EXPR;\
-    return _y;\
-  }
+#define pari_APPLY_ser_normalized pari_APPLY_pol_normalized
 
 #define pari_APPLY_type(TYPE, EXPR)\
   { \
