@@ -826,7 +826,7 @@ x^2 - 2
   *** elltwist: incorrect type in elltwist (t_VEC).
   ***   at top-level: ellchangepoint([[1,1],1,1],[1,0,0,0])
   ***                 ^-------------------------------------
-  *** ellchangepoint: incorrect type in ellchangepoint (t_INT).
+  *** ellchangepoint: incorrect type in ellchangepoint (t_VEC).
   ***   at top-level: ellpointtoz(e,[1,[0]])
   ***                 ^----------------------
   *** ellpointtoz: incorrect type in ellpointtoz (t_VEC).
@@ -835,16 +835,16 @@ x^2 - 2
   *** ellpointtoz: incorrect type in ellpointtoz (t_VEC).
   ***   at top-level: ellchangepoint([1],[1,2,3,4])
   ***                 ^-----------------------------
-  *** ellchangepoint: incorrect type in ellchangepoint (t_INT).
+  *** ellchangepoint: incorrect type in ellchangepoint (t_VEC).
   ***   at top-level: ellchangepoint([1,2,3],[1,2,3,4])
   ***                 ^---------------------------------
-  *** ellchangepoint: incorrect type in ellchangepoint (t_INT).
+  *** ellchangepoint: incorrect type in ellchangepoint (t_VEC).
   ***   at top-level: ellchangepointinv([1],[1,2,3,4])
   ***                 ^--------------------------------
-  *** ellchangepointinv: incorrect type in ellchangepointinv (t_INT).
+  *** ellchangepointinv: incorrect type in ellchangepointinv (t_VEC).
   ***   at top-level: ellchangepointinv([1,2,3],[1,2,3,4])
   ***                 ^------------------------------------
-  *** ellchangepointinv: incorrect type in ellchangepointinv (t_INT).
+  *** ellchangepointinv: incorrect type in ellchangepointinv (t_VEC).
   ***   at top-level: ellchangepoint([;],[1,2,3,4])
   ***                 ^-----------------------------
   *** ellchangepoint: incorrect type in ellchangepoint (t_MAT).
@@ -866,4 +866,10 @@ x^2 - 2
   ***   at top-level: ellchangepointinv([0,0],chbug)
   ***                 ^------------------------------
   *** ellchangepointinv: incorrect type in ellchangepointinv (t_VECSMALL).
-Total time spent: 1358
+  ***   at top-level: ellchangepoint([I],[1,2,3,4])
+  ***                 ^-----------------------------
+  *** ellchangepoint: incorrect type in ellchangepoint (t_VEC).
+  ***   at top-level: ellchangepoint(I,[1,2,3,4])
+  ***                 ^---------------------------
+  *** ellchangepoint: incorrect type in ellchangepoint (t_COMPLEX).
+Total time spent: 1615

@@ -141,12 +141,13 @@ isptcoord(GEN x)
     case t_POLMOD:
     case t_POL:
     case t_SER:
-    case t_RFRAC: return 1;
+    case t_RFRAC:
+    case t_COL: return 1; /* t_COL: nf elt */
   }
   return 0;
 }
 
-/* typ(z) == t_VEC. Is it a point ? */
+/* typ(z) == t_VEC. Is it (probably) a point ? */
 static int
 vecispt(GEN z)
 {
@@ -1644,7 +1645,7 @@ checkellpts(GEN x, char *fun)
   }
   lx = lg(x);
   for (i = 1; i < lx; i++)
-    if (!checkellpt_i(gel(x,i))) pari_err_TYPE(fun, gel(x,i));
+    if (!checkellpt_i(gel(x,i))) pari_err_TYPE(fun, x);
   return 1;
 }
 
