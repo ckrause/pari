@@ -2043,13 +2043,7 @@ FFX_degfact(GEN Pf, GEN ff)
 
 GEN
 FqX_to_FFX(GEN x, GEN ff)
-{
-  long i, lx;
-  GEN y =  cgetg_copy(x,&lx);
-  y[1] = x[1];
-  for (i=2; i<lx; i++) gel(y,i) = Fq_to_FF(gel(x,i), ff);
-  return y;
-}
+{ pari_APPLY_pol_normalized(Fq_to_FF(gel(x,i), ff)); }
 
 GEN
 FqC_to_FFC(GEN x, GEN ff)
@@ -2280,23 +2274,11 @@ RgM_is_FFM(GEN x, GEN *ff)
 
 static GEN
 FqC_to_FpXQC(GEN x, GEN T, GEN p)
-{
-  long i, lx;
-  GEN y = cgetg_copy(x,&lx);
-  for(i=1; i<lx; i++)
-    gel(y, i) = Fq_to_FpXQ(gel(x, i), T, p);
-  return y;
-}
+{ pari_APPLY_same(Fq_to_FpXQ(gel(x,i), T, p)); }
 
 static GEN
 FqM_to_FpXQM(GEN x, GEN T, GEN p)
-{
-  long i, lx;
-  GEN y = cgetg_copy(x,&lx);
-  for(i=1; i<lx; i++)
-    gel(y, i) = FqC_to_FpXQC(gel(x, i), T, p);
-  return y;
-}
+{ pari_APPLY_same(FqC_to_FpXQC(gel(x,i), T, p)); }
 
 /* for functions t_MAT -> t_MAT */
 static GEN
