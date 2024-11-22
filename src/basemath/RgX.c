@@ -1133,12 +1133,7 @@ RgX_sub(GEN x, GEN y)
 }
 GEN
 RgX_neg(GEN x)
-{
-  long i, lx = lg(x);
-  GEN y = cgetg(lx, t_POL); y[1] = x[1];
-  for (i=2; i<lx; i++) gel(y,i) = gneg(gel(x,i));
-  return y;
-}
+{ pari_APPLY_pol_normalized(gneg(gel(x,i))); }
 
 GEN
 RgX_Rg_add(GEN y, GEN x)

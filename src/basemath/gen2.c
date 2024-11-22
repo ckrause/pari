@@ -1924,9 +1924,7 @@ ZXV_pvalrem(GEN x, GEN p, GEN *px) { return ZX_gen_pvalrem(x,p,px, 1); }
 GEN
 gneg(GEN x)
 {
-  long lx, i;
   GEN y;
-
   switch(typ(x))
   {
     case t_INT:
@@ -1975,10 +1973,7 @@ gneg(GEN x)
 
     case t_FFELT: return FF_neg(x);
     case t_POL: return RgX_neg(x);
-    case t_SER:
-      y = cgetg_copy(x, &lx); y[1] = x[1];
-      for (i=2; i<lx; i++) gel(y,i) = gneg(gel(x,i));
-      break;
+    case t_SER: pari_APPLY_ser_normalized(gneg(gel(x,i)));
     case t_VEC: return RgV_neg(x);
     case t_COL: return RgC_neg(x);
     case t_MAT: return RgM_neg(x);

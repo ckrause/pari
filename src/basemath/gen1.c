@@ -509,9 +509,6 @@ quad_polmod_norm(GEN x, GEN y)
 GEN
 conj_i(GEN x)
 {
-  long lx, i;
-  GEN y;
-
   switch(typ(x))
   {
     case t_INT: case t_REAL: case t_INTMOD: case t_FRAC: case t_PADIC:
@@ -520,21 +517,20 @@ conj_i(GEN x)
     case t_COMPLEX: return mkcomplex(gel(x,1), gneg(gel(x,2)));
 
     case t_QUAD:
-      y = cgetg(4,t_QUAD);
+    {
+      GEN y = cgetg(4,t_QUAD);
       gel(y,1) = gel(x,1);
       gel(y,2) = gequal0(gmael(x,1,3))? gel(x,2)
                                       : gadd(gel(x,2), gel(x,3));
       gel(y,3) = gneg(gel(x,3)); return y;
+    }
+    case t_POL: pari_APPLY_pol_normalized(conj_i(gel(x,i)));
+    case t_SER: pari_APPLY_ser_normalized(conj_i(gel(x,i)));
 
-    case t_POL: case t_SER:
-      y = cgetg_copy(x, &lx); y[1] = x[1];
-      for (i=2; i<lx; i++) gel(y,i) = conj_i(gel(x,i));
-      return y;
-
-    case t_RFRAC: case t_VEC: case t_COL: case t_MAT:
-      y = cgetg_copy(x, &lx);
-      for (i=1; i<lx; i++) gel(y,i) = conj_i(gel(x,i));
-      return y;
+    case t_RFRAC:
+    case t_VEC:
+    case t_COL:
+    case t_MAT: pari_APPLY_same(conj_i(gel(x,i)));
 
     case t_POLMOD:
     {
