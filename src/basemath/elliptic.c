@@ -1602,16 +1602,25 @@ nf_compose_u(GEN nf, GEN *vtotal, GEN *e, GEN u, GEN uinv)
   *e = nf_coordch_uinv(nf, *e,uinv); gel(v,1) = nfmul(nf,gel(v,1), u);
 }
 
-/* raise a type exception in fun unless x is a point or a t_VEC of points */
-static void
+/* raise a type exception in fun unless x is a point (return 0) or a
+ * t_VEC/t_COL of points (return 1) */
+static int
 checkellpts(GEN x, char *fun)
 {
   long i, lx;
-  if (typ(x) != t_VEC) pari_err_TYPE(fun, x);
-  if (vecispt(x)) return;
+  switch(typ(x))
+  {
+    case t_VEC:
+      if (vecispt(x)) return 0;
+      break;
+    case t_COL:
+      break;
+    default: pari_err_TYPE(fun, x);
+  }
   lx = lg(x);
   for (i = 1; i < lx; i++)
     if (!checkellpt_i(gel(x,i))) pari_err_TYPE(fun, gel(x,i));
+  return 1;
 }
 
 /* X = (x-r)/u^2
@@ -1632,16 +1641,13 @@ ellchangepoint(GEN x, GEN ch)
 {
   GEN y, v, v2, v3, r, s, t, u;
   pari_sp av = avma;
+  int vec = checkellpts(x, "ellchangepoint");
 
-  checkellpts(x, "ellchangepoint");
   if (is_trivial_change(ch, "ellchangepoint")) return gcopy(x);
   if (lg(x) == 1) return cgetg(1, t_VEC);
   u = gel(ch,1); r = gel(ch,2); s = gel(ch,3); t = gel(ch,4);
   v = ginv(u); v2 = gsqr(v); v3 = gmul(v,v2);
-  if (typ(gel(x,1)) != t_VEC)
-    y = ellchangept(x,v2,v3,r,s,t);
-  else
-    y = ellchangevecpt(x,v2,v3,r,s,t);
+  y = vec? ellchangevecpt(x,v2,v3,r,s,t): ellchangept(x,v2,v3,r,s,t);
   return gerepilecopy(av,y);
 }
 
@@ -1663,16 +1669,13 @@ ellchangepointinv(GEN x, GEN ch)
 {
   GEN y, u, r, s, t, u2, u3;
   pari_sp av = avma;
+  int vec = checkellpts(x, "ellchangepointinv");
 
-  checkellpts(x, "ellchangepointinv");
   if (is_trivial_change(ch, "ellchangepointinv")) return gcopy(x);
   if (lg(x) == 1) return cgetg(1, t_VEC);
   u = gel(ch,1); r = gel(ch,2); s = gel(ch,3); t = gel(ch,4);
   u2 = gsqr(u); u3 = gmul(u,u2);
-  if (typ(gel(x,1)) != t_VEC)
-    y = ellchangeptinv(x,u2,u3,r,s,t);
-  else
-    y = ellchangevecptinv(x,u2,u3,r,s,t);
+  y = vec? ellchangevecptinv(x,u2,u3,r,s,t): ellchangeptinv(x,u2,u3,r,s,t);
   return gerepilecopy(av,y);
 }
 
@@ -1943,11 +1946,11 @@ ellisoncurve_i(GEN e, GEN x) { return oncurve(e, x)? gen_1: gen_0; }
 GEN
 ellisoncurve(GEN e, GEN x)
 {
-  checkell(e);
-  if (!is_vec_t(typ(x))) return gen_0;
+  int vec;
+  checkell(e); vec = checkellpts(x, "ellisoncurve");
   if (lg(x) == 1) return leafcopy(x);
-  if (!is_vec_t(typ(gel(x,1)))) return ellisoncurve_i(e, x);
-  pari_APPLY_same(ellisoncurve_i(e,gel(x,i)));
+  if (vec) pari_APPLY_same(ellisoncurve_i(e,gel(x,i)));
+  return ellisoncurve_i(e, x);
 }
 
 /* y1 = y2 or -LHS0-y2 */
