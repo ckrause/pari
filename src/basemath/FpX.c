@@ -307,22 +307,15 @@ FpX_sqr(GEN x,GEN p)
 }
 
 GEN
-FpX_mulu(GEN y, ulong x,GEN p)
+FpX_mulu(GEN x, ulong t,GEN p)
 {
-  GEN z;
-  long i, l;
-  x = umodui(x, p);
-  if (!x) return zeropol(varn(y));
-  z = cgetg_copy(y, &l); z[1] = y[1];
-  for(i=2; i<l; i++) gel(z,i) = Fp_mulu(gel(y,i), x, p);
-  return z;
+  t = umodui(t, p); if (!t) return zeropol(varn(x));
+  pari_APPLY_pol_normalized(Fp_mulu(gel(x,i), t, p));
 }
 
 GEN
 FpX_divu(GEN y, ulong x, GEN p)
-{
-  return FpX_Fp_div(y, utoi(umodui(x, p)), p);
-}
+{ return FpX_Fp_div(y, utoi(umodui(x, p)), p); }
 
 GEN
 FpX_Fp_mulspec(GEN y,GEN x,GEN p,long ly)
@@ -408,14 +401,8 @@ FpXV_factorback(GEN f, GEN e, GEN p, long v)
 }
 
 GEN
-FpX_halve(GEN y, GEN p)
-{
-  GEN z;
-  long i, l;
-  z = cgetg_copy(y, &l); z[1] = y[1];
-  for(i=2; i<l; i++) gel(z,i) = Fp_halve(gel(y,i), p);
-  return z;
-}
+FpX_halve(GEN x, GEN p)
+{ pari_APPLY_pol_normalized(Fp_halve(gel(x,i), p)); }
 
 static GEN
 FpX_divrem_basecase(GEN x, GEN y, GEN p, GEN *pr)
