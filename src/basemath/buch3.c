@@ -1543,18 +1543,15 @@ bnrisconductor0(GEN A,GEN B,GEN C)
 static GEN
 ideallog_to_bnr_i(GEN Ubid, GEN cyc, GEN z)
 { return (lg(Ubid)==1)? zerocol(lg(cyc)-1): ZV_ZV_mod(ZM_ZC_mul(Ubid,z), cyc); }
-/* return bnrisprincipal(bnr, (x)), assuming z = ideallog(x); allow a
- * t_MAT for z, understood as a collection of ideallog(x_i) */
+/* return bnrisprincipal(bnr, (t)), assuming x = ideallog(t); allow a
+ * t_MAT for x, understood as a collection of ideallog(t_i) */
 static GEN
-ideallog_to_bnr(GEN bnr, GEN z)
+ideallog_to_bnr(GEN bnr, GEN x)
 {
   GEN U = gel(bnr_get_U(bnr), 2); /* bid part */
-  GEN y, cyc = bnr_get_cyc(bnr);
-  long i, l;
-  if (typ(z) == t_COL) return ideallog_to_bnr_i(U, cyc, z);
-  y = cgetg_copy(z, &l);
-  for (i = 1; i < l; i++) gel(y,i) = ideallog_to_bnr_i(U, cyc, gel(z,i));
-  return y;
+  GEN cyc = bnr_get_cyc(bnr);
+  if (typ(x) == t_COL) return ideallog_to_bnr_i(U, cyc, x);
+  pari_APPLY_same(ideallog_to_bnr_i(U, cyc, gel(x,i)));
 }
 static GEN
 bnr_log_gen_pr(GEN bnr, zlog_S *S, long e, long index)
@@ -1906,13 +1903,8 @@ GEN
 rnfconductor(GEN bnf, GEN T) { return rnfconductor0(bnf, T, 0); }
 
 static GEN
-prV_norms(GEN v)
-{
-  long i, l;
-  GEN w = cgetg_copy(v, &l);
-  for (i = 1; i < l; i++) gel(w,i) = pr_norm(gel(v,i));
-  return w;
-}
+prV_norms(GEN x)
+{ pari_APPLY_same( pr_norm(gel(x,i))); }
 
 /* Given a number field bnf=bnr[1], a ray class group structure bnr, and a
  * subgroup H (HNF form) of the ray class group, compute [n, r1, dk]

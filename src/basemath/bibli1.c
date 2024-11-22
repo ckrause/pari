@@ -142,26 +142,21 @@ check_householder(GEN Q)
 }
 
 GEN
-mathouseholder(GEN Q, GEN v)
+mathouseholder(GEN Q, GEN x)
 {
   long l = lg(Q);
   check_householder(Q);
-  switch(typ(v))
+  switch(typ(x))
   {
     case t_MAT:
-    {
-      long lx, i;
-      GEN M = cgetg_copy(v, &lx);
-      if (lx == 1) return M;
-      if (lgcols(v) != l+1) pari_err_TYPE("mathouseholder", v);
-      for (i = 1; i < lx; i++) gel(M,i) = RgC_ApplyAllQ(Q, gel(v,i), l);
-      return M;
-    }
-    case t_COL: if (lg(v) == l+1) break;
-      /* fall through */
-    default: pari_err_TYPE("mathouseholder", v);
+      if (lg(x) == 1) return cgetg(1, t_MAT);
+      if (lgcols(x) != l+1) pari_err_TYPE("mathouseholder", x);
+      pari_APPLY_same(RgC_ApplyAllQ(Q, gel(x,i), l));
+    case t_COL:
+      if (lg(x) == l+1) return RgC_ApplyAllQ(Q, x, l);
   }
-  return RgC_ApplyAllQ(Q, v, l);
+  pari_err_TYPE("mathouseholder", x);
+  return NULL; /* LCOV_EXCL_LINE */
 }
 
 GEN

@@ -113,26 +113,21 @@ get_tau(struct rnfkummer *kum)
   kum->tau.zk = nfgaloismatrix(bnf_get_nf(kum->bnfz), kum->tau.x);
 }
 
-static GEN tauofvec(GEN x, tau_s *tau);
+static GEN RgV_tau(GEN x, tau_s *tau);
 static GEN
-tauofelt(GEN x, tau_s *tau)
+Rg_tau(GEN x, tau_s *tau)
 {
   switch(typ(x))
   {
     case t_INT: case t_FRAC: return x;
     case t_COL: return RgM_RgC_mul(tau->zk, x);
-    case t_MAT: return mkmat2(tauofvec(gel(x,1), tau), gel(x,2));
-    default: pari_err_TYPE("tauofelt",x); return NULL;/*LCOV_EXCL_LINE*/
+    case t_MAT: return mkmat2(RgV_tau(gel(x,1), tau), gel(x,2));
+    default: pari_err_TYPE("Rg_tau",x); return NULL;/*LCOV_EXCL_LINE*/
   }
 }
 static GEN
-tauofvec(GEN x, tau_s *tau)
-{
-  long i, l;
-  GEN y = cgetg_copy(x, &l);
-  for (i=1; i<l; i++) gel(y,i) = tauofelt(gel(x,i), tau);
-  return y;
-}
+RgV_tau(GEN x, tau_s *tau)
+{ pari_APPLY_same(Rg_tau(gel(x,i), tau)); }
 /* [x, tau(x), ..., tau^(m-1)(x)] */
 static GEN
 powtau(GEN x, long m, tau_s *tau)
@@ -140,7 +135,7 @@ powtau(GEN x, long m, tau_s *tau)
   GEN y = cgetg(m+1, t_VEC);
   long i;
   gel(y,1) = x;
-  for (i=2; i<=m; i++) gel(y,i) = tauofelt(gel(y,i-1), tau);
+  for (i=2; i<=m; i++) gel(y,i) = Rg_tau(gel(y,i-1), tau);
   return y;
 }
 /* x^lambda */
@@ -153,7 +148,7 @@ lambdaofelt(GEN x, toK_s *T)
   for (i=1; i<m; i++)
   {
     y = famat_mulpows_shallow(y, x, uel(powg,m-i+1));
-    x = tauofelt(x, tau);
+    x = Rg_tau(x, tau);
   }
   return famat_mul_shallow(y, x);
 }
@@ -166,12 +161,6 @@ lambdaofvec(GEN x, toK_s *T)
   return y;
 }
 
-static GEN
-tauofideal(GEN id, tau_s *tau)
-{
-  return ZM_hnfmodid(RgM_mul(tau->zk, id), gcoeff(id, 1,1));
-}
-
 static int
 prconj(GEN P, GEN Q, tau_s *tau)
 {
@@ -179,7 +168,7 @@ prconj(GEN P, GEN Q, tau_s *tau)
   for(;;)
   {
     if (ZC_prdvd(x,Q)) return 1;
-    x = FpC_red(tauofelt(x, tau), p);
+    x = FpC_red(Rg_tau(x, tau), p);
     if (ZC_prdvd(x,P)) return 0;
   }
 }
@@ -669,7 +658,7 @@ kervirtualunit(struct rnfkummer *kum, GEN vselmer)
       }
     }
     gel(vell,j) = t; /* integral, not too far from primitive */
-    gel(vtau,j) = tauofelt(t, &kum->tau);
+    gel(vtau,j) = Rg_tau(t, &kum->tau);
   }
   U1 = vecslice(vell, 1, ru); /* units */
   U2 = vecslice(vell, ru+1, ru+rc); /* cycgen (mod ell-th powers) */
@@ -923,7 +912,8 @@ _rnfkummer_step4(struct rnfkummer *kum, long d, long m)
 
   for (j = 1; j <= rc; j++)
   {
-    GEN t = tauofideal(gel(gen,j), &kum->tau);
+    GEN t = gel(gen,j);
+    t = ZM_hnfmodid(RgM_mul(kum->tau.zk, t), gcoeff(t, 1,1)); /* tau(t) */
     isprincipalell(kum->bnfz, t, cycgenmod,ell,rc, &gel(T,j), &gel(B,j));
   }
   Q = Flm_ker(Flm_Fl_sub(Flm_transpose(T), kum->g, ell), ell);
@@ -937,7 +927,7 @@ _rnfkummer_step4(struct rnfkummer *kum, long d, long m)
   for (j = 1; j < m; j++)
   {
     GEN Tj = Flm_Fl_mul(gel(vT,m-j), Fl_mul(j,d,ell), ell);
-    gel(vB, j) = tauofvec(j == 1? B: gel(vB, j-1), &kum->tau);
+    gel(vB, j) = RgV_tau(j == 1? B: gel(vB, j-1), &kum->tau);
     for (i = 1; i <= rc; i++) gmael(vz, i, j) = gel(Tj, i);
   }
   vB = shallowconcat1(vB);
