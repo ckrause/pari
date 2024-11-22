@@ -132,22 +132,13 @@ centermod_i(GEN x, GEN p, GEN ps2)
       }
       return normalizepol_lg(y, lx);
 
-    case t_COL: lx = lg(x);
-      y = cgetg(lx,t_COL);
-      for (i=1; i<lx; i++) gel(y,i) = centermodii(gel(x,i),p,ps2);
-      return y;
-
-    case t_MAT: lx = lg(x);
-      y = cgetg(lx,t_MAT);
-      for (i=1; i<lx; i++) gel(y,i) = centermod_i(gel(x,i),p,ps2);
-      return y;
+    case t_COL: pari_APPLY_same(centermodii(gel(x,i),p,ps2));
+    case t_MAT: pari_APPLY_same(centermod_i(gel(x,i),p,ps2));
 
     case t_VECSMALL: lx = lg(x);
     {
       ulong pp = itou(p), pps2 = itou(ps2);
-      y = cgetg(lx,t_VECSMALL);
-      for (i=1; i<lx; i++) y[i] = s_centermod(x[i], pp, pps2);
-      return y;
+      pari_APPLY_long(s_centermod(x[i], pp, pps2));
     }
   }
   return x;
@@ -2255,7 +2246,6 @@ Q_remove_denom(GEN x, GEN *ptd)
 GEN
 Q_muli_to_int(GEN x, GEN d)
 {
-  long i, l;
   GEN y, xn, xd;
   pari_sp av;
 
@@ -2284,15 +2274,11 @@ Q_muli_to_int(GEN x, GEN d)
       gel(y,2) = Q_muli_to_int(gel(x,2),d);
       gel(y,3) = Q_muli_to_int(gel(x,3),d); return y;
 
-    case t_VEC: case t_COL: case t_MAT:
-      y = cgetg_copy(x, &l);
-      for (i=1; i<l; i++) gel(y,i) = Q_muli_to_int(gel(x,i), d);
-      return y;
-
-    case t_POL: case t_SER:
-      y = cgetg_copy(x, &l); y[1] = x[1];
-      for (i=2; i<l; i++) gel(y,i) = Q_muli_to_int(gel(x,i), d);
-      return y;
+    case t_VEC:
+    case t_COL:
+    case t_MAT: pari_APPLY_same(Q_muli_to_int(gel(x,i), d));
+    case t_POL: pari_APPLY_pol_normalized(Q_muli_to_int(gel(x,i), d));
+    case t_SER: pari_APPLY_ser_normalized(Q_muli_to_int(gel(x,i), d));
 
     case t_POLMOD:
       retmkpolmod(Q_muli_to_int(gel(x,2), d), RgX_copy(gel(x,1)));
@@ -2366,7 +2352,6 @@ RgX_rescale_to_int(GEN x)
 static GEN
 Q_divmuli_to_int(GEN x, GEN d, GEN n)
 {
-  long i, l;
   GEN y, xn, xd;
   pari_sp av;
 
@@ -2382,15 +2367,10 @@ Q_divmuli_to_int(GEN x, GEN d, GEN n)
       y = mulii(diviiexact(xn, d), diviiexact(n, xd));
       return gerepileuptoint(av, y);
 
-    case t_VEC: case t_COL: case t_MAT:
-      y = cgetg_copy(x, &l);
-      for (i=1; i<l; i++) gel(y,i) = Q_divmuli_to_int(gel(x,i), d,n);
-      return y;
-
-    case t_POL:
-      y = cgetg_copy(x, &l); y[1] = x[1];
-      for (i=2; i<l; i++) gel(y,i) = Q_divmuli_to_int(gel(x,i), d,n);
-      return y;
+    case t_VEC:
+    case t_COL:
+    case t_MAT: pari_APPLY_same(Q_divmuli_to_int(gel(x,i), d,n));
+    case t_POL: pari_APPLY_pol_normalized(Q_divmuli_to_int(gel(x,i), d,n));
 
     case t_RFRAC:
       av = avma;
@@ -2407,23 +2387,15 @@ Q_divmuli_to_int(GEN x, GEN d, GEN n)
 static GEN
 Q_divi_to_int(GEN x, GEN d)
 {
-  long i, l;
-  GEN y;
-
   switch(typ(x))
   {
     case t_INT:
       return diviiexact(x,d);
 
-    case t_VEC: case t_COL: case t_MAT:
-      y = cgetg_copy(x, &l);
-      for (i=1; i<l; i++) gel(y,i) = Q_divi_to_int(gel(x,i), d);
-      return y;
-
-    case t_POL:
-      y = cgetg_copy(x, &l); y[1] = x[1];
-      for (i=2; i<l; i++) gel(y,i) = Q_divi_to_int(gel(x,i), d);
-      return y;
+    case t_VEC:
+    case t_COL:
+    case t_MAT: pari_APPLY_same(Q_divi_to_int(gel(x,i), d));
+    case t_POL: pari_APPLY_pol_normalized(Q_divi_to_int(gel(x,i), d));
 
     case t_RFRAC:
       return gdiv(x,d);

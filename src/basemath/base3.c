@@ -1172,12 +1172,7 @@ nf_to_scalar_or_basis(GEN nf, GEN x)
  * No consistency checks, not memory-clean. */
 GEN
 RgX_to_nfX(GEN nf, GEN x)
-{
-  long i, l;
-  GEN y = cgetg_copy(x, &l); y[1] = x[1];
-  for (i=2; i<l; i++) gel(y,i) = nf_to_scalar_or_basis(nf, gel(x,i));
-  return y;
-}
+{ pari_APPLY_pol_normalized(nf_to_scalar_or_basis(nf, gel(x,i))); }
 
 /* Assume nf is a genuine nf. */
 GEN
@@ -3107,15 +3102,10 @@ ZMV_ZCV_mul(GEN U, GEN y)
   }
   return z;
 }
-/* A * (U[1], ..., U[d] */
+/* A * (x[1], ..., x[d] */
 static GEN
-ZM_ZMV_mul(GEN A, GEN U)
-{
-  long i, l;
-  GEN V = cgetg_copy(U,&l);
-  for (i = 1; i < l; i++) gel(V,i) = ZM_mul(A,gel(U,i));
-  return V;
-}
+ZM_ZMV_mul(GEN A, GEN x)
+{ pari_APPLY_same(ZM_mul(A,gel(x,i))); }
 
 /* a = 1 mod pr, sprk mod pr^e, e >= 1 */
 static GEN

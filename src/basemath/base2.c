@@ -2812,8 +2812,8 @@ GEN
 nfmodprlift(GEN nf, GEN x, GEN pr)
 {
   pari_sp av = avma;
-  GEN y, T, p, modpr;
-  long i, l, d;
+  GEN T, p, modpr;
+  long d;
   nf = checknf(nf);
   switch(typ(x))
   {
@@ -2821,9 +2821,7 @@ nfmodprlift(GEN nf, GEN x, GEN pr)
     case t_INTMOD: return icopy(gel(x,2));
     case t_FFELT: break;
     case t_VEC: case t_COL: case t_MAT:
-      y = cgetg_copy(x,&l);
-      for (i = 1; i < l; i++) gel(y,i) = nfmodprlift(nf,gel(x,i),pr);
-      return y;
+      pari_APPLY_same(nfmodprlift(nf,gel(x,i),pr));
     default: pari_err_TYPE("nfmodprlit",x);
   }
   x = FF_to_FpXQ(x);
@@ -3433,13 +3431,8 @@ RgX_nffix(const char *f, GEN T, GEN P, int lift)
   return normalizepol_lg(Q, l);
 }
 GEN
-RgV_nffix(const char *f, GEN T, GEN P, int lift)
-{
-  long i, l;
-  GEN Q = cgetg_copy(P, &l);
-  for (i=1; i<l; i++) gel(Q,i) = Rg_nffix(f, T, gel(P,i), lift);
-  return Q;
-}
+RgV_nffix(const char *f, GEN T, GEN x, int lift)
+{ pari_APPLY_same(Rg_nffix(f, T, gel(x,i), lift)); }
 
 static GEN
 get_d(GEN nf, GEN d)
@@ -3662,12 +3655,7 @@ RESTART:
 
 static GEN
 RgX_to_algX(GEN nf, GEN x)
-{
-  long i, l;
-  GEN y = cgetg_copy(x, &l); y[1] = x[1];
-  for (i=2; i<l; i++) gel(y,i) = nf_to_scalar_or_alg(nf, gel(x,i));
-  return y;
-}
+{ pari_APPLY_pol_normalized(nf_to_scalar_or_alg(nf, gel(x,i))); }
 
 GEN
 nfX_to_monic(GEN nf, GEN T, GEN *pL)
