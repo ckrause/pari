@@ -300,34 +300,22 @@ The second parameter in mygprec is the precision in base 2 */
 static GEN
 mygprec(GEN x, long bit)
 {
-  long lx, i, e, prec;
-  GEN y;
-
+  long e, prec;
   if (bit < 0) bit = 0; /* should rarely happen */
   e = gexpo(x) - bit;
   prec = nbits2prec(bit);
   switch(typ(x))
   {
-    case t_POL:
-      y = cgetg_copy(x, &lx); y[1] = x[1];
-      for (i=2; i<lx; i++) gel(y,i) = mygprecrc(gel(x,i),prec,e);
-      break;
-
-    default: y = mygprecrc(x,prec,e);
+    case t_POL: pari_APPLY_pol_normalized(mygprecrc(gel(x,i),prec,e));
+    default: return mygprecrc(x,prec,e);
   }
-  return y;
 }
 
-/* normalize a polynomial p, that is change it with coefficients in Z[i],
+/* normalize a polynomial x, that is change it with coefficients in Z[i],
 after making product by 2^shift */
 static GEN
-pol_to_gaussint(GEN p, long shift)
-{
-  long i, l = lg(p);
-  GEN q = cgetg(l, t_POL); q[1] = p[1];
-  for (i=2; i<l; i++) gel(q,i) = gtrunc2n(gel(p,i), shift);
-  return q;
-}
+pol_to_gaussint(GEN x, long shift)
+{ pari_APPLY_pol_normalized(gtrunc2n(gel(x,i), shift)); }
 
 /* returns a polynomial q in Z[i][x] keeping bit bits of p */
 static GEN
@@ -1713,22 +1701,12 @@ mygprecrc_special(GEN x, long prec, long e)
 static GEN
 mygprec_special(GEN x, long bit)
 {
-  long lx, i, e, prec;
-  GEN y;
-
-  if (bit < 0) bit = 0; /* should not happen */
-  e = gexpo(x) - bit;
-  prec = nbits2prec(bit);
+  long e = gexpo(x) - bit, prec = nbits2prec(bit);
   switch(typ(x))
   {
-    case t_POL:
-      y = cgetg_copy(x, &lx); y[1] = x[1];
-      for (i=2; i<lx; i++) gel(y,i) = mygprecrc_special(gel(x,i),prec,e);
-      break;
-
-    default: y = mygprecrc_special(x,prec,e);
+    case t_POL: pari_APPLY_pol_normalized(mygprecrc_special(gel(x,i),prec,e));
+    default: return mygprecrc_special(x,prec,e);
   }
-  return y;
 }
 
 static GEN
