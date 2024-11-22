@@ -79,6 +79,15 @@ extern const long CATCH_ALL;
     return normalizepol_lg(_y, _l);\
   }
 
+#define pari_APPLY_ZX(EXPR)\
+  { \
+    long i, _l; \
+    GEN _y = cgetg_copy(x, &_l); _y[1] = x[1];\
+    if (_l == 2) return _y;\
+    for (i=2; i<_l; i++) gel(_y,i) = EXPR;\
+    return ZX_renormalize(_y, _l);\
+  }
+
 #define pari_APPLY_pol_normalized(EXPR)\
   { \
     long i, _l; \

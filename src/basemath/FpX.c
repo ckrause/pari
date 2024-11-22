@@ -208,13 +208,7 @@ FpX_Fp_sub_shallow(GEN y,GEN x,GEN p)
 
 GEN
 FpX_neg(GEN x,GEN p)
-{
-  long i, lx = lg(x);
-  GEN y = cgetg(lx,t_POL);
-  y[1] = x[1];
-  for(i=2; i<lx; i++) gel(y,i) = Fp_neg(gel(x,i), p);
-  return ZX_renormalize(y, lx);
-}
+{ pari_APPLY_ZX(Fp_neg(gel(x,i), p)); }
 
 static GEN
 FpX_subspec(GEN x,GEN y,GEN p, long nx, long ny)
@@ -310,7 +304,7 @@ GEN
 FpX_mulu(GEN x, ulong t,GEN p)
 {
   t = umodui(t, p); if (!t) return zeropol(varn(x));
-  pari_APPLY_pol_normalized(Fp_mulu(gel(x,i), t, p));
+  pari_APPLY_ZX(Fp_mulu(gel(x,i), t, p));
 }
 
 GEN
