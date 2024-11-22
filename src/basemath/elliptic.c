@@ -1938,23 +1938,16 @@ oncurve(GEN e, GEN z)
      || expx < ellexpo(e) - pr + 5);
   return gc_bool(av,pr);
 }
-
+static GEN
+ellisoncurve_i(GEN e, GEN x) { return oncurve(e, x)? gen_1: gen_0; }
 GEN
 ellisoncurve(GEN e, GEN x)
 {
-  long i, tx = typ(x), lx;
-
   checkell(e);
-  if (!is_vec_t(tx)) pari_err_TYPE("ellisoncurve [point]", x);
-  lx = lg(x); if (lx==1) return cgetg(1,tx);
-  tx = typ(gel(x,1));
-  if (is_vec_t(tx))
-  {
-    GEN z = cgetg(lx,tx);
-    for (i=1; i<lx; i++) gel(z,i) = ellisoncurve(e,gel(x,i));
-    return z;
-  }
-  return oncurve(e, x)? gen_1: gen_0;
+  if (!is_vec_t(typ(x))) return gen_0;
+  if (lg(x) == 1) return leafcopy(x);
+  if (!is_vec_t(typ(gel(x,1)))) return ellisoncurve_i(e, x);
+  pari_APPLY_same(ellisoncurve_i(e,gel(x,i)));
 }
 
 /* y1 = y2 or -LHS0-y2 */

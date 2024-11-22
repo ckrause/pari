@@ -21,6 +21,7 @@ AP  14- alginit(nf,[a,b]) was only allowing a,b integral over the power basis
     15- missing type checks for change of variables in ellchangecurve,
         ellchangepoint, ellchangepointinv
     16- nfmodpr at deg 1 prime: "wrong" invisible variable in t_FFELT [#2580]
+    17- ellisoncurve: don't raise exception, return 0, 1 (or vector of such)
 
   Added
 AP   1- new GP function algnewprec
