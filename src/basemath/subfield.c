@@ -344,12 +344,8 @@ trace(GEN x, GEN Trq, GEN p)
 static GEN
 poltrace(GEN x, GEN Trq, GEN p)
 {
-  long i,l;
-  GEN y;
   if (typ(x) == t_INT || varn(x) != 0) return trace(x, Trq, p);
-  y = cgetg_copy(x, &l); y[1] = x[1];
-  for (i=2; i<l; i++) gel(y,i) = trace(gel(x,i),Trq,p);
-  return normalizepol_lg(y, l);
+  pari_APPLY_pol(trace(gel(x,i),Trq,p));
 }
 
 /* Find h in Fp[X] such that h(a[i]) = listdelta[i] for all modular factors

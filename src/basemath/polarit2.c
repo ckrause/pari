@@ -3774,12 +3774,7 @@ poldisc0(GEN x, long v)
     case t_QFB:
       return icopy(qfb_disc(x));
     case t_VEC: case t_COL: case t_MAT:
-    {
-      long i;
-      GEN z = cgetg_copy(x, &i);
-      for (i--; i; i--) gel(z,i) = poldisc0(gel(x,i), v);
-      return z;
-    }
+      pari_APPLY_same(poldisc0(gel(x,i), v));
   }
   if (v < 0) pari_err_TYPE("poldisc",x);
   av = avma; v0 = fetch_var_higher();

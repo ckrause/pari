@@ -1227,13 +1227,8 @@ ne2_to_xy(GEN t)
   return mkvec2(u, v);
 }
 static GEN
-ne2V_to_xyV(GEN v)
-{
-  long i, l;
-  GEN w = cgetg_copy(v,&l);
-  for (i=1; i<l; i++) gel(w,i) = ne2_to_xy(gel(v,i));
-  return w;
-}
+ne2V_to_xyV(GEN x)
+{ pari_APPLY_same(ne2_to_xy(gel(x,i))); }
 
 static GEN
 sol_0(void) { retmkvec( mkvec2(gen_0,gen_0) ); }

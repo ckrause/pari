@@ -202,12 +202,8 @@ Zp_to_Z(GEN x, GEN p) {
 }
 /* shallow */
 static GEN
-ZpX_to_ZX(GEN f, GEN p) {
-  long i, l = lg(f);
-  GEN F = cgetg_copy(f, &l); F[1] = f[1];
-  for (i=2; i<l; i++) gel(F,i) = Zp_to_Z(gel(f,i), p);
-  return F;
-}
+ZpX_to_ZX(GEN x, GEN p)
+{ pari_APPLY_pol_normalized(Zp_to_Z(gel(x,i), p)); }
 
 static GEN
 get_padic_content(GEN f, GEN p)

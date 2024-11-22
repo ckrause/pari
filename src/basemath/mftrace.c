@@ -164,22 +164,11 @@ Qab_to_Fl(GEN P, ulong r, ulong p)
   return t;
 }
 static GEN
-QabC_to_Flc(GEN C, ulong r, ulong p)
-{
-  long i, l = lg(C);
-  GEN A = cgetg(l, t_VECSMALL);
-  for (i = 1; i < l; i++) uel(A,i) = Qab_to_Fl(gel(C,i), r, p);
-  return A;
-}
+QabC_to_Flc(GEN x, ulong r, ulong p)
+{ pari_APPLY_long( Qab_to_Fl(gel(x,i), r, p)); }
 static GEN
-QabM_to_Flm(GEN M, ulong r, ulong p)
-{
-  long i, l;
-  GEN A = cgetg_copy(M, &l);
-  for (i = 1; i < l; i++)
-    gel(A, i) = QabC_to_Flc(gel(M, i), r, p);
-  return A;
-}
+QabM_to_Flm(GEN x, ulong r, ulong p)
+{ pari_APPLY_same(QabC_to_Flc(gel(x, i), r, p);) }
 /* A a t_POL */
 static GEN
 QabX_to_Flx(GEN A, ulong r, ulong p)
@@ -917,26 +906,23 @@ chicompat(GEN CHI, GEN CHI1, GEN CHI2)
   T2 = o2 <= 2? gen_1: utoipos(O / o2);
   return mkvec4(P, T1, T2, O == o? gen_1: Qab_trace_init(O, o, P, Po));
 }
-/* *F a vector of cyclotomic numbers */
-static void
-compatlift(GEN *F, long o, GEN P)
+static GEN
+inflatemod(GEN f, long o, GEN P)
 {
-  long i, l;
-  GEN f = *F, g = cgetg_copy(f,&l);
-  for (i = 1; i < l; i++)
-  {
-    GEN fi = lift_shallow(gel(f,i));
-    gel(g,i) = gmodulo(typ(fi)==t_POL? RgX_inflate(fi,o): fi, P);
-  }
-  *F = g;
+  f = lift_shallow(f);
+  return gmodulo(typ(f)==t_POL? RgX_inflate(f,o): f, P);
 }
+static GEN
+RgV_inflatemod(GEN x, long o, GEN P)
+{ pari_APPLY_same(inflatemod(gel(x,i), o, P)); }
+/* *F a vector of cyclotomic numbers */
 static void
 chicompatlift(GEN T, GEN *F, GEN *G)
 {
   long o1 = itou(gel(T,2)), o2 = itou(gel(T,3));
   GEN P = gel(T,1);
-  if (o1 != 1) compatlift(F, o1, P);
-  if (o2 != 1 && G) compatlift(G, o2, P);
+  if (o1 != 1) *F = RgV_inflatemod(*F, o1, P);
+  if (o2 != 1 && G) *G = RgV_inflatemod(*G, o2, P);
 }
 static GEN
 chicompatfix(GEN T, GEN F)
@@ -1133,25 +1119,14 @@ Rg_embed1(GEN c, GEN vz)
   if (t == t_POL) c = RgX_RgV_eval(c, vz);
   return c;
 }
-/* return s(P) in C[X] */
+/* return s(x) in C[X] */
 static GEN
-RgX_embed1(GEN P, GEN vz)
-{
-  long i, l;
-  GEN Q = cgetg_copy(P, &l);
-  Q[1] = P[1];
-  for (i = 2; i < l; i++) gel(Q,i) = Rg_embed1(gel(P,i), vz);
-  return normalizepol_lg(Q,l); /* normally a no-op */
-}
-/* return s(P) in C^n */
+RgX_embed1(GEN x, GEN vz)
+{ pari_APPLY_pol(Rg_embed1(gel(x,i), vz)); }
+/* return s(x) in C^n */
 static GEN
-vecembed1(GEN P, GEN vz)
-{
-  long i, l;
-  GEN Q = cgetg_copy(P, &l);
-  for (i = 1; i < l; i++) gel(Q,i) = Rg_embed1(gel(P,i), vz);
-  return Q;
-}
+vecembed1(GEN x, GEN vz)
+{ pari_APPLY_same(Rg_embed1(gel(x,i), vz)); }
 /* P in L = K[X]/(U), K = Q[t]/T; s an embedding of K -> C attached
  * to a root of T, extended to an embedding of L -> C attached to a root
  * of s(U); vT powers of the root of T, vU powers of the root of s(U).
@@ -1159,32 +1134,17 @@ vecembed1(GEN P, GEN vz)
 static GEN
 Rg_embed2(GEN P, long vt, GEN vT, GEN vU)
 {
-  long i, l;
-  GEN Q;
   P = liftpol_shallow(P);
   if (typ(P) != t_POL) return P;
   if (varn(P) == vt) return Rg_embed1(P, vT);
-  /* varn(P) == vx */
-  Q = cgetg_copy(P, &l); Q[1] = P[1];
-  for (i = 2; i < l; i++) gel(Q,i) = Rg_embed1(gel(P,i), vT);
-  return Rg_embed1(Q, vU);
+  return Rg_embed1(RgX_embed1(P, vT), vU); /* varn(P) == vx */
 }
 static GEN
-vecembed2(GEN P, long vt, GEN vT, GEN vU)
-{
-  long i, l;
-  GEN Q = cgetg_copy(P, &l);
-  for (i = 1; i < l; i++) gel(Q,i) = Rg_embed2(gel(P,i), vt, vT, vU);
-  return Q;
-}
+vecembed2(GEN x, long vt, GEN vT, GEN vU)
+{ pari_APPLY_same(Rg_embed2(gel(x,i), vt, vT, vU)); }
 static GEN
-RgX_embed2(GEN P, long vt, GEN vT, GEN vU)
-{
-  long i, l;
-  GEN Q = cgetg_copy(P, &l);
-  for (i = 2; i < l; i++) gel(Q,i) = Rg_embed2(gel(P,i), vt, vT, vU);
-  Q[1] = P[1]; return normalizepol_lg(Q,l);
-}
+RgX_embed2(GEN x, long vt, GEN vT, GEN vU)
+{ pari_APPLY_pol(Rg_embed2(gel(x,i), vt, vT, vU)); }
 /* embed polynomial f in variable 0 [ may be a scalar ], E from getembed */
 static GEN
 RgX_embed(GEN f, GEN E)
@@ -1213,25 +1173,17 @@ mfvecembed(GEN E, GEN v)
   return v;
 }
 GEN
-mfmatembed(GEN E, GEN f)
+mfmatembed(GEN E, GEN x)
 {
-  long i, l;
-  GEN g;
-  if (lg(E) == 1) return f;
-  g = cgetg_copy(f, &l);
-  for (i = 1; i < l; i++) gel(g,i) = mfvecembed(E, gel(f,i));
-  return g;
+  if (lg(E) == 1) return x;
+  pari_APPLY_same(mfvecembed(E, gel(x,i)));
 }
 /* embed vector of polynomials in var 0 */
 static GEN
-RgXV_embed(GEN f, GEN E)
+RgXV_embed(GEN x, GEN E)
 {
-  long i, l;
-  GEN v;
-  if (lg(E) == 1) return f;
-  v = cgetg_copy(f, &l);
-  for (i = 1; i < l; i++) gel(v,i) = RgX_embed(gel(f,i), E);
-  return v;
+  if (lg(E) == 1) return x;
+  pari_APPLY_same(RgX_embed(gel(x,i), E));
 }
 
 /* embed scalar */
@@ -1669,15 +1621,8 @@ mfcoefs_i(GEN F, long n, long d)
 }
 
 static GEN
-matdeflate(long n, long d, GEN M)
-{
-  long i, l;
-  GEN A;
-  /*  if (d == 1) return M; */
-  A = cgetg_copy(M,&l);
-  for (i = 1; i < l; i++) gel(A,i) = c_deflate(n,d,gel(M,i));
-  return A;
-}
+matdeflate(long n, long d, GEN x)
+{ pari_APPLY_same(c_deflate(n,d,gel(x,i))); }
 static int
 space_is_cusp(long space) { return space != mf_FULL && space != mf_EISEN; }
 /* safe with flraw mf */
@@ -4929,29 +4874,23 @@ nfcontent(GEN nf, GEN v)
   return c;
 }
 static GEN
-nf_primpart(GEN nf, GEN B)
+nf_primpart(GEN nf, GEN x)
 {
-  switch(typ(B))
+  switch(typ(x))
   {
     case t_COL:
     {
-      GEN A = matalgtobasis(nf, B), c = nfcontent(nf, A);
-      if (typ(c) == t_INT) return B;
+      GEN A = matalgtobasis(nf, x), c = nfcontent(nf, A);
+      if (typ(c) == t_INT) return x;
       c = idealred_elt(nf,c);
       A = Q_primpart( nfC_nf_mul(nf, A, Q_primpart(nfinv(nf,c))) );
       A = liftpol_shallow( matbasistoalg(nf, A) );
-      if (gexpo(A) > gexpo(B)) A = B;
+      if (gexpo(A) > gexpo(x)) A = x;
       return A;
     }
-    case t_MAT:
-    {
-      long i, l;
-      GEN A = cgetg_copy(B, &l);
-      for (i = 1; i < l; i++) gel(A,i) = nf_primpart(nf, gel(B,i));
-      return A;
-    }
+    case t_MAT: pari_APPLY_same(nf_primpart(nf, gel(x,i)));
     default:
-      pari_err_TYPE("nf_primpart", B);
+      pari_err_TYPE("nf_primpart", x);
       return NULL; /*LCOV_EXCL_LINE*/
   }
 }
@@ -6255,34 +6194,24 @@ mfdiheval(GEN bnr, GEN w, GEN a)
   return Flv_dotproduct(chin, L, ordmax);
 }
 
-/* A(x^k) mod T = polcyclo(m), 0 <= k < m */
+/* x(t^k) mod T = polcyclo(m), 0 <= k < m */
 static GEN
-Galois(GEN A, long k, GEN T, long m)
+Galois(GEN x, long k, GEN T, long m)
 {
   GEN B;
   long i, ik, d;
-  if (typ(A) != t_POL) return A;
-  if (varn(A) != varn(T))
-  {
-    B = cgetg_copy(A, &d); B[1] = A[1];
-    for (i = 2; i < d; i++) gel(B, i) = Galois(gel(A, i), k, T, m);
-    return B;
-  }
-  if ((d = degpol(A)) <= 0) return A;
-  B = cgetg(m + 2, t_POL); B[1] = A[1]; gel(B,2) = gel(A,2);
+  if (typ(x) != t_POL) return x;
+  if (varn(x) != varn(T)) pari_APPLY_pol_normalized(Galois(gel(x,i), k, T, m));
+  if ((d = degpol(x)) <= 0) return x;
+  B = cgetg(m + 2, t_POL); B[1] = x[1]; gel(B,2) = gel(x,2);
   for (i = 1; i < m; i++) gel(B, i+2) = gen_0;
   for (i = 1, ik = k; i <= d; i++, ik = Fl_add(ik, k, m))
-    gel(B, ik + 2) = gel(A, i+2);
+    gel(B, ik + 2) = gel(x, i+2);
   return QX_ZX_rem(normalizepol(B), T);
 }
 static GEN
-vecGalois(GEN v, long k, GEN T, long m)
-{
-  long i, l;
-  GEN w = cgetg_copy(v,&l);
-  for (i = 1; i < l; i++) gel(w,i) = Galois(gel(v,i), k, T, m);
-  return w;
-}
+vecGalois(GEN x, long k, GEN T, long m)
+{ pari_APPLY_same(Galois(gel(x,i), k, T, m)); }
 
 static GEN
 fix_pol(GEN S, GEN Pn, int *trace)
@@ -7456,19 +7385,12 @@ mfcheapeisen(GEN mf)
 }
 
 static GEN
-myimag_i(GEN tau)
+myimag_i(GEN x)
 {
-  long tc = typ(tau);
-  if (tc == t_INFINITY || tc == t_INT || tc == t_FRAC)
-    return gen_1;
-  if (tc == t_VEC)
-  {
-    long ltau, i;
-    GEN z = cgetg_copy(tau, &ltau);
-    for (i=1; i<ltau; i++) gel(z,i) = myimag_i(gel(tau,i));
-    return z;
-  }
-  return imag_i(tau);
+  long tc = typ(x);
+  if (tc == t_INFINITY || tc == t_INT || tc == t_FRAC) return gen_1;
+  if (tc == t_VEC) pari_APPLY_same(myimag_i(gel(x,i)));
+  return imag_i(x);
 }
 
 static GEN
@@ -11365,13 +11287,8 @@ Rg_approx(GEN t, long bit)
   return t;
 }
 static GEN
-RgV_approx(GEN v, long bit)
-{
-  long i, l = lg(v);
-  GEN w = cgetg_copy(v, &l);
-  for (i = 1; i < lg(v); i++) gel(w,i) = Rg_approx(gel(v,i), bit);
-  return w;
-}
+RgV_approx(GEN x, long bit)
+{ pari_APPLY_same(Rg_approx(gel(x,i), bit)); }
 /* m != 2 (mod 4), D t_INT; V has "denominator" D, recognize in Q(zeta_m) */
 static GEN
 bestapprnf2(GEN V, long m, GEN D, long prec)
@@ -11636,25 +11553,24 @@ vecact_GL2(GEN x, GEN M, long k)
 { pari_APPLY_same(act_GL2(gel(x,i), M, k)); }
 
 static GEN
-normalizeapprox(GEN R, long bit)
+RgX_approx(GEN x, long bit)
+{ pari_APPLY_pol_normalized(Rg_approx(gel(x,i),bit)); }
+
+static GEN normalizeapprox(GEN x, long bit);
+static GEN
+normalizeapprox_i(GEN x, long bit)
 {
-  GEN X = gen_1, Q;
-  long i, l;
-  if (is_vec_t(typ(R)))
-  {
-    Q = cgetg_copy(R, &l);
-    for (i = 1; i < l; i++)
-    {
-      pari_sp av = avma;
-      gel(Q,i) = gerepileupto(av, normalizeapprox(gel(R,i), bit));
-    }
-    return Q;
-  }
-  if (typ(R) == t_RFRAC && varn(gel(R,2)) == 0) { X = gel(R,2); R = gel(R,1); }
-  if (typ(R) != t_POL || varn(R) != 0) return gdiv(R, X);
-  Q = cgetg_copy(R, &l); Q[1] = R[1];
-  for (i = 2; i < l; ++i) gel(Q,i) = Rg_approx(gel(R,i),bit);
-  Q = normalizepol_lg(Q,l); return gdiv(Q, X);
+  GEN D = gen_1;
+  if (is_vec_t(typ(x))) pari_APPLY_same(normalizeapprox(gel(x,i), bit));
+  if (typ(x) == t_RFRAC && varn(gel(x,2)) == 0) { D = gel(x,2); x = gel(x,1); }
+  if (typ(x) != t_POL || varn(x) != 0) return gdiv(x, D);
+  return gdiv(RgX_approx(x, bit), D);
+}
+static GEN
+normalizeapprox(GEN x, long bit)
+{
+  pari_sp av = avma;
+  return gerepileupto(av, normalizeapprox_i(x, bit));
 }
 
 /* make sure T is a t_POL in variable 0 */
@@ -12064,7 +11980,7 @@ mfperiodpols_i(GEN mf, GEN FE, GEN cosets, GEN *pvan, long bit)
       T2 = intAoo(van, nlim, gen_0,N, P, AR, k, prec);
     }
     T1 = gsub(T1, act_S(T2, k));
-    T1 = normalizeapprox(T1, bit-20);
+    T1 = normalizeapprox_i(T1, bit-20);
     vP = gprec_wtrunc(T1, prec);
   }
   else
@@ -12085,13 +12001,13 @@ mfperiodpols_i(GEN mf, GEN FE, GEN cosets, GEN *pvan, long bit)
       P2 = gel(intall, iS);
 
       P = act_S(isint1(c)? P2: gmul(c, P2), k);
-      P = normalizeapprox(gsub(P1, P), bit-20);
+      P = normalizeapprox_i(gsub(P1, P), bit-20);
       gel(vP,i) = gprec_wtrunc(P, prec);
       if (iS == i) continue;
 
       P = act_S(isint1(c)? P1: gmul(conj_i(c), P1), k);
       if (!odd(k)) P = gneg(P);
-      P = normalizeapprox(gadd(P, P2), bit-20);
+      P = normalizeapprox_i(gadd(P, P2), bit-20);
       gel(vP,iS) = gprec_wtrunc(P, prec);
     }
   }
@@ -12331,7 +12247,7 @@ mfsymbolevalpartial(GEN fs, GEN A, GEN ga, long bit)
     S = intAoo0(fs, A, ga, P, bit);
     S = RgX_embedall(S, F? mfgetembed(F,prec): fs_get_vE(fs));
   }
-  delete_var(); return normalizeapprox(S, bit-20);
+  delete_var(); return normalizeapprox_i(S, bit-20);
 }
 
 static GEN
@@ -12393,14 +12309,14 @@ mfsymboleval(GEN fs, GEN path, GEN ga, long bitprec)
       z2 = mfsymbolevalpartial(fs, be, ga, bitprec);
     z = gsub(z, z2);
     if (vabd) z = unact(z, vabd, k, prec);
-    return gerepileupto(av, normalizeapprox(z, bitprec-20));
+    return gerepileupto(av, normalizeapprox_i(z, bitprec-20));
   }
   else if (!tsc2)
   {
     GEN z = mfsymbolevalpartial(fs, be, ga, bitprec);
     if (c) z = gsub(mfsymboleval(fs, mkvec2(al, mkoo()), ga, bitprec), z);
     if (vabd) z = unact(z, vabd, k, prec);
-    return gerepileupto(av, normalizeapprox(z, bitprec-20));
+    return gerepileupto(av, normalizeapprox_i(z, bitprec-20));
   }
   if (F) pari_err_TYPE("mfsymboleval", fs);
   D = a*d-b*c;
@@ -12433,7 +12349,7 @@ mfsymboleval(GEN fs, GEN path, GEN ga, long bitprec)
   }
   if (vabd) S = unact(S, vabd, k, prec);
   S = RgX_embedall(S, fs_get_vE(fs));
-  return gerepileupto(av, normalizeapprox(S, bitprec-20));
+  return gerepileupto(av, normalizeapprox_i(S, bitprec-20));
 }
 
 /* v a scalar or t_POL; set *pw = a if expo(a) > E for some coefficient;
@@ -12453,14 +12369,10 @@ improve(GEN v, GEN *pw, long *E)
   }
 }
 static GEN
-polabstorel(GEN rnfeq, GEN T)
+polabstorel(GEN rnfeq, GEN x)
 {
-  long i, l;
-  GEN U;
-  if (typ(T) != t_POL) return T;
-  U = cgetg_copy(T, &l); U[1] = T[1];
-  for (i = 2; i < l; i++) gel(U,i) = eltabstorel(rnfeq, gel(T,i));
-  return U;
+  if (typ(x) != t_POL) return x;
+  pari_APPLY_pol_normalized(eltabstorel(rnfeq, gel(x,i)));
 }
 static GEN
 bestapprnfrel(GEN x, GEN polabs, GEN roabs, GEN rnfeq, long prec)

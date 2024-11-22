@@ -1527,12 +1527,8 @@ gtomp(GEN z, long prec)
 
 INLINE GEN
 RgX_gtofp(GEN x, long prec)
-{
-  long l;
-  GEN y = cgetg_copy(x, &l);
-  while (--l > 1) gel(y,l) = gtofp(gel(x,l), prec);
-  y[1] = x[1]; return y;
-}
+{ pari_APPLY_pol_normalized(gtofp(gel(x,i), prec)); }
+
 INLINE GEN
 RgC_gtofp(GEN x, long prec)
 { pari_APPLY_type(t_COL, gtofp(gel(x,i), prec)) }
@@ -2188,12 +2184,7 @@ ZXQ_sqr(GEN x, GEN T) { return ZX_rem(ZX_sqr(x), T); }
 
 INLINE GEN
 RgX_copy(GEN x)
-{
-  long lx, i;
-  GEN y = cgetg_copy(x, &lx); y[1] = x[1];
-  for (i = 2; i<lx; i++) gel(y,i) = gcopy(gel(x,i));
-  return y;
-}
+{ pari_APPLY_pol_normalized(gcopy(gel(x,i))); }
 /* have to use ulong to avoid silly warnings from gcc "assuming signed
  * overflow does not occur" */
 INLINE GEN
@@ -2352,12 +2343,7 @@ INLINE void
 RgM_dimensions(GEN x, long *m, long *n) { *n = lg(x)-1; *m = *n? nbrows(x): 0; }
 INLINE GEN
 RgM_shallowcopy(GEN x)
-{
-  long l;
-  GEN y = cgetg_copy(x, &l);
-  while (--l > 0) gel(y,l) = leafcopy(gel(x,l));
-  return y;
-}
+{ pari_APPLY_same(leafcopy(gel(x,i))); }
 INLINE GEN
 F2m_copy(GEN x) { return RgM_shallowcopy(x); }
 
