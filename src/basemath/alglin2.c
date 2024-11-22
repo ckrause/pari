@@ -1182,9 +1182,6 @@ GEN
 gnorm(GEN x)
 {
   pari_sp av;
-  long lx, i;
-  GEN y;
-
   switch(typ(x))
   {
     case t_INT:  return sqri(x);
@@ -1197,9 +1194,7 @@ gnorm(GEN x)
       return gerepileupto(av, greal(gmul(conj_i(x),x)));
 
     case t_FFELT:
-      y = cgetg(3, t_INTMOD);
-      gel(y,1) = FF_p(x);
-      gel(y,2) = FF_norm(x); return y;
+      retmkintmod(FF_norm(x), FF_p(x));
 
     case t_POLMOD:
     {
@@ -1208,9 +1203,7 @@ gnorm(GEN x)
       return RgXQ_norm(a, T);
     }
     case t_VEC: case t_COL: case t_MAT:
-      y = cgetg_copy(x, &lx);
-      for (i=1; i<lx; i++) gel(y,i) = gnorm(gel(x,i));
-      return y;
+      pari_APPLY_same(gnorm(gel(x,i)));
   }
   pari_err_TYPE("gnorm",x);
   return NULL; /* LCOV_EXCL_LINE */
@@ -1470,7 +1463,7 @@ GEN
 gtrace(GEN x)
 {
   pari_sp av;
-  long i, lx, tx = typ(x);
+  long lx, tx = typ(x);
   GEN y, z;
 
   switch(tx)
@@ -1491,15 +1484,10 @@ gtrace(GEN x)
       return gmul2n(gel(x,2),1);
 
     case t_POL:
-      y = cgetg_copy(x, &lx); y[1] = x[1];
-      for (i=2; i<lx; i++) gel(y,i) = gtrace(gel(x,i));
-      return normalizepol_lg(y, lx);
-
+      pari_APPLY_pol(gtrace(gel(x,i)));
     case t_SER:
       if (ser_isexactzero(x)) return gcopy(x);
-      y = cgetg_copy(x, &lx); y[1] = x[1];
-      for (i=2; i<lx; i++) gel(y,i) = gtrace(gel(x,i));
-      return normalizeser(y);
+      pari_APPLY_ser(gtrace(gel(x,i)));
 
     case t_POLMOD:
       y = gel(x,1); z = gel(x,2);
@@ -1508,18 +1496,13 @@ gtrace(GEN x)
       return gerepileupto(av, RgXQ_trace(z, y));
 
     case t_FFELT:
-      y=cgetg(3, t_INTMOD);
-      gel(y,1) = FF_p(x);
-      gel(y,2) = FF_trace(x);
-      return y;
+      retmkintmod(FF_trace(x), FF_p(x));
 
     case t_RFRAC:
       av = avma; return gerepileupto(av, gadd(x, conj_i(x)));
 
     case t_VEC: case t_COL:
-      y = cgetg_copy(x, &lx);
-      for (i=1; i<lx; i++) gel(y,i) = gtrace(gel(x,i));
-      return y;
+      pari_APPLY_same(gtrace(gel(x,i)));
 
     case t_MAT:
       lx = lg(x); if (lx == 1) return gen_0;

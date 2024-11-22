@@ -605,81 +605,38 @@ gen_matmul(GEN A, GEN B, void *E, const struct bb_field *ff)
 }
 
 static GEN
-gen_colneg(GEN A, void *E, const struct bb_field *ff)
-{
-  long i, l;
-  GEN B = cgetg_copy(A, &l);
-  for (i = 1; i < l; i++)
-    gel(B, i) = ff->neg(E, gel(A, i));
-  return B;
-}
+gen_colneg(GEN x, void *E, const struct bb_field *ff)
+{ pari_APPLY_same(ff->neg(E, gel(x,i))); }
 
 static GEN
-gen_matneg(GEN A, void *E, const struct bb_field *ff)
-{
-  long i, l;
-  GEN B = cgetg_copy(A, &l);
-  for (i = 1; i < l; i++)
-    gel(B, i) = gen_colneg(gel(A, i), E, ff);
-  return B;
-}
+gen_matneg(GEN x, void *E, const struct bb_field *ff)
+{ pari_APPLY_same(gen_colneg(gel(x,i), E, ff)); }
 
 static GEN
-gen_colscalmul(GEN A, GEN b, void *E, const struct bb_field *ff)
-{
-  long i, l;
-  GEN B = cgetg_copy(A, &l);
-  for (i = 1; i < l; i++)
-    gel(B, i) = ff->red(E, ff->mul(E, gel(A, i), b));
-  return B;
-}
+gen_colscalmul(GEN x, GEN b, void *E, const struct bb_field *ff)
+{ pari_APPLY_same(ff->red(E, ff->mul(E, gel(x,i), b))); }
 
 static GEN
-gen_matscalmul(GEN A, GEN b, void *E, const struct bb_field *ff)
-{
-  long i, l;
-  GEN B = cgetg_copy(A, &l);
-  for (i = 1; i < l; i++)
-    gel(B, i) = gen_colscalmul(gel(A, i), b, E, ff);
-  return B;
-}
+gen_matscalmul(GEN x, GEN b, void *E, const struct bb_field *ff)
+{ pari_APPLY_same(gen_colscalmul(gel(x,i), b, E, ff)); }
 
 static GEN
-gen_colsub(GEN A, GEN C, void *E, const struct bb_field *ff)
-{
-  long i, l;
-  GEN B = cgetg_copy(A, &l);
-  for (i = 1; i < l; i++)
-    gel(B, i) = ff->add(E, gel(A, i), ff->neg(E, gel(C, i)));
-  return B;
-}
+gen_colsub(GEN x, GEN y, void *E, const struct bb_field *ff)
+{ pari_APPLY_same(ff->add(E, gel(x,i), ff->neg(E, gel(y,i)))); }
 
 static GEN
-gen_matsub(GEN A, GEN C, void *E, const struct bb_field *ff)
-{
-  long i, l;
-  GEN B = cgetg_copy(A, &l);
-  for (i = 1; i < l; i++)
-    gel(B, i) = gen_colsub(gel(A, i), gel(C, i), E, ff);
-  return B;
-}
+gen_matsub(GEN x, GEN y, void *E, const struct bb_field *ff)
+{ pari_APPLY_same(gen_colsub(gel(x,i), gel(y,i), E, ff)); }
 
 static GEN
 gen_zerocol(long n, void* data, const struct bb_field *R)
-{
-  GEN C = cgetg(n+1,t_COL), zero = R->s(data, 0);
-  long i;
-  for (i=1; i<=n; i++) gel(C,i) = zero;
-  return C;
-}
+{ return const_col(n, R->s(data, 0)); }
 
 static GEN
 gen_zeromat(long m, long n, void* data, const struct bb_field *R)
 {
-  GEN M = cgetg(n+1,t_MAT);
-  long i;
-  for (i=1; i<=n; i++) gel(M,i) = gen_zerocol(m, data, R);
-  return M;
+  GEN M = const_vec(n, gen_zerocol(m, data, R));
+  settyp(M, t_MAT); return M;
 }
 
 static GEN
@@ -2806,11 +2763,8 @@ split_realimag_col(GEN z, long r1, long r2)
 GEN
 split_realimag(GEN x, long r1, long r2)
 {
-  long i,l; GEN y;
   if (typ(x) == t_COL) return split_realimag_col(x,r1,r2);
-  y = cgetg_copy(x, &l);
-  for (i=1; i<l; i++) gel(y,i) = split_realimag_col(gel(x,i), r1, r2);
-  return y;
+  pari_APPLY_same(split_realimag_col(gel(x,i), r1, r2));
 }
 
 /* assume M = (r1+r2) x (r1+2r2) matrix and y compatible vector or matrix
@@ -4597,14 +4551,8 @@ ZabM_inv_worker(GEN P, GEN A, GEN Q)
 }
 
 static GEN
-vecnorml1(GEN a)
-{
-  long i, l;
-  GEN g = cgetg_copy(a, &l);
-  for (i=1; i<l; i++)
-    gel(g, i) = gnorml1_fake(gel(a,i));
-  return g;
-}
+vecnorml1(GEN x)
+{ pari_APPLY_same(gnorml1_fake(gel(x,i))); }
 
 static GEN
 ZabM_true_Hadamard(GEN a)
