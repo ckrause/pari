@@ -1988,9 +1988,7 @@ gneg(GEN x)
 GEN
 gneg_i(GEN x)
 {
-  long lx, i;
   GEN y;
-
   switch(typ(x))
   {
     case t_INT:
@@ -2029,15 +2027,11 @@ gneg_i(GEN x)
       gel(y,2) = gneg_i(gel(x,2));
       gel(y,3) = gneg_i(gel(x,3)); break;
 
-    case t_VEC: case t_COL: case t_MAT:
-      y = cgetg_copy(x, &lx);
-      for (i=1; i<lx; i++) gel(y,i) = gneg_i(gel(x,i));
-      break;
-
-    case t_POL: case t_SER:
-      y = cgetg_copy(x, &lx); y[1]=x[1];
-      for (i=2; i<lx; i++) gel(y,i) = gneg_i(gel(x,i));
-      break;
+    case t_VEC:
+    case t_COL:
+    case t_MAT: pari_APPLY_same(gneg_i(gel(x,i)));
+    case t_POL: pari_APPLY_pol_normalized(gneg_i(gel(x,i)));
+    case t_SER: pari_APPLY_ser_normalized(gneg_i(gel(x,i)));
 
     case t_RFRAC:
       y = cgetg(3, t_RFRAC);
@@ -2665,15 +2659,10 @@ cvtop(GEN x, GEN p, long d)
 GEN
 gcvtop(GEN x, GEN p, long r)
 {
-  long i, lx;
-  GEN y;
-
   switch(typ(x))
   {
-    case t_POL: case t_SER:
-      y = cgetg_copy(x, &lx); y[1] = x[1];
-      for (i=2; i<lx; i++) gel(y,i) = gcvtop(gel(x,i),p,r);
-      return y;
+    case t_POL: pari_APPLY_pol_normalized(gcvtop(gel(x,i),p,r));
+    case t_SER: pari_APPLY_ser_normalized(gcvtop(gel(x,i),p,r));
     case t_POLMOD: case t_RFRAC: case t_VEC: case t_COL: case t_MAT:
       pari_APPLY_same(gcvtop(gel(x,i),p,r));
   }
