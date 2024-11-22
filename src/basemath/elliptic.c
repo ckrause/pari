@@ -125,12 +125,37 @@ nftoalg(GEN nf, GEN x)
   }
 }
 
+static int
+isptcoord(GEN x)
+{
+  switch(typ(x))
+  {
+    case t_INT:
+    case t_REAL:
+    case t_INTMOD:
+    case t_FRAC:
+    case t_FFELT:
+    case t_COMPLEX:
+    case t_PADIC:
+    case t_QUAD:
+    case t_POLMOD:
+    case t_POL:
+    case t_SER:
+    case t_RFRAC: return 1;
+  }
+  return 0;
+}
+
 /* typ(z) == t_VEC. Is it a point ? */
 static int
 vecispt(GEN z)
 {
-  long l = lg(z);
-  return l == 3 || (l == 2 && isintzero(gel(z,1)));
+  switch(lg(z))
+  {
+    case 2: return isintzero(gel(z,1));
+    case 3: return isptcoord(gel(z,1)) && isptcoord(gel(z,2));
+    default: return 0;
+  }
 }
 int
 checkellpt_i(GEN z)

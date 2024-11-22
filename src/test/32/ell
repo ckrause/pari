@@ -829,7 +829,7 @@ x^2 - 2
   *** ellchangepoint: incorrect type in ellchangepoint (t_INT).
   ***   at top-level: ellpointtoz(e,[1,[0]])
   ***                 ^----------------------
-  *** ellpointtoz: forbidden addition t_INT + t_VEC (1 elts).
+  *** ellpointtoz: incorrect type in ellpointtoz (t_VEC).
   ***   at top-level: ellpointtoz(E3,[1,[0]])
   ***                 ^-----------------------
   *** ellpointtoz: incorrect type in ellpointtoz (t_VEC).
@@ -866,4 +866,4 @@ x^2 - 2
   ***   at top-level: ellchangepointinv([0,0],chbug)
   ***                 ^------------------------------
   *** ellchangepointinv: incorrect type in ellchangepointinv (t_VECSMALL).
-Total time spent: 1206
+Total time spent: 1358
