@@ -1353,7 +1353,7 @@ RgF_to_Flxq(GEN F, GEN T, ulong p)
     for (i=1; i<_l; i++) \
     { GEN _z = EXPR;\
       if (!_z) return _z;\
-       gel(_y,i) = _z;\
+      gel(_y,i) = _z;\
     } return _y;\
   }
 
