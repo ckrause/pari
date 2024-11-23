@@ -855,3 +855,9 @@ vector(21,n,mfcoef(F,n-1))
 \\ #2572
 mf=mfinit([12,3,Mod(7,12)],1);F=mfbasis(mf)[1];
 mfslashexpansion(mf,F,[1,0;5,1],3,1)[4]
+
+\\ #2586
+mf=mfinit([27,2],0);f=mfeigenbasis(mf)[1];
+symb=mfsymbol(mf,f);a=(-1+sqrt(-3))/2;
+F(s,t)=mfsymboleval(symb,[s,t]);
+F(oo,0)+F(0,a)-F(oo,a)

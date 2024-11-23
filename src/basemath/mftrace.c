@@ -12315,6 +12315,7 @@ mfsymboleval(GEN fs, GEN path, GEN ga, long bitprec)
   {
     GEN z = mfsymbolevalpartial(fs, be, ga, bitprec);
     if (c) z = gsub(mfsymboleval(fs, mkvec2(al, mkoo()), ga, bitprec), z);
+    else z = gneg(z);
     if (vabd) z = unact(z, vabd, k, prec);
     return gerepileupto(av, normalizeapprox_i(z, bitprec-20));
   }
