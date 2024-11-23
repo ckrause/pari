@@ -371,10 +371,10 @@ if (ellan(e,100) != ellan(E,100),error("ellan"));
 P=ellchangepoint([0,1],[1,2,3,4])
 ellchangepointinv(P,[1,2,3,4])
 
-v = ['u,'r,'s,'t]; w = ['U,'R,'S,'T]; P = ['x,'y];
-vw = ellchangecompose(v,w)
+v = ['u,'r,'s,'t]; w = ['U,'R,'S,'T]; P = ['x,'y]; E = ellinit([0,1]);
+vw = ellchangecompose(E,v,w)
 ellchangepoint(ellchangepoint(P,v),w) == ellchangepoint(P,vw)
-iv = ellchangeinvert(v)
+iv = ellchangeinvert(E,v)
 ellchangepointinv(P,v) == ellchangepoint(P, iv)
 
 \\#1416

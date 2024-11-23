@@ -10,6 +10,12 @@ This file lists the incompatible changes between Version 2.x and older versions
      trap: use iferr() instead.
      listcreate, listkill: use L = List().
   - nfmodpr now returns a t_INTMOD when the residue field is Z/pZ
+  - ellchangepoint / ellchangepointinv: now require the elliptic curve as
+    first argument (to indicate the domain over which the transformation
+    is performed); backward compatibility is maintained for now:
+    ellchangepoint(P, urst) still works when it used to do; but
+    ellchangepoint(E, P, urst) now works also when E, P, urst are defined
+    over a number field with components in basis form
 
 * Specific to the PARI library:
 ===============================

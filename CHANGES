@@ -15,14 +15,13 @@ BA  10- paridecl.h could conflict with complex.h [#2583]
     11- forprime(p=524288,1048576,1) -> crash [#2584]
         forprime(p=1048607,1048617,1) -> oo loop
     12- printf("%10.6f", tiny rational) -> undefined result [#2576]
-    13- argument checks in ellchangepoint, ellchangepointinv
-AP  14- alginit(nf,[a,b]) was only allowing a,b integral over the power basis
+AP  13- alginit(nf,[a,b]) was only allowing a,b integral over the power basis
         instead of arbitrary algebraic integers.
-    15- missing type checks for change of variables in ellchangecurve,
+    14- missing type checks for change of variables in ellchangecurve,
         ellchangepoint, ellchangepointinv
-    16- nfmodpr at deg 1 prime: "wrong" invisible variable in t_FFELT [#2580]
-    17- ellisoncurve: don't raise exception, return 0, 1 (or vector of such)
-    18- [libpari] missing normalization in FpX_mulu (when p is not prime)
+    15- nfmodpr at deg 1 prime: "wrong" invisible variable in t_FFELT [#2580]
+    16- ellisoncurve: don't raise exception, return 0, 1 (or vector of such)
+    17- [libpari] missing normalization in FpX_mulu (when p is not prime)
 
   Added
 AP   1- new GP function algnewprec
@@ -57,6 +56,12 @@ AP   6- alginit: construction from Hasse invariants now allows a shortcut in the
 AP   7- alginit(nf,[a,b]) now allows a to be a square in nf.
      8- nfmodpr now returns a t_INTMOD when the residue field is Z/pZ
      9- [libpari] oncurve renamed ellisoncurve_i
+    10- ellchangepoint / ellchangepointinv: now require the elliptic curve as
+        first argument (to indicate the domain over which the transformation
+        is performed); backward compatibility is maintained for now:
+        ellchangepoint(P, urst) still works when it used to do; but
+        ellchangepoint(E, P, urst) now works also when E, P, urst are defined
+        over a number field with components in basis form
 
   Removed
 BA   1- GP function trap, use iferr instead.

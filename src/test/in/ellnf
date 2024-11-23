@@ -27,6 +27,12 @@ E2 = ellchangecurve(E, [17,0,0,0]);
 [ellcard(E2, P5), ellcard(E2, P13), ellcard(E2, P17)]
 [ellgroup(E2, P5), ellgroup(E2, P13), ellgroup(E2, P17)]
 E3 = ellchangecurve(E, [1/17,a,a+1,0]);
+w = matalgtobasis(nf4,[1/17,a,a+1,0]);
+E3 == ellchangecurve(E,w)
+ellchangepoint(E,['x,'y],w)
+ellchangepointinv(E,['x,'y],w)
+ellchangecompose(E,w,w)
+ellchangeinvert(E,w)
 ellap(E3, P17)
 ellan(E2,20)
 ellan(E3,20)

@@ -467,8 +467,8 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: chptell(x,y) ===> ellchangepoint(x,y)
 
-ellchangepoint(x,v): change data on point or vector of points x on an elliptic 
-curve according to v=[u,r,s,t].
+ellchangepoint(E,x,v): change data on point or vector of points x on an 
+elliptic curve according to v=[u,r,s,t].
 
 
   ***   at top-level: classno()
@@ -4499,4 +4499,4 @@ New syntax: texprint(x) ===> printtex(x)
 printtex({str}*): outputs its string arguments in TeX format.
 
 
-Total time spent: 2
+Total time spent: 14
