@@ -22,6 +22,7 @@ This file lists the incompatible changes between Version 2.x and older versions
      is no longer possible. Use
         polred0(mkvec2(x, gel(fa,1)), flag)
      instead. And preferably polredbest!
+   - oncurve was renamed to ellisoncurve_i
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.16 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - binomial changed to agree with Loeb's definition

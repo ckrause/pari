@@ -3406,7 +3406,7 @@ GEN     ellwp0(GEN w, GEN z, long flag, long prec);
 GEN     ellwpseries(GEN e, long v, long PRECDL);
 GEN     ellxn(GEN e, long n, long v);
 GEN     ellzeta(GEN om, GEN z, long prec);
-int     oncurve(GEN e, GEN z);
+int     ellisoncurve_i(GEN e, GEN z);
 GEN     orderell(GEN e, GEN p);
 GEN     pointell(GEN e, GEN z, long prec);
 GEN     point_to_a4a6(GEN E, GEN P, GEN p, GEN *pa4);

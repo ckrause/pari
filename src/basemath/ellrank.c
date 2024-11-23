@@ -1546,7 +1546,9 @@ check_oncurve(GEN ell, GEN v)
   for (i = 1; i < l; i++)
   {
     GEN P = gel(v, i);
-    if (lg(P) != 3 || !oncurve(ell,P)) pari_err_TYPE("ellrank",P);
+    if (!checkellpt_i(P) || ell_is_inf(P)
+                         || !RgV_is_QV(P)
+                         || !ellisoncurve_i(ell,P)) pari_err_TYPE("ellrank",P);
   }
 }
 

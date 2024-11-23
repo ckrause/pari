@@ -1938,18 +1938,18 @@ oncurve_exact(GEN e, GEN z)
   GEN A = ec_LHS_evalQ(e,z), B = ec_f_evalx(e,gel(z,1));
   return gc_bool(av, gequal(A, B));
 }
-/* Exactness of lhs and rhs in the following depends in nonobvious ways
+/* Assume e is an ell and z is an ellpt.
+ * Exactness of lhs and rhs in the following depends in nonobvious ways
  * on the coeffs of the curve as well as on the components of the point z.
  * Thus if e is exact, with a1==0, and z has exact y coordinate only, the
  * lhs will be exact but the rhs won't. */
 int
-oncurve(GEN e, GEN z)
+ellisoncurve_i(GEN e, GEN z)
 {
   GEN LHS, RHS, x;
   long pl, pr, ex, expx;
   pari_sp av;
 
-  if (!checkellpt_i(z)) return 0;
   if (ell_is_inf(z)) return 1; /* oo */
   if (ell_get_type(e) == t_ELL_NF) z = nfVtoalg(ellnf_get_nf(e), z);
   av = avma;
@@ -1967,16 +1967,17 @@ oncurve(GEN e, GEN z)
      || expx < ellexpo(e) - pr + 5);
   return gc_bool(av,pr);
 }
+/* assume e is an ell and x an ellpt */
 static GEN
-ellisoncurve_i(GEN e, GEN x) { return oncurve(e, x)? gen_1: gen_0; }
+gellisoncurve_i(GEN e, GEN x) { return ellisoncurve_i(e, x)? gen_1: gen_0; }
 GEN
 ellisoncurve(GEN e, GEN x)
 {
   int vec;
   checkell(e); vec = checkellpts(x, "ellisoncurve");
   if (lg(x) == 1) return leafcopy(x);
-  if (vec) pari_APPLY_same(ellisoncurve_i(e,gel(x,i)));
-  return ellisoncurve_i(e, x);
+  if (vec) pari_APPLY_same(gellisoncurve_i(e,gel(x,i)));
+  return gellisoncurve_i(e, x);
 }
 
 /* y1 = y2 or -LHS0-y2 */
@@ -6808,6 +6809,7 @@ prV_merge_factors(GEN nf, GEN L, GEN A)
   if (A) L = shallowconcat(L, gel(idealfactor(nf, A), 1));
   return gen_sort_uniq(L, (void*)cmp_prime_ideal, &cmp_nodata);
 }
+/* assume E is an ell and P an ellpt */
 static GEN
 ellnf_height(GEN E, GEN P, long prec)
 {
@@ -6815,7 +6817,7 @@ ellnf_height(GEN E, GEN P, long prec)
   GEN logp, oldp, x, nf, d, F, Ee, Pe, s, v, phi2, psi2;
   long i, l, r1;
   E = ellintegralmodel_i(E, &v); if (v) P = ellchangepoint(P, v);
-  if (!oncurve(E,P))
+  if (!ellisoncurve_i(E,P))
     pari_err_DOMAIN("ellheight", "point", "not on", strtoGENstr("E"), P);
   if (signe(ellorder(E, P, NULL))) return gc_const(av, gen_0);
   x = gel(P,1);
@@ -6843,6 +6845,7 @@ ellnf_height(GEN E, GEN P, long prec)
   return gerepileupto(av, gmul2n(s, 1));
 }
 
+/* assume e is an ell and a an ellpt */
 static GEN
 ellQ_height(GEN e, GEN a, long prec)
 {
@@ -6852,7 +6855,7 @@ ellQ_height(GEN e, GEN a, long prec)
   GEN v, S, c4, D;
 
   if (!RgV_is_QV(a)) pari_err_TYPE("ellheight [not a rational point]",a);
-  if (!oncurve(e,a))
+  if (!ellisoncurve_i(e,a))
     pari_err_DOMAIN("ellheight", "point", "not on", strtoGENstr("E"),a);
   if (ellorder_Q(e, a)) return gen_0;
   av = avma;
@@ -7920,7 +7923,7 @@ elltrace(GEN E, GEN P)
   checkell(E);
   if (!checkellpt_i(P)) pari_err_TYPE("elltrace", P);
   if (ell_is_inf(P)) return gcopy(P); /* P == oo */
-  if (!oncurve(E,P))
+  if (!ellisoncurve_i(E,P))
     pari_err_DOMAIN("elltrace", "point", "not on", strtoGENstr("E"), P);
   /* More checks */
 

@@ -8,5 +8,6 @@ Doc: gives 1 (i.e.~true) if the point $z$ is on the elliptic curve $E$, 0
  take this into account, i.e.~an imprecise equality is checked, not a precise
  one. It is allowed for $z$ to be a vector of points in which case a vector
  (of the same type) is returned.
-Variant: Also available is \fun{int}{oncurve}{GEN E, GEN z} which does not
- accept vectors of points.
+Variant: Also available is \fun{int}{ellisoncurve_i}{GEN E, GEN z} which
+ does not type checks and assumes that $z$ is a point, either at
+ infinity ($[0]$) or an affine point $[x,y]$.

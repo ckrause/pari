@@ -274,7 +274,7 @@ isogeny_from_kernel_point(GEN E, GEN P, int only_image, long vx, long vy)
   pari_sp av = avma;
   GEN isog, EE, f, g, h, h2, h3;
   GEN Q = P, t = gen_0, w = gen_0;
-  if (!oncurve(E,P))
+  if (!ellisoncurve_i(E,P))
     pari_err_DOMAIN("isogeny_from_kernel_point", "point", "not on", E, P);
   if (ell_is_inf(P))
   {
