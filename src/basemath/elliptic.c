@@ -992,6 +992,7 @@ ellchangecompose(GEN E, GEN v, GEN w)
 {
   pari_sp av = avma;
   GEN nf = NULL;
+  checkell(E);
   if (ell_get_type(E) == t_ELL_NF)
   {
     nf = ellnf_get_nf(E);
