@@ -28,7 +28,7 @@ as \emph{undefined} in this case.
 In this chapter, we will describe the functions according to a rough
 classification. The general entry looks something like:
 
-\key{foo}$(x,\{\fl=0\})$: short description.
+\key{foo}$(x,\{\fl=0\})$: description, usually with examples.
 
 The library syntax is \kbd{GEN foo(GEN x, long flag = 0)}.
 
@@ -69,7 +69,7 @@ be given. This is in particular used by the various \kbd{print} routines.
 \misctitle{Flags} A \tev{flag} is an argument which, rather than conveying
 actual information to the routine, instructs it to change its default
 behavior, e.g.~return more or less information. All such
-flags are optional, and will be called \fl\ in the function descriptions to
+flags are optional and will be called \fl\ in the function descriptions to
 follow. There are two different kind of flags
 
 \item generic: all valid values for the flag are individually
@@ -123,8 +123,8 @@ The \var{library} function \kbd{foo}, as defined at the beginning of this
 section, is seen to have two mandatory arguments, $x$ and \fl: no function
 seen in the present chapter has been implemented so as to accept a variable
 number of arguments, so all arguments are mandatory when programming with the
-library (usually, variants are provided corresponding to the various flag values).
-We include an \kbd{= default value} token in the prototype to signal how a missing
-argument should be encoded. Most of the time, it will be a \kbd{NULL} pointer, or
--1 for a variable number. Refer to the \emph{User's Guide to the PARI library}
-for general background and details.
+library (usually, variants are provided corresponding to the various flag
+values). We include an \kbd{= default value} token in the prototype to signal
+how a missing argument should be encoded. Most of the time, it will be a
+\kbd{NULL} pointer, or -1 for a variable number. Refer to the \emph{User's
+Guide to the PARI library} for general background and details.
