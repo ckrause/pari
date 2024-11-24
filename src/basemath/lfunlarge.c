@@ -432,26 +432,24 @@ xpquo_one(GEN s, GEN cs, GEN ga, long odd, long md, long prec)
 static GEN
 xpquo(GEN s, GEN VCALL, long prec)
 {
-  long md = get_modulus(VCALL), n, lve, i;
-  GEN cd = NULL, z, pz, cs, VC = get_chivec(VCALL), ve, R;
+  GEN  ve = get_signat(VCALL), VC = get_chivec(VCALL), Z = get_chiZ(VCALL);
+  GEN R, cs, cd = NULL;
+  long md = get_modulus(VCALL), lve = lg(ve), n, i;
   if (!gequal0(s)) prec = nbits2prec(prec + maxss(gexpo(s), 0));
-  z = gexp(gdivgs(PiI2(prec), -md), prec);
   if (md == 1)
     return gmul(gpow(mppi(prec), gsub(s, ghalf), prec),
                 gexp(gsub(glngamma(gdivgs(gsubsg(1, s), 2), prec),
                           glngamma(gdivgs(s, 2), prec)), prec));
-  pz = gpowers(z, md - 1);
   for (n = 1; n < md; n++)
   {
     GEN xn = mycall(VC, n);
     if (xn)
     {
-      GEN tmp = gmul(xn, gel(pz, n + 1));
-      cd = cd ? gadd(cd, tmp) : tmp;
+      xn = gmul(xn, gel(Z, 2*(md - n) + 1));
+      cd = cd ? gadd(cd, xn) : xn;
     }
   }
-  cs = gsubsg(1, gconj(s));
-  ve = get_signat(VCALL); lve = lg(ve); R = cgetg(lve, t_VEC);
+  cs = gsubsg(1, gconj(s)); R = cgetg(lve, t_VEC);
   for (i = 1; i < lve; i++)
     gel(R, i) = xpquo_one(s, cs, gel(cd, i), ve[i], md, prec);
   if (lve == 2) R = gel(R, 1);
