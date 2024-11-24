@@ -10,30 +10,26 @@ Help: zetahurwitz(s,x,{der=0}): Hurwitz zeta function at s, x, with s not 1 and
 Doc: Hurwitz zeta function $\zeta(s,x)=\sum_{n\ge0}(n+x)^{-s}$ and
  analytically continued, with $s\ne1$ and $x$ not a negative or zero
  integer. Note that $\zeta(s,1) = \zeta(s)$. $s$ can also be a polynomial,
- rational function, or power series. If $s$ is not a \typ{PADIC}, then $der$ must
-  be non-negative and the function returns the
+ rational function, or power series. If $s$ is not a \typ{PADIC}, then
+ \kbd{der} must be non-negative and the function returns the
  \kbd{der}'th derivative with respect to $s$. Note that the derivative
  with respect to $x$ is simply $-s\zeta(s+1,x)$. If $s$ is a \typ{PADIC},
- compute Hurwitz zeta for the $der$-th power of the Teichm\"uller character.
+ compute Hurwitz zeta for the \kbd{der}-th power of the Teichm\"uller character.
  \bprog
  ? zetahurwitz(Pi,Pi)
- %1 = 0.056155444497585099925180502385781494484
+ %1 = 0.056155444497585099925180502385781494485
  ? zetahurwitz(2,1) - zeta(2)
- %2 = -2.350988701644575016 E-38
+ %2 = 5.8... E-39
  ? zetahurwitz(Pi,3) - (zeta(Pi)-1-1/2^Pi)
- %3 = -2.2040519077917890774 E-39
+ %3 = 0.E-39
  ? zetahurwitz(-7/2,1) - zeta(-7/2)
- %4 = -2.295887403949780289 E-41
- ? zetahurwitz(-2.3,Pi+I*log(2))
- %5 = -5.1928369229555125820137832704455696057\
-     - 6.1349660138824147237884128986232049582*I
- ? zetahurwitz(-1+x^2+O(x^3),1)
- %6 = -0.083333333333333333333333333333333333333\
-      - 0.16542114370045092921391966024278064276*x^2 + O(x^3)
- ? zetahurwitz(1+x+O(x^4),2)
- %7 = 1.0000000000000000000000000000000000000*x^-1\
-    - 0.42278433509846713939348790991759756896\
-    + 0.072815845483676724860586375874901319138*x + O(x^2)
+ %4 = -6.8... E-41
+ ? zetahurwitz(-2.3, Pi+I*log(2))
+ %5 = -5.192836... - 6.134966...*I
+ ? 12 * zetahurwitz(-1+x^2+O(x^3), 1)
+ %6 = -1.000000... - 1.985053...*x^2 + O(x^3)
+ ? zetahurwitz(1+x+O(x^4), 2)
+ %7 = 1.000000...*x^-1 - 0.422784... + 0.072815...*x + O(x^2)
  ? zetahurwitz(2,1,2) \\ zeta''(2)
  %8 = 1.9892802342989010234208586874215163815
  @eprog
@@ -41,22 +37,25 @@ Doc: Hurwitz zeta function $\zeta(s,x)=\sum_{n\ge0}(n+x)^{-s}$ and
  The derivative can be used to compute Barnes' multiple gamma functions.
  For instance:
  \bprog
- ? mygamma(z)=exp(zetahurwitz(0,z,1)-zeta'(0));
  /* Alternate way to compute the gamma function */
- ? BarnesG(z)=exp(-zetahurwitz(-1,z,1)+(z-1)*lngamma(z)+zeta'(-1));
- /* Barnes G function, satisfying G(z+1)=gamma(z)*G(z): */
- ? BarnesG(6)/BarnesG(5)
+ ? mygamma(z) = exp(zetahurwitz(0,z,1) - zeta'(0));
+
+ /* Barnes G function, satisfying G(z+1) = gamma(z)*G(z): */
+ ? BarnesG(z) = exp(-zetahurwitz(-1,z,1) + (z-1)*lngamma(z) + zeta'(-1));
+
+ ? BarnesG(6) / BarnesG(5)
  %11 = 24.000000000000000000000000000000000002
  @eprog
 
- Some examples involving $p$-adic:
+ To finish with, some examples involving $p$-adics:
  \bprog
  ? Z = zeta(2+O(5^7))
- %11 = 4*5^(-1) + 4*5 + 3*5^2 + 5^3 + 3*5^5 + O(5^6)
- ? zetahurwitz(2+O(5^7),1,0) == Z
- %12 = 1
- ? P=psi(O(11^7),2)
- %13 = 1 + 2*11 + 8*11^2 + 10*11^3 + 5*11^5 + O(11^6)
- ? P==-2*zetahurwitz(3+O(11^7),0,-2)
- %14 = 1
+ %12 = 4*5^(-1) + 4*5 + 3*5^2 + 5^3 + 3*5^5 + O(5^6)
+ ? zetahurwitz(2+O(5^7), 1, 0) == Z
+ %13 = 1
+
+ ? P = psi(O(11^7), 2)
+ %14 = 1 + 2*11 + 8*11^2 + 10*11^3 + 5*11^5 + O(11^6)
+ ? P == -2 * zetahurwitz(3+O(11^7), 0, -2)
+ %15 = 1
  @eprog
