@@ -20,8 +20,7 @@ AP  13- alginit(nf,[a,b]) was only allowing a,b integral over the power basis
     14- missing type checks for change of variables in ellchangecurve,
         ellchangepoint, ellchangepointinv
     15- nfmodpr at deg 1 prime: "wrong" invisible variable in t_FFELT [#2580]
-    16- ellisoncurve: don't raise exception, return 0, 1 (or vector of such)
-    17- [libpari] missing normalization in FpX_mulu (when p is not prime)
+    16- [libpari] missing normalization in FpX_mulu (when p is not prime)
 
   Added
 AP   1- new GP function algnewprec
