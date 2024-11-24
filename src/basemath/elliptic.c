@@ -911,7 +911,7 @@ init_ch(void) { return mkvec4(gen_1,gen_0,gen_0,gen_0); }
  * (raise type exception in 'fun' if not). Otherwise assume valid.
  * Return 1 if trivial change, 0 otherwise */
 static int
-is_trivial_change(GEN w, char *fun)
+is_trivial_change(GEN w, const char *fun)
 {
   if (fun)
   {
@@ -1657,7 +1657,7 @@ nf_compose_u(GEN nf, GEN *vtotal, GEN *e, GEN u, GEN uinv)
 /* raise a type exception in fun unless x is a point (return 0) or a
  * t_VEC/t_COL of points (return 1) */
 static int
-checkellpts(GEN x, char *fun)
+checkellpts(GEN x, const char *fun)
 {
   long i, lx;
   switch(typ(x))
