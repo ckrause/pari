@@ -88,7 +88,7 @@ asinh(a)
 
 localprec(1310); precision(imag(cos(Pi*(1+I/2^2048)))) >= 1310
 
-localprec(1000); abs(sinh(1e-500)-1e-500) < 2e-1500
+localprec(1000); exponent(sinh(1e-500)-1e-500) < -4985
 
 sinc(0)
 sinc(1/2)

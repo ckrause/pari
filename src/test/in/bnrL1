@@ -3,7 +3,7 @@ setrand(1); K=bnfinit(x^2-3);
 setrand(1); bnrL1(bnrinit(K,5),,5)
 setrand(1); bnrL1(bnrinit(K,[5,[1,0]]),,5)
 \\ avoid 32/64-bit discrepancy for near-0 components
-filter(v)= apply(x->if(abs(imag(x[2])) < 1e-38, real(x),x), v);
+filter(v)= apply(x->if(exponent(imag(x[2])) < -127, real(x),x), v);
 setrand(1); filter( bnrL1(bnrinit(K,[5,[1,1]]),,5) )
 setrand(1); K=bnfinit(x^2-168);\\#1601
 setrand(1); bnrL1(bnrinit(K,[6,[1,1]]),,5)

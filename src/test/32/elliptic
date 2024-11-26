@@ -89,7 +89,7 @@ q^101)
 small([128, 1])], [0, 0, 0, 0, 0, 0, 0, 0]]
 ? l=elllseries(ccurve,2)
 0.38157540826071121129371040958008663668
-? abs(elllseries(ccurve,2,1.2)-l)<1.4e-38
+? exponent(elllseries(ccurve,2,1.2)-l)<-125
 1
 ? tcurve=ellinit([1,0,1,-19,26]);
 ? ellorder(tcurve,[1,2])
@@ -121,4 +121,4 @@ small([128, 1])], [0, 0, 0, 0, 0, 0, 0, 0]]
  28*w))]
 ? if(getheap()!=HEAP,getheap())
 ? print("Total time spent: ",gettime);
-Total time spent: 26
+Total time spent: 46
