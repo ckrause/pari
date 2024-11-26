@@ -1682,6 +1682,7 @@ ellchangept(GEN nf, GEN P, GEN v2, GEN v3, GEN r, GEN s, GEN t)
 {
   GEN a, x, y;
   if (ell_is_inf(P)) return P;
+  if (nf) P = nfVtoalg(nf, P);
   x = gel(P,1); y = gel(P,2); a = gsub(x,r);
   retmkvec2(gmul(v2, a), gmul(v3, gsub(y, gadd(gmul(s,a),t))));
 }

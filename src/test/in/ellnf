@@ -30,7 +30,9 @@ E3 = ellchangecurve(E, [1/17,a,a+1,0]);
 w = matalgtobasis(nf4,[1/17,a,a+1,0]);
 E3 == ellchangecurve(E,w)
 ellchangepoint(E,['x,'y],w)
+ellchangepoint(E,[[0,1]~,'y],w)
 ellchangepointinv(E,['x,'y],w)
+ellchangepointinv(E,[[0,1]~,'y],w)
 ellchangecompose(E,w,w)
 ellchangeinvert(E,w)
 ellap(E3, P17)
