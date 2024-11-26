@@ -2385,14 +2385,14 @@ idealprimedec_limit_norm(GEN nf, GEN p, GEN B)
 GEN
 idealprimedec(GEN nf, GEN p)
 { return idealprimedec_limit_f(nf, p, 0); }
+static GEN
+nf_pV_to_prVV(GEN nf, GEN x)
+{ pari_APPLY_same(idealprimedec(nf, gel(x,i))); }
 GEN
-nf_pV_to_prV(GEN nf, GEN P)
+nf_pV_to_prV(GEN nf, GEN x)
 {
-  long i, l;
-  GEN Q = cgetg_copy(P,&l);
-  if (l == 1) return Q;
-  for (i = 1; i < l; i++) gel(Q,i) = idealprimedec(nf, gel(P,i));
-  return shallowconcat1(Q);
+  if (lg(x) == 1) return leafcopy(x);
+  return shallowconcat1(nf_pV_to_prVV(nf, x));
 }
 
 /* return [Fp[x]: Fp] */
@@ -3416,19 +3416,16 @@ Rg_nffix(const char *f, GEN T, GEN c, int lift)
   RgX_check_QX(c, f);
   return lift? c: mkpolmod(c, T);
 }
-/* check whether P is a polynomials with coeffs in number field Q[y]/(T)
+/* check whether x is a polynomials with coeffs in number field Q[y]/(T)
  * and returned a normalized copy. If 'lift' is set return lifted coefs
  * (t_POL/t_FRAC/t_INT) else t_POLMOD/t_FRAC/t_INT */
 GEN
-RgX_nffix(const char *f, GEN T, GEN P, int lift)
+RgX_nffix(const char *f, GEN T, GEN x, int lift)
 {
-  long i, l, vT = varn(T);
-  GEN Q = cgetg_copy(P, &l);
-  if (typ(P) != t_POL) pari_err_TYPE(stack_strcat(f," [t_POL expected]"), P);
-  if (varncmp(varn(P), vT) >= 0) pari_err_PRIORITY(f, P, ">=", vT);
-  Q[1] = P[1];
-  for (i=2; i<l; i++) gel(Q,i) = Rg_nffix(f, T, gel(P,i), lift);
-  return normalizepol_lg(Q, l);
+  long vT = varn(T);
+  if (typ(x) != t_POL) pari_err_TYPE(stack_strcat(f," [t_POL expected]"), x);
+  if (varncmp(varn(x), vT) >= 0) pari_err_PRIORITY(f, x, ">=", vT);
+  pari_APPLY_pol_normalized(Rg_nffix(f, T, gel(x,i), lift));
 }
 GEN
 RgV_nffix(const char *f, GEN T, GEN x, int lift)
