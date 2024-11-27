@@ -675,7 +675,7 @@ parselect(GEN C, GEN D, long flag)
 }
 
 GEN
-veccatapply(void *E, GEN (*f)(void* E, GEN x), GEN x)
+veccatapply(void *E, GEN (*f)(void*, GEN), GEN x)
 {
   pari_sp av = avma;
   GEN v = vecapply(E, f, x);
@@ -683,53 +683,46 @@ veccatapply(void *E, GEN (*f)(void* E, GEN x), GEN x)
 }
 
 static GEN
-vecapply2(void *E, GEN (*f)(void* E, GEN x), GEN x)
-{
-  long i, lx;
-  GEN y = cgetg_copy(x, &lx); y[1] = x[1];
-  for (i=2; i<lx; i++) gel(y,i) = f(E, gel(x,i));
-  return y;
-}
+ser_apply(void *E, GEN (*f)(void*, GEN), GEN x)
+{ pari_APPLY_ser(f(E, gel(x,i))); }
 static GEN
-vecapply1(void *E, GEN (*f)(void* E, GEN x), GEN x)
-{
-  long i, lx;
-  GEN y = cgetg_copy(x, &lx);
-  for (i=1; i<lx; i++) gel(y,i) = f(E, gel(x,i));
-  return y;
-}
+RgX_apply(void *E, GEN (*f)(void*, GEN), GEN x)
+{ pari_APPLY_pol(f(E, gel(x,i))); }
 static GEN
-mapapply1(void *E, GEN (*f)(void* E, GEN x), GEN x)
-{
-  long i, lx;
-  GEN y = cgetg_copy(x, &lx);
-  for (i=1; i<lx; i++)
-  {
-    GEN xi = gel(x, i);
-    gel(y,i) = mkvec2(mkvec2(gcopy(gmael(xi, 1, 1)), f(E,gmael(xi, 1, 2))),
-                             gcopy(gel(xi, 2)));
-  }
-  return y;
-}
+RgV_apply(void *E, GEN (*f)(void*, GEN), GEN x)
+{ pari_APPLY_same( f(E, gel(x,i)) ); }
+static GEN
+RgM_apply(void *E, GEN (*f)(void*, GEN), GEN x)
+{ pari_APPLY_same( RgV_apply(E,f,gel(x,i)) ); }
+
+static GEN
+map_apply_i(void *E, GEN (*f)(void*, GEN), GEN x)
+{ retmkvec2(mkvec2(gcopy(gmael(x,1,1)), f(E, gmael(x,1,2))),
+            gcopy(gel(x, 2))); }
+static GEN
+map_apply(void *E, GEN (*f)(void* E, GEN x), GEN x)
+{ pari_APPLY_same(map_apply_i(E, f, gel(x,i))); }
+
 /* as genapply, but treat A [ t_VEC,t_COL, or t_MAT] as a t_VEC */
 GEN
 vecapply(void *E, GEN (*f)(void* E, GEN x), GEN x)
 {
   GEN y;
-  clone_lock(x); y = vecapply1(E,f,x);
+  clone_lock(x); y = RgV_apply(E,f,x);
   clone_unlock_deep(x); settyp(y, t_VEC); return y;
 }
 GEN
 genapply(void *E, GEN (*f)(void* E, GEN x), GEN x)
 {
-  long i, lx, tx = typ(x);
+  long tx = typ(x);
   GEN y, z;
+
   if (is_scalar_t(tx)) return f(E, x);
   clone_lock(x);
   switch(tx) {
-    case t_POL: y = normalizepol(vecapply2(E,f,x)); break;
+    case t_POL: y = RgX_apply(E,f,x); break;
     case t_SER:
-      y = ser_isexactzero(x)? gcopy(x): normalizeser(vecapply2(E,f,x));
+      y = ser_isexactzero(x)? gcopy(x): ser_apply(E,f,x);
       break;
     case t_LIST:
       {
@@ -743,22 +736,14 @@ genapply(void *E, GEN (*f)(void* E, GEN x), GEN x)
           y[1] = evaltyp(t)|_evallg(lg(z)-1);
           switch(t)
           {
-          case t_LIST_RAW:
-            list_data(y) = vecapply1(E,f,z);
-            break;
-          case t_LIST_MAP:
-            list_data(y) = mapapply1(E,f,z);
-            break;
+            case t_LIST_RAW: list_data(y) = RgV_apply(E,f,z); break;
+            case t_LIST_MAP: list_data(y) = map_apply(E,f,z); break;
           }
         }
       }
       break;
-    case t_MAT:
-      y = cgetg_copy(x, &lx);
-      for (i = 1; i < lx; i++) gel(y,i) = vecapply1(E,f,gel(x,i));
-      break;
-
-    case t_VEC: case t_COL: y = vecapply1(E,f,x); break;
+    case t_MAT: y = RgM_apply(E, f, x); break;
+    case t_VEC: case t_COL: y = RgV_apply(E,f,x); break;
     default:
       pari_err_TYPE("apply",x);
       return NULL;/*LCOV_EXCL_LINE*/
@@ -796,13 +781,8 @@ veccatselapply(void *Epred, long (*pred)(void* E, GEN x), void *Efun,
 
 /* suitable for gerepileupto */
 GEN
-parapply_slice_worker(GEN D, GEN worker)
-{
-  long l, i;
-  GEN w = cgetg_copy(D, &l);
-  for (i = 1; i < l; i++) gel(w,i) = closure_callgen1(worker, gel(D,i));
-  return w;
-}
+parapply_slice_worker(GEN x, GEN worker)
+{ pari_APPLY_same(closure_callgen1(worker, gel(x,i))); }
 
 /* B <- {A[i] : i = r (mod m)}, 1 <= r <= m */
 static void
@@ -869,9 +849,7 @@ gen_parapply_percent(GEN worker, GEN D, long percent)
 
 GEN
 gen_parapply(GEN worker, GEN D)
-{
-  return gen_parapply_percent(worker, D, 0);
-}
+{ return gen_parapply_percent(worker, D, 0); }
 
 GEN
 parapply(GEN C, GEN D)
@@ -1031,18 +1009,14 @@ zv_diagonal(GEN x)
   return y;
 }
 
-/* compute m*diagonal(d) */
+/* compute x*diagonal(d) */
 GEN
-matmuldiagonal(GEN m, GEN d)
+matmuldiagonal(GEN x, GEN d)
 {
-  long j, lx;
-  GEN y = cgetg_copy(m, &lx);
-
-  if (typ(m)!=t_MAT) pari_err_TYPE("matmuldiagonal",m);
+  if (typ(x)!=t_MAT) pari_err_TYPE("matmuldiagonal",x);
   if (! is_vec_t(typ(d))) pari_err_TYPE("matmuldiagonal",d);
-  if (lg(d) != lx) pari_err_OP("operation 'matmuldiagonal'", m,d);
-  for (j=1; j<lx; j++) gel(y,j) = RgC_Rg_mul(gel(m,j), gel(d,j));
-  return y;
+  if (lg(d) != lg(x)) pari_err_OP("operation 'matmuldiagonal'", x,d);
+  pari_APPLY_same(RgC_Rg_mul(gel(x,i), gel(d,i)));
 }
 
 /* compute A*B assuming the result is a diagonal matrix */
