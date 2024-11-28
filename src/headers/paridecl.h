@@ -204,6 +204,7 @@ GEN     F2xqX_halfgcd_all(GEN x, GEN y, GEN T, GEN *a, GEN *b);
 GEN     F2xqX_invBarrett(GEN T, GEN Q);
 long    F2xqX_ispower(GEN f, long k, GEN T, GEN *pt_r);
 GEN     F2xqX_mul(GEN x, GEN y, GEN T);
+long    F2xqX_nbroots(GEN f, GEN T);
 GEN     F2xqX_normalize(GEN z, GEN T);
 GEN     F2xqX_powu(GEN x, ulong n, GEN T);
 GEN     F2xqX_red(GEN z, GEN T);
@@ -957,6 +958,7 @@ GEN     FpX_split_part(GEN f, GEN p);
 
 /* FpXQX_factor.c */
 
+GEN     F2xqX_Frobenius(GEN S, GEN T);
 GEN     F2xqX_ddf(GEN S, GEN T);
 GEN     F2xqX_degfact(GEN S, GEN T);
 GEN     F2xqX_factor(GEN x, GEN T);

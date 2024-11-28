@@ -853,6 +853,30 @@ F2xqXQ_Frobenius(GEN xp, GEN Xp, GEN f, GEN T)
   }
 }
 
+GEN
+F2xqX_Frobenius(GEN S, GEN T)
+{
+  pari_sp av = avma;
+  GEN X  = polx_F2xX(get_F2xqX_var(S), get_F2x_var(T));
+  GEN xp = F2x_Frobenius(T);
+  GEN Xp = F2xqXQ_sqr(X, S, T);
+  GEN Xq = F2xqXQ_Frobenius(xp, Xp, S, T);
+  return gerepilecopy(av, Xq);
+}
+
+static GEN
+F2xqX_split_part(GEN f, GEN T)
+{
+  long n = degpol(f);
+  GEN z, Xq, X;
+  if (n <= 1) return f;
+  X = polx_F2xX(varn(f),get_F2x_var(T));
+  f = F2xqX_red(f, T);
+  Xq = F2xqX_Frobenius(f, T);
+  z = F2xX_add(Xq, X);
+  return F2xqX_gcd(z, f, T);
+}
+
 static GEN
 FlxqX_split_part(GEN f, GEN T, ulong p)
 {
@@ -900,6 +924,14 @@ FpXQX_nbroots(GEN f, GEN T, GEN p)
 long
 FqX_nbroots(GEN f, GEN T, GEN p)
 { return T ? FpXQX_nbroots(f, T, p): FpX_nbroots(f, p); }
+
+long
+F2xqX_nbroots(GEN f, GEN T)
+{
+  pari_sp av = avma;
+  GEN z = F2xqX_split_part(f, T);
+  return gc_long(av, degpol(z));
+}
 
 long
 FlxqX_nbroots(GEN f, GEN T, ulong p)
