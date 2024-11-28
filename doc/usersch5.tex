@@ -13819,6 +13819,11 @@ of the univariate polynomial \kbd{f} over the definition field of the
 \typ{FFELT} \kbd{a}. The coefficients of \kbd{f} must be of type \typ{INT},
 \typ{INTMOD} or \typ{FFELT} and compatible with \kbd{a}.
 
+\fun{long}{FFX_nbroots}{GEN f, GEN a} returns the number of roots
+of the univariate polynomial \kbd{f} over the definition field of the
+\typ{FFELT} \kbd{a}. The coefficients of \kbd{f} must be of type \typ{INT},
+\typ{INTMOD} or \typ{FFELT} and compatible with \kbd{a}.
+
 \fun{GEN}{FFX_preimagerel}{GEN F, GEN x, GEN a} returns $P\%F$
 where \kbd{P=x.pol} assuming $a$ and $x$ belongs to fields having the same
 characteristic, and that the coefficients of $F$ belong to the definition

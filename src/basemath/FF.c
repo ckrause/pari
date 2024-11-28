@@ -1628,6 +1628,29 @@ FFX_roots(GEN Pf, GEN ff)
   return gerepilecopy(av, raw_to_FFC(r, ff));
 }
 
+long
+FFX_nbroots(GEN Pf, GEN ff)
+{
+  pari_sp av = avma;
+  GEN T,p;
+  ulong pp;
+  long r;
+  GEN P = FFX_to_raw(Pf, ff);
+  _getFF(ff,&T,&p,&pp);
+  switch(ff[1])
+  {
+  case t_FF_FpXQ:
+    r = FpXQX_nbroots(P, T, p);
+    break;
+  case t_FF_F2xq:
+    r = F2xqX_nbroots(P, T);
+    break;
+  default:
+    r = FlxqX_nbroots(P, T, pp);
+  }
+  return gc_long(av, r);
+}
+
 static GEN
 raw_to_FFXC(GEN x, GEN ff) { pari_APPLY_type(t_COL, raw_to_FFX(gel(x,i), ff)); }
 static GEN
