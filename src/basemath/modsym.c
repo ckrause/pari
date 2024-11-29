@@ -3488,15 +3488,10 @@ clean_tail(GEN phi, long c, GEN q)
     gel(phi,a) = P;
   }
 }
-/* concat z to all phi[i] */
+/* concat z to all x[i] */
 static GEN
-concat2(GEN phi, GEN z)
-{
-  long i, l;
-  GEN v = cgetg_copy(phi,&l);
-  for (i = 1; i < l; i++) gel(v,i) = shallowconcat(gel(phi,i), z);
-  return v;
-}
+concat2(GEN x, GEN z)
+{ pari_APPLY_same(shallowconcat(gel(x,i), z)); }
 static GEN
 red_mod_FilM(GEN phi, ulong p, long k, long flag)
 {
@@ -3598,13 +3593,8 @@ RgX_to_moments(GEN P, GEN bin)
   return vecreverse(P);
 }
 static GEN
-RgXC_to_moments(GEN v, GEN bin)
-{
-  long i, l;
-  GEN w = cgetg_copy(v,&l);
-  for (i=1; i<l; i++) gel(w,i) = RgX_to_moments(gel(v,i),bin);
-  return w;
-}
+RgXC_to_moments(GEN x, GEN bin)
+{ pari_APPLY_same(RgX_to_moments(gel(x,i), bin)); }
 
 /* W an mspadic, assume O[2] is integral, den is the cancelled denominator
  * or NULL, L = log(path)^* in sparse form */
@@ -3887,34 +3877,26 @@ FpVV_dotproduct(GEN v, GEN w, GEN p)
   return T;
 }
 
+/* 4^(i-1) x */
+static GEN
+_4i(GEN x, long i)
+{
+  if (i > 1) x = gmul2n(x, (i-1)<<1);
+  return x;
+}
+/* (-1)^i 4^(i-1) x */
+static GEN
+_m4i(GEN x, long i)
+{ x = _4i(x, i); return odd(i)? x: gneg(x); }
 /* \int (-4z)^j given \int z^j */
 static GEN
-twistmoment_m4(GEN v)
-{
-  long i, l;
-  GEN w = cgetg_copy(v, &l);
-  for (i = 1; i < l; i++)
-  {
-    GEN c = gel(v,i);
-    if (i > 1) c = gmul2n(c, (i-1)<<1);
-    gel(w,i) = odd(i)? c: gneg(c);
-  }
-  return w;
-}
+twistmoment_m4(GEN x)
+{ pari_APPLY_same(_m4i(gel(x,i), i)); }
 /* \int (4z)^j given \int z^j */
 static GEN
-twistmoment_4(GEN v)
-{
-  long i, l;
-  GEN w = cgetg_copy(v, &l);
-  for (i = 1; i < l; i++)
-  {
-    GEN c = gel(v,i);
-    if (i > 1) c = gmul2n(c, (i-1)<<1);
-    gel(w,i) = c;
-  }
-  return w;
-}
+twistmoment_4(GEN x)
+{ pari_APPLY_same(_4i(gel(x,i), i)); }
+
 /* W an mspadic, phi eigensymbol, p \nmid D. Return C(x) mod FilM */
 GEN
 mspadicmoments(GEN W, GEN PHI, long D)
