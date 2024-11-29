@@ -1178,7 +1178,7 @@ ZM_togglesign(GEN M)
 /********************************************************************/
 /* Reduce ZC x modulo ZM y in HNF, may return x itself (not a copy) */
 GEN
-ZC_hnfremdiv(GEN x, GEN y, GEN *Q)
+ZC_hnfdivrem(GEN x, GEN y, GEN *Q)
 {
   long i, l = lg(x);
   GEN q;
@@ -1206,7 +1206,7 @@ ZM_hnfdivrem(GEN x, GEN y, GEN *Q)
   if (Q)
   {
     GEN q = cgetg(lx, t_MAT); *Q = q;
-    for (i=1; i<lx; i++) gel(R,i) = ZC_hnfremdiv(gel(x,i),y,(GEN*)(q+i));
+    for (i=1; i<lx; i++) gel(R,i) = ZC_hnfdivrem(gel(x,i),y,(GEN*)(q+i));
   }
   else
     for (i=1; i<lx; i++)

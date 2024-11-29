@@ -3120,7 +3120,7 @@ Deprecated routine:
 
 \subsec{Reduction modulo matrices}
 
-\fun{GEN}{ZC_hnfremdiv}{GEN x, GEN y, GEN *Q} assuming $y$ is an
+\fun{GEN}{ZC_hnfdivrem}{GEN x, GEN y, GEN *Q} assuming $y$ is an
 invertible \kbd{ZM} in HNF and $x$ is a \kbd{ZC}, returns the \kbd{ZC} $R$
 equal to $x$ mod $y$ (whose $i$-th entry belongs to $[-y_{i,i}/2, y_{i,i}/2[$).
 Stack clean \emph{unless} $x$ is already reduced (in which case, returns $x$

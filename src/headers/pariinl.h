@@ -2334,7 +2334,7 @@ INLINE GEN
 zm_row(GEN x, long i) { return Flm_row(x,i); }
 
 INLINE GEN
-ZC_hnfrem(GEN x, GEN y) { return ZC_hnfremdiv(x,y,NULL); }
+ZC_hnfrem(GEN x, GEN y) { return ZC_hnfdivrem(x,y,NULL); }
 INLINE GEN
 ZM_hnfrem(GEN x, GEN y) { return ZM_hnfdivrem(x,y,NULL); }
 INLINE GEN

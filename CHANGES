@@ -62,6 +62,7 @@ AP   7- alginit(nf,[a,b]) now allows a to be a square in nf.
         ellchangepoint(P, urst) still works when it used to do; but
         ellchangepoint(E, P, urst) now works also when E, P, urst are defined
         over a number field with components in basis form
+    11- renamed ZC_hnfremdiv -> ZC_hnfdivrem
 
   Removed
 BA   1- GP function trap, use iferr instead.

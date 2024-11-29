@@ -1505,7 +1505,7 @@ GEN     ZC_ZV_mul(GEN x, GEN y);
 GEN     ZC_divexactu(GEN x, ulong c);
 GEN     ZC_add(GEN x, GEN y);
 GEN     ZC_copy(GEN x);
-GEN     ZC_hnfremdiv(GEN x, GEN y, GEN *Q);
+GEN     ZC_hnfdivrem(GEN x, GEN y, GEN *Q);
 long    ZC_is_ei(GEN x);
 GEN     ZC_lincomb(GEN u, GEN v, GEN X, GEN Y);
 void    ZC_lincomb1_inplace(GEN X, GEN Y, GEN v);
