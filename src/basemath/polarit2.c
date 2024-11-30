@@ -1209,6 +1209,7 @@ gen_factorback(GEN L, GEN e, void *data, GEN (*_mul)(void*,GEN,GEN),
     p = gel(L,1);
     e = gel(L,2);
   }
+  if (!is_vec_t(typ(p))) pari_err_TYPE("factorback [not a vector]", p);
   /* p = elts, e = expo */
   lx = lg(p);
   /* check whether e is an integral vector of correct length */
