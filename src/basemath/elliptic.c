@@ -5571,7 +5571,7 @@ ellQ_factorback_slice(GEN A, GEN L, ulong l, GEN E, GEN P, GEN *mod)
     return Flv_to_ZV(Hp);
   }
   T = ZV_producttree(P);
-  A = ZM_nv_mod_tree(A, P, T);
+  A = ZVV_nv_mod_tree(A, P, T);
   H = cgetg(n+1, t_VEC);
   for(i=1; i <= n; i++)
   {

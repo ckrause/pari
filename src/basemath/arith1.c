@@ -1901,13 +1901,13 @@ ZV_nv_mod_tree(GEN B, GEN A, GEN T)
   return V;
 }
 
-GEN
-ZM_nv_mod_tree(GEN M, GEN xa, GEN T)
+static GEN
+ZM_nv_mod_tree_t(GEN M, GEN xa, GEN T, long t)
 {
   pari_sp av = avma;
   long i, j, l = lg(M), n = lg(xa)-1;
   GEN V = cgetg(n+1, t_VEC);
-  for (j=1; j <= n; j++) gel(V, j) = cgetg(l, t_MAT);
+  for (j=1; j <= n; j++) gel(V, j) = cgetg(l, t);
   for (i=1; i < l; i++)
   {
     GEN v = ZV_nv_mod_tree(gel(M, i), xa, T);
@@ -1915,6 +1915,14 @@ ZM_nv_mod_tree(GEN M, GEN xa, GEN T)
   }
   return gerepilecopy(av, V);
 }
+
+GEN
+ZM_nv_mod_tree(GEN M, GEN xa, GEN T)
+{ return ZM_nv_mod_tree_t(M, xa, T, t_MAT); }
+
+GEN
+ZVV_nv_mod_tree(GEN M, GEN xa, GEN T)
+{ return ZM_nv_mod_tree_t(M, xa, T, t_VEC); }
 
 static GEN
 ZV_sqr(GEN z)
