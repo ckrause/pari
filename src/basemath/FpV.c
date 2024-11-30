@@ -1102,6 +1102,10 @@ ZM_to_Flm(GEN x, ulong p)
 { pari_APPLY_same(ZV_to_Flv(gel(x,i), p)) }
 
 GEN
+ZVV_to_FlvV(GEN x, ulong p)
+{ pari_APPLY_type(t_VEC, ZV_to_Flv(gel(x,i), p)) }
+
+GEN
 ZMV_to_FlmV(GEN x, ulong m)
 { pari_APPLY_type(t_VEC,ZM_to_Flm(gel(x,i), m)) }
 

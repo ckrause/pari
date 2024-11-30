@@ -5565,7 +5565,7 @@ ellQ_factorback_slice(GEN A, GEN L, ulong l, GEN E, GEN P, GEN *mod)
   if (n == 1)
   {
     ulong p = uel(P,1);
-    GEN Hp = ellQ_factorback1(ZM_to_Flm(A, p), L, l, E, CM, p);
+    GEN Hp = ellQ_factorback1(ZVV_to_FlvV(A, p), L, l, E, CM, p);
     if (!Hp) { *mod = gen_1; return ellinf(); }
     *mod = utoi(p);
     return Flv_to_ZV(Hp);
