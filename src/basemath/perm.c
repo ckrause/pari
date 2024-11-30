@@ -276,37 +276,32 @@ vecsmall_duplicate(GEN x)
 static int
 vecsmall_is1to1spec(GEN v, long n, GEN w)
 {
-  pari_sp ltop=avma;
-  long nx=n>>1, ny=n-nx;
-  long m, ix, iy;
+  pari_sp av = avma;
+  long nx = n>>1, ny = n - nx, m, ix, iy;
   GEN x, y;
-  if (n<=2)
+  if (n <= 2)
   {
-    if (n==1)
-      w[0]=v[0];
+    if (n == 1) w[0] = v[0];
     else if (n==2)
     {
-      long v0=v[0], v1=v[1];
-      if (v0==v1) return 0;
-      else if (v0<v1) { w[0]=v0; w[1]=v1; }
-      else            { w[0]=v1; w[1]=v0; }
+      long v0 = v[0], v1 = v[1];
+      if (v0 == v1) return 0;
+      else if (v0 < v1) { w[0] = v0; w[1] = v1; }
+      else              { w[0] = v1; w[1] = v0; }
     }
     return 1;
   }
-  x = new_chunk(nx);
-  if (!vecsmall_is1to1spec(v,nx,x))    return 0;
-  y = new_chunk(ny);
-  if (!vecsmall_is1to1spec(v+nx,ny,y)) return 0;
-  for (m=0, ix=0, iy=0; ix<nx && iy<ny; )
-    if (x[ix]==y[iy]) return 0;
-    else if (x[ix]<y[iy])
-      w[m++]=x[ix++];
+  x = new_chunk(nx); if (!vecsmall_is1to1spec(v, nx, x))    return 0;
+  y = new_chunk(ny); if (!vecsmall_is1to1spec(v+nx, ny, y)) return 0;
+  for (m = ix = iy = 0; ix < nx && iy < ny; )
+    if (x[ix] == y[iy]) return 0;
+    else if (x[ix] < y[iy])
+      w[m++] = x[ix++];
     else
-      w[m++]=y[iy++];
-  for(;ix<nx;) w[m++]=x[ix++];
-  for(;iy<ny;) w[m++]=y[iy++];
-  set_avma(ltop);
-  return 1;
+      w[m++] = y[iy++];
+  while (ix < nx) w[m++] = x[ix++];
+  while (iy < ny) w[m++] = y[iy++];
+  return gc_bool(av, 1);
 }
 
 int
@@ -315,8 +310,7 @@ vecsmall_is1to1(GEN V)
   pari_sp av = avma;
   long l;
   GEN W = cgetg_copy(V, &l);
-  if (l <= 2) return 1;
-  return gc_bool(av, vecsmall_is1to1spec(V+1,l,W+1));
+  return gc_bool(av, l <= 2? 1: vecsmall_is1to1spec(V+1, l, W+1));
 }
 
 /*************************************************************************/
