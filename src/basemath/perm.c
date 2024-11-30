@@ -562,7 +562,7 @@ Z_to_perm(long n, GEN x)
       if (uel(v,i) > a) uel(v,i)++;
     uel(v,r) = a+1;
   }
-  set_avma(av); return v;
+  return gc_const(av, v);
 }
 GEN
 numtoperm(long n, GEN x)
@@ -686,7 +686,7 @@ perm_pow(GEN perm, GEN exp)
       if (++l == n) l = 0;
     }
   }
-  set_avma(av); return p;
+  return gc_const(av, p);
 }
 
 GEN
@@ -709,7 +709,7 @@ perm_powu(GEN perm, ulong exp)
       if (++l == n) l = 0;
     }
   }
-  set_avma(av); return p;
+  return gc_const(av, p);
 }
 
 GEN
@@ -915,8 +915,7 @@ group_set(GEN G, long n)
   long i, l = lg(elts);
   for(i=1; i<l; i++)
     F2v_set(res,mael(elts,i,1));
-  set_avma(av);
-  return res;
+  return gc_const(av, res);
 }
 
 static int
