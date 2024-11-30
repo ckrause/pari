@@ -253,9 +253,9 @@ vecsmall_uniq(GEN v)
 long
 vecsmall_duplicate_sorted(GEN x)
 {
-  long i,k,l=lg(x);
-  if (l==1) return 0;
-  for (k=x[1],i=2; i<l; k=x[i++])
+  long i, k, l = lg(x);
+  if (l == 1) return 0;
+  for (k = x[1], i = 2; i < l; k = x[i++])
     if (x[i] == k) return i;
   return 0;
 }
@@ -263,14 +263,13 @@ vecsmall_duplicate_sorted(GEN x)
 long
 vecsmall_duplicate(GEN x)
 {
-  pari_sp av=avma;
-  GEN p=vecsmall_indexsort(x);
-  long k,i,r=0,l=lg(x);
-  if (l==1) return 0;
-  for (k=x[p[1]],i=2; i<l; k=x[p[i++]])
-    if (x[p[i]] == k) { r=p[i]; break; }
-  set_avma(av);
-  return r;
+  pari_sp av = avma;
+  GEN p = vecsmall_indexsort(x);
+  long k, i, r = 0, l = lg(x);
+  if (l == 1) return gc_long(av, 0);
+  for (k = x[p[1]], i = 2; i < l; k = x[p[i++]])
+    if (x[p[i]] == k) { r = p[i]; break; }
+  return gc_long(av, r);
 }
 
 static int
