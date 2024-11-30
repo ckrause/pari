@@ -7830,7 +7830,7 @@ static void
 FljV_vecsat(GEN E, GEN P, ulong o, ulong l, ulong a4, ulong a6, ulong p,
             GEN S, long *m)
 {
-  P = ZM_to_Flm(P, p);
+  P = ZVV_to_FlvV(P, p);
   if (p % l == 1)
     FljV_vecsat_Prickett(E, P, o, l, a4, a6, p, S, m);
   else
