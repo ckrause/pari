@@ -707,13 +707,11 @@ static GEN
 charpoly_funceq(GEN P, GEN q)
 {
   long i, l, g = degpol(P)>>1;
-  GEN Q = cgetg_copy(P, &l);
-  Q[1] = P[1];
-  for (i=0; i<=g; i++)
-    gel(Q, i+2) = mulii(gel(P, 2*g-i+2), powiu(q, g-i));
-  for (; i<=2*g; i++)
-    gel(Q, i+2) = icopy(gel(P, i+2));
-  return Q;
+  GEN R, Q = gpowers0(q, g-1, q); /* Q[i] = q^i, i <= g */
+  R = cgetg_copy(P, &l); R[1] = P[1];
+  for (i=0; i<g; i++) gel(R, i+2) = mulii(gel(P, 2*g-i+2), gel(Q, g-i));
+  for (; i<=2*g; i++) gel(R, i+2) = icopy(gel(P, i+2));
+  return R;
 }
 
 static long
@@ -806,8 +804,7 @@ hyperellcharpoly(GEN PQ)
     R = FpX_div_by_X_x(R, eps? b: negi(b), pn, NULL);
     R = FpX_center_i(R, pn, shifti(pn,-1));
   }
-  R = charpoly_funceq(R, q);
-  return gerepilecopy(av, R);
+  return gerepileupto(av, charpoly_funceq(R, q));
 }
 
 int
