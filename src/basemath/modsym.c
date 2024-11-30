@@ -5031,29 +5031,25 @@ mspetersson(GEN W, GEN F, GEN G)
   }
 }
 
-/* action of g in SL_2(Z/NZ) on functions f: (Z/NZ)^2 -> Q given by sparse
- * matrix M. */
 static GEN
-actf(long N, GEN M, GEN g)
+act_ij(GEN v, ulong a, ulong b, ulong c, ulong d, ulong N)
 {
-  long n, a, b, c, d, l;
-  GEN m;
-  c = umodiu(gcoeff(g,2,1), N); if (!c) return M;
+  long I, J, i = v[1], j = v[2];
+  I = Fl_add(Fl_mul(a,i,N), Fl_mul(c,j,N), N); if (!I) I = N;
+  J = Fl_add(Fl_mul(b,i,N), Fl_mul(d,j,N), N); if (!J) J = N;
+  return mkvecsmall2(I,J);
+}
+/* action of g in SL_2(Z/NZ) on functions f: (Z/NZ)^2 -> Q given by sparse
+ * matrix x. */
+static GEN
+actf(long N, GEN x, GEN g)
+{
+  long a, b, c, d;
+  c = umodiu(gcoeff(g,2,1), N); if (!c) return x;
   d = umodiu(gcoeff(g,2,2), N);
   a = umodiu(gcoeff(g,1,1), N);
   b = umodiu(gcoeff(g,1,2), N);
-  m = cgetg_copy(M, &l);
-  for (n = 1; n < l; n++)
-  {
-    GEN v = gel(M,n);
-    long i = v[1], j = v[2];
-    long I = Fl_add(Fl_mul(a,i,N), Fl_mul(c,j,N), N);
-    long J = Fl_add(Fl_mul(b,i,N), Fl_mul(d,j,N), N);
-    if (!I) I = N;
-    if (!J) J = N;
-    gel(m,n) = mkvecsmall2(I,J);
-  }
-  return m;
+  pari_APPLY_same(act_ij(gel(x,i), a, b, c, d, N));
 }
 
 /* q1 = N/a, q2 = q1/d, (u,a) = 1. Gamma_0(N)-orbit attached to [q1,q2,u]
