@@ -3369,29 +3369,19 @@ ffeltmaprel_i(GEN m, GEN x)
 static GEN
 ffmaprel_i(GEN m, GEN x)
 {
-  GEN y;
-  long i, lx, tx = typ(x);
-  switch(tx)
+  switch(typ(x))
   {
     case t_FFELT:
       return ffeltmaprel_i(m, x);
-    case t_POL: case t_RFRAC: case t_SER:
-    case t_VEC: case t_COL: case t_MAT:
-      y = cgetg_copy(x, &lx);
-      for (i=1; i<lontyp[tx]; i++) y[i] = x[1];
-      for (i=lontyp[tx]; i<lx; i++)
-        gel(y,i) = ffmaprel_i(m, gel(x,i));
-      return y;
+    case t_POL: pari_APPLY_pol_normalized(ffmaprel_i(m, gel(x,i)));
+    case t_SER: pari_APPLY_ser_normalized(ffmaprel_i(m, gel(x,i)));
+    case t_RFRAC: case t_VEC: case t_COL: case t_MAT:
+      pari_APPLY_same(ffmaprel_i(m, gel(x,i)));
   }
   return gcopy(x);
 }
-
 GEN
-ffmaprel(GEN m, GEN x)
-{
-  checkmap(m, "ffmaprel");
-  return ffmaprel_i(m, x);
-}
+ffmaprel(GEN m, GEN x) { checkmap(m, "ffmaprel"); return ffmaprel_i(m, x); }
 
 static void
 err_compo(GEN m, GEN n)
