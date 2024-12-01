@@ -85,34 +85,22 @@ ZXY_z_eval(GEN P, ulong x, ulong y)
   return z;
 }
 
-/* P an Fq[X], where Fq = Fp[Y]/(T(Y)), a an FpX representing the automorphism
- * y -> a(y). Return a(P), applying a() coefficientwise. */
+/* a(x) mod (T,p) */
 static GEN
-FqX_FpXQ_eval(GEN P, GEN a, GEN T, GEN p)
+_eval(GEN a, GEN x, GEN T, GEN p)
 {
-  long i, l;
-  GEN Q = cgetg_copy(P, &l);
-
-  Q[1] = P[1];
-  for (i = 2; i < l; i++)
-  {
-    GEN cf = gel(P, i);
-    if (typ(cf) == t_POL) {
-      switch(degpol(cf))
-      {
-        case -1: cf = gen_0; break;
-        case 0:  cf = gel(cf,2); break;
-        default:
-          cf = FpX_FpXQ_eval(cf, a, T, p);
-          cf = simplify_shallow(cf);
-          break;
-      }
-    }
-    gel(Q, i) = cf;
-  }
-
-  return Q;
+  long d;
+  if (typ(x) != t_POL) return x;
+  d = degpol(x);
+  if (d <= 0) return d? gen_0: gel(x,2);
+  x = FpX_FpXQ_eval(x, a, T, p);
+  return simplify_shallow(x);
 }
+/* x an Fq[X], where Fq = Fp[Y]/(T(Y)), a an FpX representing the automorphism
+ * y -> a(y). Return a(x), applying a() coefficientwise. */
+static GEN
+FqX_FpXQ_eval(GEN x, GEN a, GEN T, GEN p)
+{ pari_APPLY_pol_normalized(_eval(a, gel(x,i), T, p)); }
 
 /* Sieving routines */
 static GEN
