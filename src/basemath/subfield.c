@@ -598,6 +598,11 @@ bound_for_coeff(long m, GEN rr, GEN *maxroot)
   return M;
 }
 
+static GEN
+RgV_translate(GEN x, GEN t) { pari_APPLY_same(gadd(t, gel(x,i))); }
+static GEN
+RgV_negtranslate(GEN x, GEN t) { pari_APPLY_same(gsub(t, gel(x,i))); }
+
 /* d = requested degree for subfield. Return DATA, valid for given pol, S and d
  * If DATA != NULL, translate pol [ --> pol(X+1) ] and update DATA
  * 1: polynomial pol
@@ -613,45 +618,32 @@ bound_for_coeff(long m, GEN rr, GEN *maxroot)
 static void
 compute_data(blockdata *B)
 {
-  GEN ffL, roo, pe, p1, p2, fk, fhk, MM, maxroot, pol;
+  GEN ffL, roo, pe, p1, p2, fk, MM, maxroot, pol;
   primedata *S = B->S;
   GEN p = S->p, T = S->T, ff = S->ff, DATA = B->DATA;
-  long i, j, l, e, N, lff = lg(ff);
+  long i, l, e, N, lff = lg(ff);
 
   if (DEBUGLEVEL>1) err_printf("Entering compute_data()\n\n");
   pol = B->PD->pol; N = degpol(pol);
   roo = B->PD->roo;
   if (DATA)
   {
-    GEN Xm1 = gsub(pol_x(varn(pol)), gen_1);
-    GEN TR = addiu(gel(DATA,5), 1);
-    GEN mTR = negi(TR), interp, bezoutC;
+    GEN TR = addiu(gel(DATA,5), 1), mTR = negi(TR), interp, bezoutC;
 
     if (DEBUGLEVEL>1) err_printf("... update (translate) an existing DATA\n\n");
-
     gel(DATA,5) = TR;
     pol = RgX_translate(gel(DATA,1), gen_m1);
-    p1 = cgetg_copy(roo, &l);
-    for (i=1; i<l; i++) gel(p1,i) = gadd(TR, gel(roo,i));
-    roo = p1;
-
-    fk = gel(DATA,4); l = lg(fk);
-    for (i=1; i<l; i++) gel(fk,i) = gsub(Xm1, gel(fk,i));
-
+    roo = RgV_translate(roo, TR);
+    fk = RgV_negtranslate(gel(DATA,4),
+                          deg1pol_shallow(gen_1, gen_m1, varn(pol)));
     bezoutC = gel(DATA,6); l = lg(bezoutC);
     interp  = gel(DATA,9);
     for (i=1; i<l; i++)
     {
       if (degpol(gel(interp,i)) > 0) /* do not turn pol_1(0) into gen_1 */
-      {
-        p1 = RgX_translate(gel(interp,i), gen_m1);
-        gel(interp,i) = FpXX_red(p1, p);
-      }
+        gel(interp,i) = FpXX_red(RgX_translate(gel(interp,i), gen_m1), p);
       if (degpol(gel(bezoutC,i)) > 0)
-      {
-        p1 = RgX_translate(gel(bezoutC,i), gen_m1);
-        gel(bezoutC,i) = FpXX_red(p1, p);
-      }
+        gel(bezoutC,i)= FpXX_red(RgX_translate(gel(bezoutC,i), gen_m1), p);
     }
     ff = cgetg(lff, t_VEC); /* copy, do not overwrite! */
     for (i=1; i<lff; i++)
@@ -675,17 +667,13 @@ compute_data(blockdata *B)
   /* compute fhk = ZpX_liftfact(pol,fk,T,p,e,pe) in 2 steps
    * 1) lift in Zp to precision p^e */
   ffL = ZpX_liftfact(pol, ff, pe, p, e);
-  fhk = NULL;
   for (l=i=1; i<lff; i++)
   { /* 2) lift factorization of ff[i] in Qp[X] / T */
-    GEN F, L = gel(ffL,i);
-    long di = degpol(L);
-    F = cgetg(di+1, t_VEC);
-    for (j=1; j<=di; j++) F[j] = fk[l++];
-    L = ZqX_liftfact(L, F, T, pe, p, e);
-    fhk = fhk? shallowconcat(fhk, L): L;
+    long l2 = l + degpol(gel(ffL,i));
+    gel(ffL,i) = ZqX_liftfact(gel(ffL,i), vecslice(fk, l, l2-1), T, pe, p, e);
+    l = l2;
   }
-  gel(DATA,3) = roots_from_deg1(fhk);
+  gel(DATA,3) = roots_from_deg1(shallowconcat1(ffL));
 
   p1 = mulur(N, powruhalf(utor(N-1,DEFAULTPREC), N-1));
   p2 = powru(maxroot, B->size + N*(N-1)/2);
