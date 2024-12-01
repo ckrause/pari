@@ -903,105 +903,119 @@ Q_factor(GEN x)
   b = Z_factor(gel(x,2)); gel(b,2) = ZC_neg(gel(b,2));
   return gerepilecopy(av, ZM_merge_factor(a,b));
 }
-/* replace t_QUAD/t_COMPLEX coeffs by t_POLMOD in T */
+
+/* replace quadratic number over Fp or Q by t_POL in v */
 static GEN
-RgX_fix_quad(GEN x, GEN T)
+quadratic_to_RgX(GEN z, long v)
 {
-  long i, l, v = varn(T);
-  GEN y = cgetg_copy(x,&l);
-  for (i = 2; i < l; i++)
+  GEN a, b;
+  switch(typ(z))
   {
-    GEN c = gel(x,i);
-    switch(typ(c))
-    {
-      case t_QUAD: c++;/* fall through */
-      case t_COMPLEX: c = deg1pol_shallow(gel(c,2),gel(c,1),v);
-    }
-    gel(y,i) = c;
+    case t_INT: case t_FRAC: case t_INTMOD: return z;
+    case t_COMPLEX: a = gel(z,2); b = gel(z,1); break;
+    case t_QUAD: a = gel(z,3); b = gel(z,2); break;
+    default: pari_err_IMPL("factor for general polynomials"); /* paranoia */
+             return NULL; /* LCOV_EXCL_LINE */
   }
-  y[1] = x[1]; return y;
+  return deg1pol_shallow(a, b, v);
+}
+/* replace t_QUAD/t_COMPLEX [of rationals] coeffs by t_POL in v */
+static GEN
+RgX_fix_quadratic(GEN x, long v)
+{ pari_APPLY_pol_normalized(quadratic_to_RgX(gel(x,i), v)); }
+static GEN
+RgXQ_factor_i(GEN x, GEN T, GEN p, long t1, long t2, long *pv)
+{
+  *pv = -1;
+  if (t2 == t_PADIC) return NULL;
+  if (t2 == t_INTMOD)
+  {
+    T = RgX_to_FpX(T,p);
+    if (!FpX_is_irred(T,p)) return NULL;
+  }
+  if (t1 != t_POLMOD)
+  { /* replace w in x by t_POL */
+    if (t2 != t_INTMOD) T = leafcopy(T);
+    *pv = fetch_var(); setvarn(T, *pv);
+    x = RgX_fix_quadratic(x, *pv);
+  }
+  if (t2 == t_INTMOD) return factmod(x, mkvec2(p,T));
+  return nffactor(T, x);
+}
+static GEN
+RgXQ_factor(GEN x, GEN T, GEN p, long tx)
+{
+  pari_sp av = avma;
+  long t1, t2, v;
+  GEN w, y;
+  RgX_type_decode(tx, &t1, &t2);
+  y = RgXQ_factor_i(x, T, p, t1, t2, &v);
+  if (!y) pari_err_IMPL("factor for general polynomials");
+  if (v < 0) return gerepileupto(av, y);
+  /* substitute back w */
+  w = (t1 == t_COMPLEX)? gen_I(): mkquad(T,gen_0,gen_1);
+  gel(y,1) = gsubst(liftpol_shallow(gel(y,1)), v, w);
+  (void)delete_var(); return gerepilecopy(av, y);
+}
+
+static GEN
+RX_factor(GEN x, long prec)
+{
+  GEN y = cgetg(3,t_MAT), R, P;
+  pari_sp av = avma;
+  long v = varn(x), i, l, r1;
+
+  R = cleanroots(x, prec); l = lg(R);
+  for (r1 = 1; r1 < l; r1++)
+    if (typ(gel(R,r1)) == t_COMPLEX) break;
+  l = (r1+l)>>1; P = cgetg(l,t_COL);
+  for (i = 1; i < r1; i++)
+    gel(P,i) = deg1pol_shallow(gen_1, negr(gel(R,i)), v);
+  for (   ; i < l; i++)
+  {
+    GEN a = gel(R,2*i-r1), t;
+    t = gmul2n(gel(a,1), 1); togglesign(t);
+    gel(P,i) = deg2pol_shallow(gen_1, t, gnorm(a), v);
+  }
+  gel(y,1) = gerepileupto(av, P);
+  gel(y,2) = const_col(l-1, gen_1); return y;
+}
+static GEN
+CX_factor(GEN x, long prec)
+{
+  GEN y = cgetg(3,t_MAT), R;
+  pari_sp av = avma;
+  long v = varn(x);
+
+  R = roots(x, prec);
+  gel(y,1) = gerepileupto(av, deg1_from_roots(R, v));
+  gel(y,2) = const_col(degpol(x), gen_1); return y;
 }
 
 static GEN
 RgX_factor(GEN x, GEN dom)
 {
-  pari_sp av;
-  long pa, v, lx, r1, i;
-  GEN  p, pol, y, p1, p2;
-  long tx = dom ? RgX_Rg_type(x,dom,&p,&pol,&pa): RgX_type(x,&p,&pol,&pa);
+  GEN  p, T;
+  long pa, tx = dom ? RgX_Rg_type(x,dom,&p,&T,&pa): RgX_type(x,&p,&T,&pa);
   switch(tx)
   {
     case 0: pari_err_IMPL("factor for general polynomials");
     case t_POL: return RgXY_factor(x, dom);
     case t_INT: return ZX_factor(x);
     case t_FRAC: return QX_factor(x);
-    case t_INTMOD: return factmod(x,p);
-    case t_PADIC: return factorpadic(x,p,pa);
-    case t_FFELT: return FFX_factor(x,pol);
-
-    case t_COMPLEX: y = cgetg(3,t_MAT);
-      av = avma; p1 = deg1_from_roots(roots(x,pa), varn(x));
-      gel(y,1) = p1 = gerepileupto(av, p1);
-      gel(y,2) = const_col(lg(p1)-1, gen_1); return y;
-
-    case t_REAL: y=cgetg(3,t_MAT); v=varn(x);
-      av=avma; p1=cleanroots(x,pa);
-      lx = lg(p1);
-      for (r1 = 1; r1 < lx; r1++)
-        if (typ(gel(p1,r1)) == t_COMPLEX) break;
-      lx=(r1+lx)>>1; p2=cgetg(lx,t_COL);
-      for (i = 1; i < r1; i++)
-        gel(p2,i) = deg1pol_shallow(gen_1, negr(gel(p1,i)), v);
-      for (   ; i < lx; i++)
-      {
-        GEN a = gel(p1,2*i-r1);
-        p = cgetg(5, t_POL); gel(p2,i) = p;
-        p[1] = x[1];
-        gel(p,2) = gnorm(a);
-        gel(p,3) = gmul2n(gel(a,1),1); togglesign(gel(p,3));
-        gel(p,4) = gen_1;
-      }
-      gel(y,1) = gerepileupto(av,p2);
-      gel(y,2) = const_col(lx-1, gen_1); return y;
-
-    default:
-    {
-      GEN w = NULL, T = pol;
-      long t1, t2;
-      av = avma;
-      RgX_type_decode(tx, &t1, &t2);
-      if (t1 == t_COMPLEX) w = gen_I();
-      else if (t1 == t_QUAD) w = mkquad(pol,gen_0,gen_1);
-      if (w)
-      { /* substitute I or w by t_POLMOD */
-        T = leafcopy(pol); setvarn(T, fetch_var());
-        x = RgX_fix_quad(x, T);
-      }
-      switch (t2)
-      {
-        case t_INT: case t_FRAC: p1 = nffactor(T,x); break;
-        case t_INTMOD:
-          T = RgX_to_FpX(T,p);
-          if (FpX_is_irred(T,p)) { p1 = factmod(x,mkvec2(p,T)); break; }
-        /*fall through*/
-        default:
-          if (w) (void)delete_var();
-          pari_err_IMPL("factor for general polynomial");
-          return NULL; /* LCOV_EXCL_LINE */
-      }
-      if (t1 == t_POLMOD) return gerepileupto(av, p1);
-      /* substitute back I or w */
-      gel(p1,1) = gsubst(liftpol_shallow(gel(p1,1)), varn(T), w);
-      (void)delete_var(); return gerepilecopy(av, p1);
-    }
+    case t_INTMOD: return factmod(x, p);
+    case t_PADIC: return factorpadic(x, p, pa);
+    case t_FFELT: return FFX_factor(x, T);
+    case t_COMPLEX: return CX_factor(x, pa);
+    case t_REAL: return RX_factor(x, pa);
   }
+  return RgXQ_factor(x, T, p, tx);
 }
 
 static GEN
 factor_domain(GEN x, GEN dom)
 {
-  long tx = typ(x);
-  long tdom = dom ? typ(dom): 0;
+  long tx = typ(x), tdom = dom ? typ(dom): 0;
   pari_sp av;
 
   if (gequal0(x))
