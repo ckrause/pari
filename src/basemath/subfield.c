@@ -573,29 +573,24 @@ choose_prime(primedata *S, GEN pol)
 
 /* maxroot t_REAL */
 static GEN
-bound_for_coeff(long m, GEN rr, GEN *maxroot)
+bound_for_coeff(long m, GEN R, GEN *maxroot)
 {
-  long i,r1, lrr=lg(rr);
-  GEN p1,b1,b2,B,M, C = matpascal(m-1);
+  GEN b1, b2, M, v, C = vecbinomial(m-1);
+  long i, r1, l = lg(R);
 
-  for (r1=1; r1 < lrr; r1++)
-    if (typ(gel(rr,r1)) != t_REAL) break;
+  for (r1 = 1; r1 < l; r1++)
+    if (typ(gel(R,r1)) != t_REAL) break;
   r1--;
-
-  rr = gabs(rr,0); *maxroot = vecmax(rr);
-  for (i=1; i<lrr; i++)
-    if (gcmp(gel(rr,i), gen_1) < 0) gel(rr,i) = gen_1;
-  for (b1=gen_1,i=1; i<=r1; i++) b1 = gmul(b1, gel(rr,i));
-  for (b2=gen_1    ; i<lrr; i++) b2 = gmul(b2, gel(rr,i));
-  B = gmul(b1, gsqr(b2)); /* Mahler measure */
-  M = cgetg(m+2, t_VEC); gel(M,1) = gel(M,2) = gen_0; /* unused */
-  for (i=1; i<m; i++)
-  {
-    p1 = gadd(gmul(gcoeff(C, m, i+1), B),/* binom(m-1, i)   */
-              gcoeff(C, m, i));          /* binom(m-1, i-1) */
-    gel(M,i+2) = ceil_safe(p1);
-  }
-  return M;
+  R = gabs(R,0); *maxroot = vecmax(R);
+  for (b1 = gen_1, i = 1; i <= r1; i++)
+    if (gcmpgs(gel(R,i), 1) > 0) b1 = gmul(b1, gel(R,i));
+  for (b2 = gen_1    ; i < l; i++)
+    if (gcmpgs(gel(R,i), 1) > 0) b2 = gmul(b2, gel(R,i));
+  M = gmul(b1, gsqr(b2)); /* Mahler measure */
+  v = cgetg(m+2, t_VEC); gel(v,1) = gel(v,2) = gen_0; /* unused */
+  for (i = 1; i < m; i++) /* binom(m-1, i) * M + binom(m-1, i-1) */
+    gel(v, i+2) = ceil_safe(gadd(gmul(gel(C, i+1), M), gel(C, i)));
+  return v;
 }
 
 static GEN
