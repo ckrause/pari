@@ -56,8 +56,6 @@ typedef struct {
   long cj;  /* number of conjugate fields */
 } FAD_t;
 
-#undef CHECK
-
 /* Eval P(x) assuming P has positive coefficients and the result is a long */
 static ulong
 ZX_z_eval(GEN P, ulong x)
@@ -818,76 +816,13 @@ possible_efj(GEN p, long m)
   setlg(L, nb); return L;
 }
 
-#ifdef CHECK
-static void
-checkpols(GEN p, GEN EFJ, GEN pols)
-{
-  GEN pol, p1, p2;
-  long c1, c2, e, f, j, i, l = lg(pols);
-
-  if (typ(pols) == t_INT) return;
-
-  e = EFJ[1];
-  f = EFJ[2];
-  j = EFJ[3];
-
-  for (i = 1; i < l; i++)
-  {
-    pol = gel(pols, i);
-    if (typ(pol) == t_VEC) pol = gel(pol, 1);
-    if (!polisirreducible(pol)) pari_err_BUG("Polynomial is reducible");
-    p1 = poldisc0(pol, -1);
-    if (gvaluation(p1, p) != f*(e+j-1)) pari_err_BUG("Discriminant is incorrect");
-    /* only compute a p-maximal order */
-    p1 = nfinit0(mkvec2(pol, mkvec(p)), 0, DEFAULTPREC);
-    p2 = idealprimedec(p1, p);
-    if(lg(p2) > 2) pari_err_BUG("Prime p is split");
-    p2 = gel(p2, 1);
-    if (cmpis(gel(p2, 3), e)) pari_err_BUG("Ramification index is incorrect");
-    if (cmpis(gel(p2, 4), f)) pari_err_BUG("inertia degree is incorrect");
-  }
-
-  if (l == 2) return;
-  if (e*f > 20) return;
-
-  /* TODO: check that (random) distinct polynomials give nonisomorphic extensions */
-  for (i = 1; i < 3*l; i++)
-  {
-    c1 = random_Fl(l-1)+1;
-    c2 = random_Fl(l-1)+1;
-    if (c1 == c2) continue;
-    p1 = gel(pols, c1);
-    if (typ(p1) == t_VEC) p1 = gel(p1, 1);
-    p2 = gel(pols, c2);
-    if (typ(p2) == t_VEC) p2 = gel(p2, 1);
-    pol = polcompositum0(p1, p2, 0);
-    pol = gel(pol, 1);
-    if (poldegree(pol, -1) > 100) continue;
-    p1 = factorpadic(pol, p, 2);
-    p1 = gmael(p1, 1, 1);
-    if (poldegree(p1, -1) == e*f) pari_err_BUG("fields are isomorphic");
-    /*
-      p1 = nfinit0(mkvec2(pol, mkvec(p)), 0, DEFAULTPREC);
-      p2 = idealprimedec_galois(p1, p);
-      if (!cmpis(mulii(gel(p2, 3), gel(p2, 4)), e*f)) pari_err_BUG("fields are isomorphic");
-    */
-  }
-}
-#endif
-
 static GEN
 pols_from_efj(pari_sp av, GEN EFJ, GEN p, long flag)
 {
   long i, l;
   GEN L = cgetg_copy(EFJ, &l);
   if (l == 1) { set_avma(av); return flag == 2? gen_0: cgetg(1, t_VEC); }
-  for (i = 1; i < l; i++)
-  {
-    gel(L,i) = GetRamifiedPol(p, gel(EFJ,i), flag);
-#ifdef CHECK
-    checkpols(p, gel(EFJ, i), gel(L, i));
-#endif
-  }
+  for (i = 1; i < l; i++) gel(L,i) = GetRamifiedPol(p, gel(EFJ,i), flag);
   if (flag == 2) return gerepileuptoint(av, ZV_sum(L));
   return gerepilecopy(av, shallowconcat1(L));
 }
