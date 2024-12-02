@@ -1020,21 +1020,19 @@ static GEN
 lfunzetak(GEN T)
 { pari_sp av = avma; return gerepilecopy(av, lfunzetak_i(T)); }
 
-/* v = vector of normalized characters of order dividing o; renormalize
- * so that all have same apparent order o */
+/* C = normalized character of order dividing o; renormalize so that it has
+ * apparent order o */
 static GEN
-char_renormalize(GEN v, GEN o)
+char_renormalize(GEN C, GEN o)
 {
-  long i, l;
-  GEN w = cgetg_copy(v, &l);
-  for (i = 1; i < l; i++)
-  {
-    GEN C = gel(v,i), oc = gel(C,1), c = gel(C,2);
-    if (!equalii(o, oc)) c = gmul(c, diviiexact(o, oc));
-    gel(w,i) = c;
-  }
-  return w;
+  GEN oc = gel(C,1), c = gel(C,2);
+  if (!equalii(o, oc)) c = ZC_Z_mul(c, diviiexact(o, oc));
+  return c;
 }
+static GEN
+vecchar_renormalize(GEN x, GEN o)
+{ pari_APPLY_same(char_renormalize(gel(x,i), o)); }
+
 /* G is a bid of nftyp typ_BIDZ */
 static GEN
 lfunchiZ(GEN G, GEN CHI)
@@ -1065,7 +1063,7 @@ lfunchiZ(GEN G, GEN CHI)
       o = lcmii(o, gel(C,1)); /* lcm with charorder */
       gel(nchi,i) = C;
     }
-    nchi = mkvec2(o, char_renormalize(nchi, o));
+    nchi = mkvec2(o, vecchar_renormalize(nchi, o));
     if (typ(N) != t_INT) N = gel(N,1);
   }
   else
@@ -1132,7 +1130,7 @@ lfunchigen(GEN bnr, GEN CHI)
       o = lcmii(o, gel(chi,1)); /* lcm with charorder */
       gel(nchi,i) = chi;
     }
-    nchi = mkvec2(o, char_renormalize(nchi, o));
+    nchi = mkvec2(o, vecchar_renormalize(nchi, o));
   }
   else
   {
@@ -1271,21 +1269,24 @@ static GEN
 lfunabelrel(GEN bnr, GEN H, GEN mod)
 { pari_sp av = avma; return gerepilecopy(av, lfunabelrel_i(bnr, H, mod)); }
 
+
+static GEN
+lfunchiinit(GEN bnr, GEN chi, GEN dom, long der, long bitprec)
+{
+  GEN L = lfunchigen(bnr, lg(chi)==2 ? gel(chi,1): chi);
+  return lfuninit(L, dom, der, bitprec);
+}
+static GEN
+veclfunchiinit(GEN bnr, GEN x, GEN dom, long der, long bitprec)
+{ pari_APPLY_same(lfunchiinit(bnr, gel(x,i), dom, der, bitprec)); }
 GEN
 lfunabelianrelinit(GEN bnr, GEN H, GEN dom, long der, long bitprec)
 {
-  GEN X, cnj, M, D,C ;
-  long l, i;
-  C = chigenkerfind(bnr, H, &cnj);
-  C = vec_classes (C, cnj);
-  X = cgetg_copy(C,&l);
-  for (i = 1; i < l; ++i)
-  {
-    GEN chi = gel(C,i);
-    GEN L = lfunchigen(bnr, lg(chi)==2 ? gel(chi,1): chi);
-    gel(X,i) = lfuninit(L, dom, der, bitprec);
-  }
-  M = mkvec3(X, const_vecsmall(l-1, 1), const_vecsmall(l-1, 0));
+  GEN cnj, M, D, C = chigenkerfind(bnr, H, &cnj);
+  long l;
+  C = vec_classes(C, cnj); l = lg(C);
+  M = mkvec3(veclfunchiinit(bnr, C, dom, der, bitprec),
+             const_vecsmall(l-1, 1), const_vecsmall(l-1, 0));
   D = mkvec2(dom, mkvecsmall2(der, bitprec));
   return lfuninit_make(t_LDESC_PRODUCT, lfunabelrel_i(bnr, H, NULL), M, D);
 }
