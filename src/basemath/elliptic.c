@@ -2208,14 +2208,8 @@ GEN
 ellordinate(GEN e, GEN x, long prec)
 {
   checkell(e);
-  if (is_matvec_t(typ(x)))
-  {
-    long i, lx;
-    GEN v = cgetg_copy(x, &lx);
-    for (i=1; i<lx; i++) gel(v,i) = ellordinate(e,gel(x,i),prec);
-    return v;
-  }
-  return ellordinate_i(e, x, prec);
+  if (!is_matvec_t(typ(x))) return ellordinate_i(e, x, prec);
+  pari_APPLY_same(ellordinate_i(e,gel(x,i),prec));
 }
 
 GEN

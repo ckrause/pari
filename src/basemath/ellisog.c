@@ -1542,18 +1542,13 @@ ellnf_isomat(GEN E, long flag)
 }
 
 static GEN
-list_to_crv(GEN L)
+to_crv(GEN L)
 {
-  long i, l;
-  GEN V = cgetg_copy(L, &l);
-  for (i=1; i < l; i++)
-  {
-    GEN Li = gel(L,i);
-    GEN e = mkvec2(gdivgs(gel(Li,1), -48), gdivgs(gel(Li,2), -864));
-    gel(V,i) = lg(Li)==6 ? mkvec3(e, gel(Li,4), gel(Li,5)): e;
-  }
-  return V;
+  GEN e = mkvec2(gdivgs(gel(L,1), -48), gdivgs(gel(L,2), -864));
+  return lg(L)==6 ? mkvec3(e, gel(L,4), gel(L,5)): e;
 }
+static GEN
+list_to_crv(GEN x) { pari_APPLY_same(to_crv(gel(x,i))); }
 
 GEN
 ellisomat(GEN E, long p, long flag)
