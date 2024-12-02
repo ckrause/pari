@@ -5370,13 +5370,8 @@ Tpmod(GEN Ap, GEN A, ulong chip, long p, ulong q)
 }
 /* Tp(f_1), ..., Tp(f_d) mod q */
 static GEN
-matTpmod(GEN Ap, GEN A, ulong chip, long p, ulong q)
-{
-  long i, l;
-  GEN B = cgetg_copy(A, &l);
-  for (i = 1; i < l; i++) gel(B,i) = Tpmod(gel(Ap,i), gel(A,i), chip, p, q);
-  return B;
-}
+matTpmod(GEN xp, GEN x, ulong chip, long p, ulong q)
+{ pari_APPLY_same(Tpmod(gel(xp,i), gel(x,i), chip, p, q)); }
 
 /* Ap[i] = a_{p*i}(F), A[i] = a_i(F), i = 1..lim
  * Tp(f)[n] = a_{p*n}(f) + chi(p) a_{n/p}(f) * 1_{p | n} */
@@ -5389,15 +5384,10 @@ Tp(GEN Ap, GEN A, GEN chip, long p)
     gel(B,ip) = gadd(gel(B,ip), gmul(gel(A,i), chip));
   return B;
 }
-/* Tp(f_1), ..., Tp(f_d) mod q */
+/* Tp(f_1), ..., Tp(f_d) */
 static GEN
-matTp(GEN Ap, GEN A, GEN chip, long p)
-{
-  long i, l;
-  GEN B = cgetg_copy(A, &l);
-  for (i = 1; i < l; i++) gel(B,i) = Tp(gel(Ap,i), gel(A,i), chip, p);
-  return B;
-}
+matTp(GEN xp, GEN x, GEN chip, long p)
+{ pari_APPLY_same(Tp(gel(xp,i), gel(x,i), chip, p)); }
 
 static GEN
 _RgXQM_mul(GEN x, GEN y, GEN T)
