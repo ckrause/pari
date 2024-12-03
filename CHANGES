@@ -17,11 +17,12 @@ BA  10- paridecl.h could conflict with complex.h [#2583]
     12- printf("%10.6f", tiny rational) -> undefined result [#2576]
 AP  13- alginit(nf,[a,b]) was only allowing a,b integral over the power basis
         instead of arbitrary algebraic integers.
-    14- missing type checks for change of variables in ellchangecurve,
+HC  14- zeta not continous around 1/2+3000*I [#2585]
+    15- missing type checks for change of variables in ellchangecurve,
         ellchangepoint, ellchangepointinv
-    15- nfmodpr at deg 1 prime: "wrong" invisible variable in t_FFELT [#2580]
-    16- [libpari] missing normalization in FpX_mulu (when p is not prime)
-    17- missing type checks in factorback [#2590]
+    16- nfmodpr at deg 1 prime: "wrong" invisible variable in t_FFELT [#2580]
+    17- [libpari] missing normalization in FpX_mulu (when p is not prime)
+    18- missing type checks in factorback [#2590]
 
   Added
 AP   1- new GP function algnewprec
