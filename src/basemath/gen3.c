@@ -2059,6 +2059,8 @@ lookup(GEN v, long vx)
   return 0;
 }
 
+static GEN
+serdiffop(GEN x, GEN v, GEN dv) { pari_APPLY_ser(diffop(gel(x,i),v,dv)); }
 GEN
 diffop(GEN x, GEN v, GEN dv)
 {
@@ -2103,12 +2105,10 @@ diffop(GEN x, GEN v, GEN dv)
       if (ser_isexactzero(x)) y = x;
       else
       {
-        y = cgetg_copy(x, &lx); y[1] = x[1];
-        for (i=2; i<lx; i++) gel(y,i) = diffop(gel(x,i),v,dv);
-        y = normalizeser(y); /* y is probably invalid */
+        y = serdiffop(x, v, dv); /* y is probably invalid */
         y = gsubst(y, vx, pol_x(vx)); /* Fix that */
       }
-      y = gadd(y, gmul(gel(dv,idx),derivser(x)));
+      y = gadd(y, gmul(gel(dv,idx), derivser(x)));
       return gerepileupto(av, y);
 
     case t_RFRAC: {
@@ -2808,25 +2808,20 @@ padic_to_Q_shallow(GEN x)
   if (v>0) return mulii(powiu(p,v), u);
   return mkfrac(u, powiu(p,-v));
 }
-GEN
-QpV_to_QV(GEN v)
+static GEN
+Qp_to_Q(GEN c)
 {
-  long i, l;
-  GEN w = cgetg_copy(v, &l);
-  for (i = 1; i < l; i++)
+  switch(typ(c))
   {
-    GEN c = gel(v,i);
-    switch(typ(c))
-    {
-      case t_INT:
-      case t_FRAC: break;
-      case t_PADIC: c = padic_to_Q_shallow(c); break;
-      default: pari_err_TYPE("padic_to_Q", v);
-    }
-    gel(w,i) = c;
+    case t_INT:
+    case t_FRAC: break;
+    case t_PADIC: c = padic_to_Q_shallow(c); break;
+    default: pari_err_TYPE("padic_to_Q", c);
   }
-  return w;
+  return c;
 }
+GEN
+QpV_to_QV(GEN x) { pari_APPLY_same(Qp_to_Q(gel(x,i))); }
 
 GEN
 gtrunc(GEN x)
