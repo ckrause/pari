@@ -2101,13 +2101,7 @@ proddiff(GEN u, long i)
   return gerepileupto(av, p);
 }
 static GEN
-vecpows(GEN u, long N)
-{
-  long i, l;
-  GEN v = cgetg_copy(u, &l);
-  for (i = 1; i < l; i++) gel(v,i) = gpowgs(gel(u,i), N);
-  return v;
-}
+vecpows(GEN x, long N) { pari_APPLY_same(gpowgs(gel(x,i), N)); }
 
 static void
 limit_init(struct limit *L, GEN alpha, int asymp)
