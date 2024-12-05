@@ -990,12 +990,14 @@ gen_ellgroup(GEN N, GEN d, GEN *pt_m, void *E, const struct bb_group *grp,
              GEN pairorder(void *E, GEN P, GEN Q, GEN m, GEN F))
 {
   pari_sp av = avma;
-  GEN N0, N1, F;
+  GEN N0, N1, F, B, md, g1 = gen_1, g2 = gen_1;
+  long n = 0, lB, j;
   if (pt_m) *pt_m = gen_1;
   if (is_pm1(N)) return cgetg(1,t_VEC);
   F = ellgroup_d2(N, d);
   if (!F) {set_avma(av); return mkveccopy(N);}
   N0 = gel(F,1); N1 = diviiexact(N, N0);
+  B = ZV_to_nv(gmael(F, 2, 2)); lB = lg(B);
   while(1)
   {
     pari_sp av2 = avma;
@@ -1009,15 +1011,34 @@ gen_ellgroup(GEN N, GEN d, GEN *pt_m, void *E, const struct bb_group *grp,
 
     m = lcmii(s, t);
     d = pairorder(E, P, Q, m, F);
-    /* structure is [N/d, d] iff m d == N0. Note that N/d = N1 m */
-    if (is_pm1(d) && equalii(m, N0)) {set_avma(av); return mkveccopy(N);}
-    if (equalii(mulii(m, d), N0))
+    md = mulii(m, d);
+
+    /*for each prime l dividing N0, check whether
+    P and Q generate every rational points of order l^k*/
+    for (j = 1; j < lB; j++)
     {
-      GEN g = mkvec2(mulii(N1,m), d);
+      GEN l;
+      ulong e = uel(B, j);
+      if (e == 0) continue;
+      l = gcoeff(gel(F, 2), j, 1);
+      if (Z_pval(md, l) == e) {
+        g1 = mulii(g1, powiu(l, Z_pval(m, l)));
+        g2 = mulii(g2, powiu(l, Z_pval(d, l)));
+        uel(B, j) = 0;
+        n++;
+      }
+    }
+
+    if (n == lB-1)
+    {
+      GEN g;
+      if(gequal1(g2)) return gerepilecopy(av, mkveccopy(N));
+      if (pt_m) *pt_m = g1;
+      g1 = mulii(g1, N1); g = mkvec2(g1, g2);
       if (!pt_m) return gerepilecopy(av, g);
       *pt_m = m; return gc_all(av, 2, &g, pt_m);
     }
-    set_avma(av2);
+    gerepileall(av2, 2, &g1, &g2);
   }
 }
 
