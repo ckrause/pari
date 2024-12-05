@@ -664,43 +664,51 @@ gen_PH_log(GEN a, GEN g, GEN ord, void *E, const struct bb_group *grp)
 /**                    ORDER OF AN ELEMENT                            **/
 /**                                                                   **/
 /***********************************************************************/
+
+static GEN
+rec_order(GEN a, GEN o, GEN m,
+          void *E, const struct bb_group *grp, long x, long y)
+{
+  pari_sp av = avma;
+  if(grp->equal1(a)) return gen_1;
+  if(x == y)
+  {
+    GEN b = a, p = gcoeff(m, x, 1);
+    long i, e = itos(gcoeff(m,x,2));
+    for (i = 0; i < e; i++)
+    {
+      if (grp->equal1(b)) return gerepilecopy(av, powiu(p, i));
+      b = grp->pow(E, b, p);
+    }
+    return gerepilecopy(av, powiu(p, e));
+  }
+  else
+  {
+    GEN b, o1, o2, cof = gen_1;
+    long i, z = (x+y)/2;
+    for (i = x; i <= z; i++)
+      cof = mulii(cof, powii(gcoeff(m, i, 1), gcoeff(m, i, 2)));
+    b = grp->pow(E, a, cof);
+    o1 = rec_order(b, diviiexact(o, cof), m, E, grp, z+1, y);
+    b = grp->pow(E, a, o1);
+    o2 = rec_order(b, diviiexact(o, o1), m, E, grp, x, z);
+    return gerepilecopy(av, mulii(o1, o2));
+  }
+}
+
 /*Find the exact order of a assuming a^o==1*/
 GEN
 gen_order(GEN a, GEN o, void *E, const struct bb_group *grp)
 {
   pari_sp av = avma;
-  long i, l;
+  long l;
   GEN m;
 
   m = get_arith_ZZM(o);
   if (!m) pari_err_TYPE("gen_order [missing order]",a);
   o = gel(m,1);
   m = gel(m,2); l = lgcols(m);
-  for (i = l-1; i; i--)
-  {
-    GEN t, y, p = gcoeff(m,i,1);
-    long j, e = itos(gcoeff(m,i,2));
-    if (l == 2) {
-      t = gen_1;
-      y = a;
-    } else {
-      t = diviiexact(o, powiu(p,e));
-      y = grp->pow(E, a, t);
-    }
-    if (grp->equal1(y)) o = t;
-    else {
-      for (j = 1; j < e; j++)
-      {
-        y = grp->pow(E, y, p);
-        if (grp->equal1(y)) break;
-      }
-      if (j < e) {
-        if (j > 1) p = powiu(p, j);
-        o = mulii(t, p);
-      }
-    }
-  }
-  return gerepilecopy(av, o);
+  return gerepilecopy(av, rec_order(a, o, m, E, grp, 1, l-1));
 }
 
 /*Find the exact order of a assuming a^o==1, return [order,factor(order)] */
