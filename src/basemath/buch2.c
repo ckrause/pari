@@ -3161,8 +3161,8 @@ makecycgen(GEN bnf)
 {
   GEN cyc = bnf_get_cyc(bnf), gen = bnf_get_gen(bnf), nf = bnf_get_nf(bnf);
   GEN h, y, GD = bnf_get_GD(bnf), W = bnf_get_W(bnf); /* HNF */
-  GEN Sunits = bnf_get_sunits(bnf);
-  GEN X = Sunits? gel(Sunits,1): NULL, C = Sunits? gel(Sunits,3): NULL;
+  GEN SUnits = bnf_get_sunits(bnf);
+  GEN X = SUnits? gel(SUnits,1): NULL, C = SUnits? gel(SUnits,3): NULL;
   long e, i, l;
 
   if (DEBUGLEVEL) pari_warn(warner,"completing bnf (building cycgen)");
@@ -3352,9 +3352,9 @@ get_archclean(GEN nf, GEN x, long prec, int units)
   return M;
 }
 static void
-Sunits_archclean(GEN nf, GEN Sunits, GEN *pmun, GEN *pC, long prec)
+SUnits_archclean(GEN nf, GEN SUnits, GEN *pmun, GEN *pC, long prec)
 {
-  GEN ipi, M, X = gel(Sunits,1), U = gel(Sunits,2), G = gel(Sunits,3);
+  GEN ipi, M, X = gel(SUnits,1), U = gel(SUnits,2), G = gel(SUnits,3);
   long k, N = nf_get_degree(nf), l = lg(X);
 
   M = cgetg(l, t_MAT);
@@ -3369,14 +3369,14 @@ GEN
 bnfnewprec_shallow(GEN bnf, long prec)
 {
   GEN nf0 = bnf_get_nf(bnf), nf, v, fu, matal, y, A, C;
-  GEN Sunits = bnf_get_sunits(bnf), Ur, Ga, Ge, M1, M2;
+  GEN SUnits = bnf_get_sunits(bnf), Ur, Ga, Ge, M1, M2;
   long r1, r2, prec0 = prec;
 
   nf_get_sign(nf0, &r1, &r2);
-  if (Sunits)
+  if (SUnits)
   {
     fu = matal = NULL;
-    prec += nbits2extraprec(gexpo(Sunits));
+    prec += nbits2extraprec(gexpo(SUnits));
   }
   else
   {
@@ -3394,8 +3394,8 @@ bnfnewprec_shallow(GEN bnf, long prec)
   {
     pari_sp av = avma;
     nf = nfnewprec_shallow(nf0,prec);
-    if (Sunits)
-      Sunits_archclean(nf, Sunits, &A, &C, prec);
+    if (SUnits)
+      SUnits_archclean(nf, SUnits, &A, &C, prec);
     else
     {
       A = get_archclean(nf, fu, prec, 1);
