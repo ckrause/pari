@@ -25,6 +25,7 @@ BA  16- control-C could lead to segfault later [#2496]
     18- [libpari] missing normalization in FpX_mulu (when p is not prime)
 HC  19- mfsymboleval could return wrong sign [#2586]
     20- missing type checks in factorback [#2590]
+BA  21- charpoly(Mod(x,x^20+1/2)) -> crash [#2591]
 
   Added
 AP   1- new GP function algnewprec

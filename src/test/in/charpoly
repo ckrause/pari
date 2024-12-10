@@ -72,6 +72,15 @@ minpoly(Mod(1,x^24+1))
 minpoly(Mod(1,x^2))
 minpoly(Mod(1/(x-(t+1))*Mod(1,2),(t+1)*x^2+t*x+1))
 
+test(a)=
+{
+   if(subst(charpoly(a),x,a),error(a));
+   if(subst(minpoly(a),x,a),error(a));
+}
+
+test(Mod(x^7+x+1,x^41+x^13/13+x/17))
+test(Mod(x^7+x^5/5+1,x^41+x^13/13+x/17))
+
 test(p)=
 {
   my(P,Q);
