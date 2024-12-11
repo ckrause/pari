@@ -2009,7 +2009,7 @@ QXQ_charpoly(GEN A, GEN T, long v)
 {
   pari_sp av = avma;
   GEN den, B = Q_remove_denom(A, &den);
-  GEN P = ZXQ_charpoly(B, Q_primpart(T), v);
+  GEN P = ZXQ_charpoly(B, T, v);
   return gerepilecopy(av, den ? RgX_rescale(P, ginv(den)): P);
 }
 

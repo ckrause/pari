@@ -3414,7 +3414,15 @@ RgXQ_charpoly_fast(GEN x, GEN T, long v)
   switch(t)
   {
     case t_INT:    return ZXQ_charpoly(x, T, v);
-    case t_FRAC:   return QXQ_charpoly(x, T, v);
+    case t_FRAC:
+    {
+      pari_sp av = avma;
+      GEN cT;
+      T = Q_primitive_part(T, &cT);
+      T = QXQ_charpoly(x, T, v);
+      if (cT) T = gerepileupto(av, T); /* silly rare case */
+      return T;
+    }
     case t_INTMOD: return RgXQ_charpoly_FpXQ(x, T, p, v);
     default:       return NULL;
   }
