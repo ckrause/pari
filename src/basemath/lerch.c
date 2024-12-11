@@ -217,10 +217,13 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
       if (!(y = toser_i(x))) pari_err_TYPE("zetahurwitz", x);
       x = y; x0 = polcoef_i(x, 0, -1); break;
   }
-  rx = grndtoi(real_i(x0), NULL);
+  rx = real_i(x0);
+  if (typ(x) != t_SER && typ(rx) == t_INT && signe(rx) <= 0
+                      && gequal0(imag_i(x0)))
+    pari_err_DOMAIN("zetahurwitz","x", "=",
+                     strtoGENstr("nonpositive integer"), x0);
+  rx = grndtoi(rx, NULL);
   if (typ(rx) != t_INT) pari_err_TYPE("zetahurwitz", x);
-  if (x0 == x && signe(rx) <= 0 && gexpo(gsub(x, rx)) < 17 - bitprec)
-    pari_err_DOMAIN("zetahurwitz", "x", "<=", gen_0, x);
   switch (typ(s))
   {
     long v, pr;

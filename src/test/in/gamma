@@ -11,6 +11,8 @@ lngamma(1.)
 [psi(2+I+x,d)|d<-[0..4]]
 [psi(1+x,d)|d<-[0..4]]
 [psi(-2+x,d)|d<-[0..4]]
+psi(-1/2,1)
+psi(2^-1024,1)
 gamma(-1/2+x)
 gamma(1+a*x+O(x^2))
 lngamma(1+a*x+O(x^2))
@@ -84,3 +86,4 @@ lngamma(-2+x)
 gamma(O(x))
 lngamma(O(x))
 psi(O(x))
+psi(-1)
