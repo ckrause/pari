@@ -11337,7 +11337,9 @@ These functions handle groups of rank at most $2$ equipped with a family of
 bilinear pairings which behave like the Weil pairing on elliptic curves over
 finite field. In the descriptions below, the function \kbd{pairorder(E, P, Q,
 m, F)} must return the order of the $m$-pairing of $P$ and $Q$, both of order
-dividing $m$, where $F$ is the factorization matrix of a multiple of $m$.
+dividing $m$, where $F$ is the factorization matrix of a multiple $M$ of $m$.
+The format $[M, \kbd{factor}(M)]$ is also accepted for $F$, and in fact
+preferred.
 
 \fun{GEN}{gen_ellgroup}{GEN o, GEN d, GEN *pt_m, void *E, const struct bb_group *grp,
              GEN pairorder(void *E, GEN P, GEN Q, GEN m, GEN F)}
