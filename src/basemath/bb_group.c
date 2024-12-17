@@ -964,79 +964,83 @@ gen_Shanks_sqrtn(GEN a, GEN n, GEN q, GEN *zetan, void *E, const struct bb_group
 /*               structure of groups with pairing                  */
 /*                                                                 */
 /*******************************************************************/
-
+/* return c = \prod_{p^2 | (N,d^2)} p^{v_p(N)} and factor(c); multiple of d2 */
 static GEN
-ellgroup_d2(GEN N, GEN d)
+d2_multiple(GEN N, GEN d)
 {
-  GEN r = gcdii(N, d);
-  GEN F1 = gel(Z_factor(r), 1);
-  long i, j, l1 = lg(F1);
-  GEN F = cgetg(3, t_MAT);
-  gel(F,1) = cgetg(l1, t_COL);
-  gel(F,2) = cgetg(l1, t_COL);
-  for (i = 1, j = 1; i < l1; ++i)
+  GEN P, E, Q = gel(Z_factor(gcdii(N,d)), 1);
+  long i, j, l = lg(Q);
+  P = cgetg(l, t_COL);
+  E = cgetg(l, t_COL);
+  for (i = 1, j = 1; i < l; i++)
   {
-    long v = Z_pval(N, gel(F1, i));
-    if (v<=1) continue;
-    gcoeff(F, j  , 1) = gel(F1, i);
-    gcoeff(F, j++, 2) = stoi(v);
+    long v = Z_pval(N, gel(Q,i));
+    if (v <= 1) continue;
+    gel(P, j) = gel(Q,i);
+    gel(E, j) = utoipos(v); j++;
   }
-  setlg(F[1],j); setlg(F[2],j);
-  return j==1 ? NULL : mkvec2(factorback(F), F);
+  if (j == 1) return NULL;
+  setlg(P,j); setlg(E,j);
+  return mkvec2(factorback2(P, E), mkmat2(P, E));
 }
 
+/* Return elementary divisors [d1, d2], d2 | d1, for group of order N.
+ * We have d2 | d */
 GEN
-gen_ellgroup(GEN N, GEN d, GEN *pt_m, void *E, const struct bb_group *grp,
+gen_ellgroup(GEN N, GEN d, GEN *pm, void *E, const struct bb_group *grp,
              GEN pairorder(void *E, GEN P, GEN Q, GEN m, GEN F))
 {
   pari_sp av = avma;
-  GEN N0, N1, F, B, md, g1 = gen_1, g2 = gen_1;
-  long n = 0, lB, j;
-  if (pt_m) *pt_m = gen_1;
+  GEN N0, N1, F, fa0, L0, E0, g1 = gen_1, g2 = gen_1;
+  long n = 0, n0, j;
+
+  if (pm) *pm = gen_1;
   if (is_pm1(N)) return cgetg(1,t_VEC);
-  F = ellgroup_d2(N, d);
-  if (!F) {set_avma(av); return mkveccopy(N);}
-  N0 = gel(F,1); N1 = diviiexact(N, N0);
-  B = ZV_to_nv(gmael(F, 2, 2)); lB = lg(B);
-  while(1)
-  {
+  F = d2_multiple(N, d); if (!F) { set_avma(av); return mkveccopy(N); }
+  N0 = gel(F,1); fa0 = gel(F,2); /* N0 a multiple of d2, fa0 = factor(N0) */
+  N1 = diviiexact(N, N0); /* N1 | d1 */
+  L0 = gel(fa0, 1); n0 = lg(L0)-1; /* primes dividing N0 */
+  E0 = ZV_to_nv(gel(fa0, 2)); /* ... and their exponents */
+  while (1)
+  { /* g1 | (d1/N1), g2 | d2 */
     pari_sp av2 = avma;
-    GEN P, Q, d, s, t, m;
+    GEN P, Q, s, t, m, mo;
 
     P = grp->pow(E,grp->rand(E), N1);
-    s = gen_order(P, F, E, grp); if (equalii(s, N0)) {set_avma(av); return mkveccopy(N);}
+    s = gen_order(P, F, E, grp); /* s | N0 */
+    if (equalii(s, N0)) { set_avma(av); return mkveccopy(N); }
 
     Q = grp->pow(E,grp->rand(E), N1);
-    t = gen_order(Q, F, E, grp); if (equalii(t, N0)) {set_avma(av); return mkveccopy(N);}
+    t = gen_order(Q, F, E, grp); /* t | N0 */
+    if (equalii(t, N0)) { set_avma(av); return mkveccopy(N); }
 
-    m = lcmii(s, t);
-    d = pairorder(E, P, Q, m, F);
-    md = mulii(m, d);
+    m = lcmii(s, t); /* m | N0 */
+    mo = mulii(m, pairorder(E, P, Q, m, F));
 
-    /*for each prime l dividing N0, check whether
-    P and Q generate every rational points of order l^k*/
-    for (j = 1; j < lB; j++)
+    /* For each prime l dividing N0, check whether P and Q
+     * generate all rational points of order a power of l */
+    for (j = 1; j <= n0; j++)
     {
       GEN l;
-      ulong e = uel(B, j);
+      ulong e = uel(E0, j);
       if (e == 0) continue;
-      l = gcoeff(gel(F, 2), j, 1);
-      if (Z_pval(md, l) == e) {
-        g1 = mulii(g1, powiu(l, Z_pval(m, l)));
-        g2 = mulii(g2, powiu(l, Z_pval(d, l)));
-        uel(B, j) = 0;
-        n++;
+      l = gel(L0, j);
+      if (Z_pval(mo, l) == e)
+      {
+        long vm = Z_pval(m, l);
+        g1 = mulii(g1, powiu(l, vm));
+        g2 = mulii(g2, powiu(l, e - vm));
+        if (++n == n0)
+        { /* done with all primes l */
+          GEN g;
+          if (equali1(g2)) { set_avma(av); return mkveccopy(N); }
+          if (pm) *pm = g1;
+          g = mkvec2(mulii(g1, N1), g2);
+          if (!pm) return gerepilecopy(av, g);
+          *pm = m; return gc_all(av, 2, &g, pm);
+        }
+        uel(E0, j) = 0; /* done with this prime l */
       }
-    }
-
-    if (n == lB-1)
-    {
-      GEN g;
-      if(gequal1(g2)) return gerepilecopy(av, mkveccopy(N));
-      if (pt_m) *pt_m = g1;
-      g1 = mulii(g1, N1); g = mkvec2(g1, g2);
-      if (!pt_m) return gerepilecopy(av, g);
-      *pt_m = m; return gc_all(av, 2, &g, pt_m);
     }
     gerepileall(av2, 2, &g1, &g2);
   }
