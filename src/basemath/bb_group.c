@@ -1025,7 +1025,7 @@ gen_ellgroup(GEN N, GEN d, GEN *pm, void *E, const struct bb_group *grp,
       ulong e = uel(E0, j);
       if (e == 0) continue;
       l = gel(L0, j);
-      if (Z_pval(mo, l) == e)
+      if ((ulong)Z_pval(mo, l) == e)
       {
         long vm = Z_pval(m, l);
         g1 = mulii(g1, powiu(l, vm));
