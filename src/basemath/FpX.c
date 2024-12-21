@@ -2702,6 +2702,61 @@ Fp2_sqrt(GEN z, GEN D, GEN p)
   return mkvec2(u,v);
 }
 
+static GEN
+FpXQ_sumautsum_sqr(void *E, GEN xzd)
+{
+  struct _FpXQ *D = (struct _FpXQ*)E;
+  pari_sp av = avma;
+  GEN xi, zeta, delta, xi2, zeta2, delta2, temp, xipow;
+  GEN T = D->T, p = D-> p;
+  ulong d;
+  xi = gel(xzd, 1); zeta = gel(xzd, 2); delta = gel(xzd, 3);
+
+  d = brent_kung_optpow(get_FpX_degree(T)-1,3,1);
+  xipow = FpXQ_powers(xi, d, T, p);
+
+  xi2 = FpX_FpXQV_eval(xi, xipow, T, p);
+  zeta2 = FpXQ_mul(zeta, FpX_FpXQV_eval(zeta,  xipow, T, p), T, p);
+  temp  = FpXQ_mul(zeta, FpX_FpXQV_eval(delta, xipow, T, p), T, p);
+  delta2 = FpX_add(delta, temp, p);
+  return gerepilecopy(av, mkvec3(xi2, zeta2, delta2));
+}
+
+static GEN
+FpXQ_sumautsum_msqr(void *E, GEN xzd)
+{
+  struct _FpXQ *D = (struct _FpXQ*)E;
+  pari_sp av = avma;
+  GEN xii, zetai, deltai, xzd2;
+  GEN T = D->T, p = D-> p, xi0pow = gel(D->aut, 1), zeta0 = gel(D->aut, 2);
+  xzd2 = FpXQ_sumautsum_sqr(E, xzd);
+  xii = FpX_FpXQV_eval(gel(xzd2, 1), xi0pow, T, p);
+  zetai = FpXQ_mul(zeta0, FpX_FpXQV_eval(gel(xzd2, 2), xi0pow, T, p), T, p);
+  deltai = FpX_add(gel(xzd2, 3), zetai, p);
+
+  return gerepilecopy(av, mkvec3(xii, zetai, deltai));
+}
+
+/*returns a + a^(1+s) + a^(1+s+2s) + ... + a^(1+s+...+is)
+  where ax = [a,s] with s an automorphism */
+static GEN
+FpXQ_sumautsum(GEN ax, long i, GEN T, GEN p) {
+  pari_sp av = avma;
+  GEN a, xi, zeta, vec, res;
+  struct _FpXQ D;
+  ulong d;
+  D.T = FpX_get_red(T, p); D.p = p;
+  a = gel(ax, 1); xi = gel(ax,2);
+  d = brent_kung_optpow(get_FpX_degree(T)-1,2*(hammingl(i)-1),1);
+  zeta = FpX_FpXQ_eval(a, xi, T, p);
+  D.aut = mkvec2(FpXQ_powers(xi, d, T, p), zeta);
+
+  vec = gen_powu_fold(mkvec3(xi, zeta, zeta), i, (void *)&D, FpXQ_sumautsum_sqr, FpXQ_sumautsum_msqr);
+  res = FpXQ_mul(a, FpX_add(pol_1(get_FpX_var(T)), gel(vec, 3), p), T, p);
+
+  return gerepilecopy(av, res);
+}
+
 GEN
 FpXQ_sqrt(GEN z, GEN T, GEN p)
 {
@@ -2740,8 +2795,35 @@ FpXQ_sqrt(GEN z, GEN T, GEN p)
     GEN s = Fp_sqrt(constant_coeff(z), p);
     if (!s) return gc_NULL(av);
     return gerepilecopy(av, scalarpol_shallow(s, get_FpX_var(T)));
+  } else
+  {
+    GEN c, b, new_z, lam, beta, x, y, w, aut;
+    long v = get_FpX_var(T);
+    if(!signe(z)) return pol_0(varn(z));
+    if(gequal(p, gen_2)) {
+      w = F2xq_sqrt(ZX_to_F2x(z), ZX_to_F2x(get_FpX_mod(T)));
+      if (!z) return NULL;
+      w = F2x_to_ZX(z);
+      return gerepileuptoleaf(av, w);
+    }
+    T = FpX_get_red(T, p);
+    aut = FpX_Frobenius(T,p);
+    do {
+      do c = random_FpX(d, v, p); while (!signe(c));
+
+      new_z = FpXQ_mul(z, FpXQ_sqr(c, T, p), T, p);
+      lam = FpXQ_pow(new_z, shifti(p, -1), T, p);
+      y = d==2 ? pol_0(v) : FpXQ_sumautsum(mkvec2(lam, aut), d-2, T, p);
+      b = FpX_add(pol_1(v), y, p);
+    } while (!signe(b));
+
+    x = FpXQ_mul(new_z, FpXQ_sqr(b, T, p), T, p);
+    if (degpol(x) > 1) return NULL;
+    beta = Fp_sqrt(constant_coeff(x), p);
+    if (!beta) return NULL;
+    w = FpX_Fp_mul(FpXQ_inv(FpXQ_mul(b, c, T, p), T, p), beta, p);
+    return gerepilecopy(av, w);
   }
-  return FpXQ_sqrtn(z, gen_2, T, p, NULL);
 }
 
 GEN

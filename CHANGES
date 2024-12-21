@@ -45,6 +45,7 @@ BA  11- new GP functions ellchangecompose, ellchangeinvert
 HC  12- zetahurwitz(t_PADIC,,d): use dth-power of the Teichmuller character
 BA  13- [libpari] ZVV_nv_mod_tree, ZVV_to_FlvV
 MTB 14- gen_order: implement faster recursive algorithm
+MTB 15- FpXQ_sqrt: implement fast algorithm
 
   Changed
 BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
