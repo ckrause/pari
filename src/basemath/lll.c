@@ -344,16 +344,18 @@ ZM_flatter_rank(GEN M, long rank, long flag)
   pari_timer ti;
   pari_sp ltop = avma;
   GEN T;
-  long i, n = lg(M)-1;
+  long i, n = lg(M)-1, s, sm = LONG_MAX;
   if (rank == n)  return ZM_flatter(M, flag);
   T = matid(n);
   if (DEBUGLEVEL>=3) timer_start(&ti);
   for (i = 1;; i++)
   {
     GEN S = ZM_flatter(vconcat(gshift(M,i),matid(n)), flag);
+    s = expi(gnorml2(S));
     if (DEBUGLEVEL>=3)
-      timer_printf(&ti,"FLATTERRANK step %ld: %ld",i,expi(gnorml2(S)));
-    if (ZM_isidentity(S)) break;
+      timer_printf(&ti,"FLATTERRANK step %ld: %ld",i,s);
+    if (ZM_isidentity(S) || s >= sm) break;
+    sm = s;
     T = ZM_mul(T, S);
     M = ZM_mul(M, S);
     if (gc_needed(ltop, 1))

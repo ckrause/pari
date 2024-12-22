@@ -31,6 +31,7 @@ BA  21- charpoly(Mod(x,x^20+1/2)) -> crash [#2591]
         rnfpseudobasis, rnfdisc, rnfdedekind) were missing relevant sanity
         checks
 BA  24- polresultant(t_POL with RFRAC coeffs) could be incorrect [#2588]
+BA  25- qflll(non-maximal rank) -> potential oo-loop [#2587]
 
   Added
 AP   1- new GP function algnewprec
