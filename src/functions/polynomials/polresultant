@@ -23,8 +23,8 @@ Doc: resultant of the two
  If $\fl=1$, uses the determinant of Sylvester's matrix instead; this should
  always be slower than the default.
 
- If $x$ or $y$ are multivariate with a huge \emph{polynomial} content, it
- is advisable to remove it before calling this function. Compare:
+ If $x$ or $y$ are multivariate with a huge content, it is advisable to
+ remove it before calling this function. Compare:
  \bprog
  ? a = polcyclo(7) * ((t+1)/(t+2))^100;
  ? b = polcyclo(11)* ((t+2)/(t+3))^100);
