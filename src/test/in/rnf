@@ -251,6 +251,8 @@ rnfdedekind(nf, P)
 rnfdedekind(nf, P, [pr2,pr3])
 rnfdedekind(nf, x^2)
 
+rnfinit(nf, x^2 - y/3);
+
 rnfconductor(nf, x^2);
 rnfconductor(nf, [x^2,1]);
 

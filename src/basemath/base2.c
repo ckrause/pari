@@ -3085,6 +3085,69 @@ FqX_non_root(GEN P, GEN T, GEN p)
   return NULL;
 }
 
+/* true nf, x t_POL */
+static int
+nfpolisintegral_i(GEN nf, GEN x)
+{
+  GEN d, T = nf_get_pol(nf);
+  long l = lg(x);
+  if (varn(x) != varn(T)) pari_err_VAR("nfisintegral", x,T);
+  if (l >= lg(T)) { x = RgX_rem(x, T); l = lg(x); }
+  if (l == 2) return 1;
+  if (l == 3)
+  {
+    switch(typ(gel(x,2)))
+    {
+      case t_INT: return 1;
+      case t_FRAC: return 0;
+      default: pari_err_TYPE("nfisintegral",x);
+    }
+  }
+  x = Q_remove_denom(x, &d);
+  if (!RgX_is_ZX(x)) pari_err_TYPE("nfisintegral",x);
+  if (!d) return 1;
+  x = ZM_ZX_mul(nf_get_invzk(nf), x);
+  return ZV_Z_dvd(x, d);
+}
+static int
+nfpolisintegral(GEN nf, GEN x)
+{ pari_sp av = avma; return gc_int(av, nfpolisintegral_i(nf, x)); }
+
+/* true nf */
+static int
+nfisintegral(GEN nf, GEN x)
+{
+  switch(typ(x))
+  {
+    case t_INT: return 1;
+    case t_FRAC: return 0;
+    case t_POLMOD:
+      x = checknfelt_mod(nf,x,"nfisintegral");
+      switch(typ(x))
+      {
+        case t_INT: return 1;
+        case t_FRAC: return 0;
+        case t_POL: return nfpolisintegral(nf,x);
+      }
+      break;
+    case t_POL: return nfpolisintegral(nf,x);
+    case t_COL:
+      if (lg(x)-1 != nf_get_degree(nf)) break;
+      return RgV_is_ZV(x);
+  }
+  pari_err_TYPE("nfisintegral",x);
+  return 0; /* LCOV_EXCL_LINE */
+}
+/* true nf */
+static int
+nfXisintegral(GEN nf, GEN x)
+{
+  long i, l = lg(x);
+  for (i = 2; i < l; i++)
+    if (!nfisintegral(nf, gel(x,i))) return 0;
+  return 1;
+}
+
 /* Relative Dedekind criterion over (true) nf, applied to the order defined by a
  * root of monic irreducible polynomial P, modulo the prime ideal pr. Assume
  * vdisc = v_pr( disc(P) ).
@@ -3102,6 +3165,8 @@ rnfdedekind_i(GEN nf, GEN P, GEN pr, long vdisc, long only_maximal)
   if (vdisc == 1) return NULL; /* pr-maximal */
   if (!only_maximal && !gequal1(leading_coeff(P)))
     pari_err_IMPL( "the full Dedekind criterion in the nonmonic case");
+  if (!nfXisintegral(nf, P))
+    pari_err_IMPL("non integral polynomial in rnfdedekind");
   /* either monic OR only_maximal = 1 */
   m = degpol(P);
   nfT = nf_get_pol(nf);
@@ -3469,6 +3534,8 @@ rnfallbase(GEN nf, GEN pol, GEN lim, GEN rnf, GEN *pD, GEN *pf, GEN *pDKP)
   nf = checknf(nf); pol = liftpol_shallow(pol);
   if (!gequal1(leading_coeff(pol)))
     pari_err_IMPL("nonmonic relative polynomials in rnfallbase");
+  if (!nfXisintegral(nf, pol))
+    pari_err_IMPL("non integral polynomial in rnfallbase");
   disc = nf_to_scalar_or_basis(nf, nfX_disc(nf, pol));
   if (gequal0(disc))
     pari_err_DOMAIN("rnfpseudobasis","issquarefree(pol)","=",gen_0, pol);

@@ -27,6 +27,9 @@ HC  19- mfsymboleval could return wrong sign [#2586]
     20- missing type checks in factorback [#2590]
 BA  21- charpoly(Mod(x,x^20+1/2)) -> crash [#2591]
     22- psi(x close to a nonpositive integer) -> error
+    23- rnf functions which assume polynomial with integral coeffs (rnfinit,
+        rnfpseudobasis, rnfdisc, rnfdedekind) were missing relevant sanity
+        checks
 
   Added
 AP   1- new GP function algnewprec
