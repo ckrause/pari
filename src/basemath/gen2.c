@@ -1777,8 +1777,8 @@ ZV_Z_dvd(GEN v, GEN p)
   pari_sp av = avma;
   long i, l = lg(v);
   for (i=1; i<l; i++)
-    if (!dvdii(gel(v,i), p)) return gc_long(av,0);
-  return gc_long(av,1);
+    if (!dvdii(gel(v,i), p)) return gc_int(av, 0);
+  return gc_int(av, 1);
 }
 
 static long
