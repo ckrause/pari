@@ -122,3 +122,9 @@ my(p=nextprime(2^100)); test(Mod(Mod(1,nextprime(2^100)),ffinit(p,3,'a)));
 
 polresultant(x^2+y*x+y^4,(3*x^4+(y+5)*x^3+(2*y+1)*x^2+y*x+y^3)/x,y)
 polresultant(x^2+y*x+y^4,(x^4+(y+5)*x^3+(2*y+1)*x^2+y*x+y^3)/x,y)
+polresultant(-y^7 + x*y^2 + x^4,(624*y^10 + 832*x^3*y^8 - 156*x*y^5 - 117*x^2 )/y)
+
+a=ffgen([2,2],'a);
+f=x^6 + (y^5 + (a + 1));
+g=(a*x^11+a*x^10+(a*y^2+(a+1)*y+(a+1))*x^9+((a+1)*y^3+(a+1)*y^2+y)*x^8+(y^3+a*y^2+a)*x^7+(y^4+y^3+y+a)*x^6+(a*y^3+y^2+(a+1)*y+1)*x^5+((a+1)*y^3+a*y^2+y+(a+1))*x^4+(a*y^3+y^2+(a+1)*y+a)*x^3+((a+1)*y^3+a*y)*x^2+(a*y^3+a*y^2+a*y+a)*x+((a+1)*y^4+y+1))/(a*x^3+(a+1));
+polresultant(f,g,'y)

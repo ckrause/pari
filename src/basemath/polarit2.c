@@ -3103,13 +3103,31 @@ nextSousResultant(GEN P, GEN Q, GEN Z, GEN s)
 }
 #undef addshift
 
+static GEN
+RgX_pseudodenom(GEN x)
+{
+  GEN m = NULL;
+  long l = lg(x), i;
+  for (i = 2; i < l; i++)
+  {
+    GEN xi = gel(x, i);
+    if (typ(xi) == t_RFRAC)
+    {
+      GEN d = denom_i(xi);
+      if (!m || signe(RgX_pseudorem(m, d)))
+        m = m ? gmul(m, d): d;
+    }
+  }
+  return m;
+}
+
 /* Ducos's subresultant */
 GEN
 RgX_resultant_all(GEN P, GEN Q, GEN *sol)
 {
   pari_sp av, av2;
   long dP, dQ, delta, sig = 1;
-  GEN cP, cQ, Z, s;
+  GEN DP, DQ, cP, cQ, Z, s;
 
   dP = degpol(P);
   dQ = degpol(Q); delta = dP - dQ;
@@ -3136,6 +3154,9 @@ RgX_resultant_all(GEN P, GEN Q, GEN *sol)
   }
   /* primitive_part is also possible here, but possibly very costly,
    * and hardly ever worth it */
+
+  DP = RgX_pseudodenom(P); if (DP) P = gmul(P,DP);
+  DQ = RgX_pseudodenom(Q); if (DQ) Q = gmul(Q,DQ);
   P = Q_primitive_part(P, &cP);
   Q = Q_primitive_part(Q, &cQ);
   av2 = avma;
@@ -3161,6 +3182,8 @@ RgX_resultant_all(GEN P, GEN Q, GEN *sol)
   if (!signe(Q)) { set_avma(av); return Rg_get_0(Q); }
   s = Lazard(leading_coeff(Q), s, degpol(P));
   if (sig == -1) s = gneg(s);
+  if (DP) s = gdiv(s, gpowgs(DP,dQ));
+  if (DQ) s = gdiv(s, gpowgs(DQ,dP));
   if (cP) s = gmul(s, gpowgs(cP,dQ));
   if (cQ) s = gmul(s, gpowgs(cQ,dP));
   if (!sol) return gerepilecopy(av, s);
