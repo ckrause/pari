@@ -3462,16 +3462,73 @@ Flxq_sqrtn(GEN a, GEN n, GEN T, ulong p, GEN *zeta)
   }
 }
 
+static GEN
+Flxq_sumautsum_sqr(void *E, GEN xzd)
+{
+  struct _Flxq *D = (struct _Flxq*)E;
+  pari_sp av = avma;
+  GEN xi, zeta, delta, xi2, zeta2, delta2, temp, xipow;
+  GEN T = D->T;
+  ulong d, p = D-> p, pi = D->pi;
+  xi = gel(xzd, 1); zeta = gel(xzd, 2); delta = gel(xzd, 3);
+
+  d = brent_kung_optpow(get_Flx_degree(T)-1,3,1);
+  xipow = Flxq_powers_pre(xi, d, T, p, pi);
+
+  xi2 = Flx_FlxqV_eval_pre(xi, xipow, T, p, pi);
+  zeta2 = Flxq_mul_pre(zeta, Flx_FlxqV_eval_pre(zeta,  xipow, T, p, pi), T, p, pi);
+  temp  = Flxq_mul_pre(zeta, Flx_FlxqV_eval_pre(delta, xipow, T, p, pi), T, p, pi);
+  delta2 = Flx_add(delta, temp, p);
+  return gerepilecopy(av, mkvec3(xi2, zeta2, delta2));
+}
+
+static GEN
+Flxq_sumautsum_msqr(void *E, GEN xzd)
+{
+  struct _Flxq *D = (struct _Flxq*)E;
+  pari_sp av = avma;
+  GEN xii, zetai, deltai, xzd2;
+  GEN T = D->T, xi0pow = gel(D->aut, 1), zeta0 = gel(D->aut, 2);
+  ulong p = D-> p, pi = D->pi;
+  xzd2 = Flxq_sumautsum_sqr(E, xzd);
+  xii = Flx_FlxqV_eval_pre(gel(xzd2, 1), xi0pow, T, p, pi);
+  zetai = Flxq_mul_pre(zeta0, Flx_FlxqV_eval_pre(gel(xzd2, 2), xi0pow, T, p, pi), T, p, pi);
+  deltai = Flx_add(gel(xzd2, 3), zetai, p);
+
+  return gerepilecopy(av, mkvec3(xii, zetai, deltai));
+}
+
+/*returns a + a^(1+s) + a^(1+s+2s) + ... + a^(1+s+...+is)
+  where ax = [a,s] with s an automorphism */
+static GEN
+Flxq_sumautsum_pre(GEN ax, long i, GEN T, ulong p, ulong pi) {
+  pari_sp av = avma;
+  GEN a, xi, zeta, vec, res;
+  struct _Flxq D;
+  ulong d;
+  D.T = Flx_get_red(T, p); D.p = p; D.pi = pi;
+  a = gel(ax, 1); xi = gel(ax,2);
+  d = brent_kung_optpow(get_Flx_degree(T)-1,2*(hammingl(i)-1),1);
+  zeta = Flx_Flxq_eval_pre(a, xi, T, p, pi);
+  D.aut = mkvec2(Flxq_powers_pre(xi, d, T, p, pi), zeta);
+
+  vec = gen_powu_fold(mkvec3(xi, zeta, zeta), i, (void *)&D, Flxq_sumautsum_sqr, Flxq_sumautsum_msqr);
+  res = Flxq_mul_pre(a, Flx_add(pol1_Flx(get_Flx_var(T)), gel(vec, 3), p), T, p, pi);
+
+  return gerepilecopy(av, res);
+}
+
 GEN
 Flxq_sqrt_pre(GEN z, GEN T, ulong p, ulong pi)
 {
   pari_sp av = avma;
+  long d = get_Flx_degree(T);
   if (p==2)
   {
     GEN r = F2xq_sqrt(Flx_to_F2x(z), Flx_to_F2x(get_Flx_mod(T)));
     return gerepileupto(av, F2x_to_Flx(r));
   }
-  if (get_Flx_degree(T)==2)
+  if (d==2)
   {
     GEN P = get_Flx_mod(T), s;
     ulong c = uel(P,2), b = uel(P,3), a = uel(P,4);
@@ -3494,8 +3551,36 @@ Flxq_sqrt_pre(GEN z, GEN T, ulong p, ulong pi)
     }
     return gerepileuptoleaf(av, Flx_renormalize(s, 4));
   }
-  else
-    return Flxq_sqrtn(z, gen_2, T, p, NULL);
+  if (lgpol(z)<=1 && odd(d))
+  {
+    pari_sp av = avma;
+    ulong s = Fl_sqrt(Flx_constant(z), p);
+    if (s==~0UL) return gc_NULL(av);
+    return gerepilecopy(av, Fl_to_Flx(s, get_Flx_var(T)));
+  } else
+  {
+    GEN c, b, new_z, lam, x, y, w, aut;
+    ulong beta;
+    long v = get_Flx_var(T);
+    if (!lgpol(z)) return pol0_Flx(v);
+    T = Flx_get_red_pre(T, p, pi);
+    aut = Flx_Frobenius_pre(T, p, pi);
+    do {
+      do c = random_Flx(d, v, p); while (!lgpol(c));
+
+      new_z = Flxq_mul_pre(z, Flxq_sqr_pre(c, T, p, pi), T, p, pi);
+      lam = Flxq_powu_pre(new_z, p>>1, T, p, pi);
+      y = d==2 ? pol0_Flx(v) : Flxq_sumautsum_pre(mkvec2(lam, aut), d-2, T, p, pi);
+      b = Flx_add(pol1_Flx(v), y, p);
+    } while (!lgpol(b));
+
+    x = Flxq_mul_pre(new_z, Flxq_sqr_pre(b, T, p, pi), T, p, pi);
+    if (degpol(x) > 1) return NULL;
+    beta = Fl_sqrt_pre(Flx_constant(x), p, pi);
+    if (beta==~0UL) return NULL;
+    w = Flx_Fl_mul(Flxq_inv_pre(Flxq_mul_pre(b, c, T, p, pi), T, p, pi), beta, p);
+    return gerepilecopy(av, w);
+  }
 }
 
 GEN
