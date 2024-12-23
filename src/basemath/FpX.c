@@ -2760,7 +2760,7 @@ FpXQ_sumautsum(GEN ax, long i, GEN T, GEN p) {
 GEN
 FpXQ_sqrt(GEN z, GEN T, GEN p)
 {
-   pari_sp av = avma;
+  pari_sp av = avma;
   long d = get_FpX_degree(T);
   if (lgefint(p)==3)
   {
@@ -2800,12 +2800,6 @@ FpXQ_sqrt(GEN z, GEN T, GEN p)
     GEN c, b, new_z, lam, beta, x, y, w, aut;
     long v = get_FpX_var(T);
     if(!signe(z)) return pol_0(varn(z));
-    if(gequal(p, gen_2)) {
-      w = F2xq_sqrt(ZX_to_F2x(z), ZX_to_F2x(get_FpX_mod(T)));
-      if (!z) return NULL;
-      w = F2x_to_ZX(z);
-      return gerepileuptoleaf(av, w);
-    }
     T = FpX_get_red(T, p);
     aut = FpX_Frobenius(T,p);
     do {
