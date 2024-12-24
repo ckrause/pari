@@ -342,26 +342,25 @@ static GEN
 ZM_flatter_rank(GEN M, long rank, long flag)
 {
   pari_timer ti;
-  pari_sp ltop = avma;
-  GEN T;
-  long i, n = lg(M)-1, s, sm = LONG_MAX;
-  if (rank == n)  return ZM_flatter(M, flag);
-  T = matid(n);
+  pari_sp av = avma;
+  GEN T = NULL;
+  long i, n = lg(M)-1, sm = LONG_MAX;
+
+  if (rank == n) return ZM_flatter(M, flag);
   if (DEBUGLEVEL>=3) timer_start(&ti);
   for (i = 1;; i++)
   {
     GEN S = ZM_flatter(vconcat(gshift(M,i),matid(n)), flag);
-    s = expi(gnorml2(S));
-    if (DEBUGLEVEL>=3)
-      timer_printf(&ti,"FLATTERRANK step %ld: %ld",i,s);
-    if (ZM_isidentity(S) || s >= sm) break;
+    long s;
+    if (ZM_isidentity(S) || (s = expi(gnorml2(S))) >= sm) break;
     sm = s;
-    T = ZM_mul(T, S);
+    if (DEBUGLEVEL>=3) timer_printf(&ti,"FLATTERRANK step %ld: %ld",i,sm);
+    T = T? ZM_mul(T, S): S;
     M = ZM_mul(M, S);
-    if (gc_needed(ltop, 1))
-      gerepileall(ltop, 2, &M, &T);
+    if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
   }
-  return gerepilecopy(ltop, T);
+  if (!T) { set_avma(av); return matid(n); }
+  return gerepilecopy(av, T);
 }
 
 static GEN
