@@ -445,21 +445,18 @@ ZM_flattergram_rank(GEN M, long rank, long flag)
   return gerepilecopy(av, T);
 }
 
+/* round to closest integer (as a double). If |a| >= 2^52, return it */
 static double
 pari_rint(double a)
 {
 #ifdef HAS_RINT
   return rint(a);
 #else
-  const double two_to_52 = 4.5035996273704960e+15;
-  double fa = fabs(a);
-  double r = two_to_52 + fa;
-  if (fa >= two_to_52) {
-    r = a;
-  } else {
-    r = r - two_to_52;
-    if (a < 0) r = -r;
-  }
+  const double pow2 = 4.5035996273704960e+15; /* 2^52 */
+  double r, fa = fabs(a);
+  if (fa >= pow2) return a;
+  r = (pow2 + fa) - pow2;
+  if (a < 0) r = -r;
   return r;
 #endif
 }
