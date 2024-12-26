@@ -280,6 +280,21 @@ flat(GEN M, long flag, GEN *pt_T, long *pt_s, long *pt_pot)
   return gc_all(ltop, inplace ? 1: 2, &M, pt_T);
 }
 
+static void
+dbg_flatter(pari_timer *ti, long n, long i, long lti, double t, double pot2)
+{
+  double s = t / n, p = pot2 / (n*(n+1));
+  char *str;
+  if (i == -1)
+    str = (i == lti)? "final"
+                    : stack_sprintf("steps %ld-final", lti);
+  else
+    str = (i == lti)? stack_sprintf("step %ld", i)
+                    : stack_sprintf("steps %ld-%ld", lti, i);
+  timer_printf(ti, "FLATTER, dim %ld, %s: \t slope=%0.10g \t pot=%0.10g",
+               n, str, s, p);
+}
+
 static GEN
 ZM_flatter(GEN M, long flag)
 {
@@ -292,7 +307,7 @@ ZM_flatter(GEN M, long flag)
   if (DEBUGLEVEL>=3)
   {
     timer_start(&ti);
-    if (cert) err_printf("flatter dim = %ld size = %ld\n", n, ZM_max_expi(M));
+    if (cert) err_printf("FLATTER dim = %ld size = %ld\n", n, ZM_max_expi(M));
   }
   for (i = 1;;i++)
   {
@@ -309,13 +324,7 @@ ZM_flatter(GEN M, long flag)
       }
     }
     if (DEBUGLEVEL>=3 && (cert || timer_get(&ti) > 1000))
-    {
-      if (i==lti)
-        timer_printf(&ti, "FLATTER, dim %ld, step %ld: \t slope=%0.10g \t pot=%0.10g", n, i, ((double)t)/n, ((double)pot2)/(n*(n+1)));
-      else
-        timer_printf(&ti, "FLATTER, dim %ld, steps %ld-%ld: \t slope=%0.10g \t pot=%0.10g", n, lti,i, ((double)t)/n, ((double)pot2)/(n*(n+1)));
-      lti = i+1;
-    }
+      dbg_flatter(&ti, n, i, lti, t, pot2);
     s = t;
     pot = pot2;
     M = M2;
@@ -323,12 +332,7 @@ ZM_flatter(GEN M, long flag)
     if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
   }
   if (DEBUGLEVEL>=3 && (cert || timer_get(&ti) > 1000))
-  {
-    if (i==lti)
-      timer_printf(&ti, "FLATTER, dim %ld, final \t slope=%0.10g \t pot=%0.10g", n, ((double)s)/n, ((double)pot)/(n*(n+1)));
-    else
-      timer_printf(&ti, "FLATTER, dim %ld, steps %ld-final:\t slope=%0.10g \t pot=%0.10g", n, lti, ((double)s)/n, ((double)pot)/(n*(n+1)));
-  }
+    dbg_flatter(&ti, n, -1, i == lti? -1: lti, s, pot);
   if (!inplace)
   {
     if (!T) return gc_NULL(av);
