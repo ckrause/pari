@@ -283,31 +283,26 @@ flat(GEN M, long flag, GEN *pt_T, long *pt_s, long *pt_pot)
 static GEN
 ZM_flatter(GEN M, long flag)
 {
-  pari_sp ltop = avma, btop;
-  long i, n = lg(M)-1;
-  long s = -1, pot = LONG_MAX;
-  GEN T;
+  pari_sp av = avma;
+  long i, n = lg(M)-1, s = -1, lti = 1, pot = LONG_MAX;
+  GEN T = NULL;
   pari_timer ti;
-  long lti = 1;
   long inplace = flag & LLL_INPLACE, cert = !(flag & LLL_NOCERTIFY);
-  T = matid(n);
+
   if (DEBUGLEVEL>=3)
   {
     timer_start(&ti);
-    if (cert)
-      err_printf("flatter dim = %ld size = %ld\n", n, ZM_max_expi(M));
+    if (cert) err_printf("flatter dim = %ld size = %ld\n", n, ZM_max_expi(M));
   }
-  btop = avma;
   for (i = 1;;i++)
   {
     long t, pot2;
     GEN U, M2 = flat(M, flag, &U, &t, &pot2);
-    if (t==0) { s = t; break; }
+    if (t == 0) { s = t; break; }
     if (s >= 0)
     {
-      if (s==t && pot>=pot2)
-        break;
-      if (s<t && i > 20)
+      if (s == t && pot>=pot2) break;
+      if (s < t && i > 20)
       {
         if (DEBUGLEVEL >= 3) err_printf("BACK:%ld:%ld:%g\n", n, i, s);
         break;
@@ -324,9 +319,8 @@ ZM_flatter(GEN M, long flag)
     s = t;
     pot = pot2;
     M = M2;
-    if (!inplace) T = ZM_mul(T, U);
-    if (gc_needed(btop, 1))
-      gerepileall(btop, 2, &M, &T);
+    if (!inplace) T = T? ZM_mul(T, U): U;
+    if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
   }
   if (DEBUGLEVEL>=3 && (cert || timer_get(&ti) > 1000))
   {
@@ -335,9 +329,15 @@ ZM_flatter(GEN M, long flag)
     else
       timer_printf(&ti, "FLATTER, dim %ld, steps %ld-final:\t slope=%0.10g \t pot=%0.10g", n, lti, ((double)s)/n, ((double)pot)/(n*(n+1)));
   }
-  return  gerepilecopy(ltop, inplace ? M: T);
+  if (!inplace)
+  {
+    if (!T) return gc_NULL(av);
+    return gerepilecopy(av, T);
+  }
+  return  gerepilecopy(av, M);
 }
 
+/* return base change, NULL if identity. FIXME: what if flag & LLL_INPLACE ? */
 static GEN
 ZM_flatter_rank(GEN M, long rank, long flag)
 {
@@ -352,7 +352,7 @@ ZM_flatter_rank(GEN M, long rank, long flag)
   {
     GEN S = ZM_flatter(vconcat(gshift(M,i),matid(n)), flag);
     long s;
-    if (ZM_isidentity(S) || (s = expi(gnorml2(S))) >= sm) break;
+    if (!S || (s = expi(gnorml2(S))) >= sm) break;
     sm = s;
     if (DEBUGLEVEL>=3) timer_printf(&ti,"FLATTERRANK step %ld: %ld",i,sm);
     T = T? ZM_mul(T, S): S;
@@ -364,83 +364,81 @@ ZM_flatter_rank(GEN M, long rank, long flag)
 }
 
 static GEN
-flattergram_i(GEN M, long flag, long *pt_s)
+flattergram_i(GEN M, long flag)
 {
-  pari_sp ltop = avma;
-  GEN R, T;
-  R = RgM_Cholesky_dynprec(M);
-  *pt_s = drop(R);
-  T =  lllfp(R, 0.99, LLL_IM| LLL_UPPER| LLL_NOCERTIFY | (flag&LLL_KEEP_FIRST));
-  return gerepilecopy(ltop, T);
+  pari_sp av = avma;
+  GEN T, R = RgM_Cholesky_dynprec(M);
+  T = lllfp(R, 0.99, LLL_IM|LLL_UPPER|LLL_NOCERTIFY | (flag&LLL_KEEP_FIRST));
+  return gerepileupto(av, T);
 }
 
+static void
+dbg_flattergram(pari_timer *t, long n, long i, long s)
+{ timer_printf(t, "FLATTERGRAM, dim %ld step %ld, slope=%0.10g", n, i,
+               ((double)s)/n); }
+/* return base change, NULL if identity */
 static GEN
 ZM_flattergram(GEN M, long flag)
 {
-  pari_sp ltop = avma, btop;
-  GEN T;
-  long i, n = lg(M)-1;
+  pari_sp av = avma;
+  GEN T = NULL;
+  long i, n = lg(M)-1, s = -1;
+
   pari_timer ti;
-  long s = -1;
   if (DEBUGLEVEL>=3)
   {
     timer_start(&ti);
     err_printf("FLATTERGRAM dim = %ld size = %ld\n", n, ZM_max_expi(M));
   }
-  btop = avma;
-  T = matid(n);
   for (i = 1;; i++)
   {
-    long t;
-    GEN S = flattergram_i(M, flag, &t);
-    t = expi(gnorml2(S));
-    if (t==0) { s = t;  break; }
+    GEN S = flattergram_i(M, flag);
+    long t = expi(gnorml2(S));
+    if (t == 0) { s = t;  break; }
     if (s)
     {
-      double st = s-t;
-      if (st == 0)
-        break;
+      double st = s - t;
+      if (st == 0) break;
       if (st < 0 && i > 20)
       {
-        if (DEBUGLEVEL >= 3) err_printf("BACK:%ld:%ld:%0.10g\n", n, i, ((double)s)/n);
+        if (DEBUGLEVEL >= 3)
+          err_printf("BACK:%ld:%ld:%0.10g\n", n, i, ((double)s)/n);
         break;
       }
     }
-    T = ZM_mul(T, S);
+    T = T? ZM_mul(T, S): S;
     M = qf_ZM_apply(M, S);
     s = t;
-    if (DEBUGLEVEL >= 3)
-      timer_printf(&ti, "FLATTERGRAM, dim %ld step %ld, slope=%0.10g", n, i, ((double)s)/n);
-    if (gc_needed(btop, 1))
-      gerepileall(btop, 2, &M, &T);
+    if (DEBUGLEVEL >= 3) dbg_flattergram(&ti, n, i, s);
+    if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
   }
-  if (DEBUGLEVEL >= 3)
-    timer_printf(&ti, "FLATTERGRAM, dim %ld, slope=%0.10g", n, ((double)s)/n);
-  return gerepilecopy(ltop, T);
+  if (DEBUGLEVEL >= 3) dbg_flattergram(&ti, n, i, s);
+  if (!T && ZM_isidentity(T)) return gc_NULL(av);
+  return gerepilecopy(av, T);
 }
 
+/* return base change, NULL if identity */
 static GEN
 ZM_flattergram_rank(GEN M, long rank, long flag)
 {
   pari_timer ti;
-  pari_sp ltop = avma;
-  GEN T;
+  pari_sp av = avma;
+  GEN T = NULL;
   long i, n = lg(M)-1;
-  if (rank == n)  return ZM_flattergram(M, flag);
-  T = matid(n);
+  if (rank == n) return ZM_flattergram(M, flag);
   if (DEBUGLEVEL>=3) timer_start(&ti);
   for (i = 1;; i++)
   {
     GEN S = ZM_flattergram(RgM_Rg_add(gshift(M, i), gen_1), flag);
     if (DEBUGLEVEL>=3)
       timer_printf(&ti,"FLATTERGRAMRANK step %ld: %ld",i,expi(gnorml2(S)));
-    if (ZM_isidentity(S)) break;
-    T = ZM_mul(T, S);
+    if (!S) break;
+    T = T? ZM_mul(T, S): S;
     M = qf_ZM_apply(M, S);
-    if (gc_needed(ltop, 1))
-      gerepileall(ltop, 2, &M, &T);
+    if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
   }
-  return gerepilecopy(ltop, T);
+  if (!T || ZM_isidentity(T)) return gc_NULL(av);
+  return gerepilecopy(av, T);
 }
 
 static double
@@ -2331,21 +2329,28 @@ fplll_flatter(GEN *pG, GEN *pB, GEN *pU, long rank, long flag)
   if (!*pG)
   {
     GEN T = ZM_flatter_rank(*pB, rank, flag);
-    if (*pU)
+    if (T)
     {
-      *pU = ZM_mul(*pU, T);
-      *pB = ZM_mul(*pB, T);
-    } else *pB = T;
-  } else
+      if (*pU)
+      {
+        *pU = ZM_mul(*pU, T);
+        *pB = ZM_mul(*pB, T);
+      }
+      else *pB = T;
+    }
+  }
+  else
   {
     GEN T, G = *pG;
     long i, j, l = lg(G);
     for (i = 1; i < l; i++)
-      for(j = 1; j < i; j++)
-        gmael(G,j,i) = gmael(G,i,j);
+      for(j = 1; j < i; j++) gmael(G,j,i) = gmael(G,i,j);
     T = ZM_flattergram_rank(G, rank, flag);
-    if (*pU) *pU = ZM_mul(*pU, T);
-    *pG = qf_ZM_apply(*pG, T);
+    if (T)
+    {
+      if (*pU) *pU = ZM_mul(*pU, T);
+      *pG = qf_ZM_apply(*pG, T);
+    }
   }
 }
 
