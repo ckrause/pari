@@ -284,7 +284,7 @@ static void
 dbg_flatter(pari_timer *ti, long n, long i, long lti, double t, double pot2)
 {
   double s = t / n, p = pot2 / (n*(n+1));
-  char *str;
+  const char *str;
   if (i == -1)
     str = (i == lti)? "final"
                     : stack_sprintf("steps %ld-final", lti);
