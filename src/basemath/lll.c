@@ -328,8 +328,13 @@ ZM_flatter(GEN M, long flag)
     s = t;
     pot = pot2;
     M = M2;
-    if (!inplace) T = T? ZM_mul(T, U): U;
-    if (gc_needed(av, 1)) gerepileall(av, T ? 2: 1, &M, &T);
+    if (!inplace)
+    {
+      T = T? ZM_mul(T, U): U;
+      if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
+    }
+    else
+      if (gc_needed(av, 1)) M = gerepilecopy(av, M);
   }
   if (DEBUGLEVEL>=3 && (cert || timer_get(&ti) > 1000))
     dbg_flatter(&ti, n, -1, i == lti? -1: lti, s, pot);
@@ -361,7 +366,7 @@ ZM_flatter_rank(GEN M, long rank, long flag)
     if (DEBUGLEVEL>=3) timer_printf(&ti,"FLATTERRANK step %ld: %ld",i,sm);
     T = T? ZM_mul(T, S): S;
     M = ZM_mul(M, S);
-    if (gc_needed(av, 1)) gerepileall(av, T ? 2 : 1, &M, &T);
+    if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
   }
   if (!T) { set_avma(av); return matid(n); }
   return gerepilecopy(av, T);
@@ -414,7 +419,7 @@ ZM_flattergram(GEN M, long flag)
     M = qf_ZM_apply(M, S);
     s = t;
     if (DEBUGLEVEL >= 3) dbg_flattergram(&ti, n, i, s);
-    if (gc_needed(av, 1)) gerepileall(av, T ? 2 : 1, &M, &T);
+    if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
   }
   if (DEBUGLEVEL >= 3) dbg_flattergram(&ti, n, i, s);
   if (!T && ZM_isidentity(T)) return gc_NULL(av);
