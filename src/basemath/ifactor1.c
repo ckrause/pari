@@ -3364,15 +3364,8 @@ moebiusu(ulong n)
     case 1: return  1;
     case 2: return -1;
   }
-  v = vals(n);
-  if (v == 0)
-    s = 1;
-  else
-  {
-    if (v > 1) return 0;
-    n >>= 1;
-    s = -1;
-  }
+  p = n & 3; if (!p) return 0;
+  if (p == 2) { n >>= 1; s = -1; } else s = 1;
   av = avma;
   u_forprime_init(&S, 3, tridiv_boundu(n));
   test_prime = 0;
