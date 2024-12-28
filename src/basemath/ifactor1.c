@@ -3139,6 +3139,66 @@ static int
 uisprime_nosmall(ulong n, ulong lim)
 { return (lim >= 661)? uisprime_661(n): uisprime(n); }
 
+static GEN factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2);
+static GEN ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU);
+
+/* N != 0. Odd prime divisors less than lim; NULL if empty.
+ * Assume lim >= 128. Better for efficiency if n >= lim^2. Not GC-clean */
+static GEN
+u_oddprimedivisors_fast(ulong N, ulong lim)
+{
+  GEN F, P, PR;
+  long n, b;
+  ulong Nr;
+  if (lim < 128) return NULL; /* decline */
+  PR = prodprimes();
+  b = minss(lg(PR)-1, expu(lim)-6); /* expu(lim) >= 7 */
+  Nr = ugcd(N, umodiu(gel(PR,b), N));
+  if (Nr == 1) return NULL;
+  F = factoru_sign(Nr, lim + 1, 1 + 2 + 16, NULL, NULL);
+  P = gel(F,1); n = lg(P) - 1; /* > 0 */
+  if (uel(P, n) > lim)
+  {
+    if (n == 1) return NULL;
+    setlg(P, n);
+  }
+  return P;
+}
+/* not GC-clean */
+static GEN
+Z_oddprimedivisors_fast(GEN N, ulong lim)
+{
+  GEN F, P, PR, Nr;
+  pari_sp av = avma;
+  long i, n, b;
+  if (lim < 128) return NULL; /* decline */
+  PR = prodprimes();
+  b = minss(lg(PR)-1, expu(lim)-6); /* expu(lim) >= 7 */
+  Nr = gcdii(N, gel(PR,b));
+  if (lgefint(Nr) == 3)
+  {
+    ulong uNr = uel(Nr,2);
+    if (uNr == 1) return gc_NULL(av);
+    F = factoru_sign(uNr, lim + 1, 1 + 2 + 16, NULL, NULL);
+    P = gel(F,1); n = lg(P) - 1; /* > 0 */
+    if (uel(P, n) > lim)
+    {
+      if (n == 1) return gc_NULL(av);
+      setlg(P, n);
+    }
+    return P;
+  }
+  F = ifactor_sign(Nr, lim + 1, 1 + 2 + 16, 1, NULL);
+  P = gel(F,1); n = lg(P) - 1; /* > 0 */
+  if (cmpiu(gel(P, n), lim) > 0)
+  {
+    if (n == 1) return gc_NULL(av);
+    setlg(P, n); n--;
+  }
+  settyp(P, t_VECSMALL); /* convert to t_VECSMALL in place */
+  for (i = 1; i <= n; i++) uel(P,i) = gel(P,i)[2];
+  return P;
+}
 /* Factor n and output [p,e] where
  * p, e are vecsmall with n = prod{p[i]^e[i]}. If all != 0:
  * if pU1 is not NULL, set *pU1 and *pU2 so that unfactored composite is
@@ -3175,17 +3235,14 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
     lim = minss(usqrt(n), all? all-1: tridiv_boundu(n));
     if (!(hint & 16) && lim >= 128) /* expu(lim) >= 7 */
     { /* fast trial division */
-      GEN PR = prodprimes();
-      long nPR = lg(PR)-1, b = minss(nPR, expu(lim)-6);
-      ulong nr = ugcd(n, umodiu(gel(PR,b), n));
-      if (nr != 1)
+      GEN Q = u_oddprimedivisors_fast(n, lim);
+      maxp = GP_DATA->factorlimit;
+      if (Q)
       {
-        GEN F = factoru_sign(nr, all, 1 + 2 + 16, NULL, NULL), Q = gel(F,1);
         long j, l = lg(Q);
         for (j = 1; j < l; j++)
         {
           ulong p = uel(Q,j);
-          if (all && p >= all) break; /* may occur for last p */
           E[i] = u_lvalrem(n, p, &n); /* > 0 */
           P[i] = p; i++;
         }
@@ -3193,10 +3250,9 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
         if (n <= maxp
             && PRIMES_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
       }
-      maxp = GP_DATA->factorlimit;
     }
     else
-    {
+    { /* naive trial division */
       maxp = lim;
       u_forprime_init(&S, 3, lim);
       while ( (p = u_forprime_next_fast(&S)) )
@@ -3713,26 +3769,19 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
     }
     if (is_pm1(n)) return aux_end(M,n,nb);
     lim = all? all-1: tridiv_bound(n);
-    if (!(hint & 16) && lim >= 128) /* expu(lim) >= 7 */
+    av = avma;
+    if (!(hint & 16) && lim >= 128)
     { /* fast trial division */
-      GEN nr, PR = prodprimes();
-      long nPR = lg(PR)-1, b = minss(nPR, expu(lim)-6);
-      av = avma; maxp = GP_DATA->factorlimit;
-      nr = gcdii(gel(PR,b), n);
-      if (is_pm1(nr)) { set_avma(av); av2 = av; }
-      else
+      GEN Q = Z_oddprimedivisors_fast(n, lim);
+      av2 = avma;
+      if (Q)
       {
-        GEN F = ifactor_sign(nr, all, 1 + 2 + 16, 1, NULL), P = gel(F,1);
-        long l = lg(P);
-        av2 = avma;
+        long l = lg(Q);
         for (i = 1; i < l; i++)
         {
           pari_sp av3 = avma;
-          GEN gp = gel(P,i);
-          ulong p = gp[2];
-          long k;
-          if (lgefint(gp)>3 || (all && p>=all)) break; /* may occur for last p */
-          k = Z_lvalrem(n, p, &n); /* > 0 */
+          ulong p = uel(Q, i);
+          long k = Z_lvalrem(n, p, &n); /* > 0 */
           affii(n, N); n = N; set_avma(av3);
           STOREu(&nb, p, k);
         }
@@ -3742,10 +3791,11 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
           return aux_end(M,n,nb);
         }
       }
+      maxp = GP_DATA->factorlimit;
     }
     else
     { /* naive trial division */
-      av = avma; maxp = maxprime();
+      maxp = maxprime();
       u_forprime_init(&T, 3, minss(lim, maxp)); av2 = avma;
       /* first pass: known to fit in private prime table */
       while ((p = u_forprime_next_fast(&T)))
