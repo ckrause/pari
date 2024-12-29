@@ -3354,9 +3354,9 @@ long
 moebiusu(ulong n)
 {
   pari_sp av;
-  ulong p;
   long s, v, test_prime;
-  forprime_t S;
+  ulong p, lim;
+  GEN P;
 
   switch(n)
   {
@@ -3366,25 +3366,44 @@ moebiusu(ulong n)
   }
   p = n & 3; if (!p) return 0;
   if (p == 2) { n >>= 1; s = -1; } else s = 1;
-  av = avma;
-  u_forprime_init(&S, 3, tridiv_boundu(n));
-  test_prime = 0;
-  while ((p = u_forprime_next_fast(&S)))
+  av = avma; lim = tridiv_boundu(n);
+  P = u_oddprimedivisors_fast(n, lim);
+  if (P)
   {
-    int stop;
-    /* tiny integers without small factors are often primes */
-    if (p == 673)
+    long i, nP = lg(P) - 1;
+    for (i = 1; i <= nP; i++)
     {
-      test_prime = 0;
-      if (uisprime_661(n)) return gc_long(av,-s);
+      p = uel(P, i); n /= p;
+      if (n % p == 0) return gc_long(av, 0);
     }
-    v = u_lvalrem_stop(&n, p, &stop);
-    if (v) {
-      if (v > 1) return gc_long(av,0);
-      test_prime = 1;
-      s = -s;
+    if (odd(nP)) s = -s;
+    if (n == 1) return gc_long(av, s);
+    lim = umuluu_or_0(lim, lim);
+    if (!lim || lim >= n) return gc_long(av, -s); /* n prime */
+    test_prime = 1;
+  }
+  else
+  {
+    forprime_t S;
+    u_forprime_init(&S, 3, lim);
+    test_prime = 0;
+    while ((p = u_forprime_next_fast(&S)))
+    {
+      int stop;
+      /* tiny integers without small factors are often primes */
+      if (p == 673)
+      {
+        test_prime = 0;
+        if (uisprime_661(n)) return gc_long(av,-s);
+      }
+      v = u_lvalrem_stop(&n, p, &stop);
+      if (v) {
+        if (v > 1) return gc_long(av,0);
+        test_prime = 1;
+        s = -s;
+      }
+      if (stop) return gc_long(av, n==1? s: -s);
     }
-    if (stop) return gc_long(av, n==1? s: -s);
   }
   set_avma(av);
   if (test_prime && uisprime_661(n)) return -s;
@@ -3401,10 +3420,9 @@ long
 moebius(GEN n)
 {
   pari_sp av = avma;
-  GEN F;
-  ulong p;
+  GEN F, P;
+  ulong p, lim;
   long i, l, s, v;
-  forprime_t S;
 
   if ((F = check_arith_non0(n,"moebius")))
   {
@@ -3418,19 +3436,46 @@ moebius(GEN n)
   }
   if (lgefint(n) == 3) return moebiusu(uel(n,2));
   p = mod4(n); if (!p) return 0;
-  if (p == 2) { s = -1; n = shifti(n, -1); } else { s = 1; n = icopy(n); }
-  setabssign(n);
-
-  u_forprime_init(&S, 3, tridiv_bound(n));
-  while ((p = u_forprime_next_fast(&S)))
+  if (p == 2)
   {
-    int stop;
-    v = Z_lvalrem_stop(&n, p, &stop);
-    if (v)
+    n = shifti(n, -1);
+    if (lgefint(n) == 3) return - moebiusu(uel(n,2));
+    s = -1;
+  }
+  else
+  {
+    n = icopy(n);
+    s = 1;
+  }
+  setabssign(n); lim = tridiv_bound(n);
+  P = Z_oddprimedivisors_fast(n, lim);
+  if (P)
+  {
+    long i, nP = lg(P) - 1;
+    for (i = 1; i <= nP; i++)
     {
-      if (v > 1) return gc_long(av,0);
-      s = -s;
-      if (stop) return gc_long(av, is_pm1(n)? s: -s);
+      p = uel(P, i); n = diviuexact(n, p);
+      if (dvdiu(n, p)) return gc_long(av, 0);
+    }
+    if (odd(nP)) s = -s;
+    if (is_pm1(n)) return gc_long(av, s);
+    lim = umuluu_or_0(lim, lim);
+    if (cmpii(sqru(lim), n) >= 0) return gc_long(av, -s); /* n prime */
+  }
+  else
+  {
+    forprime_t S;
+    u_forprime_init(&S, 3, lim);
+    while ((p = u_forprime_next_fast(&S)))
+    {
+      int stop;
+      v = Z_lvalrem_stop(&n, p, &stop);
+      if (v)
+      {
+        if (v > 1) return gc_long(av,0);
+        s = -s;
+        if (stop) return gc_long(av, is_pm1(n)? s: -s);
+      }
     }
   }
   l = lg(primetab);
