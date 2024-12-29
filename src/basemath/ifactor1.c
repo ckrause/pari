@@ -3363,12 +3363,17 @@ moebiusu(ulong n)
     case 1: return  1;
     case 2: return -1;
   }
+  /* n > 2 */
   p = n & 3; if (!p) return 0;
   if (p == 2) { n >>= 1; s = -1; } else s = 1;
+  if (n <= maxprimelim() && PRIMES_search(n) > 0) return -s;
   av = avma; lim = tridiv_boundu(n);
-  if (lim >= 128)
+  if (n >= 691 * 691)
   {
-    GEN P = u_oddprimedivisors_fast(n, lim);
+    ulong sqrtn = usqrt(n);
+    GEN P;
+    lim = minss(sqrtn, lim);
+    P = u_oddprimedivisors_fast(n, lim);
     if (P)
     {
       long i, nP = lg(P) - 1;
@@ -3379,9 +3384,8 @@ moebiusu(ulong n)
       }
       if (odd(nP)) s = -s;
       if (n == 1) return gc_long(av, s);
-      lim = umuluu_or_0(lim, lim);
-      if (!lim || lim >= n) return gc_long(av, -s); /* n prime */
     }
+    if (lim == sqrtn) return gc_long(av, -s); /* n prime */
     test_prime = 1;
   }
   else
@@ -3525,9 +3529,16 @@ ispowerful(GEN n)
   n = shifti(n, -vali(n));
   if (is_pm1(n)) return gc_long(av, 1);
   setabssign(n); lim = tridiv_bound(n);
-  if (lim >= 128)
+  if (cmpiu(n, 691 * 691) >= 0)
   {
-    GEN P = Z_oddprimedivisors_fast(n, lim);
+    ulong sqrtn = 0;
+    GEN P;
+    if (lgefint(n) == 3)
+    {
+      sqrtn = usqrt(n[2]);
+      lim = minss(sqrtn, lim);
+    }
+    P = Z_oddprimedivisors_fast(n, lim);
     if (P)
     {
       long i, nP = lg(P) - 1;
@@ -3538,6 +3549,7 @@ ispowerful(GEN n)
       }
       if (is_pm1(n)) return gc_long(av, 1);
     }
+    if (lim == sqrtn) return gc_long(av, 0); /* prime */
   }
   else
   {
