@@ -3232,10 +3232,13 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
     }
     maxp = maxprime();
     if (n <= maxp && PRIMES_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
-    lim = minss(usqrt(n), all? all-1: tridiv_boundu(n));
-    if (!(hint & 16) && lim >= 128) /* expu(lim) >= 7 */
+    lim = all? all-1: tridiv_boundu(n);
+    if (!(hint & 16) && lim >= 128 && n >= 691 * 691) /* expu(lim) >= 7 */
     { /* fast trial division */
-      GEN Q = u_oddprimedivisors_fast(n, lim);
+      ulong sqrtn = usqrt(n);
+      GEN Q;
+      lim = minss(lim, sqrtn);
+      Q = u_oddprimedivisors_fast(n, lim);
       maxp = GP_DATA->factorlimit;
       if (Q)
       {
@@ -3247,8 +3250,8 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
           P[i] = p; i++;
         }
         if (n == 1) goto END;
-        if (n <= maxp
-            && PRIMES_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
+        if (lim == sqrtn || (n <= maxp && PRIMES_search(n) > 0))
+        { P[i] = n; E[i] = 1; i++; goto END; }
       }
     }
     else
