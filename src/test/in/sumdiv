@@ -60,6 +60,9 @@ divisors([1,2])
 
 \\#1702
 moebius(factor(18))
+vector(100,i, moebius(2^64+i))
+vector(100,i, moebius(2^32+i))
+vector(100,i, moebius(2^16+i))
 
 \\ core would destroy its input
 R = 762104756900678410271641;
