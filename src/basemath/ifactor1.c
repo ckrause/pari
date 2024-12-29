@@ -3356,7 +3356,6 @@ moebiusu(ulong n)
   pari_sp av;
   long s, v, test_prime;
   ulong p, lim;
-  GEN P;
 
   switch(n)
   {
@@ -3367,19 +3366,22 @@ moebiusu(ulong n)
   p = n & 3; if (!p) return 0;
   if (p == 2) { n >>= 1; s = -1; } else s = 1;
   av = avma; lim = tridiv_boundu(n);
-  P = u_oddprimedivisors_fast(n, lim);
-  if (P)
+  if (lim >= 128)
   {
-    long i, nP = lg(P) - 1;
-    for (i = 1; i <= nP; i++)
+    GEN P = u_oddprimedivisors_fast(n, lim);
+    if (P)
     {
-      p = uel(P, i); n /= p;
-      if (n % p == 0) return gc_long(av, 0);
+      long i, nP = lg(P) - 1;
+      for (i = 1; i <= nP; i++)
+      {
+        p = uel(P, i); n /= p;
+        if (n % p == 0) return gc_long(av, 0);
+      }
+      if (odd(nP)) s = -s;
+      if (n == 1) return gc_long(av, s);
+      lim = umuluu_or_0(lim, lim);
+      if (!lim || lim >= n) return gc_long(av, -s); /* n prime */
     }
-    if (odd(nP)) s = -s;
-    if (n == 1) return gc_long(av, s);
-    lim = umuluu_or_0(lim, lim);
-    if (!lim || lim >= n) return gc_long(av, -s); /* n prime */
     test_prime = 1;
   }
   else
@@ -3420,7 +3422,7 @@ long
 moebius(GEN n)
 {
   pari_sp av = avma;
-  GEN F, P;
+  GEN F;
   ulong p, lim;
   long i, l, s, v;
 
@@ -3448,18 +3450,21 @@ moebius(GEN n)
     s = 1;
   }
   setabssign(n); lim = tridiv_bound(n);
-  P = Z_oddprimedivisors_fast(n, lim);
-  if (P)
+  if (lim >= 128)
   {
-    long i, nP = lg(P) - 1;
-    for (i = 1; i <= nP; i++)
+    GEN P = Z_oddprimedivisors_fast(n, lim);
+    if (P)
     {
-      p = uel(P, i); n = diviuexact(n, p);
-      if (dvdiu(n, p)) return gc_long(av, 0);
+      long i, nP = lg(P) - 1;
+      for (i = 1; i <= nP; i++)
+      {
+        p = uel(P, i); n = diviuexact(n, p);
+        if (dvdiu(n, p)) return gc_long(av, 0);
+      }
+      if (odd(nP)) s = -s;
+      if (is_pm1(n)) return gc_long(av, s);
+      if (cmpii(sqru(lim), n) >= 0) return gc_long(av, -s); /* n prime */
     }
-    if (odd(nP)) s = -s;
-    if (is_pm1(n)) return gc_long(av, s);
-    if (cmpii(sqru(lim), n) >= 0) return gc_long(av, -s); /* n prime */
   }
   else
   {
@@ -3499,9 +3504,8 @@ ispowerful(GEN n)
 {
   pari_sp av = avma;
   GEN F;
-  ulong p, bound;
+  ulong p, lim;
   long i, l, v;
-  forprime_t S;
 
   if ((F = check_arith_all(n, "ispowerful")))
   {
@@ -3519,18 +3523,35 @@ ispowerful(GEN n)
 
   if (mod4(n) == 2) return 0;
   n = shifti(n, -vali(n));
-  if (is_pm1(n)) return 1;
-  setabssign(n);
-  bound = tridiv_bound(n);
-  u_forprime_init(&S, 3, bound);
-  while ((p = u_forprime_next_fast(&S)))
+  if (is_pm1(n)) return gc_long(av, 1);
+  setabssign(n); lim = tridiv_bound(n);
+  if (lim >= 128)
   {
-    int stop;
-    v = Z_lvalrem_stop(&n, p, &stop);
-    if (v)
+    GEN P = Z_oddprimedivisors_fast(n, lim);
+    if (P)
     {
-      if (v == 1) return gc_long(av,0);
-      if (stop) return gc_long(av, is_pm1(n));
+      long i, nP = lg(P) - 1;
+      for (i = 1; i <= nP; i++)
+      {
+        v = Z_lvalrem(n, uel(P,i), &n);
+        if (v == 1) return gc_long(av, 0);
+      }
+      if (is_pm1(n)) return gc_long(av, 1);
+    }
+  }
+  else
+  {
+    forprime_t S;
+    u_forprime_init(&S, 3, lim);
+    while ((p = u_forprime_next_fast(&S)))
+    {
+      int stop;
+      v = Z_lvalrem_stop(&n, p, &stop);
+      if (v)
+      {
+        if (v == 1) return gc_long(av,0);
+        if (stop) return gc_long(av, is_pm1(n));
+      }
     }
   }
   l = lg(primetab);
@@ -3544,7 +3565,7 @@ ispowerful(GEN n)
     }
   }
   /* no need to factor: must be p^2 or not powerful */
-  if (cmpii(powuu(bound+1, 3), n) > 0) return gc_long(av,  Z_issquare(n));
+  if (cmpii(powuu(lim+1, 3), n) > 0) return gc_long(av,  Z_issquare(n));
 
   if (ifac_isprime(n)) return gc_long(av,0);
   /* large composite without small factors */
