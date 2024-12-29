@@ -3459,7 +3459,6 @@ moebius(GEN n)
     }
     if (odd(nP)) s = -s;
     if (is_pm1(n)) return gc_long(av, s);
-    lim = umuluu_or_0(lim, lim);
     if (cmpii(sqru(lim), n) >= 0) return gc_long(av, -s); /* n prime */
   }
   else
