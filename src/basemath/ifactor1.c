@@ -3142,8 +3142,9 @@ uisprime_nosmall(ulong n, ulong lim)
 static GEN factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2);
 static GEN ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU);
 
-/* N != 0. Odd prime divisors less than lim; NULL if empty.
- * Assume lim >= 128. Better for efficiency if n >= lim^2. Not GC-clean */
+/* N != 0. Odd prime divisors less than min(lim, factorlimit) [WARNING!];
+ * NULL if empty.
+ * Assume lim >= 128. Better for efficiency if n >= lim^2. Not GC-clean. */
 static GEN
 u_oddprimedivisors_fast(ulong N, ulong lim)
 {
@@ -3243,16 +3244,19 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
       if (Q)
       {
         long j, l = lg(Q);
+        int stop = 0;
         for (j = 1; j < l; j++)
         {
           ulong p = uel(Q,j);
-          E[i] = u_lvalrem(n, p, &n); /* > 0 */
+          E[i] = u_lvalrem_stop(&n, p, &stop); /* > 0 */
           P[i] = p; i++;
         }
         if (n == 1) goto END;
-        if (lim == sqrtn || (n <= maxp && PRIMES_search(n) > 0))
+        if (stop || (n <= maxp && PRIMES_search(n) > 0))
         { P[i] = n; E[i] = 1; i++; goto END; }
       }
+      else if (lim == sqrtn && lim <= maxp)
+        { P[i] = n; E[i] = 1; i++; goto END; }
     }
     else
     { /* naive trial division */
@@ -3388,7 +3392,8 @@ moebiusu(ulong n)
       if (odd(nP)) s = -s;
       if (n == 1) return gc_long(av, s);
     }
-    if (lim == sqrtn) return gc_long(av, -s); /* n prime */
+    if (lim == sqrtn && lim <= GP_DATA->factorlimit)
+      return gc_long(av, -s); /* n prime */
     test_prime = 1;
   }
   else
@@ -3470,7 +3475,8 @@ moebius(GEN n)
       }
       if (odd(nP)) s = -s;
       if (is_pm1(n)) return gc_long(av, s);
-      if (cmpii(sqru(lim), n) >= 0) return gc_long(av, -s); /* n prime */
+      if (lim <= GP_DATA->factorlimit &&
+          cmpii(sqru(lim), n) >= 0) return gc_long(av, -s); /* n prime */
     }
   }
   else
@@ -3552,7 +3558,8 @@ ispowerful(GEN n)
       }
       if (is_pm1(n)) return gc_long(av, 1);
     }
-    if (lim == sqrtn) return gc_long(av, 0); /* prime */
+    if (lim == sqrtn && lim <= GP_DATA->factorlimit)
+      return gc_long(av, 0); /* prime */
   }
   else
   {
