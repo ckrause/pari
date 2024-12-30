@@ -3792,8 +3792,7 @@ Zn_ispower(GEN a, GEN q, GEN K, GEN *pt)
   GEN L, N;
   pari_sp av;
   long e, i, l;
-  ulong pp;
-  forprime_t S;
+  ulong pp, lim;
 
   if (!signe(a))
   {
@@ -3819,21 +3818,61 @@ Zn_ispower(GEN a, GEN q, GEN K, GEN *pt)
     }
     goto END;
   }
-  if (!mod2(K)
-      && kronecker(a, shifti(q,-vali(q))) == -1) return gc_long(av,0);
-  L = pt? vectrunc_init(expi(q)+1): NULL;
-  u_forprime_init(&S, 2, tridiv_bound(q));
-  while ((pp = u_forprime_next(&S)))
+  e = vali(q); if (e) q = shifti(q, -e);
+  if (!mod2(K) && kronecker(a, q) == -1) return gc_long(av,0);
+  L = pt? vectrunc_init(expi(q)+2): NULL;
+  if (e)
   {
-    int stop;
-    e = Z_lvalrem_stop(&q, pp, &stop);
-    if (!e) continue;
-    if (!Zp_ispower(a, L, K, utoipos(pp), e)) return gc_long(av,0);
+    if (!Zp_ispower(a, L, K, gen_2, e)) return gc_long(av,0);
     a = modii(a, q);
-    if (stop)
+  }
+  lim = tridiv_bound(q);
+  if (cmpiu(q, 691 * 691) >= 0)
+  {
+    ulong sqrtq = lgefint(q) == 3? usqrt(q[2]): 0;
+    GEN P;
+    if (sqrtq) lim = minss(sqrtq, lim);
+    P = Z_oddprimedivisors_fast(q, lim);
+    if (P)
     {
-      if (!is_pm1(q) && !Zp_ispower(a, L, K, q, 1)) return gc_long(av,0);
+      long nP = lg(P) - 1;
+      int stop = 0;
+      for (i = 1; i <= nP; i++)
+      {
+        ulong pp = uel(P,i);
+        e = Z_lvalrem_stop(&q, pp, &stop);
+        if (!Zp_ispower(a, L, K, utoipos(pp), e)) return gc_long(av,0);
+        a = modii(a, q);
+
+      }
+      if (stop)
+      {
+        if (!is_pm1(q) && !Zp_ispower(a, L, K, q, 1)) return gc_long(av,0);
+        goto END;
+      }
+    }
+    else if (lim == sqrtq && lim <= GP_DATA->factorlimit)
+    {
+      if (!Zp_ispower(a, L, K, q, 1)) return gc_long(av,0);
       goto END;
+    }
+  }
+  else
+  {
+    forprime_t S;
+    u_forprime_init(&S, 3, lim);
+    while ((pp = u_forprime_next(&S)))
+    {
+      int stop;
+      e = Z_lvalrem_stop(&q, pp, &stop);
+      if (!e) continue;
+      if (!Zp_ispower(a, L, K, utoipos(pp), e)) return gc_long(av,0);
+      a = modii(a, q);
+      if (stop)
+      {
+        if (!is_pm1(q) && !Zp_ispower(a, L, K, q, 1)) return gc_long(av,0);
+        goto END;
+      }
     }
   }
   l = lg(primetab);
