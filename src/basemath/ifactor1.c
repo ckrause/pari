@@ -3384,15 +3384,14 @@ moebiusu(ulong n)
     if (P)
     {
       long i, nP = lg(P) - 1;
+      int stop = 0;
       for (i = 1; i <= nP; i++)
-      {
-        p = uel(P, i); n /= p;
-        if (n % p == 0) return gc_long(av, 0);
-      }
+        if (u_lvalrem_stop(&n, uel(P,i), &stop) > 1) return gc_long(av, 0);
       if (odd(nP)) s = -s;
       if (n == 1) return gc_long(av, s);
+      if (stop) return gc_long(av, -s);
     }
-    if (lim == sqrtn && lim <= GP_DATA->factorlimit)
+    else if (lim == sqrtn && lim <= GP_DATA->factorlimit)
       return gc_long(av, -s); /* n prime */
     test_prime = 1;
   }
@@ -3551,14 +3550,16 @@ ispowerful(GEN n)
     if (P)
     {
       long i, nP = lg(P) - 1;
+      int stop = 0;
       for (i = 1; i <= nP; i++)
       {
-        v = Z_lvalrem(n, uel(P,i), &n);
+        v = Z_lvalrem_stop(&n, uel(P,i), &stop);
         if (v == 1) return gc_long(av, 0);
       }
       if (is_pm1(n)) return gc_long(av, 1);
+      if (stop) return gc_long(av, 0); /* prime */
     }
-    if (lim == sqrtn && lim <= GP_DATA->factorlimit)
+    else if (lim == sqrtn && lim <= GP_DATA->factorlimit)
       return gc_long(av, 0); /* prime */
   }
   else
@@ -3619,8 +3620,7 @@ core(GEN n)
   pari_sp av = avma;
   GEN m, F;
   ulong p;
-  long i, l, v;
-  forprime_t S;
+  long i, l, v, lim;
 
   if ((F = check_arith_all(n, "core")))
   {
@@ -3643,19 +3643,56 @@ core(GEN n)
   }
 
   m = signe(n) < 0? gen_m1: gen_1;
-  n = absi_shallow(n);
-  u_forprime_init(&S, 2, tridiv_bound(n));
-  while ((p = u_forprime_next_fast(&S)))
+  v = vali(n);
+  if (v)
   {
-    int stop;
-    v = Z_lvalrem_stop(&n, p, &stop);
-    if (v)
+    n = shifti(n, -v); setabssign(n);
+    if (odd(v)) m = shifti(m, 1);
+  }
+  else
+    n = absi_shallow(n);
+  lim = tridiv_bound(n);
+  if (cmpiu(n, 691 * 691) >= 0)
+  {
+    ulong sqrtn = 0;
+    GEN P;
+    if (lgefint(n) == 3)
     {
-      if (v & 1) m = muliu(m, p);
-      if (stop)
+      sqrtn = usqrt(n[2]);
+      lim = minss(sqrtn, lim);
+    }
+    P = Z_oddprimedivisors_fast(n, lim);
+    if (P)
+    {
+      long i, nP = lg(P) - 1;
+      int stop = 0;
+      for (i = 1; i <= nP; i++)
       {
-        if (!is_pm1(n)) m = mulii(m, n);
-        return gerepileuptoint(av, m);
+        v = Z_lvalrem_stop(&n, uel(P,i), &stop);
+        if (odd(v)) m = muliu(m, uel(P,i));
+      }
+      if (is_pm1(n)) return gerepileuptoint(av, m);
+      if (stop) return gerepileuptoint(av, mulii(m, n));
+    }
+    else if (lim == sqrtn && lim <= GP_DATA->factorlimit)
+      return gerepileuptoint(av, mulii(m, n)); /* prime */
+  }
+  else
+  {
+    forprime_t S;
+    u_forprime_init(&S, 3, tridiv_bound(n));
+    while ((p = u_forprime_next_fast(&S)))
+    {
+      int stop;
+      v = Z_lvalrem_stop(&n, p, &stop);
+      if (v)
+      {
+        if (v & 1) m = muliu(m, p);
+        if (stop)
+        {
+          if (!is_pm1(n)) m = mulii(m, n);
+          return gerepileuptoint(av, m);
+        }
       }
     }
   }
