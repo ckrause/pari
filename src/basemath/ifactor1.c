@@ -3761,6 +3761,144 @@ Z_issmooth_fact(GEN m, ulong lim)
   return gc_NULL(av);
 }
 
+/* b unit mod p */
+static int
+Up_ispower(GEN b, GEN K, GEN p, long d, GEN *pt)
+{
+  if (d == 1)
+  { /* mod p: faster */
+    if (!Fp_ispower(b, K, p)) return 0;
+    if (pt) *pt = Fp_sqrtn(b, K, p, NULL);
+  }
+  else
+  { /* mod p^{2 +} */
+    if (!ispower(cvtop(b, p, d), K, pt)) return 0;
+    if (pt) *pt = gtrunc(*pt);
+  }
+  return 1;
+}
+/* We're studying whether a mod (q*p^e) is a K-th power, (q,p) = 1.
+ * Decide mod p^e, then reduce a mod q unless q = NULL. */
+static int
+handle_pe(GEN *pa, GEN q, GEN L, GEN K, GEN p, long e)
+{
+  GEN t, A;
+  long v = Z_pvalrem(*pa, p, &A), d = e - v;
+  if (d <= 0) t = gen_0;
+  else
+  {
+    ulong r;
+    v = uabsdivui_rem(v, K, &r);
+    if (r || !Up_ispower(A, K, p, d, L? &t: NULL)) return 0;
+    if (L && v) t = mulii(t, powiu(p, v));
+  }
+  if (q) *pa = modii(*pa, q);
+  if (L) vectrunc_append(L, mkintmod(t, powiu(p, e)));
+  return 1;
+}
+long
+Zn_ispower(GEN a, GEN q, GEN K, GEN *pt)
+{
+  GEN L, N;
+  pari_sp av;
+  long e, i, l;
+  ulong pp;
+  forprime_t S;
+
+  if (!signe(a))
+  {
+    if (pt) {
+      GEN t = cgetg(3, t_INTMOD);
+      gel(t,1) = icopy(q); gel(t,2) = gen_0; *pt = t;
+    }
+    return 1;
+  }
+  /* a != 0 */
+  av = avma;
+
+  if (typ(q) != t_INT) /* integer factorization */
+  {
+    GEN P = gel(q,1), E = gel(q,2);
+    l = lg(P);
+    L = pt? vectrunc_init(l): NULL;
+    for (i = 1; i < l; i++)
+    {
+      GEN p = gel(P,i);
+      long e = itos(gel(E,i));
+      if (!handle_pe(&a, NULL, L, K, p, e)) return gc_long(av,0);
+    }
+    goto END;
+  }
+  if (!mod2(K)
+      && kronecker(a, shifti(q,-vali(q))) == -1) return gc_long(av,0);
+  L = pt? vectrunc_init(expi(q)+1): NULL;
+  u_forprime_init(&S, 2, tridiv_bound(q));
+  while ((pp = u_forprime_next(&S)))
+  {
+    int stop;
+    e = Z_lvalrem_stop(&q, pp, &stop);
+    if (!e) continue;
+    if (!handle_pe(&a, q, L, K, utoipos(pp), e)) return gc_long(av,0);
+    if (stop)
+    {
+      if (!is_pm1(q) && !handle_pe(&a, q, L, K, q, 1)) return gc_long(av,0);
+      goto END;
+    }
+  }
+  l = lg(primetab);
+  for (i = 1; i < l; i++)
+  {
+    GEN p = gel(primetab,i);
+    e = Z_pvalrem(q, p, &q);
+    if (!e) continue;
+    if (!handle_pe(&a, q, L, K, p, e)) return gc_long(av,0);
+    if (is_pm1(q)) goto END;
+  }
+  N = gcdii(a,q);
+  if (!is_pm1(N))
+  {
+    if (ifac_isprime(N))
+    {
+      e = Z_pvalrem(q, N, &q);
+      if (!handle_pe(&a, q, L, K, N, e)) return gc_long(av,0);
+    }
+    else
+    {
+      GEN part = ifac_start(N, 0);
+      for(;;)
+      {
+        long e;
+        GEN p;
+        if (!ifac_next(&part, &p, &e)) break;
+        e = Z_pvalrem(q, p, &q);
+        if (!handle_pe(&a, q, L, K, p, e)) return gc_long(av,0);
+      }
+    }
+  }
+  if (!is_pm1(q))
+  {
+    if (ifac_isprime(q))
+    {
+      if (!handle_pe(&a, q, L, K, q, 1)) return gc_long(av,0);
+    }
+    else
+    { /* icopy needed: ifac_next would destroy q */
+      GEN part = ifac_start(icopy(q), 0);
+      for(;;)
+      {
+        long e;
+        GEN p;
+        if (!ifac_next(&part, &p, &e)) break;
+        if (!handle_pe(&a, q, L, K, p, e)) return gc_long(av,0);
+      }
+    }
+  }
+END:
+  if (pt) *pt = gerepileupto(av, chinese1_coprime_Z(L));
+  return 1;
+}
+
+
 /***********************************************************************/
 /**                                                                   **/
 /**       COMPUTING THE MATRIX OF PRIME DIVISORS AND EXPONENTS        **/
