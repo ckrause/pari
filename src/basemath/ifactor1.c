@@ -3680,7 +3680,7 @@ core(GEN n)
   else
   {
     forprime_t S;
-    u_forprime_init(&S, 3, tridiv_bound(n));
+    u_forprime_init(&S, 3, lim);
     while ((p = u_forprime_next_fast(&S)))
     {
       int stop;
