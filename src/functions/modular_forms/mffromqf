@@ -2,7 +2,7 @@ Function: mffromqf
 Section: modular_forms
 C-Name: mffromqf
 Prototype: GDG
-Help: mffromqf(Q,{P}): Q being an even positive definite quadratic form
+Help: mffromqf(Q,{P = 1}): Q being an even positive definite quadratic form
  and P a homogeneous spherical polynomial for Q, computes a 3-component vector
  [mf,F,coeffs], where F is the theta function corresponding to (Q, P), mf is
  the corresponding space of modular forms from mfinit, and coeffs are the
@@ -12,7 +12,12 @@ Doc: $Q$ being an even integral positive definite quadratic form
  a 3-component vector $[\var{mf},F,v]$, where $F$ is the theta function
  corresponding to $(Q,P)$, \var{mf} is the corresponding space of modular
  forms (from \kbd{mfinit}), and $v$ gives the coefficients of $F$ on
- \kbd{mfbasis(mf)}.
+ \kbd{mfbasis(mf)}. A homogeneous polynomial in variables $(x_1,\dots,x_n)$
+ is spherical for $Q$ (of dimension $n$) if $ \Delta_Q P = 0$, with
+ $$ \Delta_Q = {}^t(d/d x_1,\dots,d/d x_n)
+            Q^{-1} (d/d x_1, \dots, \dots x_n).$$
+ In particular, if $Q$ is the identity, then $\Delta_Q$ is the standard
+ Laplacian $d^2/d x_1^2 + \dots + d^2/d x_n^2$.
  \bprog
  ? [mf,F,v] = mffromqf(2*matid(10)); v
  %1 = [64/5, 4/5, 32/5]~
