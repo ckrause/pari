@@ -275,7 +275,8 @@ pari_completion(pari_rl_interface *rl, char *text, int START, int END)
  * . a command */
   if (start >=1 && line[start] != '~') start--;
   while (start && is_keyword_char(line[start])) start--;
-  if (line[start] == '~')
+  if (line[start] == '~'
+      && (is_keyword_char(line[start+1]) || line[start+1] == '/'))
   {
     char *(*f)(const char*, int);
     f = rl->username_completion_function;
