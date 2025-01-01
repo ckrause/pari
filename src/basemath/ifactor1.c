@@ -1314,27 +1314,21 @@ fin:
   }
   return res;
 }
-/* Tuning parameter:  for input up to 64 bits long, we must not spend more
- * than a very short time, for fear of slowing things down on average.
- * With the current tuning formula, increase our efforts somewhat at 49 bit
- * input (an extra round for each bit at first),  and go up more and more
- * rapidly after we pass 80 bits.-- Changed this to adjust for the presence of
- * squfof, which will finish input up to 59 bits quickly. */
+/* decline if n < 2^96 */
 static GEN
 pollardbrent(GEN n)
 {
-  const long tune_pb_min = 14; /* even 15 seems too much. */
-  long c0, size = expi(n) + 1;
-  if (size <= 28)
-    c0 = 32;/* amounts very nearly to 'insist'. Now that we have squfof(), we
-             * don't insist any more when input is 2^29 ... 2^32 */
-  else if (size <= 96)
-    return NULL;
-  else if (size <= 301)
-    /* nonlinear increase in effort, kicking in around 80 bits */
-    /* 301 gives 48121 + tune_pb_min */
-    c0 = tune_pb_min + size - 60 +
-      ((size-73)>>1)*((size-70)>>3)*((size-56)>>4);
+  const long tune = 14; /* FIXME: retune this */
+  long c0, size, tf = lgefint(n);
+#ifdef LONG_IS_64BIT
+  if (tf < 4 || (tf == 4 && uel(n,2) < (1UL << 32))) return NULL;
+#else  /* 32 bits */
+  if (tf < 5) return NULL;
+#endif
+  size = expi(n) + 1;
+  /* nonlinear increase in effort, kicking in around 80 bits */
+  if (size <= 301) /* 301 gives 48121 + tune */
+    c0 = tune + size-60 + ((size-73)>>1)*((size-70)>>3)*((size-56)>>4);
   else
     c0 = 49152; /* ECM is faster when it'd take longer */
   return pollardbrent_i(n, size, c0, 0);
@@ -1370,7 +1364,8 @@ Z_pollardbrent(GEN n, long rounds, long seed)
  * with q computed as usual from B and a (occupying the c position), gives a
  * reduced form, whose third member is easiest to recover by going back to D.
  * From this point onwards, we're once again working with single-word numbers.
- * No need to track signs, just work with the abs values of the coefficients. */
+ * No need to track signs, just work with the abs values of the coefficients.
+ * HACK: if LONG_IS_64BIT, D is actually a typecast long */
 static long
 squfof_ambig(long a, long B, long dd, GEN D)
 {
@@ -1380,11 +1375,15 @@ squfof_ambig(long a, long B, long dd, GEN D)
   q = (dd + (B>>1)) / a;
   qa = q * a;
   b = (qa - B) + qa; /* avoid overflow */
+#ifdef LONG_IS_64BIT
+  c = (((long)D - b*b) >> 2) / a;
+#else
   {
     pari_sp av = avma;
     c = itos(divis(shifti(subii(D, sqrs(b)), -2), a));
     set_avma(av);
   }
+#endif
   a0 = a; b0 = b1 = b; /* end of loop detection and safeguard */
   for (;;)
   { /* reduction step */
@@ -1433,6 +1432,9 @@ static GEN
 squfof(GEN n)
 {
   ulong d1, d2;
+#ifdef LONG_IS_64BIT
+  ulong uD1, uD2;
+#endif
   long tf = lgefint(n), nm4, cnt = 0;
   long a1, b1, c1, dd1, L1, a2, b2, c2, dd2, L2, a, q, c, qc, qcb;
   GEN D1, D2;
@@ -1450,6 +1452,28 @@ squfof(GEN n)
 
   /* now we have 5 < n < 2^59 */
   nm4 = mod4(n);
+#ifdef LONG_IS_64BIT
+  if (nm4 == 1)
+  { /* n = 1 (mod4):  run one iteration on D1 = n, another on D2 = 5n */
+    uD1 = n[2];
+    uD2 = 5 * n[2]; d2 = usqrt(uD2); dd2 = (long)((d2>>1) + (d2&1));
+    b2 = (long)((d2-1) | 1); /* b1, b2 will always stay odd */
+  }
+  else
+  { /* n = 3 (mod4):  run one iteration on D1 = 3n, another on D2 = 4n */
+    uD1 = 3 * n[2];
+    uD2 = 4 * n[2]; dd2 = usqrt(n[2]); d2 =  dd2 << 1;
+    b2 = (long)(d2 & (~1UL)); /* largest even below d2, will stay even */
+  }
+  D1 = (GEN)uD1;
+  D2 = (GEN)uD2;
+  d1 = usqrt(uD1);
+  b1 = (long)((d1-1) | 1); /* largest odd number not exceeding d1 */
+  /* c1 != 0 else n or 3n would be a square */
+  c1 = (uD1 - b1*b1) / 4;
+  /* c2 != 0 else 5n would be a square */
+  c2 = (uD2 - b2*b2) / 4;
+#else
   if (nm4 == 1)
   { /* n = 1 (mod4):  run one iteration on D1 = n, another on D2 = 5n */
     D1 = n;
@@ -1468,6 +1492,7 @@ squfof(GEN n)
   c1 = itos(shifti(subii(D1, sqru((ulong)b1)), -2));
   /* c2 != 0 else 5n would be a square */
   c2 = itos(shifti(subii(D2, sqru((ulong)b2)), -2));
+#endif
   L1 = (long)usqrt(d1);
   L2 = (long)usqrt(d2);
   /* dd1 used to compute floor((d1+b1)/2) as dd1+floor(b1/2), without
@@ -1497,8 +1522,7 @@ squfof(GEN n)
    * shouldn't happen). */
   if (DEBUGLEVEL >= 4)
     err_printf("SQUFOF: entering main loop with forms\n"
-               "\t(1, %ld, %ld) and (1, %ld, %ld)\n\tof discriminants\n"
-               "\t%Ps and %Ps, respectively\n", b1, -c1, b2, -c2, D1, D2);
+               "\t(1, %ld, %ld) and (1, %ld, %ld)\n", b1, -c1, b2, -c2);
 
   /* MAIN LOOP: walk around the principal cycle looking for a square form.
    * Blacklist small leading coefficients.
@@ -1591,8 +1615,11 @@ squfof(GEN n)
           }
           /* chase the inverse root form back along the ambiguous cycle */
           q = squfof_ambig(a, b1, dd1, D1);
-          if (nm4 == 3 && q % 3 == 0) q /= 3;
-          if (q > 1) return gc_utoipos(av, q); /* SUCCESS! */
+          if (q > 3)
+          {
+            if (nm4 == 3 && q % 3 == 0) q /= 3;
+            return gc_utoipos(av, q); /* SUCCESS! */
+          }
         }
         else if (DEBUGLEVEL >= 4) /* blacklisted */
           err_printf("SQUFOF: ...but the root form seems to be on the "
@@ -1633,8 +1660,11 @@ squfof(GEN n)
           }
           /* chase the inverse root form along the ambiguous cycle */
           q = squfof_ambig(a, b2, dd2, D2);
-          if (nm4 == 1 && q % 5 == 0) q /= 5;
-          if (q > 1) return gc_utoipos(av, q); /* SUCCESS! */
+          if (q > 5)
+          {
+            if (nm4 == 1 && q % 5 == 0) q /= 5;
+            return gc_utoipos(av, q); /* SUCCESS! */
+          }
         }
         else if (DEBUGLEVEL >= 4)        /* blacklisted */
           err_printf("SQUFOF: ...but the root form seems to be on the "
@@ -2743,15 +2773,15 @@ ifac_crack(GEN *partial, GEN *where, long moebius_mode)
 
   factor = NULL;
   if (!(hint & 4))
-  { /* pollardbrent() Rho usually gets a first chance */
-    if (DEBUGLEVEL >= 4) err_printf("IFAC: trying Pollard-Brent rho method\n");
-    factor = pollardbrent(VALUE(*where));
+  { /* SQUFOF then Rho */
+    if (DEBUGLEVEL >= 4)
+      err_printf("IFAC: trying Shanks' SQUFOF, will fail silently if input\n"
+                 "      is too large for it.\n");
+    factor = squfof(VALUE(*where));
     if (!factor)
-    { /* Shanks' squfof() */
-      if (DEBUGLEVEL >= 4)
-        err_printf("IFAC: trying Shanks' SQUFOF, will fail silently if input\n"
-                   "      is too large for it.\n");
-      factor = squfof(VALUE(*where));
+    {
+      if (DEBUGLEVEL >= 4) err_printf("IFAC: trying Pollard-Brent rho\n");
+      factor = pollardbrent(VALUE(*where));
     }
   }
   if (!factor && !(hint & 2))
