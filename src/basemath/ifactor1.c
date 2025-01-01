@@ -1353,23 +1353,19 @@ Z_pollardbrent(GEN n, long rounds, long seed)
 
 /***********************************************************************/
 /**              FACTORIZATION (Shanks' SQUFOF) --GN2000Sep30-Oct01   **/
-/**  squfof() returns a nontrivial factor of n, assuming n is odd,    **/
-/**  composite, not a pure square, and has no small prime divisor,    **/
-/**  or NULL if it fails to find one.  It works on two discriminants  **/
-/**  simultaneously  (n and 5n for n=1(4), 3n and 4n for n=3(4)).     **/
+/**  squfof() returns a proper factor of n, or NULL (failure). Assume **/
+/**  n is composite, not a square, and has no small prime divisors.   **/
+/**  Works on two discriminants at once: n and 5n or 3n and 4n        **/
 /**  Present implementation is limited to input <2^59, and works most **/
 /**  of the time in signed arithmetic on integers <2^31 in absolute   **/
 /**  size. (Cf. Algo 8.7.2 in ACiCNT)                                 **/
 /***********************************************************************/
 
-/* The following is invoked to walk back along the ambiguous cycle* until we
- * hit an ambiguous form and thus the desired factor, which it returns.  If it
- * fails for any reason, it returns 0.  It doesn't interfere with timing and
- * diagnostics, which it leaves to squfof().
+/* squfof_ambig walks back along the ambiguous cycle until we hit an ambiguous
+ * form and thus the desired factor, which it returns. Returs 0 on failure.
  *
- * Before we invoke this, we've found a form (A, B, -C) with A = a^2, where a
- * isn't blacklisted and where gcd(a, B) = 1.  According to ACiCANT, we should
- * now proceed reducing the form (a, -B, -aC), but it is easy to show that the
+ * Input: a form (A, B, -C) with A = a^2, where a isn't blacklisted and
+ * (a, B) = 1. We should now proceed reducing the form (a, -B, -aC), but the
  * first reduction step always sends this to (-aC, B, a), and the next one,
  * with q computed as usual from B and a (occupying the c position), gives a
  * reduced form, whose third member is easiest to recover by going back to D.
@@ -1378,7 +1374,7 @@ Z_pollardbrent(GEN n, long rounds, long seed)
 static long
 squfof_ambig(long a, long B, long dd, GEN D)
 {
-  long b, c, q, qa, qc, qcb, a0, b0, b1, c0;
+  long b, c, q, qa, a0, b0, b1;
   long cnt = 0; /* count reduction steps on the cycle */
 
   q = (dd + (B>>1)) / a;
@@ -1389,16 +1385,10 @@ squfof_ambig(long a, long B, long dd, GEN D)
     c = itos(divis(shifti(subii(D, sqrs(b)), -2), a));
     set_avma(av);
   }
-#ifdef DEBUG_SQUFOF
-  err_printf("SQUFOF: ambigous cycle of discriminant %Ps\n", D);
-  err_printf("SQUFOF: Form on ambigous cycle (%ld, %ld, %ld)\n", a, b, c);
-#endif
-
-  a0 = a; b0 = b1 = b;        /* end of loop detection and safeguard */
-
-  for (;;) /* reduced cycles are finite */
+  a0 = a; b0 = b1 = b; /* end of loop detection and safeguard */
+  for (;;)
   { /* reduction step */
-    c0 = c;
+    long c0 = c, qc, qcb;
     if (c0 > dd)
       q = 1;
     else
@@ -1415,8 +1405,8 @@ squfof_ambig(long a, long B, long dd, GEN D)
 
     cnt++; if (b == b1) break;
 
-    /* safeguard against infinite loop: recognize when we've walked the entire
-     * cycle in vain. (I don't think this can actually happen -- exercise.) */
+    /* safeguard against infinite loop: we walked the cycle in vain.
+     * (I don't think this can actually happen.) */
     if (b == b0 && a == a0) return 0;
 
     b1 = b;
@@ -1438,7 +1428,7 @@ squfof_ambig(long a, long B, long dd, GEN D)
 
 #define SQUFOF_BLACKLIST_SZ 64
 
-/* assume 2,3,5 do not divide n */
+/* assume (n,30) = 1 */
 static GEN
 squfof(GEN n)
 {
@@ -1464,7 +1454,7 @@ squfof(GEN n)
   { /* n = 1 (mod4):  run one iteration on D1 = n, another on D2 = 5n */
     D1 = n;
     D2 = mului(5,n); d2 = itou(sqrti(D2)); dd2 = (long)((d2>>1) + (d2&1));
-    b2 = (long)((d2-1) | 1);        /* b1, b2 will always stay odd */
+    b2 = (long)((d2-1) | 1); /* b1, b2 will always stay odd */
   }
   else
   { /* n = 3 (mod4):  run one iteration on D1 = 3n, another on D2 = 4n */
@@ -1474,10 +1464,10 @@ squfof(GEN n)
   }
   d1 = itou(sqrti(D1));
   b1 = (long)((d1-1) | 1); /* largest odd number not exceeding d1 */
+  /* c1 != 0 else n or 3n would be a square */
   c1 = itos(shifti(subii(D1, sqru((ulong)b1)), -2));
-  if (!c1) pari_err_BUG("squfof [caller of] (n or 3n is a square)");
+  /* c2 != 0 else 5n would be a square */
   c2 = itos(shifti(subii(D2, sqru((ulong)b2)), -2));
-  if (!c2) pari_err_BUG("squfof [caller of] (5n is a square)");
   L1 = (long)usqrt(d1);
   L2 = (long)usqrt(d2);
   /* dd1 used to compute floor((d1+b1)/2) as dd1+floor(b1/2), without
@@ -1489,21 +1479,21 @@ squfof(GEN n)
    *
    * a1 and c1 represent the absolute values of the a,c coefficients; we keep
    * track of the sign separately, via the iteration counter cnt: when cnt is
-   * even, c is understood to be negative, else c is positive and a < 0.
+   * even, c < 0 and a > 0, else c > 0 and a < 0.
    *
    * L1, L2 are the limits for blacklisting small leading coefficients
    * on the principal cycle, to guarantee that when we find a square form,
-   * its square root will belong to an ambiguous cycle  (i.e. won't be an
-   * earlier form on the principal cycle).
+   * its square root will belong to an ambiguous cycle, i.e. won't be an
+   * earlier form on the principal cycle.
    *
-   * When n = 3(mod 4), D2 = 12(mod 16), and b^2 is always 0 or 4 mod 16.
+   * When n = 3(mod 4), D2 = 12(mod 16), and b^2 is 0 or 4 mod 16.
    * It follows that 4*a*c must be 4 or 8 mod 16, respectively, so at most
-   * one of a,c can be divisible by 2 at most to the first power.  This fact
+   * one of a,c can be divisible by 2 at most to the first power. This fact
    * is used a couple of times below.
    *
    * The flags act1, act2 remain true while the respective cycle is still
-   * active;  we drop them to false when we return to the identity form with-
-   * out having found a square form  (or when the blacklist overflows, which
+   * active; we drop them to false when we return to the identity form with-
+   * out having found a square form (or when the blacklist overflows, which
    * shouldn't happen). */
   if (DEBUGLEVEL >= 4)
     err_printf("SQUFOF: entering main loop with forms\n"
@@ -1515,7 +1505,7 @@ squfof(GEN n)
    *
    * The reduction operator can be computed entirely in 32-bit arithmetic:
    * Let q = floor(floor((d1+b1)/2)/c1)  (when c1>dd1, q=1, which happens
-   * often enough to special-case it).  Then the new b1 = (q*c1-b1) + q*c1,
+   * often enough to special-case it). Then the new b1 = (q*c1-b1) + q*c1,
    * which does not overflow, and the new c1 = a1 - q*(q*c1-b1), which is
    * bounded by d1 in abs size since both the old and the new a1 are positive
    * and bounded by d1. */
@@ -1534,7 +1524,7 @@ squfof(GEN n)
       if (a1 <= L1)
       { /* blacklist this */
         if (blp1 >= SQUFOF_BLACKLIST_SZ) /* overflows: shouldn't happen */
-          act1 = 0; /* silently */
+          act1 = 0;
         else
         {
           if (DEBUGLEVEL >= 6)
@@ -1556,7 +1546,7 @@ squfof(GEN n)
       if (a2 <= L2)
       { /* blacklist this */
         if (blp2 >= SQUFOF_BLACKLIST_SZ) /* overflows: shouldn't happen */
-          act2 = 0; /* silently */
+          act2 = 0;
         else
         {
           if (DEBUGLEVEL >= 6)
@@ -1566,12 +1556,8 @@ squfof(GEN n)
       }
     }
 
-    /* bump counter, loop if this is an odd iteration (i.e. if the real
-     * leading coefficients are negative) */
-    if (++cnt & 1) continue;
-
-    /* second half of main loop entered only when the leading coefficients
-     * are positive (i.e., during even-numbered iterations) */
+    if (++cnt & 1) continue; /* odd iteration */
+    /* even iteration: the leading coefficients are positive */
 
     /* examine first form if active */
     if (act1 && a1 == 1) /* back to identity */
@@ -1601,7 +1587,7 @@ squfof(GEN n)
           { /* q^2 divides D1 hence n [ assuming n % 3 != 0 ] */
             set_avma(av);
             if (DEBUGLEVEL >= 4) err_printf("SQUFOF: found factor %ld^2\n", q);
-            return mkvec3(utoipos(q), gen_2, NULL);/* exponent 2, unknown status */
+            return mkvec3(utoipos(q), gen_2, NULL);/* q^2, unknown status */
           }
           /* chase the inverse root form back along the ambiguous cycle */
           q = squfof_ambig(a, b1, dd1, D1);
@@ -1643,7 +1629,7 @@ squfof(GEN n)
           { /* q^2 divides D2 hence n [ assuming n % 5 != 0 ] */
             set_avma(av);
             if (DEBUGLEVEL >= 4) err_printf("SQUFOF: found factor %ld^2\n", q);
-            return mkvec3(utoipos(q), gen_2, NULL);/* exponent 2, unknown status */
+            return mkvec3(utoipos(q), gen_2, NULL);/* q^2, unknown status */
           }
           /* chase the inverse root form along the ambiguous cycle */
           q = squfof_ambig(a, b2, dd2, D2);
@@ -1657,7 +1643,6 @@ squfof(GEN n)
     }
   } /* end main loop */
 
-  /* both discriminants turned out to be useless. */
   if (DEBUGLEVEL>=4) err_printf("SQUFOF: giving up\n");
   return gc_NULL(av);
 }
