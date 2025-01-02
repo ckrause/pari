@@ -357,6 +357,8 @@ error("domain error in ffmap: m domain does not contain 46484092795487340755
 2156332*c^3 + 565071891011786154985459862809*c^2 + 2007484431137321392872863
 3027*c + 370341892320446299776532835998")
 error("incorrect type in ffextend (t_POL).")
+? a=ffgen(('a^4+'a^3+'a^2+'a+1)*Mod(1,3));
+? for(i=1,1000,setrand(i);iferr(sqrt(2*a^2+1);print(i),E,E))
 ? ffinit(1,1)
   ***   at top-level: ffinit(1,1)
   ***                 ^-----------
@@ -386,4 +388,4 @@ error("incorrect type in ffextend (t_POL).")
   ***                 ^-------------------
   *** fforder: domain error in fforder: x = 0
 ? print("Total time spent: ",gettime);
-Total time spent: 831
+Total time spent: 822

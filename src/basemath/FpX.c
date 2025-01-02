@@ -2816,6 +2816,7 @@ FpXQ_sqrt(GEN z, GEN T, GEN p)
     beta = Fp_sqrt(constant_coeff(x), p);
     if (!beta) return gc_NULL(av);
     w = FpX_Fp_mul(FpXQ_inv(FpXQ_mul(b, c, T, p), T, p), beta, p);
+    if (!ZX_equal(FpXQ_sqr(w,T,p), z)) return gc_NULL(av);
     return gerepilecopy(av, w);
   }
 }

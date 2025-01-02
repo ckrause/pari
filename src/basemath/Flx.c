@@ -3579,6 +3579,7 @@ Flxq_sqrt_pre(GEN z, GEN T, ulong p, ulong pi)
     beta = Fl_sqrt_pre(Flx_constant(x), p, pi);
     if (beta==~0UL) return gc_NULL(av);
     w = Flx_Fl_mul(Flxq_inv_pre(Flxq_mul_pre(b, c, T, p, pi), T, p, pi), beta, p);
+    if (!Flx_equal(Flxq_sqr_pre(w, T, p, pi), z)) return gc_NULL(av);
     return gerepilecopy(av, w);
   }
 }
