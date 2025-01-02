@@ -2698,26 +2698,28 @@ ifac_insert_multiplet(GEN *partial, GEN *where, GEN facvec, long moebius_mode)
   return k;
 }
 
-/* Split the first (composite) entry.  There _must_ already be room for another
+/* x /= y; exact division */
+static void
+diviiexact_inplace(GEN x, GEN y)
+{ pari_sp av = avma; affii(diviiexact(x, y), x); set_avma(av); }
+
+/* Split the first (composite) entry.  There must already be room for another
  * factor below *where, and *where is updated. Two cases:
- * - entry = factor^k is a pure power: factor^k is inserted, leaving *where
- *   unchanged;
+ * - entry is a pure power: factor^k is inserted, leaving *where unchanged;
  * - entry = factor * cofactor (not necessarily coprime): both factors are
  *   inserted in the correct order, updating *where
  * The inserted factors class is set to unknown, they inherit the exponent
  * (or a multiple thereof) of their ancestor.
  *
- * Returns number of factors written into the structure, normally 2 (1 if pure
- * power, maybe > 2 if a factoring engine returned a vector of factors instead
- * of a single factor). Can reallocate the data structure in the
- * vector-of-factors case, not in the most common single-factor case.
- * Stack housekeeping:  this routine may create one or more objects  (a new
- * factor, or possibly several, and perhaps one or more new exponents > 2) */
+ * Returns number of factors written into the structure, usually 2; only 1
+ * if pure power, and > 2 if a factoring engine returned a vector of factors.
+ * Can reallocate the data structure in the rare > 2 case; may create one or
+ * more objects: new factors or exponents > 2 */
 static long
 ifac_crack(GEN *partial, GEN *where, long moebius_mode)
 {
-  long cmp_res, hint = get_hint(partial);
-  GEN factor, exponent;
+  long hint = get_hint(partial);
+  GEN cofactor, factor, exponent;
 
 #ifdef IFAC_DEBUG
   ifac_check(*partial, *where);
@@ -2794,60 +2796,49 @@ ifac_crack(GEN *partial, GEN *where, long moebius_mode)
     if (DEBUGLEVEL >= 4) err_printf("IFAC: trying MPQS\n");
     factor = mpqs(VALUE(*where));
   }
+  if (!factor && !(hint & 8))
+  { /* Final ECM stage, guaranteed to succeed */
+    if (DEBUGLEVEL >= 4)
+      err_printf("IFAC: forcing ECM, may take some time\n");
+    factor = ellfacteur(VALUE(*where), 1);
+  }
   if (!factor)
-  {
-    if (!(hint & 8))
-    { /* still no luck? Final ECM stage, guaranteed to succeed */
-      if (DEBUGLEVEL >= 4)
-        err_printf("IFAC: forcing ECM, may take some time\n");
-      factor = ellfacteur(VALUE(*where), 1);
+  { /* limited factorization */
+    if (DEBUGLEVEL >= 2)
+    {
+      pari_warn(warner, hint==15? "IFAC: untested integer declared prime"
+                                : "IFAC: unfactored composite declared prime");
+      /* don't print it out at level 3 or above, where it would appear
+       * several times before and after this message already */
+      if (DEBUGLEVEL == 2) err_printf("\t%Ps\n", VALUE(*where));
     }
-    else
-    { /* limited factorization */
-      if (DEBUGLEVEL >= 2)
-      {
-        if (hint != 15)
-          pari_warn(warner, "IFAC: unfactored composite declared prime");
-        else
-          pari_warn(warner, "IFAC: untested integer declared prime");
-
-        /* don't print it out at level 3 or above, where it would appear
-         * several times before and after this message already */
-        if (DEBUGLEVEL == 2) err_printf("\t%Ps\n", VALUE(*where));
-      }
-      CLASS(*where) = gen_1; /* might as well trial-divide by it... */
-      return 1;
-    }
+    CLASS(*where) = gen_1; /* might as well trial-divide by it... */
+    return 1;
   }
-  if (typ(factor) == t_VEC) /* delegate this case */
+  /* At least two factors */
+  if (typ(factor) == t_VEC)
     return ifac_insert_multiplet(partial, where, factor, moebius_mode);
-  /* typ(factor) == t_INT */
-  /* got single integer back:  work out the cofactor (in place) */
-  if (!dvdiiz(VALUE(*where), factor, VALUE(*where)))
-  {
-    err_printf("IFAC: factoring %Ps\n", VALUE(*where));
-    err_printf("\tyielded 'factor' %Ps\n\twhich isn't!\n", factor);
-    pari_err_BUG("factoring");
-  }
-  /* factoring engines report the factor found; tell about the cofactor */
-  if (DEBUGLEVEL >= 4) err_printf("IFAC: cofactor = %Ps\n", VALUE(*where));
 
-  /* The two factors are 'factor' and VALUE(*where), find out which is larger */
-  cmp_res = cmpii(factor, VALUE(*where));
+  /* Single factor (t_INT): work out cofactor in place */
+  diviiexact_inplace(VALUE(*where), factor);
+  cofactor = VALUE(*where);
+  /* factoring engines reported factor; tell about the cofactor */
+  if (DEBUGLEVEL >= 4) err_printf("IFAC: cofactor = %Ps\n", cofactor);
   CLASS(*where) = NULL; /* mark factor /cofactor 'unknown' */
-  exponent = EXPON(*where);
+  exponent = EXPON(*where); /* common exponent */
+
   *where -= 3;
   CLASS(*where) = NULL; /* mark factor /cofactor 'unknown' */
-  icopyifstack(exponent, EXPON(*where));
-  if (cmp_res < 0)
+  icopyifstack(exponent, EXPON(*where)); /* copy common exponent */
+
+  if (cmpii(factor, cofactor) < 0)
     VALUE(*where) = factor; /* common case */
-  else if (cmp_res > 0)
-  { /* factor > cofactor, rearrange */
+  else
+  { /* factor > cofactor, swap. Exponent is the same, so no need to swap. */
     GEN old = *where + 3;
     VALUE(*where) = VALUE(old); /* move cofactor pointer to lowest slot */
     VALUE(old) = factor; /* save factor */
   }
-  else pari_err_BUG("ifac_crack [Z_issquareall miss]");
   return 2;
 }
 
