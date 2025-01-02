@@ -3575,9 +3575,9 @@ Flxq_sqrt_pre(GEN z, GEN T, ulong p, ulong pi)
     } while (!lgpol(b));
 
     x = Flxq_mul_pre(new_z, Flxq_sqr_pre(b, T, p, pi), T, p, pi);
-    if (degpol(x) > 1) return NULL;
+    if (degpol(x) > 1) return gc_NULL(av);
     beta = Fl_sqrt_pre(Flx_constant(x), p, pi);
-    if (beta==~0UL) return NULL;
+    if (beta==~0UL) return gc_NULL(av);
     w = Flx_Fl_mul(Flxq_inv_pre(Flxq_mul_pre(b, c, T, p, pi), T, p, pi), beta, p);
     return gerepilecopy(av, w);
   }
