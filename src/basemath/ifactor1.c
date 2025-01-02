@@ -3104,14 +3104,13 @@ static void
 ifac_factoru(GEN n, long hint, GEN P, GEN E, long *pi)
 {
   GEN part = ifac_start_hint(n, 0, hint);
+  long i = *pi;
   for(;;)
   {
     long v;
     GEN p;
-    if (!ifac_next(&part,&p,&v)) return;
-    P[*pi] = itou(p);
-    E[*pi] = v;
-    (*pi)++;
+    if (!ifac_next(&part,&p,&v)) { *pi = i; return; }
+    P[i] = itou(p); E[i] = v; i++;
   }
 }
 /* destroys n */
@@ -3306,11 +3305,9 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
           oldi = i;
         }
         v = u_lvalrem_stop(&n, p, &stop);
-        if (v) {
-          P[i] = p;
-          E[i] = v; i++;
-        }
-        if (stop) {
+        if (v) { P[i] = p; E[i] = v; i++; }
+        if (stop)
+        {
           if (n != 1) { P[i] = n; E[i] = 1; i++; }
           goto END;
         }
@@ -3324,11 +3321,9 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
       {
         int stop;
         v = u_lvalrem_stop(&n, p, &stop);
-        if (v) {
-          P[i] = p;
-          E[i] = v; i++;
-        }
-        if (stop) {
+        if (v) { P[i] = p; E[i] = v; i++; }
+        if (stop)
+        {
           if (n != 1) { P[i] = n; E[i] = 1; i++; }
           goto END;
         }
