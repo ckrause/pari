@@ -2761,7 +2761,7 @@ GEN
 FpXQ_sqrt(GEN z, GEN T, GEN p)
 {
   pari_sp av = avma;
-  long d = get_FpX_degree(T);
+  long d;
   if (lgefint(p)==3)
   {
     if (uel(p,2) == 2)
@@ -2776,13 +2776,15 @@ FpXQ_sqrt(GEN z, GEN T, GEN p)
       return gerepileupto(av, Flx_to_ZX(z));
     }
   }
+  d = get_FpX_degree(T);
   if (d==2)
   {
     GEN P = get_FpX_mod(T);
     GEN c = gel(P,2), b = gel(P,3), a = gel(P,4), b2 = Fp_halve(b, p);
     GEN t = Fp_div(b2, a, p);
     GEN D = Fp_sub(Fp_sqr(b2, p), Fp_mul(a, c, p), p);
-    GEN x = degpol(z)<1 ? constant_coeff(z): Fp_sub(gel(z,2), Fp_mul(gel(z,3), t, p), p);
+    GEN x = degpol(z)<1 ? constant_coeff(z)
+                        : Fp_sub(gel(z,2), Fp_mul(gel(z,3), t, p), p);
     GEN y = degpol(z)<1 ? gen_0: gel(z,3);
     GEN r = Fp2_sqrt(mkvec2(x, y), D, p), s;
     if (!r) return gc_NULL(av);
@@ -2797,18 +2799,18 @@ FpXQ_sqrt(GEN z, GEN T, GEN p)
     return gerepilecopy(av, scalarpol_shallow(s, get_FpX_var(T)));
   } else
   {
-    GEN c, b, new_z, lam, beta, x, y, w, aut;
+    GEN p2, c, b, new_z, beta, x, y, w, ax;
     long v = get_FpX_var(T);
-    if(!signe(z)) return pol_0(varn(z));
+    if (!signe(z)) return pol_0(varn(z));
     T = FpX_get_red(T, p);
-    aut = FpX_Frobenius(T,p);
+    ax = mkvec2(NULL, FpX_Frobenius(T,p));
+    p2 = shifti(p, -1); /* (p - 1) / 2 */
     do {
       do c = random_FpX(d, v, p); while (!signe(c));
-
       new_z = FpXQ_mul(z, FpXQ_sqr(c, T, p), T, p);
-      lam = FpXQ_pow(new_z, shifti(p, -1), T, p);
-      y = d==2 ? pol_0(v) : FpXQ_sumautsum(mkvec2(lam, aut), d-2, T, p);
-      b = FpX_add(pol_1(v), y, p);
+      gel(ax,1) = FpXQ_pow(new_z, p2, T, p);
+      y = FpXQ_sumautsum(ax, d-2, T, p); /* d > 2 */
+      b = FpX_Fp_add(y, gen_1, p);
     } while (!signe(b));
 
     x = FpXQ_mul(new_z, FpXQ_sqr(b, T, p), T, p);

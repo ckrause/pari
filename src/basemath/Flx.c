@@ -3522,12 +3522,13 @@ GEN
 Flxq_sqrt_pre(GEN z, GEN T, ulong p, ulong pi)
 {
   pari_sp av = avma;
-  long d = get_Flx_degree(T);
+  long d;
   if (p==2)
   {
     GEN r = F2xq_sqrt(Flx_to_F2x(z), Flx_to_F2x(get_Flx_mod(T)));
     return gerepileupto(av, F2x_to_Flx(r));
   }
+  d = get_Flx_degree(T);
   if (d==2)
   {
     GEN P = get_Flx_mod(T), s;
@@ -3559,26 +3560,27 @@ Flxq_sqrt_pre(GEN z, GEN T, ulong p, ulong pi)
     return gerepilecopy(av, Fl_to_Flx(s, get_Flx_var(T)));
   } else
   {
-    GEN c, b, new_z, lam, x, y, w, aut;
-    ulong beta;
+    GEN c, b, new_z, x, y, w, ax;
+    ulong p2, beta;
     long v = get_Flx_var(T);
     if (!lgpol(z)) return pol0_Flx(v);
     T = Flx_get_red_pre(T, p, pi);
-    aut = Flx_Frobenius_pre(T, p, pi);
+    ax = mkvec2(NULL, Flx_Frobenius_pre(T, p, pi));
+    p2 = p >> 1; /* (p-1) / 2 */
     do {
       do c = random_Flx(d, v, p); while (!lgpol(c));
 
       new_z = Flxq_mul_pre(z, Flxq_sqr_pre(c, T, p, pi), T, p, pi);
-      lam = Flxq_powu_pre(new_z, p>>1, T, p, pi);
-      y = d==2 ? pol0_Flx(v) : Flxq_sumautsum_pre(mkvec2(lam, aut), d-2, T, p, pi);
-      b = Flx_add(pol1_Flx(v), y, p);
+      gel(ax, 1) = Flxq_powu_pre(new_z, p2, T, p, pi);
+      y = Flxq_sumautsum_pre(ax, d-2, T, p, pi); /* d > 2 */
+      b = Flx_Fl_add(y, 1UL, p);
     } while (!lgpol(b));
 
     x = Flxq_mul_pre(new_z, Flxq_sqr_pre(b, T, p, pi), T, p, pi);
     if (degpol(x) > 1) return gc_NULL(av);
     beta = Fl_sqrt_pre(Flx_constant(x), p, pi);
     if (beta==~0UL) return gc_NULL(av);
-    w = Flx_Fl_mul(Flxq_inv_pre(Flxq_mul_pre(b, c, T, p, pi), T, p, pi), beta, p);
+    w = Flx_Fl_mul(Flxq_inv_pre(Flxq_mul_pre(b, c, T,p,pi), T,p,pi), beta, p);
     if (!Flx_equal(Flxq_sqr_pre(w, T, p, pi), z)) return gc_NULL(av);
     return gerepilecopy(av, w);
   }
