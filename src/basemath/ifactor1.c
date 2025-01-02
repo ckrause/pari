@@ -3206,6 +3206,17 @@ Z_oddprimedivisors_fast(GEN N, ulong lim)
   for (i = 1; i <= n; i++) uel(P,i) = gel(P,i)[2];
   return P;
 }
+/* return mask with bit 0, 1, 2 set if respectively 3, 5, 7 divide n */
+static int
+u_357_divides(ulong n)
+{ /* vector (105, i, n = i-1; !(n%3) + 2 * !(n%5) + 4 * !(n%7)) */
+  const unsigned int tab[] = {
+  7,0,0,1,0,2,1,4,0,1,2,0,1,0,4,3,0,0,1,0,2,5,0,0,1,2,0,1,4,0,3,0,0,1,0,6,1,0,
+  0,1,2,0,5,0,0,3,0,0,1,4,2,1,0,0,1,2,4,1,0,0,3,0,0,5,0,2,1,0,0,1,6,0,1,0,0,3,
+  0,4,1,0,2,1,0,0,5,2,0,1,0,0,3,4,0,1,0,2,1,0,4,1,2,0,1,0,0};
+  return tab[n % 105UL];
+}
+
 /* Factor n and output [p,e] where
  * p, e are vecsmall with n = prod{p[i]^e[i]}. If all != 0:
  * if pU1 is not NULL, set *pU1 and *pU2 so that unfactored composite is
@@ -3215,7 +3226,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
 {
   GEN f, E, E2, P, P2;
   pari_sp av;
-  ulong p, lim = 0;
+  ulong ALL, p, lim = 0;
   long i, oldi = -1;
   forprime_t S;
 
@@ -3228,7 +3239,8 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
   (void)new_chunk(16*2);
   P = cgetg(16, t_VECSMALL); i = 1;
   E = cgetg(16, t_VECSMALL);
-  if (!all || all > 2)
+  ALL = all? all: ULONG_MAX; /* (!all || all > n) == ALL > n */
+  if (ALL > 2)
   {
     ulong maxp;
     long v = vals(n);
@@ -3236,6 +3248,22 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
     {
       P[1] = 2; E[1] = v; i = 2;
       n >>= v; if (n == 1) goto END;
+    }
+    if (ALL > 3)
+    {
+      int mask = u_357_divides(n);
+      if (mask)
+      {
+        if (mask & 1)
+        { P[i] = 3; E[i] = 1 + u_lvalrem(n / 3, 3, &n); i++;
+          if (n == 1) goto END; }
+        if ((mask & 2) && ALL > 5)
+        { P[i] = 5; E[i] = 1 + u_lvalrem(n / 5, 5, &n); i++;
+          if (n == 1) goto END; }
+        if ((mask & 4) && ALL > 7)
+        { P[i] = 7; E[i] = 1 + u_lvalrem(n / 7, 7, &n); i++;
+          if (n == 1) goto END; }
+      }
     }
     maxp = maxprime();
     if (n <= maxp && PRIMES_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
@@ -3267,7 +3295,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
     else
     { /* naive trial division */
       maxp = lim;
-      u_forprime_init(&S, 3, lim);
+      u_forprime_init(&S, 11, lim);
       while ( (p = u_forprime_next_fast(&S)) )
       {
         int stop;
