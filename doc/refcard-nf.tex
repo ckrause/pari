@@ -511,7 +511,7 @@ $A$ is a central simple algebra over a number field $K$; represented by
 \var{al} from \kbd{alginit}; $K$ is given by a \var{nf} structure.
 
 \li{create CSA from data}
-   {alginit$(B,C,\{v\},\{maxord=1\})$}
+   {alginit$(B,C,\{v\},\{flag=3\})$}
 \beginindentedkeys
   \li{multiplication table over $K$}{$B = K${\rm, }$C = \var{mt}$}
   \li{cyclic algebra $(L/K,\sigma,b)$}
@@ -520,7 +520,12 @@ $A$ is a central simple algebra over a number field $K$; represented by
   \li{matrix algebra $M_d(K)$}{$B = K$, $C = d$}
   \li{local Hasse invariants over $K$}
      {$B = K$, $C = [d, [\var{PR}, \var{HF}], \var{HI}]$}
+  \li{ramification set of quaternion algebra}
+     {$B = K$, $C = [\var{PR}, \var{HI}]$}
+  \li{Hamilton quaternion algebra $(-1,-1)_{\RR}$}{$B = 1.$, $C = 1/2$}
 \endindentedkeys
+\li{recover~$(a,b)$ if $\var{al}=(a,b)_K$}{algisquatalg$(\var{al})$}
+\li{recompute \var{al} using current precision}{algnewprec$(\var{al})$}
 
 \smallskip
 \subsec{Properties}
@@ -549,12 +554,21 @@ $A$ is a central simple algebra over a number field $K$; represented by
 
 \smallskip
 \subsec{Operations on elements}
+\li{$x\in$ \var{nf} as an element of \var{al}}{algeltfromnf$(\var{al},x)$}
 \li{reduced norm}{algnorm$(\var{al},x)$}
 \li{reduced trace}{algtrace$(\var{al},x)$}
 \li{reduced char. polynomial}{algcharpoly$(\var{al},x)$}
 \li{express $x$ on integral basis}{algalgtobasis$(\var{al},x)$}
 \li{convert $x$ to algebraic form}{algbasistoalg$(\var{al},x)$}
+\li{express quaternion $x$ on integral basis}{algquattobasis$(\var{al},x)$}
+\li{convert $x$ to quaternion form}{algbasistoquat$(\var{al},x)$}
 \li{map $x\in A$ to $M_d(L)$, $L$ split. field} {algtomatrix$(\var{al},x)$}
+\li{init mod \var{pr} map ${\cal O}_0 \to M_k(\FF_q)$}
+   {algmodprinit$(\var{al},\var{pr},\{v\})$}
+\li{project~$x$ to $M_k(\FF_q)$}
+   {algmodpr$(\var{al},\var{x},\var{modP})$}
+\li{lift from $M_k(\FF_q)$ to ${\cal O}_0$}
+   {algmodprlift$(\var{al},\var{x},\var{modP})$}
 
 \smallskip
 \subsec{Orders}
@@ -562,6 +576,7 @@ $A$ is a central simple algebra over a number field $K$; represented by
 \li{discriminant of order ${\cal O}_0$}{algdisc$(\var{al})$}
 \li{$\ZZ$-basis of natural order in terms ${\cal O}_0$'s basis}
    {alginvbasis$(\var{al})$}
+\li{$\ZZ$-basis of Eichler order of level~$N$}{algeichlerbasis$(\var{al},N)$}
 \newcolumn
 \strut
 \vskip 11cm
