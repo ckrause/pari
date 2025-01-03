@@ -144,6 +144,7 @@ sub library_syntax { my ($fun, $args) = @_;
     my ($c) = $proto[$i++];
     if ($c eq 'i') { $type = "int"; next; }
     if ($c eq 'l') { $type = "long"; next; }
+    if ($c eq 'u') { $type = "ulong"; next; }
     if ($c eq 'v') { $type = "void"; next; }
     if ($c =~ /^[GIJEULM&]$/) {$args .= ", $p2c{$c} " . shift(@ARGS); next;}
     if ($c eq 'W') {my ($v) = shift(@ARGS);
