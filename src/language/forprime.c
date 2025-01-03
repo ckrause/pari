@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 /**********************************************************************/
 
 static ulong _maxprimelim = 0;
-static GEN _prodprimes,_prodprimes_addr;
+static GEN _prodprimes;
 typedef unsigned char *byteptr;
 
 /* Build/Rebuild table of prime differences. The actual work is done by the
@@ -380,10 +380,9 @@ set_prodprimes(void)
   setlg(W, u);
   for (j = 2; j < u; j++) gel(W,j) = mulii(gel(W,j-1), gel(W,j));
   s = gsizeword(W);
-  w = (GEN)pari_malloc(s*sizeof(long));
+  w = (GEN)pari_malloc(s * sizeof(long));
   av = (pari_sp)(w + s);
-  _prodprimes_addr = w;
-  _prodprimes = gcopy_avma(W, &av);
+  _prodprimes = gcopy_avma(W, &av); /* optimimized gerepile */
   set_avma(ltop);
 }
 
@@ -800,11 +799,7 @@ pari_init_primes(ulong maxprime)
 void
 pari_close_primes(void)
 {
-  if (pari_PRIMES)
-  {
-    pari_free(pari_PRIMES);
-    pari_free(_prodprimes_addr);
-  }
+  if (pari_PRIMES) pari_free(pari_PRIMES);
   pari_free(pari_sieve_modular.sieve);
 }
 
