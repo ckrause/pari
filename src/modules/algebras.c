@@ -3865,9 +3865,10 @@ static GEN
 H_invol(GEN x)
 {
   pari_sp av = avma;
+  long tx;
   GEN cx;
   if (!x) return gerepileupto(av,diagonal(mkvec4(gen_1,gen_m1,gen_m1,gen_m1)));
-  long tx = H_model(x);
+  tx = H_model(x);
   if (tx == H_SCALAR) return gconj(x);
   cx = gneg(x);
   gel(cx,1) = gcopy(gel(x,1));
