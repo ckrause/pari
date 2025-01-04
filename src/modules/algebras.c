@@ -342,6 +342,8 @@ GEN
 algchar(GEN al) { checkalg(al); return alg_get_char(al); }
 GEN
 alg_get_tracebasis(GEN al) { return gel(al,11); }
+GEN
+alg_get_invol(GEN al) { return gmael(al,6,2); }
 
 /* lattices */
 GEN
@@ -468,13 +470,15 @@ b_i = u^((i-1)/(dn))*ZKabs.((i-1)%(dn)+1)
 Integral basis:
 Basis of some order.
 
-al:
+al structure:
 1- rnf of the cyclic splitting field of degree n over the center nf of degree d
 2- VEC of aut^i 1<=i<=n if n>1, or i=0 if n=1
 3- b in nf
 4- infinite hasse invariants (mod n) : VECSMALL of size r1, values only 0 or n/2 (if integral)
 5- finite hasse invariants (mod n) : VEC[VEC of primes, VECSMALL of hasse inv mod n]
-6- currently unused (gen_0 placeholder)
+6- VEC
+  6.1- 0, or [a,b,sa] where sa^2=a if al is quaternion algebra (a,b)
+  6.2- dn^2*dn^2 matrix of stored involution
 7* dn^2*dn^2 matrix expressing the integral basis in terms of the natural basis
 8* dn^2*dn^2 matrix expressing the natural basis in terms of the integral basis
 9* VEC of dn^2 matrices giving the dn^2*dn^2 left multiplication tables of the integral basis
@@ -3857,6 +3861,34 @@ algpoleval(GEN al, GEN pol, GEN x)
   return gerepileupto(av, res);
 }
 
+static GEN
+H_invol(GEN x)
+{
+  pari_sp av = avma;
+  GEN cx;
+  if (!x) return gerepileupto(av,diagonal(mkvec4(gen_1,gen_m1,gen_m1,gen_m1)));
+  long tx = H_model(x);
+  if (tx == H_SCALAR) return gconj(x);
+  cx = gneg(x);
+  gel(cx,1) = gcopy(gel(x,1));
+  return gerepileupto(av, cx);
+}
+
+GEN
+alginvol(GEN al, GEN x)
+{
+  pari_sp av = avma;
+  GEN invol;
+  checkalg(al);
+  if (!x && al) return gerepileupto(av, alg_get_invol(al));
+  if (alg_type(al)==al_REAL) return H_invol(x);
+  x = algalgtobasis(al, x);
+  invol = alg_get_invol(al);
+  if (typ(invol)!=t_MAT)
+    pari_err_DOMAIN("alginvol [al does not contain an involution]", "invol", "=", gen_0, invol);
+  return gerepileupto(av, RgM_RgC_mul(invol,x));
+}
+
 /** GRUNWALD-WANG **/
 /*
 Song Wang's PhD thesis (pdf pages)
@@ -4473,6 +4505,26 @@ hassereduce(GEN hf)
   setlg(h,j); return mkvec2(pr,h);
 }
 
+static void
+alg_insert_quatconj(GEN al)
+{
+  GEN aut, nf, rnf, nfabs, gene, absaut;
+  long d;
+  aut = alg_get_aut(al);
+  d = alg_get_absdim(al) / 4;
+  nf = alg_get_center(al);
+  rnf = alg_get_splittingfield(al);
+  nfabs = rnf_build_nfabs(rnf, nf_get_prec(nf));
+  gene = lift_shallow(rnfeltabstorel(rnf,pol_x(nf_get_varn(nfabs))));
+  absaut = rnfeltreltoabs(rnf,poleval(gene,aut));
+  gmael(al,6,2) = shallowmatconcat(mkmat22(
+    nfgaloismatrix(nfabs,absaut),
+    gen_0,
+    gen_0,
+    gneg(matid(2*d))
+    ));
+}
+
 /* rnf complete */
 static GEN
 alg_complete0(GEN rnf, GEN aut, GEN hf, GEN hi, long flag)
@@ -4540,11 +4592,13 @@ alg_complete0(GEN rnf, GEN aut, GEN hf, GEN hi, long flag)
   settyp(Lpr,t_VEC);
   hf = mkvec2(Lpr, shallowconcat(hfe, const_vecsmall(lg(Lpr)-lg(hfe), 0)));
   gel(al,5) = hf;
-  gel(al,6) = mkvec(gen_0);
+  gel(al,6) = mkvec2(gen_0,gen_0);
   gel(al,7) = matid(D);
   gel(al,8) = matid(D); /* TODO modify 7, 8 et 9 once LLL added */
   gel(al,9) = algnatmultable(al,D);
   gel(al,11)= algtracebasis(al);
+
+  if (n==2) alg_insert_quatconj(al);
   if (flag & al_MAXORD) al = alg_maximal_primes(al, prV_primes(Lpr));
   return gerepilecopy(av, al);
 }
@@ -4782,7 +4836,7 @@ alg_matrix(GEN nf, long n, long v, long flag)
 static GEN
 alg_hilbert_asquare(GEN nf, GEN a, GEN sa, GEN b, long v, long flag)
 {
-  GEN mt, al, ord, z1, z2, den;
+  GEN mt, al, ord, z1, z2, den, invol;
   long d = nf_get_degree(nf), i;
   mt = mkvec4(
       matid(4),
@@ -4814,6 +4868,9 @@ alg_hilbert_asquare(GEN nf, GEN a, GEN sa, GEN b, long v, long flag)
   /* remember special case */
   sa = basistoalg(nf,sa);
   gmael(al,6,1) = mkvec3(a,b,sa);
+  invol = matid(4*d);
+  for (i=d+1; i<lg(invol); i++) gcoeff(invol,i,i) = gen_m1;
+  gmael(al,6,2) = invol;
 
   if (flag & al_MAXORD)
   {
@@ -4887,7 +4944,7 @@ mk_R()
   gel(al,2) = mkvec(gel(al,1));
   gel(al,3) = gen_1;
   gel(al,4) = mkvecsmall(0);
-  gel(al,6) = mkvec(gen_0);
+  gel(al,6) = mkvec2(gen_0,matid(1));
   gel(al,8) = gel(al,7) = matid(1);
   gel(al,9) = mkvec(matid(1));
   return gerepilecopy(av,al);
@@ -4904,7 +4961,7 @@ mk_C()
   gel(al,2) = mkvec(I);
   gel(al,3) = gen_1;
   gel(al,4) = cgetg(1,t_VECSMALL);
-  gel(al,6) = mkvec(gen_0);
+  gel(al,6) = mkvec2(gen_0,mkmat22(gen_1,gen_0,gen_0,gen_m1));
   gel(al,8) = gel(al,7) = matid(2);
   gel(al,9) = mkvec2(
     matid(2),
@@ -4924,7 +4981,7 @@ mk_H()
   gel(al,2) = mkvec(gconj(I));
   gel(al,3) = gen_m1;
   gel(al,4) = mkvecsmall(1);
-  gel(al,6) = mkvec(gen_0);
+  gel(al,6) = mkvec2(gen_0, H_invol(NULL));
   gel(al,8) = gel(al,7) = matid(4);
   gel(al,9) = mkvec4(
     matid(4),
@@ -5152,11 +5209,13 @@ alg_cyclic(GEN rnf, GEN aut, GEN b, long flag)
   gel(al,2) = allauts(rnf, aut);
   gel(al,3) = basistoalg(nf,b);
   rnf_build_nfabs(rnf, nf_get_prec(nf));
-  gel(al,6) = mkvec(gen_0);
+  gel(al,6) = mkvec2(gen_0,gen_0);
   gel(al,7) = matid(D);
   gel(al,8) = matid(D); /* TODO modify 7, 8 et 9 once LLL added */
   gel(al,9) = algnatmultable(al,D);
   gel(al,11)= algtracebasis(al);
+
+  if (n==2) alg_insert_quatconj(al);
 
   algcomputehasse(al, flag);
 
@@ -5293,7 +5352,7 @@ alg_csa_table(GEN nf, GEN mt0, long v, long flag)
   gel(al,2) = mt;
   gel(al,3) = gen_0; /* placeholder */
   gel(al,4) = gel(al,5) = gen_0; /* TODO Hasse invariants if flag&al_FACTOR */
-  gel(al,6) = mkvec(gen_0);
+  gel(al,6) = mkvec2(gen_0,gen_0);
   gel(al,7) = matid(D);
   gel(al,8) = matid(D);
   gel(al,9) = algnatmultable(al,D);
@@ -5317,7 +5376,7 @@ algtableinit_i(GEN mt0, GEN p)
   n = lg(mt)-1;
   al = cgetg(12, t_VEC);
   for (i=1; i<=5; i++) gel(al,i) = gen_0;
-  gel(al,6) = mkvec(gen_0);
+  gel(al,6) = mkvec2(gen_0, gen_0);
   gel(al,7) = matid(n);
   gel(al,8) = matid(n);
   gel(al,9) = mt;
@@ -5598,12 +5657,16 @@ algpdecompose_i(GEN al, GEN p, GEN zprad, GEN projs)
 static GEN
 alg_change_overorder_shallow(GEN al, GEN ord)
 {
-  GEN al2, mt, iord, mtx, den, den2, div;
+  GEN al2, mt, iord, mtx, den, den2, div, invol;
   long i, n;
   n = alg_get_absdim(al);
 
   iord = QM_inv(ord);
   al2 = shallowcopy(al);
+
+  invol = alg_get_invol(al);
+  if (typ(invol) == t_MAT) gmael(al2,6,2) = QM_mul(iord, QM_mul(invol,ord));
+
   ord = Q_remove_denom(ord,&den);
 
   gel(al2,7) = Q_remove_denom(gel(al,7), &den2);

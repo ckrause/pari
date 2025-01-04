@@ -53,6 +53,7 @@ MTB 14- gen_order: implement faster recursive algorithm
 MTB 15- FpXQ_sqrt: implement fast algorithm
 BA  16- [libpari] F2xqX_Frobenius, F2xqX_nbroots, FF_nbroots
     17- core, ispowerfu, moebius: implement fast trial division
+AP  18- new GP function alginvol
 
   Changed
 BA   1- idealfactorback, rnfisnorminit: flag is now a long to match GP proto.
