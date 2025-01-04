@@ -3147,28 +3147,57 @@ uisprime_nosmall(ulong n, ulong lim)
 static GEN factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2);
 static GEN ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU);
 
-/* N != 0. Odd prime divisors less than min(lim, factorlimit) [WARNING!];
- * NULL if empty.
- * Assume lim >= 128. Better for efficiency if n >= lim^2. Not GC-clean. */
+/* simplified version of factoru_sign, to be called on squarefree n whose
+ * prime divisors are >= minp. Find those which are <= lim.
+ * Assume 1 <= minp <= lim */
 static GEN
-u_oddprimedivisors_fast(ulong N, ulong lim)
+factoru_primes(ulong n, ulong lim, ulong minp)
 {
-  GEN F, P, PR;
-  long n, b;
+  forprime_t S;
+  ulong p, NMAX;
+  long i;
+  GEN P;
+
+  if (n < minp) return NULL;
+  NMAX = maxprimelim();
+  if (n <= NMAX && PRIMES_search(n) > 0) return mkvecsmall(n);
+  P = cgetg(16, t_VECSMALL); i = 1;
+  u_forprime_init(&S, minp, lim);
+  while ( (p = u_forprime_next_fast(&S)) )
+  {
+    ulong q = n / p;
+    if (n % p == 0)
+    {
+      P[i++] = p; n = q;
+      if (n <= NMAX && PRIMES_search(n) > 0)
+      { /* n is now prime */
+        if (n <= lim) P[i++] = n;
+        break;
+      }
+    }
+    else if (q <= p)
+    { /* n <= p^2: n is now prime */
+      if (n <= lim) P[i++] = n;
+      break;
+    }
+  }
+  setlg(P, i); return P;
+}
+
+/* N != 0. Odd prime divisors less than min(lim, factorlimit) [WARNING!];
+ * NULL if empty. Assume lim >= 128 and primes dividing n are >= minp.
+ * Better for efficiency if n >= lim^2. Not GC-clean. */
+static GEN
+u_oddprimedivisors_fast(ulong N, ulong lim, ulong minp)
+{
+  GEN PR;
+  long b;
   ulong Nr;
   if (lim < 128) return NULL; /* decline */
   PR = prodprimes();
   b = minss(lg(PR)-1, expu(lim)-6); /* expu(lim) >= 7 */
   Nr = ugcd(N, umodiu(gel(PR,b), N));
-  if (Nr == 1) return NULL;
-  F = factoru_sign(Nr, lim + 1, 1 + 2 + 16, NULL, NULL);
-  P = gel(F,1); n = lg(P) - 1; /* > 0 */
-  if (uel(P, n) > lim)
-  {
-    if (n == 1) return NULL;
-    setlg(P, n);
-  }
-  return P;
+  return factoru_primes(Nr, lim, minp);
 }
 /* not GC-clean */
 static GEN
@@ -3216,6 +3245,16 @@ u_357_divides(ulong n)
   return tab[n % 105UL];
 }
 
+static GEN
+factoru_result(GEN P, GEN E, long i)
+{
+  GEN P2, E2, f = cgetg(3,t_VEC);
+  gel(f,1) = P2 = cgetg(i, t_VECSMALL);
+  gel(f,2) = E2 = cgetg(i, t_VECSMALL);
+  while (--i >= 1) { P2[i] = P[i]; E2[i] = E[i]; }
+  return f;
+}
+
 /* Factor n and output [p,e] where
  * p, e are vecsmall with n = prod{p[i]^e[i]}. If all != 0:
  * if pU1 is not NULL, set *pU1 and *pU2 so that unfactored composite is
@@ -3223,19 +3262,18 @@ u_357_divides(ulong n)
 static GEN
 factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
 {
-  GEN f, E, E2, P, P2;
-  pari_sp av;
+  pari_sp av = avma;
   ulong ALL, p, lim = 0;
   long i, oldi = -1;
   forprime_t S;
+  GEN E, P;
 
   if (pU1) *pU1 = *pU2 = 1;
   if (n == 0) retmkvec2(mkvecsmall(0), mkvecsmall(1));
   if (n == 1) retmkvec2(cgetg(1,t_VECSMALL), cgetg(1,t_VECSMALL));
 
-  f = cgetg(3,t_VEC); av = avma;
   /* enough room to store <= 15 primes and exponents (OK if n < 2^64) */
-  (void)new_chunk(16*2);
+  (void)new_chunk(3 + 16*2);
   P = cgetg(16, t_VECSMALL); i = 1;
   E = cgetg(16, t_VECSMALL);
   ALL = all? all: ULONG_MAX; /* (!all || all > n) == ALL > n */
@@ -3272,7 +3310,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
       ulong sqrtn = usqrt(n);
       GEN Q;
       lim = minss(lim, sqrtn);
-      Q = u_oddprimedivisors_fast(n, lim);
+      Q = u_oddprimedivisors_fast(n, lim, 11);
       maxp = GP_DATA->factorlimit;
       if (Q)
       {
@@ -3359,11 +3397,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
     E = vecsmallpermute(E, perm);
   }
 END:
-  set_avma(av);
-  P2 = cgetg(i, t_VECSMALL); gel(f,1) = P2;
-  E2 = cgetg(i, t_VECSMALL); gel(f,2) = E2;
-  while (--i >= 1) { P2[i] = P[i]; E2[i] = E[i]; }
-  return f;
+  set_avma(av); return factoru_result(P, E, i);
 }
 GEN
 factoru(ulong n)
@@ -3392,6 +3426,7 @@ moebiusu(ulong n)
   pari_sp av;
   long s, v, test_prime;
   ulong p, lim;
+  int mask;
 
   switch(n)
   {
@@ -3402,6 +3437,13 @@ moebiusu(ulong n)
   /* n > 2 */
   p = n & 3; if (!p) return 0;
   if (p == 2) { n >>= 1; s = -1; } else s = 1;
+  mask = u_357_divides(n);
+  if (mask)
+  {
+    if (mask & 1) { n /= 3; s = -s; if (n % 3 == 0) return 0; }
+    if (mask & 2) { n /= 5; s = -s; if (n % 5 == 0) return 0; }
+    if (mask & 4) { n /= 7; s = -s; if (n % 7 == 0) return 0; }
+  }
   if (n <= maxprimelim() && PRIMES_search(n) > 0) return -s;
   av = avma; lim = tridiv_boundu(n);
   if (n >= 691 * 691)
@@ -3409,7 +3451,7 @@ moebiusu(ulong n)
     ulong sqrtn = usqrt(n);
     GEN P;
     lim = minss(sqrtn, lim);
-    P = u_oddprimedivisors_fast(n, lim);
+    P = u_oddprimedivisors_fast(n, lim, 11);
     if (P)
     {
       long i, nP = lg(P) - 1;
