@@ -359,31 +359,44 @@ sieve_chunk(pari_prime *known_primes, ulong s, byteptr data, ulong n)
   }
 }
 
+static long
+ZV_size(GEN x)
+{
+  long i, l = lg(x), s = l;
+  for (i = 1; i < l; i++) s += lgefint(gel(x,i));
+  return s;
+}
+/* avoid gcopy_avma so as to deallocate using free() in pari_close_primes */
+static GEN
+ZV_copy_alloc(GEN x)
+{
+  long i, l = lg(x), s = ZV_size(x);
+  GEN z = (GEN)pari_malloc(s * sizeof(long)), av = z + s;
+  for (i = 1; i < l; i++) gel(z,i) = av = icopy_avma(gel(x,i), (pari_sp)av);
+  z[0] = x[0] & (TYPBITS|LGBITS); return z;
+}
+
 static void
 set_prodprimes(void)
 {
-  pari_sp ltop = avma, av;
+  pari_sp av = avma;
   ulong b = 1UL << 8, M = minuu(maxprime(), GP_DATA->factorlimit);
-  GEN W, w, v = primes_interval_zv(3, M);
-  long s, u, j, jold, l = lg(v);
+  GEN W, v = primes_interval_zv(3, M);
+  long u, j, jold, l = lg(v);
 
   W = cgetg(64+1, t_VEC);
   for (jold = j = u = 1; j < l; j++)
     if (j==l-1 || uel(v,j) >= b)
     {
       long lw = (j == l-1? l: j) - jold + 1;
-      w = v+jold-1; w[0] = evaltyp(t_VECSMALL) | _evallg(lw);
-      gel(W,u++) = zv_prod_Z(w); /* p_jold ... p_{j-1} */
+      GEN w = v+jold-1;
+      w[0] = evaltyp(t_VECSMALL) | _evallg(lw);
+      gel(W,u++) = zv_prod_Z(w); /* p_jold ... p_{j-1}; last p ~ 2*first */
       jold = j; b *= 2;
       if (b > M) b = M; /* truncate last run */
     }
-  setlg(W, u);
   for (j = 2; j < u; j++) gel(W,j) = mulii(gel(W,j-1), gel(W,j));
-  s = gsizeword(W);
-  w = (GEN)pari_malloc(s * sizeof(long));
-  av = (pari_sp)(w + s);
-  _prodprimes = gcopy_avma(W, &av); /* optimimized gerepile */
-  set_avma(ltop);
+  setlg(W, u); _prodprimes = ZV_copy_alloc(W); set_avma(av);
 }
 
 static void
@@ -799,7 +812,11 @@ pari_init_primes(ulong maxprime)
 void
 pari_close_primes(void)
 {
-  if (pari_PRIMES) pari_free(pari_PRIMES);
+  if (pari_PRIMES)
+  {
+    pari_free(pari_PRIMES);
+    pari_free(_prodprimes);
+  }
   pari_free(pari_sieve_modular.sieve);
 }
 
