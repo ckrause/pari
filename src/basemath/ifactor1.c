@@ -3690,8 +3690,8 @@ core(GEN n)
 {
   pari_sp av = avma;
   GEN m, F;
-  ulong p;
-  long i, l, v, lim;
+  ulong p, lim;
+  long i, l, v;
 
   if ((F = check_arith_all(n, "core")))
   {
@@ -3730,7 +3730,7 @@ core(GEN n)
     if (lgefint(n) == 3)
     {
       sqrtn = usqrt(n[2]);
-      lim = minss(sqrtn, lim);
+      lim = minuu(sqrtn, lim);
     }
     P = Z_oddprimedivisors_fast(n, lim);
     if (P)
