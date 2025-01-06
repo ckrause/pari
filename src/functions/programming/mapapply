@@ -8,7 +8,7 @@ Doc: applies the closure $f$ to the image $y$ of $x$ by the map $M$
  and returns the evaluation $f(y)$. The closure $f$ is allowed to
  modify the components of $y$ in place. If $M$ is not defined at $x$, and
  the optional argument \kbd{u} (for \var{undefined}) is present and is
- a closure of arity $0$, return the evaluation $u()$.
+ a closure of arity $0$, returns the evaluation $u()$.
 
  To apply $f$ to \emph{all} entries (values) of $M$, use \kbd{apply}$(f, M)$
  instead. There are two main use-cases:
