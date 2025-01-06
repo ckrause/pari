@@ -68,6 +68,18 @@ Doc:
  \emph{ramified} otherwise. In the quaternion algebra case, the Hasse invariants
  can only be~$0$ or~$1/2$ and the set of ramified places has even cardinality.
 
+ \subsec{Types of algebra structures} %GPHELPskip
+
+ There are four types of algebra structures (cf \tet{algtype}):
+
+ \item Associative algebra over $\Q$ or $\F_p$ given by a multiplication table.
+
+ \item Central simple algebra over a number field given by a multiplication table.
+
+ \item Central simple algebra over a number field given as a cyclic algebra.
+
+ \item Division algebra over $\R$.
+
  \subsec{Orders in algebras} %GPHELPskip
 
  Let~$A$ be an algebra of finite dimension over~$\Q$. An \emph{order}
