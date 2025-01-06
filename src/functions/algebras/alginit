@@ -6,7 +6,7 @@ Help: alginit(B,C,{v},{flag=3}): initializes the central simple algebra
  defined by data B, C. Binary digits of the flag mean 1: compute a maximal
  order; 2: fully factor the discriminant instead of using a lazy factorisation.
 Doc: initializes the central simple algebra defined by data $B$, $C$ and
- variable $v$, as follows.
+ variable $v$, as follows. Internally, a central simple algebra over a number field can be represented either as a cyclic algebra or by a multiplication table (see \tet{algtype}).
 
  \item (quaternion algebra) $B$ is an \kbd{nf}
  structure attached to a number field $K$, $C = [a,b]$ is a vector
@@ -92,8 +92,8 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
   ? PR = idealprimedec(nf,5); #PR
   %2 = 2
   ? hi = [];
-  ? hf = [PR, [1/3,-1/3]];
-  ? A = alginit(nf, [3,hf,hi]);
+  ? hf = [1/3,-1/3];
+  ? A = alginit(nf, [3,[PR, hf],hi]);
   ? algsplittingfield(A).pol
   %6 = x^3 - 21*x + 7
  @eprog
@@ -125,11 +125,9 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
  and computes a maximal order for the algebra by default, which may require a
  lot of time. This can be controlled by $\fl$, whose binary digits mean:
 
-  \item $1$: compute a maximal order.
+  \item $1$: computes a maximal order.
 
-  \item $2$: fully factor the discriminants instead of using a lazy
- factorisation. If this digit of $\fl$ is set to~$0$, the local Hasse invariants
- are not computed.
+  \item $2$: if this bit is set to 0, uses a lazy factorization (the local Hasse invariants are not computed); if this bit is set to 1, fully factors the discriminants instead.
 
  If only a partial factorisation is known, the computed order is only guaranteed
  to be maximal at the known prime factors.
@@ -173,11 +171,11 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
 
   \item The absolute traces of the elements of the basis of ${\cal O}_{0}$.
 
-  \item If $A$ was constructed as a cyclic algebra~$(L/K,\sigma,b)$ of degree
+  \item If $A$ was constructed as a cyclic algebra~$(L/K,\sigma,b)$ (in particular defined by local Hasse invariants) of degree
  $d$, a \typ{VEC} $[\sigma,\sigma^{2},\dots,\sigma^{d-1}]$. The function
  \kbd{algaut} returns $\sigma$.
 
-  \item If $A$ was constructed as a cyclic algebra~$(L/K,\sigma,b)$, the
+  \item If $A$ was constructed as a cyclic algebra~$(L/K,\sigma,b)$ (in particular defined by local Hasse invariants), the
  element $b$, accessed with \kbd{algb}.
 
   \item If $A$ was constructed with its multiplication table $mt$ over $K$,
