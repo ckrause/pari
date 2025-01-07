@@ -2,7 +2,7 @@ Function: algtrace
 Section: algebras
 C-Name: algtrace
 Prototype: DGGD0,L,
-Help: algtrace({al},x,{abs=0}): (reduced) trace of x.
+Help: algtrace({al},x,{abs=0}): (reduced) trace of x in al (Hamilton quaternions if omitted).
 Doc: Given an element \var{x} in \var{al} (Hamilton quaternions if omitted),
  computes its trace. If \var{al} is a table algebra output by \tet{algtableinit}
  or if $abs=1$, returns the absolute trace of \var{x}, which is an element of
