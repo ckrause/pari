@@ -2,7 +2,7 @@ Function: algmodprinit
 Section: algebras
 C-Name: algmodprinit
 Prototype: GGDn
-Help: algmodprinit(al,pr,{v}): initialise a reduction mod pr map.
+Help: algmodprinit(al,pr,{v}): initialises a reduction mod pr map.
 Doc: Consider a central simple algebra \var{al} output by \tet{alginit} and a
  \kbd{prid} \var{pr} representing a prime ideal $\goth{p}$ at which the order
  ${\cal O}$ stored in \var{al} is maximal (not checked; by default, this is true
