@@ -3,7 +3,7 @@ Section: algebras
 C-Name: algquattobasis
 Prototype: GG
 Help: algquattobasis(al,x): transforms the quaternion x expressed on the basis
- (1,i,j,ij) to a column vector on the integral basis of al.
+ (1,i,j,ij) to a column vector on the integral basis of the quaternion algebra al.
 Doc: Given an element \var{x} in the quaternion algebra \var{al} output by
  \tet{alginit}, expressed on the basis~$(1,i,j,ij)$, transforms it to a column
  vector on the integral basis of \var{al}. This function is provided for
