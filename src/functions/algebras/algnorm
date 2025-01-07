@@ -2,7 +2,7 @@ Function: algnorm
 Section: algebras
 C-Name: algnorm
 Prototype: DGGD0,L,
-Help: algnorm({al},x,{abs=0}): (reduced) norm of x.
+Help: algnorm({al},x,{abs=0}): (reduced) norm of x in al (Hamilton quaternions if omitted).
 Doc: Given an element \var{x} in \var{al} (Hamilton quaternions if omitted),
  computes its norm. If \var{al} is a table algebra output by \tet{algtableinit}
  or if $abs=1$, returns the absolute norm of \var{x}, which is an element of
