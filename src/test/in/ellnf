@@ -229,6 +229,9 @@ A1 = Emin.area;
 A2 = apply(x->abs(x)^2,u) * E.area;
 exponent(vector(3,i,(A1[i]-A2[i])/A2[i]))
 
+E=ellinit([1,a+1,a+1,18606575967166652*a-153729155890347509,3849964978395963953436488*a-31808746938748928238787861],nfinit(a^2-a-60));
+ellrootno(E)
+
 e(D,f,p)=
 {
  my(v=valuation(f,p),k=kronecker(D,p));

@@ -6114,11 +6114,11 @@ ellnf2isog(GEN E, GEN z)
 }
 
 static GEN
-ellnf_reladelicvolume(GEN E, GEN P, GEN z, long prec)
+ellnf_reladelicvolume(GEN E, GEN P, GEN C, GEN z, long prec)
 {
   pari_sp av = avma;
   GEN nf = ellnf_get_nf(E);
-  GEN rnf = rnfinit0(nf, P, 1);
+  GEN rnf = rnfinit0(nf, mkvec2(P, C), 1);
   GEN Et = ellrnfup(rnf, E, prec);
   GEN E2 = ellnf2isog(Et, rnfeltreltoabs(rnf, z));
   GEN c1 = ellnf_adelicvolume(Et, prec), c2 = ellnf_adelicvolume(E2, prec);
@@ -6148,9 +6148,10 @@ ellnf_rootno_global(GEN E)
     v = rootnovalp(divrr(cK,cKt), 2, prec);
   } else
   {
+    GEN C = ellnf_D_primes(E);
     GEN D = deg2pol_shallow(gen_1, gen_0, gneg(ell_get_disc(E)), var);
     GEN P = RgX_divs(RgX_rescale(ec_bmodel(E, var), utoi(4)), 4);
-    GEN c = ellnf_reladelicvolume(E, P, gmul2n(pol_x(var),-2), prec);
+    GEN c = ellnf_reladelicvolume(E, P, C, gmul2n(pol_x(var),-2), prec);
     GEN cL = gel(c,1), cLt = gel(c,2);
     GEN F = nfroots(nf, D);
     if (lg(F)>1)
@@ -6159,9 +6160,9 @@ ellnf_rootno_global(GEN E)
     {
       GEN cK = ellnf_adelicvolume(E, prec);
       GEN cp = nfcompositum(nf, P, D, 3);
-      GEN cc = ellnf_reladelicvolume(E, gel(cp,1), gmul2n(gel(cp,2),-2), prec);
+      GEN cc = ellnf_reladelicvolume(E, gel(cp,1), C, gmul2n(gel(cp,2),-2), prec);
       GEN cF = gel(cc,1), cFt = gel(cc,2);
-      GEN rnf = rnfinit0(nf,D,1);
+      GEN rnf = rnfinit0(nf,mkvec2(D,C),1);
       GEN Et = ellrnfup(rnf, E, prec);
       GEN cKv = ellnf_adelicvolume(Et, prec);
       long v2 = rootnovalp(divrr(gmul(cL,cF),gmul(cLt,cFt)), 2, prec);
