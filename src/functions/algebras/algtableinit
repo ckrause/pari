@@ -10,7 +10,7 @@ Doc: initializes the associative algebra over $K = \Q$ ($p$ omitted) or $\F_{p}$
  $(e_{1} = 1, e_{2}, \dots, e_{n})$; the table is given as a \typ{VEC} of $n$ matrices in
  $M_{n}(K)$, giving the left multiplication by the basis elements $e_{i}$, in the
  given basis.
- Assumes that $e_{1}=1$, that $K e_{1}\oplus \dots\oplus K e_{n}]$ describes an
+ Assumes that $e_{1}=1$, that $K e_{1}\oplus \dots\oplus K e_{n}$ describes an
  associative algebra over $K$, and in the case $K=\Q$ that the multiplication
  table is integral. If the algebra is already known to be central
  and simple, then the case $K = \F_{p}$ is useless, and one should use
