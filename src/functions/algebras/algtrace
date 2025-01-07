@@ -26,7 +26,7 @@ Doc: Given an element \var{x} in \var{al} (Hamilton quaternions if omitted),
  %9 = 8
  ? algtrace(,[1.,2,3,4]~) \\ Hamilton quaternions
  %10 = 2.0000000000
- ? algtrace(,[1.,2,3,4]~,0)
+ ? algtrace(,[1.,2,3,4]~,1)
  %11 = 4.0000000000
  @eprog
 
