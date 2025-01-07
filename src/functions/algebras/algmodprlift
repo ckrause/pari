@@ -5,7 +5,7 @@ Prototype: GGG
 Help: algmodprlift(al,x,modP): a preimage of x under the reduction map stored in
  modP, cf algmodprinit.
 Doc: Given a central simple algebra \var{al} output by \tet{alginit}, a
- matrix~\var{x} and the output~\var{modP} of \tet{algmodprinit}, compute a
+ matrix~\var{x} and the output~\var{modP} of \tet{algmodprinit}, computes a
  preimage of~\var{x} under the corresponding map.
  \bprog
  ? nf = nfinit(y^2+2);
