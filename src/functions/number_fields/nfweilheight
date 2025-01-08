@@ -2,11 +2,11 @@ Function: nfweilheight
 Section: number_fields
 C-Name: nfweilheight
 Prototype: GGp
-Help: nfweilheight(nf, v): return the absolute Weil height of the vector v seen
+Help: nfweilheight(nf, v): returns the absolute Weil height of the vector v seen
  as an element of the projective space over the number field nf given by nfinit.
 Doc: let \var{nf} be attached to a number field $K$, let $v$ be a vector of
  elements of $K$, not all of them $0$, seen as element of the projective
- space of dimension \kbd{\#v - 1}. Return the absolute logarithmic Weil height
+ space of dimension \kbd{\#v - 1}. Returns the absolute logarithmic Weil height
  of that element, which does not depend on the number field used to compute it.
 
  When the entries of $v$ are rational, the height is
