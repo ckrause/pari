@@ -8,7 +8,7 @@ Help: bestapprPade(x,{B},{Q}): returns a rational function approximation to x.
 Doc: using variants of the extended Euclidean algorithm (Pad\'{e}
  approximants), returns a rational
  function approximation $a/b$ to $x$, whose denominator is limited
- by $B$, if present. If $B$ is omitted, return the best approximation
+ by $B$, if present. If $B$ is omitted, returns the best approximation
  affordable given the input accuracy; if you are looking for true rational
  functions, presumably approximated to sufficient accuracy, you should first
  try that option. Otherwise, $B$ must be a nonnegative real
@@ -38,7 +38,7 @@ Doc: using variants of the extended Euclidean algorithm (Pad\'{e}
  \bprog
  ? T = 1 + t + t^2 + t^3 + t^4 + t^5 + t^6 + O(t^7); \\ mod t^7
  ? bestapprPade(T)
- %1 = 1/(-t + 1)
+ %1 = -1/(t - 1)
  @eprog
  \item If $x$ is a \typ{SER} and both $B$ and $Q$ are nonnegative,
    returns a rational function approximation $a/b$
