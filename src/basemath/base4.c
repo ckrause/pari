@@ -2905,6 +2905,7 @@ ZV_cba(GEN v)
 GEN
 Z_ppo(GEN x, GEN f)
 {
+  (void)Z_pvalrem(x, f, &x);
   for (;;)
   {
     f = gcdii(x, f); if (is_pm1(f)) break;

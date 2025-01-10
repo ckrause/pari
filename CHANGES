@@ -1,9 +1,10 @@
 Bug numbers refer to the BTS at http://pari.math.u-bordeaux.fr/Bugs/
 Done for version 2.18.1 (released 0?/01/2026):
   Fixed
+     1- reduce memory use in Z_ppo
 
   Added
-     3- [libpari] prodprimes, rodprimeslim
+     3- [libpari] prodprimes, prodprimeslim
 
   Changed
 
