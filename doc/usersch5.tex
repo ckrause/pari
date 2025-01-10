@@ -1073,7 +1073,10 @@ the prime table. I.e., $p_N = \kbd{maxprime()}$.
 
 \fun{GEN}{prodprimes}{void} a vector $T$ where \kbd{T[i]} is the product of the
 primes in our prime table that are smaller than $2^{7+i}$. Used to quickly
-detect small prime divisors of large integers, using a few gcd's.
+detect small prime divisors of large integers, using gcd's.
+
+\fun{GEN}{prodprimeslim}{void} a vector $L$ where \kbd{L[i]} is the largest
+prime less that $2^{7+i}$.
 
 \fun{ulong}{maxprimelim}{void} the argument used for the last
 \kbd{initprimetable}

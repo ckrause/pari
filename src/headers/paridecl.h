@@ -3673,6 +3673,7 @@ void    maxprime_check(ulong c);
 ulong   maxprimelim(void);
 void    pari_init_primes(ulong maxprime);
 GEN     prodprimes(void);
+GEN     prodprimeslim(void);
 ulong   u_forprime_next(forprime_t *T);
 int     u_forprime_init(forprime_t *T, ulong a, ulong b);
 void    u_forprime_restrict(forprime_t *T, ulong c);

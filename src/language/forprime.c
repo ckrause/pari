@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 /**********************************************************************/
 
 static ulong _maxprimelim = 0;
-static GEN _prodprimes;
+static GEN _prodprimes, _prodprimeslim;
 typedef unsigned char *byteptr;
 
 /* Build/Rebuild table of prime differences. The actual work is done by the
@@ -385,18 +385,27 @@ set_prodprimes(void)
   long u, j, jold, l = lg(v);
 
   W = cgetg(64+1, t_VEC);
+  M = v[l-1]; /* = precprime(M) */
+  _prodprimeslim = cgetalloc(64+1, t_VECSMALL);
+  if (b > M) b = M;
   for (jold = j = u = 1; j < l; j++)
-    if (j==l-1 || uel(v,j) >= b)
+    if (uel(v,j) >= b) /* if j = l-1, then b = M = v[j] */
     {
       long lw = (j == l-1? l: j) - jold + 1;
       GEN w = v+jold-1;
       w[0] = evaltyp(t_VECSMALL) | _evallg(lw);
-      gel(W,u++) = zv_prod_Z(w); /* p_jold ... p_{j-1}; last p ~ 2*first */
+      _prodprimeslim[u] = w[lw - 1];
+      /* product of primes from
+       *   p_jold = 3 if first entry, else nextprime(_prodprime_lim[u - 1] + 1)
+       * to
+       *   p_{j-1} = _prodprimeslim[u] = precprime(M or 2^{u+7}) */
+      gel(W,u++) = zv_prod_Z(w);
       jold = j; b *= 2;
       if (b > M) b = M; /* truncate last run */
     }
   for (j = 2; j < u; j++) gel(W,j) = mulii(gel(W,j-1), gel(W,j));
-  setlg(W, u); _prodprimes = ZV_copy_alloc(W); set_avma(av);
+  setlg(W, u); _prodprimes = ZV_copy_alloc(W);
+  setlg(_prodprimeslim, u); set_avma(av);
 }
 
 static void
@@ -468,6 +477,8 @@ ulong
 maxprimeN(void) { return pari_PRIMES? pari_PRIMES[0]: 0; }
 GEN
 prodprimes(void) { return pari_PRIMES? _prodprimes: NULL; }
+GEN
+prodprimeslim(void) { return pari_PRIMES? _prodprimeslim: NULL; }
 void
 maxprime_check(ulong c) { if (maxprime() < c) pari_err_MAXPRIME(c); }
 
@@ -816,6 +827,7 @@ pari_close_primes(void)
   {
     pari_free(pari_PRIMES);
     pari_free(_prodprimes);
+    pari_free(_prodprimeslim);
   }
   pari_free(pari_sieve_modular.sieve);
 }
