@@ -134,6 +134,20 @@ Doc: initializes the central simple algebra defined by data $B$, $C$ and
  If only a partial factorisation is known, the computed order is only guaranteed
  to be maximal at the known prime factors.
 
+ Recall that we defined, for each central simple algebra, a natural order (cf.
+ \secref{se:algebrasdefs}):
+
+ \item For a cyclic algebra~$(L/K,\sigma,b) = \bigoplus_{i=0}^{d-1}x^{i}L$, the
+ natural order is~$\bigoplus_{i=0}^{d-1}x^{i}\Z_{L}$.
+
+ \item For a CSA given by a multiplication table on a
+ $K$-basis~$(e_i)_i$, the natural order is~$\bigoplus_{i=0}^{d^{2}-1}\Z_{K}
+ e_{i}$.
+
+ In particular, in a quaternion algebra~$(a,b)_K = K + Ki + Kj + Kij$, the
+ natural order always contains~$\Z_{K} + \Z_{K}i + \Z_{K}j + \Z_{K}ij$ but may
+ be larger.
+
  The pari object representing such an algebra $A$ is a \typ{VEC} with the
  following data:
 

@@ -7,7 +7,7 @@ Doc:
  This section collects functions related to associative algebras and central
  simple algebras (CSA) over number fields.
 
- \subsec{Algebra definitions} %GPHELPskip
+ \subsec{Algebra definitions} \label{se:algebrasdefs} %GPHELPskip
 
  Let $A$ be a finite-dimensional unital associative algebra over a field $K$.
  The algebra $A$ is \emph{central} if its center is $K$ and it is
