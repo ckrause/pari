@@ -1104,7 +1104,7 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: fpn(p,n) ===> ffinit(p,n)
 
-ffinit(p,n,{v='x}): monic irreducible polynomial of degree n over F_p[v].
+ffinit(p,n,{v='x}): monic irreducible polynomial of degree n in F_p[v].
 
 
   ***   at top-level: galois()
@@ -4499,4 +4499,4 @@ New syntax: texprint(x) ===> printtex(x)
 printtex({str}*): outputs its string arguments in TeX format.
 
 
-Total time spent: 14
+Total time spent: 17
