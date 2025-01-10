@@ -2,8 +2,8 @@ Function: algisquatalg
 Section: algebras
 C-Name: algisquatalg
 Prototype: G
-Help: algisquatalg(al): returns [a,b] if al is the quaternion algebra (a,b)_F,
- and 0 otherwise.
+Help: algisquatalg(al): returns [a,b] if al was constructed as the quaternion
+ algebra (a,b)_F, and 0 otherwise.
 Doc: Given a central simple algebra \var{al} over a field $F$, output by
  \tet{alginit}, returns the \typ{VEC} $[a,b]$ if \var{al} was constructed as a
  quaternion algebra~$(a,b)_F$, and~$0$ otherwise.
