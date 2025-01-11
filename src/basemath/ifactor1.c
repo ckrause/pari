@@ -3148,91 +3148,99 @@ static GEN factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2);
 static GEN ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU);
 
 /* simplified version of factoru_sign, to be called on squarefree n whose
- * prime divisors are >= minp. Find those which are <= lim.
- * Assume 1 <= minp <= lim */
+ * prime divisors are in [minp, maxp]. In practice called with
+ * maxp <= maxprimelim() */
 static GEN
-factoru_primes(ulong n, ulong lim, ulong minp)
+factoru_primes(ulong n, ulong minp, ulong maxp)
 {
   forprime_t S;
-  ulong p, NMAX;
+  ulong p;
   long i;
   GEN P;
 
   if (n < minp) return NULL;
-  NMAX = maxprimelim();
-  if (n <= NMAX && PRIMES_search(n) > 0) return mkvecsmall(n);
+  if (n <= maxp && PRIMES_search(n) > 0) return mkvecsmall(n);
   P = cgetg(16, t_VECSMALL); i = 1;
-  u_forprime_init(&S, minp, lim);
+  u_forprime_init(&S, minp, maxp);
   while ( (p = u_forprime_next_fast(&S)) )
   {
     ulong q = n / p;
     if (n % p == 0)
     {
       P[i++] = p; n = q;
-      if (n <= NMAX && PRIMES_search(n) > 0)
-      { /* n is now prime */
-        if (n <= lim) P[i++] = n;
-        break;
-      }
+      if (q <= p || (n <= maxp && PRIMES_search(n) > 0)) { P[i++] = n; break; }
     }
-    else if (q <= p)
-    { /* n <= p^2: n is now prime */
-      if (n <= lim) P[i++] = n;
-      break;
-    }
+    else if (q <= p) { P[i++] = n; break; } /* n <= p^2: n is now prime */
   }
+  if (i == 1) return NULL;
+  setlg(P, i); return P;
+}
+static GEN
+Z_factor_primes(GEN N, ulong minp, ulong maxp)
+{
+  forprime_t S;
+  ulong p;
+  long i, n = 0;
+  GEN P;
+  if (lgefint(N) == 3) return factoru_primes(uel(N,2), minp, maxp);
+  u_forprime_init(&S, minp, maxp);
+  P = cgetg(expi(N) + 1, t_VECSMALL); i = 1;
+  while ( (p = u_forprime_next_fast(&S)) )
+  {
+    int stop;
+    long v = Z_lvalrem_stop(&N, p, &stop);
+    if (v) P[i++] = p;
+    if (stop)
+    {
+      if (!equali1(N)) P[i++] = uel(N,2);
+      goto END;
+    }
+    if (v && lgefint(N) == 3) { n = uel(N,2); break; }
+  }
+  if (n) while ( (p = u_forprime_next_fast(&S)) )
+  {
+    ulong q = n / p;
+    if (n % p == 0)
+    {
+      P[i++] = p; n = q;
+      if (q <= p || (n <= maxp && PRIMES_search(n) > 0)) { P[i++] = n; break; }
+    }
+    else if (q <= p) { P[i++] = n; break; } /* n <= p^2: n is now prime */
+  }
+END:
+  if (i == 1) return NULL;
   setlg(P, i); return P;
 }
 
-/* N != 0. Odd prime divisors less than min(lim, factorlimit) [WARNING!];
- * NULL if empty. Assume lim >= 128 and primes dividing n are >= minp.
- * Better for efficiency if n >= lim^2. Not GC-clean. */
-static GEN
-u_oddprimedivisors_fast(ulong N, ulong lim, ulong minp)
+/* N != 0. Product of odd prime divisors less than
+ *   min(*pLIM, factorlimit) [WARNING!];
+ * with lim <= *pLIM < 2*lim and *pLIM prime
+ * Assume lim >= 128. Better for efficiency if N >= lim^2. */
+static ulong
+u_oddprimedivisors_gcd(ulong N, ulong lim, ulong *pLIM)
 {
-  GEN PR;
-  long b;
-  ulong Nr;
-  if (lim < 128) return NULL; /* decline */
-  PR = prodprimes();
-  b = minss(lg(PR)-1, expu(lim)-6); /* expu(lim) >= 7 */
-  Nr = ugcd(N, umodiu(gel(PR,b), N));
-  return factoru_primes(Nr, lim, minp);
+  GEN PR = prodprimes(), LIM = prodprimeslim();
+  long b = minss(lg(PR)-1, expu(lim)-6);
+  /* 2^{b+6} <= lim < 2^{b+7}, b >= 1 */
+  *pLIM = LIM[b]; return ugcd(N, umodiu(gel(PR,b), N));
 }
 /* not GC-clean */
 static GEN
+Z_oddprimedivisors_gcd(GEN N, ulong lim, ulong *pLIM)
+{
+  GEN PR = prodprimes(), LIM = prodprimeslim();
+  long b = minss(lg(PR)-1, expu(lim)-6);
+  *pLIM = LIM[b]; return gcdii(N, gel(PR,b));
+}
+
+/* Assume lim >= 128 and N odd. */
+static GEN
 Z_oddprimedivisors_fast(GEN N, ulong lim)
 {
-  GEN F, P, PR, Nr;
   pari_sp av = avma;
-  long i, n, b;
-  if (lim < 128) return NULL; /* decline */
-  PR = prodprimes();
-  b = minss(lg(PR)-1, expu(lim)-6); /* expu(lim) >= 7 */
-  Nr = gcdii(N, gel(PR,b));
-  if (lgefint(Nr) == 3)
-  {
-    ulong uNr = uel(Nr,2);
-    if (uNr == 1) return gc_NULL(av);
-    F = factoru_sign(uNr, lim + 1, 1 + 2 + 16, NULL, NULL);
-    P = gel(F,1); n = lg(P) - 1; /* > 0 */
-    if (uel(P, n) > lim)
-    {
-      if (n == 1) return gc_NULL(av);
-      setlg(P, n);
-    }
-    return P;
-  }
-  F = ifactor_sign(Nr, lim + 1, 1 + 2 + 16, 1, NULL);
-  P = gel(F,1); n = lg(P) - 1; /* > 0 */
-  if (cmpiu(gel(P, n), lim) > 0)
-  {
-    if (n == 1) return gc_NULL(av);
-    setlg(P, n); n--;
-  }
-  settyp(P, t_VECSMALL); /* convert to t_VECSMALL in place */
-  for (i = 1; i <= n; i++) uel(P,i) = gel(P,i)[2];
-  return P;
+  GEN Nr = Z_oddprimedivisors_gcd(N, lim, &lim);
+  GEN P = Z_factor_primes(Nr, 3, lim);
+  return P? P: gc_NULL(av);
 }
 /* return mask with bit 0, 1, 2 set if respectively 3, 5, 7 divide n */
 static int
@@ -3305,12 +3313,13 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
     maxp = maxprime();
     if (n <= maxp && PRIMES_search(n) > 0) { P[i] = n; E[i] = 1; i++; goto END; }
     lim = all? all-1: tridiv_boundu(n);
-    if (!(hint & 16) && lim >= 128 && n >= 691 * 691) /* expu(lim) >= 7 */
+    if (lim >= 128 && n >= 691 * 691) /* expu(lim) >= 7 */
     { /* fast trial division */
-      ulong sqrtn = usqrt(n);
+      ulong gcdlim, gcd, sqrtn = usqrt(n);
       GEN Q;
       lim = minss(lim, sqrtn);
-      Q = u_oddprimedivisors_fast(n, lim, 11);
+      gcd = u_oddprimedivisors_gcd(n, lim, &gcdlim);
+      Q = factoru_primes(gcd, 11, gcdlim);
       maxp = GP_DATA->factorlimit;
       if (Q)
       {
@@ -3319,6 +3328,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
         for (j = 1; j < l; j++)
         {
           ulong p = uel(Q,j);
+          if (all && p >= all) { stop = 1; break; }
           E[i] = u_lvalrem_stop(&n, p, &stop); /* > 0 */
           P[i] = p; i++;
         }
@@ -3448,22 +3458,19 @@ moebiusu(ulong n)
   av = avma; lim = tridiv_boundu(n);
   if (n >= 691 * 691)
   {
-    ulong sqrtn = usqrt(n);
+    ulong gcdlim, gcd, sqrtn = usqrt(n);
     GEN P;
     lim = minss(sqrtn, lim);
-    P = u_oddprimedivisors_fast(n, lim, 11);
-    if (P)
+    gcd = u_oddprimedivisors_gcd(n, lim, &gcdlim);
+    if (gcd != 1)
     {
-      long i, nP = lg(P) - 1;
-      int stop = 0;
-      for (i = 1; i <= nP; i++)
-        if (u_lvalrem_stop(&n, uel(P,i), &stop) > 1) return gc_long(av, 0);
-      if (odd(nP)) s = -s;
-      if (n == 1) return gc_long(av, s);
-      if (stop) return gc_long(av, -s);
+      n /= gcd;
+      if (ugcd(gcd, n) != 1) return 0;
     }
-    else if (lim == sqrtn && lim <= GP_DATA->factorlimit)
-      return gc_long(av, -s); /* n prime */
+    P = factoru_primes(gcd, 11, gcdlim);
+    if (P && odd(lg(P) - 1)) s = -s;
+    if (n == 1) return gc_long(av, s);
+    if (lim == sqrtn && lim <= GP_DATA->factorlimit) return gc_long(av, -s);
     test_prime = 1;
   }
   else
@@ -3505,8 +3512,9 @@ moebius(GEN n)
 {
   pari_sp av = avma;
   GEN F;
-  ulong p, lim;
-  long i, l, s, v;
+  ulong p, lim, n357;
+  long i, l, s, v, copy;
+  int mask;
 
   if ((F = check_arith_non0(n,"moebius")))
   {
@@ -3520,33 +3528,43 @@ moebius(GEN n)
   }
   if (lgefint(n) == 3) return moebiusu(uel(n,2));
   p = mod4(n); if (!p) return 0;
+  copy = s = 1;
   if (p == 2)
   {
     n = shifti(n, -1);
-    if (lgefint(n) == 3) return - moebiusu(uel(n,2));
-    s = -1;
+    copy = 0; s = -1;
   }
-  else
+  n357 = umodiu(n, 9 * 25 * 49);
+  mask = u_357_divides(n357);
+  if (mask)
   {
-    n = icopy(n);
-    s = 1;
+    ulong m = 1;
+    if (mask & 1) { m = 3;  s = -s; }
+    if (mask & 2) { m *= 5; s = -s; }
+    if (mask & 4) { m *= 7; s = -s; }
+    if (u_357_divides(n357 / m)) return gc_long(av, 0);
+    copy = 0; n = diviuexact(n, m);
   }
+  if (copy) n = icopy(n);
+  else if (lgefint(n) == 3) return gc_long(av, s * moebiusu(uel(n,2)));
   setabssign(n); lim = tridiv_bound(n);
   if (lim >= 128)
   {
-    GEN P = Z_oddprimedivisors_fast(n, lim);
-    if (P)
+    ulong gcdlim;
+    GEN gcd = Z_oddprimedivisors_gcd(n, lim, &gcdlim);
+    if (!equali1(gcd))
     {
-      long i, nP = lg(P) - 1;
-      for (i = 1; i <= nP; i++)
+      GEN P;
+      n = diviiexact(n, gcd);
+      if (!equali1(gcdii(gcd, n))) return gc_long(av, 0);
+      P = Z_factor_primes(gcd, 11, gcdlim);
+      if (P)
       {
-        p = uel(P, i); n = diviuexact(n, p);
-        if (dvdiu(n, p)) return gc_long(av, 0);
+        if (odd(lg(P) - 1)) s = -s;
+        if (is_pm1(n)) return gc_long(av, s);
+        if (lim <= GP_DATA->factorlimit &&
+            cmpii(sqru(lim), n) >= 0) return gc_long(av, -s); /* n prime */
       }
-      if (odd(nP)) s = -s;
-      if (is_pm1(n)) return gc_long(av, s);
-      if (lim <= GP_DATA->factorlimit &&
-          cmpii(sqru(lim), n) >= 0) return gc_long(av, -s); /* n prime */
     }
   }
   else
@@ -3561,8 +3579,8 @@ moebius(GEN n)
       {
         if (v > 1) return gc_long(av,0);
         s = -s;
-        if (stop) return gc_long(av, is_pm1(n)? s: -s);
       }
+      if (stop) return gc_long(av, is_pm1(n)? s: -s);
     }
   }
   l = lg(primetab);
@@ -3587,8 +3605,9 @@ ispowerful(GEN n)
 {
   pari_sp av = avma;
   GEN F;
-  ulong p, lim;
+  ulong p, lim, n357;
   long i, l, v;
+  int mask, copy = 1;
 
   if ((F = check_arith_all(n, "ispowerful")))
   {
@@ -3603,35 +3622,44 @@ ispowerful(GEN n)
     return 1;
   }
   if (!signe(n)) return 1;
-
   if (mod4(n) == 2) return 0;
-  n = shifti(n, -vali(n));
+  n357 = umodiu(n, 9 * 25 * 49);
+  mask = u_357_divides(n357);
+  if (mask)
+  {
+    if ((mask & 1) && n357 % 9)  return 0;
+    if ((mask & 2) && n357 % 25) return 0;
+    if ((mask & 4) && n357 % 49) return 0;
+    if (mask & 1) (void)Z_lvalrem(diviuexact(n,9),  3, &n);
+    if (mask & 2) (void)Z_lvalrem(diviuexact(n,25), 5, &n);
+    if (mask & 4) (void)Z_lvalrem(diviuexact(n,49), 7, &n);
+    copy = 0;
+  }
+  if (!mod2(n)) { n = shifti(n, -vali(n)); copy = 0; }
   if (is_pm1(n)) return gc_long(av, 1);
+  if (copy) n = icopy(n);
   setabssign(n); lim = tridiv_bound(n);
   if (cmpiu(n, 691 * 691) >= 0)
   {
-    ulong sqrtn = 0;
-    GEN P;
+    ulong gcdlim, sqrtn = 0;
+    GEN gcd;
     if (lgefint(n) == 3)
     {
       sqrtn = usqrt(n[2]);
       lim = minss(sqrtn, lim);
     }
-    P = Z_oddprimedivisors_fast(n, lim);
-    if (P)
+    gcd = Z_oddprimedivisors_gcd(n, lim, &gcdlim);
+    if (!equali1(gcd))
     {
-      long i, nP = lg(P) - 1;
-      int stop = 0;
-      for (i = 1; i <= nP; i++)
-      {
-        v = Z_lvalrem_stop(&n, uel(P,i), &stop);
-        if (v == 1) return gc_long(av, 0);
-      }
-      if (is_pm1(n)) return gc_long(av, 1);
-      if (stop) return gc_long(av, 0); /* prime */
+      GEN r;
+      n = diviiexact(n, gcd);
+      n = dvmdii(n, gcd, &r);
+      if (r != gen_0) return gc_long(av, 0);
+      n = Z_ppo(n, gcd);
     }
-    else if (lim == sqrtn && lim <= GP_DATA->factorlimit)
-      return gc_long(av, 0); /* prime */
+    /* prime divisors > gcdlim */
+    if (equali1(n)) return gc_long(av, 1);
+    if (sqrtn && gcdlim >= sqrtn) return gc_long(av, 0); /* prime */
   }
   else
   {
@@ -3641,11 +3669,8 @@ ispowerful(GEN n)
     {
       int stop;
       v = Z_lvalrem_stop(&n, p, &stop);
-      if (v)
-      {
-        if (v == 1) return gc_long(av,0);
-        if (stop) return gc_long(av, is_pm1(n));
-      }
+      if (v == 1) return gc_long(av,0);
+      if (stop) return gc_long(av, is_pm1(n)); /* n > 1 is now prime */
     }
   }
   l = lg(primetab);
@@ -3685,13 +3710,43 @@ coreu(ulong n)
   if (n == 0) return 0;
   av = avma; return gc_ulong(av, coreu_fact(factoru(n)));
 }
+
+/* d = a squarefree divisor of n. Return n / (n, d^oo)
+ * and set *pcore = \prod_{p | (n,d), v_p(n) odd} p
+ * Simpified form of Z_cba. */
+static GEN
+core_init_from_squarefree(GEN n, GEN d, GEN *pcore)
+{
+  GEN c = gen_1;
+  long v;
+
+  if (equali1(d)) { *pcore = c; return n; }
+  v = Z_pvalrem(n, d, &n);
+  for (;; v++)
+  { /* d^v divides "original n" */
+    GEN newd = gcdii(n, d); /* newd^{v+1} divides original n */
+    if (!equalii(d, newd))
+    { /* new d loses primes dividing original n to exact power v */
+      if (odd(v)) c = mulii(c, diviiexact(d, newd)); /* lost primes */
+      d = newd; if (equali1(d)) break;
+    }
+    if (equalii(d, n))
+    {
+      if (odd(v + 1)) c = mulii(c, d);
+      *pcore = c; return gen_1;
+    }
+    n = diviiexact(n, d);
+  }
+  *pcore = c; return n;
+}
+
 GEN
 core(GEN n)
 {
   pari_sp av = avma;
   GEN m, F;
   ulong p, lim;
-  long i, l, v;
+  long i, l, v, s;
 
   if ((F = check_arith_all(n, "core")))
   {
@@ -3705,15 +3760,9 @@ core(GEN n)
       if (mpodd(gel(E,i))) gel(x,j++) = gel(P,i);
     setlg(x, j); return ZV_prod(x);
   }
-  switch(lgefint(n))
-  {
-    case 2: return gen_0;
-    case 3:
-      p = coreu(uel(n,2));
-      return signe(n) > 0? utoipos(p): utoineg(p);
-  }
-
-  m = signe(n) < 0? gen_m1: gen_1;
+  s = signe(n);
+  if (!s) return gen_0;
+  m = s < 0? gen_m1: gen_1;
   v = vali(n);
   if (v)
   {
@@ -3721,31 +3770,24 @@ core(GEN n)
     if (odd(v)) m = shifti(m, 1);
   }
   else
-    n = absi_shallow(n);
+    n = absi(n);
   lim = tridiv_bound(n);
   if (cmpiu(n, 691 * 691) >= 0)
   {
-    ulong sqrtn = 0;
-    GEN P;
+    ulong gcdlim, sqrtn = 0;
+    GEN gcd, mpart;
     if (lgefint(n) == 3)
     {
       sqrtn = usqrt(n[2]);
       lim = minuu(sqrtn, lim);
     }
-    P = Z_oddprimedivisors_fast(n, lim);
-    if (P)
-    {
-      long i, nP = lg(P) - 1;
-      int stop = 0;
-      for (i = 1; i <= nP; i++)
-      {
-        v = Z_lvalrem_stop(&n, uel(P,i), &stop);
-        if (odd(v)) m = muliu(m, uel(P,i));
-      }
-      if (is_pm1(n)) return gerepileuptoint(av, m);
-      if (stop) return gerepileuptoint(av, mulii(m, n));
-    }
-    else if (lim == sqrtn && lim <= GP_DATA->factorlimit)
+    gcd = Z_oddprimedivisors_gcd(n, lim, &gcdlim);
+    n = core_init_from_squarefree(n, gcd, &mpart);
+    m = mulii(m, mpart);
+    if (equali1(n)) return gerepileuptoint(av, m);
+    /* n has no prime divisor <= gcdlim */
+    if ((lim == sqrtn && lim <= GP_DATA->factorlimit)
+        || cmpii(sqru(gcdlim + 1), n) > 0)
       return gerepileuptoint(av, mulii(m, n)); /* prime */
   }
   else
@@ -3756,14 +3798,11 @@ core(GEN n)
     {
       int stop;
       v = Z_lvalrem_stop(&n, p, &stop);
-      if (v)
-      {
-        if (v & 1) m = muliu(m, p);
-        if (stop)
-        {
-          if (!is_pm1(n)) m = mulii(m, n);
-          return gerepileuptoint(av, m);
-        }
+      if (v & 1) m = muliu(m, p);
+      if (stop)
+      { /* n > 1 is now prime */
+        if (!is_pm1(n)) m = mulii(m, n);
+        return gerepileuptoint(av, m);
       }
     }
   }
@@ -3814,19 +3853,15 @@ Z_issmooth_fact(GEN m, ulong lim)
   u_forprime_init(&S, 2, lim);
   while ((p = u_forprime_next_fast(&S)))
   {
-    long v;
     int stop;
-    if ((v = Z_lvalrem_stop(&m, p, &stop)))
+    long v = Z_lvalrem_stop(&m, p, &stop);
+    if (v) { P[i] = p; E[i] = v; i++; }
+    if (stop)
     {
-      P[i] = p;
-      E[i] = v; i++;
-      if (stop)
-      {
-        if (abscmpiu(m,lim) > 0) break;
-        if (m[2] > 1) { P[i] = m[2]; E[i] = 1; i++; }
-        setlg(P, i);
-        setlg(E, i); return gc_const((pari_sp)F, F);
-      }
+      if (abscmpiu(m,lim) > 0) break;
+      if (m[2] > 1) { P[i] = m[2]; E[i] = 1; i++; }
+      setlg(P, i);
+      setlg(E, i); return gc_const((pari_sp)F, F);
     }
   }
   return gc_NULL(av);
@@ -3999,8 +4034,8 @@ Zn_ispower(GEN a, GEN q, GEN K, GEN *pt)
     }
   }
 END:
-  if (pt) *pt = gerepileupto(av, chinese1_coprime_Z(L));
-  return 1;
+  if (!pt) return gc_long(av, 1);
+  *pt = gerepileupto(av, chinese1_coprime_Z(L)); return 1;
 }
 
 
@@ -4130,7 +4165,7 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
     if (is_pm1(n)) return aux_end(M,n,nb);
     lim = all? all-1: tridiv_bound(n);
     av = avma;
-    if (!(hint & 16) && lim >= 128)
+    if (lim >= 128)
     { /* fast trial division */
       GEN Q = Z_oddprimedivisors_fast(n, lim);
       av2 = avma;
@@ -4141,7 +4176,9 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
         {
           pari_sp av3 = avma;
           ulong p = uel(Q, i);
-          long k = Z_lvalrem(n, p, &n); /* > 0 */
+          long k;
+          if (all && p >= all) break;
+          k = Z_lvalrem(n, p, &n); /* > 0 */
           affii(n, N); n = N; set_avma(av3);
           STOREu(&nb, p, k);
         }
