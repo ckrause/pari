@@ -264,8 +264,8 @@ RgXY_factor_squarefree(GEN f, GEN dom)
     GEN x = pol_x(varn(f));
     if (dom)
     {
-      GEN c = Rg_get_1(dom);
-      if (typ(c) != t_INT) x = RgX_Rg_mul(x, c);
+      GEN one = Rg_get_1(dom);
+      if (typ(one) != t_INT) x = RgX_Rg_mul(x, one);
     }
     vectrunc_append(Lfac, x); if (!degpol(f)) return Lfac;
   }
