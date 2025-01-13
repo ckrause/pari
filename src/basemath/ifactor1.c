@@ -3179,8 +3179,8 @@ static GEN
 Z_factor_primes(GEN N, ulong minp, ulong maxp)
 {
   forprime_t S;
-  ulong p;
-  long i, n = 0;
+  ulong p, n = 0;
+  long i;
   GEN P;
   if (lgefint(N) == 3) return factoru_primes(uel(N,2), minp, maxp);
   u_forprime_init(&S, minp, maxp);
