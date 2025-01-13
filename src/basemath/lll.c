@@ -346,7 +346,6 @@ ZM_flatter(GEN M, long flag)
   return  gerepilecopy(av, M);
 }
 
-/* return base change, NULL if identity. FIXME: what if flag & LLL_INPLACE ? */
 static GEN
 ZM_flatter_rank(GEN M, long rank, long flag)
 {
@@ -354,6 +353,7 @@ ZM_flatter_rank(GEN M, long rank, long flag)
   pari_sp av = avma;
   GEN T = NULL;
   long i, n = lg(M)-1, sm = LONG_MAX;
+  long inplace = flag & LLL_INPLACE;
 
   if (rank == n) return ZM_flatter(M, flag);
   if (DEBUGLEVEL>=3) timer_start(&ti);
@@ -368,8 +368,12 @@ ZM_flatter_rank(GEN M, long rank, long flag)
     M = ZM_mul(M, S);
     if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
   }
-  if (!T) { set_avma(av); return matid(n); }
-  return gerepilecopy(av, T);
+  if (!inplace)
+  {
+    if (!T) { set_avma(av); return matid(n); }
+    return gerepilecopy(av, T);
+  }
+  return  gerepilecopy(av, M);
 }
 
 static GEN
