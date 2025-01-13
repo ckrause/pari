@@ -18,15 +18,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 //
 //  Based on plotQt by Nils-Peter Skoruppa (www.countnumber.de)
 /////////////////////////////////////////////////////////////////////////////
+#include <FL/Fl.H>
+#include <FL/Fl_Window.H>
+#include <FL/fl_draw.H>
+
 extern "C" {
 #include "pari.h"
 #include "paripriv.h"
 #include "rect.h"
 }
-
-#include <FL/Fl.H>
-#include <FL/Fl_Window.H>
-#include <FL/fl_draw.H>
 
 class Plotter: public Fl_Window {
 
