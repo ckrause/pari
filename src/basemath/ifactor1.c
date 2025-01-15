@@ -3703,13 +3703,6 @@ coreu_fact(GEN f)
   }
   return m;
 }
-ulong
-coreu(ulong n)
-{
-  pari_sp av;
-  if (n == 0) return 0;
-  av = avma; return gc_ulong(av, coreu_fact(factoru(n)));
-}
 
 /* d = a squarefree divisor of n. Return n / (n, d^oo)
  * and set *pcore = \prod_{p | (n,d), v_p(n) odd} p
@@ -3739,14 +3732,94 @@ core_init_from_squarefree(GEN n, GEN d, GEN *pcore)
   }
   *pcore = c; return n;
 }
+static ulong
+coreu_init_from_squarefree(ulong n, ulong d, ulong *pcore)
+{
+  ulong c = 1;
+  long v;
+
+  if (d == 1) { *pcore = c; return n; }
+  v = u_lvalrem(n, d, &n);
+  for (;; v++)
+  { /* d^v divides "original n" */
+    ulong newd = ugcd(n, d); /* newd^{v+1} divides original n */
+    if (d != newd)
+    { /* new d loses primes dividing original n to exact power v */
+      if (odd(v)) c *= d / newd; /* lost primes */
+      d = newd; if (d == 1) break;
+    }
+    if (d == n)
+    {
+      if (odd(v + 1)) c *= d;
+      *pcore = c; return 1;
+    }
+    n /= d;
+  }
+  *pcore = c; return n;
+}
+
+ulong
+coreu(ulong n)
+{
+  ulong p, lim, m;
+  long v;
+
+  if (!n) return 0;
+  m = 1;
+  v = vals(n);
+  if (v)
+  {
+    n >>= v;
+    if (odd(v)) m = 2;
+  }
+  v = u_lvalrem(n, 3, &n); if (odd(v)) m *= 3;
+  v = u_lvalrem(n, 5, &n); if (odd(v)) m *= 5;
+  v = u_lvalrem(n, 7, &n); if (odd(v)) m *= 7;
+  if (n == 1) return m;
+  if (n <= maxprimelim() && PRIMES_search(n) > 0) return m * n;
+  lim = tridiv_boundu(n);
+  if (n >= 691 * 691)
+  {
+    ulong mpart, gcd, gcdlim, sqrtn = usqrt(n);
+    lim = minuu(sqrtn, lim);
+    gcd = u_oddprimedivisors_gcd(n, lim, &gcdlim);
+    n = coreu_init_from_squarefree(n, gcd, &mpart);
+    m *= mpart;
+    if (n == 1) return m;
+    /* n has no prime divisor <= gcdlim */
+    if ((lim == sqrtn && lim <= GP_DATA->factorlimit)
+        || (gcdlim + 1) * (gcdlim + 1) > n)
+      return m * n; /* prime */
+  }
+  else
+  {
+    forprime_t S;
+    u_forprime_init(&S, 11, lim);
+    while ((p = u_forprime_next_fast(&S)))
+    {
+      int stop;
+      v = u_lvalrem_stop(&n, p, &stop);
+      if (v & 1) m *= p;
+      if (stop) return n == 1? m: m * n; /* n > 1 is now prime */
+    }
+  }
+  if (uisprime_661(n)) return m * n;
+  else
+  {
+    pari_sp av = avma;
+    m *= itou(ifac_core(utoipos(n)));
+    return gc_ulong(av, m);
+  }
+}
 
 GEN
 core(GEN n)
 {
   pari_sp av = avma;
   GEN m, F;
-  ulong p, lim;
+  ulong lim, mask;
   long i, l, v, s;
+  int copy = 1;
 
   if ((F = check_arith_all(n, "core")))
   {
@@ -3762,26 +3835,36 @@ core(GEN n)
   }
   s = signe(n);
   if (!s) return gen_0;
+  if (lgefint(n) == 3)
+  {
+    ulong c = coreu(uel(n,2));
+    return s < 0? utoineg(c): utoipos(c);
+  }
   m = s < 0? gen_m1: gen_1;
   v = vali(n);
   if (v)
   {
-    n = shifti(n, -v); setabssign(n);
+    n = shifti(n, -v);
     if (odd(v)) m = shifti(m, 1);
+    copy = 0;
   }
-  else
-    n = absi(n);
-  lim = tridiv_bound(n);
-  if (cmpiu(n, 691 * 691) >= 0)
+  if ((mask = u_357_divides(umodiu(n, 3 * 5 * 7))))
   {
+    if (mask & 1) { v = Z_lvalrem(n, 3, &n); if (odd(v)) m = muliu(m, 3); }
+    if (mask & 2) { v = Z_lvalrem(n, 5, &n); if (odd(v)) m = muliu(m, 5); }
+    if (mask & 4) { v = Z_lvalrem(n, 7, &n); if (odd(v)) m = muliu(m, 7); }
+    copy = 0;
+  }
+  if (copy) n = absi(n);
+  else if (lgefint(n) == 3)
+  {
+    ulong c = coreu(uel(n,2));
+    return gerepileuptoint(av, muliu(m, c));
+  }
+  setabssign(n); lim = tridiv_bound(n);
+  { /* n >= 691^2 */
     ulong gcdlim, sqrtn = 0;
-    GEN gcd, mpart;
-    if (lgefint(n) == 3)
-    {
-      sqrtn = usqrt(n[2]);
-      lim = minuu(sqrtn, lim);
-    }
-    gcd = Z_oddprimedivisors_gcd(n, lim, &gcdlim);
+    GEN mpart, gcd = Z_oddprimedivisors_gcd(n, lim, &gcdlim);
     n = core_init_from_squarefree(n, gcd, &mpart);
     m = mulii(m, mpart);
     if (equali1(n)) return gerepileuptoint(av, m);
@@ -3789,22 +3872,6 @@ core(GEN n)
     if ((lim == sqrtn && lim <= GP_DATA->factorlimit)
         || cmpii(sqru(gcdlim + 1), n) > 0)
       return gerepileuptoint(av, mulii(m, n)); /* prime */
-  }
-  else
-  {
-    forprime_t S;
-    u_forprime_init(&S, 3, lim);
-    while ((p = u_forprime_next_fast(&S)))
-    {
-      int stop;
-      v = Z_lvalrem_stop(&n, p, &stop);
-      if (v & 1) m = muliu(m, p);
-      if (stop)
-      { /* n > 1 is now prime */
-        if (!is_pm1(n)) m = mulii(m, n);
-        return gerepileuptoint(av, m);
-      }
-    }
   }
   l = lg(primetab);
   for (i = 1; i < l; i++)
