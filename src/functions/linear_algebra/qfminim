@@ -14,8 +14,8 @@ Help: qfminim(x,{B},{m},{flag=0}): x being a square and symmetric
  ignores m and returns the first vector whose norm is less than B. 2: as 0
  but uses a more robust, slower implementation
 Doc: $x$ being a square and symmetric matrix of dimension $d$ representing
- a positive definite quadratic form, this function deals with the vectors of
- $x$ whose norm is less than or equal to $B$, enumerated using the
+ a positive definite quadratic form, this function deals with the nonzero
+ vectors of $x$ whose norm is less than or equal to $B$, enumerated using the
  Fincke-Pohst algorithm, storing at most $m$ pairs of vectors: only one
  vector is given for each pair $\pm v$. There is no limit if $m$ is omitted:
  beware that this may be a huge vector! The vectors are returned in no
@@ -33,11 +33,10 @@ Doc: $x$ being a square and symmetric matrix of dimension $d$ representing
 
  \item If $\fl=1$, ignore $m$ and return $[M,v]$, where $v$ is a nonzero
  vector of length $M \leq B$. If no nonzero vector has length $\leq B$,
- return $[]$. If no explicit $B$ is provided, return a vector of smallish
- norm, namely the vector of smallest length (usually the first one but not
- always) in an LLL-reduced basis for $x$.
+ return $[]$. If no explicit $B$ is provided, return a vector of smallest
+ length in an LLL-reduced basis for $x$.
 
- In these two cases, $x$ must have integral \emph{small} entries: more
+ In the two previous cases, $x$ must have integral \emph{small} entries: more
  precisely, we definitely must have $d\cdot \|x\|_{\infty}^{2} < 2^{53}$ but
  even that may not be enough. The implementation uses low precision floating
  point computations for maximal speed and gives incorrect results when $x$
@@ -50,7 +49,7 @@ Doc: $x$ being a square and symmetric matrix of dimension $d$ representing
  $\fl = 0$, where $M$ is returned as a floating point number. If $x$ is
  inexact and $B$ is omitted, the ``minimal'' vectors in $V$ only have
  approximately the same norm (up to the internal working accuracy).
- This version is very robust but still offers no hard and fast guarantee
+ This version is very robust but still offers no hard guarantee
  about the result: it involves floating point operations performed at a high
  floating point precision depending on your input, but done without rigorous
  tracking of roundoff errors (as would be provided by interval arithmetic for
@@ -89,7 +88,7 @@ Doc: $x$ being a square and symmetric matrix of dimension $d$ representing
  ? qfminim(x,,0)  \\ 0: don't store minimal vectors
  time = 121 ms.
  %4 = [196560, 4, [;]] \\ 196560 minimal vectors of norm 4
- ? qfminim(x)  \\ store all minimal vectors !
+ ? qfminim(x); \\ store all minimal vectors !
  time = 821 ms.
  ? qfminim(x,,0,2); \\ safe algorithm. Slower and unnecessary here.
  time = 5,540 ms.
