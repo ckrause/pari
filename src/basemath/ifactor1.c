@@ -3044,7 +3044,7 @@ ifac_ispowerful(GEN n)
     if (gc_needed(av,1)) ifac_GC(av,&part);
   }
 }
-/* destroys n */
+/* destroys n; assume n != 0 is composite */
 static GEN
 ifac_core(GEN n)
 {
@@ -3317,7 +3317,7 @@ factoru_sign(ulong n, ulong all, long hint, ulong *pU1, ulong *pU2)
     { /* fast trial division */
       ulong gcdlim, gcd, sqrtn = usqrt(n);
       GEN Q;
-      lim = minss(lim, sqrtn);
+      lim = minuu(lim, sqrtn);
       gcd = u_oddprimedivisors_gcd(n, lim, &gcdlim);
       Q = factoru_primes(gcd, 11, gcdlim);
       maxp = GP_DATA->factorlimit;
@@ -3460,7 +3460,7 @@ moebiusu(ulong n)
   {
     ulong gcdlim, gcd, sqrtn = usqrt(n);
     GEN P;
-    lim = minss(sqrtn, lim);
+    lim = minuu(sqrtn, lim);
     gcd = u_oddprimedivisors_gcd(n, lim, &gcdlim);
     if (gcd != 1)
     {
@@ -3646,7 +3646,7 @@ ispowerful(GEN n)
     if (lgefint(n) == 3)
     {
       sqrtn = usqrt(n[2]);
-      lim = minss(sqrtn, lim);
+      lim = minuu(sqrtn, lim);
     }
     gcd = Z_oddprimedivisors_gcd(n, lim, &gcdlim);
     if (!equali1(gcd))
@@ -3816,8 +3816,8 @@ GEN
 core(GEN n)
 {
   pari_sp av = avma;
-  GEN m, F;
-  ulong lim, mask;
+  GEN m, mpart, gcd, F;
+  ulong lim, gcdlim, mask, m0;
   long i, l, v, s;
   int copy = 1;
 
@@ -3840,39 +3840,35 @@ core(GEN n)
     ulong c = coreu(uel(n,2));
     return s < 0? utoineg(c): utoipos(c);
   }
-  m = s < 0? gen_m1: gen_1;
-  v = vali(n);
+  v = vali(n); m0 = 1;
   if (v)
   {
-    n = shifti(n, -v);
-    if (odd(v)) m = shifti(m, 1);
+    n = shifti(n, -v); if (odd(v)) m0 *= 2;
     copy = 0;
   }
   if ((mask = u_357_divides(umodiu(n, 3 * 5 * 7))))
   {
-    if (mask & 1) { v = Z_lvalrem(n, 3, &n); if (odd(v)) m = muliu(m, 3); }
-    if (mask & 2) { v = Z_lvalrem(n, 5, &n); if (odd(v)) m = muliu(m, 5); }
-    if (mask & 4) { v = Z_lvalrem(n, 7, &n); if (odd(v)) m = muliu(m, 7); }
+    if (mask & 1) { v = Z_lvalrem(n, 3, &n); if (odd(v)) m0 *= 3; }
+    if (mask & 2) { v = Z_lvalrem(n, 5, &n); if (odd(v)) m0 *= 5; }
+    if (mask & 4) { v = Z_lvalrem(n, 7, &n); if (odd(v)) m0 *= 7; ; }
     copy = 0;
   }
-  if (copy) n = absi(n);
+  if (copy) n = absi(n); /* ifac_core destroys n */
   else if (lgefint(n) == 3)
   {
     ulong c = coreu(uel(n,2));
-    return gerepileuptoint(av, muliu(m, c));
+    m = muluu(m0, c); if (s < 0) setsigne(m, -1);
+    return gerepileuptoint(av, m);
   }
   setabssign(n); lim = tridiv_bound(n);
-  { /* n >= 691^2 */
-    ulong gcdlim, sqrtn = 0;
-    GEN mpart, gcd = Z_oddprimedivisors_gcd(n, lim, &gcdlim);
-    n = core_init_from_squarefree(n, gcd, &mpart);
-    m = mulii(m, mpart);
-    if (equali1(n)) return gerepileuptoint(av, m);
-    /* n has no prime divisor <= gcdlim */
-    if ((lim == sqrtn && lim <= GP_DATA->factorlimit)
-        || cmpii(sqru(gcdlim + 1), n) > 0)
-      return gerepileuptoint(av, mulii(m, n)); /* prime */
-  }
+  /* n >= 691^2 */
+  gcd = Z_oddprimedivisors_gcd(n, lim, &gcdlim);
+  n = core_init_from_squarefree(n, gcd, &mpart);
+  m = mului(m0, mpart); if (s < 0) setsigne(m, -1);
+  if (equali1(n)) return gerepileuptoint(av, m);
+  /* n has no prime divisor <= gcdlim */
+  if (cmpii(sqru(gcdlim + 1), n) > 0)
+    return gerepileuptoint(av, mulii(m, n)); /* prime */
   l = lg(primetab);
   for (i = 1; i < l; i++)
   {
@@ -3884,10 +3880,8 @@ core(GEN n)
       if (is_pm1(n)) return gerepileuptoint(av, m);
     }
   }
-  if (ifac_isprime(n)) { m = mulii(m, n); return gerepileuptoint(av, m); }
-  if (m == gen_1) n = icopy(n); /* ifac_core destroys n */
-  /* large composite without small factors */
-  return gerepileuptoint(av, mulii(m, ifac_core(n)));
+  if (!ifac_isprime(n)) n = ifac_core(n); /* composite without small factors */
+  return gerepileuptoint(av, mulii(m, n));
 }
 
 long
@@ -3934,24 +3928,24 @@ Z_issmooth_fact(GEN m, ulong lim)
   return gc_NULL(av);
 }
 
-/* Is (a mod p^e) a K-th power ? */
+/* Is (a mod p^e) a K-th power ? p is prime and e > 0 */
 static int
 Zp_ispower(GEN a, GEN L, GEN K, GEN p, long e)
 {
-  GEN t = gen_0, b;
-  long v = Z_pvalrem(a, p, &b), d = e - v;
+  GEN t = gen_0;
+  long v = Z_pvalrem(a, p, &a), d = e - v;
   if (d > 0)
-  { /* is b mod p^d a K-th power ? b a p-unit */
+  { /* is a mod p^d a K-th power ? a a p-unit */
     ulong r;
     v = uabsdivui_rem(v, K, &r); if (r) return 0;
     if (d == 1)
     { /* mod p: faster */
-      if (!Fp_ispower(b, K, p)) return 0;
-      if (L) t = Fp_sqrtn(b, K, p, NULL);
+      if (!Fp_ispower(a, K, p)) return 0;
+      if (L) t = Fp_sqrtn(a, K, p, NULL);
     }
     else
     { /* mod p^{2 +} */
-      if (!ispower(cvtop(b, p, d), K, L? &t: NULL)) return 0;
+      if (!ispower(cvtop(a, p, d), K, L? &t: NULL)) return 0;
       if (L) t = gtrunc(t);
     }
     if (L && v) t = mulii(t, powiu(p, v));
@@ -4004,7 +3998,7 @@ Zn_ispower(GEN a, GEN q, GEN K, GEN *pt)
   {
     ulong sqrtq = lgefint(q) == 3? usqrt(q[2]): 0;
     GEN P;
-    if (sqrtq) lim = minss(sqrtq, lim);
+    if (sqrtq) lim = minuu(sqrtq, lim);
     P = Z_oddprimedivisors_fast(q, lim);
     if (P)
     {
@@ -4016,7 +4010,6 @@ Zn_ispower(GEN a, GEN q, GEN K, GEN *pt)
         e = Z_lvalrem_stop(&q, pp, &stop);
         if (!Zp_ispower(a, L, K, utoipos(pp), e)) return gc_long(av,0);
         a = modii(a, q);
-
       }
       if (stop)
       {
@@ -4260,7 +4253,7 @@ ifactor_sign(GEN n, ulong all, long hint, long sn, GEN *pU)
     else
     { /* naive trial division */
       maxp = maxprime();
-      u_forprime_init(&T, 3, minss(lim, maxp)); av2 = avma;
+      u_forprime_init(&T, 3, minuu(lim, maxp)); av2 = avma;
       /* first pass: known to fit in private prime table */
       while ((p = u_forprime_next_fast(&T)))
       {
