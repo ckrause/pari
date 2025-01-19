@@ -1794,20 +1794,16 @@ ggcd(GEN x, GEN y)
       z = cgetg(3,t_POLMOD);
       if (vx == vy)
         T = RgX_equal(T,Ty)? RgX_copy(T): RgX_gcd(T, Ty);
-      else if (varncmp(vx, vy) > 0)
-        T = RgX_copy(T);
       else
-        T = RgX_copy(Ty);
+        T = RgX_copy(varncmp(vx,vy) > 0? T: Ty);
       gel(z,1) = T;
       if (degpol(T) <= 0) gel(z,2) = gen_0;
       else
       {
-        GEN X, Y, d;
-        av = avma; X = gel(x,2); Y = gel(y,2);
-        d = ggcd(content(X), content(Y));
+        GEN X = gel(x,2), Y = gel(y,2), d;
+        av = avma; d = ggcd(content(X), content(Y));
         if (!gequal1(d)) { X = gdiv(X,d); Y = gdiv(Y,d); }
-        p1 = ggcd(T, X);
-        gel(z,2) = gerepileupto(av, gmul(d, ggcd(p1, Y)));
+        gel(z,2) = gerepileupto(av, gmul(d, ggcd(ggcd(T, X), Y)));
       }
       return z;
     }
