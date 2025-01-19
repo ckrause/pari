@@ -56,6 +56,8 @@ Q = x^2+(-17280/23*y^2+314496/23*y+70144);
         my(C=nfcompositum(nf,p,q,k),L=if(k==0,apply(pollead,C),pollead(C)));
         print(k,":",L))))
 }
+\\#2605
+nfcompositum(nfinit(y-2),x^2-y,x^3-x-1)
 
 \\bad input
 nfcompositum(nfinit(x),w^2+1,w^2+1)

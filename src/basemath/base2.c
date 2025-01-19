@@ -4011,6 +4011,7 @@ compositum_fix(GEN nf, GEN A)
   int ok;
   if (nf)
   {
+    A = RgXQX_red(A, nf_get_pol(nf));
     A = Q_primpart(liftpol_shallow(A)); RgX_check_ZXX(A,"polcompositum");
     ok = nfissquarefree(nf,A);
   }

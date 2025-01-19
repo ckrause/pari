@@ -4,6 +4,7 @@ Done for version 2.18.1 (released 0?/01/2026):
      1- reduce memory use in Z_ppo
 BA   2- ellrootno over number fields could be slow [#2595]
 BA   3- matsolvemod could fail [#2604]
+BA   4- nfcompositum(nfinit(y-2),x^2-y,x^3-x-1) -> error [#2605]
 
   Added
      3- [libpari] prodprimes, prodprimeslim
