@@ -1590,6 +1590,8 @@ Q_gcd(GEN x, GEN y)
   else
   { return (ty == t_INT)? gcdiq(y,x): gcdqq(x,y); }
 }
+static GEN
+gcd3(GEN x, GEN y, GEN z) { return ggcd(ggcd(x, y), z); }
 
 GEN
 ggcd(GEN x, GEN y)
@@ -1711,9 +1713,9 @@ ggcd(GEN x, GEN y)
         switch(ty)
         {
           case t_FRAC:
-            av = avma; p1=gcdii(gel(x,1),gel(y,2)); set_avma(av);
-            if (!equali1(p1)) pari_err_OP("gcd",x,y);
-            return ggcd(gel(y,1), x);
+            av = avma;
+            if (!equali1(gcdii(gel(x,1),gel(y,2)))) pari_err_OP("gcd",x,y);
+            set_avma(av); return ggcd(gel(y,1), x);
 
           case t_FFELT:
           {
@@ -1803,7 +1805,7 @@ ggcd(GEN x, GEN y)
         GEN X = gel(x,2), Y = gel(y,2), d;
         av = avma; d = ggcd(content(X), content(Y));
         if (!gequal1(d)) { X = gdiv(X,d); Y = gdiv(Y,d); }
-        gel(z,2) = gerepileupto(av, gmul(d, ggcd(ggcd(T, X), Y)));
+        gel(z,2) = gerepileupto(av, gmul(d, gcd3(T, X, Y)));
       }
       return z;
     }
@@ -1814,17 +1816,15 @@ ggcd(GEN x, GEN y)
         vy = varn(y);
         if (varncmp(vy,vx) < 0) return cont_gcd_pol(y, x);
         z = cgetg(3,t_POLMOD);
-        gel(z,1) = RgX_copy(gel(x,1));
-        av = avma; p1 = ggcd(gel(x,1),gel(x,2));
-        gel(z,2) = gerepileupto(av, ggcd(p1,y));
+        gel(z,1) = RgX_copy(gel(x,1)); av = avma;
+        gel(z,2) = gerepileupto(av, gcd3(gel(x,1), gel(x,2), y));
         return z;
 
       case t_RFRAC:
         vy = varn(gel(y,2));
         if (varncmp(vy,vx) < 0) return cont_gcd_rfrac(y, x);
         av = avma;
-        p1 = ggcd(gel(x,1),gel(y,2));
-        if (degpol(p1)) pari_err_OP("gcd",x,y);
+        if (degpol(ggcd(gel(x,1),gel(y,2)))) pari_err_OP("gcd",x,y);
         set_avma(av); return gdiv(ggcd(gel(y,1),x), content(gel(y,2)));
     }
   }
