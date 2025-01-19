@@ -1797,7 +1797,7 @@ ggcd(GEN x, GEN y)
       if (vx == vy)
         T = RgX_equal(T,Ty)? RgX_copy(T): RgX_gcd(T, Ty);
       else
-        T = RgX_copy(varncmp(vx,vy) > 0? T: Ty);
+        T = RgX_copy(varncmp(vx,vy) < 0? T: Ty);
       gel(z,1) = T;
       if (degpol(T) <= 0) gel(z,2) = gen_0;
       else
