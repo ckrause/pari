@@ -1968,7 +1968,9 @@ parforstep(GEN a, GEN b, GEN s, GEN code, void *E, long call(void*, GEN, GEN))
     {
       GEN vs = vecsum(s);
       ss = gsigne(vs); v = s;
-      lim = gdiv(gmulgs(gadd(gsub(b,a),vs),lg(vs)-1),vs);
+      lim = typ(b)==t_INFINITY ? inf_get_sign(b)==ss
+                               ? int2n(BITS_IN_LONG): gen_0
+          : gdiv(gmulgs(gadd(gsub(b,a),vs),lg(vs)-1),vs);
       break;
     }
     case t_INTMOD:
@@ -1977,7 +1979,9 @@ parforstep(GEN a, GEN b, GEN s, GEN code, void *E, long call(void*, GEN, GEN))
       s = gel(s,1); /* FALL THROUGH */
     default:
       ss = gsigne(s);
-      lim = gdiv(gadd(gsub(b,a),s),s);
+      lim = typ(b)==t_INFINITY ? inf_get_sign(b)==ss
+                               ? int2n(BITS_IN_LONG): gen_0
+          : gdiv(gadd(gsub(b,a),s),s);
   }
   lim = ceil_safe(lim);
   if (!ss || typ(lim)!=t_INT) pari_err_DOMAIN("parforstep","step","=",gen_0,s);
