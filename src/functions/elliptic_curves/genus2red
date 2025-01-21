@@ -40,7 +40,7 @@ Doc: Let $PQ$ be a polynomial $P$, resp. a vector $[P,Q]$ of polynomials, with
  reduction at p: [III{9}] page 184, [3, 3], f = 10
  %1 = [59049, Mat([3, 10]), x^6 + 3*x^3 + 63, [3, [1, []],
         ["[III{9}] page 184", [3, 3]]]]
- ? [N, FaN, T, V] = genus2red(x^3-x^2-1, x^2-x);  \\ X_1(13), global reduction
+ ? [N, FaN, T, V] = genus2red([x^2-x, x^3-x^2-1]);  \\ X_1(13), global reduction
  p = 13
  (potential) stable reduction: [5, [Mod(0, 13), Mod(0, 13)]]
  reduction at p: [I{0}-II-0] page 159, [], f = 2
@@ -49,7 +49,7 @@ Doc: Let $PQ$ be a polynomial $P$, resp. a vector $[P,Q]$ of polynomials, with
  ? FaN
  %4 = Mat([13, 2])   \\ in particular, good reduction at 2 !
  ? T
- %5 = x^6 + 58*x^5 + 1401*x^4 + 18038*x^3 + 130546*x^2 + 503516*x + 808561
+ %5 = [-x^5 - x^3 + x^2 - x, x^3 + x^2 + 1]
  ? V
  %6 = [[13, [5, [Mod(0, 13), Mod(0, 13)]], ["[I{0}-II-0] page 159", []]]]
  @eprog\noindent
