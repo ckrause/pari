@@ -13,7 +13,7 @@ Help: qfminim(x,{B},{m},{flag=0}): x being a square and symmetric
  these, and V lists half the vectors (the other half is given by -V). 1:
  ignores m and returns the first vector whose norm is less than B. 2: as 0
  but uses a more robust, slower implementation
-Doc: $x$ being a square and symmetric matrix of dimension $d$ representing
+Doc: Let $x$ be a square and symmetric matrix of dimension $d$ representing
  a positive definite quadratic form, this function deals with the nonzero
  vectors of $x$ whose norm is less than or equal to $B$, enumerated using the
  Fincke-Pohst algorithm, storing at most $m$ pairs of vectors: only one
