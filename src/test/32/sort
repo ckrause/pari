@@ -38,10 +38,13 @@ Vecsmall([4, 6, 2, 1])
 [4, 3, 2, 1]
 Vecsmall([1, 2, 6, 4])
 List([])
+3
+2
+0
   ***   at top-level: vecsearch(Vecsmall(1),1,1)
   ***                 ^--------------------------
   *** vecsearch: incorrect type in sort_function (t_VECSMALL).
   ***   at top-level: vecsort(Vecsmall(1),1)
   ***                 ^----------------------
   *** vecsort: incorrect type in sort_function (t_VECSMALL).
-Total time spent: 0
+Total time spent: 1

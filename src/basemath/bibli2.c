@@ -1845,7 +1845,7 @@ vecsearch(GEN v, GEN x, GEN k)
   switch(typ(v))
   {
     case t_VECSMALL: x = (GEN)itos(x); break;
-    case t_VEC: case t_COL: break;
+    case t_VEC: case t_COL: case t_MAT: break;
     case t_LIST:
       if (list_typ(v)==t_LIST_RAW)
       {
