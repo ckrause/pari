@@ -59,6 +59,11 @@ for (i=1,#v, print([v[i]==1,v[i]==-1]))
 A=Ser(vector(40000,i,i==1));
 A==A
 
+Mod(14,20) == Mod(39,55)
+Mod(13,20) == Mod(39,55)
+Mod(1+x, x^2+x) == Mod(1-x, x^2-x)
+Mod(2+x, x^2+x) == Mod(1-x, x^2-x)
+
 Mod(Mod(y,y^2+1),x^2-2) == Mod(y,y^2+1)
 test(x)=[x==1, x==-1];
 [test(O(29^-1)), test(O(29^0)), test(O(29))]

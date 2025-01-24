@@ -6,6 +6,8 @@ BA   2- ellrootno over number fields could be slow [#2595]
 BA   3- matsolvemod could fail [#2604]
 BA   4- nfcompositum(nfinit(y-2),x^2-y,x^3-x-1) -> error [#2605]
      5- vecsearch(t_MAT, t_COL or t_VEC) -> error
+     6- Mod(a,A) == Mod(b,B) was checking a == b && A == B instead
+        of the documented Mod(a,A) - Mod(b,B) == 0
 
   Added
      3- [libpari] prodprimes, prodprimeslim

@@ -1037,12 +1037,11 @@ int
 gequal(GEN x, GEN y)
 {
   pari_sp av;
+  GEN A, B, a, b;
   long tx, ty;
-  long i;
 
   if (x == y) return 1;
-  tx = typ(x);
-  ty = typ(y);
+  tx = typ(x); ty = typ(y);
   if (tx == ty)
     switch(tx)
     {
@@ -1052,18 +1051,30 @@ gequal(GEN x, GEN y)
       case t_REAL:
         return equalrr(x,y);
 
-      case t_FRAC: case t_INTMOD:
+      case t_FRAC:
         return equalii(gel(x,2), gel(y,2)) && equalii(gel(x,1), gel(y,1));
+
+      case t_INTMOD:
+        A = gel(x,1); B = gel(y,1);
+        a = gel(x,2); b = gel(y,2);
+        if (equalii(A, B)) return equalii(a, b);
+        av = avma; A = gcdii(A, B);
+        return gc_bool(av, equalii(modii(a,A), modii(b,A)));
 
       case t_COMPLEX:
         return gequal(gel(x,2),gel(y,2)) && gequal(gel(x,1),gel(y,1));
       case t_PADIC:
         if (!equalii(gel(x,2),gel(y,2))) return 0;
-        av = avma; i = gequal0(gsub(x,y)); set_avma(av);
-        return i;
+        av = avma; return gc_bool(av, gequal0(gsub(x,y)));
+
       case t_POLMOD:
-        if (varn(gel(x,1)) != varn(gel(y,1))) break;
-        return gequal(gel(x,2),gel(y,2)) && RgX_equal_var(gel(x,1),gel(y,1));
+        A = gel(x,1); B = gel(y,1);
+        if (varn(A) != varn(B)) break;
+        a = gel(x,2); b = gel(y,2);
+        if (RgX_equal_var(A, B)) return gequal(a,b);
+        av = avma; A = ggcd(A, B);
+        return gc_bool(av, gequal(gmod(a,A), gmod(b,A)));
+
       case t_POL:
         if (varn(x) != varn(y)) break;
         return polequal(x,y);
