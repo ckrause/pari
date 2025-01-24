@@ -62,8 +62,7 @@ Doc:
  %8 = 1
  ? [0] == [0,0] \\ not equal
  %9 = 0
- @eprog\noindent In particular \kbd{==} is not transitive in general; it is
- transitive when used to compare objects known to have the same type. The
+ @eprog\noindent In particular \kbd{==} is not transitive in general. The
  operator \kbd{===} is transitive. The \kbd{==} operator allows two
  equivalent negated forms: \kbd{!=} or \kbd{<>}; there is no negated form for
  \kbd{===}.
