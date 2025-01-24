@@ -778,7 +778,7 @@ const struct bb_field *get_Fq_field(void **E, GEN T, GEN p)
 /*******************************************************************/
 /* P(X + c) */
 static GEN
-Fp_XpN_powu(GEN u, long n, GEN p, long v)
+Fp_XpN_powu(GEN u, ulong n, GEN p, long v)
 {
   pari_sp av;
   long k;
@@ -836,9 +836,25 @@ FpX_Fp_translate(GEN P, GEN c, GEN p)
   }
 }
 
-/* P(X + c), c an Fq */
-GEN
-FqX_Fq_translate(GEN P, GEN c, GEN T, GEN p)
+static GEN
+FpXQX_XpN_powu(GEN u, ulong n, GEN T, GEN p, long v)
+{
+  pari_sp av;
+  long k;
+  GEN B, C, V;
+  if (!n) return pol_1(v);
+  av = avma;
+  V = FpXQ_powers(u, n, T, p);
+  B = vecbinomial(n);
+  C = cgetg(n+3, t_POL);
+  C[1] = evalsigne(1)| evalvarn(v);
+  for (k=1; k <= n+1; k++)
+    gel(C,k+1) = Fq_mul(gel(V,n+2-k), gel(B,k), T, p);
+  return gerepileupto(av, C);
+}
+
+static GEN
+FpXQX_FpXQ_translate_basecase(GEN P, GEN c, GEN T, GEN p)
 {
   pari_sp av = avma;
   GEN Q;
@@ -859,6 +875,36 @@ FqX_Fq_translate(GEN P, GEN c, GEN T, GEN p)
     }
   }
   return gc_GEN(av, FpXQX_renormalize(Q, lg(Q)));
+}
+
+GEN
+FpXQX_FpXQ_translate(GEN P, GEN c, GEN T, GEN p)
+{
+  pari_sp av = avma;
+  long n = degpol(P);
+  if (n < 220)
+    return FpXQX_FpXQ_translate_basecase(P, c, T, p);
+  else
+  {
+    long d = n >> 1;
+    GEN Q = FpXQX_FpXQ_translate(RgX_shift_shallow(P, -d), c, T, p);
+    GEN R = FpXQX_FpXQ_translate(RgXn_red_shallow(P, d), c, T, p);
+    GEN S = FpXQX_XpN_powu(c, d, T, p, varn(P));
+    return gerepileupto(av, FpXX_add(FpXQX_mul(Q, S, T, p), R, p));
+  }
+}
+
+GEN
+FqX_Fq_translate(GEN x, GEN y, GEN T, GEN p)
+{
+  if (!T) return FpX_Fp_translate(x,y,p);
+  if (typ(y)==t_INT)
+  {
+    pari_sp av = avma;
+    y = scalarpol_shallow(y,varn(T));
+    return gc_upto(av, FpXQX_FpXQ_translate(x,y,T,p));
+  }
+  return FpXQX_FpXQ_translate(x,y,T,p);
 }
 
 GEN

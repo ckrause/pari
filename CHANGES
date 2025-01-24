@@ -41,7 +41,7 @@ BA   3- [libpari] Flm_hess_pre
 BA   4- new default doctest and meta-command \z
 BA   5- ellfromeqn: option to return the map to the curve
 BA   6- new meta command \qf
-BA   7- [libpari] Flx_unscale, Flx_Fl_translate
+BA   7- [libpari] Flx_unscale, Flx_Fl_translate, FpXQX_FpXQ_translate
 BA   8- [libpari] FlxqC_red_pre, FlxqM_red_pre, FlxM_mul
 BA   9- [libpari] FlxC_Fl_translate, FlxM_Fl_translate
     10- [libpari] RgX_type_code

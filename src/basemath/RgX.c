@@ -581,11 +581,21 @@ zero_FpX_mod(GEN p, long v)
 }
 
 static GEN
+zero_FpXQX_mod(GEN pol, GEN p, long v)
+{
+  GEN r = cgetg(3,t_POL);
+  r[1] = evalvarn(v);
+  gel(r,2) = mkpolmod(mkintmod(gen_0, icopy(p)), gcopy(pol));
+  return r;
+}
+
+static GEN
 RgX_Rg_translate_FpX(GEN P, GEN c, GEN p)
 {
   pari_sp av = avma;
   GEN r;
 #if 0
+  /* 'divide by 0' error if p is not prime and c not invertible */
   if (lgefint(p) == 3)
   {
     ulong pp = uel(p, 2);
@@ -599,6 +609,17 @@ RgX_Rg_translate_FpX(GEN P, GEN c, GEN p)
 }
 
 static GEN
+RgX_Rg_translate_FpXQX(GEN x, GEN c, GEN pol, GEN p)
+{
+  pari_sp av = avma;
+  GEN r, T = RgX_to_FpX(pol, p);
+  if (signe(T)==0) pari_err_OP("subst", x, c);
+  r = FpXQX_FpXQ_translate(RgX_to_FpXQX(x, T, p), Rg_to_FpXQ(c, T, p), T, p);
+  if (signe(r)==0) { set_avma(av); return zero_FpXQX_mod(pol, p, varn(x)); }
+  return gc_upto(av, FpXQX_to_mod(r, T, p));
+}
+
+static GEN
 RgX_Rg_translate_fast(GEN P, GEN c)
 {
   GEN p, pol;
@@ -608,6 +629,8 @@ RgX_Rg_translate_fast(GEN P, GEN c)
   {
     case t_INT:    return ZX_Z_translate(P, c);
     case t_INTMOD: return RgX_Rg_translate_FpX(P, c, p);
+    case RgX_type_code(t_POLMOD, t_INTMOD):
+                   return RgX_Rg_translate_FpXQX(P, c, pol, p);
     default:       return NULL;
   }
 }
@@ -2985,15 +3008,6 @@ RgX_mul_FpX(GEN x, GEN y, GEN p)
     r = FpX_mul(RgX_to_FpX(x, p), RgX_to_FpX(y, p), p);
   if (signe(r)==0) { set_avma(av); return zero_FpX_mod(p, varn(x)); }
   return gc_upto(av, FpX_to_mod(r, p));
-}
-
-static GEN
-zero_FpXQX_mod(GEN pol, GEN p, long v)
-{
-  GEN r = cgetg(3,t_POL);
-  r[1] = evalvarn(v);
-  gel(r,2) = mkpolmod(mkintmod(gen_0, icopy(p)), gcopy(pol));
-  return r;
 }
 
 static GEN

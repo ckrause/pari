@@ -108,3 +108,4 @@ subst(T,x,x^3+2)
 subst(T,x,x^4+2*x^2+1)
 subst([x],x,x+1)
 
+a=Mod(a,(a^2+1)*Mod(1,11)); P=x^2+a*x+13*a+3;subst(P,x,x+a)
