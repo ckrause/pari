@@ -385,8 +385,8 @@ ZX_translate_basecase(GEN P, GEN c)
   return gerepilecopy(av, Q);
 }
 
-static GEN
-Z_Xpm1_powu(long n, long s, long v)
+GEN
+Xpm1_powu(long n, long s, long v)
 {
   long d, k;
   GEN C;
@@ -416,7 +416,7 @@ Z_XpN_powu(GEN u, long n, long v)
   GEN B, C, V;
   if (!n) return pol_1(v);
   if (is_pm1(u))
-    return Z_Xpm1_powu(n, signe(u), v);
+    return Xpm1_powu(n, signe(u), v);
   av = avma;
   V = gpowers(u, n);
   B = vecbinomial(n);

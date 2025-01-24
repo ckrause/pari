@@ -485,6 +485,7 @@ GEN  ser2pol_i_normalize(GEN x, long l, long *v);
 GEN  ser2rfrac_i(GEN x);
 GEN  swap_vars(GEN b0, long v, long vc);
 GEN  RgX_recipspec_shallow(GEN x, long l, long n);
+GEN  Xpm1_powu(long n, long s, long v);
 
 /* b) Modular */
 GEN  bezout_lift_fact(GEN T, GEN Tmod, GEN p, long e);
