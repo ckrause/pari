@@ -777,8 +777,27 @@ const struct bb_field *get_Fq_field(void **E, GEN T, GEN p)
 /*                                                                 */
 /*******************************************************************/
 /* P(X + c) */
-GEN
-FpX_translate(GEN P, GEN c, GEN p)
+static GEN
+Fp_XpN_powu(GEN u, ulong n, GEN p, long v)
+{
+  pari_sp av;
+  long k;
+  GEN B, C, V;
+  if (!n) return pol_1(v);
+  if (is_pm1(u))
+    return Xpm1_powu(n, signe(u), v);
+  av = avma;
+  V = Fp_powers(u, n, p);
+  B = FpV_red(vecbinomial(n), p);
+  C = cgetg(n+3, t_POL);
+  C[1] = evalsigne(1)| evalvarn(v);
+  for (k=1; k <= n+1; k++)
+    gel(C,k+1) = Fp_mul(gel(V,n+2-k), gel(B,k), p);
+  return gerepileupto(av, C);
+}
+
+static GEN
+FpX_translate_basecase(GEN P, GEN c, GEN p)
 {
   pari_sp av = avma;
   GEN Q, *R;
@@ -800,6 +819,24 @@ FpX_translate(GEN P, GEN c, GEN p)
   }
   return gerepilecopy(av, FpX_renormalize(Q, lg(Q)));
 }
+
+GEN
+FpX_translate(GEN P, GEN c, GEN p)
+{
+  pari_sp av = avma;
+  long n = degpol(P);
+  if (n<=3 || 25*(n-3) < expi(p))
+    return FpX_translate_basecase(P, c, p);
+  else
+  {
+    long d = n >> 1;
+    GEN Q = FpX_translate(RgX_shift_shallow(P, -d), c, p);
+    GEN R = FpX_translate(RgXn_red_shallow(P, d), c, p);
+    GEN S = Fp_XpN_powu(c, d, p, varn(P));
+    return gerepileupto(av, FpX_add(FpX_mul(Q, S, p), R, p));
+  }
+}
+
 /* P(X + c), c an Fq */
 GEN
 FqX_translate(GEN P, GEN c, GEN T, GEN p)
