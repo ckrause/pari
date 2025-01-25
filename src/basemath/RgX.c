@@ -570,25 +570,72 @@ RgX_translate_basecase(GEN P, GEN c)
   }
   return gerepilecopy(av, Q);
 }
-GEN
-RgX_translate(GEN P, GEN c)
+
+static GEN
+zero_FpX_mod(GEN p, long v)
+{
+  GEN r = cgetg(3,t_POL);
+  r[1] = evalvarn(v);
+  gel(r,2) = mkintmod(gen_0, icopy(p));
+  return r;
+}
+
+static GEN
+RgX_translate_FpX(GEN P, GEN c, GEN p)
+{
+  pari_sp av = avma;
+  GEN r;
+#if 0
+  if (lgefint(p) == 3)
+  {
+    ulong pp = uel(p, 2);
+    r = Flx_to_ZX_inplace(Flx_translate(RgX_to_Flx(x, pp), Rg_to_Fl(c, pp), pp));
+  }
+  else
+#endif
+    r = FpX_translate(RgX_to_FpX(P, p), Rg_to_Fp(c, p), p);
+  if (signe(r)==0) { set_avma(av); return zero_FpX_mod(p, varn(P)); }
+  return gerepileupto(av, FpX_to_mod(r, p));
+}
+
+static GEN
+RgX_translate_fast(GEN P, GEN c)
+{
+  GEN p, pol;
+  long pa;
+  long t = RgX_Rg_type(P, c, &p,&pol,&pa);
+  switch(t)
+  {
+    case t_INT:    return ZX_translate(P, c);
+    case t_INTMOD: return RgX_translate_FpX(P, c, p);
+    default:       return NULL;
+  }
+}
+
+static GEN
+RgX_translate_i(GEN P, GEN c)
 {
   pari_sp av = avma;
   long n;
-  if (typ(c) == t_INT && RgX_is_ZX(P)) return ZX_translate(P, c);
   n = degpol(P);
   if (n < 40)
     return RgX_translate_basecase(P, c);
   else
   {
     long d = n >> 1;
-    GEN Q = RgX_translate(RgX_shift_shallow(P, -d), c);
-    GEN R = RgX_translate(RgXn_red_shallow(P, d), c);
+    GEN Q = RgX_translate_i(RgX_shift_shallow(P, -d), c);
+    GEN R = RgX_translate_i(RgXn_red_shallow(P, d), c);
     GEN S = gpowgs(deg1pol_shallow(gen_1, c, varn(P)), d);
     return gerepileupto(av, RgX_add(RgX_mul(Q, S), R));
   }
 }
 
+GEN
+RgX_translate(GEN P, GEN c)
+{
+  GEN R = RgX_translate_fast(P, c);
+  return R ? R: RgX_translate_i(P,c);
+}
 /* P(ax + b) */
 GEN
 RgX_affine(GEN P, GEN a, GEN b)
@@ -2935,15 +2982,6 @@ Kronecker_to_mod(GEN z, GEN T)
 /*                        Domain detection                         */
 /*                                                                 */
 /*******************************************************************/
-
-static GEN
-zero_FpX_mod(GEN p, long v)
-{
-  GEN r = cgetg(3,t_POL);
-  r[1] = evalvarn(v);
-  gel(r,2) = mkintmod(gen_0, icopy(p));
-  return r;
-}
 
 static GEN
 RgX_mul_FpX(GEN x, GEN y, GEN p)
