@@ -4414,6 +4414,12 @@ poleval(GEN x, GEN y)
   switch(tx)
   {
     case t_POL:
+      if (typ(y) == t_POL && varn(x) == varn(y) && degpol(y) == 1)
+      {
+        if (isint1(gel(y,3))) return RgX_translate(x, gel(y,2));
+        return gerepilecopy(av0, RgX_affine(x, gel(y,3), gel(y,2)));
+      }
+
       i = lg(x)-1; imin = 2; break;
 
     case t_RFRAC:

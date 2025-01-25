@@ -431,7 +431,9 @@ GEN
 ZX_translate(GEN P, GEN c)
 {
   pari_sp av = avma;
-  long n = degpol(P);
+  long n;
+  if (!signe(c)) return ZX_copy(P);
+  n = degpol(P);
   if (n < 220)
     return ZX_translate_basecase(P, c);
   else

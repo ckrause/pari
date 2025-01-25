@@ -574,7 +574,9 @@ GEN
 RgX_translate(GEN P, GEN c)
 {
   pari_sp av = avma;
-  long n = degpol(P);
+  long n;
+  if (typ(c) == t_INT && RgX_is_ZX(P)) return ZX_translate(P, c);
+  n = degpol(P);
   if (n < 40)
     return RgX_translate_basecase(P, c);
   else
@@ -591,7 +593,7 @@ RgX_translate(GEN P, GEN c)
 GEN
 RgX_affine(GEN P, GEN a, GEN b)
 {
-  if (signe(b)) P = RgX_translate(P, b);
+  if (!gequal0(b)) P = RgX_translate(P, b);
   return RgX_unscale(P, a);
 }
 

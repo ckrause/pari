@@ -13,6 +13,7 @@ BA   4- nfcompositum(nfinit(y-2),x^2-y,x^3-x-1) -> error [#2605]
      3- [libpari] prodprimes, prodprimeslim
 
   Changed
+     1- subst: use fast RgX_affine function to compute P(a*x+b)
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed
