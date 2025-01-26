@@ -1026,17 +1026,20 @@ GEN
 divrem(GEN x, GEN y, long v)
 {
   pari_sp av = avma;
-  long vx, vy;
+  long vx, vy, vz;
   GEN q, r;
   if (v < 0 || typ(y) != t_POL || typ(x) != t_POL) return gdiventres(x,y);
-  vx = varn(x); if (vx != v) x = swap_vars(x,v);
-  vy = varn(y); if (vy != v) y = swap_vars(y,v);
+  vz = v; vx = varn(x); vy = varn(y);
+  if (varncmp(vx, vz) < 0 || varncmp(vy, vz) < 0) vz = fetch_var_higher();
+  if (vx != vz) x = swap_vars(x, v, vz);
+  if (vy != vz) y = swap_vars(y, v, vz);
   q = RgX_divrem(x,y, &r);
-  if (v && (vx != v || vy != v))
+  if (vx != v || vy != v)
   {
     GEN X = pol_x(v);
-    q = gsubst(q, v, X); /* poleval broken for t_RFRAC, subst is safe */
-    r = gsubst(r, v, X);
+    q = gsubst(q, vz, X); /* poleval broken for t_RFRAC, subst is safe */
+    r = gsubst(r, vz, X);
+    if (vz != v) (void)delete_var();
   }
   return gerepilecopy(av, mkcol2(q, r));
 }
@@ -1497,18 +1500,22 @@ gsubst(GEN x, long v, GEN y)
       if (varncmp(vx, v) > 0) return subst_higher(x, y, matn);
       if (varncmp(vx, v) < 0)
       {
-        av = avma; z = cgetg(lx, t_POL); z[1] = x[1];
-        if (lx == 2) return z;
-        for (i = 2; i < lx; i++) gel(z,i) = gsubst(gel(x,i),v,y);
-        z = normalizepol_lg(z, lx); lx = lg(z);
-        if (lx == 2) { set_avma(av); return zeropol(vx); }
-        if (lx == 3) return gerepileupto(av, gmul(pol_1(vx), gel(z,2)));
+        if (lx == 2) return zeropol(vx);
+        av = avma;
+        if (lx == 3)
+        {
+          z = gsubst(gel(x,2), v, y);
+          if (typ(z) == t_POL && varn(z) == vx) return z;
+          return gerepileupto(av, gmul(pol_1(vx), z));
+        }
+        z = cgetg(lx-1, t_VEC);
+        for (i = 2; i < lx; i++) gel(z,i-1) = gsubst(gel(x,i),v,y);
         return gerepileupto(av, poleval(z, pol_x(vx)));
       }
       /* v = vx */
       if (lx == 2)
       {
-        GEN z = Rg_get_0(y);
+        z = Rg_get_0(y);
         return matn >= 0? constmat(z, matn): z;
       }
       if (lx == 3)
@@ -3502,14 +3509,18 @@ _sercoef(GEN x, long n, long v)
 static GEN
 _rfraccoef(GEN x, long n, long v)
 {
-  GEN P,Q, p = gel(x,1), q = gel(x,2);
-  long vp = gvar(p), vq = gvar(q);
+  GEN p = gel(x,1), q = gel(x,2), z;
+  long vp = gvar(p), vq = gvar(q), vz;
   if (v < 0) v = varncmp(vp, vq) < 0? vp: vq;
-  P = (vp == v)? p: swap_vars(p, v);
-  Q = (vq == v)? q: swap_vars(q, v);
-  if (!RgX_is_monomial(Q)) pari_err_TYPE("polcoef", x);
-  n += degpol(Q);
-  return gdiv(_polcoef(P, n, v), leading_coeff(Q));
+  vz = v;
+  if (varncmp(vp, v) < 0 || varncmp(vq, v) < 0) vz = fetch_var_higher();
+  if (vp != v) p = swap_vars(p, v, vz);
+  if (vq != v) q = swap_vars(q, v, vz);
+  n += degpol(q);
+  z = gdiv(_polcoef(p, n, vz), leading_coeff(q));
+  if (vz != v) (void)delete_var();
+  if (!RgX_is_monomial(q)) pari_err_TYPE("polcoef", x);
+  return z;
 }
 
 GEN

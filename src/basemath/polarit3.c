@@ -1693,22 +1693,18 @@ Flx_FlxY_resultant(GEN a, GEN b, ulong p)
   return gerepileupto(ltop,z);
 }
 
-/* return a t_POL (in variable v >= 0) whose coeffs are the coeffs of b,
- * in variable v. This is an incorrect PARI object if initially varn(b) << v.
- * We could return a vector of coeffs, but it is convenient to have degpol()
- * and friends available. Even in that case, it will behave nicely with all
- * functions treating a polynomial as a vector of coeffs (eg poleval).
- * FOR INTERNAL USE! */
+/* Return a t_POL in variable vc whose coeffs are the coeffs of b in
+ * variable v; vc must have higher priority than all variables occuring in b. */
 GEN
-swap_vars(GEN b0, long v)
+swap_vars(GEN b, long v, long vc)
 {
-  long i, n = RgX_degree(b0, v);
-  GEN b, x;
-  if (n < 0) return pol_0(v);
-  b = cgetg(n+3, t_POL); x = b + 2;
-  b[1] = evalsigne(1) | evalvarn(v);
-  for (i=0; i<=n; i++) gel(x,i) = polcoef_i(b0, i, v);
-  return b;
+  long i, n = RgX_degree(b, v);
+  GEN c, x;
+  if (n < 0) return pol_0(vc);
+  c = cgetg(n+3, t_POL); x = c + 2;
+  c[1] = evalsigne(1) | evalvarn(vc);
+  for (i = 0; i <= n; i++) gel(x,i) = polcoef_i(b, i, v);
+  return c;
 }
 
 /* assume varn(b) << varn(a) */
@@ -1849,7 +1845,7 @@ INIT:
   /* always except the first time */
   if (av2) { set_avma(av2); lambda = next_lambda(lambda); }
   if (lambda) B = RgX_translate(B0, monomial(stoi(lambda), 1, vY));
-  B = swap_vars(B, vY); setvarn(B,v);
+  B = swap_vars(B, vY, v);
   /* B0(lambda v + x, v) */
   if (DEBUGLEVEL>4) err_printf("Trying lambda = %ld\n", lambda);
   av2 = avma;
@@ -2771,7 +2767,7 @@ ZX_ZXY_resultant(GEN A, GEN B)
   B = Q_remove_denom(B, &dB);
   if (!dB) B = leafcopy(B);
   A = leafcopy(A); setvarn(A,v);
-  B = swap_vars(B, vY); setvarn(B,v); degB = degpol(B);
+  B = swap_vars(B, vY, v); degB = degpol(B);
   bound = ZX_ZXY_ResBound(A, B, dB);
   if (DEBUGLEVEL>4) err_printf("bound for resultant coeffs: 2^%ld\n",bound);
   worker = snm_closure(is_entry("_ZX_ZXY_resultant_worker"),
@@ -2802,7 +2798,7 @@ ZX_ZXY_rnfequation_lambda(GEN A, GEN B0, long lambda)
   setvarn(A,v);
 INIT:
   if (lambda) B = RgX_translate(B0, monomial(stoi(lambda), 1, vY));
-  B = swap_vars(B, vY); setvarn(B,v);
+  B = swap_vars(B, vY, v);
   /* B0(lambda v + x, v) */
   if (DEBUGLEVEL>4) err_printf("Trying lambda = %ld\n", lambda);
 
