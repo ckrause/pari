@@ -228,6 +228,13 @@ fix_pol(pari_sp av, GEN p, long v)
     setvarn(p, v);
   (void)delete_var(); return gerepileupto(av, p);
 }
+/* characteristic polynomial of 1x1 matrix */
+static GEN
+RgM1_char(GEN x, long v)
+{
+  pari_sp av = avma;
+  return gerepileupto(av, gsub(pol_x(v), gcoeff(x,1,1)));
+}
 GEN
 caract(GEN x, long v)
 {
@@ -237,9 +244,10 @@ caract(GEN x, long v)
 
   if ((T = easychar(x,v))) return T;
 
-  n = lg(x)-1; w = fetch_var_higher();
-  if (n == 1) return fix_pol(av, deg1pol(gen_1, gneg(gcoeff(x,1,1)), w), v);
+  n = lg(x)-1;
+  if (n == 1) return RgM1_char(x, v);
 
+  w = fetch_var_higher();
   x_k = pol_x(w); /* to be modified in place */
   T = scalarpol(det(x), w); C = utoineg(n); Q = pol_x(w);
   for (k=1; k<=n; k++)
@@ -315,17 +323,13 @@ caradj(GEN x, long v, GEN *py)
   }
 
   n = lg(x)-1;
-  if (!n) { if (py) *py = cgetg(1,t_MAT); return pol_1(v); }
+  if (n == 0) { if (py) *py = cgetg(1,t_MAT); return pol_1(v); }
+  if (n == 1) { if (py) *py = matid(1); return RgM1_char(x, v); }
   av0 = avma; w = fetch_var_higher();
   T = cgetg(n+3,t_POL); T[1] = evalsigne(1) | evalvarn(w);
   gel(T,n+2) = gen_1;
   av = avma; t = gerepileupto(av, gneg(mattrace(x)));
   gel(T,n+1) = t;
-  if (n == 1) {
-    T = fix_pol(av0, T, v);
-    if (py) *py = matid(1);
-    return T;
-  }
   if (n == 2) {
     GEN a = gcoeff(x,1,1), b = gcoeff(x,1,2);
     GEN c = gcoeff(x,2,1), d = gcoeff(x,2,2);
