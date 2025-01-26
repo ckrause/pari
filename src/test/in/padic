@@ -25,10 +25,10 @@ test(3,3)
 test(11,3)
 test(nextprime(2^64),3)
 polrootspadic(x^3-x+8, 2, 6)
-f = subst(x^3-x+8, x, x + Mod(y,y^2+y+1));
-padicappr(f, Mod(1+O(2^10)-y, y^2+y+1))
-polrootspadic(f, [y^2+y+1,2], 6)
-polrootspadic(2*y*f, [y^2+y+1,2], 6)
+T=y^2+y+1; f = subst(x^3-x+8, x, x + Mod(y,T));
+padicappr(f, Mod(1+O(2^10)-y, T))
+polrootspadic(f, [T,2], 6)
+polrootspadic(2*Mod(y,T)*f, [T,2], 6)
 \\#1424
 lift(1/2 + O(2))
 
