@@ -1410,6 +1410,7 @@ gsupnorm_aux(GEN x, GEN *m, GEN *msq, long prec)
     case t_QUAD:  z = cxquadnorm(x,prec); store(z, msq); return;
     case t_INT: case t_REAL: z = mpabs(x); store(z,m); return;
     case t_FRAC: z = absfrac(x); store(z,m); return;
+    case t_INFINITY: store(mkoo(), m);
 
     case t_POL: lx = lg(x)-1; x++; break;
 

@@ -8,6 +8,8 @@ BA   4- nfcompositum(nfinit(y-2),x^2-y,x^3-x-1) -> error [#2605]
      5- vecsearch(t_MAT, t_COL or t_VEC) -> error
      6- Mod(a,A) == Mod(b,B) was checking a == b && A == B instead
         of the documented Mod(a,A) - Mod(b,B) == 0
+     7- charpoly: memory leak
+     8- normlp(, oo): support components equal to oo or -oo
 
   Added
      3- [libpari] prodprimes, prodprimeslim
