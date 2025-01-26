@@ -221,7 +221,11 @@ charpoly(GEN x, long v)
 static GEN
 fix_pol(pari_sp av, GEN p, long v)
 {
-  if (varncmp(gvar2(p), v) <= 0) p = poleval(p, pol_x(v)); else setvarn(p, v);
+  long w = gvar2(p);
+  if (w != NO_VARIABLE && varncmp(w, v) <= 0)
+    p = poleval(p, pol_x(v));
+  else
+    setvarn(p, v);
   (void)delete_var(); return gerepileupto(av, p);
 }
 GEN
