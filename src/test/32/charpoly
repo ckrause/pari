@@ -65,9 +65,7 @@ Mod(1, 18446744073709551629)*x^4 + Mod(18446744073709551600, 184467440737095
 
 [Mod(0, 2) Mod(0, 2) Mod(0, 2)]
 
-  ***   at top-level: charpoly(x*matid(3))
-  ***                 ^--------------------
-  *** charpoly: incorrect priority in charpoly: variable x = x
+0
 1
 1
 1
@@ -224,4 +222,4 @@ x + 3.5251905160916583918731318966948840204 E-9
   ***   at top-level: minpoly(Mod(y,x),'y)
   ***                 ^--------------------
   *** minpoly: incorrect priority in minpoly: variable x < y
-Total time spent: 46
+Total time spent: 188

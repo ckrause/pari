@@ -217,30 +217,27 @@ charpoly(GEN x, long v)
   return T;
 }
 
-/* We possibly worked with an "invalid" polynomial p, satisfying
- * varn(p) > gvar2(p). Fix this. */
+/* p a t_POL in fetch_var_higher(); return p(pol_x(v)) and delete variable */
 static GEN
-fix_pol(pari_sp av, GEN p)
+fix_pol(pari_sp av, GEN p, long v)
 {
-  long w = gvar2(p), v = varn(p);
-  if (w == v) pari_err_PRIORITY("charpoly", p, "=", w);
-  if (varncmp(w,v) < 0) p = gerepileupto(av, poleval(p, pol_x(v)));
-  return p;
+  if (varncmp(gvar2(p), v) <= 0) p = poleval(p, pol_x(v)); else setvarn(p, v);
+  (void)delete_var(); return gerepileupto(av, p);
 }
 GEN
 caract(GEN x, long v)
 {
   pari_sp av = avma;
   GEN  T, C, x_k, Q;
-  long k, n;
+  long k, n, w;
 
   if ((T = easychar(x,v))) return T;
 
-  n = lg(x)-1;
-  if (n == 1) return fix_pol(av, deg1pol(gen_1, gneg(gcoeff(x,1,1)), v));
+  n = lg(x)-1; w = fetch_var_higher();
+  if (n == 1) return fix_pol(av, deg1pol(gen_1, gneg(gcoeff(x,1,1)), w), v);
 
-  x_k = pol_x(v); /* to be modified in place */
-  T = scalarpol(det(x), v); C = utoineg(n); Q = pol_x(v);
+  x_k = pol_x(w); /* to be modified in place */
+  T = scalarpol(det(x), w); C = utoineg(n); Q = pol_x(w);
   for (k=1; k<=n; k++)
   {
     GEN mk = utoineg(k), d;
@@ -252,7 +249,7 @@ caract(GEN x, long v)
     Q = RgX_mul(Q, x_k);
     C = diviuexact(mulsi(k-n,C), k+1); /* (-1)^k binomial(n,k) */
   }
-  return fix_pol(av, RgX_Rg_div(T, mpfact(n)));
+  return fix_pol(av, RgX_Rg_div(T, mpfact(n)), v);
 }
 
 /* C = charpoly(x, v) */
@@ -300,7 +297,7 @@ GEN
 caradj(GEN x, long v, GEN *py)
 {
   pari_sp av, av0;
-  long i, k, n;
+  long i, k, n, w;
   GEN T, y, t;
 
   if ((T = easychar(x, v)))
@@ -313,22 +310,24 @@ caradj(GEN x, long v, GEN *py)
     return T;
   }
 
-  n = lg(x)-1; av0 = avma;
-  T = cgetg(n+3,t_POL); T[1] = evalsigne(1) | evalvarn(v);
+  n = lg(x)-1;
+  if (!n) { if (py) *py = cgetg(1,t_MAT); return pol_1(v); }
+  av0 = avma; w = fetch_var_higher();
+  T = cgetg(n+3,t_POL); T[1] = evalsigne(1) | evalvarn(w);
   gel(T,n+2) = gen_1;
-  if (!n) { if (py) *py = cgetg(1,t_MAT); return T; }
   av = avma; t = gerepileupto(av, gneg(mattrace(x)));
   gel(T,n+1) = t;
   if (n == 1) {
-    T = fix_pol(av0, T);
-    if (py) *py = matid(1); return T;
+    T = fix_pol(av0, T, v);
+    if (py) *py = matid(1);
+    return T;
   }
   if (n == 2) {
     GEN a = gcoeff(x,1,1), b = gcoeff(x,1,2);
     GEN c = gcoeff(x,2,1), d = gcoeff(x,2,2);
     av = avma;
     gel(T,2) = gerepileupto(av, gsub(gmul(a,d), gmul(b,c)));
-    T = fix_pol(av0, T);
+    T = fix_pol(av0, T, v);
     if (py) {
       y = cgetg(3, t_MAT);
       gel(y,1) = mkcol2(gcopy(d), gneg(c));
@@ -340,6 +339,7 @@ caradj(GEN x, long v, GEN *py)
   /* l > 3 */
   if (bad_char(residual_characteristic(x), n))
   { /* n! not invertible in base ring */
+    (void)delete_var();
     T = charpoly(x, v);
     if (!py) return gerepileupto(av, T);
     *py = RgM_adj_from_char(x, v, T); return gc_all(av, 2, &T,py);
@@ -359,7 +359,7 @@ caradj(GEN x, long v, GEN *py)
   t = gmul(gcoeff(x,1,1),gcoeff(y,1,1));
   for (i=2; i<=n; i++) t = gadd(t, gmul(gcoeff(x,1,i),gcoeff(y,i,1)));
   gel(T,2) = gerepileupto(av, gneg(t));
-  T = fix_pol(av0, T);
+  T = fix_pol(av0, T, v);
   if (py) *py = odd(n)? gcopy(y): RgM_neg(y);
   gunclone(y); return T;
 }
@@ -1005,8 +1005,8 @@ carhess(GEN x, long v)
   pari_sp av;
   GEN y;
   if ((y = easychar(x,v))) return y;
-  av = avma; y = RgM_hess_charpoly(hess(x), v);
-  return fix_pol(av, y);
+  av = avma; y = RgM_hess_charpoly(hess(x), fetch_var_higher());
+  y = fix_pol(av, y, v); return y;
 }
 
 /* Bound for sup norm of charpoly(M/dM), M integral: let B = |M|oo / |dM|,
@@ -1168,9 +1168,9 @@ carberkowitz(GEN x, long v)
     }
     for (i = 1; i <= r+1; i++) gel(V,i) = gel(Q,i);
   }
-  V = RgV_to_RgX_reverse(V, v); /* not gtopoly: fail if v > gvar(V) */
-  V = odd(lx)? gcopy(V): RgX_neg(V);
-  return fix_pol(av0, V);
+  V = gtopoly(V, fetch_var_higher());
+  if (!odd(lx)) V = RgX_neg(V);
+  return fix_pol(av0, V, v);
 }
 
 /*******************************************************************/
