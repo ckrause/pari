@@ -4233,6 +4233,7 @@ ulong   hash_zv(GEN x);
 /* hyperell.c */
 
 GEN     ZX_hyperellred(GEN P, GEN *pM);
+GEN     genus2charpoly(GEN G, GEN p);
 GEN     hyperellcharpoly(GEN x);
 GEN     hyperellchangecurve(GEN C, GEN m);
 GEN     hyperelldisc(GEN x);

@@ -1956,3 +1956,17 @@ genus2_eulerfact2(GEN F, GEN PQ)
            genus2_eulerfact2_semistable(gel(W,2)));
   return gerepileupto(av, E);
 }
+
+GEN
+genus2charpoly(GEN G, GEN p)
+{
+  pari_sp av = avma;
+  GEN gr = genus2red(G, p), F;
+  GEN PQ = gel(gr, 3), L = gel(gr, 4), r = gel(L, 4);
+  GEN P = gadd(gsqr(gel(PQ, 2)), gmul2n(gel(PQ, 1), 2));
+  if (equaliu(p,2))
+    F = genus2_eulerfact2(P, PQ);
+  else
+    F = genus2_eulerfact(P,p, r[1],r[2]);
+  return gerepileupto(av, F);
+}
