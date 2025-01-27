@@ -5,7 +5,7 @@ Prototype: vVGDGI
 Wrapper: (,,,vG)
 Description:
  (,gen,?gen,closure):void forqfvec1(${4 cookie}, ${4 wrapper}, $2, $3)
-Help:forqfvec(v,q,b,expr): q being a square and symmetric integral matrix
+Help: forqfvec(v,q,b,expr): q being a square and symmetric integral matrix
  representing an positive definite quadratic form, evaluate expr
  for all pairs of nonzero vectors (-v, v) such that q(v)<=b.
 Doc: $q$ being a square and symmetric integral matrix representing a positive

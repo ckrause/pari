@@ -5,7 +5,7 @@ Prototype: GDPDn
 Help: ellformalw(E,{n=seriesprecision},{t='x}): E elliptic curve,
  n integer; returns n terms of the formal expansion of w = -1/y in the formal
  parameter t = -x/y.
-Doc:Return the formal power series $w$ attached to the elliptic curve $E$,
+Doc: Return the formal power series $w$ attached to the elliptic curve $E$,
  in the variable $t$:
  $$ w(t) = t^{3}(1 + a_{1} t + (a_{2} + a_{1}^{2}) t^{2} + \cdots + O(t^{n})),$$
  which is the formal expansion of $-1/y$ in the formal parameter $t := -x/y$

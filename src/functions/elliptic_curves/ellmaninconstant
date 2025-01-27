@@ -1,4 +1,4 @@
-Function:ellmaninconstant
+Function: ellmaninconstant
 Section: elliptic_curves
 C-Name: ellmaninconstant
 Prototype: G

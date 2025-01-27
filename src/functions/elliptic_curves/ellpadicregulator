@@ -2,7 +2,7 @@ Function: ellpadicregulator
 Section: elliptic_curves
 C-Name: ellpadicregulator
 Prototype: GGLG
-Help:ellpadicregulator(E,p,n,S): E elliptic curve/Q, S a vector of
+Help: ellpadicregulator(E,p,n,S): E elliptic curve/Q, S a vector of
  points in E(Q), p prime, n an integer; returns the p-adic
  cyclotomic regulator of the points of S at precision p^n.
 Doc: Let $E/\Q$ be an elliptic curve. Return the determinant of the Gram
