@@ -3,8 +3,7 @@ Section: linear_algebra
 C-Name: matreduce
 Prototype: G
 Help: matreduce(m): reduce the factorization matrix m to canonical form
- (sorted first row with unique elements)
- matrix.
+ (sorted first column with unique elements) matrix.
 Doc: let $m$ be a factorization matrix, i.e., a 2-column matrix whose
  columns contains arbitrary ``generators'' and integer ``exponents''
  respectively. Returns the canonical form of $m$: the
