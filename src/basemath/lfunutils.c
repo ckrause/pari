@@ -2219,9 +2219,14 @@ static GEN
 nfellcharpoly(GEN e, GEN T, GEN p)
 {
   GEN nf, E, t;
+  e = shallowcopy(e);
   nf = nfinit(mkvec2(T, mkvec(p)), DEFAULTPREC);
-  E = ellinit(e, nf, DEFAULTPREC);
-  if (lg(E)==1) return NULL;
+  while(1)
+  {
+    E = ellinit(e, nf, DEFAULTPREC);
+    if (lg(E)!=1) break;
+    gel(e,5) = gadd(gel(e,5), p);
+  }
   t = elleulerf(E, p);
   obj_free(E);
   return t;
