@@ -11,7 +11,7 @@ Doc: Let $E/\Q$ be an elliptic curve. Return the determinant of the Gram
  digits.
 
  When $E$ has ordinary reduction at $p$, this is the expected Gram
- deteterminant in $\Q_{p}$.
+ determinant in $\Q_{p}$.
 
  In the case of supersingular reduction of $E$ at $p$, the definition
  requires care: the regulator $R$ is an element of
