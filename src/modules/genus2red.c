@@ -1193,7 +1193,7 @@ tame_5(struct igusa *I, struct igusa_p *Ip)
         {
           case 0: condp = 4;
             Ip->type = stack_sprintf("[I*{0}-I*{0}-%ld] page 158",(d-2)/2);
-            Ip->abe = 1; Ip->tor = 0;
+            Ip->abe = 0; Ip->tor = 0;
             Ip->neron = mkvecsmall4(2,2,2,2); break;
           case 1: condp = 2;
             Ip->type = stack_sprintf("[I{0}-I*{0}-%ld] page 159",(d-1)/2);
