@@ -4,7 +4,7 @@
 \\ t is to be substituted with a prime number bigger or equal to 7
 \\ and can be taken to be 5 most of the time...
 \\ a, b, c are generic integers (to be changed if unexpected output)
-do(P, s) = print("Type: ", s); genus2red(subst(P,'t,7),7);
+do(P, s) = print("Type: ", s); my(Q= subst(P,'t,7)); [genus2red(Q, 7), genus2charpoly(Q,7)];
 
 P0=x^5+a*x^3+b*x^2+c*x+1;
 do(substvec(P0, [a,b,c], [1,-2,3]), "[I{0-0-0}], p. 155")
