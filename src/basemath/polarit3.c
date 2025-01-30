@@ -778,7 +778,7 @@ const struct bb_field *get_Fq_field(void **E, GEN T, GEN p)
 /*******************************************************************/
 /* P(X + c) */
 static GEN
-Fp_XpN_powu(GEN u, ulong n, GEN p, long v)
+Fp_XpN_powu(GEN u, long n, GEN p, long v)
 {
   pari_sp av;
   long k;
