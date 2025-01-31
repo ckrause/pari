@@ -2195,9 +2195,9 @@ genus2_redmodel(GEN P, GEN p)
 }
 
 static GEN
-oneminusxd(long d)
+xdminusone(long d)
 {
-  return gsub(gen_1, pol_xn(d, 0));
+  return gsub(pol_xn(d, 0),gen_1);
 }
 
 static GEN
@@ -2229,7 +2229,7 @@ nfellcharpoly(GEN e, GEN T, GEN p)
   }
   t = elleulerf(E, p);
   obj_free(E);
-  return t;
+  return RgX_recip(ginv(t));
 }
 
 static GEN
@@ -2287,12 +2287,12 @@ genus2_eulerfact_semistable(GEN P, GEN p)
   GEN F = gel(GU,1), Q = gel(GU,2);
   long dQ = degpol(Q), lF = lg(F)-1;
 
-  abe = dQ >= 5 ? RgX_recip(hyperellcharpoly(gmul(Q,gmodulo(gen_1,p))))
-      : dQ >= 3 ? RgX_recip(ellfromeqncharpoly(Q,gen_0,p))
+  abe = dQ >= 5 ? hyperellcharpoly(gmul(Q,gmodulo(gen_1,p)))
+      : dQ >= 3 ? ellfromeqncharpoly(Q,gen_0,p)
                 : pol_1(0);
-  ki = dQ != 0 ? oneminusxd(1)
-              : Fp_issquare(gel(Q,2),p) ? ZX_sqr(oneminusxd(1))
-                                        : oneminusxd(2);
+  ki = dQ != 0 ? xdminusone(1)
+              : Fp_issquare(gel(Q,2),p) ? ZX_sqr(xdminusone(1))
+                                        : xdminusone(2);
   if (lF)
   {
     long i;
@@ -2301,23 +2301,23 @@ genus2_eulerfact_semistable(GEN P, GEN p)
       GEN Fi = gel(F, i);
       long d = degpol(Fi);
       GEN e = FpX_rem(Q, Fi, p);
-      GEN kqf = lgpol(e)==0 ? oneminusxd(d):
-                FpXQ_issquare(e, Fi, p) ? ZX_sqr(oneminusxd(d))
-                                        : oneminusxd(2*d);
-      kp = gmul(kp, oneminusxd(d));
+      GEN kqf = lgpol(e)==0 ? xdminusone(d):
+                FpXQ_issquare(e, Fi, p) ? ZX_sqr(xdminusone(d))
+                                        : xdminusone(2*d);
+      kp = gmul(kp, xdminusone(d));
       kq = gmul(kq, kqf);
     }
   }
   if (v)
   {
-    GEN kqoo = w==1 ? oneminusxd(1):
-               Fp_issquare(leading_coeff(Q), p)? ZX_sqr(oneminusxd(1))
-                                              : oneminusxd(2);
-    kp = gmul(kp, oneminusxd(1));
+    GEN kqoo = w==1 ? xdminusone(1):
+               Fp_issquare(leading_coeff(Q), p)? ZX_sqr(xdminusone(1))
+                                              : xdminusone(2);
+    kp = gmul(kp, xdminusone(1));
     kq = gmul(kq, kqoo);
   }
-  tor = RgX_div(ZX_mul(oneminusxd(1), kq), ZX_mul(ki, kp));
-  return ginv( ZX_mul(abe, tor) );
+  tor = RgX_div(ZX_mul(xdminusone(1), kq), ZX_mul(ki, kp));
+  return ZX_mul(abe, tor);
 }
 
 static GEN
@@ -2425,10 +2425,10 @@ genus2_eulerfact2_semistable(GEN PQ)
   GEN ki, kp = pol_1(0), kq = pol_1(0);
   long dP = F2x_degree(P), dQ = F2x_degree(Q), d = maxss(dP, 2*dQ);
   if (!lgpol(F)) return pol_1(0);
-  ki = dQ!=0 || dP>0 ? oneminusxd(1):
-      dP==-1 ? ZX_sqr(oneminusxd(1)): oneminusxd(2);
-  abe = d>=5? RgX_recip(hyperellcharpoly(gmul(PQ,gmodulss(1,2)))):
-        d>=3? RgX_recip(ellfromeqncharpoly(F2x_to_ZX(P), F2x_to_ZX(Q), gen_2)):
+  ki = dQ!=0 || dP>0 ? xdminusone(1):
+      dP==-1 ? ZX_sqr(xdminusone(1)): xdminusone(2);
+  abe = d>=5? hyperellcharpoly(gmul(PQ,gmodulss(1,2))):
+        d>=3? ellfromeqncharpoly(F2x_to_ZX(P), F2x_to_ZX(Q), gen_2):
         pol_1(0);
   if (lgpol(F))
   {
@@ -2439,23 +2439,23 @@ genus2_eulerfact2_semistable(GEN PQ)
       GEN Fi = gel(M, i);
       long d = F2x_degree(Fi);
       long nb  = F2xqX_quad_nbroots(F2x_rem(Q, Fi), F2x_rem(P, Fi), Fi);
-      GEN kqf = nb==1 ? oneminusxd(d):
-                nb==2 ? ZX_sqr(oneminusxd(d))
-                      : oneminusxd(2*d);
-      kp = gmul(kp, oneminusxd(d));
+      GEN kqf = nb==1 ? xdminusone(d):
+                nb==2 ? ZX_sqr(xdminusone(d))
+                      : xdminusone(2*d);
+      kp = gmul(kp, xdminusone(d));
       kq = gmul(kq, kqf);
     }
   }
   if (maxss(v[1],2*v[2])<5)
   {
-    GEN kqoo = v[1]>2*v[2] ? oneminusxd(1):
-               v[1]<2*v[2] ? ZX_sqr(oneminusxd(1))
-                           : oneminusxd(2);
-    kp = gmul(kp, oneminusxd(1));
+    GEN kqoo = v[1]>2*v[2] ? xdminusone(1):
+               v[1]<2*v[2] ? ZX_sqr(xdminusone(1))
+                           : xdminusone(2);
+    kp = gmul(kp, xdminusone(1));
     kq = gmul(kq, kqoo);
   }
-  tor = RgX_div(ZX_mul(oneminusxd(1),kq), ZX_mul(ki, kp));
-  return ginv( ZX_mul(abe, tor) );
+  tor = RgX_div(ZX_mul(xdminusone(1),kq), ZX_mul(ki, kp));
+  return ZX_mul(abe, tor);
 }
 
 static GEN
@@ -2484,13 +2484,13 @@ lfungenus2(GEN G)
   if (ram2 && equalis(gmael(M,2,1),-1))
     pari_warn(warner,"unknown valuation of conductor at 2");
   e = cgetg(lL+(ram2?0:1), t_VEC);
-  gel(e,1) = mkvec2(gen_2, ram2 ? genus2_eulerfact2(F, PQ)
-           : ginv( RgX_recip(hyperellcharpoly(gmul(PQ,gmodulss(1,2))))) );
+  gel(e,1) = mkvec2(gen_2, ram2 ? ginv(RgX_recip(genus2_eulerfact2(F, PQ)))
+           : ginv(RgX_recip(hyperellcharpoly(gmul(PQ,gmodulss(1,2))))) );
   for(i = ram2? 2: 1; i < lL; i++)
   {
     GEN Li = gel(L, i);
     GEN p = gel(Li, 1);
-    gel(e, ram2 ? i: i+1) = mkvec2(p, genus2_eulerfact(F,p));
+    gel(e, ram2 ? i: i+1) = mkvec2(p, ginv(RgX_recip(genus2_eulerfact(F,p))));
   }
   Ldata = mkvecn(6, tag(mkvec2(F,e), t_LFUN_GENUS2),
       gen_0, mkvec4(gen_0, gen_0, gen_1, gen_1), gen_2, N, gen_0);
