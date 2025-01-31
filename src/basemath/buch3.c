@@ -1884,7 +1884,7 @@ rnfconductor0(GEN bnf, GEN T, long flag)
       long v, pp = itou(p);
       if ((v = u_lvalrem(degT, pp, &q)))
       { /* e = e_tame * e_wild, e_wild | p^v */
-        ulong t = ugcd(umodiu(subiu(pr_norm(pr),1), q), q); /* e_tame | t */
+        ulong t = ugcdiu(subiu(pr_norm(pr),1), q); /* e_tame | t */
         /* upper bound for 1 + p/(p-1) * v * e(L/Q,p) */
         e0 = minuu(e0, 1 + (pp * v * pr_get_e(pr) * upowuu(pp,v) * t) / (pp-1));
         e = utoipos(e0);

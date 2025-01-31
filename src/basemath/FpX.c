@@ -1207,8 +1207,7 @@ FpX_integXn(GEN x, long n, GEN p)
       gel(y,i) = gen_0;
     else
     {
-      ulong j = n+i-1;
-      ulong d = ugcd(j, umodiu(xi, j));
+      ulong j = n+i-1, d = ugcdiu(xi, j);
       if (d==1)
         gel(y,i) = Fp_divu(xi, j, p);
       else

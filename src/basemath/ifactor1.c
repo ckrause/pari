@@ -3222,7 +3222,7 @@ u_oddprimedivisors_gcd(ulong N, ulong lim, ulong *pLIM)
   GEN PR = prodprimes(), LIM = prodprimeslim();
   long b = minss(lg(PR)-1, expu(lim)-6);
   /* 2^{b+6} <= lim < 2^{b+7}, b >= 1 */
-  *pLIM = LIM[b]; return ugcd(N, umodiu(gel(PR,b), N));
+  *pLIM = LIM[b]; return ugcdiu(gel(PR,b), N);
 }
 /* not GC-clean */
 static GEN

@@ -4722,7 +4722,7 @@ makeC3C3resolvent(GEN pol, long flag)
 
 /* x, y > 0 */
 static GEN
-lcmiu(GEN x, ulong y) { return muliu(x, y / ugcd(umodiu(x,y), y)); }
+lcmiu(GEN x, ulong y) { return muliu(x, y / ugcdiu(x,y)); }
 static GEN
 lcmuu(ulong x, ulong y) { return muluu(x, y / ugcd(x, y)); }
 

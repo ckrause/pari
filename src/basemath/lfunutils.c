@@ -1844,7 +1844,7 @@ lfunellsympow(GEN e, ulong m)
   ellQ_get_Nfa(e, &N, &Nfa);
   pr = gel(Nfa,1);
   ex = gel(Nfa,2); l = lg(pr);
-  if (ugcd(umodiu(N,6), 6) == 1)
+  if (ugcdiu(N,6) == 1)
     et = NULL;
   else
     et = ellminimaldotwist(e, NULL);

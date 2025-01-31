@@ -424,7 +424,7 @@ uisprime_661(ulong n)
 }
 
 static int
-iu_coprime(GEN N, ulong u) { return ugcd(u, umodiu(N,u)) == 1; }
+iu_coprime(GEN N, ulong u) { return ugcdiu(N,u) == 1; }
 long
 BPSW_psp(GEN N)
 {
