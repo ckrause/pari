@@ -663,6 +663,7 @@ Fp_ispower(GEN x, GEN K, GEN p)
   /* implies p > 2 */
   p_1 = subiu(p,1);
   K = gcdii(K, p_1);
+  if (equali1(K)) return gc_bool(av, 1);
   if (absequaliu(K, 2)) return gc_bool(av, kronecker(x,p) > 0);
   x = Fp_pow(x, diviiexact(p_1,K), p);
   return gc_bool(av, equali1(x));
