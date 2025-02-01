@@ -788,6 +788,8 @@ hashtable *hashstr_import_static(hashentry *e, ulong size);
 
 GEN     ZlXQX_hyperellpadicfrobenius(GEN H, GEN T, ulong p, long n);
 GEN     hyperellextremalmodels(GEN F, long g, GEN p);
+GEN     genus2_eulerfact(GEN P, GEN p);
+GEN     genus2_eulerfact2(GEN F, GEN PQ);
 
 /* intnum.c */
 

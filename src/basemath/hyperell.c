@@ -1475,3 +1475,301 @@ hyperellchangecurve(GEN W, GEN C)
   Q = RgX_Rg_div(RgX_add(Q, RgX_mul2n(H,1)), e);
   return gerepilecopy(av, mkvec2(P,Q));
 }
+
+static GEN
+genus2_redmodel(GEN P, GEN p)
+{
+  GEN M = FpX_factor(P, p);
+  GEN F = gel(M,1), E = gel(M,2);
+  long i, k, r = lg(F);
+  GEN U = scalarpol(leading_coeff(P), varn(P));
+  GEN G = cgetg(r, t_COL);
+  for (i=1, k=0; i<r; i++)
+  {
+    if (E[i]>1)
+      gel(G,++k) = gel(F,i);
+    if (odd(E[i]))
+      U = FpX_mul(U, gel(F,i), p);
+  }
+  setlg(G,++k);
+  return mkvec2(G,U);
+}
+
+static GEN
+xdminusone(long d)
+{
+  return gsub(pol_xn(d, 0),gen_1);
+}
+
+static GEN
+ellfromeqncharpoly(GEN P, GEN Q, GEN p)
+{
+  long v;
+  GEN E, F, t, y;
+  v = fetch_var();
+  y = pol_x(v);
+  F = gsub(gadd(ZX_sqr(y), gmul(y, Q)), P);
+  E = ellinit(ellfromeqn(F), p, DEFAULTPREC);
+  delete_var();
+  t = ellap(E, p);
+  obj_free(E);
+  return mkpoln(3, gen_1, negi(t), p);
+}
+
+static GEN
+nfellcharpoly(GEN e, GEN T, GEN p)
+{
+  GEN nf, E, t;
+  e = shallowcopy(e);
+  nf = nfinit(mkvec2(T, mkvec(p)), DEFAULTPREC);
+  while(1)
+  {
+    E = ellinit(e, nf, DEFAULTPREC);
+    if (lg(E)!=1) break;
+    gel(e,5) = gadd(gel(e,5), p);
+  }
+  t = elleulerf(E, p);
+  obj_free(E);
+  return RgX_recip(ginv(t));
+}
+
+static GEN
+genus2_red5(GEN P, GEN T, GEN p)
+{
+  long vx = varn(P), vy = varn(T);
+  GEN f = shallowcopy(T);
+  setvarn(f, vx);
+  while(1)
+  {
+    GEN Pr, R, r, Rs;
+    (void) ZXX_pvalrem(P, p, &Pr);
+    R = FpXQX_roots_mult(Pr, 3, T, p);
+    if (lg(R)==1) return P;
+    r = FpX_center(gel(R,1), p, shifti(p,-1));
+    r = gel(R,1);
+    P = RgX_affine(P, p, r);
+    setvarn(r, vx);
+    f = RgX_Rg_div(gsub(f, r), p);
+    Rs = RgX_rem(RgXY_swap(P, 3, vy), gsub(f, pol_x(vy)));
+    P = RgXY_swap(Rs, 3, vy);
+    (void) ZXX_pvalrem(P, sqri(p), &P);
+  }
+}
+
+static GEN
+genus2_type5(GEN P, GEN p)
+{
+  GEN E, F, T, a, a2, Q;
+  long v;
+  (void) ZX_pvalrem(P, p, &F);
+  F = FpX_red(F, p);
+  if (degpol(F) < 1) return NULL;
+  F = FpX_factor(F, p);
+  if (mael(F,2,1) != 3 || degpol(gmael(F,1,1)) != 2) return NULL;
+  T = gmael(F, 1, 1);
+  v = fetch_var_higher();
+  Q = RgV_to_RgX(ZX_digits(P, T), v);
+  Q = genus2_red5(Q, T, p);
+  a = gel(Q,5); a2 = ZX_sqr(a);
+  E = mkvec5(gen_0, gel(Q,4), gen_0, ZX_mul(gel(Q,3),a), ZX_mul(gel(Q,2),a2));
+  delete_var();
+  return nfellcharpoly(E, T, p);
+}
+
+/* Assume P has semistable reduction at p */
+static GEN
+genus2_eulerfact_semistable(GEN P, GEN p)
+{
+  GEN Pp = FpX_red(P, p);
+  GEN GU = genus2_redmodel(Pp, p);
+  long d = 6-degpol(Pp), v = d/2, w = odd(d);
+  GEN abe, tor;
+  GEN ki, kp = pol_1(0), kq = pol_1(0);
+  GEN F = gel(GU,1), Q = gel(GU,2);
+  long dQ = degpol(Q), lF = lg(F)-1;
+
+  abe = dQ >= 5 ? hyperellcharpoly(gmul(Q,gmodulo(gen_1,p)))
+      : dQ >= 3 ? ellfromeqncharpoly(Q,gen_0,p)
+                : pol_1(0);
+  ki = dQ != 0 ? xdminusone(1)
+              : Fp_issquare(gel(Q,2),p) ? ZX_sqr(xdminusone(1))
+                                        : xdminusone(2);
+  if (lF)
+  {
+    long i;
+    for(i=1; i <= lF; i++)
+    {
+      GEN Fi = gel(F, i);
+      long d = degpol(Fi);
+      GEN e = FpX_rem(Q, Fi, p);
+      GEN kqf = lgpol(e)==0 ? xdminusone(d):
+                FpXQ_issquare(e, Fi, p) ? ZX_sqr(xdminusone(d))
+                                        : xdminusone(2*d);
+      kp = gmul(kp, xdminusone(d));
+      kq = gmul(kq, kqf);
+    }
+  }
+  if (v)
+  {
+    GEN kqoo = w==1 ? xdminusone(1):
+               Fp_issquare(leading_coeff(Q), p)? ZX_sqr(xdminusone(1))
+                                              : xdminusone(2);
+    kp = gmul(kp, xdminusone(1));
+    kq = gmul(kq, kqoo);
+  }
+  tor = RgX_div(ZX_mul(xdminusone(1), kq), ZX_mul(ki, kp));
+  return ZX_mul(abe, tor);
+}
+
+GEN
+genus2_eulerfact(GEN P, GEN p)
+{
+  pari_sp av = avma;
+  GEN W, R = genus2_type5(P, p), E;
+  if (R) return R;
+  W = hyperellextremalmodels(P, 2, p);
+  if (lg(W) < 3) return genus2_eulerfact_semistable(P,p);
+  E =  gmul(genus2_eulerfact_semistable(gel(W,1),p),
+            genus2_eulerfact_semistable(gel(W,2),p));
+  return gerepileupto(av, E);
+}
+
+static GEN
+F2x_genus2_find_trans(GEN P, GEN Q, GEN F)
+{
+  pari_sp av = avma;
+  long i, d = F2x_degree(F), v = P[1];
+  GEN M, C, V;
+  M = cgetg(d+1, t_MAT);
+  for (i=1; i<=d; i++)
+  {
+    GEN Mi = F2x_rem(F2x_add(F2x_shift(Q,i-1), monomial_F2x(2*i-2,v)), F);
+    gel(M,i) = F2x_to_F2v(Mi, d);
+  }
+  C = F2x_to_F2v(F2x_rem(P, F), d);
+  V = F2m_F2c_invimage(M, C);
+  return gerepileuptoleaf(av, F2v_to_F2x(V, v));
+}
+
+static GEN
+F2x_genus2_trans(GEN P, GEN Q, GEN H)
+{
+  return F2x_add(P,F2x_add(F2x_mul(H,Q), F2x_sqr(H)));
+}
+
+static GEN
+F2x_genus_redoo(GEN P, GEN Q, long k)
+{
+  if (F2x_degree(P)==2*k)
+  {
+    long c = F2x_coeff(P,2*k-1), dQ = F2x_degree(Q);
+    if ((dQ==k-1 && c==1) || (dQ<k-1 && c==0))
+     return F2x_genus2_trans(P, Q, monomial_F2x(k, P[1]));
+  }
+  return P;
+}
+
+static GEN
+F2x_pseudodisc(GEN P, GEN Q)
+{
+  GEN dP = F2x_deriv(P), dQ = F2x_deriv(Q);
+  return F2x_gcd(Q, F2x_add(F2x_mul(P, F2x_sqr(dQ)), F2x_sqr(dP)));
+}
+
+static GEN
+F2x_genus_red(GEN P, GEN Q)
+{
+  long dP, dQ;
+  GEN F, FF;
+  P = F2x_genus_redoo(P, Q, 3);
+  P = F2x_genus_redoo(P, Q, 2);
+  P = F2x_genus_redoo(P, Q, 1);
+  dP = F2x_degree(P);
+  dQ = F2x_degree(Q);
+  FF = F = F2x_pseudodisc(P,Q);
+  while(F2x_degree(F)>0)
+  {
+    GEN M = gel(F2x_factor(F),1);
+    long i, l = lg(M);
+    for(i=1; i<l; i++)
+    {
+      GEN R = F2x_sqr(gel(M,i));
+      GEN H = F2x_genus2_find_trans(P, Q, R);
+      P = F2x_div(F2x_genus2_trans(P, Q, H), R);
+      Q = F2x_div(Q, gel(M,i));
+    }
+    F = F2x_pseudodisc(P, Q);
+  }
+  return mkvec4(P,Q,FF,mkvecsmall2(dP,dQ));
+}
+
+/* Number of solutions of x^2+b*x+c */
+static long
+F2xqX_quad_nbroots(GEN b, GEN c, GEN T)
+{
+  if (lgpol(b) > 0)
+  {
+    GEN d = F2xq_div(c, F2xq_sqr(b, T), T);
+    return F2xq_trace(d, T)? 0: 2;
+  }
+  else
+    return 1;
+}
+
+static GEN
+genus2_eulerfact2_semistable(GEN PQ)
+{
+  GEN V = F2x_genus_red(ZX_to_F2x(gel(PQ, 1)), ZX_to_F2x(gel(PQ, 2)));
+  GEN P = gel(V, 1), Q = gel(V, 2);
+  GEN F = gel(V, 3), v = gel(V, 4);
+  GEN abe, tor;
+  GEN ki, kp = pol_1(0), kq = pol_1(0);
+  long dP = F2x_degree(P), dQ = F2x_degree(Q), d = maxss(dP, 2*dQ);
+  if (!lgpol(F)) return pol_1(0);
+  ki = dQ!=0 || dP>0 ? xdminusone(1):
+      dP==-1 ? ZX_sqr(xdminusone(1)): xdminusone(2);
+  abe = d>=5? hyperellcharpoly(gmul(PQ,gmodulss(1,2))):
+        d>=3? ellfromeqncharpoly(F2x_to_ZX(P), F2x_to_ZX(Q), gen_2):
+        pol_1(0);
+  if (lgpol(F))
+  {
+    GEN M = gel(F2x_factor(F), 1);
+    long i, lF = lg(M)-1;
+    for(i=1; i <= lF; i++)
+    {
+      GEN Fi = gel(M, i);
+      long d = F2x_degree(Fi);
+      long nb  = F2xqX_quad_nbroots(F2x_rem(Q, Fi), F2x_rem(P, Fi), Fi);
+      GEN kqf = nb==1 ? xdminusone(d):
+                nb==2 ? ZX_sqr(xdminusone(d))
+                      : xdminusone(2*d);
+      kp = gmul(kp, xdminusone(d));
+      kq = gmul(kq, kqf);
+    }
+  }
+  if (maxss(v[1],2*v[2])<5)
+  {
+    GEN kqoo = v[1]>2*v[2] ? xdminusone(1):
+               v[1]<2*v[2] ? ZX_sqr(xdminusone(1))
+                           : xdminusone(2);
+    kp = gmul(kp, xdminusone(1));
+    kq = gmul(kq, kqoo);
+  }
+  tor = RgX_div(ZX_mul(xdminusone(1),kq), ZX_mul(ki, kp));
+  return ZX_mul(abe, tor);
+}
+
+GEN
+genus2_eulerfact2(GEN F, GEN PQ)
+{
+  pari_sp av = avma;
+  GEN W, R = genus2_type5(F, gen_2), E;
+  if (R) return R;
+  W = hyperellextremalmodels(PQ, 2, gen_2);
+  if (lg(W) < 3) return genus2_eulerfact2_semistable(PQ);
+  E = gmul(genus2_eulerfact2_semistable(gel(W,1)),
+           genus2_eulerfact2_semistable(gel(W,2)));
+  return gerepileupto(av, E);
+}
+
+
