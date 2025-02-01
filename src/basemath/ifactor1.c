@@ -3928,6 +3928,16 @@ Z_issmooth_fact(GEN m, ulong lim)
   return gc_NULL(av);
 }
 
+/* assume (x,p) = 1 */
+static GEN
+Z_to_Up(GEN x, GEN p, long d)
+{
+  GEN z = cgetg(5, t_PADIC);
+  z[1] = evalprecp(d) | evalvalp(0);
+  gel(z,2) = p;
+  gel(z,3) = powiu(p, d);
+  gel(z,4) = modii(x, gel(z,3)); return z;
+}
 /* Is (a mod p^e) a K-th power ? p is prime and e > 0 */
 static int
 Zp_ispower(GEN a, GEN L, GEN K, GEN p, long e)
@@ -3935,18 +3945,24 @@ Zp_ispower(GEN a, GEN L, GEN K, GEN p, long e)
   GEN t = gen_0;
   long v = Z_pvalrem(a, p, &a), d = e - v;
   if (d > 0)
-  { /* is a mod p^d a K-th power ? a a p-unit */
+  { /* is a mod p^d a K-th power ? a p-unit */
     ulong r;
-    v = uabsdivui_rem(v, K, &r); if (r) return 0;
-    if (d == 1)
-    { /* mod p: faster */
-      if (!Fp_ispower(a, K, p)) return 0;
-      if (L) t = Fp_sqrtn(a, K, p, NULL);
+    v = uabsdivui_rem(v, K, &r);
+    if (r || !Fp_ispower(a, K, p)) return 0;
+    if (d == 1) /* mod p*/
+    { if (L) t = Fp_sqrtn(a, K, p, NULL); }
+    else if (dvdii(K, p))
+    { /* mod p^{2 +}, ramified case */
+      if (!ispower(Z_to_Up(a, p, d), K, L? &t: NULL)) return 0;
+      if (L) t = padic_to_Q(t);
     }
     else
-    { /* mod p^{2 +} */
-      if (!ispower(cvtop(a, p, d), K, L? &t: NULL)) return 0;
-      if (L) t = gtrunc(t);
+    { /* mod p^{2 +}, unramified case */
+      if (L)
+      {
+        t = Fp_sqrtn(a, K, p, NULL);
+        t = Zp_sqrtnlift(a, K, t, p, d);
+      }
     }
     if (L && v) t = mulii(t, powiu(p, v));
   }
