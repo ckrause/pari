@@ -1,0 +1,11 @@
+Function: thetanull
+Section: transcendental
+C-Name: thetanull
+Prototype: GDGp
+Help: thetanull(tau,{flag=0}): Jacobi theta Nullwerte: if flag is not 1 or
+ [1,1], same as theta(0, tau, flag). Otherwise, (d/dz)theta(z,tau,flag) at z=0.
+ If flag = 0 or omitted, vector of all four.
+Doc: Jacobi theta Nullwerte: if \kbd{flag} not 1 or \kbd{1,1}, same as
+ \kbd{theta(0,tau,flag)}, otherwise derivative with respect to $z$ at $z=0$
+ since \kbd{theta(0,tau,flag)} is identically 0. If \kbd{flag=0} or omitted,
+ vector of all four.

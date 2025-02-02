@@ -1,8 +1,31 @@
 Function: theta
 Section: transcendental
 C-Name: theta
-Prototype: GGp
-Help: theta(q,z): Jacobi sine theta-function.
-Doc: Jacobi sine theta-function
- $$ \theta_{1}(z, q) =
-    2q^{1/4} \sum_{n\geq 0} (-1)^{n} q^{n(n+1)} \sin((2n+1)z).$$
+Prototype: GGDGD0,L,p
+Help: theta(z,tau,{flag=0},{der=0}): Jacobi theta-functions. If flag omitted,
+ old behavior theta(q,z) Jacobi sine theta function. Otherwise, one variable
+ Riemann-Jacobi theta functions theta_{0,0}=theta_3, theta_{0,1}=theta_4,
+ theta_{1,0}=theta_2, theta_{1,1}=-theta_1. If flag=0, all four theta_{i,j}
+ for 0<=i,j<=1. If der>0, der'th derivative in z.
+Doc: Jacobi theta-functions. If flag omitted, old behavior with parameters
+ \kbd{q,z} instead of \kbd{z,tau}:
+ \kbd{theta(q,z)}=$2q^{1/4} \sum_{n\geq 0} (-1)^{n} q^{n(n+1)} \sin((2n+1)z)$.
+
+ Otherwise, setting $u=\exp(2\pi iz)$ and $q=\exp(2\pi i\tau)$, we have with
+ \kbd{flag=[0,0]} or \kbd{flag=3}:
+ $$\theta_{0,0}(z,\tau)=\theta_3(z,\tau)=\sum_{n\in\Bbb Z}u^nq^{n^2/2}=1+2q^{1/2}\cos(2\pi z)+2q^{4/2}\cos(4\pi z)+\cdots\;,$$
+
+ with \kbd{flag=[0,1]} or \kbd{flag=4}:
+ $$\theta_{0,1}(z,\tau)=\theta_4(z,\tau)=\sum_{n\in\Bbb Z}(-1)^nu^nq^{n^2/2}=1-2q^{1/2}\cos(2\pi z)+2q^{4/2}\cos(4\pi z)-\cdots\;,$$
+
+ with \kbd{flag=[1,0]} or \kbd{flag=2}:
+ $$\theta_{1,0}(z,\tau)=\theta_2(z,\tau)=\sum_{n\in\Bbb Z}u^{n+1/2}q^{(n+1/2)^2/2}=2q^{1/8}\cos(\pi z)+2q^{9/8}\cos(3\pi z)+\cdots\;,$$
+
+ with \kbd{flag=[1,1]}
+ $$\theta_{1,1}(z,\tau)=i\sum_{n\in\Bbb Z}(-1)^nu^{n+1/2}q^{(n+1/2)^2/2}=-2q^{1/8}\sin(\pi z)+2q^{9/8}\sin(3\pi z)+\cdots\;,$$
+ and \kbd{flag=1} gives $-\theta_{1,1}(z,\tau)=\theta_1(z,\tau)$.
+
+ Finally, \kbd{flag=0} gives the vector
+ $[\theta_{0,0}(z,\tau),\theta_{0,1}(z,\tau),\theta_{1,0}(z,\tau),\theta_{1,1}(z,\tau)]$.
+
+ If \kbd{der} is set and positive, \kbd{der}'th derivative with respect to $z$.

@@ -1,0 +1,17 @@
+Function: ellweierstrass
+Section: transcendental
+C-Name: ellweierstrass
+Prototype: GGp
+Help: ellweierstrass(z,tau): returns a vector of Weierstrass elliptic functions
+ corresponding to z,tau. If z=0, returns a 4-component vector
+ [[w1,w2],[g2,g3],[e1,e2,e3],[eta1,eta2]] with [w1,w2]=[-1,tau] and standard
+ elliptic function notation. If z is not 0, returns an 8-component vector,
+ the previous concatenated with [sigma(z,tau),zeta(z,tau),wp(z,tau),wp'(z,tau)].
+Doc: returns a vector of Weierstrass elliptic functions
+ corresponding to $(z,\tau)$. If $z=0$, returns a 4-component vector
+ $$[[\omega_1,\omega_2],[g_2,g_3],[e_1,e_2,e_3],[\eta_1,\eta_2]]$$ with
+ $[\omega_1,\omega_2]=[-1,\tau]$ and standard elliptic function notation.
+
+ If $z\ne0$, returns an 8-component vector,
+ the previous concatenated with
+ $$[\sigma(z,\tau),\zeta(z,\tau),\wp(z,\tau),\wp'(z,\tau)]$$
