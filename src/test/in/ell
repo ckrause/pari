@@ -17,9 +17,10 @@ L={
 L=apply(x->if(type(x)=="t_VEC",x,ellinit([x,0])),L);
 for(j=1,#F,for(i=1,#L, print(F[j],":",L[i][4],":",F[j](L[i]))));
 
-ellap(ellinit([1,0,1,4,-6]), 2)
-ellap(ellinit([0,17]), 2)
-ellap(ellinit([0, 0, 1, -1, 0]),2486246173)
+testap(e,p) = my(E=ellinit(e));[ellap(E,p), ellcharpoly(E,p)];
+testap([1,0,1,4,-6], 2)
+testap([0,17], 2)
+testap([0, 0, 1, -1, 0],2486246173)
 
 testgroup(v,p)=
 { my(E,F,G,g);

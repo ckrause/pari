@@ -52,6 +52,8 @@ test(nextprime(2^65),2);
 
 p=18446744073709551557;
 e=ellinit([3,3],p);N=ellcard(e);
+C=ellcharpoly(e)
+if(subst(C,x,1)!=N, error("charpoly:",e[1..5],":",p));
 setrand(1);
 g=ellgenerators(e)
 ellorder(e,g[1])
@@ -59,10 +61,12 @@ ellorder(e,g[1])
 a=ffgen(101^3,'a);
 E=ellinit([1,3],a); E.j
 E.disc
+N=ellcard(E); C=ellcharpoly(E)
+if(subst(C,x,1)!=N, error("charpoly:",E));
 P=random(E);Q=random(E);
 R=elladd(E,P,Q);
 elladd(E,ellsub(E,R,P),ellneg(E,Q))
-N=ellcard(E);ellmul(E,P,N)
+ellmul(E,P,N)
 
 checkorder(E, N)=
 {

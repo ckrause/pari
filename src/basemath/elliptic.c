@@ -6419,20 +6419,56 @@ ellanQ_zv(GEN e, long n0)
 }
 
 static GEN
-ellQ_eulerf(GEN e, GEN p)
+ellQ_charpoly(GEN e, GEN p)
 {
+  pari_sp av = avma;
   int good_red;
   GEN card = ellcard_ram(e, p, &good_red);
-  GEN ap = subii(addiu(p, 1), card);
+  GEN ap = subii(addiu(p, 1), card), T;
   if (good_red)
-    return mkrfrac(gen_1,deg2pol_shallow(p, gneg(ap), gen_1, 0));
-  if (!signe(ap)) return pol_1(0);
-  return mkrfrac(gen_1,deg1pol_shallow(negi(ap), gen_1,0));
+    T =  deg2pol_shallow(gen_1, gneg(ap), p, 0);
+  else if (!signe(ap)) { set_avma(av); return pol_1(0); }
+  else T = deg1pol_shallow(gen_1, negi(ap), 0);
+  return gerepilecopy(av, T);
 }
 
 static GEN
-ellanQ(GEN e, long N)
-{ return vecsmall_to_vec_inplace(ellanQ_zv(e,N)); }
+ellnf_charpoly(GEN e, GEN pr)
+{
+  pari_sp av = avma;
+  int good_red;
+  GEN T, ap = ellnfap(e, pr, &good_red);
+  if (good_red)
+    T =  deg2pol_shallow(gen_1, gneg(ap), pr_norm(pr), 0);
+  else if (!signe(ap)) { set_avma(av); return pol_1(0); }
+  else T = deg1pol_shallow(gen_1, negi(ap), 0);
+  return gerepilecopy(av, T);
+}
+
+static GEN
+ellff_charpoly(GEN E)
+{
+  pari_sp av = avma;
+  GEN f = ellff_get_field(E), q = typ(f)==t_INT ? f : FF_q(f);
+  GEN mt = subii(ellff_get_card(E), addiu(q,1));
+  return gerepilecopy(av, deg2pol_shallow(gen_1, mt, q, 0));
+}
+
+GEN
+ellcharpoly(GEN E, GEN p)
+{
+  p = checkellp(&E, p, NULL, "ellcharpoly");
+  switch(ell_get_type(E))
+  {
+   case t_ELL_Fp:
+   case t_ELL_Fq: return ellff_charpoly(E);
+   case t_ELL_Q:  return ellQ_charpoly(E, p);
+   case t_ELL_NF: return ellnf_charpoly(E, p);
+   default:
+     pari_err_TYPE("ellcharpoly",E);
+     return NULL; /*LCOV_EXCL_LINE*/
+  }
+}
 
 static GEN
 ellnflocal(GEN E, GEN p, long n)
@@ -6462,6 +6498,25 @@ ellnflocal(GEN E, GEN p, long n)
   return gerepileupto(av, RgXn_inv_i(T, n));
 }
 
+
+GEN
+elleulerf(GEN E, GEN p)
+{
+  checkell(E);
+  switch(ell_get_type(E))
+  {
+    case t_ELL_Q:  return ginv(RgX_recip(ellQ_charpoly(E, p)));
+    case t_ELL_NF: return ellnflocal(E, p, 0);
+    default:
+      pari_err_TYPE("elleulerf",E);
+      return NULL; /*LCOV_EXCL_LINE*/
+  }
+}
+
+static GEN
+ellanQ(GEN e, long N)
+{ return vecsmall_to_vec_inplace(ellanQ_zv(e,N)); }
+
 GEN
 direllnf_worker(GEN P, ulong X, GEN E)
 {
@@ -6482,20 +6537,6 @@ ellnfan(GEN E, long N)
 {
   GEN worker = snm_closure(is_entry("_direllnf_worker"), mkvec(E));
   return pardireuler(worker, gen_2, stoi(N), NULL, NULL);
-}
-
-GEN
-elleulerf(GEN E, GEN p)
-{
-  checkell(E);
-  switch(ell_get_type(E))
-  {
-    case t_ELL_Q: return ellQ_eulerf(E, p);
-    case t_ELL_NF: return ellnflocal(E, p, 0);
-    default:
-      pari_err_TYPE("elleulerf",E);
-      return NULL; /*LCOV_EXCL_LINE*/
-  }
 }
 
 GEN

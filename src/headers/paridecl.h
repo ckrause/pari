@@ -3345,6 +3345,7 @@ GEN     ellchangepoint0(GEN E, GEN x, GEN ch);
 GEN     ellchangepoint(GEN x, GEN ch);
 GEN     ellchangepointinv0(GEN E, GEN x, GEN ch);
 GEN     ellchangepointinv(GEN x, GEN ch);
+GEN     ellcharpoly(GEN E, GEN p);
 GEN     elldivpol(GEN e, long n, long v);
 GEN     elleisnum(GEN om, long k, long flag, long prec);
 GEN     elleta(GEN om, long prec);

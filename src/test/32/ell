@@ -161,9 +161,9 @@ d(60*z, z^2 + 5)*x^2 + Mod(25, z^2 + 5)]
 (E)->ellneg(E,[0,0]):Mod(z, z^2 + 5):[0, 0]
 (E)->ellneg(E,[0,0]):Mod(4, 1009):[0, Mod(0, 1009)]
 (E)->ellneg(E,[0,0]):z:[0, 0]
--1
-0
-152
+[-1, x + 1]
+[0, 1]
+[152, x^2 - 152*x + 2486246173]
 1031:[504, 2]
 2053:[1008, 2]
 4099:[4196]
@@ -872,4 +872,4 @@ x^2 - 2
   ***   at top-level: ellchangepoint(I,[1,2,3,4])
   ***                 ^---------------------------
   *** ellchangepoint: incorrect type in ellchangepoint (t_COMPLEX).
-Total time spent: 1615
+Total time spent: 1230
