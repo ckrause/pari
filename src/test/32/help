@@ -122,6 +122,7 @@ zkst : structure of (Z_K/m)*         bid,                     bnr
 \w {nf} : write to a file
 \x {n}  : print complete inner structure of result
 \y {n}  : disable/enable automatic simplification (set simplify=n)
+\z {n}  : disable/enable doctest mode
 
 {f}=optional filename. {n}=optional integer
 

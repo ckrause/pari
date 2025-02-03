@@ -98,8 +98,18 @@ filtre0(filtre_t *F)
 {
   const char *s = F->s;
   char c, *t = F->t;
+  int doctest = GP_DATA->doctest, more_input = F->more_input;
 
-  if (F->more_input == 1) F->more_input = 0;
+  if (odd(more_input)) F->more_input = 0;
+  if (doctest && more_input <= 1)
+  {
+    int is_doctest = isspace((unsigned char)*s);
+    while (isspace((unsigned char)*s)) s++;
+    if (*s==0) goto END;
+    if (*s=='?' && s[1]==' ') s+=2;
+    else if (is_doctest)
+      F->in_comment = ONE_LINE_COMMENT;
+  }
   while ((c = *s++))
   {
     if (F->in_string)
@@ -160,7 +170,7 @@ filtre0(filtre_t *F)
           t--; s++;
           if (!*s)
           {
-            if (!F->more_input) F->more_input = 1;
+            if (!F->more_input) F->more_input = 3;
             goto END;
           }
         } /* skip \<CR> */

@@ -340,6 +340,7 @@ slash_commands(void)
 \\w {nf} : write to a file\n\
 \\x {n}  : print complete inner structure of result\n\
 \\y {n}  : disable/enable automatic simplification (set simplify=n)\n\
+\\z {n}  : disable/enable doctest mode\n\
 \n\
 {f}=optional filename. {n}=optional integer\n");
 }
@@ -1728,6 +1729,9 @@ GEN
 sd_breakloop(const char *v, long flag)
 { return sd_toggle(v,flag,"breakloop", &(GP_DATA->breakloop)); }
 GEN
+sd_doctest(const char *v, long flag)
+{ return sd_ulong(v,flag,"doctest",&(GP_DATA->doctest), 0,1,NULL); }
+GEN
 sd_echo(const char *v, long flag)
 { return sd_ulong(v,flag,"echo", &(GP_DATA->echo), 0,2,NULL); }
 GEN
@@ -2018,6 +2022,10 @@ escape(const char *tch, int ismain)
       s = get_sep(s);
       if (!*s) s = (GP_DATA->simplify)? "0": "1";
       (void)sd_simplify(s,d_ACKNOWLEDGE); break;
+    case 'z':
+      s = get_sep(s);
+      if (!*s) s = (GP_DATA->doctest)? "0": "1";
+      (void)sd_doctest(s,d_ACKNOWLEDGE); break;
     default: pari_err(e_SYNTAX,"unexpected character", tch,tch-1);
   }
 }
