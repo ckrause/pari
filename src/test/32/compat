@@ -77,7 +77,7 @@ New syntax: apell(e,n) ===> ellap(e,n)
 ellap(E,{p}): given an elliptic curve E defined over a finite field Fq, return 
 the trace of Frobenius a_p = q+1-#E(Fq); for other fields of definition K, p 
 must define a finite residue field, (p prime for K = Qp or Q; p a maximal ideal 
-for K a number field), return the order of the (nonsingular) reduction of E.
+for K a number field).
 
 
   ***   at top-level: apell2()
@@ -90,7 +90,7 @@ New syntax: apell2(e,n) ===> ellap(e,n)
 ellap(E,{p}): given an elliptic curve E defined over a finite field Fq, return 
 the trace of Frobenius a_p = q+1-#E(Fq); for other fields of definition K, p 
 must define a finite residue field, (p prime for K = Qp or Q; p a maximal ideal 
-for K a number field), return the order of the (nonsingular) reduction of E.
+for K a number field).
 
 
   ***   at top-level: apprpadic()
@@ -4499,4 +4499,4 @@ New syntax: texprint(x) ===> printtex(x)
 printtex({str}*): outputs its string arguments in TeX format.
 
 
-Total time spent: 17
+Total time spent: 8
