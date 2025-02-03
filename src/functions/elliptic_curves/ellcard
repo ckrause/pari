@@ -5,8 +5,7 @@ Prototype: GDG
 Help: ellcard(E,{p}): given an elliptic curve E defined over
  a finite field Fq, return the order of the group E(Fq); for other fields
  of definition K, p must define a finite residue field,
- (p prime for K = Qp or Q; p a maximal ideal for K a number field),
- return the order of the (nonsingular) reduction of E.
+ (p prime for K = Qp or Q; p a maximal ideal for K a number field).
 Doc: Let \kbd{E} be an \kbd{ell} structure as output by \kbd{ellinit}, attached
  to an elliptic curve $E/K$. If $K = \F_{q}$ is finite, return the order of the
  group $E(\F_{q})$.
@@ -22,9 +21,10 @@ Doc: Let \kbd{E} be an \kbd{ell} structure as output by \kbd{ellinit}, attached
  prime number ($K = \Q$) or prime ideal ($K$ a general number field) with
  residue field $\F_{q}$ otherwise. The equation need not be minimal
  or even integral at $p$; of course, a minimal model will be more efficient.
- The function considers the group of nonsingular points of the reduction
- of a minimal model of the curve at $p$, so also makes sense when the curve
- has bad reduction.
+ The function considers the reduction of a minimal model of the curve at $p$,
+ so also makes sense when the curve has bad reduction: the point count
+ includes the singular point in that case.
+
  \bprog
  ? E = ellinit([-3,1]);
  ? factor(E.disc)
