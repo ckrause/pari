@@ -28,3 +28,6 @@ Doc: given a matrix $x$ and
 
  [1]
  @eprog
+
+ In the case of \typ{INTMOD} coefficients, this is only guaranteed to work for
+ prime modulus. For the case of composite modulus, see \tet{matsolvemod}.
