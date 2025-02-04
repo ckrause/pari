@@ -20,7 +20,8 @@ Doc: determinant of the square matrix $x$.
  pivot.
 
  \item intmod entries: classical Gaussian elimination using first nonzero
- pivot.
+ pivot. Recall that this is only guaranteed to work for prime modulus; for
+ composite modulus, see \tet{matdetmod}.
 
  \item other cases: Gauss-Bareiss.
 
