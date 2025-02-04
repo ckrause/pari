@@ -15,6 +15,7 @@ BA   9- lfungenus2 could give wrong result at odd primes (#2487)
   Added
      1- [libpari] prodprimes, prodprimeslim
 BA   2- New GP functions ellcharpoly, genus2charpoly
+BA   3- [libpari] Flm_hess_pre
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b)

@@ -914,7 +914,7 @@ hess(GEN x)
 }
 
 GEN
-Flm_hess(GEN x, ulong p)
+Flm_hess_pre(GEN x, ulong p, ulong pi)
 {
   long lx = lg(x), m, i, j;
   if (lx == 1) return cgetg(1,t_MAT);
@@ -933,16 +933,30 @@ Flm_hess(GEN x, ulong p)
     {
       ulong c = ucoeff(x,i,m-1);
       if (!c) continue;
-
-      c = Fl_mul(c,t,p); ucoeff(x,i,m-1) = 0;
-      for (j=m; j<lx; j++)
-        ucoeff(x,i,j) = Fl_sub(ucoeff(x,i,j), Fl_mul(c,ucoeff(x,m,j), p), p);
-      for (j=1; j<lx; j++)
-        ucoeff(x,j,m) = Fl_add(ucoeff(x,j,m), Fl_mul(c,ucoeff(x,j,i), p), p);
+      if (pi)
+      {
+        c = Fl_mul_pre(c,t,p,pi); ucoeff(x,i,m-1) = 0;
+        for (j=m; j<lx; j++)
+          ucoeff(x,i,j) = Fl_sub(ucoeff(x,i,j), Fl_mul_pre(c,ucoeff(x,m,j), p, pi), p);
+        for (j=1; j<lx; j++)
+          ucoeff(x,j,m) = Fl_add(ucoeff(x,j,m), Fl_mul_pre(c,ucoeff(x,j,i), p, pi), p);
+      } else
+      {
+        c = Fl_mul(c,t,p); ucoeff(x,i,m-1) = 0;
+        for (j=m; j<lx; j++)
+          ucoeff(x,i,j) = Fl_sub(ucoeff(x,i,j), Fl_mul(c,ucoeff(x,m,j), p), p);
+        for (j=1; j<lx; j++)
+          ucoeff(x,j,m) = Fl_add(ucoeff(x,j,m), Fl_mul(c,ucoeff(x,j,i), p), p);
+      }
     }
   }
   return x;
 }
+
+GEN
+Flm_hess(GEN x, ulong p)
+{ return Flm_hess_pre(x, p, SMALL_ULONG(p)? 0: get_Fl_red(p)); }
+
 GEN
 FpM_hess(GEN x, GEN p)
 {
