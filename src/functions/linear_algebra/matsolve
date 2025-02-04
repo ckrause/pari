@@ -32,6 +32,9 @@ Doc: Let $M$ be a left-invertible matrix and $B$ a column vector
  solution, the function returns an $X$ such that $MX - B$ is nonzero
  although it has at least $\#M$ zero rows.
 
+ In the case of \typ{INTMOD} coefficients, this is only guaranteed to work for
+ prime modulus. For the case of composite modulus, see \tet{matsolvemod}.
+
 Function: _ZM_inv_worker
 C-Name: ZM_inv_worker
 Prototype: GG
