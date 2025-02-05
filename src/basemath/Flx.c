@@ -4794,9 +4794,9 @@ FlxM_pack_ZM_bits(GEN M, long b)
 }
 
 static GEN
-ZM_unpack_FlxqM(GEN M, GEN T, ulong p, ulong pi, GEN (*unpack)(GEN, ulong))
+ZM_unpack_FlxM(GEN M, ulong p, ulong pi, ulong sv, GEN (*unpack)(GEN, ulong))
 {
-  long i, j, l, lc, sv = get_Flx_var(T);
+  long i, j, l, lc;
   GEN N = cgetg_copy(M, &l), x;
   if (l == 1)
     return N;
@@ -4806,16 +4806,16 @@ ZM_unpack_FlxqM(GEN M, GEN T, ulong p, ulong pi, GEN (*unpack)(GEN, ulong))
     for (i = 1; i < lc; i++) {
       x = unpack(gcoeff(M, i, j), p);
       x[1] = sv;
-      gcoeff(N, i, j) = Flx_rem_pre(x, T, p, pi);
+      gcoeff(N, i, j) = x;
     }
   }
   return N;
 }
 
 static GEN
-ZM_unpack_FlxqM_bits(GEN M, long b, GEN T, ulong p, ulong pi)
+ZM_unpack_FlxM_bits(GEN M, long b, ulong p, ulong pi, long sv)
 {
-  long i, j, l, lc, sv = get_Flx_var(T);
+  long i, j, l, lc;
   GEN N = cgetg_copy(M, &l), x;
   if (l == 1)
     return N;
@@ -4826,7 +4826,7 @@ ZM_unpack_FlxqM_bits(GEN M, long b, GEN T, ulong p, ulong pi)
       for (i = 1; i < lc; i++) {
         x = kron_unpack_Flx_bits_narrow(gcoeff(M, i, j), b, p);
         x[1] = sv;
-        gcoeff(N, i, j) = Flx_rem_pre(x, T, p, pi);
+        gcoeff(N, i, j) = x;
       }
     }
   } else {
@@ -4836,21 +4836,19 @@ ZM_unpack_FlxqM_bits(GEN M, long b, GEN T, ulong p, ulong pi)
       for (i = 1; i < lc; i++) {
         x = kron_unpack_Flx_bits_wide(gcoeff(M, i, j), b, p, pi);
         x[1] = sv;
-        gcoeff(N, i, j) = Flx_rem_pre(x, T, p, pi);
+        gcoeff(N, i, j) = x;
       }
     }
   }
   return N;
 }
 
-GEN
-FlxqM_mul_Kronecker(GEN A, GEN B, GEN T, ulong p)
+static GEN
+FlxM_mul_Kronecker_i(GEN A, GEN B, ulong p, ulong pi, long d, long sv)
 {
-  pari_sp av = avma;
-  long b, d = get_Flx_degree(T), n = lg(A) - 1;
-  GEN C, D, z;
+  long b, n = lg(A) - 1;
+  GEN C, z;
   GEN (*pack)(GEN, long), (*unpack)(GEN, ulong);
-  ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
   int is_sqr = A==B;
 
   z = muliu(muliu(sqru(p - 1), d), n);
@@ -4863,7 +4861,6 @@ FlxqM_mul_Kronecker(GEN A, GEN B, GEN T, ulong p)
     long l = lgefint(z) - 2;
     if (nbits2nlong(d*b) == d*l) b = l*BITS_IN_LONG;
   }
-  set_avma(av);
 
   switch (b) {
   case BITS_IN_HALFULONG:
@@ -4886,12 +4883,60 @@ FlxqM_mul_Kronecker(GEN A, GEN B, GEN T, ulong p)
     A = FlxM_pack_ZM_bits(A, b);
     B = is_sqr? A: FlxM_pack_ZM_bits(B, b);
     C = ZM_mul(A, B);
-    D = ZM_unpack_FlxqM_bits(C, b, T, p, pi);
-    return gerepilecopy(av, D);
+    return ZM_unpack_FlxM_bits(C, b, p, pi, sv);
   }
   A = FlxM_pack_ZM(A, pack);
   B = is_sqr? A: FlxM_pack_ZM(B, pack);
   C = ZM_mul(A, B);
-  D = ZM_unpack_FlxqM(C, T, p, pi, unpack);
-  return gerepilecopy(av, D);
+  return ZM_unpack_FlxM(C, p, pi, sv, unpack);
+}
+
+GEN
+FlxqM_mul_Kronecker(GEN A, GEN B, GEN T, ulong p)
+{
+  pari_sp av = avma;
+  ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
+  long sv = get_Flx_var(T), d = get_Flx_degree(T);
+  GEN C = FlxM_mul_Kronecker_i(A, B, p, pi, d, sv);
+  C = FlxqM_red_pre(C, T, p, pi);
+  return gerepileupto(av, C);
+}
+
+/* assume m > 1 */
+static long
+FlxV_max_degree_i(GEN x, long m)
+{
+  long i, l = degpol(gel(x,1));
+  for (i = 2; i < m; i++) l = maxss(l, degpol(gel(x,i)));
+  return l;
+}
+
+/* assume n > 1 and m > 1 */
+static long
+FlxM_max_degree_i(GEN x, long n, long m)
+{
+  long j, l = FlxV_max_degree_i(gel(x,1), m);
+  for (j = 2; j < n; j++) l = maxss(l, FlxV_max_degree_i(gel(x,j), m));
+  return l;
+}
+
+static long
+FlxM_max_degree(GEN x)
+{
+  long n = lg(x), m;
+  if (n == 1) return -1;
+  m = lgcols(x); return m == 1? -1: FlxM_max_degree_i(x, n, m);
+}
+
+GEN
+FlxM_mul(GEN x, GEN y, ulong p)
+{
+  pari_sp av = avma;
+  ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
+  long sv, d;
+  if (lg(x) == 1) return cgetg(1,t_MAT);
+  if (lg(gel(x,1))==1) return FlxqM_mul(x, y, NULL, p);
+  sv = mael3(x,1,1,1);
+  d = maxss(FlxM_max_degree(x), FlxM_max_degree(y));
+  return gerepilecopy(av, FlxM_mul_Kronecker_i(x, y, p, pi, d+1, sv));
 }
