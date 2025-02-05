@@ -1652,20 +1652,29 @@ genus2_halfstablemodel(GEN P, GEN p)
 static GEN
 genus2_redmodel(GEN P, GEN p)
 {
-  GEN M = FpX_factor(P, p);
-  GEN F = gel(M,1), E = gel(M,2);
-  long i, k, r = lg(F);
-  GEN U = scalarpol(leading_coeff(P), varn(P));
-  GEN G = cgetg(r, t_COL);
-  for (i=1, k=0; i<r; i++)
+  GEN LP, U, F;
+  long i, k, r;
+  if (degpol(P) < 0) return mkvec2(cgetg(1, t_COL), P);
+  F = FpX_factor_squarefree(P, p);
+  r = lg(F); U = NULL;
+  for (i = k = 1; i < r; i++)
   {
-    if (E[i]>1)
-      gel(G,++k) = gel(F,i);
-    if (odd(E[i]))
-      U = FpX_mul(U, gel(F,i), p);
+    GEN f = gel(F,i);
+    long df = degpol(f);
+    if (!df) continue;
+    if (odd(i)) U = U? FpX_mul(U, f, p): f;
+    if (i > 1) gel(F,k++) = df == 1? mkcol(f): gel(FpX_factor(f, p), 1);
   }
-  setlg(G,++k);
-  return mkvec2(G,U);
+  LP = leading_coeff(P);
+  if (!U)
+    U = scalarpol_shallow(LP, varn(P));
+  else
+  {
+    GEN LU = leading_coeff(U);
+    if (!equalii(LU, LP)) U = FpX_Fp_mul(U, Fp_div(LP, LU, p), p);
+  }
+  setlg(F,k); if (k > 1) F = shallowconcat1(F);
+  return mkvec2(F, U);
 }
 
 static GEN
