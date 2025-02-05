@@ -4697,6 +4697,14 @@ FlxM_sub(GEN x, GEN y, ulong p)
 { pari_APPLY_same(FlxC_sub(gel(x, i), gel(y,i), p)) }
 
 GEN
+FlxqC_red_pre(GEN x, GEN T, ulong p, ulong pi)
+{ pari_APPLY_type(t_COL, Flx_rem_pre(gel(x,i), T, p, pi)) }
+
+GEN
+FlxqM_red_pre(GEN x, GEN T, ulong p, ulong pi)
+{ pari_APPLY_same(FlxqC_red_pre(gel(x,i), T, p, pi)) }
+
+GEN
 FlxqC_Flxq_mul(GEN x, GEN y, GEN T, ulong p)
 { pari_APPLY_type(t_COL, Flxq_mul(gel(x, i), y, T, p)) }
 
