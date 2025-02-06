@@ -5,8 +5,9 @@ C-Name: sd_doctest
 Prototype:
 Help:
 Doc: if set to $1$, \kbd{gp} will discard lines starting with a whitespace,
- unless the first non-whitespace character is '?' followed by a space,
- so that examples from the documentation can be read unmodified. Can also be
+ unless the first non-whitespace character is '?' followed by a space, in which
+ case this character is ignored.
+ This way, examples from the documentation can be read unmodified. Can also be
  switched using \b{z}.
 
  The default value is \kbd{0}.
