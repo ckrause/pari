@@ -50,7 +50,7 @@ Doc:
  ? Mn
  %4 = [-16*n^2/y^2*x^2,-16*n^2/y^3*x^5+64*n^4/y^3*x]
  @eprog
- We check that \kbd{Mn} maps to a point on \kbd{En} (modulo \kbd{Cn$}:
+ We check that \kbd{Mn} maps to a point on \kbd{En} (modulo \kbd{Cn}):
  \bprog
  ? ellisoncurve(ellinit(En), Mn*Mod(1,Cn))
  %5 = 1
