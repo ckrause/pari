@@ -14,4 +14,8 @@ Doc: gives a basis for the image of the
  any type. If $\fl=0$, use standard Gauss pivot. If $\fl=1$, use
  \kbd{matsupplement} (much slower: keep the default flag!).
 
+ In the case of \typ{INTMOD} coefficients, this is only guaranteed to work for
+ prime modulus. In the case of composite modulus, a basis might not exist;
+ however an alternative is provided by \tet{matimagemod}.
+
 Variant: Also available is \fun{GEN}{image}{GEN x} ($\fl=0$).

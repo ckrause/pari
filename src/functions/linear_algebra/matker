@@ -16,6 +16,10 @@ Doc: gives a basis for the kernel of the matrix $x$ as columns of a matrix.
 
  If $x$ is known to have integral entries, set $\fl=1$.
 
+ In the case of \typ{INTMOD} coefficients, this is only guaranteed to work for
+ prime modulus. In the case of composite modulus, a basis might not exist;
+ however an alternative is provided by \tet{matkermod}.
+
 Variant: Also available are \fun{GEN}{ker}{GEN x} ($\fl=0$),
  \fun{GEN}{ZM_ker}{GEN x} ($\fl=1$).
 

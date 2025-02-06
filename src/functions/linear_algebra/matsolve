@@ -33,7 +33,8 @@ Doc: Let $M$ be a left-invertible matrix and $B$ a column vector
  although it has at least $\#M$ zero rows.
 
  In the case of \typ{INTMOD} coefficients, this is only guaranteed to work for
- prime modulus. For the case of composite modulus, see \tet{matsolvemod}.
+ prime modulus. For the case of composite modulus, see \tet{matsolvemod} and
+ \tet{matinvmod}.
 
 Function: _ZM_inv_worker
 C-Name: ZM_inv_worker
