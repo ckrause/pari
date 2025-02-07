@@ -6319,6 +6319,9 @@ polynomial of degree $\kbd{n} > 0$ over $\F_p$, in variable \kbd{v}.
 \fun{GEN}{Flx_rescale}{GEN P, ulong h, ulong p} returns $h^{\deg(P)} P(x/h)$,
 \kbd{P} is a \kbd{Flx} and \kbd{h} is a nonzero integer.
 
+\fun{GEN}{Flx_unscale}{GEN P, ulong h, ulong p} returns $P(h\*x)$,
+\kbd{P} is a \kbd{Flx} and \kbd{h} is a nonzero integer.
+
 \fun{GEN}{random_Flx}{long d, long sv, ulong p} returns a random \kbd{Flx}
 in variable \kbd{v}, of degree less than~\kbd{d}.
 

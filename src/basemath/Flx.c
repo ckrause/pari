@@ -1194,6 +1194,23 @@ Flx_recip(GEN x)
   return z;
 }
 
+/* Return P(x * h) */
+GEN
+Flx_unscale(GEN P, ulong h, ulong p)
+{
+  long i, l;
+  ulong hi = 1UL;
+  GEN Q = cgetg_copy(P, &l);
+  Q[1] = P[1];
+  if (l == 2) return Q;
+  uel(Q,2) = uel(P,2);
+  for (i=3; i<l; i++)
+  {
+    hi = Fl_mul(hi, h ,p);
+    uel(Q,i) = Fl_mul(uel(P,i), hi, p);
+  }
+  return Q;
+}
 /* Return h^degpol(P) P(x / h) */
 GEN
 Flx_rescale(GEN P, ulong h, ulong p)

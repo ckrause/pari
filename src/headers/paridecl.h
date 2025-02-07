@@ -455,6 +455,7 @@ GEN     Flx_to_FlxX(GEN z, long v);
 GEN     Flx_to_ZX(GEN z);
 GEN     Flx_to_ZX_inplace(GEN z);
 GEN     Flx_triple(GEN y, ulong p);
+GEN     Flx_unscale(GEN P, ulong h, ulong p);
 long    Flx_val(GEN x);
 long    Flx_valrem(GEN x, GEN *Z);
 GEN     FlxC_FlxqV_eval(GEN x, GEN v, GEN T, ulong p);

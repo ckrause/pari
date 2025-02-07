@@ -19,6 +19,7 @@ BA   3- [libpari] Flm_hess_pre
 BA   4- new default doctest and meta-command \z
 BA   5- ellfromeqn: option to return the map to the curve
 BA   6- new meta command \qf
+BA   7- [libpari] Flx_unscale
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b)
