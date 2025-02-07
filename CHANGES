@@ -21,6 +21,7 @@ BA   5- ellfromeqn: option to return the map to the curve
 BA   6- new meta command \qf
 BA   7- [libpari] Flx_unscale, Flx_translate
 BA   8- [libpari] FlxqC_red_pre, FlxqM_red_pre, FlxM_mul
+BA   9- [libpari] FlxC_translate, FlxM_translate
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b)
