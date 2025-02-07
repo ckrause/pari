@@ -448,6 +448,7 @@ GEN     Flx_splitting(GEN p, long k);
 GEN     Flx_sqr(GEN x, ulong p);
 GEN     Flx_sqr_pre(GEN x, ulong p, ulong pi);
 GEN     Flx_sub(GEN x, GEN y, ulong p);
+GEN     Flx_translate(GEN P, ulong c, ulong p);
 GEN     Flx_translate1(GEN P, ulong p);
 GEN     Flx_translate1_basecase(GEN P, ulong p);
 GEN     Flx_to_Flv(GEN x, long N);

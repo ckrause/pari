@@ -4280,6 +4280,17 @@ Flx_translate1(GEN P, ulong p)
   }
 }
 
+GEN
+Flx_translate(GEN P, ulong c, ulong p)
+{
+  pari_sp av = avma;
+  GEN Q;
+  if (c==0) return Flx_copy(P);
+  if (c==1) return Flx_translate1(P, p);
+  Q = Flx_unscale(Flx_translate1(Flx_unscale(P, c, p), p), Fl_inv(c, p), p);
+  return gerepileuptoleaf(av, Q);
+}
+
 static GEN
 zl_Xp1_powu(ulong n, ulong p, ulong q, long e, long vs)
 {

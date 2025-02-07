@@ -6189,6 +6189,9 @@ here $p$ must be prime.
 \fun{GEN}{Flx_integ}{GEN z, ulong p},
 here $p$ must be prime.
 
+\fun{GEN}{Flx_translate}{GEN P, ulong c, ulong p} return $P(x+c)$, $p$ must be
+prime. Asymptotically fast (quasi-linear in the degree of $P$).
+
 \fun{GEN}{Flx_translate1}{GEN P, ulong p} return $P(x+1)$, $p$ must be prime.
 Asymptotically fast (quasi-linear in the degree of $P$).
 
