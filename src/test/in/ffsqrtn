@@ -1,0 +1,56 @@
+sqrtn_check(p, f, n) = {
+    my(a,y,z);
+    \\print("finding ", n, "-th root in finite field of size ", p, "^", f);
+    a = ffgen([p,f]);
+    y = random(a)^n;
+    for(i = 1,3,
+    z=sqrtn(y, n);
+    if(z^n != y,
+    error(y, z, n)));
+}
+
+sqrtn_with_unityroot_check(p, f, n) = {
+    my(a,z,y,u);
+    a = ffgen([p,f]);
+    y = random(a)^n;
+    for(i = 1,3,
+    z=sqrtn(y, n, &u);
+    if(z^n != y,
+    error(y, z, n));
+    if(u^n != 1,
+    error(u, n)));
+}
+
+setrand(1000)
+
+sqrtn_check(7, 6, 2);
+sqrtn_check(7, 6, 4);
+sqrtn_check(7, 6, 27);
+sqrtn_with_unityroot_check(7, 6, 4);
+sqrtn_with_unityroot_check(7, 6, 27);
+
+p = precprime(2^32);
+f = 10;
+
+sqrtn_check(p, f, 2);
+sqrtn_check(p, f, 9);
+sqrtn_check(p, f, 7^2);
+sqrtn_check(p, f, 19);
+sqrtn_check(p, f, 2^10);
+
+sqrtn_with_unityroot_check(p, f, 8);
+sqrtn_with_unityroot_check(p, f, 125);
+
+p = 18446744073709551923;
+f = 90;
+setrand(1000)
+
+sqrtn_check(p, f, 2);
+sqrtn_check(p, f, 3^4);
+sqrtn_check(p, f, 109);
+sqrtn_check(p, f, 15139);
+sqrtn_check(p, f, 2^6);
+sqrtn_check(p, f, 5*13);
+
+sqrtn_with_unityroot_check(p, f, 15139);
+sqrtn_with_unityroot_check(p, f, 3^5);

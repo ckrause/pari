@@ -3457,28 +3457,6 @@ Flxq_log(GEN a, GEN g, GEN ord, GEN T, ulong p)
   return gerepileuptoleaf(av, gen_PH_log(a, g, v, E, S));
 }
 
-GEN
-Flxq_sqrtn(GEN a, GEN n, GEN T, ulong p, GEN *zeta)
-{
-  if (!lgpol(a))
-  {
-    if (signe(n) < 0) pari_err_INV("Flxq_sqrtn",a);
-    if (zeta)
-      *zeta=pol1_Flx(get_Flx_var(T));
-    return pol0_Flx(get_Flx_var(T));
-  }
-  else
-  {
-    void *E;
-    pari_sp av = avma;
-    const struct bb_group *S = get_Flxq_star(&E,T,p);
-    GEN o = subiu(powuu(p,get_Flx_degree(T)), 1);
-    GEN s = gen_Shanks_sqrtn(a,n,o,zeta,E,S);
-    if (!s) return gc_NULL(av);
-    return gc_all(av, zeta?2:1, &s, zeta);
-  }
-}
-
 static GEN
 Flxq_sumautsum_sqr(void *E, GEN xzd)
 {
@@ -3533,6 +3511,178 @@ Flxq_sumautsum_pre(GEN ax, long i, GEN T, ulong p, ulong pi) {
   res = Flxq_mul_pre(a, Flx_add(pol1_Flx(get_Flx_var(T)), gel(vec, 3), p), T, p, pi);
 
   return gerepilecopy(av, res);
+}
+
+/*algorithm from
+Doliskani, J., & Schost, E. (2014).
+Taking roots over high extensions of finite fields*/
+static GEN
+Flxq_sqrtl_spec_pre(GEN z, GEN n, GEN T, ulong p, ulong pi, GEN *zetan)
+{
+  pari_sp av = avma;
+  GEN psn, c, b, new_z, beta, x, y, w, ax, g, zeta;
+  long s, l, v = get_Flx_var(T), d = get_Flx_degree(T);
+  ulong zeta2, beta2;
+  s = itos(Fp_order(utoi(p), stoi(d), n));
+  if(s >= d || d % s != 0)
+    pari_err(e_MISC, "expected p's order mod n to divide the degree of T");
+  l = d/s;
+  if (!lgpol(z)) return pol0_Flx(get_Flx_var(T));
+  T = Flx_get_red(T, p);
+  ax = mkvec2(NULL, Flxq_autpow_pre(Flx_Frobenius_pre(T,p,pi), s, T, p,pi));
+  psn = diviiexact(subiu(powuu(p, s), 1), n);
+  do {
+    do c = random_Flx(d, v, p); while (!lgpol(c));
+    new_z = Flxq_mul_pre(z, Flxq_pow_pre(c, n, T, p,pi), T, p,pi);
+    gel(ax,1) = Flxq_pow_pre(new_z, psn, T, p,pi);
+
+    /*If l == 2, b has to be 1 + a^((p^s-1)/n)*/
+    if(l == 2) y = gel(ax, 1);
+    else y = Flxq_sumautsum_pre(ax, l-2, T, p, pi);
+    b = Flx_Fl_add(y, 1, p);
+  } while (!lgpol(b));
+
+  x = Flxq_mul_pre(new_z, Flxq_pow_pre(b, n, T, p,pi), T, p,pi);
+  if(s == 1) {
+    if (degpol(x) > 0) return gc_NULL(av);
+    beta2 = Fl_sqrtn(Flx_constant(x), umodiu(n, p), p, &zeta2);
+    if (beta2==~0UL) return gc_NULL(av);
+    if(zetan) *zetan = monomial_Flx(zeta2, 0, get_Flx_var(T));
+    w = Flx_Fl_mul(Flxq_inv_pre(Flxq_mul_pre(b, c, T, p,pi), T, p,pi), beta2, p);
+    gerepileall(av, zetan? 2: 1, &w, zetan);
+    return w;
+  }
+  g = Flxq_minpoly(x, T, p);
+  if (degpol(g) != s) return gc_NULL(av);
+  beta = Flxq_sqrtn(polx_Flx(get_Flx_var(T)), n, g, p, &zeta);
+  if (!beta) return gc_NULL(av);
+
+  if(zetan) *zetan = Flx_Flxq_eval(zeta, x, T, p);
+  beta = Flx_Flxq_eval(beta, x, T, p);
+  w = Flxq_mul_pre(Flxq_inv_pre(Flxq_mul_pre(b, c, T, p,pi), T, p,pi), beta, T, p,pi);
+  gerepileall(av, zetan? 2: 1, &w, zetan);
+  return w;
+}
+
+static GEN
+Flxq_sqrtn_spec_pre(GEN a, GEN n, GEN T, ulong p, ulong pi, GEN q, GEN *zetan)
+{
+  pari_sp ltop = avma;
+  GEN z, m, u1, u2;
+  int is_1;
+  if (is_pm1(n))
+  {
+    if (zetan) *zetan = pol1_Flx(get_Flx_var(T));
+    return signe(n) < 0? Flxq_inv_pre(a, T, p,pi): gcopy(a);
+  }
+  is_1 = gequal1(a);
+  if (is_1 && !zetan) return gcopy(a);
+  z = pol1_Flx(get_Flx_var(T));
+  m = bezout(n,q,&u1,&u2);
+  if (!is_pm1(m))
+  {
+    GEN F = Z_factor(m);
+    long i, j, j2;
+    GEN y, l;
+    pari_sp av1 = avma;
+    for (i = nbrows(F); i; i--)
+    {
+      l = gcoeff(F,i,1);
+      j = itos(gcoeff(F,i,2));
+      if(zetan) {
+        a = Flxq_sqrtl_spec_pre(a,l,T,p,pi,&y);
+        if (!a) return gc_NULL(ltop);
+        j--;
+        j2 = j;
+      }
+      if (!is_1 && j > 0) {
+        do
+        {
+          a = Flxq_sqrtl_spec_pre(a,l,T,p,pi,NULL);
+          if (!a) return gc_NULL(ltop);
+        } while (--j);
+      }
+      /*This is below finding a's root,
+      so we don't spend time doing this, if a is not n-th root*/
+      if(zetan) {
+        for(; j2>0; j2--) y = Flxq_sqrtl_spec_pre(y, l, T, p,pi,NULL);
+        z = Flxq_mul_pre(z, y, T, p,pi);
+      }
+      if (gc_needed(ltop,1))
+      { /* n can have lots of prime factors*/
+        if(DEBUGMEM>1) pari_warn(warnmem,"Flxq_sqrtn_spec");
+        gerepileall(av1, zetan? 2: 1, &a, &z);
+      }
+    }
+  }
+
+  if (!equalii(m, n))
+    a = Flxq_pow_pre(a,modii(u1,q), T, p,pi);
+  if (zetan)
+  {
+    *zetan = z;
+    gerepileall(ltop,2,&a,zetan);
+  }
+  else /* is_1 is 0: a was modified above -> gerepileupto valid */
+    a = gerepileupto(ltop, a);
+  return a;
+}
+
+GEN
+Flxq_sqrtn(GEN a, GEN n, GEN T, ulong p, GEN *zeta)
+{
+  if (!lgpol(a))
+  {
+    if (signe(n) < 0) pari_err_INV("Flxq_sqrtn",a);
+    if (zeta)
+      *zeta=pol1_Flx(get_Flx_var(T));
+    return pol0_Flx(get_Flx_var(T));
+  }
+  else if(p == 2) {
+    pari_sp av = avma;
+    GEN z;
+    z = F2xq_sqrtn(Flx_to_F2x(a), n, Flx_to_F2x(get_FpX_mod(T)), zeta);
+    if (!z) return NULL;
+    z = F2x_to_Flx(z);
+    if (!zeta) return gerepileuptoleaf(av, z);
+    *zeta=F2x_to_Flx(*zeta);
+    return gc_all(av, 2, &z,zeta);
+  }
+  else
+  {
+    void *E;
+    pari_sp av = avma;
+    const struct bb_group *S = get_Flxq_star(&E,T,p);
+    GEN o = subiu(powuu(p,get_Flx_degree(T)), 1);
+    GEN m, u1, u2, l, zeta2, F, n2, z;
+    long i, s, pi, d = get_Flx_degree(T);
+    pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
+    m = bezout(n,o,&u1,&u2);
+    F = Z_factor(m);
+    for (i = nbrows(F); i; i--)
+    {
+      l = gcoeff(F,i,1);
+      s = itos(Fp_order(utoi(p), subiu(l, 1), l));
+      /*Flxq_sqrtn_spec only works if d > s and s | d
+      for those factors of m we use Flxq_sqrtn_spec
+      for the other factor we stay with gen_Shanks_sqrtn*/
+      if(d <= s || d % s != 0) {
+        gcoeff(F,i,2) = gen_0;
+      }
+      else gcoeff(F,i,2) = stoi(Z_pval(n,l));
+    }
+    F = factorback(F);
+    z = Flxq_sqrtn_spec_pre(a,F,T, p,pi,o,zeta);
+    if(!z) return gc_NULL(av);
+    n2 = diviiexact(n, F);
+    if(!gequal1(n2)) {
+      if(zeta) zeta2 = gcopy(*zeta);
+      z = gen_Shanks_sqrtn(z, n2, o, zeta, E, S);
+      if (!z) return gc_NULL(av);
+      if(zeta) *zeta = Flxq_mul_pre(*zeta, zeta2, T, p,pi);
+    }
+    return gc_all(av, zeta?2:1, &z, zeta);
+  }
 }
 
 GEN

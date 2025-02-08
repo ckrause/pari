@@ -1157,7 +1157,7 @@ Mod(0, 2)
 Mod(Mod(1, 2)*y^2 + Mod(1, 2)*y + Mod(1, 2), Mod(1, 2)*y^3 + Mod(1, 2)*y^2 +
  Mod(1, 2))
 0
-Mod(Mod(2, 5)*y^2 + Mod(4, 5), Mod(1, 5)*y^3 + Mod(1, 5)*y^2 + Mod(1, 5))
+Mod(Mod(3, 5)*y^2 + Mod(1, 5), Mod(1, 5)*y^3 + Mod(1, 5)*y^2 + Mod(1, 5))
 Mod(2, 5)
 0
 1
