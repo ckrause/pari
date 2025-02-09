@@ -2171,13 +2171,16 @@ FpM_intersect(GEN x, GEN y, GEN p)
   return gerepileupto(av, z);
 }
 
+/* HACK: avoid overwriting d from RgM_pivots after set_avma(av) in suppl
+ * or indexrank-type functions */
 static void
 init_suppl(GEN x)
 {
   if (lg(x) == 1) pari_err_IMPL("suppl [empty matrix]");
-  /* HACK: avoid overwriting d from RgM_pivots after set_avma(av) */
   (void)new_chunk(lgcols(x) * 2);
 }
+static void
+init_pivot_list(GEN x) { (void)new_chunk(3 + 2*lg(x)); /* HACK */ }
 
 GEN
 FpM_suppl(GEN x, GEN p)
@@ -2235,17 +2238,12 @@ FqM_suppl(GEN x, GEN T, GEN p)
   set_avma(av); return get_suppl(x,d,nbrows(x),r,&col_ei);
 }
 
-static void
-init_indexrank(GEN x) {
-  (void)new_chunk(3 + 2*lg(x)); /* HACK */
-}
-
 GEN
 FpM_indexrank(GEN x, GEN p) {
   pari_sp av = avma;
   long r;
   GEN d;
-  init_indexrank(x);
+  init_pivot_list(x);
   d = FpM_gauss_pivot(x,p,&r);
   set_avma(av); return indexrank0(lg(x)-1, r, d);
 }
@@ -2255,7 +2253,7 @@ Flm_indexrank(GEN x, ulong p) {
   pari_sp av = avma;
   long r;
   GEN d;
-  init_indexrank(x);
+  init_pivot_list(x);
   d = Flm_pivots(x, p, &r, 0);
   set_avma(av); return indexrank0(lg(x)-1, r, d);
 }
@@ -2265,7 +2263,7 @@ F2m_indexrank(GEN x) {
   pari_sp av = avma;
   long r;
   GEN d;
-  init_indexrank(x);
+  init_pivot_list(x);
   d = F2m_gauss_pivot(F2m_copy(x),&r);
   set_avma(av); return indexrank0(lg(x)-1, r, d);
 }
@@ -2275,7 +2273,7 @@ F2xqM_indexrank(GEN x, GEN T) {
   pari_sp av = avma;
   long r;
   GEN d;
-  init_indexrank(x);
+  init_pivot_list(x);
   d = F2xqM_gauss_pivot(x, T, &r);
   set_avma(av); return indexrank0(lg(x) - 1, r, d);
 }
@@ -2285,7 +2283,7 @@ FlxqM_indexrank(GEN x, GEN T, ulong p) {
   pari_sp av = avma;
   long r;
   GEN d;
-  init_indexrank(x);
+  init_pivot_list(x);
   d = FlxqM_gauss_pivot(x, T, p, &r);
   set_avma(av); return indexrank0(lg(x) - 1, r, d);
 }
@@ -2295,7 +2293,7 @@ FqM_indexrank(GEN x, GEN T, GEN p) {
   pari_sp av = avma;
   long r;
   GEN d;
-  init_indexrank(x);
+  init_pivot_list(x);
   d = FqM_gauss_pivot(x, T, p, &r);
   set_avma(av); return indexrank0(lg(x) - 1, r, d);
 }
@@ -4003,8 +4001,7 @@ imagecompl(GEN x)
   pivot_fun pivot;
 
   if (typ(x)!=t_MAT) pari_err_TYPE("imagecompl",x);
-  pivot = get_pivot_fun(x, &data);
-  (void)new_chunk(lg(x) * 4 + 1); /* HACK */
+  init_pivot_list(x); pivot = get_pivot_fun(x, &data);
   d = RgM_pivots(x, &r, pivot, data); /* if (!d) then r = 0 */
   set_avma(av);
   return imagecompl_aux(x, d, r);
@@ -4016,7 +4013,7 @@ ZM_imagecompl(GEN x)
   GEN d;
   long r;
 
-  (void)new_chunk(lg(x) * 4 + 1); /* HACK */
+  init_pivot_list(x);
   d = ZM_pivots(x, &r); /* if (!d) then r = 0 */
   set_avma(av);
   return imagecompl_aux(x, d, r);
@@ -4400,7 +4397,7 @@ indexrank(GEN x)
   d = RgM_indexrank_fast(x, &fun, &data);
   if (d) return d;
   av = avma;
-  init_indexrank(x);
+  init_pivot_list(x);
   d = RgM_pivots(x, &r, fun, data);
   set_avma(av); return indexrank0(lg(x)-1, r, d);
 }
@@ -4410,7 +4407,7 @@ ZM_indeximage(GEN x) {
   pari_sp av = avma;
   long r;
   GEN d;
-  init_indexrank(x);
+  init_pivot_list(x);
   d = ZM_pivots(x,&r);
   set_avma(av); return indeximage0(lg(x)-1, r, d);
 }
@@ -4426,7 +4423,7 @@ ZM_indexrank(GEN x) {
   pari_sp av = avma;
   long r;
   GEN d;
-  init_indexrank(x);
+  init_pivot_list(x);
   d = ZM_pivots(x,&r);
   set_avma(av); return indexrank0(lg(x)-1, r, d);
 }
