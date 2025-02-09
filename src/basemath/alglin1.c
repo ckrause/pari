@@ -2376,48 +2376,6 @@ gauss_get_pivot_NZ(GEN X, GEN x0/*unused*/, long ix, GEN c)
   return lx;
 }
 
-static pivot_fun
-get_pivot_fun(GEN x, GEN *data)
-{
-  long i, j, hx, lx = lg(x);
-  int res = t_INT;
-  GEN p = NULL;
-
-  *data = NULL;
-  if (lx == 1) return &gauss_get_pivot_NZ;
-  hx = lgcols(x);
-  for (j=1; j<lx; j++)
-  {
-    GEN xj = gel(x,j);
-    for (i=1; i<hx; i++)
-    {
-      GEN c = gel(xj,i);
-      switch(typ(c))
-      {
-        case t_REAL:
-          res = t_REAL;
-          break;
-        case t_COMPLEX:
-          if (typ(gel(c,1)) == t_REAL || typ(gel(c,2)) == t_REAL) res = t_REAL;
-          break;
-        case t_INT: case t_INTMOD: case t_FRAC: case t_FFELT: case t_QUAD:
-        case t_POLMOD: /* exact types */
-          break;
-        case t_PADIC:
-          p = gel(c,2);
-          res = t_PADIC;
-          break;
-        default: return &gauss_get_pivot_NZ;
-      }
-    }
-  }
-  switch(res)
-  {
-    case t_REAL: *data = x; return &gauss_get_pivot_max;
-    case t_PADIC: *data = p; return &gauss_get_pivot_padic;
-    default: return &gauss_get_pivot_NZ;
-  }
-}
 /* Set pivot seeking function appropriate for the domain of x with RgM_type t
  * (first non zero pivot, maximal pivot...)
  * x0 is a reference point used when guessing whether x[i,j] ~ 0
@@ -2433,6 +2391,13 @@ set_pivot_fun(pivot_fun *fun, GEN *data, long t, GEN x0, GEN p)
     case t_PADIC: *data = p; *fun = gauss_get_pivot_padic; break;
     default: *data = NULL; *fun = gauss_get_pivot_NZ;
   }
+}
+static void
+set_pivot_fun_all(pivot_fun *fun, GEN *data, GEN x)
+{
+  GEN p, pol;
+  long pa, t = RgM_type(x, &p,&pol,&pa);
+  set_pivot_fun(fun, data, t, x, p);
 }
 
 static GEN
@@ -4001,11 +3966,11 @@ imagecompl(GEN x)
   pari_sp av = avma;
   GEN data, d;
   long r;
-  pivot_fun pivot;
+  pivot_fun fun;
 
   if (typ(x)!=t_MAT) pari_err_TYPE("imagecompl",x);
-  init_pivot_list(x); pivot = get_pivot_fun(x, &data);
-  d = RgM_pivots(x, &r, pivot, data); /* if (!d) then r = 0 */
+  init_pivot_list(x); set_pivot_fun_all(&fun, &data, x);
+  d = RgM_pivots(x, &r, fun, data); /* if (!d) then r = 0 */
   set_avma(av); return imagecompl_aux(x, d, r);
 }
 GEN
@@ -5119,7 +5084,7 @@ ZM_det3(GEN M)
 }
 
 static GEN
-det_simple_gauss(GEN a, GEN data, pivot_fun pivot)
+det_simple_gauss(GEN a, pivot_fun pivot, GEN data)
 {
   pari_sp av = avma;
   long i,j,k, s = 1, nbco = lg(a)-1;
@@ -5155,21 +5120,6 @@ det_simple_gauss(GEN a, GEN data, pivot_fun pivot)
   }
   if (s < 0) x = gneg_i(x);
   return gerepileupto(av, gmul(x, gcoeff(a,nbco,nbco)));
-}
-
-GEN
-det2(GEN a)
-{
-  GEN data;
-  pivot_fun pivot;
-  long n = lg(a)-1;
-  if (typ(a)!=t_MAT) pari_err_TYPE("det2",a);
-  if (!n) return gen_1;
-  if (n != nbrows(a)) pari_err_DIM("det2");
-  if (n == 1) return gcopy(gcoeff(a,1,1));
-  if (n == 2) return RgM_det2(a);
-  pivot = get_pivot_fun(a, &data);
-  return det_simple_gauss(a, data, pivot);
 }
 
 /* Assumes a a square t_MAT of dimension n > 0. Returns det(a) using
@@ -5525,17 +5475,33 @@ det(GEN a)
   long n = lg(a)-1;
   double B;
   GEN data, b;
-  pivot_fun pivot;
+  pivot_fun fun;
 
   if (typ(a)!=t_MAT) pari_err_TYPE("det",a);
   if (!n) return gen_1;
   if (n != nbrows(a)) pari_err_DIM("det");
   if (n == 1) return gcopy(gcoeff(a,1,1));
   if (n == 2) return RgM_det2(a);
-  b = RgM_det_fast(a, &pivot, &data);
+  b = RgM_det_fast(a, &fun, &data);
   if (b) return b;
-  if (pivot != gauss_get_pivot_NZ) return det_simple_gauss(a, data, pivot);
+  if (data) return det_simple_gauss(a, fun, data);
   B = (double)n; return det_develop(a, det_init_max(n), B*B*B);
+}
+
+GEN
+det2(GEN a)
+{
+  long n = lg(a)-1;
+  GEN data;
+  pivot_fun fun;
+
+  if (typ(a)!=t_MAT) pari_err_TYPE("det2",a);
+  if (!n) return gen_1;
+  if (n != nbrows(a)) pari_err_DIM("det2");
+  if (n == 1) return gcopy(gcoeff(a,1,1));
+  if (n == 2) return RgM_det2(a);
+  set_pivot_fun_all(&fun, &data, a);
+  return det_simple_gauss(a, fun, data);
 }
 
 GEN
