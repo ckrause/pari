@@ -2934,7 +2934,6 @@ RgX_to_FFX(GEN x, GEN ff)
   return y;
 }
 
-#define code(t1,t2) ((t1 << 6) | t2)
 /* Check types and replace F by a monic normalized FpX having the same roots
  * Don't bother to make constant polynomials monic */
 static GEN
@@ -2948,7 +2947,8 @@ factmod_init(GEN f, GEN *pD, GEN *pT, GEN *pp)
     long pa, t = RgX_type(f, pp, pT, &pa);
     if (t == t_FFELT) return f;
     *pD = gen_0;
-    if (t != t_INTMOD && t != code(t_POLMOD,t_INTMOD)) pari_err_TYPE(s,f);
+    if (t != t_INTMOD && t != RgX_type_code(t_POLMOD,t_INTMOD))
+      pari_err_TYPE(s,f);
     return RgX_to_FqX(f, *pT, *pp);
   }
   if (typ(D) == t_FFELT) { *pD = NULL; *pT = D; return RgX_to_FFX(f,D); }
@@ -2957,7 +2957,6 @@ factmod_init(GEN f, GEN *pD, GEN *pT, GEN *pp)
     pari_err_PRIORITY(s, T, "<=", varn(f));
   *pT = T; *pp = p; return RgX_to_FqX(f, T, p);
 }
-#undef code
 
 int
 ff_parse_Tp(GEN Tp, GEN *T, GEN *p, long red)

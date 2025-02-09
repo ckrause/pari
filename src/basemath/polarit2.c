@@ -346,16 +346,15 @@ static long RgX_settype(GEN x, long *t, GEN *p, GEN *pol, long *pa, GEN *ff, lon
 }
 #define update_prec(x,y) { long __x = x; if (__x < *y) *y=__x; }
 
-static const long tsh = 6;
-#define code(t1,t2) ((t1 << 6) | t2)
+static const long RgX_type_shift = 6;
 void
 RgX_type_decode(long x, long *t1, long *t2)
 {
-  *t1 = x >> tsh;
-  *t2 = (x & ((1L<<tsh)-1));
+  *t1 = x >> RgX_type_shift;
+  *t2 = (x & ((1L<<RgX_type_shift)-1));
 }
 int
-RgX_type_is_composite(long t) { return t >= tsh; }
+RgX_type_is_composite(long t) { return t >= RgX_type_shift; }
 
 static int
 settype(GEN c, long *t, GEN *p, GEN *pol, long *pa, GEN *ff, long *t2, long *var)
@@ -486,11 +485,11 @@ choosetype(long *t, long t2, GEN ff, GEN *pol, long var)
   if (t2) /* polmod/quad/complex of intmod/padic */
   {
     if (t[2] && (t[3]||t[7])) return 0;
-    if (t[3]) return code(t2,t_INTMOD);
-    if (t[7]) return code(t2,t_PADIC);
+    if (t[3]) return RgX_type_code(t2,t_INTMOD);
+    if (t[7]) return RgX_type_code(t2,t_PADIC);
     if (t[2]) return t_COMPLEX;
-    if (t[1]) return code(t2,t_FRAC);
-    return code(t2,t_INT);
+    if (t[1]) return RgX_type_code(t2,t_FRAC);
+    return RgX_type_code(t2,t_INT);
   }
   if (t[5]) /* ffelt */
   {
@@ -503,7 +502,7 @@ choosetype(long *t, long t2, GEN ff, GEN *pol, long var)
     return t_REAL;
   }
   if (t[10]) return t_POL;
-  if (t[8]) return code(t_QUAD,t_INT);
+  if (t[8]) return RgX_type_code(t_QUAD,t_INT);
   if (t[3]) return t_INTMOD;
   if (t[7]) return t_PADIC;
   if (t[1]) return t_FRAC;
@@ -1112,7 +1111,7 @@ roots_to_pol_fast(GEN x, long v)
   {
     case t_INTMOD: return roots_to_pol_FpV(x, v, p);
     case t_FFELT:  return FFV_roots_to_pol(x, pol, v);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return roots_to_pol_FqV(x, v, pol, p);
     default:       return NULL;
   }
@@ -2754,7 +2753,7 @@ RgX_extgcd_fast(GEN x, GEN y, GEN *U, GEN *V)
   {
     case t_FFELT:  return FFX_extgcd(x, y, pol, U, V);
     case t_INTMOD: return RgX_extgcd_FpX(x, y, p, U, V);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgX_extgcd_FpXQX(x, y, pol, p, U, V);
     default:       return NULL;
   }
@@ -2905,7 +2904,7 @@ RgX_halfgcd_all_fast(GEN x, GEN y, GEN *a, GEN *b)
   {
     case t_FFELT:  return FFX_halfgcd_all(x, y, pol, a, b);
     case t_INTMOD: return RgX_halfgcd_all_FpX(x, y, p, a, b);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgX_halfgcd_all_FpXQX(x, y, pol, p, a, b);
     default:       return NULL;
   }
@@ -3225,7 +3224,7 @@ resultant_fast(GEN x, GEN y)
     case t_FRAC:   return QX_resultant(x,y);
     case t_FFELT:  return FFX_resultant(x,y,pol);
     case t_INTMOD: return RgX_resultant_FpX(x, y, p);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgX_resultant_FpXQX(x, y, pol, p);
     default:       return NULL;
   }
@@ -3643,11 +3642,11 @@ RgX_gcd_fast(GEN x, GEN y)
     case t_FRAC:   return QX_gcd(x, y);
     case t_FFELT:  return FFX_gcd(x, y, pol);
     case t_INTMOD: return RgX_gcd_FpX(x, y, p);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgX_gcd_FpXQX(x, y, pol, p);
-    case code(t_POLMOD, t_INT):
+    case RgX_type_code(t_POLMOD, t_INT):
                    return ZX_is_monic(pol)? RgX_gcd_ZXQX(x,y,pol): NULL;
-    case code(t_POLMOD, t_FRAC):
+    case RgX_type_code(t_POLMOD, t_FRAC):
                    return RgX_is_ZX(pol) && ZX_is_monic(pol) ?
                                             RgX_gcd_QXQX(x,y,pol): NULL;
     default:       return NULL;
@@ -3784,7 +3783,7 @@ RgX_disc_fast(GEN x)
     case t_FRAC:   return QX_disc(x);
     case t_FFELT:  return FFX_disc(x, pol);
     case t_INTMOD: return RgX_disc_FpX(x, p);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgX_disc_FpXQX(x, pol, p);
     default:       return NULL;
   }
@@ -4187,7 +4186,7 @@ RgXQ_mul_fast(GEN x, GEN y, GEN T)
     case t_FRAC:   return RgX_is_ZX(T) && ZX_is_monic(T) ? QXQ_mul(x,y,T): NULL;
     case t_FFELT:  return FFXQ_mul(x, y, T, pol);
     case t_INTMOD: return RgXQ_mul_FpXQ(x, y, T, p);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgXQ_mul_FpXQXQ(x, y, T, pol, p);
     default:       return NULL;
   }
@@ -4213,7 +4212,7 @@ RgXQ_sqr_fast(GEN x, GEN T)
     case t_FRAC:   return RgX_is_ZX(T) && ZX_is_monic(T) ? QXQ_sqr(x,T): NULL;
     case t_FFELT:  return FFXQ_sqr(x, T, pol);
     case t_INTMOD: return RgXQ_sqr_FpXQ(x, T, p);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgXQ_sqr_FpXQXQ(x, T, pol, p);
     default:       return NULL;
   }
@@ -4239,7 +4238,7 @@ RgXQ_inv_fast(GEN x, GEN y)
     case t_FRAC:   return RgX_is_ZX(y)? QXQ_inv(x,y): NULL;
     case t_FFELT:  return FFXQ_inv(x, y, pol);
     case t_INTMOD: return RgXQ_inv_FpXQ(x, y, p);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgXQ_inv_FpXQXQ(x, y, pol, p);
     default:       return NULL;
   }

@@ -4084,6 +4084,14 @@ is one of \typ{INT}, \typ{INTMOD} (set \kbd{*ptp}) or \typ{PADIC}
 (set \kbd{*ptp} and \kbd{*ptprec}), with the same meaning
 as above.
 
+\fun{long}{RgX_type_code}{long t1, long t2} is the reverse of
+\kbd{RgX\_type\_decode}, it returns the compount type $t$ built from
+\kbd{t1} and \kbd{t2}. This is implemented as a macro so as to be usable
+as a label in a switch when both types are constants, e.g.,
+\bprog
+  case RgX_type_code(t_POLMOD, t_INTMOD): ...
+@eprog
+
 \fun{int}{RgX_type_is_composite}{long t} $t$ as returned by \kbd{RgX\_type},
 return 1 if $t$ is a composite type, and 0 otherwise.
 

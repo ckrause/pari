@@ -700,8 +700,6 @@ fft(GEN W, GEN p, GEN f, long step, long l, long inv)
   gerepilecoeffs(av, f, l);
 }
 
-#define code(t1,t2) ((t1 << 6) | t2)
-
 static GEN
 FFT_i(GEN W, GEN x)
 {
@@ -720,7 +718,8 @@ FFT_i(GEN W, GEN x)
   else z = x;
   if (l == 2) return mkveccopy(gel(z,1));
   y = cgetg(l, t_VEC);
-  if (tw==code(t_COMPLEX,t_INT) || tw==code(t_COMPLEX,t_REAL))
+  if (tw == RgX_type_code(t_COMPLEX,t_INT) ||
+      tw == RgX_type_code(t_COMPLEX,t_REAL))
   {
     long inv = (l >= 5 && signe(imag_i(gel(W,1+(l>>2))))==1) ? 1 : 0;
     fft(W+1, z+1, y+1, 1, l-1, inv);
@@ -728,8 +727,6 @@ FFT_i(GEN W, GEN x)
     fft2(W+1, z+1, y+1, 1, l-1);
   return y;
 }
-
-#undef code
 
 GEN
 FFT(GEN W, GEN x)

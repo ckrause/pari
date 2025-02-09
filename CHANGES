@@ -22,6 +22,7 @@ BA   6- new meta command \qf
 BA   7- [libpari] Flx_unscale, Flx_translate
 BA   8- [libpari] FlxqC_red_pre, FlxqM_red_pre, FlxM_mul
 BA   9- [libpari] FlxC_translate, FlxM_translate
+    10- [libpari] RgX_type_code
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b)

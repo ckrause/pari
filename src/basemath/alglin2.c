@@ -752,8 +752,6 @@ RgXQ_minpoly_FpXQXQ(GEN x, GEN S, GEN pol, GEN p)
   return gerepileupto(av, FpXQX_to_mod(r, T, p));
 }
 
-#define code(t1,t2) ((t1 << 6) | t2)
-
 static GEN
 RgXQ_minpoly_fast(GEN x, GEN y)
 {
@@ -764,13 +762,11 @@ RgXQ_minpoly_fast(GEN x, GEN y)
   {
     case t_INTMOD: return RgXQ_minpoly_FpXQ(x, y, p);
     case t_FFELT:  return FFXQ_minpoly(x, y, pol);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgXQ_minpoly_FpXQXQ(x, y, pol, p);
     default:       return NULL;
   }
 }
-
-#undef code
 
 /* return caract(Mod(x,T)) in variable v */
 GEN

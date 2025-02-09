@@ -856,6 +856,8 @@ RgX_equal_var(GEN x, GEN y) { return varn(x) == varn(y) && RgX_equal(x,y); }
 INLINE GEN
 RgX_to_RgV(GEN x, long N) { x = RgX_to_RgC(x, N); settyp(x, t_VEC); return x; }
 
+#define RgX_type_code(t1,t2) ((t1 << 6) | t2)
+
 INLINE int
 RgX_is_rational(GEN x)
 {

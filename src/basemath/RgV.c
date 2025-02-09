@@ -532,7 +532,6 @@ RgM_RgC_mul_FqM(GEN x, GEN y, GEN pol, GEN p)
   return gerepileupto(av, FqC_to_mod(b, T, p));
 }
 
-#define code(t1,t2) ((t1 << 6) | t2)
 static GEN
 RgM_RgC_mul_fast(GEN x, GEN y)
 {
@@ -545,12 +544,11 @@ RgM_RgC_mul_fast(GEN x, GEN y)
     case t_FRAC:   return QM_QC_mul(x,y);
     case t_FFELT:  return FFM_FFC_mul(x, y, pol);
     case t_INTMOD: return RgM_RgC_mul_FpM(x, y, p);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgM_RgC_mul_FqM(x, y, pol, p);
     default:       return NULL;
   }
 }
-#undef code
 
 /* compatible t_MAT * t_COL, lx = lg(x) = lg(y) > 1, l = lgcols(x) */
 static GEN
@@ -653,7 +651,6 @@ INLINE int
 RgX_is_monic_ZX(GEN pol)
 { return RgX_is_ZX(pol) && ZX_is_monic(pol); }
 
-#define code(t1,t2) ((t1 << 6) | t2)
 static GEN
 RgM_mul_fast(GEN x, GEN y)
 {
@@ -666,11 +663,11 @@ RgM_mul_fast(GEN x, GEN y)
     case t_FRAC:   return QM_mul(x,y);
     case t_FFELT:  return FFM_mul(x, y, pol);
     case t_INTMOD: return RgM_mul_FpM(x, y, p);
-    case code(t_POLMOD, t_INT):
+    case RgX_type_code(t_POLMOD, t_INT):
                    return ZX_is_monic(pol)? RgM_mul_ZXQM(x, y, pol): NULL;
-    case code(t_POLMOD, t_FRAC):
+    case RgX_type_code(t_POLMOD, t_FRAC):
                    return RgX_is_monic_ZX(pol)? RgM_mul_QXQM(x, y, pol): NULL;
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgM_mul_FqM(x, y, pol, p);
     default:       return NULL;
   }
@@ -688,17 +685,15 @@ RgM_sqr_fast(GEN x)
     case t_FRAC:   return QM_sqr(x);
     case t_FFELT:  return FFM_mul(x, x, pol);
     case t_INTMOD: return RgM_mul_FpM(x, x, p);
-    case code(t_POLMOD, t_INT):
+    case RgX_type_code(t_POLMOD, t_INT):
                    return ZX_is_monic(pol)? RgM_sqr_ZXQM(x, pol): NULL;
-    case code(t_POLMOD, t_FRAC):
+    case RgX_type_code(t_POLMOD, t_FRAC):
                    return RgX_is_monic_ZX(pol)? RgM_sqr_QXQM(x, pol): NULL;
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgM_mul_FqM(x, x, pol, p);
     default:       return NULL;
   }
 }
-
-#undef code
 
 /* lx, ly > 1 */
 static GEN

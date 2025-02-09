@@ -2488,7 +2488,6 @@ RgM_inv_FqM(GEN x, GEN pol, GEN p)
   return gerepileupto(av, FqM_to_mod(b, T, p));
 }
 
-#define code(t1,t2) ((t1 << 6) | t2)
 /* Returns gen_0 instead of NULL for 'no fast algorithm'. NULL is already
  * reserved for 'not invertible' */
 static GEN
@@ -2503,12 +2502,11 @@ RgM_inv_fast(GEN x, pivot_fun *fun, GEN *data)
     case t_FRAC:   return QM_inv(x);
     case t_FFELT:  return FFM_inv(x, pol);
     case t_INTMOD: return RgM_inv_FpM(x, p);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgM_inv_FqM(x, pol, p);
     default:       return gen_0;
   }
 }
-#undef code
 
 static GEN
 RgM_RgC_solve_FpC(GEN a, GEN b, GEN p)
@@ -3573,7 +3571,6 @@ RgM_deplin_FqM(GEN x, GEN pol, GEN p)
   return gerepileupto(av, b);
 }
 
-#define code(t1,t2) ((t1 << 6) | t2)
 /* Returns gen_0 instead of NULL for 'no fast algorithm'. NULL is already
  * reserved for 'not invertible' */
 static GEN
@@ -3587,12 +3584,11 @@ RgM_deplin_fast(GEN x)
     case t_FRAC:   return QM_deplin(x);
     case t_FFELT:  return FFM_deplin(x, pol);
     case t_INTMOD: return RgM_deplin_FpM(x, p);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgM_deplin_FqM(x, pol, p);
     default:       return gen_0;
   }
 }
-#undef code
 
 static GEN
 RgM_deplin(GEN x)
@@ -3841,7 +3837,6 @@ RgM_ker_FqM(GEN x, GEN pol, GEN p)
   return gerepileupto(av, FqM_to_mod(b, T, p));
 }
 
-#define code(t1,t2) ((t1 << 6) | t2)
 static GEN
 RgM_ker_fast(GEN x, pivot_fun *fun, GEN *data)
 {
@@ -3854,12 +3849,11 @@ RgM_ker_fast(GEN x, pivot_fun *fun, GEN *data)
     case t_FRAC:   return QM_ker(x);
     case t_FFELT:  return FFM_ker(x, pol);
     case t_INTMOD: return RgM_ker_FpM(x, p);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgM_ker_FqM(x, pol, p);
     default:       return NULL;
   }
 }
-#undef code
 
 GEN
 ker(GEN x)
@@ -3917,7 +3911,6 @@ QM_image(GEN A)
   return gerepilecopy(av, QM_image_shallow(A));
 }
 
-#define code(t1,t2) ((t1 << 6) | t2)
 static GEN
 RgM_image_fast(GEN x, pivot_fun *fun, GEN *data)
 {
@@ -3930,12 +3923,11 @@ RgM_image_fast(GEN x, pivot_fun *fun, GEN *data)
     case t_FRAC:   return QM_image(x);
     case t_FFELT:  return FFM_image(x, pol);
     case t_INTMOD: return RgM_image_FpM(x, p);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgM_image_FqM(x, pol, p);
     default:       return NULL;
   }
 }
-#undef code
 
 GEN
 image(GEN x)
@@ -4238,7 +4230,6 @@ RgM_rank_FqM(GEN x, GEN pol, GEN p)
   return gc_long(av,r);
 }
 
-#define code(t1,t2) ((t1 << 6) | t2)
 static long
 RgM_rank_fast(GEN x, pivot_fun *fun, GEN *data)
 {
@@ -4251,12 +4242,11 @@ RgM_rank_fast(GEN x, pivot_fun *fun, GEN *data)
     case t_FRAC:   return QM_rank(x);
     case t_INTMOD: return RgM_rank_FpM(x, p);
     case t_FFELT:  return FFM_rank(x, pol);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgM_rank_FqM(x, pol, p);
     default:       return -1;
   }
 }
-#undef code
 
 long
 rank(GEN x)
@@ -4336,7 +4326,6 @@ RgM_indexrank_FqM(GEN x, GEN pol, GEN p)
   return gerepileupto(av, r);
 }
 
-#define code(t1,t2) ((t1 << 6) | t2)
 static GEN
 RgM_indexrank_fast(GEN x, pivot_fun *fun, GEN *data)
 {
@@ -4349,12 +4338,11 @@ RgM_indexrank_fast(GEN x, pivot_fun *fun, GEN *data)
     case t_FRAC:   return QM_indexrank(x);
     case t_INTMOD: return RgM_indexrank_FpM(x, p);
     case t_FFELT:  return FFM_indexrank(x, pol);
-    case code(t_POLMOD, t_INTMOD):
+    case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgM_indexrank_FqM(x, pol, p);
     default:       return NULL;
   }
 }
-#undef code
 
 GEN
 indexrank(GEN x)
@@ -5441,7 +5429,6 @@ RgM_det_FqM(GEN x, GEN pol, GEN p)
   return gerepilecopy(av, mkpolmod(FpX_to_mod(b, p), FpX_to_mod(T, p)));
 }
 
-#define code(t1,t2) ((t1 << 6) | t2)
 static GEN
 RgM_det_fast(GEN x, pivot_fun *fun, GEN *data)
 {
@@ -5454,11 +5441,10 @@ RgM_det_fast(GEN x, pivot_fun *fun, GEN *data)
     case t_FRAC:   return QM_det(x);
     case t_FFELT:  return FFM_det(x, pol);
     case t_INTMOD: return RgM_det_FpM(x, p);
-    case code(t_POLMOD, t_INTMOD): return RgM_det_FqM(x, pol, p);
+    case RgX_type_code(t_POLMOD, t_INTMOD): return RgM_det_FqM(x, pol, p);
     default: return NULL;
   }
 }
-#undef code
 
 static long
 det_init_max(long n)
