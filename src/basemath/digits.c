@@ -218,10 +218,10 @@ digits(GEN x, GEN B)
   pari_sp av = avma;
   long v = 0;
   if (typ(x) == t_INT) return digits_i(x, B);
-  if (typ(x) != t_PADIC || (v = valp(x)) < 0 || (B && !gequal(B, gel(x,2))))
+  if (typ(x) != t_PADIC || (v = valp(x)) < 0 || (B && !gequal(B, padic_p(x))))
     pari_err_TYPE("digits",x);
-  if (!signe(gel(x, 4))) return cgetg(1, t_VEC);
-  x = digits_i(gel(x, 4), gel(x, 2));
+  if (!signe(padic_u(x))) return cgetg(1, t_VEC);
+  x = digits_i(padic_u(x), padic_p(x));
   vecreverse_inplace(x);
   if (!v) return x;
   return gerepileupto(av, concat(zerovec(v), x));

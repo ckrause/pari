@@ -3930,14 +3930,7 @@ Z_issmooth_fact(GEN m, ulong lim)
 
 /* assume (x,p) = 1 */
 static GEN
-Z_to_Up(GEN x, GEN p, long d)
-{
-  GEN z = cgetg(5, t_PADIC);
-  z[1] = evalprecp(d) | evalvalp(0);
-  gel(z,2) = p;
-  gel(z,3) = powiu(p, d);
-  gel(z,4) = modii(x, gel(z,3)); return z;
-}
+Z_to_Up(GEN x, GEN p, long d) { retmkpadic_i(modii(x, _pd), p, 0, d); }
 /* Is (a mod p^e) a K-th power ? p is prime and e > 0 */
 static int
 Zp_ispower(GEN a, GEN L, GEN K, GEN p, long e)

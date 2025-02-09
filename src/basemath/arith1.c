@@ -651,12 +651,12 @@ lift_intmod(GEN x, GEN *pp)
 static GEN
 lift_padic(GEN x, GEN *pp)
 {
-  GEN p = *pp, q = gel(x,2), y = gel(x,4);
+  GEN p = *pp, q = padic_p(x), u = padic_u(x);
   if (!p) *pp = p = q;
   else if (!equalii(p,q)) err_p(p, q);
   if (absequaliu(p,2) && precp(x) <= 2) err_prec();
-  if (!signe(y)) err_prec();
-  return odd(valp(x))? mulii(p,y): y;
+  if (!signe(u)) err_prec();
+  return odd(valp(x))? mulii(p,u): u;
 }
 
 long
@@ -3188,7 +3188,7 @@ znlog(GEN h, GEN g, GEN o)
   {
     case t_PADIC:
     {
-      GEN p = gel(g,2);
+      GEN p = padic_p(g);
       long v = valp(g);
       if (v < 0) pari_err_DIM("znlog");
       if (v > 0) {
@@ -3198,7 +3198,7 @@ znlog(GEN h, GEN g, GEN o)
         if (!gequal(h, gpowgs(g,k))) { set_avma(av); return cgetg(1,t_VEC); }
         return gc_stoi(av, k);
       }
-      N = gel(g,3);
+      N = padic_pd(g);
       g = Rg_to_Fp(g, N);
       break;
     }
@@ -3883,8 +3883,8 @@ bestappr_Q(GEN x, GEN k)
     case t_PADIC: {
       pari_sp av = avma;
       long v = valp(x);
-      a = mod_to_frac(gel(x,4), gel(x,3), k); if (!a) return NULL;
-      if (v) a = gmul(a, powis(gel(x,2), v));
+      a = mod_to_frac(padic_u(x), padic_pd(x), k); if (!a) return NULL;
+      if (v) a = gmul(a, powis(padic_p(x), v));
       return gerepilecopy(av, a);
     }
 

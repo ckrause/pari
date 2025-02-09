@@ -261,7 +261,7 @@ padicprec_relative(GEN x)
     case t_INT: case t_FRAC:
       return LONG_MAX;
     case t_PADIC:
-      return signe(gel(x,4))? precp(x): 0;
+      return signe(padic_u(x))? precp(x): 0;
     case t_POLMOD: case t_VEC: case t_COL: case t_MAT:
       return vec_padicprec_relative(x, 1);
     case t_POL: case t_SER:
@@ -306,7 +306,7 @@ padicprec(GEN x, GEN p)
       return Z_pval(gel(x,1),p);
 
     case t_PADIC:
-      if (!equalii(gel(x,2),p)) pari_err_MODULUS("padicprec", gel(x,2), p);
+      if (!equalii(padic_p(x),p)) pari_err_MODULUS("padicprec", gel(x,2), p);
       return precp(x)+valp(x);
 
     case t_POL: case t_SER:
@@ -2788,13 +2788,13 @@ ser2rfrac(GEN x)
 GEN
 padic_to_Q(GEN x)
 {
-  GEN u = gel(x,4), p;
+  GEN u = padic_u(x), p;
   long v;
   if (!signe(u)) return gen_0;
   v = valp(x);
   if (!v) return icopy(u);
-  p = gel(x,2);
-  if (v>0)
+  p = padic_p(x);
+  if (v > 0)
   {
     pari_sp av = avma;
     return gerepileuptoint(av, mulii(u, powiu(p,v)));
@@ -2804,15 +2804,15 @@ padic_to_Q(GEN x)
 GEN
 padic_to_Q_shallow(GEN x)
 {
-  GEN u = gel(x,4), p, q, q2;
+  GEN u = padic_u(x), p, q, q2;
   long v;
   if (!signe(u)) return gen_0;
-  q = gel(x,3); q2 = shifti(q,-1);
+  q = padic_pd(x); q2 = shifti(q,-1);
   v = valp(x);
   u = Fp_center_i(u, q, q2);
   if (!v) return u;
-  p = gel(x,2);
-  if (v>0) return mulii(powiu(p,v), u);
+  p = padic_p(x);
+  if (v > 0) return mulii(u, powiu(p,v));
   return mkfrac(u, powiu(p,-v));
 }
 static GEN
@@ -3875,8 +3875,8 @@ centerlift0(GEN x, long v)
 GEN
 centerlift(GEN x)
 {
+  GEN u, p, pd;
   long v;
-  GEN y;
   switch(typ(x))
   {
     case t_INT: return icopy(x);
@@ -3891,20 +3891,15 @@ centerlift(GEN x)
    case t_VEC: case t_COL: case t_MAT:
       pari_APPLY_same(centerlift(gel(x,i)));
     case t_PADIC:
-      if (!signe(gel(x,4))) return gen_0;
-      v = valp(x);
-      if (v>=0)
+      if (!signe(padic_u(x))) return gen_0;
+      v = valp(x); u = padic_u(x); p = padic_p(x); pd = padic_pd(x);
+      if (v >= 0)
       { /* here p^v is an integer */
-        GEN z =  centerliftii(gel(x,4), gel(x,3));
-        pari_sp av;
-        if (!v) return z;
-        av = avma; y = powiu(gel(x,2),v);
-        return gerepileuptoint(av, mulii(y,z));
+        pari_sp av = avma;
+        GEN z = centerliftii(u, pd);
+        return v? gerepileuptoint(av, mulii(powiu(p,v), z)): z;
       }
-      y = cgetg(3,t_FRAC);
-      gel(y,1) = centerliftii(gel(x,4), gel(x,3));
-      gel(y,2) = powiu(gel(x,2),-v);
-      return y;
+      retmkfrac(centerliftii(u, pd), powiu(p,-v));
     default: return gcopy(x);
   }
 }

@@ -82,6 +82,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
        gel(_v,2) = (p);\
        gel(_v,3) = (pd);\
        gel(_v,4) = (x); return _v; } while(0)
+/* x allowed to contain _pd */
+#define retmkpadic_i(x,p,e,d)\
+  do { GEN _v = cgetg(5, t_PADIC), _pd = powiu(p, d);\
+       _v[1] = evalvalp(e) | evalprecp(d);\
+       gel(_v,2) = (p);\
+       gel(_v,3) = (_pd);\
+       gel(_v,4) = (x); return _v; } while(0)
 #define retmkqfb(x,y,z,d)\
   do { GEN _v = cgetg(5, t_QFB);\
        gel(_v,1) = (x);\

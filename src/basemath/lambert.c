@@ -400,7 +400,7 @@ lambertp(GEN x)
   GEN y;
 
   if (gequal0(x)) return gcopy(x);
-  minv = equaliu(gel(x,2), 2)? 2: 1;
+  minv = equaliu(padic_p(x), 2)? 2: 1;
   if (valp(x) < minv) { x = leafcopy(x); setvalp(x, minv); }
   k = Qp_exp_prec(x);
   if (k < 0) return NULL;

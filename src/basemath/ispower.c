@@ -496,9 +496,9 @@ issquare(GEN x)
       return 1;
 
     case t_PADIC:
-      a = gel(x,4); if (!signe(a)) return 1;
+      a = padic_u(x); if (!signe(a)) return 1;
       if (valp(x)&1) return 0;
-      p = gel(x,2);
+      p = padic_p(x);
       if (!absequaliu(p, 2)) return (kronecker(a,p) != -1);
 
       v = precp(x); /* here p=2, a is odd */

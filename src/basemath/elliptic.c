@@ -581,7 +581,7 @@ real_prec(GEN q)
 /* q a t_PADIC */
 static long
 padic_prec(GEN q)
-{ return signe(gel(q,4))? precp(q)+valp(q): valp(q); }
+{ return signe(padic_u(q))? precp(q)+valp(q): valp(q); }
 
 /* check whether moduli are consistent */
 static void
@@ -621,7 +621,7 @@ base_ring(GEN x, GEN *pp, long *prec)
       break;
     case t_PADIC:
       ep = padic_prec(*pp);
-      p = gel(*pp, 2);
+      p = padic_p(*pp);
       break;
     case t_FFELT:
       p = *pp;
@@ -646,7 +646,7 @@ base_ring(GEN x, GEN *pp, long *prec)
     GEN p2, q = gel(x,i);
     switch(typ(q)) {
       case t_PADIC:
-        p2 = gel(q,2);
+        p2 = padic_p(q);
         switch(t)
         {
           case t_FRAC:  t = t_PADIC; p = p2; break;

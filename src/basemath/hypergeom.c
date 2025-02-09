@@ -1079,7 +1079,7 @@ static GEN
 Qp_hypergeom(GEN N, GEN D, GEN z)
 {
   pari_sp av = avma;
-  GEN r, S = gen_1, R = gen_1, p = gel(z, 2), dft = ginv(subis(p, 1));
+  GEN r, S = gen_1, R = gen_1, p = padic_p(z), dft = ginv(subis(p, 1));
   long l, i, prec = precp(z) + valp(z) + 1;
 
   r = gsub(stoi(valp(z)), dft);

@@ -226,7 +226,7 @@ Rg_to_F2(GEN x)
       if (!mpodd(gel(x,2))) (void)Fl_inv(0,2); /* error */
       return mpodd(gel(x,1));
     case t_PADIC:
-      if (!absequaliu(gel(x,2),2)) pari_err_OP("",x, mkintmodu(1,2));
+      if (!absequaliu(padic_p(x),2)) pari_err_OP("",x, mkintmodu(1,2));
       if (valp(x) < 0) (void)Fl_inv(0,2);
       return valp(x) & 1;
     case t_INTMOD: {

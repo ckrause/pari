@@ -681,13 +681,13 @@ addQp(GEN x, GEN y)
 {
   pari_sp av = avma;
   long d, r, e, vy = valp(y), py = precp(y);
-  GEN q, mod, u, p = gel(y,2);
+  GEN q, mod, u, p = padic_p(y);
 
   e = Q_pvalrem(x, p, &x);
   d = vy - e; r = d + py;
   if (r <= 0) { set_avma(av); return gcopy(y); }
-  mod = gel(y,3);
-  u   = gel(y,4);
+  mod = padic_pd(y);
+  u   = padic_u(y);
   (void)new_chunk(5 + ((lgefint(mod) + lgefint(p)*labs(d)) << 1));
 
   if (d > 0)

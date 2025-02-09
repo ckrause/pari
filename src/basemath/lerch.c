@@ -127,7 +127,7 @@ Qp_zetahurwitz_i(GEN s, GEN x, long k)
   if (typ(x) == t_PADIC)
   {
     pari_sp av = avma;
-    GEN p = gel(x,2);
+    GEN p = padic_p(x);
     long e = pprec(x);
     e += sdivsi(e, subis(p, 1));
     s = gadd(s, zeropadic_shallow(p, e));

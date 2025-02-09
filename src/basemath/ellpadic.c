@@ -134,7 +134,7 @@ Qp_ascending_Landen(GEN AB, GEN *ptx, GEN *pty)
     v -= 2*valp(x);
   else
     v -= valp(gnorm(x)); /* v(x) = v(Nx) / (e*f), here ef = 2 */
-  p = gel(r,2);
+  p = padic_p(r);
   if (absequaliu(p,2)) v -= 3; /* |r_{n+1}| <= |(r_n)^2 / 8| */
   /* v = v(A[n+1] R[n+1] / x_{n+1}^2) */
   if (v <= 0) pari_err_PREC("Qp_ascending_Landen");

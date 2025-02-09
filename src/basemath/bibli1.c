@@ -770,7 +770,7 @@ lindep_padic(GEN x)
     if (typ(c) != t_PADIC) continue;
 
     j = precp(c); if (j < prec) prec = j;
-    q = gel(c,2);
+    q = padic_p(c);
     if (!p) p = q; else if (!equalii(p, q)) pari_err_MODULUS("lindep_padic", p, q);
   }
   if (!p) pari_err_TYPE("lindep_padic [not a p-adic vector]",x);

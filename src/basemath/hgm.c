@@ -321,17 +321,13 @@ sumbinom(GEN v, GEN x, long m0, long N, ulong pD)
 static GEN
 umultop(ulong x, ulong y, GEN gp, GEN gpD, long D)
 {
-  ulong pD = gpD[2];
+  ulong pD = gpD[2], xy;
   long v;
-  GEN z;
   if (!x) return zeropadic_shallow(gp, D);
   v = u_lvalrem(x, gp[2], &x);
   if (x >= pD) x %= pD;
-  z = cgetg(5, t_PADIC);
-  z[1] = evalprecp(D) | evalvalp(v);
-  gel(z,2) = gp;
-  gel(z,3) = gpD;
-  gel(z,4) = utoi( Fl_mul(x, y, pD) ); return z;
+  xy = Fl_mul(x, y, pD);
+  retmkpadic(utoi(xy), gp, gpD, v, D);
 }
 
 /* Compute all gamma(m/(p^f-1)) mod p^D for 0 <= m < p^f-1 */

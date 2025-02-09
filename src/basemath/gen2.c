@@ -81,11 +81,9 @@ gassoc_proto(GEN (*f)(GEN,GEN), GEN x, GEN y)
 GEN
 cgetp(GEN x)
 {
-  GEN y = cgetg(5,t_PADIC);
-  y[1] = (x[1]&PRECPBITS) | _evalvalp(0);
-  gel(y,2) = icopy(gel(x,2));
-  gel(y,3) = icopy(gel(x,3));
-  gel(y,4) = cgeti(lgefint(gel(x,3))); return y;
+  GEN pd = padic_pd(x), p = padic_p(x);
+  long l = lgefint(pd);
+  retmkpadic(cgeti(l), icopy(p), icopy(pd), 0, precp(x));
 }
 
 /*******************************************************************/
@@ -329,7 +327,7 @@ gequal0(GEN x)
       return 0;
 
     case t_PADIC:
-      return !signe(gel(x,4));
+      return !signe(padic_u(x));
 
     case t_QUAD:
       return gequal0(gel(x,2)) && gequal0(gel(x,3));
@@ -428,8 +426,8 @@ gequal1(GEN x)
       return gequal1(gel(x,1)) && gequal0(gel(x,2));
 
     case t_PADIC:
-      if (!signe(gel(x,4))) return valp(x) <= 0;
-      return valp(x) == 0 && gequal1(gel(x,4));
+      if (!signe(padic_u(x))) return valp(x) <= 0;
+      return valp(x) == 0 && gequal1(padic_u(x));
 
     case t_QUAD:
       return gequal1(gel(x,2)) && gequal0(gel(x,3));
@@ -478,7 +476,7 @@ gequalm1(GEN x)
       return gequalm1(gel(x,2)) && gequal0(gel(x,3));
 
     case t_PADIC:
-      t = gel(x,4); if (!signe(t)) return valp(x) <= 0;
+      t = padic_u(x); if (!signe(t)) return valp(x) <= 0;
       av = avma; return gc_bool(av, !valp(x) && equalii(addui(1,t), gel(x,3)));
 
     case t_POLMOD:
@@ -952,10 +950,9 @@ gidentical(GEN x, GEN y)
     case t_COMPLEX:
       return gidentical(gel(x,2),gel(y,2)) && gidentical(gel(x,1),gel(y,1));
     case t_PADIC:
-      return valp(x) == valp(y)
-        && equalii(gel(x,2),gel(y,2))
-        && equalii(gel(x,3),gel(y,3))
-        && equalii(gel(x,4),gel(y,4));
+      return valp(x) == valp(y) && precp(x) == precp(y)
+        && equalii(padic_p(x), padic_p(y))
+        && equalii(padic_u(x), padic_u(y));
     case t_POLMOD:
       return gidentical(gel(x,2),gel(y,2)) && polidentical(gel(x,1),gel(y,1));
     case t_POL:
@@ -1064,7 +1061,7 @@ gequal(GEN x, GEN y)
       case t_COMPLEX:
         return gequal(gel(x,2),gel(y,2)) && gequal(gel(x,1),gel(y,1));
       case t_PADIC:
-        if (!equalii(gel(x,2),gel(y,2))) return 0;
+        if (!equalii(padic_p(x), padic_p(y))) return 0;
         av = avma; return gc_bool(av, gequal0(gsub(x,y)));
 
       case t_POLMOD:
@@ -1312,7 +1309,7 @@ gvaluation(GEN x, GEN p)
 
     case t_PADIC:
       if (tp == t_POL) return 0;
-      if (!equalii(p,gel(x,2))) break;
+      if (!equalii(p, padic_p(x))) break;
       return valp(x);
 
     case t_POLMOD: {
@@ -1968,14 +1965,11 @@ gneg(GEN x)
       gel(y,2) = RgX_copy(gel(x,2)); break;
 
     case t_PADIC:
-      if (!signe(gel(x,4))) return gcopy(x);
-      y = cgetg(5, t_PADIC);
-      y[1] = x[1];
-      gel(y,2) = icopy(gel(x,2));
-      gel(y,3) = icopy(gel(x,3));
-      gel(y,4) = subii(gel(x,3),gel(x,4));
-      break;
-
+    {
+      GEN u = padic_u(x), pd = padic_pd(x), p = padic_p(x);
+      if (!signe(u)) return gcopy(x);
+      retmkpadic(subii(pd, u), icopy(p), icopy(pd), valp(x), precp(x));
+    }
     case t_QUAD:
       y=cgetg(4,t_QUAD);
       gel(y,1) = ZX_copy(gel(x,1));
@@ -2022,12 +2016,12 @@ gneg_i(GEN x)
       gel(y,1) = gneg_i(gel(x,1));
       gel(y,2) = gneg_i(gel(x,2)); break;
 
-    case t_PADIC: y = cgetg(5,t_PADIC);
-      y[1] = x[1];
-      gel(y,2) = gel(x,2);
-      gel(y,3) = gel(x,3);
-      gel(y,4) = signe(gel(x,4))? subii(gel(x,3),gel(x,4)): gen_0; break;
-
+    case t_PADIC:
+    {
+      GEN u = padic_u(x), pd = padic_pd(x), p = padic_p(x);
+      if (!signe(u)) return zeropadic_shallow(p, valp(x));
+      retmkpadic(subii(pd, u), p, pd, valp(x), precp(x));
+    }
     case t_POLMOD:
       retmkpolmod(gneg_i(gel(x,2)), RgX_copy(gel(x,1)));
 
@@ -2287,8 +2281,8 @@ gaffsg(long s, GEN x)
       long vx;
       GEN y;
       if (!s) { padicaff0(x); break; }
-      vx = Z_pvalrem(stoi(s), gel(x,2), &y);
-      setvalp(x,vx); modiiz(y,gel(x,3),gel(x,4));
+      vx = Z_pvalrem(stoi(s), padic_p(x), &y);
+      setvalp(x,vx); modiiz(y, padic_pd(x), padic_u(x));
       break;
     }
     case t_QUAD: gaffsg(s,gel(x,2)); gaffsg(0,gel(x,3)); break;
@@ -2306,27 +2300,27 @@ gaffsg(long s, GEN x)
 GEN
 padic_to_Fp(GEN x, GEN Y) {
   pari_sp av = avma;
-  GEN p = gel(x,2), z;
+  GEN p = padic_p(x), z;
   long vy, vx = valp(x);
   if (!signe(Y)) pari_err_INV("padic_to_Fp",Y);
   vy = Z_pvalrem(Y,p, &z);
   if (vx < 0 || !gequal1(z)) pari_err_OP("",x, mkintmod(gen_1,Y));
   if (vx >= vy) { set_avma(av); return gen_0; }
-  z = gel(x,4);
+  z = padic_u(x);
   if (!signe(z) || vy > vx + precp(x)) pari_err_OP("",x, mkintmod(gen_1,Y));
   if (vx) z = mulii(z, powiu(p,vx));
   return gerepileuptoint(av, remii(z, Y));
 }
 ulong
 padic_to_Fl(GEN x, ulong Y) {
-  GEN p = gel(x,2);
+  GEN p = padic_p(x);
   ulong u, z;
   long vy, vx = valp(x);
   vy = u_pvalrem(Y,p, &u);
   if (vx < 0 || u != 1) pari_err_OP("",x, mkintmodu(1,Y));
   /* Y = p^vy */
   if (vx >= vy) return 0;
-  z = umodiu(gel(x,4), Y);
+  z = umodiu(padic_u(x), Y);
   if (!z || vy > vx + precp(x)) pari_err_OP("",x, mkintmodu(1,Y));
   if (vx) {
     ulong pp = p[2];
@@ -2370,9 +2364,9 @@ gaffect(GEN x, GEN y)
       gaffect(gel(x,1),gel(y,1));
       gaffect(gel(x,2),gel(y,2)); return;
     case t_PADIC:
-      if (!equalii(gel(x,2),gel(y,2))) pari_err_OP("",x,y);
-      modiiz(gel(x,4),gel(y,3),gel(y,4));
-      setvalp(y,valp(x)); return;
+      if (!equalii(padic_p(x), padic_p(y))) pari_err_OP("",x,y);
+      modiiz(padic_u(x), padic_pd(y), padic_u(y));
+      setvalp(y, valp(x)); return;
     case t_QUAD:
       if (! ZX_equal(gel(x,1),gel(y,1))) pari_err_OP("",x,y);
       affii(gel(x,2),gel(y,2));
@@ -2403,8 +2397,8 @@ gaffect(GEN x, GEN y)
         case t_PADIC:
           if (!signe(x)) { padicaff0(y); break; }
           av = avma;
-          setvalp(y, Z_pvalrem(x,gel(y,2),&p1));
-          affii(modii(p1,gel(y,3)), gel(y,4));
+          setvalp(y, Z_pvalrem(x, padic_p(y), &p1));
+          affii(modii(p1, padic_pd(y)), padic_u(y));
           set_avma(av); break;
 
         case t_QUAD: gaffect(x,gel(y,2)); gaffsg(0,gel(y,3)); break;
@@ -2430,14 +2424,17 @@ gaffect(GEN x, GEN y)
           set_avma(av); break;
         case t_COMPLEX: gaffect(x,gel(y,1)); gaffsg(0,gel(y,2)); break;
         case t_PADIC:
+        {
+          GEN p = padic_p(y), pd = padic_pd(y);
           if (!signe(gel(x,1))) { padicaff0(y); break; }
           num = gel(x,1);
           den = gel(x,2);
-          av = avma; vx = Z_pvalrem(num, gel(y,2), &num);
-          if (!vx) vx = -Z_pvalrem(den,gel(y,2),&den);
-          setvalp(y,vx);
-          p1 = mulii(num,Fp_inv(den,gel(y,3)));
-          affii(modii(p1,gel(y,3)), gel(y,4)); set_avma(av); break;
+          av = avma; vx = Z_pvalrem(num, p, &num);
+          if (!vx) vx = -Z_pvalrem(den, p, &den);
+          setvalp(y, vx);
+          p1 = mulii(num, Fp_inv(den, pd));
+          affii(modii(p1,pd), padic_u(y)); set_avma(av); break;
+        }
         case t_QUAD: gaffect(x,gel(y,2)); gaffsg(0,gel(y,3)); break;
         default: pari_err_TYPE2("=",x,y);
       }
@@ -2556,33 +2553,26 @@ ctop(GEN x, GEN p, long d)
 GEN
 cvstop2(long s, GEN y)
 {
-  GEN z, p = gel(y,2);
-  long v, d = signe(gel(y,4))? precp(y): 0;
+  GEN p = padic_p(y), pd = padic_pd(y), u = padic_u(y);
+  long v, d = signe(u)? precp(y): 0;
   if (!s) return zeropadic_shallow(p, d);
   v = z_pvalrem(s, p, &s);
   if (d <= 0) return zeropadic_shallow(p, v);
-  z = cgetg(5, t_PADIC);
-  z[1] = evalprecp(d) | evalvalp(v);
-  gel(z,2) = p;
-  gel(z,3) = gel(y,3);
-  gel(z,4) = modsi(s, gel(y,3)); return z;
+  retmkpadic(modsi(s, pd), p, pd, v, d);
 }
 
 static GEN
 itop2_coprime(GEN x, GEN y, long v, long d)
 {
-  GEN z = cgetg(5, t_PADIC);
-  z[1] = evalprecp(d) | evalvalp(v);
-  gel(z,2) = gel(y,2);
-  gel(z,3) = gel(y,3);
-  gel(z,4) = modii(x, gel(y,3)); return z;
+  GEN p = padic_p(y), pd = padic_pd(y);
+  retmkpadic(modii(x, pd), p, pd, v, d);
 }
 /* cvtop(x, gel(y,2), precp(y)), shallow */
 GEN
 cvtop2(GEN x, GEN y)
 {
-  GEN p = gel(y,2);
-  long v, d = signe(gel(y,4))? precp(y): 0;
+  GEN p = padic_p(y), u;
+  long v, d = signe(padic_u(y))? precp(y): 0;
   switch(typ(x))
   {
     case t_INT:
@@ -2600,25 +2590,30 @@ cvtop2(GEN x, GEN y)
       if (d <= 0) return zeropadic_shallow(p, Q_pval(x,p));
       num = gel(x,1); v = Z_pvalrem(num, p, &num);
       den = gel(x,2); if (!v) v = -Z_pvalrem(den, p, &den);
-      if (!is_pm1(den)) num = mulii(num, Fp_inv(den, gel(y,3)));
+      if (!is_pm1(den)) num = mulii(num, Fp_inv(den, padic_pd(y)));
       return itop2_coprime(num, y, v, d);
     }
     case t_COMPLEX: return ctop(x, p, d);
     case t_QUAD:    return qtop(x, p, d);
     case t_PADIC:
-      if (!signe(gel(x,4))) return zeropadic_shallow(p, d);
+      u = padic_u(x);
+      if (!signe(u)) return zeropadic_shallow(p, d);
       if (precp(x) <= d) return x;
-      return itop2_coprime(gel(x,4), y, valp(x), d); /* reduce accuracy */
+      return itop2_coprime(u, y, valp(x), d); /* reduce accuracy */
   }
   pari_err_TYPE("cvtop2",x);
   return NULL; /* LCOV_EXCL_LINE */
 }
 
+static GEN
+_Fp_div(GEN n, GEN d, GEN q)
+{ return equali1(d)? modii(n, q): Fp_div(n, d, q); }
+
 /* assume is_const_t(tx) */
 GEN
 cvtop(GEN x, GEN p, long d)
 {
-  GEN z;
+  GEN u;
   long v;
 
   if (typ(p) != t_INT) pari_err_TYPE("cvtop",p);
@@ -2628,11 +2623,7 @@ cvtop(GEN x, GEN p, long d)
       if (!signe(x)) return zeropadic(p, d);
       if (d <= 0) return zeropadic(p, Z_pval(x,p));
       v = Z_pvalrem(x, p, &x);
-      z = cgetg(5, t_PADIC);
-      z[1] = evalprecp(d) | evalvalp(v);
-      gel(z,2) = icopy(p);
-      gel(z,3) = powiu(p, d);
-      gel(z,4) = modii(x, gel(z,3)); return z; /* not memory-clean */
+      retmkpadic_i(modii(x, _pd), icopy(p), v, d); /* not memory-clean */
 
     case t_INTMOD:
       v = Z_pval(gel(x,1),p); if (v > d) v = d;
@@ -2642,24 +2633,16 @@ cvtop(GEN x, GEN p, long d)
     {
       GEN num, den;
       if (d <= 0) return zeropadic(p, Q_pval(x,p));
-      num = gel(x,1); v = Z_pvalrem(num, p, &num);
+      num = gel(x,1); v = Z_pvalrem(num, p, &num); /* not memory-clean */
       den = gel(x,2); if (!v) v = -Z_pvalrem(den, p, &den);
-      z = cgetg(5, t_PADIC);
-      z[1] = evalprecp(d) | evalvalp(v);
-      gel(z,2) = icopy(p);
-      gel(z,3) = powiu(p, d);
-      if (!is_pm1(den)) num = mulii(num, Fp_inv(den, gel(z,3)));
-      gel(z,4) = modii(num, gel(z,3)); return z; /* not memory-clean */
+      retmkpadic_i(_Fp_div(num, den, _pd), icopy(p), v, d);
     }
     case t_COMPLEX: return ctop(x, p, d);
     case t_PADIC:
-      p = gel(x,2); /* override */
-      if (!signe(gel(x,4))) return zeropadic(p, d);
-      z = cgetg(5,t_PADIC);
-      z[1] = x[1]; setprecp(z,d);
-      gel(z,2) = icopy(p);
-      gel(z,3) = powiu(p, d);
-      gel(z,4) = modii(gel(x,4), gel(z,3)); return z;
+      p = padic_p(x); /* override */
+      u = padic_u(x);
+      if (!signe(u)) return zeropadic(p, d);
+      retmkpadic_i(modii(u, _pd), icopy(p), valp(x), d);
 
     case t_QUAD: return qtop(x, p, d);
   }
