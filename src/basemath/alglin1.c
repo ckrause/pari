@@ -90,7 +90,7 @@ gerepile_gauss(GEN x,long k,long t,pari_sp av, long j, GEN c)
   long u,i, n = lg(x)-1, m = n? nbrows(x): 0;
   size_t dec;
 
-  if (DEBUGMEM > 1) pari_warn(warnmem,"gauss_pivot. k=%ld, n=%ld",k,n);
+  if (DEBUGMEM > 1) pari_warn(warnmem,"RgM_pivots. k=%ld, n=%ld",k,n);
   for (u=t+1; u<=m; u++)
     if (u==j || !c[u]) COPY(gcoeff(x,u,k));
   for (u=1; u<=m; u++)
@@ -759,7 +759,7 @@ get_suppl(GEN x, GEN d, long n, long r, GEN(*ei)(long,long))
   if (rx == n && r == 0) return gcopy(x);
   y = cgetg(n+1, t_MAT);
   av = avma; c = zero_zv(n);
-  /* c = lines containing pivots (could get it from gauss_pivot, but cheap)
+  /* c = lines containing pivots (could get it from RgM_pivots, but cheap)
    * In theory r = 0 and d[j] > 0 for all j, but why take chances? */
   for (k = j = 1; j<=rx; j++)
     if (d[j]) { c[ d[j] ] = 1; gel(y,k++) = gel(x,j); }
@@ -773,7 +773,7 @@ get_suppl(GEN x, GEN d, long n, long r, GEN(*ei)(long,long))
   return y;
 }
 
-/* n = dim x, r = dim Ker(x), d from gauss_pivot */
+/* n = dim x, r = dim Ker(x), d from RgM_pivots */
 static GEN
 indexrank0(long n, long r, GEN d)
 {
@@ -1348,7 +1348,7 @@ gen_get_suppl(GEN x, GEN d, long n, long r, void *E, const struct bb_field *ff)
   if (rx == n && r == 0) return gcopy(x);
   c = zero_zv(n);
   y = cgetg(n+1, t_MAT);
-  /* c = lines containing pivots (could get it from gauss_pivot, but cheap)
+  /* c = lines containing pivots (could get it from RgM_pivots, but cheap)
    * In theory r = 0 and d[j] > 0 for all j, but why take chances? */
   for (k = j = 1; j<=rx; j++)
     if (d[j]) { c[ d[j] ] = 1; gel(y,k++) = gcopy(gel(x,j)); }
@@ -2175,7 +2175,7 @@ static void
 init_suppl(GEN x)
 {
   if (lg(x) == 1) pari_err_IMPL("suppl [empty matrix]");
-  /* HACK: avoid overwriting d from gauss_pivot() after set_avma(av) */
+  /* HACK: avoid overwriting d from RgM_pivots after set_avma(av) */
   (void)new_chunk(lgcols(x) * 2);
 }
 
@@ -2378,13 +2378,8 @@ gauss_get_pivot_NZ(GEN X, GEN x0/*unused*/, long ix, GEN c)
   return lx;
 }
 
-/* Return pivot seeking function appropriate for the domain of the RgM x
- * (first non zero pivot, maximal pivot...)
- * x0 is a reference point used when guessing whether x[i,j] ~ 0
- * (iff x[i,j] << x0[i,j]); typical case: mateigen, Gauss pivot on x - vp.Id,
- * but use original x when deciding whether a prospective pivot is nonzero */
 static pivot_fun
-get_pivot_fun(GEN x, GEN x0, GEN *data)
+get_pivot_fun(GEN x, GEN *data)
 {
   long i, j, hx, lx = lg(x);
   int res = t_INT;
@@ -2420,9 +2415,25 @@ get_pivot_fun(GEN x, GEN x0, GEN *data)
   }
   switch(res)
   {
-    case t_REAL: *data = x0; return &gauss_get_pivot_max;
+    case t_REAL: *data = x; return &gauss_get_pivot_max;
     case t_PADIC: *data = p; return &gauss_get_pivot_padic;
     default: return &gauss_get_pivot_NZ;
+  }
+}
+/* Set pivot seeking function appropriate for the domain of x with RgM_type t
+ * (first non zero pivot, maximal pivot...)
+ * x0 is a reference point used when guessing whether x[i,j] ~ 0
+ * (iff x[i,j] << x0[i,j]); typical case: mateigen, Gauss pivot on x - vp.Id,
+ * but use original x when deciding whether a prospective pivot is nonzero */
+static void
+set_pivot_fun(pivot_fun *fun, GEN *data, long t, GEN x0, GEN p)
+{
+  switch(t)
+  {
+    case t_REAL:
+    case t_COMPLEX: *data = x0; *fun = gauss_get_pivot_max; break;
+    case t_PADIC: *data = p; *fun = gauss_get_pivot_padic; break;
+    default: *data = NULL; *fun = gauss_get_pivot_NZ;
   }
 }
 
@@ -2515,12 +2526,14 @@ RgM_inv_FqM(GEN x, GEN pol, GEN p)
 }
 
 #define code(t1,t2) ((t1 << 6) | t2)
+/* Contrary to other *fast functions, returns gen_0 instead of NULL for
+ * 'no fast algorithm'. NULL is already reserved for 'not invertible' */
 static GEN
-RgM_inv_fast(GEN x)
+RgM_inv_fast(GEN x, pivot_fun *fun, GEN *data)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_type(x, &p,&pol,&pa);
+  long pa, t = RgM_type(x, &p,&pol,&pa);
+  set_pivot_fun(fun, data, t, x, p);
   switch(t)
   {
     case t_INT:    /* Fall back */
@@ -2592,30 +2605,25 @@ RgM_solve_FpM(GEN a, GEN b, GEN p)
  * bco: number of columns of b (if matrix)
  */
 static GEN
-RgM_solve_basecase(GEN a, GEN b)
+RgM_solve_basecase(GEN a, GEN b, pivot_fun pivot, GEN data)
 {
   pari_sp av = avma;
   long i, j, k, li, bco, aco;
   int iscol;
-  pivot_fun pivot;
-  GEN p, u, data;
+  GEN p, u;
 
-  set_avma(av);
-
-  if (lg(a)-1 == 2 && nbrows(a) == 2) {
-    /* 2x2 matrix, start by inverting a */
+  if (lg(a)-1 == 2 && nbrows(a) == 2)
+  { /* 2x2 matrix, start by inverting a */
     GEN u = gcoeff(a,1,1), v = gcoeff(a,1,2);
     GEN w = gcoeff(a,2,1), x = gcoeff(a,2,2);
     GEN D = gsub(gmul(u,x), gmul(v,w)), ainv;
     if (gequal0(D)) return NULL;
     ainv = mkmat2(mkcol2(x, gneg(w)), mkcol2(gneg(v), u));
-    ainv = gmul(ainv, ginv(D));
+    ainv = RgM_Rg_mul(ainv, ginv(D));
     if (b) ainv = gmul(ainv, b);
     return gerepileupto(av, ainv);
   }
-
   if (!init_gauss(a, &b, &aco, &li, &iscol)) return cgetg(1, iscol?t_COL:t_MAT);
-  pivot = get_pivot_fun(a, a, &data);
   a = RgM_shallowcopy(a);
   bco = lg(b)-1;
   if(DEBUGLEVEL>4) err_printf("Entering gauss\n");
@@ -2658,11 +2666,11 @@ RgM_solve_basecase(GEN a, GEN b)
 }
 
 static GEN
-RgM_RgC_solve_fast(GEN x, GEN y)
+RgM_RgC_solve_fast(GEN x, GEN y, pivot_fun *fun, GEN *data)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_RgC_type(x, y, &p,&pol,&pa);
+  long pa, t = RgM_RgC_type(x, y, &p,&pol,&pa);
+  set_pivot_fun(fun, data, t, x, p);
   switch(t)
   {
     case t_INT:    return ZM_gauss(x, y);
@@ -2674,11 +2682,11 @@ RgM_RgC_solve_fast(GEN x, GEN y)
 }
 
 static GEN
-RgM_solve_fast(GEN x, GEN y)
+RgM_solve_fast(GEN x, GEN y, pivot_fun *fun, GEN *data)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_type2(x, y, &p,&pol,&pa);
+  long pa, t = RgM_type2(x, y, &p,&pol,&pa);
+  set_pivot_fun(fun, data, t, x, p);
   switch(t)
   {
     case t_INT:    return ZM_gauss(x, y);
@@ -2693,12 +2701,14 @@ GEN
 RgM_solve(GEN a, GEN b)
 {
   pari_sp av = avma;
-  GEN u;
+  pivot_fun fun;
+  GEN u, data;
   if (!b) return RgM_inv(a);
-  u = typ(b)==t_MAT ? RgM_solve_fast(a, b): RgM_RgC_solve_fast(a, b);
+  u = typ(b)==t_MAT ? RgM_solve_fast(a, b, &fun, &data)
+                    : RgM_RgC_solve_fast(a, b, &fun, &data);
   if (!u) return gc_NULL(av);
   if (u != gen_0) return u;
-  return RgM_solve_basecase(a, b);
+  return RgM_solve_basecase(a, b, fun, data);
 }
 
 GEN
@@ -2713,8 +2723,9 @@ RgM_div(GEN a, GEN b)
 GEN
 RgM_inv(GEN a)
 {
-  GEN b = RgM_inv_fast(a);
-  return b==gen_0? RgM_solve_basecase(a, NULL): b;
+  pivot_fun fun;
+  GEN data, b = RgM_inv_fast(a, &fun, &data);
+  return b==gen_0? RgM_solve_basecase(a, NULL, fun, data): b;
 }
 
 /* assume dim A >= 1, A invertible + upper triangular  */
@@ -3603,8 +3614,7 @@ static GEN
 RgM_deplin_fast(GEN x)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_type(x, &p,&pol,&pa);
+  long pa, t = RgM_type(x, &p,&pol,&pa);
   switch(t)
   {
     case t_INT:    /* fall through */
@@ -3655,16 +3665,14 @@ deplin(GEN x)
  * Set r = dim ker(x). d[k] contains the index of the first nonzero pivot
  * in column k */
 static GEN
-gauss_pivot_ker(GEN x, GEN x0, GEN *dd, long *rr)
+gauss_pivot_ker(GEN x, GEN *dd, long *rr, pivot_fun pivot, GEN data)
 {
-  GEN c, d, p, data;
+  GEN c, d, p;
   pari_sp av;
   long i, j, k, r, t, n, m;
-  pivot_fun pivot;
 
   n=lg(x)-1; if (!n) { *dd=NULL; *rr=0; return cgetg(1,t_MAT); }
   m=nbrows(x); r=0;
-  pivot = get_pivot_fun(x, x0, &data);
   x = RgM_shallowcopy(x);
   c = zero_zv(m);
   d = cgetg(n+1,t_VECSMALL);
@@ -3703,7 +3711,7 @@ gauss_pivot_ker(GEN x, GEN x0, GEN *dd, long *rr)
  *   d[k] != 0 contains the index of a nonzero pivot in column k
  *   d[k] == 0 if column k is a linear combination of the (k-1) first ones */
 GEN
-RgM_pivots(GEN x0, GEN data, long *rr, pivot_fun pivot)
+RgM_pivots(GEN x0, long *rr, pivot_fun pivot, GEN data)
 {
   GEN x, c, d, p;
   long i, j, k, r, t, m, n = lg(x0)-1;
@@ -3812,24 +3820,15 @@ END:
   return gerepileuptoleaf(av0, d);
 }
 
-/* set *pr = dim Ker x */
+/* compute ker(x) */
 static GEN
-gauss_pivot(GEN x, long *pr) {
-  GEN data;
-  pivot_fun pivot = get_pivot_fun(x, x, &data);
-  return RgM_pivots(x, data, pr, pivot);
-}
-
-/* compute ker(x), x0 is a reference point when guessing whether x[i,j] ~ 0
- * (iff x[i,j] << x0[i,j]) */
-static GEN
-ker_aux(GEN x, GEN x0)
+ker_aux(GEN x, pivot_fun fun, GEN data)
 {
   pari_sp av = avma;
   GEN d,y;
   long i,j,k,r,n;
 
-  x = gauss_pivot_ker(x,x0,&d,&r);
+  x = gauss_pivot_ker(x,&d,&r, fun, data);
   if (!r) { set_avma(av); return cgetg(1,t_MAT); }
   n = lg(x)-1; y=cgetg(r+1,t_MAT);
   for (j=k=1; j<=r; j++,k++)
@@ -3878,11 +3877,11 @@ RgM_ker_FqM(GEN x, GEN pol, GEN p)
 
 #define code(t1,t2) ((t1 << 6) | t2)
 static GEN
-RgM_ker_fast(GEN x)
+RgM_ker_fast(GEN x, pivot_fun *fun, GEN *data)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_type(x, &p,&pol,&pa);
+  long pa, t = RgM_type(x, &p,&pol,&pa);
+  set_pivot_fun(fun, data, t, x, p);
   switch(t)
   {
     case t_INT:    /* fall through */
@@ -3899,9 +3898,10 @@ RgM_ker_fast(GEN x)
 GEN
 ker(GEN x)
 {
-  GEN b = RgM_ker_fast(x);
+  pivot_fun fun;
+  GEN data, b = RgM_ker_fast(x, &fun, &data);
   if (b) return b;
-  return ker_aux(x,x);
+  return ker_aux(x, fun, data);
 }
 
 GEN
@@ -3953,11 +3953,11 @@ QM_image(GEN A)
 
 #define code(t1,t2) ((t1 << 6) | t2)
 static GEN
-RgM_image_fast(GEN x)
+RgM_image_fast(GEN x, pivot_fun *fun, GEN *data)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_type(x, &p,&pol,&pa);
+  long pa, t = RgM_type(x, &p,&pol,&pa);
+  set_pivot_fun(fun, data, t, x, p);
   switch(t)
   {
     case t_INT:    /* fall through */
@@ -3974,35 +3974,53 @@ RgM_image_fast(GEN x)
 GEN
 image(GEN x)
 {
-  GEN d, M;
+  pivot_fun fun;
+  GEN d, M, data;
   long r;
 
   if (typ(x)!=t_MAT) pari_err_TYPE("matimage",x);
-  M = RgM_image_fast(x);
+  M = RgM_image_fast(x, &fun, &data);
   if (M) return M;
-  d = gauss_pivot(x,&r); /* d left on stack for efficiency */
+  d = RgM_pivots(x, &r, fun, data); /* d left on stack for efficiency */
   return image_from_pivot(x,d,r);
 }
 
 static GEN
-imagecompl_aux(GEN x, GEN(*PIVOT)(GEN,long*))
+imagecompl_aux(GEN x, GEN d, long r)
 {
-  pari_sp av = avma;
-  GEN d,y;
-  long j,i,r;
-
-  if (typ(x)!=t_MAT) pari_err_TYPE("imagecompl",x);
-  (void)new_chunk(lg(x) * 4 + 1); /* HACK */
-  d = PIVOT(x,&r); /* if (!d) then r = 0 */
-  set_avma(av); y = cgetg(r+1,t_VECSMALL);
-  for (i=j=1; j<=r; i++)
+  GEN y = cgetg(r+1,t_VECSMALL);
+  long j, i;
+  for (i = j = 1; j<=r; i++)
     if (!d[i]) y[j++] = i;
   return y;
 }
 GEN
-imagecompl(GEN x) { return imagecompl_aux(x, &gauss_pivot); }
+imagecompl(GEN x)
+{
+  pari_sp av = avma;
+  GEN data, d;
+  long r;
+  pivot_fun pivot;
+
+  if (typ(x)!=t_MAT) pari_err_TYPE("imagecompl",x);
+  pivot = get_pivot_fun(x, &data);
+  (void)new_chunk(lg(x) * 4 + 1); /* HACK */
+  d = RgM_pivots(x, &r, pivot, data); /* if (!d) then r = 0 */
+  set_avma(av);
+  return imagecompl_aux(x, d, r);
+}
 GEN
-ZM_imagecompl(GEN x) { return imagecompl_aux(x, &ZM_pivots); }
+ZM_imagecompl(GEN x)
+{
+  pari_sp av = avma;
+  GEN d;
+  long r;
+
+  (void)new_chunk(lg(x) * 4 + 1); /* HACK */
+  d = ZM_pivots(x, &r); /* if (!d) then r = 0 */
+  set_avma(av);
+  return imagecompl_aux(x, d, r);
+}
 
 static GEN
 RgM_RgC_invimage_FpC(GEN A, GEN y, GEN p)
@@ -4032,8 +4050,7 @@ static GEN
 RgM_RgC_invimage_fast(GEN x, GEN y)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_RgC_type(x, y, &p,&pol,&pa);
+  long pa, t = RgM_RgC_type(x, y, &p,&pol,&pa);
   switch(t)
   {
     case t_INTMOD: return RgM_RgC_invimage_FpC(x, y, p);
@@ -4112,8 +4129,7 @@ static GEN
 RgM_invimage_fast(GEN x, GEN y)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_type2(x, y, &p,&pol,&pa);
+  long pa, t = RgM_type2(x, y, &p,&pol,&pa);
   switch(t)
   {
     case t_INTMOD: return RgM_invimage_FpM(x, y, p);
@@ -4169,11 +4185,11 @@ RgM_suppl_FpM(GEN x, GEN p)
 }
 
 static GEN
-RgM_suppl_fast(GEN x)
+RgM_suppl_fast(GEN x, pivot_fun *fun, GEN *data)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_type(x,&p,&pol,&pa);
+  long pa, t = RgM_type(x,&p,&pol,&pa);
+  set_pivot_fun(fun, data, t, x, p);
   switch(t)
   {
     case t_INTMOD: return RgM_suppl_FpM(x, p);
@@ -4188,14 +4204,15 @@ GEN
 suppl(GEN x)
 {
   pari_sp av = avma;
-  GEN d, M;
+  pivot_fun fun;
+  GEN d, M, data;
   long r;
   if (typ(x)!=t_MAT) pari_err_TYPE("suppl",x);
-  M = RgM_suppl_fast(x);
+  M = RgM_suppl_fast(x, &fun, &data);
   if (M) return M;
   init_suppl(x);
-  d = gauss_pivot(x,&r);
-  set_avma(av); return get_suppl(x,d,nbrows(x),r,&col_ei);
+  d = RgM_pivots(x, &r, fun, data); set_avma(av);
+  return get_suppl(x,d,nbrows(x),r,&col_ei);
 }
 
 GEN
@@ -4256,11 +4273,11 @@ RgM_rank_FqM(GEN x, GEN pol, GEN p)
 
 #define code(t1,t2) ((t1 << 6) | t2)
 static long
-RgM_rank_fast(GEN x)
+RgM_rank_fast(GEN x, pivot_fun *fun, GEN *data)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_type(x,&p,&pol,&pa);
+  long pa, t = RgM_type(x,&p,&pol,&pa);
+  set_pivot_fun(fun, data, t, x, p);
   switch(t)
   {
     case t_INT:    return ZM_rank(x);
@@ -4278,12 +4295,14 @@ long
 rank(GEN x)
 {
   pari_sp av = avma;
+  pivot_fun fun;
+  GEN data;
   long r;
 
   if (typ(x)!=t_MAT) pari_err_TYPE("rank",x);
-  r = RgM_rank_fast(x);
+  r = RgM_rank_fast(x, &fun, &data);
   if (r >= 0) return r;
-  (void)gauss_pivot(x, &r);
+  (void)RgM_pivots(x, &r, fun, data);
   return gc_long(av, lg(x)-1 - r);
 }
 
@@ -4302,7 +4321,7 @@ perm_complete(GEN d, long n)
   return gc_const(av, y);
 }
 
-/* n = dim x, r = dim Ker(x), d from gauss_pivot */
+/* n = dim x, r = dim Ker(x), d from RgM_pivots */
 static GEN
 indeximage0(long n, long r, GEN d)
 {
@@ -4315,7 +4334,7 @@ indeximage0(long n, long r, GEN d)
     if (d[j]) v[i++] = j;
   return v;
 }
-/* x an m x n t_MAT, n > 0, r = dim Ker(x), d from gauss_pivot */
+/* x an m x n t_MAT, n > 0, r = dim Ker(x), d from RgM_pivots */
 static void
 indexrank_all(long m, long n, long r, GEN d, GEN *prow, GEN *pcol)
 {
@@ -4352,11 +4371,11 @@ RgM_indexrank_FqM(GEN x, GEN pol, GEN p)
 
 #define code(t1,t2) ((t1 << 6) | t2)
 static GEN
-RgM_indexrank_fast(GEN x)
+RgM_indexrank_fast(GEN x, pivot_fun *fun, GEN *data)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_type(x,&p,&pol,&pa);
+  long pa, t = RgM_type(x,&p,&pol,&pa);
+  set_pivot_fun(fun, data, t, x, p);
   switch(t)
   {
     case t_INT:    return ZM_indexrank(x);
@@ -4374,14 +4393,15 @@ GEN
 indexrank(GEN x)
 {
   pari_sp av;
+  pivot_fun fun;
   long r;
-  GEN d;
+  GEN d, data;
   if (typ(x)!=t_MAT) pari_err_TYPE("indexrank",x);
-  d = RgM_indexrank_fast(x);
+  d = RgM_indexrank_fast(x, &fun, &data);
   if (d) return d;
   av = avma;
   init_indexrank(x);
-  d = gauss_pivot(x, &r);
+  d = RgM_pivots(x, &r, fun, data);
   set_avma(av); return indexrank0(lg(x)-1, r, d);
 }
 
@@ -5028,7 +5048,8 @@ mateigen(GEN x, long flag, long prec)
   l = lg(R); y = cgetg(l, t_VEC);
   for (k = 1; k < l; k++)
   {
-    GEN F = ker_aux(RgM_Rg_sub_shallow(x, gel(R,k)), x);
+    GEN M = RgM_Rg_sub_shallow(x, gel(R,k));
+    GEN F = ker_aux(M, gauss_get_pivot_max, x);
     long d = lg(F)-1;
     if (!d) { set_avma(av); return eigen_err(exact, x, flag, prec); }
     gel(y,k) = F;
@@ -5151,7 +5172,7 @@ det2(GEN a)
   if (n != nbrows(a)) pari_err_DIM("det2");
   if (n == 1) return gcopy(gcoeff(a,1,1));
   if (n == 2) return RgM_det2(a);
-  pivot = get_pivot_fun(a, a, &data);
+  pivot = get_pivot_fun(a, &data);
   return det_simple_gauss(a, data, pivot);
 }
 
@@ -5476,20 +5497,19 @@ RgM_det_FqM(GEN x, GEN pol, GEN p)
 
 #define code(t1,t2) ((t1 << 6) | t2)
 static GEN
-RgM_det_fast(GEN x)
+RgM_det_fast(GEN x, pivot_fun *fun, GEN *data)
 {
   GEN p, pol;
-  long pa;
-  long t = RgM_type(x, &p,&pol,&pa);
+  long pa, t = RgM_type(x, &p,&pol,&pa);
+  set_pivot_fun(fun, data, t, x, p);
   switch(t)
   {
     case t_INT:    return ZM_det(x);
     case t_FRAC:   return QM_det(x);
     case t_FFELT:  return FFM_det(x, pol);
     case t_INTMOD: return RgM_det_FpM(x, p);
-    case code(t_POLMOD, t_INTMOD):
-                   return RgM_det_FqM(x, pol, p);
-    default:       return NULL;
+    case code(t_POLMOD, t_INTMOD): return RgM_det_FqM(x, pol, p);
+    default: return NULL;
   }
 }
 #undef code
@@ -5516,12 +5536,10 @@ det(GEN a)
   if (n != nbrows(a)) pari_err_DIM("det");
   if (n == 1) return gcopy(gcoeff(a,1,1));
   if (n == 2) return RgM_det2(a);
-  b = RgM_det_fast(a);
+  b = RgM_det_fast(a, &pivot, &data);
   if (b) return b;
-  pivot = get_pivot_fun(a, a, &data);
   if (pivot != gauss_get_pivot_NZ) return det_simple_gauss(a, data, pivot);
-  B = (double)n;
-  return det_develop(a, det_init_max(n), B*B*B);
+  B = (double)n; return det_develop(a, det_init_max(n), B*B*B);
 }
 
 GEN

@@ -2995,7 +2995,7 @@ compute_multiple_of_R(GEN Ar, long RU, long N, long *pneed, long *bit, GEN *ptL)
   mdet = shallowconcat(T, mdet); /* det(Span(mdet)) = N * R */
 
   /* could be using indexrank(), but need custom "get_pivot" function */
-  d = RgM_pivots(mdet, NULL, &r, &compute_multiple_of_R_pivot);
+  d = RgM_pivots(mdet, &r, &compute_multiple_of_R_pivot, NULL);
   /* # of independent columns = target rank ? */
   if (lg(mdet)-1 - r != RU)
   {

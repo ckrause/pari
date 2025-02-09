@@ -594,7 +594,7 @@ GEN     redimagsl2(GEN q, GEN *U);
 
 typedef long (*pivot_fun)(GEN,GEN,long,GEN);
 GEN ZM_pivots(GEN x0, long *rr);
-GEN RgM_pivots(GEN x0, GEN data, long *rr, pivot_fun pivot);
+GEN RgM_pivots(GEN x0, long *rr, pivot_fun pivot, GEN data);
 void RgMs_structelim_col(GEN M, long nbcol, long nbrow, GEN A, GEN *p_col, GEN *p_lin);
 
 /* arith1.c */
