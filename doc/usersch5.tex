@@ -12247,6 +12247,12 @@ The inputs must be \typ{INT}s satisfying $0 \leq x < y$.
 The input must satisfy $\deg x < \deg y$ with respect to the main variable of
 the \typ{POL} $y$. $x$ may be a scalar.
 
+\fun{GEN}{mkpadic}{GEN u, GEN p, GEN pd, long v, long d} creates the
+\typ{PADIC} $p^v(u + O(p^d))$ of valuation $v$ and precision $d$.
+The arguments $u, p, \kbd{pd}$ must be \typ{INT} with $0 \leq u < p^d$,
+$p$ prime and $\kbd{pd} = p^d$. The value $u = 0$ is allowed if and only if
+$d = 0$, otherwise $u$ must be a $p$-unit.
+
 \fun{GEN}{mkmat}{GEN x} creates a 1-column \typ{MAT} with column $x$
 (a \typ{COL}).
 
@@ -12376,6 +12382,10 @@ generally that the rational function cannot be simplified.
 
 \fun{GEN}{retmkintmod}{GEN x, GEN y}
 returns the \typ{INTMOD} \kbd{Mod(x, y)}.
+
+\fun{GEN}{retmkpadic}{GEN u, GEN p, GEN pd, long v, long d} returns the
+\typ{PADIC} $p^v(u + O(p^d))$ of valuation $v$ and precision $d$. See
+\kbd{mkpadic} for constraints on arguments.
 
 \fun{GEN}{retmkquad}{GEN n, GEN a, GEN b}.
 

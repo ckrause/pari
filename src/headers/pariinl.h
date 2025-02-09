@@ -76,6 +76,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
        gel(_v,1) = (x);\
        gel(_v,2) = (y);\
        gel(_v,3) = (z); return _v; } while(0)
+#define retmkpadic(x,p,pd,e,d)\
+  do { GEN _v = cgetg(5, t_PADIC);\
+       _v[1] = evalvalp(e) | evalprecp(d);\
+       gel(_v,2) = (p);\
+       gel(_v,3) = (pd);\
+       gel(_v,4) = (x); return _v; } while(0)
 #define retmkqfb(x,y,z,d)\
   do { GEN _v = cgetg(5, t_QFB);\
        gel(_v,1) = (x);\
@@ -170,6 +176,8 @@ mkintmodu(ulong x, ulong y) {
   gel(v,1) = utoipos(y);
   gel(v,2) = utoi(x); return v;
 }
+INLINE GEN
+mkpadic(GEN x, GEN p, GEN pd, long e, long d) { retmkpadic(x,p,pd,e,d); }
 INLINE GEN
 mkpolmod(GEN x, GEN y) { retmkpolmod(x,y); }
 INLINE GEN
@@ -402,25 +410,9 @@ const_vecsmall(long n, long c)
 /***   ZERO   ***/
 /* O(p^e) */
 INLINE GEN
-zeropadic(GEN p, long e)
-{
-  GEN y = cgetg(5,t_PADIC);
-  gel(y,4) = gen_0;
-  gel(y,3) = gen_1;
-  gel(y,2) = icopy(p);
-  y[1] = evalvalp(e) | _evalprecp(0);
-  return y;
-}
+zeropadic(GEN p, long e) { retmkpadic(gen_0, icopy(p), gen_1, e, 0); }
 INLINE GEN
-zeropadic_shallow(GEN p, long e)
-{
-  GEN y = cgetg(5,t_PADIC);
-  gel(y,4) = gen_0;
-  gel(y,3) = gen_1;
-  gel(y,2) = p;
-  y[1] = evalvalp(e) | _evalprecp(0);
-  return y;
-}
+zeropadic_shallow(GEN p, long e) { retmkpadic(gen_0, icopy(p), gen_1, e, 0); }
 /* O(pol_x(v)^e) */
 INLINE GEN
 zeroser(long v, long e)

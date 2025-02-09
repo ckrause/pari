@@ -157,7 +157,6 @@ typedef long *GEN;
                        (((ulong*)(x))[1]&(~VARNBITS)) | (ulong)evalvarn(s))
 
 /* t_LIST */
-
 #define list_typ(x)  ((long)(((ulong)((x)[1])) >> TYPSHIFT))
 #define list_nmax(x) ((long)(((ulong)((x)[1])) & LGBITS))
 #define list_data(x) ((GEN*)x)[2]
@@ -165,6 +164,11 @@ enum {
   t_LIST_RAW = 0,
   t_LIST_MAP = 1
 };
+
+/* t_PADIC */
+#define padic_p(x) gel(x,2)
+#define padic_pd(x) gel(x,3)
+#define padic_u(x) gel(x,4)
 
 /* DO NOT REORDER THESE
  * actual values can be changed. Adapt lontyp in gen2.c */

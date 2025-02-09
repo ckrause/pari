@@ -6656,6 +6656,7 @@ INLINE GEN    mkmat3(GEN x, GEN y, GEN z);
 INLINE GEN    mkmat4(GEN x, GEN y, GEN z, GEN t);
 INLINE GEN    mkmat5(GEN x, GEN y, GEN z, GEN t, GEN u);
 INLINE GEN    mkmatcopy(GEN x);
+INLINE GEN    mkpadic(GEN x, GEN p, GEN pd, long e, long d);
 INLINE GEN    mkpolmod(GEN x, GEN y);
 INLINE GEN    mkqfb(GEN x, GEN y, GEN z, GEN d);
 INLINE GEN    mkquad(GEN n, GEN x, GEN y);

@@ -1242,8 +1242,8 @@ can be handled using the following functions:
 \fun{long}{precp}{GEN z} returns the $p$-adic precision of \kbd{z}. This is
 $0$ if $\kbd{z} = 0$.
 
-\fun{void}{setprecp}{GEN z, long l} sets the $p$-adic precision of \kbd{z}
-to \kbd{l}.
+\fun{void}{setprecp}{GEN z, long d} sets the $p$-adic precision of \kbd{z}
+to \kbd{d}.
 
 \fun{long}{valp}{GEN z} returns the $p$-adic valuation of \kbd{z}
 (i.e. the exponent). This is defined even if \kbd{z} is equal to~0.
@@ -1251,13 +1251,14 @@ to \kbd{l}.
 \fun{void}{setvalp}{GEN z, long e} sets the $p$-adic valuation of \kbd{z}
 to \kbd{e}.
 
-In addition to this codeword, \kbd{z[2]} points to the prime $p$,
-\kbd{z[3]} points to $p^{\text{precp(z)}}$, and \kbd{z[4]} points to
-a \typ{INT} representing the $p$-adic unit attached to \kbd{z} modulo
-\kbd{z[3]} (and to zero if \kbd{z} is zero). To summarize, if $z\neq
-0$, we have the equality:
-$$ \kbd{z} = p^{\text{valp(z)}} * (\kbd{z[4]} + O(\kbd{z[3]})),\quad
-\text{where}\quad \kbd{z[3]} = p^{\text{precp(z)}}. $$
+The following accessors are available:
+
+\item \tet{padic_p}$(z)$: the prime $p$.
+
+\item \tet{padic_pd}$(z)$: $p^d$, where $d$ is the $p$-adic precision
+
+\item \tet{padic_u}$(z)$: the $p$-unit $u$ modulo $p^d$
+such that $z = p^v(u + O(p^d))$ or $0$ (if and only if $z$ is $0$).
 
 \subsec{Type \typ{QUAD} (quadratic number)}
 \sidx{quadratic number}\kbdsidx{t_QUAD}\kbd{z[1]} points to the canonical
