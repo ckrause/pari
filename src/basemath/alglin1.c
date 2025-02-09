@@ -4397,8 +4397,7 @@ indexrank(GEN x)
   d = RgM_indexrank_fast(x, &fun, &data);
   if (d) return d;
   av = avma;
-  init_pivot_list(x);
-  d = RgM_pivots(x, &r, fun, data);
+  init_pivot_list(x); d = RgM_pivots(x, &r, fun, data);
   set_avma(av); return indexrank0(lg(x)-1, r, d);
 }
 
@@ -4407,8 +4406,7 @@ ZM_indeximage(GEN x) {
   pari_sp av = avma;
   long r;
   GEN d;
-  init_pivot_list(x);
-  d = ZM_pivots(x,&r);
+  init_pivot_list(x); d = ZM_pivots(x,&r);
   set_avma(av); return indeximage0(lg(x)-1, r, d);
 }
 long
@@ -4423,8 +4421,7 @@ ZM_indexrank(GEN x) {
   pari_sp av = avma;
   long r;
   GEN d;
-  init_pivot_list(x);
-  d = ZM_pivots(x,&r);
+  init_pivot_list(x); d = ZM_pivots(x,&r);
   set_avma(av); return indexrank0(lg(x)-1, r, d);
 }
 
