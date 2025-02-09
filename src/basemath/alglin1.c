@@ -4429,17 +4429,14 @@ long
 QM_rank(GEN x)
 {
   pari_sp av = avma;
-  long r = ZM_rank(Q_primpart(x));
-  set_avma(av);
-  return r;
+  return gc_long(av, ZM_rank(Q_primpart(x)));
 }
 
 GEN
 QM_indexrank(GEN x)
 {
   pari_sp av = avma;
-  GEN r = ZM_indexrank(Q_primpart(x));
-  return gerepileupto(av, r);
+  return gerepileupto(av, ZM_indexrank(Q_primpart(x)));
 }
 
 /*******************************************************************/
