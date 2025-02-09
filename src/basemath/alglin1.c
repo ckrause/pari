@@ -2524,8 +2524,8 @@ RgM_inv_FqM(GEN x, GEN pol, GEN p)
 }
 
 #define code(t1,t2) ((t1 << 6) | t2)
-/* Contrary to other *fast functions, returns gen_0 instead of NULL for
- * 'no fast algorithm'. NULL is already reserved for 'not invertible' */
+/* Returns gen_0 instead of NULL for 'no fast algorithm'. NULL is already
+ * reserved for 'not invertible' */
 static GEN
 RgM_inv_fast(GEN x, pivot_fun *fun, GEN *data)
 {
@@ -2663,6 +2663,8 @@ RgM_solve_basecase(GEN a, GEN b, pivot_fun pivot, GEN data)
   return gerepilecopy(av, iscol? gel(u,1): u);
 }
 
+/* Returns gen_0 instead of NULL for 'no fast algorithm'. NULL is already
+ * reserved for 'not invertible' */
 static GEN
 RgM_RgC_solve_fast(GEN x, GEN y, pivot_fun *fun, GEN *data)
 {
@@ -2678,7 +2680,6 @@ RgM_RgC_solve_fast(GEN x, GEN y, pivot_fun *fun, GEN *data)
     default:       return gen_0;
   }
 }
-
 static GEN
 RgM_solve_fast(GEN x, GEN y, pivot_fun *fun, GEN *data)
 {
@@ -3608,6 +3609,8 @@ RgM_deplin_FqM(GEN x, GEN pol, GEN p)
 }
 
 #define code(t1,t2) ((t1 << 6) | t2)
+/* Returns gen_0 instead of NULL for 'no fast algorithm'. NULL is already
+ * reserved for 'not invertible' */
 static GEN
 RgM_deplin_fast(GEN x)
 {
@@ -4041,6 +4044,8 @@ RgM_RgC_invimage_FpC(GEN A, GEN y, GEN p)
   }
 }
 
+/* Returns gen_0 instead of NULL for 'no fast algorithm'. NULL is already
+ * reserved for 'not invertible' */
 static GEN
 RgM_RgC_invimage_fast(GEN x, GEN y)
 {
@@ -4120,6 +4125,8 @@ RgM_invimage_FpM(GEN A, GEN B, GEN p)
   }
 }
 
+/* Returns gen_0 instead of NULL for 'no fast algorithm'. NULL is already
+ * reserved for 'not invertible' */
 static GEN
 RgM_invimage_fast(GEN x, GEN y)
 {
