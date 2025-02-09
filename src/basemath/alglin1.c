@@ -4003,8 +4003,7 @@ imagecompl(GEN x)
   if (typ(x)!=t_MAT) pari_err_TYPE("imagecompl",x);
   init_pivot_list(x); pivot = get_pivot_fun(x, &data);
   d = RgM_pivots(x, &r, pivot, data); /* if (!d) then r = 0 */
-  set_avma(av);
-  return imagecompl_aux(x, d, r);
+  set_avma(av); return imagecompl_aux(x, d, r);
 }
 GEN
 ZM_imagecompl(GEN x)
@@ -4015,8 +4014,7 @@ ZM_imagecompl(GEN x)
 
   init_pivot_list(x);
   d = ZM_pivots(x, &r); /* if (!d) then r = 0 */
-  set_avma(av);
-  return imagecompl_aux(x, d, r);
+  set_avma(av); return imagecompl_aux(x, d, r);
 }
 
 static GEN
