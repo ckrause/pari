@@ -1716,8 +1716,8 @@ Qp_sqrtn_ram(GEN x, long e)
     /* n=p^e and a^n=z*x where z is a (p-1)th-root of 1.
      * Since z^n=z, we have (a/z)^n = x. */
     a = gdiv(x, powgi(a,subiu(n,1))); /* = a/z = x/a^(n-1)*/
-    if (v) setvalp(a,v);
   }
+  if (v) setvalp(a,v);
   return gerepileupto(ltop,a);
 }
 
