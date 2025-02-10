@@ -234,7 +234,7 @@ member_r2(GEN x) { return gel(member_sign(x), 2); }
 GEN
 member_normfu(GEN x) /* norm of fundamental unit */
 {
-  if (lg(x)!=6 || typ(gel(x,1))!=t_INT || typ(gel(x,2))!=t_VEC)
+  if (typ(x)!=t_VEC || lg(x)!=6 || typ(gel(x,1))!=t_INT || typ(gel(x,2))!=t_VEC)
     member_err("normfu",x);
   return gel(x,5);
 }
