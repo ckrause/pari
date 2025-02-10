@@ -735,7 +735,8 @@ Z2XQ_invnorm(GEN a, GEN T, long e)
   if (DEBUGLEVEL>=3) timer_printf(&ti,"Z2XQ_log");
   s = Fp_neg(FpXQ_trace(s, T, pe), pe);
   if (DEBUGLEVEL>=3) timer_printf(&ti,"FpXQ_trace");
-  s = modii(gel(Qp_exp(cvtop(s, gen_2, e-2)),4),pe);
+  s = Qp_exp(cvtop(s, gen_2, e-2));
+  s = modii(padic_u(s), pe);
   if (DEBUGLEVEL>=3) timer_printf(&ti,"Qp_exp");
   return s;
 }
