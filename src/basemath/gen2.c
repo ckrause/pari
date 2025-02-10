@@ -2260,10 +2260,10 @@ vecmin(GEN x) { return vecmin0(x, NULL); }
 static void
 padicaff0(GEN x)
 {
-  if (signe(gel(x,4)))
+  if (signe(padic_u(x)))
   {
-    x[1] = evalvalp(valp(x)+precp(x));
-    affsi(0,gel(x,4));
+    setvalp(x, valp(x) + precp(x));
+    affsi(0, padic_u(x));
   }
 }
 
