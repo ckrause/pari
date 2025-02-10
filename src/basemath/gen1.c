@@ -635,28 +635,30 @@ static GEN
 addsub_pp(GEN x, GEN y, GEN (*op)(GEN,GEN))
 {
   pari_sp av = avma;
-  long d,e,r,rx,ry;
-  GEN u, z, mod, p = gel(x,2);
+  long d, e, r, rx, ry;
+  GEN u, z, mod, pdx, pdy, ux, uy, p = padic_p(x);
   int swap;
 
-  (void)new_chunk(5 + lgefint(gel(x,3)) + lgefint(gel(y,3)));
   e = valp(x);
   r = valp(y); d = r-e;
   if (d < 0) { swap = 1; swap(x,y); e = r; d = -d; } else swap = 0;
+  pdx = padic_pd(x); ux = padic_u(x);
+  pdy = padic_pd(y); uy = padic_u(y);
+  (void)new_chunk(5 + lgefint(pdx) + lgefint(pdy));
   rx = precp(x);
   ry = precp(y);
   if (d) /* v(x) < v(y) */
   {
     r = d+ry; z = powiu(p,d);
-    if (r < rx) mod = mulii(z,gel(y,3)); else { r = rx; mod = gel(x,3); }
-    z = mulii(z,gel(y,4));
-    u = swap? op(z, gel(x,4)): op(gel(x,4), z);
+    if (r < rx) mod = mulii(z,pdy); else { r = rx; mod = pdx; }
+    z = mulii(z, uy);
+    u = swap? op(z, ux): op(ux, z);
   }
   else
   {
     long c;
-    if (ry < rx) { r=ry; mod = gel(y,3); } else { r=rx; mod = gel(x,3); }
-    u = swap? op(gel(y,4), gel(x,4)): op(gel(x,4), gel(y,4));
+    if (ry < rx) { r=ry; mod = pdy; } else { r=rx; mod = pdx; }
+    u = swap? op(uy, ux): op(ux, uy);
     if (!signe(u) || (c = Z_pvalrem(u,p,&u)) >= r)
     {
       set_avma(av); return zeropadic(p, e+r);
@@ -1714,17 +1716,14 @@ mulcc(GEN x, GEN y)
 /* x,y PADIC */
 static GEN
 mulpp(GEN x, GEN y) {
-  long l = valp(x) + valp(y);
-  pari_sp av;
-  GEN z, t;
-  if (!equalii(gel(x,2),gel(y,2))) pari_err_OP("*",x,y);
-  if (!signe(gel(x,4))) return zeropadic(gel(x,2), l);
-  if (!signe(gel(y,4))) return zeropadic(gel(x,2), l);
+  GEN pd, p = padic_p(x), ux = padic_u(x), uy = padic_u(y);
+  long e = valp(x) + valp(y), dx, dy;
 
-  t = (precp(x) > precp(y))? y: x;
-  z = cgetp(t); setvalp(z,l); av = avma;
-  affii(remii(mulii(gel(x,4),gel(y,4)), gel(t,3)), gel(z,4));
-  set_avma(av); return z;
+  if (!equalii(p, padic_p(y))) pari_err_OP("*",x,y);
+  if (!signe(ux) || !signe(uy)) return zeropadic(p, e);
+  dx = precp(x); dy = precp(y);
+  if (dx > dy) { pd = padic_pd(y); dx = dy; } else pd = padic_pd(x);
+  retmkpadic(Fp_mul(ux, uy, pd), icopy(p), icopy(pd), e, dx);
 }
 /* x,y QUAD */
 static GEN
