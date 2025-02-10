@@ -3364,8 +3364,8 @@ ffmap_i(GEN m, GEN x)
     case t_POL: case t_RFRAC: case t_SER:
     case t_VEC: case t_COL: case t_MAT:
       y = cgetg_copy(x, &lx);
-      for (i=1; i<lontyp[tx]; i++) y[i] = x[1];
-      for (i=lontyp[tx]; i<lx; i++)
+      for (i = 1; i < lontyp[tx]; i++) y[i] = x[i];
+      for (; i < lx; i++)
       {
         GEN yi = ffmap_i(m, gel(x,i));
         if (!yi) return NULL;
