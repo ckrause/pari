@@ -534,7 +534,7 @@ cmp_padic(GEN x, GEN y)
   vy = valp(y);
   if (vx < vy) return  1;
   if (vx > vy) return -1;
-  return cmpii(gel(x,4), gel(y,4));
+  return cmpii(padic_u(x), padic_u(y));
 }
 
 /* replace p^e by p*...*p [ factors are not known to be equal, only close at
