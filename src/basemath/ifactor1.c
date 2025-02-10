@@ -3930,7 +3930,8 @@ Z_issmooth_fact(GEN m, ulong lim)
 
 /* assume (x,p) = 1 */
 static GEN
-Z_to_Up(GEN x, GEN p, long d) { retmkpadic_i(modii(x, _pd), p, 0, d); }
+Z_to_Up(GEN x, GEN p, long d)
+{ retmkpadic_i(modii(x, _pd), p, powiu(p,d), 0, d); }
 /* Is (a mod p^e) a K-th power ? p is prime and e > 0 */
 static int
 Zp_ispower(GEN a, GEN L, GEN K, GEN p, long e)

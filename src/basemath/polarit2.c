@@ -397,7 +397,7 @@ settype(GEN c, long *t, GEN *p, GEN *pol, long *pa, GEN *ff, long *t2, long *var
             t[3]=1; break;
           case t_PADIC:
             update_prec(precp(d)+valp(d), pa);
-            assign_or_fail(gel(d,2),p);
+            assign_or_fail(padic_p(d), p);
             if (!*t2) *t2 = t_COMPLEX;
             t[7]=1; break;
           default: return 0;
@@ -407,7 +407,7 @@ settype(GEN c, long *t, GEN *p, GEN *pol, long *pa, GEN *ff, long *t2, long *var
       break;
     case t_PADIC:
       update_prec(precp(c)+valp(c), pa);
-      assign_or_fail(gel(c,2),p);
+      assign_or_fail(padic_p(c), p);
       t[7]=1; break;
     case t_QUAD:
       assign_or_fail(gel(c,1),pol);
@@ -424,7 +424,7 @@ settype(GEN c, long *t, GEN *p, GEN *pol, long *pa, GEN *ff, long *t2, long *var
             t[3]=1; break;
           case t_PADIC:
             update_prec(precp(d)+valp(d), pa);
-            assign_or_fail(gel(d,2),p);
+            assign_or_fail(padic_p(d), p);
             if (*t2 != t_POLMOD) *t2 = t_QUAD;
             t[7]=1; break;
           default: return 0;
@@ -1406,7 +1406,7 @@ triv_cont_gcd(GEN x, GEN y)
 static GEN
 padic_gcd(GEN x, GEN y)
 {
-  GEN p = gel(y,2);
+  GEN p = padic_p(y);
   long v = gvaluation(x,p), w = valp(y);
   if (w < v) v = w;
   return powis(p, v);
@@ -1488,7 +1488,7 @@ zero_gcd(GEN x)
     case t_FRAC: return absfrac(x);
     case t_COMPLEX: return c_zero_gcd(x);
     case t_REAL: return gen_1;
-    case t_PADIC: return powis(gel(x,2), valp(x));
+    case t_PADIC: return powis(padic_p(x), valp(x));
     case t_SER: return pol_xnall(valser(x), varn(x));
     case t_POLMOD: {
       GEN d = gel(x,2);
@@ -1643,8 +1643,8 @@ ggcd(GEN x, GEN y)
         return triv_cont_gcd(y,x);
 
       case t_PADIC:
-        if (!equalii(gel(x,2),gel(y,2))) return gen_1;
-        return powis(gel(y,2), minss(valp(x), valp(y)));
+        if (!equalii(padic_p(x), padic_p(y))) return gen_1;
+        return powis(padic_p(x), minss(valp(x), valp(y)));
 
       case t_QUAD:
         av=avma; p1=gdiv(x,y);
@@ -1758,7 +1758,7 @@ ggcd(GEN x, GEN y)
         {
           case t_PADIC:
           {
-            GEN p = gel(y,2);
+            GEN p = padic_p(y);
             long v = valp(y);
             if (!equalii(p, gel(x,4)) || v < 0) pari_err_OP("gcd",x,y);
             return (v && FF_equal0(x))? FF_zero(x): FF_1(x);
@@ -2218,7 +2218,7 @@ Q_denom_safe(GEN x)
   switch(typ(x))
   {
     case t_INT: return gen_1;
-    case t_PADIC: l = valp(x); return l < 0? powiu(gel(x,2), -l): gen_1;
+    case t_PADIC: l = valp(x); return l < 0? powiu(padic_p(x), -l): gen_1;
     case t_FRAC: return gel(x,2);
     case t_QUAD: return Q_denom_v(x, 2, 4);
     case t_COMPLEX: case t_VEC: case t_COL: case t_MAT:

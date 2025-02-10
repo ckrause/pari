@@ -833,67 +833,53 @@ pow_monome(GEN x, long n)
   gel(A,d) = b; return y;
 }
 
-/* x t_PADIC */
+/* q*p^v */
+static GEN
+mulpowu(GEN q, GEN p, ulong v)
+{
+  pari_sp av = avma;
+  if (v == 0) return icopy(q);
+  return gerepileuptoint(av, mulii(q, powiu(p,v)));
+}
+
+/* x t_PADIC, n != 0 */
 static GEN
 powps(GEN x, long n)
 {
-  long e = n*valp(x), v;
-  GEN t, y, mod, p = gel(x,2);
-  pari_sp av;
+  long e = valp(x), v;
+  GEN p = padic_p(x);
 
-  if (!signe(gel(x,4))) {
+  if (e)
+  {
+    pari_sp av = avma;
+    e = itos_or_0(mulss(e, n));
+    if (!e) pari_err_OVERFLOW("valp()");
+    set_avma(av);
+  }
+  if (!signe(padic_u(x))) {
     if (n < 0) pari_err_INV("powps",x);
     return zeropadic(p, e);
   }
   v = z_pval(n, p);
-
-  y = cgetg(5,t_PADIC);
-  mod = gel(x,3);
-  if (v == 0) mod = icopy(mod);
-  else
-  {
-    if (precp(x) == 1 && absequaliu(p, 2)) v++;
-    mod = mulii(mod, powiu(p,v));
-    mod = gerepileuptoint((pari_sp)y, mod);
-  }
-  y[1] = evalprecp(precp(x) + v) | evalvalp(e);
-  gel(y,2) = icopy(p);
-  gel(y,3) = mod;
-
-  av = avma; t = gel(x,4);
-  if (n < 0) { t = Fp_inv(t, mod); n = -n; }
-  t = Fp_powu(t, n, mod);
-  gel(y,4) = gerepileuptoint(av, t);
-  return y;
+  if (v && precp(x) == 1 && absequaliu(p, 2)) v++;
+  retmkpadic_i(Fp_pows(padic_u(x), n, _pd), icopy(p),
+               mulpowu(padic_pd(x), p, v), e, precp(x) + v);
 }
 /* x t_PADIC */
 static GEN
 powp(GEN x, GEN n)
 {
+  GEN p = padic_p(x);
   long v;
-  GEN y, mod, p = gel(x,2);
 
   if (valp(x)) pari_err_OVERFLOW("valp()");
-
-  if (!signe(gel(x,4))) {
+  if (!signe(padic_u(x))) {
     if (signe(n) < 0) pari_err_INV("powp",x);
     return zeropadic(p, 0);
   }
   v = Z_pval(n, p);
-
-  y = cgetg(5,t_PADIC);
-  mod = gel(x,3);
-  if (v == 0) mod = icopy(mod);
-  else
-  {
-    mod = mulii(mod, powiu(p,v));
-    mod = gerepileuptoint((pari_sp)y, mod);
-  }
-  y[1] = evalprecp(precp(x) + v) | _evalvalp(0);
-  gel(y,2) = icopy(p);
-  gel(y,3) = mod;
-  gel(y,4) = Fp_pow(gel(x,4), n, mod);
-  return y;
+  retmkpadic_i(Fp_pow(padic_u(x), n, _pd), icopy(p),
+               mulpowu(padic_pd(x), p, v), 0, precp(x) + v);
 }
 static GEN
 pow_polmod(GEN x, GEN n)
@@ -1309,7 +1295,7 @@ gpow(GEN x, GEN n, long prec)
     long p = powcx_prec(fabs(dbllog2(x)), n, prec);
     return gerepileupto(av, powcx(x, glog(x, p), n, prec));
   }
-  if (tn == t_PADIC) x = gcvtop(x, gel(n,2), precp(n));
+  if (tn == t_PADIC) x = gcvtop(x, padic_p(n), precp(n));
   i = precision(n);
   if (i) prec = i;
   prec0 = prec;
@@ -1458,33 +1444,25 @@ Z2_sqrt(GEN x, long e)
   }
 }
 
+static GEN
+Up_sqrt(GEN u, GEN p, GEN pd, long d, long D)
+{ retmkpadic(Zp_sqrt(u, p, d), icopy(p), icopy(pd), 0, D); }
+
 /* x unit defined modulo p^e, e > 0 */
 GEN
 Qp_sqrt(GEN x)
 {
-  long pp, e = valp(x);
-  GEN z,y,mod, p = gel(x,2);
+  long D, d, e = valp(x);
+  GEN y, mod, p = padic_p(x);
 
   if (gequal0(x)) return zeropadic(p, (e+1) >> 1);
   if (e & 1) return NULL;
 
-  y = cgetg(5,t_PADIC);
-  pp = precp(x);
-  mod = gel(x,3);
-  z   = gel(x,4); /* lift to t_INT */
-  e >>= 1;
-  z = Zp_sqrt(z, p, pp);
-  if (!z) return NULL;
-  if (absequaliu(p,2))
-  {
-    pp  = (pp <= 3) ? 1 : pp-1;
-    mod = int2n(pp);
-  }
-  else mod = icopy(mod);
-  y[1] = evalprecp(pp) | evalvalp(e);
-  gel(y,2) = icopy(p);
-  gel(y,3) = mod;
-  gel(y,4) = z; return y;
+  mod = padic_pd(x); D = d = precp(x); e >>= 1;
+  if (absequaliu(p,2)) { D = (d <= 3) ? 1 : d-1; mod = int2n(D); }
+  y = Up_sqrt(padic_u(x), p, mod, d, D);
+  if (!padic_u(y)) return NULL;
+  setvalp(y, e); return y;
 }
 
 GEN
@@ -1648,17 +1626,12 @@ gsqrt(GEN x, long prec)
 static GEN
 Z_to_padic(GEN a, GEN p, long e)
 {
-  if (signe(a)==0)
+  if (!signe(a))
     return zeropadic(p, e);
   else
   {
-    GEN z = cgetg(5, t_PADIC);
     long v = Z_pvalrem(a, p, &a), d = e - v;
-    z[1] = evalprecp(d) | evalvalp(v);
-    gel(z,2) = icopy(p);
-    gel(z,3) = powiu(p, d);
-    gel(z,4) = a;
-    return z;
+    retmkpadic(icopy(a), icopy(p), powiu(p, d), v, d);
   }
 }
 
@@ -1666,7 +1639,7 @@ GEN
 Qp_log(GEN x)
 {
   pari_sp av = avma;
-  GEN y, p = gel(x,2), a = gel(x,4);
+  GEN y, p = padic_p(x), a = padic_u(x);
   long e = precp(x);
 
   if (!signe(a)) pari_err_DOMAIN("Qp_log", "argument", "=", gen_0, x);
@@ -1674,7 +1647,7 @@ Qp_log(GEN x)
     y = Zp_log(a, p, e);
   else
   { /* compute log(x^(p-1)) / (p-1) */
-    GEN q = gel(x,3), t = subiu(p, 1);
+    GEN q = padic_pd(x), t = subiu(p, 1);
     a = Fp_pow(a, t, q);
     y = Fp_mul(Zp_log(a, p, e), diviiexact(subsi(1, q), t), q);
   }
@@ -1687,8 +1660,8 @@ static GEN Qp_exp_safe(GEN x);
 static GEN
 Qp_sqrtn_ram(GEN x, long e)
 {
-  pari_sp ltop=avma;
-  GEN a, p = gel(x,2), n = powiu(p,e);
+  pari_sp av = avma;
+  GEN a, p = padic_p(x), n = powiu(p,e);
   long v = valp(x), va;
   if (v)
   {
@@ -1699,14 +1672,14 @@ Qp_sqrtn_ram(GEN x, long e)
     setvalp(x,0);
   }
   /*If p = 2, -1 is a root of 1 in U1: need extra check*/
-  if (absequaliu(p, 2) && mod8(gel(x,4)) != 1) return NULL;
+  if (absequaliu(p, 2) && mod8(padic_u(x)) != 1) return NULL;
   a = Qp_log(x);
   va = valp(a) - e;
   if (va <= 0)
   {
-    if (signe(gel(a,4))) return NULL;
+    if (signe(padic_u(a))) return NULL;
     /* all accuracy lost */
-    a = cvtop(remii(gel(x,4),p), p, 1);
+    a = cvtop(remii(padic_u(x),p), p, 1);
   }
   else
   {
@@ -1718,7 +1691,7 @@ Qp_sqrtn_ram(GEN x, long e)
     a = gdiv(x, powgi(a,subiu(n,1))); /* = a/z = x/a^(n-1)*/
   }
   if (v) setvalp(a,v);
-  return gerepileupto(ltop,a);
+  return gerepileupto(av,a);
 }
 
 /*compute the nth root of x p-adic p prime with n*/
@@ -1726,7 +1699,7 @@ static GEN
 Qp_sqrtn_unram(GEN x, GEN n, GEN *zetan)
 {
   pari_sp av;
-  GEN Z, a, r, p = gel(x,2);
+  GEN Z, a, r, p = padic_p(x), u = padic_u(x);
   long v = valp(x);
   if (v)
   {
@@ -1737,12 +1710,12 @@ Qp_sqrtn_unram(GEN x, GEN n, GEN *zetan)
   r = cgetp(x); setvalp(r,v);
   Z = NULL; /* -Wall */
   if (zetan) Z = cgetp(x);
-  av = avma; a = Fp_sqrtn(gel(x,4), n, p, zetan);
+  av = avma; a = Fp_sqrtn(u, n, p, zetan);
   if (!a) return NULL;
-  affii(Zp_sqrtnlift(gel(x,4), n, a, p, precp(x)), gel(r,4));
+  affii(Zp_sqrtnlift(u, n, a, p, precp(x)), padic_u(r));
   if (zetan)
   {
-    affii(Zp_sqrtnlift(gen_1, n, *zetan, p, precp(x)), gel(Z,4));
+    affii(Zp_sqrtnlift(gen_1, n, *zetan, p, precp(x)), padic_u(Z));
     *zetan = Z;
   }
   return gc_const(av,r);
@@ -1760,8 +1733,8 @@ Qp_sqrtn(GEN x, GEN n, GEN *zetan)
     if (signe(n) < 0) x = ginv(x);
     return Qp_sqrt(x);
   }
-  av = avma; p = gel(x,2);
-  if (!signe(gel(x,4)))
+  av = avma; p = padic_p(x);
+  if (!signe(padic_u(x)))
   {
     if (signe(n) < 0) pari_err_INV("Qp_sqrtn", x);
     q = divii(addis(n, valp(x)-1), n);
@@ -2403,7 +2376,7 @@ static GEN
 Qp_exp_safe(GEN x)
 {
   pari_sp av = avma;
-  GEN p = gel(x,2), a = gel(x,4), z;
+  GEN p = padic_p(x), a = padic_u(x), z;
   long d = precp(x), v = valp(x), e = d+v;
   if (gequal0(x)) return gaddgs(x,1);
   if (v < (equaliu(p,2)? 2:1)) return NULL;
@@ -3172,7 +3145,7 @@ teichmullerinit(long p, long n)
 GEN
 teichmuller(GEN x, GEN tab)
 {
-  GEN p, q, y, z;
+  GEN p, q, z;
   long n, tx = typ(x);
 
   if (!tab)
@@ -3187,27 +3160,20 @@ teichmuller(GEN x, GEN tab)
   }
   else if (typ(tab) != t_VEC) pari_err_TYPE("teichmuller",tab);
   if (tx!=t_PADIC) pari_err_TYPE("teichmuller",x);
-  z = gel(x,4);
+  z = padic_u(x);
   if (!signe(z)) return gcopy(x);
-  p = gel(x,2);
-  q = gel(x,3);
+  p = padic_p(x);
+  q = padic_pd(x);
   n = precp(x);
-  y = cgetg(5,t_PADIC);
-  y[1] = evalprecp(n) | _evalvalp(0);
-  gel(y,2) = icopy(p);
-  gel(y,3) = icopy(q);
   if (tab)
   {
     ulong pp = itou_or_0(p);
     if (lg(tab) != (long)pp) pari_err_TYPE("teichmuller",tab);
     z = gel(tab, umodiu(z, pp));
     if (typ(z) != t_INT) pari_err_TYPE("teichmuller",tab);
-    z = remii(z, q);
   }
-  else
-    z = Zp_teichmuller(z, p, n, q);
-  gel(y,4) = z;
-  return y;
+  retmkpadic(tab? remii(z, q): Zp_teichmuller(z, p, n, q),
+             icopy(p), icopy(q), 0, n);
 }
 GEN
 teich(GEN x) { return teichmuller(x, NULL); }
@@ -3866,10 +3832,10 @@ gsinc(GEN x, long prec)
       affrr_fixlg(mpsinc(tofp_safe(x,prec)), y); return gc_const(av,y);
 
     case t_PADIC:
-      if (gequal0(x)) return cvtop(gen_1, gel(x,2), valp(x));
+      if (gequal0(x)) return cvtop(gen_1, padic_p(x), valp(x));
       av = avma; y = sin_p(x);
       if (!y) pari_err_DOMAIN("gsinc(t_PADIC)","argument","",gen_0,x);
-      return gerepileupto(av,gdiv(y,x));
+      return gerepileupto(av, gdiv(y,x));
 
     default:
     {

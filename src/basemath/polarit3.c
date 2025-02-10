@@ -78,7 +78,7 @@ charact_res(struct charact *S, GEN x)
   {
     case t_INTMOD:char_update_int(S, gel(x,1)); break;
     case t_FFELT: char_update_prime(S, gel(x,4)); break;
-    case t_PADIC: char_update_prime(S, gel(x,2)); break;
+    case t_PADIC: char_update_prime(S, padic_p(x)); break;
     case t_COMPLEX: case t_QUAD:
     case t_POLMOD: case t_POL: case t_SER: case t_RFRAC:
     case t_VEC: case t_COL: case t_MAT:

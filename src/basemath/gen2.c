@@ -2622,8 +2622,8 @@ cvtop(GEN x, GEN p, long d)
     case t_INT:
       if (!signe(x)) return zeropadic(p, d);
       if (d <= 0) return zeropadic(p, Z_pval(x,p));
-      v = Z_pvalrem(x, p, &x);
-      retmkpadic_i(modii(x, _pd), icopy(p), v, d); /* not memory-clean */
+      v = Z_pvalrem(x, p, &x); /* not memory-clean */
+      retmkpadic_i(modii(x, _pd), icopy(p), powiu(p,d), v, d);
 
     case t_INTMOD:
       v = Z_pval(gel(x,1),p); if (v > d) v = d;
@@ -2635,14 +2635,14 @@ cvtop(GEN x, GEN p, long d)
       if (d <= 0) return zeropadic(p, Q_pval(x,p));
       num = gel(x,1); v = Z_pvalrem(num, p, &num); /* not memory-clean */
       den = gel(x,2); if (!v) v = -Z_pvalrem(den, p, &den);
-      retmkpadic_i(_Fp_div(num, den, _pd), icopy(p), v, d);
+      retmkpadic_i(_Fp_div(num, den, _pd), icopy(p), powiu(p,d), v, d);
     }
     case t_COMPLEX: return ctop(x, p, d);
     case t_PADIC:
       p = padic_p(x); /* override */
       u = padic_u(x);
       if (!signe(u)) return zeropadic(p, d);
-      retmkpadic_i(modii(u, _pd), icopy(p), valp(x), d);
+      retmkpadic_i(modii(u, _pd), icopy(p), powiu(p,d), valp(x), d);
 
     case t_QUAD: return qtop(x, p, d);
   }

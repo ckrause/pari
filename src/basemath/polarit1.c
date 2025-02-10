@@ -184,7 +184,7 @@ grem(GEN x, GEN y)
 static void
 check_padic_p(GEN x, GEN p)
 {
-  GEN q = gel(x,2);
+  GEN q = padic_p(x);
   if (p && !equalii(p, q)) pari_err_MODULUS("Zp_to_Z", p,q);
 }
 /* shallow */
@@ -230,7 +230,6 @@ QpX_to_ZX(GEN f, GEN p)
 static GEN
 Z_to_Zp(GEN x, GEN p, GEN pr, long r)
 {
-  GEN y;
   long v, sx = signe(x);
 
   if (!sx) return zeropadic_shallow(p,r);
@@ -240,11 +239,7 @@ Z_to_Zp(GEN x, GEN p, GEN pr, long r)
     r -= v;
     pr = powiu(p,r);
   }
-  y = cgetg(5,t_PADIC);
-  y[1] = evalprecp(r)|evalvalp(v);
-  gel(y,2) = p;
-  gel(y,3) = pr;
-  gel(y,4) = modii(x,pr); return y;
+  retmkpadic(modii(x,pr), p, pr, v, r);
 }
 /* shallow */
 static GEN
@@ -350,10 +345,10 @@ GEN
 Zp_appr(GEN f, GEN a)
 {
   pari_sp av = avma;
-  GEN z, p = gel(a,2);
+  GEN z, p = padic_p(a);
   long v = valp(a), prec = v;
 
-  if (signe(gel(a,4))) prec += precp(a);
+  if (signe(padic_u(a))) prec += precp(a);
   f = QpX_to_ZX(f, p);
   if (degpol(f) <= 0) pari_err_CONSTPOL("Zp_appr");
   if (v < 0) pari_err_DOMAIN("padicappr", "v(a)", "<", gen_0, stoi(v));
@@ -397,10 +392,10 @@ scalar_getprec(GEN x, long *pprec, GEN *pp)
 {
   if (typ(x)==t_PADIC)
   {
-    long e = valp(x); if (signe(gel(x,4))) e += precp(x);
+    long e = valp(x); if (signe(padic_u(x))) e += precp(x);
     if (e < *pprec) *pprec = e;
     check_padic_p(x, *pp);
-    *pp = gel(x,2);
+    *pp = padic_p(x);
   }
 }
 static void
