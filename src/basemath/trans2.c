@@ -1411,7 +1411,7 @@ gadw(GEN x, long p)
   GEN s, t, u = cgetg(p+1, t_VEC);
   long j, k, kp, n = nboft(precp(x)+valp(x)+1, p);
 
-  t = s = cvtop(gen_1, gel(x,2), n);
+  t = s = cvtop(gen_1, padic_p(x), n);
   gel(u, 1) = s;
   gel(u, 2) = s;
   for (j = 2; j < p; ++j)
@@ -1446,7 +1446,7 @@ Qp_gamma_Dwork(GEN x, long p)
   {
     x = shallowcopy(x);
     setprecp(x, px+1);
-    gel(x,3) = shifti(gel(x,3),1);
+    padic_pd(x) = shifti(padic_pd(x), 1);
   }
   if (k)
   {
@@ -1493,7 +1493,7 @@ Qp_gamma_neg_Morita(long n, GEN p, long e)
 GEN
 Qp_gamma(GEN x)
 {
-  GEN n, m, N, p = gel(x,2);
+  GEN n, m, N, p = padic_p(x);
   long s, e = valp(x) + precp(x);
   if (absequaliu(p, 2) && e == 2) e = 1;
   if (valp(x) < 0) pari_err_DOMAIN("gamma","v_p(x)", "<", gen_0, x);
@@ -2250,7 +2250,7 @@ GEN
 Qp_psi(GEN x, long der)
 {
   pari_sp av = avma;
-  GEN p = gel(x,2), p1 = subis(p,1), z;
+  GEN p = padic_p(x), p1 = subis(p,1), z;
   long e = valp(x) + precp(x);
   if (valp(x) < 0) pari_err_DOMAIN("psi","v_p(x)", "<", gen_0, x);
   if (der < 0) pari_err_DOMAIN("psi","der","<", gen_0, stoi(der));

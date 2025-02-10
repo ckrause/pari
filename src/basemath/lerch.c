@@ -67,7 +67,7 @@ static GEN
 Qp_zeta_i(GEN s, long D)
 {
   pari_sp av = avma;
-  GEN z, va, gp = gel(s,2);
+  GEN z, va, gp = padic_p(s);
   ulong a, p = itou(gp), m;
   long prec = pprec(s);
   struct Qp_zetahurwitz_t S;

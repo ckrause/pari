@@ -2120,9 +2120,9 @@ dbg(GEN x, long nb, long bl)
       break;
 
     case t_PADIC:
-      blancs(bl); pari_puts("  p : "); dbg(gel(x,2),nb,bl);
-      blancs(bl); pari_puts("p^l : "); dbg(gel(x,3),nb,bl);
-      blancs(bl); pari_puts("  I : "); dbg(gel(x,4),nb,bl);
+      blancs(bl); pari_puts("  p : "); dbg(padic_p(x),nb,bl);
+      blancs(bl); pari_puts("p^l : "); dbg(padic_pd(x),nb,bl);
+      blancs(bl); pari_puts("  I : "); dbg(padic_u(x),nb,bl);
       break;
 
     case t_QUAD:
@@ -2457,7 +2457,7 @@ isfactor(GEN g)
       if (isnull(gel(g,2))) return isfactor(gel(g,1));
       return 0;
     case t_PADIC:
-      return !signe(gel(g,4));
+      return !signe(padic_u(g));
     case t_QUAD:
       if (isnull(gel(g,2))) return isfactor(gel(g,3));
       if (isnull(gel(g,3))) return isfactor(gel(g,2));
@@ -2490,7 +2490,7 @@ isdenom(GEN g)
     case t_FRAC: case t_RFRAC:
       return 0;
     case t_COMPLEX: return isnull(gel(g,2));
-    case t_PADIC: return !signe(gel(g,4));
+    case t_PADIC: return !signe(padic_u(g));
     case t_QUAD: return isnull(gel(g,3));
 
     case t_POL: deja = 0;
@@ -2855,7 +2855,7 @@ bruti_intern(GEN g, pariout_t *T, pari_str *S, int addsign)
 
     case t_PADIC:
     {
-      GEN p = gel(g,2);
+      GEN p = padic_p(g);
       pari_sp av, av0;
       char *ev;
       str_alloc(S, (precp(g)+1) * lgefint(p)); /* careful! */
@@ -2863,7 +2863,7 @@ bruti_intern(GEN g, pariout_t *T, pari_str *S, int addsign)
       ev = itostr(p);
       av = avma;
       i = valp(g); l = precp(g)+i;
-      g = gel(g,4);
+      g = padic_u(g);
       for (; i<l; i++)
       {
         g = dvmdii(g,p,&a);
@@ -3138,13 +3138,13 @@ texi_sign(GEN g, pariout_t *T, pari_str *S, int addsign)
 
     case t_PADIC:
     {
-      GEN p = gel(g,2);
+      GEN p = padic_p(g);
       pari_sp av;
       char *ev;
       str_alloc(S, (precp(g)+1) * lgefint(p)); /* careful! */
       av = avma;
       i = valp(g); l = precp(g)+i;
-      g = gel(g,4); ev = itostr(p);
+      g = padic_u(g); ev = itostr(p);
       for (; i<l; i++)
       {
         g = dvmdii(g,p,&a);

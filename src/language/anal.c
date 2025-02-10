@@ -1108,7 +1108,7 @@ gpolvar(GEN x)
     GEN h = hash_values(h_polvar);
     return vars_to_RgXV(vars_sort_inplace(h));
   }
-  if (typ(x)==t_PADIC) return gcopy( gel(x,2) );
+  if (typ(x)==t_PADIC) return icopy(padic_p(x));
   v = gvar(x);
   if (v==NO_VARIABLE) return gen_0;
   return pol_x(v);

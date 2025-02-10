@@ -76,7 +76,7 @@ member_p(GEN x)
     case typ_RNF: return rnf_get_ramified_primes(x);
   }
   switch(typ(x)) {
-    case t_PADIC: return gel(x,2);
+    case t_PADIC: return padic_p(x);
     case t_FFELT: return FF_p_i(x);
   }
   member_err("p",x);
@@ -204,7 +204,7 @@ member_mod(GEN x) /* modulus */
   switch(typ(x))
   {
     case t_INTMOD: case t_POLMOD: case t_QUAD: break;
-    case t_PADIC: return gel(x,3);
+    case t_PADIC: return padic_pd(x);
     case t_FFELT: return FF_mod(x);
     case t_VEC:
       if (checkmf_i(x))
