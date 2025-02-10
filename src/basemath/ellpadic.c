@@ -17,7 +17,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 
 static GEN
 precp_fix(GEN h, long v)
-{ return (precp(h) > v)? cvtop(h,gel(h,2),v): h; }
+{ return (precp(h) > v)? cvtop(h,padic_p(h),v): h; }
 
 /* TATE CURVE */
 
