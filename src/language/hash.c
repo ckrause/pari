@@ -359,8 +359,8 @@ hash_GEN(GEN x)
       if (!x) return h;
       /* fall through */
     default:
-      if (lontyp[tx] == 2) { h = glue(h, x[1]); i = 2; } else i = 1;
       lx = lg(x);
+      for(i = 1; i < lontyp[tx]; i++) h = glue(h, x[i]);
       for (; i < lx; i++) h = glue(h, hash_GEN(gel(x,i)));
       return h;
   }

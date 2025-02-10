@@ -1283,15 +1283,15 @@ ZX_deflate_order(GEN x)
 static GEN
 vdeflate(GEN x, long v, long d)
 {
-  long i = lontyp[typ(x)], lx;
-  GEN z = cgetg_copy(x, &lx);
-  if (i == 2) z[1] = x[1];
-  for (; i<lx; i++)
+  long i, lx, tx = typ(x);
+  GEN y = cgetg_copy(x, &lx);
+  for(i = 1; i < lontyp[tx]; i++) y[i] = x[i];
+  for (; i < lx; i++)
   {
-    gel(z,i) = gdeflate(gel(x,i),v,d);
-    if (!z[i]) return NULL;
+    gel(y,i) = gdeflate(gel(x,i),v,d);
+    if (!y[i]) return NULL;
   }
-  return z;
+  return y;
 }
 
 /* don't return NULL if substitution fails (fallback won't be able to handle

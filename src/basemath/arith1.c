@@ -3902,8 +3902,8 @@ bestappr_Q(GEN x, GEN k)
     case t_POLMOD: case t_POL: case t_RFRAC:
     case t_VEC: case t_COL: case t_MAT:
       y = cgetg_copy(x, &lx);
-      if (lontyp[tx] == 1) i = 1; else { y[1] = x[1]; i = 2; }
-      for (; i<lx; i++)
+      for(i = 1; i < lontyp[tx]; i++) y[i] = x[i];
+      for (; i < lx; i++)
       {
         a = bestappr_Q(gel(x,i),k); if (!a) return NULL;
         gel(y,i) = a;

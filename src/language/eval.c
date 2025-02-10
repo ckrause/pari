@@ -2926,7 +2926,7 @@ gen_relink(GEN x, hashtable *table)
       break;
     case t_VEC: case t_COL: case t_MAT: case t_ERROR:
       lx = lg(x);
-      for (i=lontyp[tx]; i<lx; i++) gen_relink(gel(x,i), table);
+      for (i = lontyp[tx]; i < lx; i++) gen_relink(gel(x,i), table);
   }
 }
 
