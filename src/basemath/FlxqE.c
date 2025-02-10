@@ -735,7 +735,7 @@ static GEN
 ZpXQ_sqrtnorm(GEN a, GEN T, GEN q, GEN p, long e)
 {
   GEN s = Fp_div(FpXQ_trace(ZpXQ_log(a, T, p, e), T, q), gen_2, q);
-  return modii(gel(Qp_exp(cvtop(s, p, e-1)),4), q);
+  s = Qp_exp(cvtop(s, p, e-1)); return modii(padic_u(s), q);
 }
 
 struct _teich_lin
