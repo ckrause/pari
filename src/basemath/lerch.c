@@ -24,7 +24,7 @@ struct Qp_zetahurwitz_t { GEN B, _1, s1; };
 static void
 Qp_zetahurwitz_init(struct Qp_zetahurwitz_t *S, long prec, GEN s)
 {
-  GEN B, C = gen_1, s1 = gsubgs(s, 1), p = gel(s, 2);
+  GEN B, C = gen_1, s1 = gsubgs(s, 1), p = padic_p(s);
   long j, J = ((equaliu(p,2)? (prec >> 1): prec) + 2) >> 1;
   if (gequal0(s1)) s1 = NULL;
   B = bernvec(J);
@@ -95,7 +95,7 @@ Qp_zeta(GEN s) { return Qp_zeta_i(s, 1); }
 static GEN
 Qp_zetahurwitz_ii(GEN s, GEN x, long k)
 {
-  GEN gp = gel(s,2);
+  GEN gp = padic_p(s);
   long p = itou(gp), prec = pprec(s);
   struct Qp_zetahurwitz_t S;
   Qp_zetahurwitz_init(&S, prec, s);

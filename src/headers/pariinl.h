@@ -2778,8 +2778,8 @@ INLINE long ell_get_type(GEN e) { return mael(e,14,1); }
 INLINE GEN ellff_get_field(GEN x) { return gmael(x, 15, 1); }
 INLINE GEN ellff_get_a4a6(GEN x)  { return gmael(x, 15, 2); }
 INLINE GEN ellQp_get_zero(GEN x) { return gmael(x, 15, 1); }
-INLINE long ellQp_get_prec(GEN E) { GEN z = ellQp_get_zero(E); return valp(z); }
-INLINE GEN ellQp_get_p(GEN E) { GEN z = ellQp_get_zero(E); return gel(z,2); }
+INLINE long ellQp_get_prec(GEN E) { return valp(ellQp_get_zero(E)); }
+INLINE GEN ellQp_get_p(GEN E) { return padic_p(ellQp_get_zero(E)); }
 INLINE long ellR_get_prec(GEN x) { return nbits2prec(mael3(x, 15, 1, 1)); }
 INLINE long ellR_get_sign(GEN x) { return mael3(x, 15, 1, 2); }
 INLINE GEN ellnf_get_nf(GEN x) { return checknf_i(gmael(x,15,1)); }

@@ -30,11 +30,11 @@ precp_fix(GEN h, long v)
 GEN
 Qp_agm2_sequence(GEN a1, GEN b1)
 {
-  GEN bp, pmod, p = gel(a1,2), q = gel(a1,3), An, Bn, Rn;
+  GEN bp, pmod, p = padic_p(a1), q = padic_pd(a1), An, Bn, Rn;
   long pp = precp(a1), v = valp(a1), i;
   int pis2 = absequaliu(p,2);
-  a1 = gel(a1,4);
-  b1 = gel(b1,4);
+  a1 = padic_u(a1);
+  b1 = padic_u(b1);
   if (pis2)
     pmod = utoipos(8);
   else
@@ -104,7 +104,7 @@ Qp_descending_Landen(GEN AB, GEN *ptx, GEN *pty)
     if (!t) pari_err_PREC("Qp_descending_Landen");
     if (i == n)
     {
-      GEN p = gel(r,2);
+      GEN p = padic_p(r);
       long v, vx = valp(x), vr = valp(r);
       if (vx >= vr) pari_err_PREC("Qp_descending_Landen");
       /* last loop, take into account loss of accuracy from multiplication
@@ -771,7 +771,7 @@ static GEN
 ellpadics2_tate(GEN Ep, long n)
 {
   pari_sp av;
-  GEN u2 = ellQp_u2(Ep, n), q = ellQp_q(Ep, n), pn = gel(q,3);
+  GEN u2 = ellQp_u2(Ep, n), q = ellQp_q(Ep, n), pn = padic_pd(q);
   GEN qm, s, b2 = ell_get_b2(Ep), v = vecfactoru_i(1, n);
   long m;
   qm = Fp_powers(padic_to_Fp(q, pn), n, pn);

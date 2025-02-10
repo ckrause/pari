@@ -306,7 +306,7 @@ padicprec(GEN x, GEN p)
       return Z_pval(gel(x,1),p);
 
     case t_PADIC:
-      if (!equalii(padic_p(x),p)) pari_err_MODULUS("padicprec", gel(x,2), p);
+      if (!equalii(padic_p(x),p)) pari_err_MODULUS("padicprec", padic_p(x), p);
       return precp(x)+valp(x);
 
     case t_POL: case t_SER:

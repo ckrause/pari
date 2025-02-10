@@ -140,8 +140,8 @@ addTp(GEN x, GEN y) { pari_sp av = avma; GEN z;
 
   if (!valp(y)) z = cvtop2(x,y);
   else {
-    long l = signe(gel(y,4))? valp(y) + precp(y): valp(y);
-    z  = cvtop(x, gel(y,2), l);
+    long l = signe(padic_u(y))? valp(y) + precp(y): valp(y);
+    z  = cvtop(x, padic_p(y), l);
   }
   return gerepileupto(av, addsub_pp(z, y, addii));
 }

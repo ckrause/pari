@@ -2358,7 +2358,7 @@ Qp_exp_prec(GEN x)
 
   if (e < 1) return -1;
   if (e > n) return 1;
-  p = itos_or_0(gel(x,2));
+  p = itos_or_0(padic_p(x));
   if (!p) return n / e + 1;
   if (p == 2) return e < 2? -1: ceildivuu(n, e - 1);
   /* n >= e > 0, n = qe + r */
