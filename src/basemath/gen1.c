@@ -630,6 +630,10 @@ conjvec(GEN x,long prec)
 /**                           ADDITION                             **/
 /**                                                                **/
 /********************************************************************/
+static GEN
+mkpadic_copy(GEN u, GEN p, GEN pd, long e, long d)
+{ retmkpadic(icopy(u), icopy(p), icopy(pd), e, d); }
+
 /* x, y compatible PADIC, op = add or sub */
 static GEN
 addsub_pp(GEN x, GEN y, GEN (*op)(GEN,GEN))
@@ -644,7 +648,6 @@ addsub_pp(GEN x, GEN y, GEN (*op)(GEN,GEN))
   if (d < 0) { swap = 1; swap(x,y); e = r; d = -d; } else swap = 0;
   pdx = padic_pd(x); ux = padic_u(x);
   pdy = padic_pd(y); uy = padic_u(y);
-  (void)new_chunk(5 + lgefint(pdx) + lgefint(pdy));
   rx = precp(x);
   ry = precp(y);
   if (d) /* v(x) < v(y) */
@@ -670,8 +673,7 @@ addsub_pp(GEN x, GEN y, GEN (*op)(GEN,GEN))
       e += c;
     }
   }
-  u = modii(u, mod); set_avma(av);
-  retmkpadic(icopy(u), icopy(p), icopy(mod), e, r);
+  return gerepileupto(av, mkpadic_copy(modii(u, mod), p, mod, e, r));
 }
 /* Rg_to_Fp(t_FRAC) without GC */
 static GEN
@@ -690,8 +692,6 @@ addQp(GEN x, GEN y)
   if (r <= 0) { set_avma(av); return gcopy(y); }
   mod = padic_pd(y);
   u   = padic_u(y);
-  (void)new_chunk(5 + ((lgefint(mod) + lgefint(p)*labs(d)) << 1));
-
   if (d > 0)
   {
     q = powiu(p,d);
@@ -722,8 +722,7 @@ addQp(GEN x, GEN y)
       e += c;
     }
   }
-  u = modii(u, mod); set_avma(av);
-  retmkpadic(icopy(u), icopy(p), icopy(mod), e, r);
+  return gerepileupto(av, mkpadic_copy(modii(u, mod), p, mod, e, r));
 }
 
 /* Mod(x,X) + Mod(y,X) */
