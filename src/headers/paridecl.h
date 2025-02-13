@@ -1802,6 +1802,7 @@ GEN     algramifiedplaces(GEN al);
 GEN     algrandom(GEN al, GEN b);
 GEN     algsplit(GEN al, long v);
 GEN     algtomatrix(GEN al, GEN x, long abs);
+GEN     algskolemnoether(GEN al, GEN a, GEN fa);
 GEN     algsqr(GEN al, GEN x);
 GEN     algsub(GEN al, GEN x, GEN y);
 GEN     algtableinit(GEN mt, GEN p);

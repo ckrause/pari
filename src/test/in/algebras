@@ -3083,6 +3083,45 @@ al = alginit(nf,[2,[[pr1,pr2],[0,1/2]],[0,1/2]]);
 s = alginvol(al);
 chk_invol(s,al);
 
+print("Skolem-Noether");
+nf = nfinit(y^2-3);
+al = alginit(nf, [1-y,-2]);
+u = [1..8]~;
+fu = alginvol(al,u);
+g = algskolemnoether(al,u,fu);
+algisinv(al,g)
+algmul(al,g,u) == algmul(al,fu,g)
+ii = algquattobasis(al,[0,1,0,0]~);
+jj = algquattobasis(al,[0,0,1,0]~);
+g = [2..9]~;
+ginv = alginv(al,g);
+fii = algmul(al,algmul(al,g,ii),ginv);
+fjj = algmul(al,algmul(al,g,jj),ginv);
+h = algskolemnoether(al,[ii,jj],[fii,fjj]);
+algisinv(al,h,&hinv)
+algmul(al,h,ii) == algmul(al,fii,h)
+algmul(al,h,jj) == algmul(al,fjj,h)
+gh = algmul(al,g,hinv);
+2*gh == algeltfromnf(al,algtrace(al,gh))
+algskolemnoether(al,[],[])
+algskolemnoether(al,vectorv(8),vectorv(8))
+algskolemnoether(al,u,u)
+print("algskolemnoether with CSA");
+al = alginit(nf, qamt(2+y,-3));
+u = [-8..-1]~;
+fu = algsub(al, algeltfromnf(al,algtrace(al,u)), u);
+g = algskolemnoether(al,u,fu);
+algisinv(al,g)
+algmul(al,g,u) == algmul(al,fu,g)
+g2 = algsqr(al,g);
+2*g2 == algeltfromnf(al, algtrace(al,g2)) \\g^2 in nf
+al = alginit(nfinit(y),1);
+a = [2]~;
+g = algskolemnoether(al,a,a) != 0
+
+
+
+
 
 \\BUGS
 
@@ -3348,3 +3387,26 @@ alginvol(,[1..5]~);
 al = alginit(nfinit(y),[-1,-1]);
 alginvol(al,[1,2,3]~);
 
+print("bad inputs algskolemnoether");
+nf = nfinit(y^2-3);
+al = alginit(nf, [1-y,-2]);
+u = [1..8]~;
+fu = u; fu[1]++;
+algskolemnoether(al,u,fu); \\not homomorphism
+Q = nfinit(y);
+al = alginit(Q,3);
+u = algalgtobasis(al,[0,0,1]~);
+v = algpoleval(al,x^2+x+1,u); \\not simple
+fv = algpoleval(al,3-x,v);
+algskolemnoether(al,v,fv); \\infinite loop
+algskolemnoether(al,v,[]);
+algskolemnoether(al,v,[]~);
+algskolemnoether(al,[]~,fv);
+algskolemnoether(al,[v,v],[fv,[]]);
+almt = algtableinit(qamt(-2,-7));
+algskolemnoether(almt,[1..4]~,[1..4]~)
+algskolemnoether([],[1..4]~,[1..4]~)
+H = alginit(1.,1/2);
+a = [1.,2.,3.,4.]~;
+fa = alginvol(,a);
+algskolemnoether(H,a,fa);

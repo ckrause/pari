@@ -2536,6 +2536,18 @@ algbasisrightmultable(GEN al, GEN x)
   return res;
 }
 
+/* central simple algebra al from alginit */
+/* right multiplication table on integral basis; no checks no GC */
+static GEN
+algrightmultable(GEN al, GEN x)
+{
+  GEN d, M;
+  x = algalgtobasis(al, x);
+  x = Q_remove_denom(x, &d);
+  M = algbasisrightmultable(al,x);
+  return d ? ZM_Z_div(M,d) : M;
+}
+
 /* basis for matrices : 1, E_{i,j} for (i,j)!=(1,1) */
 /* index : ijk = ((i-1)*N+j-1)*n + k */
 /* square matrices only, coefficients in basis form, shallow function */
@@ -3888,6 +3900,42 @@ alginvol(GEN al, GEN x)
   if (typ(invol)!=t_MAT)
     pari_err_DOMAIN("alginvol [al does not contain an involution]", "invol", "=", gen_0, invol);
   return gerepileupto(av, RgM_RgC_mul(invol,x));
+}
+
+GEN
+algskolemnoether(GEN al, GEN a, GEN fa)
+{
+  pari_sp av = avma;
+  long c = 0, i, ta;
+  GEN M, K, b;
+  checkalg(al);
+  ta = alg_type(al);
+  if (ta!=al_CYCLIC && ta!=al_CSA) pari_err_TYPE("algskolemnoether"
+      " [al: apply alginit()]", al);
+  if (typ(a) != t_VEC) a = mkvec(a);
+  if (typ(fa) != t_VEC) fa = mkvec(fa);
+  if (lg(a) != lg(fa)) pari_err_DIM("algskolemnoether [lg(a) != lg(fa)]");
+  if (lg(a) == 1) return gerepileupto(av, col_ei(alg_get_absdim(al),1));
+
+  /* compute space K of b s.t. b*a_i == fa_i*b for all i */
+  M = cgetg(lg(a),t_COL);
+  for (i=1; i<lg(a); i++) gel(M,i) = RgM_sub(algrightmultable(al,gel(a,i)),
+                                      algleftmultable(al,gel(fa,i)));
+  M = shallowmatconcat(M);
+  K = QM_ker(M);
+
+  /* find invertible element in K */
+  if (lg(K)==1) pari_err(e_MISC, "no solution in algskolemnoether"
+      " [check simplicity and homomorphism assumptions]");
+  b = gel(K,1);
+  while (!algisinv(al, b, NULL))
+  {
+    b = gadd(b, gel(K,1+random_Fl(lg(K)-1)));
+    c++;
+    if (c > 200) pari_err(e_MISC, "probable infinite loop in algskolemnoether"
+        " (the subalgebra is probably not simple)");
+  }
+  return gerepileupto(av, b);
 }
 
 /** GRUNWALD-WANG **/

@@ -3196,6 +3196,21 @@ alginvol
 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1
+Skolem-Noether
+1
+1
+1
+1
+1
+1
+[1, 0, 0, 0, 0, 0, 0, 0]~
+[1, 0, 0, 0, 0, 0, 0, 0]~
+[1, 0, 0, 0, 0, 0, 0, 0]~
+algskolemnoether with CSA
+1
+1
+1
+1
 nfgrunwaldwang SEGV #1669
 x^2 + Mod(-17, y)
   ***   at top-level: nfgrunwaldwang(nfinit(x),[2,3],[1,2],Vecsmall(
@@ -3491,4 +3506,32 @@ segfault algquattobasis
   ***   at top-level: alginvol(al,[1,2,3]~)
   ***                 ^---------------------
   *** alginvol: incorrect type in alg_model (t_COL).
-Total time spent: 6515
+bad inputs algskolemnoether
+  ***   at top-level: algskolemnoether(al,u,fu)
+  ***                 ^-------------------------
+  *** algskolemnoether: no solution in algskolemnoether [check simplicity and homomorphism assumptions].
+  ***   at top-level: algskolemnoether(al,v,fv)
+  ***                 ^-------------------------
+  *** algskolemnoether: probable infinite loop in algskolemnoether (the subalgebra is probably not simple).
+  ***   at top-level: algskolemnoether(al,v,[])
+  ***                 ^-------------------------
+  *** algskolemnoether: inconsistent dimensions in algskolemnoether [lg(a) != lg(fa)].
+  ***   at top-level: algskolemnoether(al,v,[]~)
+  ***                 ^--------------------------
+  *** algskolemnoether: incorrect type in alg_model (t_COL).
+  ***   at top-level: algskolemnoether(al,[]~,fv)
+  ***                 ^---------------------------
+  *** algskolemnoether: incorrect type in alg_model (t_COL).
+  ***   at top-level: algskolemnoether(al,[v,v],[fv,[]])
+  ***                 ^----------------------------------
+  *** algskolemnoether: incorrect type in alg_model (t_VEC).
+  ***   at top-level: algskolemnoether(almt,[1..4]~,[1..4]~)
+  ***                 ^--------------------------------------
+  *** algskolemnoether: incorrect type in algskolemnoether [al: apply alginit()] (t_VEC).
+  ***   at top-level: algskolemnoether([],[1..4]~,[1..4]~)
+  ***                 ^------------------------------------
+  *** algskolemnoether: incorrect type in checkalg [please apply alginit()] (t_VEC).
+  ***   at top-level: algskolemnoether(H,a,fa)
+  ***                 ^------------------------
+  *** algskolemnoether: incorrect type in algskolemnoether [al: apply alginit()] (t_VEC).
+Total time spent: 3105
