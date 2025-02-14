@@ -475,7 +475,7 @@ al structure:
 2- VEC of aut^i 1<=i<=n if n>1, or i=0 if n=1
 3- b in nf
 4- infinite hasse invariants (mod n) : VECSMALL of size r1, values only 0 or n/2 (if integral)
-5- finite hasse invariants (mod n) : VEC[VEC of primes, VECSMALL of hasse inv mod n]
+5- finite hasse invariants (mod n) : VEC[sorted VEC of primes, VECSMALL of hasse inv mod n]
 6- VEC
   6.1- 0, or [a,b,sa] where sa^2=a if al is quaternion algebra (a,b)
   6.2- dn^2*dn^2 matrix of stored involution
@@ -1742,6 +1742,7 @@ algissplit(GEN al, GEN pl)
 int
 algisramified(GEN al, GEN pl) { return !algissplit(al,pl); }
 
+/* sorted; infinite places first */
 GEN
 algramifiedplaces(GEN al)
 {
@@ -1772,6 +1773,43 @@ algramifiedplaces(GEN al)
     }
   setlg(ram, count+1);
   return gerepilecopy(av, ram);
+}
+
+/* no GC */
+static int
+algissimilar_i(GEN al, GEN al2, GEN pl)
+{
+  GEN ram, ram2;
+  long i;
+  if (pl) return gequal(alghasse(al,pl), alghasse(al2,pl));
+  ram = algramifiedplaces(al);
+  ram2 = algramifiedplaces(al2);
+  if(!gequal(ram, ram2)) return 0;
+  for (i=1; i<lg(ram); i++)
+    if (!gequal(alghasse(al,gel(ram,i)), alghasse(al2,gel(ram,i))))
+      return 0;
+  return 1;
+}
+
+int
+algisisom(GEN al, GEN al2, GEN pl)
+{
+  pari_sp av = avma;
+  long t, d;
+  checkalg(al);
+  checkalg(al2);
+  t = alg_type(al);
+  if (t != al_CYCLIC && t != al_CSA)
+    pari_err_TYPE("algisisom [al: apply alginit()]", al);
+  t = alg_type(al2);
+  if (t != al_CYCLIC && t != al_CSA)
+    pari_err_TYPE("algisisom [al2: apply alginit()]", al2);
+  if (!gequal(nf_get_pol(alg_get_center(al)), nf_get_pol(alg_get_center(al2))))
+    pari_err(e_MISC, "base fields must be identical in algisisom");
+  d = alg_get_degree(al);
+  if (d != alg_get_degree(al2)) return gc_int(av, 0);
+  if (d == 1) return gc_int(av, 1);
+  return gc_int(av, algissimilar_i(al,al2,pl));
 }
 
 GEN

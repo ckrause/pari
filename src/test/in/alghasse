@@ -1,5 +1,23 @@
 default(parisize,"12M"); \\ 10M overflows on 64 bit
 
+qamt(a,b) =
+{
+  my(m_i,m_j,m_k);
+  m_i = [0,a,0,0;
+         1,0,0,0;
+         0,0,0,a;
+         0,0,1,0];
+  m_j = [0, 0,b, 0;
+         0, 0,0,-b;
+         1, 0,0, 0;
+         0,-1,0, 0];
+  m_k = [0, 0,0,-a*b;
+         0, 0,b,   0;
+         0,-a,0,   0;
+         1, 0,0,   0];
+  [matid(4), m_i, m_j, m_k]
+};
+
 \\Tests related to hasse invariants in algebras
 
 do(name, test) = {
@@ -335,3 +353,91 @@ PR = idealprimedec(nf,2); \\ramified at the prime above 2
 hi = [1,0]; \\ramified at one place at infinity
 A = alginit(nf, [PR,hi]);
 #algramifiedplaces(A)
+
+print("algisisom");
+print("degree 1");
+nf = nfinit(y^2-3);
+pr = idealprimedec(nf,3)[1];
+al = alginit(rnfinit(nf,x),[x,1]);
+al2 = alginit(rnfinit(nf,x-1),[x,2]);
+algisisom(al,al2)
+algisisom(al,al2,pr)
+algisisom(al,al2,1)
+al3 = alginit(nf,[matid(1)]);
+al4 = alginit(nf,[matid(1)]);
+algisisom(al3,al4)
+algisisom(al,al3)
+print("degree 2");
+nf = nfinit(y^2-2);
+pr = idealprimedec(nf,17)[1];
+al = alginit(nf, [1+y, 7*y]);
+{al2 = alginit(nf, [[pr | pr <- algramifiedplaces(al), type(pr)!="t_INT"],
+  alghassei(al)]);}
+algisisom(al, al2)
+{al3 = alginit(nf, [[pr | pr <- algramifiedplaces(al), type(pr)!="t_INT"],
+  [0,1]]);}
+pr2 = algramifiedplaces(al)[2];
+!algisisom(al, al3) \\not isom at infinite places
+!algisisom(al,al3,1)
+algisisom(al,al3,pr)
+algisisom(al,al3,pr2)
+al4 = alginit(nf, [[pr],alghassei(al)]);
+!algisisom(al, al4) \\not isom at finite places
+algisisom(al, al4, 1)
+algisisom(al, al4, 2)
+!algisisom(al, al4, pr)
+nf = nfinit(y^4 + 2003*y^2 + 2119936);
+rnf = rnfinit(nf, x^2 + (-1/8736*y^3 - 547/8736*y - 11/2));
+al = alginit(rnf, [-x,1/4368*y^3 + 547/4368*y + 10]);
+al2 = alginit(nf,2);
+algisisom(al,al2)
+print("degree 3");
+Q = nfinit(y);
+al = alginit(rnfinit(Q,x^3 - x^2 - 86*x - 48), [1/6*x^2 - 5/6*x - 9, 2*11]);
+pr = algramifiedplaces(al)[1];
+al2 = alginit(Q, [3, [algramifiedplaces(al),[1/3,-1/3]], [0]]);
+algisisom(al,al2)
+algisisom(al,al2,pr)
+al3 = alginit(Q, [3, [algramifiedplaces(al),[-1/3,1/3]], [0]]);
+!algisisom(al,al3,pr)
+!algisisom(al,al3)
+print("degree 4");
+nf = nfinit(y^2-7);
+b = Mod(1+3*y, nf.pol);
+al = alginit(rnfinit(nf,polcyclo(5)), [x^2, b^2]);
+al2 = alginit(nf, [algramifiedplaces(al), [0,0]]);
+!algisisom(al,al2) \\similar but not isomorphic
+print("doc algisisom");
+nf = nfinit(y^2-2);
+al = alginit(nf, [1+y, -7]);
+al2 = alginit(nf, [-1, 2*y-1]);
+al3 = alginit(nf, [1-y, -7]);
+algisisom(al,al2)
+!algisisom(al,al3) \\isomorphic over Q but not as F-algebras
+
+print("bad inputs algisisom");
+al = alginit(nfinit(y),[-1,-1]);
+algisisom([],al);
+algisisom(al,[]);
+almt = algtableinit([matid(1)]);
+algisisom(almt,al);
+algisisom(al,almt);
+H = alginit(1.,1/2);
+algisisom(H,al);
+algisisom(al,H);
+al2 = alginit(nfinit(y-1),[-1,-1]);
+algisisom(al,al2);
+p = nextprime(10^60);
+q = nextprime(10^61);
+al = alginit(nfinit(y^2-2), [-1,-p*q],,0);
+al2 = alginit(nfinit(y^2-2), [-2,-p*q],,0);
+algisisom(al,al2);
+algisisom(al,al2,[]);
+nf = nfinit(y^2-5);
+al = alginit(nf, qamt(y+7,y-2));
+al2 = alginit(nf, qamt(y-6,y+4));
+algisisom(al,al2);
+al3 = alginit(nf, [y+3,y-5]);
+algisisom(al,al3);
+algisisom(al,al3,192);
+

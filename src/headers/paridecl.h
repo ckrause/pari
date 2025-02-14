@@ -1751,6 +1751,7 @@ int     algiscommutative(GEN al);
 int     algisdivision(GEN al, GEN pl);
 int     algisdivl(GEN al, GEN x, GEN y, GEN* ptz);
 int     algisinv(GEN al, GEN x, GEN* ptix);
+int     algisisom(GEN al, GEN al2, GEN pl);
 GEN     algisquatalg(GEN al);
 int     algisramified(GEN al, GEN pl);
 int     algissemisimple(GEN al);

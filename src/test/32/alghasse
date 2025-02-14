@@ -193,4 +193,69 @@ bug alghasse
 1
 doc alginit: quatalg from ramification
 2
-Total time spent: 2412
+algisisom
+degree 1
+1
+1
+1
+1
+1
+degree 2
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+degree 3
+1
+1
+1
+1
+degree 4
+1
+doc algisisom
+1
+1
+bad inputs algisisom
+  ***   at top-level: algisisom([],al)
+  ***                 ^----------------
+  *** algisisom: incorrect type in checkalg [please apply alginit()] (t_VEC).
+  ***   at top-level: algisisom(al,[])
+  ***                 ^----------------
+  *** algisisom: incorrect type in checkalg [please apply alginit()] (t_VEC).
+  ***   at top-level: algisisom(almt,al)
+  ***                 ^------------------
+  *** algisisom: incorrect type in algisisom [al: apply alginit()] (t_VEC).
+  ***   at top-level: algisisom(al,almt)
+  ***                 ^------------------
+  *** algisisom: incorrect type in algisisom [al2: apply alginit()] (t_VEC).
+  ***   at top-level: algisisom(H,al)
+  ***                 ^---------------
+  *** algisisom: incorrect type in algisisom [al: apply alginit()] (t_VEC).
+  ***   at top-level: algisisom(al,H)
+  ***                 ^---------------
+  *** algisisom: incorrect type in algisisom [al2: apply alginit()] (t_VEC).
+  ***   at top-level: algisisom(al,al2)
+  ***                 ^-----------------
+  *** algisisom: base fields must be identical in algisisom.
+  ***   at top-level: algisisom(al,al2)
+  ***                 ^-----------------
+  *** algisisom: Hasse invariants were not computed for this algebra.
+  ***   at top-level: algisisom(al,al2,[])
+  ***                 ^--------------------
+  *** algisisom: incorrect type in is_place_emb (t_VEC).
+  ***   at top-level: algisisom(al,al2)
+  ***                 ^-----------------
+  *** algisisom: sorry, computation of Hasse invariants over table CSA is not yet implemented.
+  ***   at top-level: algisisom(al,al3)
+  ***                 ^-----------------
+  *** algisisom: sorry, computation of Hasse invariants over table CSA is not yet implemented.
+  ***   at top-level: algisisom(al,al3,192)
+  ***                 ^---------------------
+  *** algisisom: domain error in is_place_emb: pl > 2
+Total time spent: 2451
