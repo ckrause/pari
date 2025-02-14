@@ -631,8 +631,8 @@ conjvec(GEN x,long prec)
 /**                                                                **/
 /********************************************************************/
 static GEN
-mkpadic_copy(GEN u, GEN p, GEN pd, long e, long d)
-{ retmkpadic(icopy(u), icopy(p), icopy(pd), e, d); }
+mkpadic_mod(GEN u, GEN p, GEN pd, long e, long d)
+{ retmkpadic(modii(u, pd), icopy(p), icopy(pd), e, d); }
 
 /* x, y compatible PADIC, op = add or sub */
 static GEN
@@ -673,7 +673,7 @@ addsub_pp(GEN x, GEN y, GEN (*op)(GEN,GEN))
       e += c;
     }
   }
-  return gerepileupto(av, mkpadic_copy(modii(u, mod), p, mod, e, r));
+  return gerepileupto(av, mkpadic_mod(u, p, mod, e, r));
 }
 /* Rg_to_Fp(t_FRAC) without GC */
 static GEN
@@ -722,7 +722,7 @@ addQp(GEN x, GEN y)
       e += c;
     }
   }
-  return gerepileupto(av, mkpadic_copy(modii(u, mod), p, mod, e, r));
+  return gerepileupto(av, mkpadic_mod(u, p, mod, e, r));
 }
 
 /* Mod(x,X) + Mod(y,X) */
