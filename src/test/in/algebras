@@ -3122,7 +3122,6 @@ g = algskolemnoether(al,a,a) != 0
 
 
 
-
 \\BUGS
 
 print("nfgrunwaldwang SEGV #1669");
@@ -3410,3 +3409,13 @@ H = alginit(1.,1/2);
 a = [1.,2.,3.,4.]~;
 fa = alginvol(,a);
 algskolemnoether(H,a,fa);
+
+print("quatalg [a,b] with a in basis form");
+nf = nfinit(y^3-9);
+a = [1,2,3]~;
+b = [4,5,6]~;
+al = 'al;
+al = alginit(nf, [a,b]);
+apply(type,algisquatalg(al))
+al2 = alginit(nf, [nfbasistoalg(nf,a),b]);
+algisisom(al,al2)

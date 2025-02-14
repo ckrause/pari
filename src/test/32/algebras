@@ -3534,4 +3534,7 @@ bad inputs algskolemnoether
   ***   at top-level: algskolemnoether(H,a,fa)
   ***                 ^------------------------
   *** algskolemnoether: incorrect type in algskolemnoether [al: apply alginit()] (t_VEC).
-Total time spent: 3105
+quatalg [a,b] with a in basis form
+["t_POL", "t_POL"]
+1
+Total time spent: 2680

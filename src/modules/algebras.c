@@ -5005,7 +5005,7 @@ alg_hilbert(GEN nf, GEN a, GEN b, long v, long flag)
     return gerepilecopy(av, alg_hilbert_asquare(nf,a,sa,b,v,flag));
 
   if (v < 0) v = 0;
-  rnfpol = deg2pol_shallow(gen_1, gen_0, gneg(a), v);
+  rnfpol = deg2pol_shallow(gen_1, gen_0, gneg(basistoalg(nf,a)), v);
   if (!(flag & al_FACTOR)) rnfpol = mkvec2(rnfpol, stoi(1<<20));
   rnf = rnfinit(nf, rnfpol);
   aut = gneg(pol_x(v));
