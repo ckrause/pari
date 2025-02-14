@@ -321,6 +321,14 @@ pr1 = idealprimedec(nf,3)[1];
 pr2 = idealprimedec(nf,5)[1];
 al = alginit(nf,[3,[[pr1,pr2],[1/3,2/3]],[]],,0);
 
+print("bug alghasse"); \\hasse invariants not sorted
+nf = nfinit(y^2-2);
+pr = idealprimedec(nf,17)[1];
+al = alginit(nf, [[pr],[1,0]]);
+alghasse(al,pr) == 1/2
+Lpr = alghassef(al)[1];
+Lpr == idealfactor(nf,idealfactorback(nf,Lpr))[,1]~
+
 print("doc alginit: quatalg from ramification");
 nf = nfinit(y^2-2);
 PR = idealprimedec(nf,2); \\ramified at the prime above 2

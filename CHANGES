@@ -13,6 +13,7 @@ BA   4- nfcompositum(nfinit(y-2),x^2-y,x^3-x-1) -> error [#2605]
 BA   9- lfungenus2 could give wrong result at odd primes (#2487)
     10- sqrtn(27+O(3^4),3) -> 1 + O(3) (wrong valuation in Qp_sqrtn_ram)
     11- vectorsmall(5, i, 2^63-1).normfu -> SEGV
+AP  12- alginit would sometimes not sort primes -> wrong alghasse
 
   Added
      1- [libpari] prodprimes, prodprimeslim

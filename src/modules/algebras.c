@@ -4580,7 +4580,7 @@ alg_complete0(GEN rnf, GEN aut, GEN hf, GEN hi, long flag)
 {
   pari_sp av = avma;
   GEN nf, pl, pl2, cnd, prcnd, cnds, y, Lpr, auts, b, fa, data, hfe;
-  GEN forbid, al, ind;
+  GEN forbid, al, ind, perm;
   long D, n, d, i, j, l;
   nf = rnf_get_nf(rnf);
   n = rnf_get_degree(rnf);
@@ -4639,8 +4639,9 @@ alg_complete0(GEN rnf, GEN aut, GEN hf, GEN hi, long flag)
   (void)nfmakecoprime(nf, &y, Lpr);
   Lpr = shallowconcat(Lpr, gel(idealfactor(nf,y), 1));
   settyp(Lpr,t_VEC);
-  hf = mkvec2(Lpr, shallowconcat(hfe, const_vecsmall(lg(Lpr)-lg(hfe), 0)));
-  gel(al,5) = hf;
+  hf = shallowconcat(hfe, const_vecsmall(lg(Lpr)-lg(hfe), 0));
+  perm = gen_indexsort(Lpr, (void*)&cmp_prime_ideal, &cmp_nodata);
+  gel(al,5) = mkvec2(vecpermute(Lpr,perm), vecsmallpermute(hf,perm));
   gel(al,6) = mkvec2(gen_0,gen_0);
   gel(al,7) = matid(D);
   gel(al,8) = matid(D); /* TODO modify 7, 8 et 9 once LLL added */
