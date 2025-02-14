@@ -1364,30 +1364,30 @@ GEN
 chinese(GEN x, GEN y)
 {
   pari_sp av;
-  long tx = typ(x), ty;
-  GEN z,p1,p2,d,u,v;
+  long tx, ty;
+  GEN z;
 
   if (!y) return chinese1(x);
   if (gidentical(x,y)) return gcopy(x);
-  ty = typ(y);
+  tx = typ(x); ty = typ(y);
   if (tx == ty) switch(tx)
   {
     case t_POLMOD:
     {
       GEN A = gel(x,1), B = gel(y,1);
-      GEN a = gel(x,2), b = gel(y,2);
+      GEN a = gel(x,2), b = gel(y,2), t, d, e, u, v;
       if (varn(A)!=varn(B)) pari_err_VAR("chinese",A,B);
       if (RgX_equal(A,B)) retmkpolmod(chinese(a,b), gcopy(A)); /*same modulus*/
       av = avma;
       d = RgX_extgcd(A,B,&u,&v);
-      p2 = gsub(b, a);
-      if (!gequal0(gmod(p2, d))) break;
-      p1 = gdiv(A,d);
-      p2 = gadd(a, gmul(gmul(u,p1), p2));
+      e = gsub(b, a);
+      if (!gequal0(gmod(e, d))) pari_err_OP("chinese",x,y);
+      t = gdiv(A, d);
+      e = gadd(a, gmul(gmul(u,t), e));
 
       z = cgetg(3, t_POLMOD);
-      gel(z,1) = gmul(p1,B);
-      gel(z,2) = gmod(p2,gel(z,1));
+      gel(z,1) = RgX_mul(t, B);
+      gel(z,2) = gmod(e, gel(z,1));
       return gerepileupto(av, z);
     }
     case t_INTMOD:
@@ -1405,7 +1405,7 @@ chinese(GEN x, GEN y)
     case t_POL:
     {
       long i, lx = lg(x), ly = lg(y);
-      if (varn(x) != varn(y)) break;
+      if (varn(x) != varn(y)) pari_err_OP("chinese",x,y);
       if (lx < ly) { swap(x,y); lswap(lx,ly); }
       z = cgetg(lx, t_POL); z[1] = x[1];
       for (i=2; i<ly; i++) gel(z,i) = chinese(gel(x,i),gel(y,i));
@@ -1419,7 +1419,7 @@ chinese(GEN x, GEN y)
     case t_VEC: case t_COL: case t_MAT:
     {
       long i, lx;
-      z = cgetg_copy(x, &lx); if (lx!=lg(y)) break;
+      z = cgetg_copy(x, &lx); if (lx!=lg(y)) pari_err_OP("chinese",x,y);
       for (i=1; i<lx; i++) gel(z,i) = chinese(gel(x,i),gel(y,i));
       return z;
     }
@@ -1437,8 +1437,7 @@ Z_chinese_pre(GEN A, GEN B, GEN *pC, GEN *pU, GEN *pd)
   GEN u, d = bezout(A,B,&u,NULL); /* U = u(A/d), u(A/d) + v(B/d) = 1 */
   GEN t = diviiexact(A,d);
   *pU = mulii(u, t);
-  *pC = mulii(t, B);
-  if (pd) *pd = d;
+  *pC = mulii(t, B); if (pd) *pd = d;
 }
 /* Assume C = lcm(A, B), U = 0 mod (A/d), U = 1 mod (B/d), a = b mod d,
  * where d = gcd(A,B) or NULL, return x = a (mod A), b (mod B).
@@ -1446,15 +1445,15 @@ Z_chinese_pre(GEN A, GEN B, GEN *pC, GEN *pU, GEN *pd)
 GEN
 Z_chinese_post(GEN a, GEN b, GEN C, GEN U, GEN d)
 {
-  GEN b_a;
+  GEN e;
   if (!signe(a))
   {
     if (d && !dvdii(b, d)) return NULL;
     return Fp_mul(b, U, C);
   }
-  b_a = subii(b,a);
-  if (d && !dvdii(b_a, d)) return NULL;
-  return modii(addii(a, mulii(U, b_a)), C);
+  e = subii(b,a);
+  if (d && !dvdii(e, d)) return NULL;
+  return modii(addii(a, mulii(U, e)), C);
 }
 static ulong
 u_chinese_post(ulong a, ulong b, ulong C, ulong U)
