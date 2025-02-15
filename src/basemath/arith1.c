@@ -1347,29 +1347,48 @@ gen_chinese(GEN x, GEN(*f)(GEN,GEN))
   return z;
 }
 
-/* x t_INTMOD, y t_POLMOD; promote x to t_POLMOD mod Pol(x.mod) then
- * call chinese: makes Mod(0,1) a better "neutral" element */
-static GEN
-chinese_intpol(GEN x,GEN y)
-{
-  pari_sp av = avma;
-  GEN z = mkpolmod(gel(x,2), scalarpol_shallow(gel(x,1), varn(gel(y,1))));
-  return gerepileupto(av, chinese(z, y));
-}
-
 GEN
 chinese1(GEN x) { return gen_chinese(x,chinese); }
+
+static GEN
+padic2mod(GEN x)
+{
+  pari_sp av = avma;
+  GEN pd = padic_pd(x), p = padic_p(x), u = padic_u(x);
+  long v = valp(x);
+  if (v < 0) pari_err_INV("chinese", mkintmod(gen_0, p));
+  if (v)
+  {
+    GEN pv = powiu(p, v);
+    pd = mulii(pd, pv);
+    u = mulii(u, pv);
+  }
+  return gerepilecopy(av, mkintmod(u, pd));
+
+}
+/* x t_INTMOD, y t_POLMOD; promote x to t_POLMOD mod Pol(x.mod): makes Mod(0,1)
+ * a better "neutral" element */
+static GEN
+intmod2polmod(GEN x,GEN y)
+{ retmkpolmod(gel(x,2), scalarpol_shallow(gel(x,1), varn(gel(y,1)))); }
 
 GEN
 chinese(GEN x, GEN y)
 {
-  pari_sp av;
+  pari_sp av = avma;
   long tx, ty;
   GEN z;
 
   if (!y) return chinese1(x);
   if (gidentical(x,y)) return gcopy(x);
-  tx = typ(x); ty = typ(y);
+  /* allows GC optimization for this most frequent case */
+  z = cgetg(3,t_INTMOD);
+  tx = typ(x); if (tx == t_PADIC) { x = padic2mod(x); tx = t_INTMOD; }
+  ty = typ(y); if (ty == t_PADIC) { y = padic2mod(y); ty = t_INTMOD; }
+  if (tx == t_POLMOD && ty == t_INTMOD)
+  { y = intmod2polmod(y, x); ty = t_POLMOD; }
+  if (ty == t_POLMOD && tx == t_INTMOD)
+  { x = intmod2polmod(x, y); tx = t_POLMOD; }
   if (tx == ty) switch(tx)
   {
     case t_POLMOD:
@@ -1378,7 +1397,6 @@ chinese(GEN x, GEN y)
       GEN a = gel(x,2), b = gel(y,2), t, d, e, u, v;
       if (varn(A)!=varn(B)) pari_err_VAR("chinese",A,B);
       if (RgX_equal(A,B)) retmkpolmod(chinese(a,b), gcopy(A)); /*same modulus*/
-      av = avma;
       d = RgX_extgcd(A,B,&u,&v);
       e = gsub(b, a);
       if (!gequal0(gmod(e, d))) pari_err_OP("chinese",x,y);
@@ -1394,11 +1412,10 @@ chinese(GEN x, GEN y)
     {
       GEN A = gel(x,1), B = gel(y,1);
       GEN a = gel(x,2), b = gel(y,2), c, d, C, U;
-      z = cgetg(3,t_INTMOD);
       Z_chinese_pre(A, B, &C, &U, &d);
       c = Z_chinese_post(a, b, C, U, d);
       if (!c) pari_err_OP("chinese", x,y);
-      set_avma((pari_sp)z);
+      set_avma((pari_sp)z); /* GC optimization */
       gel(z,1) = icopy(C);
       gel(z,2) = icopy(c); return z;
     }
@@ -1407,6 +1424,7 @@ chinese(GEN x, GEN y)
       long i, lx = lg(x), ly = lg(y);
       if (varn(x) != varn(y)) pari_err_OP("chinese",x,y);
       if (lx < ly) { swap(x,y); lswap(lx,ly); }
+      set_avma(av);
       z = cgetg(lx, t_POL); z[1] = x[1];
       for (i=2; i<ly; i++) gel(z,i) = chinese(gel(x,i),gel(y,i));
       if (i < lx)
@@ -1419,13 +1437,12 @@ chinese(GEN x, GEN y)
     case t_VEC: case t_COL: case t_MAT:
     {
       long i, lx;
+      set_avma(av);
       z = cgetg_copy(x, &lx); if (lx!=lg(y)) pari_err_OP("chinese",x,y);
       for (i=1; i<lx; i++) gel(z,i) = chinese(gel(x,i),gel(y,i));
       return z;
     }
   }
-  if (tx == t_POLMOD && ty == t_INTMOD) return chinese_intpol(y,x);
-  if (ty == t_POLMOD && tx == t_INTMOD) return chinese_intpol(x,y);
   pari_err_OP("chinese",x,y);
   return NULL; /* LCOV_EXCL_LINE */
 }
