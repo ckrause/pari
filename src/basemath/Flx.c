@@ -4838,6 +4838,7 @@ ZM_unpack_FlxM_bits(GEN M, long b, ulong p, ulong pi, long sv)
       }
     }
   } else {
+    if (!pi) pi = get_Fl_red(p); /* unset if !SMALL_ULONG(p) */
     for (j = 1; j < l; j++) {
       gel(N, j) = cgetg(lc, t_COL);
       for (i = 1; i < lc; i++) {
