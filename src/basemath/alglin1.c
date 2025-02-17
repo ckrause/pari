@@ -3944,7 +3944,7 @@ image(GEN x)
 }
 
 static GEN
-imagecompl_aux(GEN x, GEN d, long r)
+imagecompl_aux(GEN d, long r)
 {
   GEN y = cgetg(r+1,t_VECSMALL);
   long j, i;
@@ -3963,7 +3963,7 @@ imagecompl(GEN x)
   if (typ(x)!=t_MAT) pari_err_TYPE("imagecompl",x);
   init_pivot_list(x); set_pivot_fun_all(&fun, &data, x);
   d = RgM_pivots(x, &r, fun, data); /* if (!d) then r = 0 */
-  set_avma(av); return imagecompl_aux(x, d, r);
+  set_avma(av); return imagecompl_aux(d, r);
 }
 GEN
 ZM_imagecompl(GEN x)
@@ -3974,7 +3974,7 @@ ZM_imagecompl(GEN x)
 
   init_pivot_list(x);
   d = ZM_pivots(x, &r); /* if (!d) then r = 0 */
-  set_avma(av); return imagecompl_aux(x, d, r);
+  set_avma(av); return imagecompl_aux(d, r);
 }
 
 static GEN
