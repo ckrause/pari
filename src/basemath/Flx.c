@@ -3582,7 +3582,7 @@ Flxq_sqrtn_spec_pre(GEN a, GEN n, GEN T, ulong p, ulong pi, GEN q, GEN *zetan)
   if (!is_pm1(m))
   {
     GEN F = Z_factor(m);
-    long i, j, j2;
+    long i, j, j2 = 0; /* -Wall */
     GEN y, l;
     pari_sp av1 = avma;
     for (i = nbrows(F); i; i--)
