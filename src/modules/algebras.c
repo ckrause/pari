@@ -1775,19 +1775,25 @@ algramifiedplaces(GEN al)
   return gerepilecopy(av, ram);
 }
 
-/* no GC */
+/* assume same degree and al_CYCLIC or al_CSA */
 static int
 algissimilar_i(GEN al, GEN al2, GEN pl)
 {
   GEN ram, ram2;
-  long i;
-  if (pl) return gequal(alghasse(al,pl), alghasse(al2,pl));
+  long i, h;
+  if (pl)
+  {
+    h = alghasse_0(al2,pl);
+    return alghasse_0(al,pl) == h;
+  }
   ram = algramifiedplaces(al);
   ram2 = algramifiedplaces(al2);
-  if(!gequal(ram, ram2)) return 0;
-  for (i=1; i<lg(ram); i++)
-    if (!gequal(alghasse(al,gel(ram,i)), alghasse(al2,gel(ram,i))))
-      return 0;
+  if (!gequal(ram, ram2)) return 0;
+  for (i = 1; i < lg(ram); i++)
+  {
+    h = alghasse_0(al2,gel(ram,i));
+    if (alghasse_0(al,gel(ram,i)) != h) return 0;
+  }
   return 1;
 }
 
