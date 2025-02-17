@@ -4802,7 +4802,7 @@ FlxM_pack_ZM_bits(GEN M, long b)
 }
 
 static GEN
-ZM_unpack_FlxM(GEN M, ulong p, ulong pi, ulong sv, GEN (*unpack)(GEN, ulong))
+ZM_unpack_FlxM(GEN M, ulong p, ulong sv, GEN (*unpack)(GEN, ulong))
 {
   long i, j, l, lc;
   GEN N = cgetg_copy(M, &l), x;
@@ -4838,7 +4838,6 @@ ZM_unpack_FlxM_bits(GEN M, long b, ulong p, ulong pi, long sv)
       }
     }
   } else {
-    ulong pi = get_Fl_red(p);
     for (j = 1; j < l; j++) {
       gel(N, j) = cgetg(lc, t_COL);
       for (i = 1; i < lc; i++) {
@@ -4896,7 +4895,7 @@ FlxM_mul_Kronecker_i(GEN A, GEN B, ulong p, ulong pi, long d, long sv)
   A = FlxM_pack_ZM(A, pack);
   B = is_sqr? A: FlxM_pack_ZM(B, pack);
   C = ZM_mul(A, B);
-  return ZM_unpack_FlxM(C, p, pi, sv, unpack);
+  return ZM_unpack_FlxM(C, p, sv, unpack);
 }
 
 GEN
