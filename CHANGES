@@ -30,6 +30,7 @@ BA   9- [libpari] FlxC_translate, FlxM_translate
     11- [libpari] mkpadic, retmkpadic, padic_p, padic_u, padic_pd
 AP  12- new GP functions algskolemnoether, algisisom
     13- allow t_PADICs in chinese
+MTB 14- FpXQ_sqrtn: implement fast algorithm
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b)
