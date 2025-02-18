@@ -4,6 +4,7 @@ bernfrac(1);
 for(k = 1, 20, print(bernfrac(k)));
 for(k = 0, 5, print(bernpol(k)));
 for(k = 0, 5, print(bernpol(k,1)));
+for(i = 1, 10^6, bernpol(5,1));
 bernvec(30)
 bernreal(30)
 bernreal(202)

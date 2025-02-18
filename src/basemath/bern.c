@@ -258,8 +258,9 @@ bernpol_eval(long k, GEN x)
   if (!x) return bernpol(k, 0);
   if (gequalX(x)) return bernpol(k, varn(x));
   if (k < 0) pari_err_DOMAIN("bernpol", "index", "<", gen_0, stoi(k));
-  B = bernpol_i(k, fetch_var_higher());
-  return gerepileupto(av, poleval(B, x));
+  B = poleval(bernpol_i(k, fetch_var_higher()), x);
+  delete_var();
+  return gerepileupto(av, B);
 }
 
 /* x := pol_x(v); return 1^e + ... + x^e = x^e + (B_{e+1}(x) - B_{e+1})/(e+1) */

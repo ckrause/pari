@@ -15,6 +15,7 @@ BA   9- lfungenus2 could give wrong result at odd primes (#2487)
     11- vectorsmall(5, i, 2^63-1).normfu -> SEGV
 AP  12- alginit would sometimes not sort primes -> wrong alghasse
 AP  13- alginit(nf,[a,b]) would reject a in basis form
+BA  14- for(i=1,10^6,bernpol(5,1)) -> "no more variables" [#2611]
 
   Added
      1- [libpari] prodprimes, prodprimeslim
