@@ -855,15 +855,20 @@ Fl_sqrt_pre(ulong a, ulong p, ulong pi)
 static ulong
 Fl_lgener_pre_all(ulong l, long e, ulong r, ulong p, ulong pi, ulong *pt_m)
 {
-  ulong x, y, m, le1 = upowuu(l, e-1);
-  for (x = 2; ; x++)
+  ulong m, m1;
+  long i;
+  for (;;)
   {
-    y = Fl_powu_pre(x, r, p, pi);
-    if (y==1) continue;
-    m = Fl_powu_pre(y, le1, p, pi);
-    if (m != 1) break;
+    m = m1 = Fl_powu_pre(random_Fl(p-1)+1UL, r, p, pi);
+    if (m==1) continue;
+    for (i=1; i<e; i++)
+    {
+      m = Fl_powu_pre(m, l, p, pi);
+      if (m == 1) break;
+    }
+    if (i==e) break;
   }
-  *pt_m = m; return y;
+  *pt_m = m; return m1;
 }
 
 /* solve x^l = a , l prime in G of order q.
