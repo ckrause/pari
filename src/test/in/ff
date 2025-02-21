@@ -1,4 +1,6 @@
 jell(x)=if(#x,x.j,[]);
+test_sqrt3(a)=my(S,T, y,z, x = sqrtn(a^3,3,&z), Z = [1,z,z^2]);\
+  y = sqrtn(a^3,3); S = Set(x * Z); T = Set(y * Z); setrand(1); [S == T, S];
 {
 test(p,f) = setrand(1); a = ffgen([p,f], 'a); [
 ffgen(a^2+a+3),
@@ -14,10 +16,8 @@ a^-1,
 -a,
 sqr(a),
 sqrt(a^(2^10)),
-sqrtn((a^2+a+1)^3,3),
-sqrtn((a^2+a+1)^3,3,&z),
-z,
-if (ispower(a,3), a^(2/3)),
+test_sqrt3(a^2+a+1),
+if (ispower(a,3), (a^(2/3))^3 == a^2),
 norm(a^2+1),
 trace(a),
 charpoly(a),
