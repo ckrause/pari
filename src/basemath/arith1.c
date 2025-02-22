@@ -871,34 +871,30 @@ Fl_lgener_pre_all(ulong l, long e, ulong r, ulong p, ulong pi, ulong *pt_m)
   *pt_m = m; return m1;
 }
 
-/* solve x^l = a , l prime in G of order q.
- *
- * q =  (l^e)*r, e >= 1, (r,l) = 1
- * y generates the l-Sylow of G
- * m = y^(l^(e-1)) != 1 */
+/* Solve x^l = a in G = Fp^* of order p-1 = (l^e)*r; l prime, (r,l) = 1, e >= 1
+ * y generates the l-Sylow of G, m = y^(l^(e-1)) != 1. Allow y = 0, in which
+ * case m is ignored and (y,m) are computed from scratch */
 static ulong
 Fl_sqrtl_raw(ulong a, ulong l, ulong e, ulong r, ulong p, ulong pi, ulong y, ulong m)
 {
-  ulong u2, p1, v, w, z, dl;
-  if (a==0) return a;
+  ulong u2, v, w, z, dl;
   u2 = Fl_inv(l%r, r);
   v = Fl_powu_pre(a, u2, p, pi);
-  w = Fl_powu_pre(v, l, p, pi);
+  w = Fl_powu_pre(v, l, p, pi); if (w == a) return v;
   w = pi? Fl_mul_pre(w, Fl_inv(a, p), p, pi): Fl_div(w, a, p);
-  if (w==1) return v;
-  if (y==0) y = Fl_lgener_pre_all(l, e, r, p, pi, &m);
-  while (w!=1)
+  if (!y) y = Fl_lgener_pre_all(l, e, r, p, pi, &m);
+  while (w != 1)
   {
-    ulong k = 0;
-    p1 = w;
+    ulong k = 0, p1 = w;
     do
     {
       z = p1; p1 = Fl_powu_pre(p1, l, p, pi);
       if (++k == e) return ULONG_MAX;
-    } while (p1!=1);
+    } while (p1 != 1);
+    /* z = w^(l^(k-1)) has order l */
     dl = Fl_log_pre(z, m, l, p, pi);
     dl = Fl_neg(dl, l);
-    p1 = Fl_powu_pre(y,dl*upowuu(l,e-k-1),p,pi);
+    p1 = Fl_powu_pre(y, dl*upowuu(l,e-k-1), p, pi);
     m = Fl_powu_pre(m, dl, p, pi);
     e = k;
     v = pi? Fl_mul_pre(p1,v,p,pi): Fl_mul(p1,v,p);
@@ -909,21 +905,18 @@ Fl_sqrtl_raw(ulong a, ulong l, ulong e, ulong r, ulong p, ulong pi, ulong y, ulo
 }
 
 /* allow pi = 0 */
-static ulong
-Fl_sqrtl_i(ulong a, ulong l, ulong p, ulong pi, ulong y, ulong m)
-{
-  ulong r, e = u_lvalrem(p-1, l, &r);
-  return Fl_sqrtl_raw(a, l, e, r, p, pi, y, m);
-}
-/* allow pi = 0 */
 ulong
 Fl_sqrtl_pre(ulong a, ulong l, ulong p, ulong pi)
-{ return Fl_sqrtl_i(a, l, p, pi, 0, 0); }
-
+{
+  ulong r, e;
+  if (!a) return 0;
+  e = u_lvalrem(p-1, l, &r);
+  return Fl_sqrtl_raw(a, l, e, r, p, pi, 0, 0);
+}
 ulong
 Fl_sqrtl(ulong a, ulong l, ulong p)
 { ulong pi = (p & HIGHMASK)? get_Fl_red(p): 0;
-  return Fl_sqrtl_i(a, l, p, pi, 0, 0); }
+  return Fl_sqrtl_pre(a, l, p, pi); }
 
 /* allow pi = 0 */
 ulong
@@ -937,6 +930,7 @@ Fl_sqrtn_pre(ulong a, long n, ulong p, ulong pi, ulong *zetan)
     if (zetan) *zetan = 1UL;
     return 0;
   }
+  /* a != 0 */
   if (n==1)
   {
     if (zetan) *zetan = 1;
