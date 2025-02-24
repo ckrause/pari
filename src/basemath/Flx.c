@@ -1677,15 +1677,15 @@ Flx_mod_Xnm1(GEN T, ulong n, ulong p)
 GEN
 Flx_mod_Xn1(GEN T, ulong n, ulong p)
 {
-  long i, j, L = lg(T), l = n+2;
+  long i, j, L = lg(T), l = n+2, s = -1;
   GEN S;
   if (L <= l || n & ~LGBITS) return T;
   S = cgetg(l, t_VECSMALL);
   S[1] = T[1];
   for (i = 2; i < l; i++) S[i] = T[i];
   for (j = 2; i < L; i++) {
-    S[j] = Fl_sub(S[j], T[i], p);
-    if (++j == l) j = 2;
+    S[j] = s==-1 ? Fl_sub(S[j], T[i], p): Fl_add(S[j], T[i], p);
+    if (++j == l) { j = 2; s = -s; }
   }
   return Flx_renormalize(S, l);
 }
