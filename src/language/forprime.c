@@ -770,9 +770,9 @@ forprime_init(forprime_t *T, GEN a, GEN b)
 static void
 sieve_block(ulong a, ulong b, ulong maxpos, unsigned char* sieve)
 {
-  ulong i, lim = usqrt(b), sz = (b-a) >> 1;
+  ulong i, N = pari_PRIMES[0], lim = usqrt(b), sz = (b-a) >> 1;
   (void)memset(sieve, 0, maxpos+1);
-  for (i = 2;; i++)
+  for (i = 2; i <= N; i++)
   { /* p is odd */
     ulong k, r, p = pari_PRIMES[i]; /* starts at p = 3 */
     if (p > lim) break;

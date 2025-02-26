@@ -31,6 +31,9 @@ precprime(2.5)
 forprime(p=524288,1048576,1)
 forprime(p=1048607,1048617,1)
 
+\\ #2612
+forprime(p=1099505335069-100000,1099505335069+10000,)
+
 \\ Errors, keep at end of file
 \\#1668
 primes([1,Pol(2)]);
