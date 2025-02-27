@@ -219,14 +219,14 @@ charpoly(GEN x, long v)
 
 /* p a t_POL in fetch_var_higher(); return p(pol_x(v)) and delete variable */
 static GEN
-fix_pol(pari_sp av, GEN p, long v)
+fix_pol(GEN p, long v)
 {
   long w = gvar2(p);
   if (w != NO_VARIABLE && varncmp(w, v) <= 0)
     p = poleval(p, pol_x(v));
   else
     setvarn(p, v);
-  (void)delete_var(); return gerepileupto(av, p);
+  (void)delete_var(); return p;
 }
 /* characteristic polynomial of 1x1 matrix */
 static GEN
@@ -261,7 +261,7 @@ caract(GEN x, long v)
     Q = RgX_mul(Q, x_k);
     C = diviuexact(mulsi(k-n,C), k+1); /* (-1)^k binomial(n,k) */
   }
-  return fix_pol(av, RgX_Rg_div(T, mpfact(n)), v);
+  return gerepileupto(av, fix_pol(RgX_Rg_div(T, mpfact(n)), v));
 }
 
 /* C = charpoly(x, v) */
@@ -335,7 +335,7 @@ caradj(GEN x, long v, GEN *py)
     GEN c = gcoeff(x,2,1), d = gcoeff(x,2,2);
     av = avma;
     gel(T,2) = gerepileupto(av, gsub(gmul(a,d), gmul(b,c)));
-    T = fix_pol(av0, T, v);
+    T = gerepileupto(av, fix_pol(T, v));
     if (py) {
       y = cgetg(3, t_MAT);
       gel(y,1) = mkcol2(gcopy(d), gneg(c));
@@ -367,7 +367,7 @@ caradj(GEN x, long v, GEN *py)
   t = gmul(gcoeff(x,1,1),gcoeff(y,1,1));
   for (i=2; i<=n; i++) t = gadd(t, gmul(gcoeff(x,1,i),gcoeff(y,i,1)));
   gel(T,2) = gerepileupto(av, gneg(t));
-  T = fix_pol(av0, T, v);
+  T = gerepileupto(av0, fix_pol(T, v));
   if (py) *py = odd(n)? gcopy(y): RgM_neg(y);
   gunclone(y); return T;
 }
@@ -1024,7 +1024,7 @@ carhess(GEN x, long v)
   GEN y;
   if ((y = easychar(x,v))) return y;
   av = avma; y = RgM_hess_charpoly(hess(x), fetch_var_higher());
-  y = fix_pol(av, y, v); return y;
+  return gerepileupto(av, fix_pol(y, v));
 }
 
 /* Bound for sup norm of charpoly(M/dM), M integral: let B = |M|oo / |dM|,
@@ -1188,7 +1188,7 @@ carberkowitz(GEN x, long v)
   }
   V = gtopoly(V, fetch_var_higher());
   if (!odd(lx)) V = RgX_neg(V);
-  return fix_pol(av0, V, v);
+  return gerepileupto(av0, fix_pol(V, v));
 }
 
 /*******************************************************************/
