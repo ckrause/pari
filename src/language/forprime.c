@@ -805,17 +805,10 @@ pari_sieve_init(struct pari_sieve *s, ulong a, ulong b)
 }
 
 static struct pari_sieve pari_sieve_modular;
-
-#ifdef LONG_IS_64BIT
-#define PARI_MODULAR_BASE ((1UL<<((BITS_IN_LONG-2)>>1))+1)
-#else
-#define PARI_MODULAR_BASE ((1UL<<(BITS_IN_LONG-1))+1)
-#endif
-
 void
 pari_init_primes(ulong maxprime)
 {
-  ulong a = PARI_MODULAR_BASE, b = a + (1UL<<20)-2;
+  ulong a = (1UL<<31) + 1, b = a + (1UL<<20)-2;
   initprimetable(maxprime);
   pari_sieve_init(&pari_sieve_modular, a, b);
 }
