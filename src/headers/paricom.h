@@ -92,7 +92,6 @@ extern const long CATCH_ALL;
   { \
     long i, _l; \
     GEN _y = cgetg_copy(x, &_l); _y[1] = x[1];\
-    if (_l == 2) return _y;\
     for (i=2; i<_l; i++) gel(_y,i) = EXPR;\
     return _y;\
   }
