@@ -97,7 +97,7 @@ Doc:
  \misctitle{Warning} As for the orientation of the basis of the period lattice,
  beware that many sources use the inverse convention where
  $\omega_{2}/\omega_{1}$ has positive imaginary part and our $\omega_{2}$ is
- the negative of theirs. Our convention $\tau = \omega_{1}/\omega_{2}$ ensures
+ the conjugate of theirs. Our convention $\tau = \omega_{1}/\omega_{2}$ ensures
  that the action of $\text{PSL}_{2}$ is the natural one:
  $$[a,b;c,d]\cdot\tau = (a\tau+b)/(c\tau+d)
    = (a \omega_{1} + b\omega_{2})/(c\omega_{1} + d\omega_{2}),$$
