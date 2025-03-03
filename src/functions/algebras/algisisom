@@ -18,6 +18,6 @@ Doc: Given central simple algebras \var{al} and \var{al2} output by
  ? al3 = alginit(nf, [1-y, -7]);
  ? algisisom(al,al2)
  % = 1
- ? algisisom(al,al3) \\isomorphic over Q but not as K-algebras
+ ? algisisom(al,al3) \\ isomorphic over Q but not as K-algebras
  % = 0
  @eprog

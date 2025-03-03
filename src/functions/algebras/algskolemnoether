@@ -14,8 +14,8 @@ Doc: Given a central simple algebra \var{al} over a number field~$K$, output by
  which is guaranteed if~$A$ is simple by the Skolem--Noether theorem.
  \bprog
  ? al = alginit(nfinit(y^2-2),[-2,-3-y]);
- ? u = [0..7]~; \\generates a field in al
- ? fu = alginvol(al,u); \\quaternion conjugation -> automorphism of K(u)
+ ? u = [0..7]~; \\ generates a field in al
+ ? fu = alginvol(al,u); \\ quaternion conjugation -> automorphism of K(u)
  ? g = algskolemnoether(al,u,fu);
  ? algisinv(al,g)
  % = 1

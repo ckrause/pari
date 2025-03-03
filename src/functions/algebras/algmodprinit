@@ -33,7 +33,7 @@ Doc: Consider a central simple algebra \var{al} output by \tet{alginit} and a
 
  \bprog
  ? nf = nfinit(y^2-5);
- ? al = alginit(nf, [-1,-1]); \\quaternion algebra unramified at all primes
+ ? al = alginit(nf, [-1,-1]); \\ quaternion algebra unramified at all primes
  ? pr = idealprimedec(nf, 3)[1]; pr.f
  % = 2
  ? modP = algmodprinit(al, pr, 'a);
