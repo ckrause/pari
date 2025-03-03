@@ -37,7 +37,7 @@ Doc: Consider a central simple algebra \var{al} output by \tet{alginit} and a
  ? pr = idealprimedec(nf, 3)[1]; pr.f
  % = 2
  ? modP = algmodprinit(al, pr, 'a);
- ? modP[2] \\image in M_2(F_{3^2})
+ ? modP[2] \\ image in M_2(F_{3^2})
  % = Vecsmall([2,2])
  ? type(modP[3])
  % = "t_FFELT"
