@@ -18,6 +18,8 @@ AP  13- alginit(nf,[a,b]) would reject a in basis form
 BA  14- for(i=1,10^6,bernpol(5,1)) -> "no more variables" [#2611]
 BA  15- Flx_mod_Xn1(T,n), deg T >= 2*n -> wrong result
     16- forprime(p=1099505335069-100000,1099505335069+10000,) -> crash [#2612]
+    17- sumnumrat & friends: use full precision estimates to avoid failing with
+        domain error when "close" to boundary, e.g., sumeulerrat(1/p, 1+1e-17)
 
   Added
      1- [libpari] prodprimes, prodprimeslim

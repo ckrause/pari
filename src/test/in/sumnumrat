@@ -31,6 +31,10 @@ exponent(prodeulerrat(1+1/p,2,10^7) - S) < -381
 f(N) = sum(k=1,N,1/(p^(2*k)-1));
 prodeulerrat(f(18)/f(17))
 
+sumeulerrat(1/p,1+1E-17)
+sumeulerrat(1/p,1+1E-50)
+sumeulerrat(1/p,1+1E-100)
+
 \\ errors
 sumnumrat(1/x^2,oo)
 sumnumrat(1.0,1)

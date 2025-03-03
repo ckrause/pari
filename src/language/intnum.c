@@ -2106,29 +2106,28 @@ sumnumap0(GEN a, GEN code, GEN tab, long prec)
 { EXPR_WRAP(code, sumnumap(EXPR_ARG, a, tab, prec)); }
 
 /* max (1, |zeros|), P a t_POL or scalar */
-static double
+static GEN
 polmax(GEN P)
 {
-  pari_sp av = avma;
-  double r;
-  if (typ(P) != t_POL || degpol(P) <= 0) return 1.0;
-  r = gtodouble(polrootsbound(P, NULL));
-  return gc_double(av, maxdd(r, 1.0));
+  GEN r;
+  if (typ(P) != t_POL || degpol(P) <= 0) return gen_1;
+  r = polrootsbound(P, NULL); if (gcmpgs(r, 1) < 0) return gen_1;
+  return r;
 }
 
 /* max (1, |poles|), F a t_POL or t_RFRAC or scalar */
-static double
+static GEN
 ratpolemax(GEN F)
 {
-  if (typ(F) == t_POL) return 1.0;
+  if (typ(F) == t_POL) return gen_1;
   return polmax(gel(F,2));
 }
 /* max (1, |poles|, |zeros|)) */
-static double
+static GEN
 ratpolemax2(GEN F)
 {
   if (typ(F) == t_POL) return polmax(F);
-  return maxdd(polmax(gel(F,1)), polmax(gel(F,2)));
+  return gmax_shallow(polmax(gel(F,1)), polmax(gel(F,2)));
 }
 
 static GEN
@@ -2144,13 +2143,13 @@ rfrac_gtofp(GEN F, long prec)
 /* Compute the integral from N to infinity of a rational function F, deg(F) < -1
  * We must have N > 2 * r, r = max(1, |poles F|). */
 static GEN
-intnumainfrat(GEN F, long N, double r, long prec)
+intnumainfrat(GEN F, long N, GEN r, long prec)
 {
   long v, k, lim;
   GEN S, ser;
   pari_sp av = avma;
 
-  lim = (long)ceil(prec / log2(N/r));
+  lim = (long)ceil(prec / dbllog2(gdivsg(N, r)));
   F = rfrac_gtofp(F, prec + EXTRAPREC64);
   ser = rfracrecip_to_ser_absolute(F, lim+2);
   v = valser(ser);
@@ -2207,9 +2206,9 @@ add_sumrfrac(GEN S, GEN R, GEN vR, long b)
   return S;
 }
 static void
-get_kN(long r, long B, long *pk, long *pN)
+get_kN(GEN gr, long B, long *pk, long *pN)
 {
-  long k = maxss(50, (long)ceil(0.241*B));
+  long k = maxss(50, (long)ceil(0.241*B)), r = itos(gceil(gr));
   GEN z;
   if (k&1L) k++;
   *pk = k; constbern(k >> 1);
@@ -2222,12 +2221,11 @@ static GEN
 sumnumrat_i(GEN F, GEN F0, GEN vF, long prec)
 {
   long vx, j, k, N;
-  GEN S, S1, S2, intf, _1;
-  double r;
+  GEN r, S, S1, S2, intf, _1;
   if (poldegree(F, -1) > -2) pari_err(e_MISC, "sum diverges in sumnumrat");
   vx = varn(gel(F,2));
   r = ratpolemax(F);
-  get_kN((long)ceil(r), prec, &k,&N);
+  get_kN(r, prec, &k,&N);
   intf = intnumainfrat(F, N, r, prec);
   /* N > ratpolemax(F) is not a pole */
   _1 = real_1(prec);
@@ -2297,8 +2295,7 @@ prodnumrat(GEN F, long a, long prec)
 {
   pari_sp ltop = avma;
   long j, k, m, N, vx;
-  GEN S, S1, S2, intf, G;
-  double r;
+  GEN r, S, S1, S2, intf, G;
 
   switch(typ(F))
   {
@@ -2312,7 +2309,7 @@ prodnumrat(GEN F, long a, long prec)
   vx = varn(gel(F,2));
   if (a) F = gsubst(F, vx, gaddgs(pol_x(vx), a));
   r = ratpolemax2(F);
-  get_kN((long)ceil(r), prec, &k,&N);
+  get_kN(r, prec, &k,&N);
   G = gdiv(deriv(F, vx), F);
   intf = intnumainfrat(gmul(pol_x(vx),G), N, r, prec);
   intf = gneg(gadd(intf, gmulsg(N, glog(gsubst(F, vx, stoi(N)), prec))));
@@ -2453,8 +2450,8 @@ GEN
 sumeulerrat(GEN F, GEN s, long a, long prec)
 {
   pari_sp av = avma;
-  GEN ser, z, P;
-  double r, rs, RS, lN;
+  GEN ser, z, P, r, sigma;
+  double lr, rs, lN;
   long prec2 = prec + EXTRAPREC64, vF, N, lim;
 
   euler_set_Fs(&F, &s);
@@ -2467,18 +2464,19 @@ sumeulerrat(GEN F, GEN s, long a, long prec)
   }
   /* F t_RFRAC */
   if (a < 2) a = 2;
-  rs = gtodouble(real_i(s));
+  sigma = real_i(s);
   vF = -poldegree(F, -1);
-  if (vF <= 0) pari_err(e_MISC, "sum diverges in sumeulerrat");
+  if (vF <= 0 || gcmpgs(gmulgs(sigma, vF), 1) <= 0)
+    pari_err(e_MISC, "sum diverges in sumeulerrat");
   r = polmax(gel(F,2));
   N = a; /* >= 2 */
   /* if s not integral, computing p^-s at increased accuracy is too expensive */
   if (typ(s) == t_INT) N = maxss(30, N);
-  lN = log2((double)N);
-  RS = maxdd(1./vF, log2(r) / lN);
-  if (rs <= RS)
-    pari_err_DOMAIN("sumeulerrat", "real(s)", "<=",  dbltor(RS), dbltor(rs));
-  lim = (long)ceil(prec / (rs*lN - log2(r)));
+  lN = log2((double)N); lr = dbllog2(r); rs = gtodouble(sigma);
+  if (rs*lN - lr <= 0)
+    pari_err_DOMAIN("sumeulerrat", "real(s)", "<=",
+                    dbltor(maxdd(1./vF, lr / lN)), sigma);
+  lim = (long)ceil(prec / (rs*lN - lr));
   ser = rfracrecip_to_ser_absolute(rfrac_gtofp(F, prec2), lim+1);
   P = N < 1000000? primes_interval(gen_2, utoipos(N)): NULL;
   z = sumlogzeta(ser, s, P, N, rs, lN, vF, lim, prec);
@@ -2505,8 +2503,8 @@ GEN
 prodeulerrat(GEN F, GEN s, long a, long prec)
 {
   pari_sp ltop = avma;
-  GEN DF, NF, ser, P, z;
-  double r, rs, RS, lN;
+  GEN DF, NF, ser, P, z, r, sigma;
+  double lr, rs, lN;
   long prec2 = prec + EXTRAPREC64, vF, N, lim;
 
   euler_set_Fs(&F, &s);
@@ -2519,20 +2517,21 @@ prodeulerrat(GEN F, GEN s, long a, long prec)
   } /* F t_RFRAC */
   NF = gel(F, 1);
   DF = gel(F, 2);
-  rs = gtodouble(real_i(s));
+  sigma = real_i(s);
   vF = - rfracm1_degree(NF, DF);
-  if (rs * vF <= 1) pari_err(e_MISC, "product diverges in prodeulerrat");
+  if (gcmpgs(gmulgs(sigma, vF), 1) <= 0)
+    pari_err(e_MISC, "product diverges in prodeulerrat");
   r = ratpolemax2(F);
-  N = maxss(a, (long)ceil(2*r));
+  N = maxss(a, itos(gceil(gmul2n(r,1))));
   if (typ(s) == t_INT) N = maxss(N, 30);
-  lN = log2((double)N);
-  RS = maxdd(1./vF, log2(r) / lN);
-  if (rs <= RS)
-    pari_err_DOMAIN("prodeulerrat", "real(s)", "<=",  dbltor(RS), dbltor(rs));
-  lim = (long)ceil(prec / (rs*lN - log2(r)));
+  lN = log2((double)N); lr = dbllog2(r); rs = gtodouble(sigma);
+  if (rs*lN - lr <= 0)
+    pari_err_DOMAIN("prodeulerrat", "real(s)", "<=",
+                    dbltor(maxdd(1./vF, lr / lN)), sigma);
+  lim = (long)ceil(prec / (rs*lN - lr));
   (void)rfracrecip(&NF, &DF); /* returned value is 0 */
   if (!RgX_is_ZX(DF) || !is_pm1(gel(DF,2))
-      || lim * log2(r) > 4 * prec) NF = gmul(NF, real_1(prec2));
+      || lim * lr > 4 * prec) NF = gmul(NF, real_1(prec2));
   ser = integser(rfrac_to_ser_i(rfrac_logderiv(NF,DF), lim+3));
   /* ser = log f, f = F(1/x) + O(x^(lim+1)) */
   P = N < 1000000? primes_interval(gen_2, utoipos(N)): NULL;
