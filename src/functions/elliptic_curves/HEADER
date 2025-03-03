@@ -82,7 +82,7 @@ Doc:
  differential $dx/(2y+a_{1}x+a_{3})$
  over the connected component of the identity component of $E(\R)$.
  The second component $\omega_{2}$ is a complex period, such that
- $\tau=\dfrac{\omega_{1}}{\omega_{2}}$ belongs to Poincar\'e's
+ $\tau = \omega_{1} / \omega_{2}$ belongs to Poincar\'e's
  half-plane (positive imaginary part); not necessarily to the standard
  fundamental domain. It is normalized so that $\Im(\omega_{2}) < 0$
  and either $\Re(\omega_{2}) = 0$, when \kbd{E.disc > 0}
