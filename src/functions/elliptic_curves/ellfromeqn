@@ -72,4 +72,5 @@ Doc:
              ; x<-nfroots(,subst(C,'y,y))];
  ? [S[1],S[3]]
  %12 = [[-41496/3485,-1810283234/12145225],[-80155/20748,-20818257191/430479504]]
+ @eprog
 Variant: Also available is \fun{GEN}{ellfromeqn}{GEN f} when $P$ is omitted.
