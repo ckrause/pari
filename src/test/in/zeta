@@ -24,6 +24,7 @@ zeta(1/2+I*x+O(x^2))
 zeta''(0)
 zeta([2,3,4])
 zeta([3/2,5/2,7/2])
+zeta([7/2,5/2,3/2])
 zeta([2])
 zeta(I+2^(-64))
 zeta(0.+O(x))
@@ -31,6 +32,8 @@ zeta(0.+O(x))
 \\ Errors
 zeta(1)
 zeta(1+O(3))
+zeta([1,2,3])
+zeta([3,2,1])
 \\#2375
 \ps1
 zeta(1+t)

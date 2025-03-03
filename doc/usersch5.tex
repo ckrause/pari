@@ -14061,9 +14061,10 @@ function at the (possibly negative) integer $s\neq 1$, in relative accuracy
 \kbd{prec}.
 
 \fun{GEN}{veczeta}{GEN a, GEN b, long N, long prec} returns in a vector
-all the $\zeta(aj + b)$, where $j = 0, 1, \dots, N-1$, where $a$ and $b$ are
-real numbers (of arbitrary type, although \typ{INT} is treated more
-efficiently) and $b > 1$. Assumes that $N \geq 1$.
+all the $\zeta(aj + b)$, where $j = 0, 1, \dots, N-1$, where $a$ and
+$b$ are real numbers (of arbitrary type, although \typ{INT} is treated
+more efficiently). Assumes that $N \geq 1$, $b > 1$ and $a(N-1) + b > 1$
+(in case $a < 0$); the silly case $a = 0$ is wasteful but allowed.
 
 \fun{GEN}{ggamma1m1}{GEN x, long prec} return $\Gamma(1+x) - 1$ assuming
 $|x| < 1$. Guard against cancellation when $x$ is small.

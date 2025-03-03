@@ -1648,15 +1648,17 @@ veczetas(long a, long b, long N, long prec)
     gel(z,j+1) = rdivii(shifti(gel(z,j+1), k), subii(shifti(d,k), d), prec);
   return z;
 }
-/* zeta(a*j+b), j=0..N-1, b>1, using sumalt */
+/* zeta(a*j+b), j=0..N-1, b > 1, a*(N-1) + b > 1, using sumalt.
+ * a <= 0 is allowed (including the silly a = 0) */
 GEN
 veczeta(GEN a, GEN b, long N, long prec)
 {
   pari_sp av = avma;
   long n, j, k;
-  GEN L, c, d, z = zerovec(N);
+  GEN L, c, d, z;
   if (typ(a) == t_INT && typ(b) == t_INT)
     return gerepilecopy(av, veczetas(itos(a),  itos(b), N, prec));
+  z = zerovec(N);
   n = ceil(2 + prec2nbits_mul(prec, M_LN2/1.7627));
   c = d = int2n(2*n-1);
   for (k = n; k; k--)
@@ -1882,7 +1884,7 @@ czeta(GEN s0, long prec)
   if (funeq_factor) y = gmul(y, funeq_factor);
   set_avma(av); return affc_fixlg(y,res);
 }
-/* v a t_VEC/t_COL */
+/* v a t_VEC/t_COL; is v[i] = a + b (i-1) for some a,b ? */
 int
 RgV_is_arithprog(GEN v, GEN *a, GEN *b)
 {
@@ -1919,11 +1921,11 @@ gzeta(GEN x, long prec)
     {
       GEN a, b;
       long n = lg(x) - 1;
-      if (n > 1 && RgV_is_arithprog(x, &a, &b))
+      if (n > 1 && gcmpgs(gel(x,1), 1) > 0 && gcmpgs(gel(x,n), 1) > 0
+                && RgV_is_arithprog(x, &b, &a))
       {
-        if (!is_real_t(typ(a)) || !is_real_t(typ(b)) || gcmpgs(a, 1) <= 0)
-        { set_avma(av); break; }
-        a = veczeta(b, a, n, prec);
+        if (!is_real_t(typ(a)) || !is_real_t(typ(b))) { set_avma(av); break; }
+        a = veczeta(a, b, n, prec);
         settyp(a, typ(x)); return a;
       }
     }
