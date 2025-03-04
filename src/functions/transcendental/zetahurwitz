@@ -47,7 +47,7 @@ Doc: Hurwitz zeta function $\zeta(s,x)=\sum_{n\ge0}(n+x)^{-s}$ and
  %11 = 24.000000000000000000000000000000000002
  @eprog
 
- To finish with, some examples involving $p$-adics:
+ Finally, some examples involving $p$-adics:
  \bprog
  ? Z = zeta(2+O(5^7))
  %12 = 4*5^(-1) + 4*5 + 3*5^2 + 5^3 + 3*5^5 + O(5^6)
