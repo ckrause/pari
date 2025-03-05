@@ -1176,46 +1176,109 @@ ZM_togglesign(GEN M)
 /**                        "DIVISION" mod HNF                      **/
 /**                                                                **/
 /********************************************************************/
-/* Reduce ZC x modulo ZM y in HNF, may return x itself (not a copy) */
-GEN
-ZC_hnfdivrem(GEN x, GEN y, GEN *Q)
+/* Reduce ZC x modulo ZM y in HNF */
+static GEN
+ZC_hnfdivrem_i(GEN x, GEN y, GEN *Q, GEN (*div)(GEN,GEN))
 {
   long i, l = lg(x);
-  GEN q;
+  pari_sp av = avma;
 
   if (Q) *Q = cgetg(l,t_COL);
   if (l == 1) return cgetg(1,t_COL);
   for (i = l-1; i>0; i--)
   {
-    q = diviiround(gel(x,i), gcoeff(y,i,i));
-    if (signe(q)) {
-      togglesign(q);
-      x = ZC_lincomb(gen_1, q, x, gel(y,i));
-    }
+    GEN q = div(gel(x,i), gcoeff(y,i,i));
+    if (signe(q)) x = ZC_lincomb(gen_1, negi(q), x, gel(y,i));
     if (Q) gel(*Q, i) = q;
   }
-  return x;
+  if (avma == av) return ZC_copy(x);
+  if (!Q) return gerepileupto(av, x);
+  gerepileall(av, 2, &x, Q); return x;
 }
-
-/* x = y Q + R, may return some columns of x (not copies) */
 GEN
-ZM_hnfdivrem(GEN x, GEN y, GEN *Q)
+ZC_hnfdivrem(GEN x, GEN y, GEN *Q)
+{ return ZC_hnfdivrem_i(x, y, Q, diviiround); }
+GEN
+ZC_modhnf(GEN x, GEN y, GEN *Q)
+{ return ZC_hnfdivrem_i(x, y, Q, truedivii); }
+
+/* Return R such that x = y Q + R, y integral HNF */
+static GEN
+ZM_hnfdivrem_i(GEN x, GEN y, GEN *Q, GEN (*div)(GEN,GEN))
 {
-  long lx = lg(x), i;
-  GEN R = cgetg(lx, t_MAT);
+  long l, i;
+  GEN R = cgetg_copy(x, &l);
   if (Q)
   {
-    GEN q = cgetg(lx, t_MAT); *Q = q;
-    for (i=1; i<lx; i++) gel(R,i) = ZC_hnfdivrem(gel(x,i),y,(GEN*)(q+i));
+    GEN q = cgetg(l, t_MAT); *Q = q;
+    for (i = 1; i < l; i++)
+      gel(R,i) = ZC_hnfdivrem_i(gel(x,i),y,&gel(q,i),div);
   }
   else
-    for (i=1; i<lx; i++)
-    {
-      pari_sp av = avma;
-      GEN z = ZC_hnfrem(gel(x,i),y);
-      gel(R,i) = (avma == av)? ZC_copy(z): gerepileupto(av, z);
-    }
+    for (i = 1; i < l; i++)
+      gel(R,i) = ZC_hnfdivrem_i(gel(x,i),y,NULL,div);
   return R;
+}
+GEN
+ZM_hnfdivrem(GEN x, GEN y, GEN *Q)
+{ return ZM_hnfdivrem_i(x, y, Q, diviiround); }
+GEN
+ZM_modhnf(GEN x, GEN y, GEN *Q)
+{ return ZM_hnfdivrem_i(x, y, Q, truedivii); }
+
+static GEN
+ZV_ZV_divrem(GEN x, GEN y, GEN *pQ)
+{
+  long i, l = lg(x), tx = typ(x);
+  GEN Q, R;
+
+  if (!pQ) return ZV_ZV_mod(x, y);
+  Q = cgetg(l,tx);
+  R = cgetg(l,tx);
+  for (i = 1; i < l; i++) gel(Q,i) = truedvmdii(gel(x,i), gel(y,i), &gel(R,i));
+  *pQ = Q; return R;
+}
+static GEN
+ZM_ZV_divrem(GEN x, GEN y, GEN *Q)
+{ if (!Q) return ZM_ZV_mod(x, y);
+  pari_APPLY_same(ZV_ZV_divrem(gel(x,i), y, Q)); }
+
+static int
+RgM_issquare(GEN x) { long l = lg(x); return l == 1 || lg(gel(x,1)) == l; }
+static void
+matmodhnf_check(GEN x)
+{
+  switch(typ(x))
+  {
+    case t_VEC: case t_COL:
+      if (!RgV_is_ZV(x)) pari_err_TYPE("matmodhnf", x);
+      break;
+    case t_MAT:
+      if (!RgM_is_ZM(x)) pari_err_TYPE("matmodhnf", x);
+      break;
+    default: pari_err_TYPE("matmodhnf", x);
+  }
+}
+GEN
+matmodhnf(GEN x, GEN y, GEN *Q)
+{
+  long tx = typ(x), ty = typ(y), ly, lx;
+  matmodhnf_check(x); lx = lg(x);
+  matmodhnf_check(y); ly = lg(y);
+  if (ty == t_MAT && !RgM_issquare(y)) pari_err_TYPE("matmodhnf", y);
+  if (tx == t_MAT && lx == 1)
+  {
+    if (ly != 1) pari_err_DIM("matmodhnf");
+    if (!Q) *Q = cgetg(1, t_MAT);
+    return cgetg(1, t_MAT);
+  }
+  if (is_vec_t(ty))
+    return tx == t_MAT? ZM_ZV_divrem(x, y, Q): ZV_ZV_divrem(x, y, Q);
+  /* ty = t_MAT */
+  if (tx == t_MAT) return ZM_modhnf(x, y, Q);
+  x = ZC_modhnf(x, y, Q);
+  if (tx == t_VEC) { settyp(x, tx); if (Q) settyp(*Q, tx); }
+  return x;
 }
 
 /********************************************************************/

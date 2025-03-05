@@ -40,6 +40,7 @@ MTB 14- FpXQ_sqrtn: implement fast algorithm
 HC  15- New semantics for theta, now computes all four 1-variable theta
         functions simultaneously, new GP functions thetanull, elljacobi,
         ellweierstrass.
+    16- new GP function matmodhnf
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b)

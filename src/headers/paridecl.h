@@ -1584,6 +1584,7 @@ GEN     ZV_to_nv(GEN z);
 void    ZV_togglesign(GEN M);
 GEN     ZVV_to_FlvV(GEN x, ulong p);
 GEN     gram_matrix(GEN M);
+GEN     matmodhnf(GEN x, GEN y, GEN *Q);
 GEN     nm_Z_mul(GEN X, GEN c);
 GEN     zm_mul(GEN x, GEN y);
 GEN     zm_to_Flm(GEN z, ulong p);
