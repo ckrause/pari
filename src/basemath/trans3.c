@@ -3558,7 +3558,7 @@ weta1eta2(GEN tau, long prec)
 }
 
 static GEN
-wg2g3(GEN tau, GEN T0ALL, long prec)
+wg2g3(GEN T0ALL, long prec)
 {
   GEN Z2 = gpowgs(gel(T0ALL, 3), 4), Z3 = gpowgs(gel(T0ALL, 1), 4);
   GEN Z4 = gpowgs(gel(T0ALL, 2), 4), g2, g3, Pi = mppi(prec);
@@ -3568,7 +3568,7 @@ wg2g3(GEN tau, GEN T0ALL, long prec)
 }
 
 static GEN
-we1e2e3(GEN tau, GEN T0ALL, long prec)
+we1e2e3(GEN T0ALL, long prec)
 {
   GEN Z2 = gpowgs(gel(T0ALL, 3), 4), Z3 = gpowgs(gel(T0ALL, 1), 4), Z4 = gpowgs(gel(T0ALL, 2), 4), Pi = mppi(prec);
   return gmul(gdivgs(gsqr(Pi), 3), mkvec3(gadd(Z3, Z4), gsub(Z2, Z4), gneg(gadd(Z2, Z3))));
@@ -3591,7 +3591,7 @@ wzeta(GEN z, GEN tau, long prec)
 }
 
 static GEN
-wp(GEN z, GEN tau, GEN TALL, GEN T0ALL, long prec)
+wp(GEN z, GEN TALL, GEN T0ALL, long prec)
 {
   GEN Z2 = gel(T0ALL, 3), Z3 = gel(T0ALL, 1);
   GEN T1 = gneg(gel(TALL, 4)), T4 = gel(TALL, 2);
@@ -3599,7 +3599,7 @@ wp(GEN z, GEN tau, GEN TALL, GEN T0ALL, long prec)
 }
 
 static GEN
-wpprime(GEN z, GEN tau, GEN TALL, long prec)
+wpprime(GEN tau, GEN TALL, long prec)
 {
   GEN T1 = gneg(gel(TALL, 4)), T2 = gel(TALL, 3);
   GEN T3 = gel(TALL, 1), T4 = gel(TALL, 2);
@@ -3613,10 +3613,10 @@ ellweierstrass(GEN z, GEN tau, long prec)
   pari_sp ltop = avma;
   GEN T0ALL = thetanull_i(tau, prec);
   GEN TALL = thetaall_i(z, tau, 0, prec);
-  GEN R = mkvec4(mkvec2(gen_m1, tau), wg2g3(tau, T0ALL, prec), we1e2e3(tau, T0ALL, prec), weta1eta2(tau, prec));
+  GEN R = mkvec4(mkvec2(gen_m1, tau), wg2g3(T0ALL, prec), we1e2e3(T0ALL, prec), weta1eta2(tau, prec));
   if (!gequal0(z))
   {
-    GEN S = mkvec4(wsigma(z, tau, prec), wzeta(z, tau, prec), wp(z, tau, TALL, T0ALL, prec), wpprime(z, tau, TALL, prec));
+    GEN S = mkvec4(wsigma(z, tau, prec), wzeta(z, tau, prec), wp(z, TALL, T0ALL, prec), wpprime(tau, TALL, prec));
     R = shallowconcat(R, S);
   }
   return gerepilecopy(ltop, R);
