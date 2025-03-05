@@ -3130,8 +3130,8 @@ class_group_gen(GEN nf,GEN W,GEN C,GEN Vbase,long prec, GEN *pclg2)
   Uir = ZM_hnfdivrem(Ui,W, &X);
  /* {x} = logarithmic embedding of x (arch. component)
   * NB: [J,z] = idealred(I) --> I = y J, with {y} = - z
-  * G = g Uir - {Ga},  Uir = Ui + WX
-  * g = G Ur  - {ga},  Ur  = U + DY */
+  * G = g Uir - {Ga},  Uir = Ui - WX
+  * g = G Ur  - {ga},  Ur  = U - DY */
   G = cgetg(l,t_VEC);
   Ga= cgetg(l,t_MAT);
   Ge= cgetg(l,t_COL);
@@ -3144,13 +3144,13 @@ class_group_gen(GEN nf,GEN W,GEN C,GEN Vbase,long prec, GEN *pclg2)
     gel(Ga,j)= nf_cxlog(nf, gel(I,2), prec);
     if (!gel(Ga,j)) pari_err_PREC("class_group_gen");
   }
-  /* {ga} = {GD}Y + G U - g = {GD}Y - {Ga} U + gW X U
-                            = gW (X Ur + V Y) - {Ga}Ur */
-  M2 = ZM_add(ZM_mul(X,Ur), ZM_mul(V,Y));
+  /* {ga} = - {GD}Y + G U - g = - {GD}Y - {Ga} U - gW X U
+                            = - gW (X Ur + V Y) - {Ga}Ur */
+  M2 = ZM_neg(ZM_add(ZM_mul(X,Ur), ZM_mul(V,Y)));
   setlg(cyc,l); setlg(V,l); setlg(D,l);
-  /* G D =: {GD} = g (Ui + W X) D - {Ga}D = g W (V + X D) - {Ga}D
+  /* G D =: {GD} = g (Ui - W X) D - {Ga}D = g W (V - X D) - {Ga}D
    * NB: Ui D = W V. gW is given by (first l-1 cols of) C */
-  M1 = ZM_add(V, ZM_mul(X,D));
+  M1 = ZM_sub(V, ZM_mul(X,D));
   *pclg2 = get_clg2(cyc, Ga, C, Ur, Ge, M1, M2);
   return mkvec3(ZV_prod(cyc), cyc, G);
 }
