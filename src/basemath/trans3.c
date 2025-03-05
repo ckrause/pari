@@ -3269,7 +3269,7 @@ thetaflag(GEN v)
 
 /* Automorphy factor for tau -> -1/tau */
 static GEN
-autojtau(GEN z, GEN tau, long prec)
+autojtau(GEN z, GEN tau, long *pct, long prec)
 {
   GEN S = gen_1, tmp, sumr = gen_0;
   long ct = 0;
@@ -3287,7 +3287,8 @@ autojtau(GEN z, GEN tau, long prec)
     }
     S = gmul(S, tmp); ct++; tau = taup;
   }
-  return mkvec5(z, tau, S, stoi(ct), sumr);
+  if (pct) *pct = ct;
+  return mkvec4(z, tau, S, sumr);
 }
 
 /* Automorphy factor for z -> z+tau */
@@ -3334,9 +3335,8 @@ thetaall_i(GEN z, GEN tau, long flz, long prec)
   zold1 = gtofp(z, prec); tauold1 = gtofp(tau, prec);
   if (gsigne(imag_i(tauold1)) <= 0)
     pari_err_DOMAIN("theta", "imag(tau)", "<=", gen_0, tau);
-  redt = autojtau(zold1, tauold1, prec);
-  zold2 = gel(redt, 1); tau = gel(redt, 2); S = gel(redt, 3);
-  ct = itos(gel(redt, 4)); sumr = gel(redt, 5);
+  redt = autojtau(zold1, tauold1, &ct, prec); zold2 = gel(redt, 1);
+  tau = gel(redt, 2); S = gel(redt, 3); sumr = gel(redt, 4);
   /* I^ct for theta_{1,1}, exp(-I*Pi/4*sumr) for theta_{1,0} and theta_{1,1} */
   if (!flz)
   {
@@ -3446,8 +3446,8 @@ thetanull11(GEN tau, long prec)
   l = precision(tau); if (l) prec = l; tauold1 = gtofp(tau, prec);
   if (gsigne(imag_i(tauold1)) <= 0)
     pari_err_DOMAIN("thetanull11", "imag(tau)", "<=", gen_0, tau);
-  redt = autojtau(gen_0, tauold1, prec);
-  tau = gel(redt, 2); S = gel(redt, 3); sumr = gel(redt, 5);
+  redt = autojtau(gen_0, tauold1, NULL, prec);
+  tau = gel(redt, 2); S = gel(redt, 3); sumr = gel(redt, 4);
   S11 = gen_1; eS = maxss(gexpo(S), 0);
   if (eS > 0)
   {
@@ -3477,12 +3477,12 @@ GEN
 thetanull(GEN tau, GEN flag, long prec)
 {
   pari_sp av = avma;
-  GEN T0ALL, R = NULL;
+  GEN R = NULL;
   long fl = thetaflag(flag);
   if (fl == -1 || fl == 1) R = gmulsg(fl, thetanull11(tau, prec));
   else
   {
-    T0ALL = thetanull_i(tau, prec);
+    GEN T0ALL = thetanull_i(tau, prec);
     switch (fl)
     {
       case 0: R = T0ALL; break;
@@ -3496,6 +3496,12 @@ thetanull(GEN tau, GEN flag, long prec)
 }
 
 /* Basic Jacobi elliptic functions in terms of thetas */
+static GEN
+gadd3(GEN a, GEN b, GEN c) { return gadd(gadd(a, b), c); }
+static GEN
+gmul3(GEN a, GEN b, GEN c) { return gmul(gmul(a, b), c); }
+static GEN
+gmul4(GEN a, GEN b, GEN c, GEN d) { return gmul(gmul(a, b), gmul(c,d)); }
 GEN
 elljacobi(GEN z, GEN k, long prec)
 {
@@ -3535,9 +3541,11 @@ static GEN
 wg2g3(GEN T0ALL, long prec)
 {
   GEN Z2 = gpowgs(gel(T0ALL, 3), 4), Z3 = gpowgs(gel(T0ALL, 1), 4);
-  GEN Z4 = gpowgs(gel(T0ALL, 2), 4), g2, g3, Pi = mppi(prec);
-  g2 = gmul(gmul(sstoQ(2, 3), gpowgs(Pi, 4)), gadd(gadd(gsqr(Z2), gsqr(Z3)), gsqr(Z4)));
-  g3 = gmul(gmul(sstoQ(4, 27), gpowgs(Pi, 6)), gmul(gmul(gadd(Z2, Z3), gadd(Z3, Z4)), gsub(Z4, Z2)));
+  GEN Z4 = gpowgs(gel(T0ALL, 2), 4), pi2 = sqrr(mppi(prec));
+  GEN g2 = divru(shiftr(sqrr(pi2), 1), 3);
+  GEN g3 = divru(shiftr(powru(pi2,3), 2), 27);
+  g2 = gmul(g2, gadd3(gsqr(Z2), gsqr(Z3), gsqr(Z4)));
+  g3 = gmul(g3, gmul3(gadd(Z2, Z3), gadd(Z3, Z4), gsub(Z4, Z2)));
   return mkvec2(g2, g3);
 }
 
@@ -3546,7 +3554,8 @@ we1e2e3(GEN T0ALL, long prec)
 {
   GEN Z2 = gpowgs(gel(T0ALL, 3), 4), Z3 = gpowgs(gel(T0ALL, 1), 4);
   GEN Z4 = gpowgs(gel(T0ALL, 2), 4);
-  return gmul(gdivgs(gsqr(mppi(prec)), 3), mkvec3(gadd(Z3, Z4), gsub(Z2, Z4), gneg(gadd(Z2, Z3))));
+  return gmul(divru(sqrr(mppi(prec)), 3),
+              mkvec3(gadd(Z3, Z4), gsub(Z2, Z4), gneg(gadd(Z2, Z3))));
 }
 
 static GEN
@@ -3575,7 +3584,9 @@ wp(GEN z, GEN TALL, GEN T0ALL, long prec)
 {
   GEN Z2 = gel(T0ALL, 3), Z3 = gel(T0ALL, 1);
   GEN T1 = gneg(gel(TALL, 4)), T4 = gel(TALL, 2);
-  return gmul(gsqr(mppi(prec)), gsub(gsqr(gdiv(gmul(gmul(Z2, Z3), T4), T1)), gdivgs(gadd(gpowgs(Z2, 4), gpowgs(Z3, 4)), 3)));
+  return gmul(sqrr(mppi(prec)),
+              gsub(gsqr(gdiv(gmul3(Z2, Z3, T4), T1)),
+                   gdivgs(gadd(gpowgs(Z2, 4), gpowgs(Z3, 4)), 3)));
 }
 
 static GEN
@@ -3584,7 +3595,7 @@ wpprime(GEN tau, GEN TALL, long prec)
   GEN T1 = gneg(gel(TALL, 4)), T2 = gel(TALL, 3);
   GEN T3 = gel(TALL, 1), T4 = gel(TALL, 2);
   GEN T0 = gneg(gmul(Pi2n(1, prec), gsqr(thetanull11(tau, prec))));
-  return gdiv(gmul(gmul(T0, T2), gmul(T3, T4)), gpowgs(T1, 3));
+  return gdiv(gmul4(T0, T2, T3, T4), gpowgs(T1, 3));
 }
 
 GEN
