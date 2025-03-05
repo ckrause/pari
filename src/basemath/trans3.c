@@ -3290,42 +3290,32 @@ autojtau(GEN z, GEN tau, long prec)
   return mkvec5(z, tau, S, stoi(ct), sumr);
 }
 
-/* Automorphy factor for z->z+tau */
+/* Automorphy factor for z -> z+tau */
 static GEN
 autojz(GEN z, GEN tau, long prec)
 {
-  GEN zold = NULL, zy = imag_i(z), S = gen_1, k;
-  if (gequal0(zy)) return mkvec3(z, S, gen_0);
-  else
-  {
-    k = roundr(divrr(zy, gneg(imag_i(tau))));
-    if (signe(k))
-    {
-      zold = z; z = gadd(z, gmul(tau, k));
-      S = gexp(gmul(PiI2n(0, prec), gadd(gmul(sqri(k), tau), gmul2n(gmul(k, zold), 1))), prec);
-    }
-  }
-  return mkvec3(z, S, k);
+  GEN zy = imag_i(z), k = gen_0, S;
+  if (!gequal0(zy)) k = roundr(divrr(zy, gneg(imag_i(tau))));
+  if (!signe(k)) return mkvec3(z, gen_1, gen_0);
+  S = expIPiC(gadd(gmul(sqri(k), tau), gmul(shifti(k,1), z)), prec);
+  z = gadd(z, gmul(tau, k)); return mkvec3(z, S, k);
 }
 
-static int
-clearim_i(GEN z, GEN tau, long fl)
+static void
+clearim(GEN *v, GEN z, GEN tau, long fl)
 {
   GEN r = real_i(tau), ri = ground(r);
-  if (!gequal(r, ri)) return 0;
-  if ((fl == 1 || fl == 2) && Mod4(ri)) return 0;
-  if (gequal0(imag_i(z))) return 1;
-  return fl == 1 ? 0 : gequal0(real_i(z));
+  if (!gequal(r, ri) || (fl <= 2 && Mod4(ri))) return;
+  if (gequal0(imag_i(z)) || (fl != 1 && gequal0(real_i(z)))) *v = real_i(*v);
 }
 
 static GEN
 clearimall(GEN z, GEN tau, GEN VS)
 {
-  if (clearim_i(z, tau, 3)) gel(VS, 1) = real_i(gel(VS, 1));
-  if (clearim_i(z, tau, 4)) gel(VS, 2) = real_i(gel(VS, 2));
-  if (clearim_i(z, tau, 2)) gel(VS, 3) = real_i(gel(VS, 3));
-  if (clearim_i(z, tau, 1)) gel(VS, 4) = real_i(gel(VS, 4));
-  return VS;
+  clearim(&gel(VS,1), z, tau, 3);
+  clearim(&gel(VS,2), z, tau, 4);
+  clearim(&gel(VS,3), z, tau, 2);
+  clearim(&gel(VS,4), z, tau, 1); return VS;
 }
 
 /* Implementation of all 4 theta functions */
@@ -3334,7 +3324,7 @@ clearimall(GEN z, GEN tau, GEN VS)
 static GEN
 thetaall_i(GEN z, GEN tau, long flz, long prec)
 {
-  GEN zold1, tauold1, zold2, redt, redz, k, u, un, q, q2, qd, qn;
+  GEN zold1, tauold1, zold2, redt, k = NULL, u, un, q, q2, qd, qn;
   GEN S, S00, S01, S10, S11, tmp, sumr, u2, ui2, uin;
   long l, n, ct, eS, precold = prec;
 
@@ -3349,9 +3339,10 @@ thetaall_i(GEN z, GEN tau, long flz, long prec)
   ct = itos(gel(redt, 4)); sumr = gel(redt, 5);
   /* I^ct for theta_{1,1}, exp(-I*Pi/4*sumr) for theta_{1,0} and theta_{1,1} */
   if (!flz)
-  { redz = autojz(zold2, tau, prec);
-    z = gel(redz, 1); S = gmul(S, gel(redz, 2)); k = gel(redz, 3); }
-  else k = 0;
+  {
+    GEN redz = autojz(zold2, tau, prec);
+    z = gel(redz, 1); S = gmul(S, gel(redz, 2)); k = gel(redz, 3);
+  }
   /* (-1)^k for theta_{0,1} and theta_{1,1} */
   S00 = S01 = gen_1; S10 = S11 = gen_0; eS = maxss(gexpo(S), 0);
   if (eS > 0)
@@ -3397,8 +3388,8 @@ thetaall_i(GEN z, GEN tau, long flz, long prec)
   if (mpodd(sumr)) { tmp = S01; S01 = S00; S00 = tmp; }
   tmp = gexp(gmul(sumr, PiI2n(-2, prec)), prec);
   S10 = gmul(S10, tmp); S11 = gmul(S11, tmp);
-  if (!flz && mpodd(k)) { S01 = gneg(S01); S11 = gneg(S11); }
   if (flz) S11 = gmul(gsqr(S), S11);
+  else if (mpodd(k)) { S01 = gneg(S01); S11 = gneg(S11); }
   return clearimall(zold1, tauold1, gmul(S, mkvec4(S00, S01, S10, S11)));
 }
 
@@ -3479,8 +3470,7 @@ thetanull11(GEN tau, long prec)
   tmp = gexp(gmul(sumr, PiI2n(-2, prec)), prec); /* exp(I*Pi/4*sumr) */
   S11 = gmul(S11, gmul(q8, tmp));
   S11 = gmul(gmul(Pi2n(1, prec), gpowgs(S, 3)), S11);
-  if (clearim_i(gen_0, tauold1, 1)) S11 = real_i(S11);
-  return S11;
+  clearim(&S11, gen_0, tauold1, 1); return S11;
 }
 
 GEN
