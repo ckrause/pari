@@ -3408,12 +3408,16 @@ theta0(GEN z, GEN tau, GEN flag, long prec)
   long fl;
   if (!flag)
   {
-    long l = precision(tau), n = precision(z);
+    long l, n;
+    GEN q;
+    q = z; z = tau; /* input is (q = exp(i pi tau), Pi*z) */
+    l = precision(tau), n = precision(z);
     if (n && n < l) l = n;
     if (l) prec = l;
-    z = gtofp(z, prec);
-    tau = check_unit_disc("theta", tau, prec);
-    return gerepileupto(ltop, gneg(gel(thetaall_i(gdiv(tau, mppi(prec)), gdiv(glog(z, prec), PiI2n(0,prec)), 0, prec), 4)));
+    q = check_unit_disc("theta", q, prec);
+    tau = gdiv(glog(q, prec), PiI2n(0, prec));
+    z = gtofp(z, prec); z = gdiv(z, mppi(prec));
+    return gerepileupto(ltop, gneg(gel(thetaall_i(z, tau, 0, prec), 4)));
   }
   TALL = thetaall_i(z, tau, 0, prec);
   fl = treatflag(flag);
