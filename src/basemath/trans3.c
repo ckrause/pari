@@ -3244,25 +3244,29 @@ cxEk(GEN tau, long k, long prec)
    More precisely, to be written. */
 
 static long
-treatflag(GEN flag)
+equali01(GEN x)
 {
-  long i;
-  if (!flag) return 0;
-  if (typ(flag) == t_VEC)
+  if (!signe(x)) return 0;
+  if (!equali1(x)) pari_err_FLAG("theta");
+  return 1;
+}
+
+static long
+thetaflag(GEN v)
+{
+  long v1, v2;
+  if (!v) return 0;
+  switch(typ(v))
   {
-    if (lg(flag) != 3) pari_err_FLAG("theta");
-    for (i = 1; i <= 2; i++)
-    {
-      GEN fli = gel(flag, i);
-      if (!gequal0(fli) && !gequal1(fli)) pari_err_FLAG("theta");
-    }
-    if (gequal0(gel(flag, 1)))
-      return gequal0(gel(flag, 2)) ? 3 : 4;
-    return gequal0(gel(flag, 2)) ? 2 : -1;
+    case t_INT:
+      if (signe(v) < 0 || cmpis(v, 4) > 0) pari_err_FLAG("theta");
+      return itou(v);
+    case t_VEC:
+      if (RgV_is_ZV(v) && lg(v) == 3) break;
+    default: pari_err_FLAG("theta");
   }
-  if (typ(flag) != t_INT || signe(flag) < 0 || cmpis(flag, 4) > 0)
-    pari_err_FLAG("theta");
-  return itou(flag);
+  v1 = equali01(gel(v,1));
+  v2 = equali01(gel(v,2)); return v1? (v2? 4: 3): (v2? -1: 2);
 }
 
 /* Automorphy factor for tau->-1/tau */
@@ -3405,7 +3409,6 @@ theta0(GEN z, GEN tau, GEN flag, long prec)
 {
   pari_sp ltop = avma;
   GEN TALL, R = NULL;
-  long fl;
   if (!flag)
   {
     long l, n;
@@ -3420,8 +3423,7 @@ theta0(GEN z, GEN tau, GEN flag, long prec)
     return gerepileupto(ltop, gneg(gel(thetaall_i(z, tau, 0, prec), 4)));
   }
   TALL = thetaall_i(z, tau, 0, prec);
-  fl = treatflag(flag);
-  switch (fl)
+  switch (thetaflag(flag))
   {
     case -1: R = gel(TALL, 4); break;
     case 0: R = TALL; break;
@@ -3484,8 +3486,7 @@ thetanull(GEN tau, GEN flag, long prec)
 {
   pari_sp ltop = avma;
   GEN T0ALL, R = NULL;
-  long fl;
-  fl = treatflag(flag);
+  long fl = thetaflag(flag);
   if (fl == -1 || fl == 1) R = gmulsg(fl, thetanull11(tau, prec));
   else
   {
