@@ -3267,7 +3267,7 @@ thetaflag(GEN v)
   v2 = equali01(gel(v,2)); return v1? (v2? -1: 2): (v2? 4: 3);
 }
 
-/* Automorphy factor for tau->-1/tau */
+/* Automorphy factor for tau -> -1/tau */
 static GEN
 autojtau(GEN z, GEN tau, long prec)
 {
@@ -3335,7 +3335,7 @@ static GEN
 thetaall_i(GEN z, GEN tau, long flz, long prec)
 {
   GEN zold1, tauold1, zold2, redt, redz, k, u, un, q, q2, qd, qn;
-  GEN S, S00, S01, S10, S11, I = gen_I(), tmp, sumr, u2, ui2, uin;
+  GEN S, S00, S01, S10, S11, tmp, sumr, u2, ui2, uin;
   long l, n, ct, eS, precold = prec;
 
   l = precision(tau);
@@ -3392,7 +3392,7 @@ thetaall_i(GEN z, GEN tau, long flz, long prec)
   }
   S10 = gmul(u, S10); S11 = gmul(u, S11);
   S11 = flz ? gmul(mppi(prec), S11) : mulcxmI(S11);
-  if (!flz && (ct&3L)) S11 = gmul(gpowgs(I, ct), S11);
+  if (!flz && (ct&3L)) S11 = mulcxpowIs(S11, ct);
   if (ct&1L) { tmp = S10; S10 = S01; S01 = tmp; }
   if (mpodd(sumr)) { tmp = S01; S01 = S00; S00 = tmp; }
   tmp = gexp(gmul(sumr, PiI2n(-2, prec)), prec);
@@ -3457,11 +3457,11 @@ thetanull11(GEN tau, long prec)
     pari_err_DOMAIN("thetanull11", "imag(tau)", "<=", gen_0, tau);
   redt = autojtau(gen_0, tauold1, prec);
   tau = gel(redt, 2); S = gel(redt, 3); sumr = gel(redt, 5);
-  /* exp(-I*Pi/4*sumr) */
   S11 = gen_1; eS = maxss(gexpo(S), 0);
   if (eS > 0)
   {
-    prec = nbits2prec(eS + prec2nbits(prec)); tau = gprec_w(tau, prec);
+    prec = nbits2prec(eS + prec2nbits(prec));
+    tau = gprec_w(tau, prec);
   }
   q8 = gexp(gmul(PiI2n(-2, prec), tau), prec); q = gpowgs(q8, 8);
   qn = gen_1; qd = q;
@@ -3469,15 +3469,14 @@ thetanull11(GEN tau, long prec)
   {
     long eqn, prec2, B = prec2nbits(prec);
     qn = gmul(qn, qd);
-    tmp = gmulsg(2*n+1, qn); S11 = (n&1L) ? gsub(S11, tmp) : gadd(S11, tmp);
+    tmp = gmulsg(2*n+1, qn); S11 = odd(n)? gsub(S11, tmp): gadd(S11, tmp);
     eqn = gexpo(tmp); if (eqn < -B) break;
     qd = gmul(qd, q);
     prec2 = minss(prec, nbits2prec(eqn + B + 32));
     qn = gprec_w(qn, prec2); qd = gprec_w(qd, prec2);
   }
-  if (precold < prec)
-  { prec = precold; S11 = gprec_w(S11, prec); }
-  tmp = gexp(gmul(sumr, PiI2n(-2, prec)), prec);
+  if (precold < prec) { prec = precold; S11 = gprec_w(S11, prec); }
+  tmp = gexp(gmul(sumr, PiI2n(-2, prec)), prec); /* exp(I*Pi/4*sumr) */
   S11 = gmul(S11, gmul(q8, tmp));
   S11 = gmul(gmul(Pi2n(1, prec), gpowgs(S, 3)), S11);
   if (clearim_i(gen_0, tauold1, 1)) S11 = real_i(S11);
