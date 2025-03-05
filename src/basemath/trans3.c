@@ -3271,24 +3271,26 @@ thetaflag(GEN v)
 static GEN
 autojtau(GEN z, GEN tau, long *pct, long prec)
 {
-  GEN S = gen_1, tmp, sumr = gen_0;
+  GEN S = gen_1, sumr = gen_0;
   long ct = 0;
+  if (gequal0(z)) z = NULL;
   while (gexpo(imag_i(tau)) < -1)
   {
-    GEN r = gfloor(gadd(ghalf, real_i(tau))), taup;
+    GEN r = ground(real_i(tau)), taup, tmp;
     tau = gsub(tau, r); sumr = gadd(sumr, r);
     taup = gneg(ginv(tau));
-    if (gequal0(z)) tmp = ginv(gsqrt(mulcxmI(tau), prec));
+    if (!z)
+      tmp = ginv(gsqrt(mulcxmI(tau), prec));
     else
     {
-      tmp = gmul(mulcxI(gmul(taup, gsqr(z))), mppi(prec));
-      tmp = gdiv(gexp(tmp, prec), gsqrt(mulcxmI(tau), prec));
+      tmp = gdiv(expIPiC(gmul(taup, gsqr(z)), prec),
+                 gsqrt(mulcxmI(tau), prec));
       z = gneg(gmul(z, taup));
     }
     S = gmul(S, tmp); ct++; tau = taup;
   }
   if (pct) *pct = ct;
-  return mkvec4(z, tau, S, sumr);
+  return mkvec4(z? z: gen_0, tau, S, sumr);
 }
 
 /* Automorphy factor for z -> z+tau */
