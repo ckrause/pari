@@ -3231,8 +3231,6 @@ cxEk(GEN tau, long k, long prec)
    all four [i,j] with 0 <= i,j <= 1. For instance
    vector(4,n,theta(z,tau,[(n-1)\2,(n-1)%2])) and theta(z,tau,0)
    should both be identical to riemann_theta([z]~,Mat(tau)) from Jean Kieffer.
-   The additional optional parameter der allows to compute all derivatives
-   in a naive manner.
 
    thetanull: theta Nullwerte, same flags, value at z=0 except for flag
    1 and [1,1], first derivative at z=0 of [1,1] since value identically zero.
@@ -3266,7 +3264,7 @@ thetaflag(GEN v)
     default: pari_err_FLAG("theta");
   }
   v1 = equali01(gel(v,1));
-  v2 = equali01(gel(v,2)); return v1? (v2? 4: 3): (v2? -1: 2);
+  v2 = equali01(gel(v,2)); return v1? (v2? -1: 2): (v2? 4: 3);
 }
 
 /* Automorphy factor for tau->-1/tau */
@@ -3404,8 +3402,8 @@ thetaall_i(GEN z, GEN tau, long flz, long prec)
   return clearimall(zold1, tauold1, gmul(S, mkvec4(S00, S01, S10, S11)));
 }
 
-static GEN
-theta0(GEN z, GEN tau, GEN flag, long prec)
+GEN
+theta(GEN z, GEN tau, GEN flag, long prec)
 {
   pari_sp ltop = avma;
   GEN TALL, R = NULL;
@@ -3503,24 +3501,6 @@ thetanull(GEN tau, GEN flag, long prec)
   return gerepilecopy(ltop, R);
 }
 
-
-/* Naive derivations of thetas */
-GEN
-theta(GEN z, GEN tau, GEN flag, long der, long prec)
-{
-  pari_sp ltop = avma;
-  long B = prec2nbits(prec), prec2 = nbits2prec(3*B/2);
-  GEN eps, TP, TM, R;
-  if (der < 0) pari_err(e_MISC, "negative theta derivation");
-  if (der == 0) return theta0(z, tau, flag, prec);
-  eps = gpowgs(gen_2, -B/2);
-  z = gprec_w(z, prec2); tau = gprec_w(tau, prec2);
-  TP = theta(gadd(z, eps), tau, flag, der - 1, prec2);
-  TM = theta(gsub(z, eps), tau, flag, der - 1, prec2);
-  R = gdiv(gsub(TP, TM), gmul2n(eps, 1));
-  return gerepilecopy(ltop, gprec_w(R, prec));
-}
-
 /* Basic Jacobi elliptic functions in terms of thetas */
 GEN
 elljacobi(GEN z, GEN k, long prec)
@@ -3583,9 +3563,15 @@ wsigma(GEN z, GEN tau, long prec)
 }
 
 static GEN
+_thetaz(void *E, GEN z, long prec)
+{
+  GEN v = (GEN)E, tau = gel(v,1), flag = gel(v,2);
+  return theta(z, tau, flag, prec);
+}
+static GEN
 wzeta(GEN z, GEN tau, long prec)
 {
-  GEN TP = theta(z, tau, mkvec2(gen_1, gen_1), 1, prec);
+  GEN TP = derivnum((void*)mkvec2(tau, mkvec2(gen_1,gen_1)), _thetaz, z, prec);
   GEN E1 = gmul(gdivgs(gsqr(mppi(prec)), 3), mfE2eval(tau, prec));
   return gadd(gmul(z, E1), gdiv(TP, gel(thetaall_i(z, tau, 0, prec), 4)));
 }

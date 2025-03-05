@@ -1,12 +1,12 @@
 Function: theta
 Section: transcendental
 C-Name: theta
-Prototype: GGDGD0,L,p
-Help: theta(z,tau,{flag=0},{der=0}): Jacobi theta-functions. If flag omitted,
+Prototype: GGDGp
+Help: theta(z,tau,{flag=0}): Jacobi theta-functions. If flag omitted,
  old behavior theta(q,z) Jacobi sine theta function. Otherwise, one variable
  Riemann-Jacobi theta functions theta_{0,0}=theta_3, theta_{0,1}=theta_4,
  theta_{1,0}=theta_2, theta_{1,1}=-theta_1. If flag=0, all four theta_{i,j}
- for 0<=i,j<=1. If der>0, der'th derivative in z.
+ for 0<=i,j<=1.
 Doc: Jacobi theta-functions. If flag omitted, old behavior with parameters
  \kbd{q,z} instead of \kbd{z,tau}:
  \kbd{theta(q,z)}=$2q^{1/4} \sum_{n\geq 0} (-1)^{n} q^{n(n+1)} \sin((2n+1)z)$.
@@ -27,5 +27,3 @@ Doc: Jacobi theta-functions. If flag omitted, old behavior with parameters
 
  Finally, \kbd{flag=0} gives the vector
  $[\theta_{0,0}(z,\tau),\theta_{0,1}(z,\tau),\theta_{1,0}(z,\tau),\theta_{1,1}(z,\tau)]$.
-
- If \kbd{der} is set and positive, \kbd{der}'th derivative with respect to $z$.

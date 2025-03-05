@@ -5810,7 +5810,7 @@ GEN     polylog0(long m, GEN x, long flag, long prec);
 GEN     sumdedekind(GEN h, GEN k);
 GEN     sumdedekind_coprime(GEN h, GEN k);
 GEN     szeta(long x, long prec);
-GEN     theta(GEN z, GEN tau, GEN flag, long der, long prec);
+GEN     theta(GEN z, GEN tau, GEN flag, long prec);
 GEN     thetanull(GEN tau, GEN flag, long prec);
 GEN     thetanullk(GEN q, long k, long prec);
 GEN     elljacobi(GEN z, GEN k, long prec);
