@@ -3276,18 +3276,15 @@ autojtau(GEN z, GEN tau, long *pct, long prec)
   if (gequal0(z)) z = NULL;
   while (gexpo(imag_i(tau)) < -1)
   {
-    GEN r = ground(real_i(tau)), taup, tmp;
-    tau = gsub(tau, r); sumr = gadd(sumr, r);
-    taup = gneg(ginv(tau));
-    if (!z)
-      tmp = ginv(gsqrt(mulcxmI(tau), prec));
-    else
+    GEN r = ground(real_i(tau)), taup;
+    tau = gsub(tau, r); taup = gneg(ginv(tau));
+    S = gdiv(S, gsqrt(mulcxmI(tau), prec));
+    if (z)
     {
-      tmp = gdiv(expIPiC(gmul(taup, gsqr(z)), prec),
-                 gsqrt(mulcxmI(tau), prec));
+      S = gmul(S, expIPiC(gmul(taup, gsqr(z)), prec));
       z = gneg(gmul(z, taup));
     }
-    S = gmul(S, tmp); ct++; tau = taup;
+    ct++; tau = taup; sumr = addii(sumr, r);
   }
   if (pct) *pct = ct;
   return mkvec4(z? z: gen_0, tau, S, sumr);
@@ -3321,28 +3318,41 @@ clearimall(GEN z, GEN tau, GEN VS)
   clearim(&gel(VS,4), z, tau, 1); return VS;
 }
 
+static GEN
+gadd3(GEN a, GEN b, GEN c) { return gadd(gadd(a, b), c); }
+static GEN
+gmul3(GEN a, GEN b, GEN c) { return gmul(gmul(a, b), c); }
+static GEN
+gmul4(GEN a, GEN b, GEN c, GEN d) { return gmul(gmul(a, b), gmul(c,d)); }
+
 /* Implementation of all 4 theta functions */
+
+static long
+thetaprec(GEN z, GEN tau, long prec)
+{
+  long l = precision(tau), n = precision(z);
+  if (n && n < l) l = n;
+  return l? l: prec;
+}
 
 /* If flz = 1 and z = 0 compute theta_{1,1}' instead of theta_{1,1} */
 static GEN
 thetaall_i(GEN z, GEN tau, long flz, long prec)
 {
-  GEN zold1, tauold1, zold2, redt, k = NULL, u, un, q, q2, qd, qn;
+  GEN zold, tauold, redt, k = NULL, u, un, q, q2, qd, qn;
   GEN S, S00, S01, S10, S11, tmp, sumr, u2, ui2, uin;
-  long l, n, ct, eS, precold = prec;
+  long n, ct, eS, B, precold = prec;
 
-  l = precision(tau);
-  n = precision(z); if (n && n < l) l = n;
-  if (l) prec = l;
-  zold1 = gtofp(z, prec); tauold1 = gtofp(tau, prec);
-  if (gsigne(imag_i(tauold1)) <= 0)
+  prec = thetaprec(z, tau, prec);
+  zold = gtofp(z, prec); tauold = gtofp(tau, prec);
+  if (gsigne(imag_i(tauold)) <= 0)
     pari_err_DOMAIN("theta", "imag(tau)", "<=", gen_0, tau);
-  redt = autojtau(zold1, tauold1, &ct, prec); zold2 = gel(redt, 1);
+  redt = autojtau(zold, tauold, &ct, prec);
   tau = gel(redt, 2); S = gel(redt, 3); sumr = gel(redt, 4);
   /* I^ct for theta_{1,1}, exp(-I*Pi/4*sumr) for theta_{1,0} and theta_{1,1} */
   if (!flz)
   {
-    GEN redz = autojz(zold2, tau, prec);
+    GEN redz = autojz(gel(redt,1), tau, prec);
     z = gel(redz, 1); S = gmul(S, gel(redz, 2)); k = gel(redz, 3);
   }
   /* (-1)^k for theta_{0,1} and theta_{1,1} */
@@ -3352,25 +3362,23 @@ thetaall_i(GEN z, GEN tau, long flz, long prec)
     prec = nbits2prec(eS + prec2nbits(prec));
     z = gprec_w(z, prec); tau = gprec_w(tau, prec);
   }
-  if (!gequal0(z) && ct) flz = 0;
-  q = gexp(gmul(PiI2n(-2, prec), tau), prec);
-  qn = gen_1; q2 = gsqr(q); qd = q;
-  u = gequal0(z) ? gen_1 : gexp(gmul(PiI2n(0, prec), z), prec);
-  u2 = gsqr(u); ui2 = ginv(u2);
-  un = gen_1; uin = gen_1;
+  q = expIPiC(gmul2n(tau,-2), prec); q2 = gsqr(q);
+  u = expIPiC(z, prec); u2 = gsqr(u); ui2 = ginv(u2);
+  qn = un = uin = gen_1; qd = q; B = prec2nbits(prec);
   for (n = 1;; n++)
-  {
-    GEN uqcos;
-    long e, eqn, prec2, B = prec2nbits(prec);
-    uin = gmul(uin, ui2); qn = gmul(qn, qd); uqcos = gmul(qn, gadd(un, uin));
-    S10 = gadd(S10, uqcos);
-    tmp = flz ? gmulsg(2*n-1, uqcos) : gmul(gsub(un, uin), qn);
-    e = maxss(0, gexpo(un));
-    S11 = (n&1L) ? gsub(S11, tmp) : gadd(S11, tmp);
-    un = gmul(un, u2); qd = gmul(qd, q2); qn = gmul(qn, qd);
-    tmp = gmul(gadd(un, uin), qn); e = maxss(e, gexpo(un));
+  { /* qd = q^(4n-3), qn = q^(2n^2-n), un = u^(2n-2), uin = 1/un */
+    long e, eqn, prec2;
+    uin = gmul(uin, ui2); qn = gmul(qn, qd);
+    tmp = gmul(qn, gadd(un, uin));
+    S10 = gadd(S10, tmp);
+    tmp = flz? gmulsg(2*n-1, tmp): gmul(qn, gsub(un, uin));
+    S11 = odd(n)? gsub(S11, tmp): gadd(S11, tmp);
+
+    e = maxss(0, gexpo(un)); un = gmul(un, u2); e = maxss(e, gexpo(un));
+    qd = gmul(qd, q2); qn = gmul(qn, qd);
+    tmp = gmul(qn, gadd(un, uin));
     S00 = gadd(S00, tmp);
-    S01 = (n&1L) ? gsub(S01, tmp) : gadd(S01, tmp);
+    S01 = odd(n)? gsub(S01, tmp): gadd(S01, tmp);
     eqn = gexpo(qn) + e; if (eqn < -B) break;
     qd = gmul(qd, q2);
     prec2 = minss(prec, nbits2prec(eqn + B + 64));
@@ -3383,16 +3391,17 @@ thetaall_i(GEN z, GEN tau, long flz, long prec)
     S00 = gprec_w(S00, prec); S01 = gprec_w(S01, prec);
     S10 = gprec_w(S10, prec); S11 = gprec_w(S11, prec);
   }
-  S10 = gmul(u, S10); S11 = gmul(u, S11);
-  S11 = flz ? gmul(mppi(prec), S11) : mulcxmI(S11);
-  if (!flz && (ct&3L)) S11 = mulcxpowIs(S11, ct);
-  if (ct&1L) { tmp = S10; S10 = S01; S01 = tmp; }
-  if (mpodd(sumr)) { tmp = S01; S01 = S00; S00 = tmp; }
-  tmp = gexp(gmul(sumr, PiI2n(-2, prec)), prec);
-  S10 = gmul(S10, tmp); S11 = gmul(S11, tmp);
+  S10 = gmul(u, S10);
+  S11 = gmul(u, S11);
+  S11 = flz? gmul(mppi(prec), S11): mulcxpowIs(S11, ct + 3);
+  if (ct&1L) swap(S10, S01);
+  if (mpodd(sumr)) swap(S01, S00);
+  tmp = expIPiR(gmul2n(sumr, -2), prec);
+  S10 = gmul(S10, tmp);
+  S11 = gmul(S11, tmp);
   if (flz) S11 = gmul(gsqr(S), S11);
   else if (mpodd(k)) { S01 = gneg(S01); S11 = gneg(S11); }
-  return clearimall(zold1, tauold1, gmul(S, mkvec4(S00, S01, S10, S11)));
+  return clearimall(zold, tauold, gmul(S, mkvec4(S00, S01, S10, S11)));
 }
 
 /* -theta_{1,1}(z,tau) */
@@ -3411,15 +3420,11 @@ theta(GEN z, GEN tau, GEN flag, long prec)
   GEN TALL, R = NULL;
   if (!flag)
   {
-    long l, n;
-    GEN q;
-    q = z; z = tau; /* input is (q = exp(i pi tau), Pi*z) */
-    l = precision(tau), n = precision(z);
-    if (n && n < l) l = n;
-    if (l) prec = l;
+    GEN q = z; z = tau; /* input is (q = exp(i pi tau), Pi*z) */
+    prec = thetaprec(z, tau, prec);
     q = check_unit_disc("theta", q, prec);
     tau = gdiv(glog(q, prec), PiI2n(0, prec));
-    z = gtofp(z, prec); z = gdiv(z, mppi(prec));
+    z = gdiv(gtofp(z, prec), mppi(prec));
     return gerepileupto(av, mtheta11(z, tau, prec));
   }
   TALL = thetaall_i(z, tau, 0, prec);
@@ -3441,14 +3446,13 @@ theta(GEN z, GEN tau, GEN flag, long prec)
 static GEN
 thetanull11(GEN tau, long prec)
 {
-  GEN tauold1, redt, q, q8, qd, qn;
-  GEN S, S11, tmp, sumr;
-  long l, n, eS, precold = prec;
+  GEN tauold, redt, q, q8, qd, qn, S, S11, sumr;
+  long n, eS, B, precold = prec;
 
-  l = precision(tau); if (l) prec = l; tauold1 = gtofp(tau, prec);
-  if (gsigne(imag_i(tauold1)) <= 0)
+  prec = thetaprec(gen_0, tau, prec); tauold = gtofp(tau, prec);
+  if (gsigne(imag_i(tauold)) <= 0)
     pari_err_DOMAIN("thetanull11", "imag(tau)", "<=", gen_0, tau);
-  redt = autojtau(gen_0, tauold1, NULL, prec);
+  redt = autojtau(gen_0, tauold, NULL, prec);
   tau = gel(redt, 2); S = gel(redt, 3); sumr = gel(redt, 4);
   S11 = gen_1; eS = maxss(gexpo(S), 0);
   if (eS > 0)
@@ -3456,23 +3460,23 @@ thetanull11(GEN tau, long prec)
     prec = nbits2prec(eS + prec2nbits(prec));
     tau = gprec_w(tau, prec);
   }
-  q8 = gexp(gmul(PiI2n(-2, prec), tau), prec); q = gpowgs(q8, 8);
-  qn = gen_1; qd = q;
+  q8 = expIPiC(gmul2n(tau,-2), prec); q = gpowgs(q8, 8);
+  qn = gen_1; qd = q; B = prec2nbits(prec);
   for (n = 1;; n++)
   {
-    long eqn, prec2, B = prec2nbits(prec);
-    qn = gmul(qn, qd);
-    tmp = gmulsg(2*n+1, qn); S11 = odd(n)? gsub(S11, tmp): gadd(S11, tmp);
-    eqn = gexpo(tmp); if (eqn < -B) break;
+    long eqn, prec2;
+    GEN tmp;
+    qn = gmul(qn, qd); tmp = gmulsg(2*n+1, qn); eqn = gexpo(tmp);
+    S11 = odd(n)? gsub(S11, tmp): gadd(S11, tmp);
+    if (eqn < -B) break;
     qd = gmul(qd, q);
     prec2 = minss(prec, nbits2prec(eqn + B + 32));
     qn = gprec_w(qn, prec2); qd = gprec_w(qd, prec2);
   }
   if (precold < prec) { prec = precold; S11 = gprec_w(S11, prec); }
-  tmp = gexp(gmul(sumr, PiI2n(-2, prec)), prec); /* exp(I*Pi/4*sumr) */
-  S11 = gmul(S11, gmul(q8, tmp));
-  S11 = gmul(gmul(Pi2n(1, prec), gpowgs(S, 3)), S11);
-  clearim(&S11, gen_0, tauold1, 1); return S11;
+  S11 = gmul3(S11, q8, expIPiC(gmul2n(sumr, -2), prec));
+  S11 = gmul3(Pi2n(1, prec), gpowgs(S, 3), S11);
+  clearim(&S11, gen_0, tauold, 1); return S11;
 }
 
 GEN
@@ -3498,12 +3502,6 @@ thetanull(GEN tau, GEN flag, long prec)
 }
 
 /* Basic Jacobi elliptic functions in terms of thetas */
-static GEN
-gadd3(GEN a, GEN b, GEN c) { return gadd(gadd(a, b), c); }
-static GEN
-gmul3(GEN a, GEN b, GEN c) { return gmul(gmul(a, b), c); }
-static GEN
-gmul4(GEN a, GEN b, GEN c, GEN d) { return gmul(gmul(a, b), gmul(c,d)); }
 GEN
 elljacobi(GEN z, GEN k, long prec)
 {
