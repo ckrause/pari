@@ -2,28 +2,52 @@ Function: theta
 Section: transcendental
 C-Name: theta
 Prototype: GGDGp
-Help: theta(z,tau,{flag=0}): Jacobi theta-functions. If flag omitted,
- old behavior theta(q,z) Jacobi sine theta function. Otherwise, one variable
- Riemann-Jacobi theta functions theta_{0,0}=theta_3, theta_{0,1}=theta_4,
- theta_{1,0}=theta_2, theta_{1,1}=-theta_1. If flag=0, all four theta_{i,j}
- for 0<=i,j<=1.
-Doc: Jacobi theta-functions. If flag omitted, old behavior with parameters
- \kbd{q,z} instead of \kbd{z,tau}:
- \kbd{theta(q,z)}=$2q^{1/4} \sum_{n\geq 0} (-1)^{n} q^{n(n+1)} \sin((2n+1)z)$.
+Help: theta(a,b,{flag}): Jacobi theta-functions. If flag is omitted, let (q,z) =
+ (a,b) and return theta(q,z), the Jacobi sine theta function. Otherwise, let
+ (tau, z) = (a,b) and return one variable
+ Riemann-Jacobi theta functions depending on flag: theta_{0,0} = theta_3,
+ theta_{0,1} = theta_4, theta_{1,0} = theta_2, or theta_{1,1} = -theta_1.
+ If flag=0, return all four theta_{i,j} for 0<=i,j<=1.
+Doc: Jacobi theta-functions. The meaning of the complex
+ numbers $(a,b)$ depend on whether \fl\ is present or omitted.
 
- Otherwise, setting $u=\exp(2\pi iz)$ and $q=\exp(2\pi i\tau)$, we have with
- \kbd{flag=[0,0]} or \kbd{flag=3}:
- $$\theta_{0,0}(z,\tau)=\theta_3(z,\tau)=\sum_{n\in\Bbb Z}u^nq^{n^2/2}=1+2q^{1/2}\cos(2\pi z)+2q^{4/2}\cos(4\pi z)+\cdots\;,$$
+ If flag is omitted, we compute the Jacobi sine theta function.
+ Let $(q, z) = (a, b)$. We assume that $|q| < 1$, and return
+ $$\theta(q,z) = 2q^{1/4} \sum_{n\geq 0} (-1)^{n} q^{n(n+1)}
+   \sin((2n+1)z)\;.$$
 
- with \kbd{flag=[0,1]} or \kbd{flag=4}:
- $$\theta_{0,1}(z,\tau)=\theta_4(z,\tau)=\sum_{n\in\Bbb Z}(-1)^nu^nq^{n^2/2}=1-2q^{1/2}\cos(2\pi z)+2q^{4/2}\cos(4\pi z)-\cdots\;,$$
+ \noindent Otherwise, we let $(\tau, z) = (a,b)$ and return
+ one variable Riemann-Jacobi theta functions.
+ We assume $\Im \tau > 0$, set $u = \exp(2\pi iz)$ and $q = \exp(2\pi i\tau)$
+ and define
+ $$\theta_{0,0}(z,\tau) = \theta_3(z,\tau)
+ = \sum_{n\in\Z} u^n q^{n^2/2}
+ = 1 + 2q^{1/2} \cos(2\pi z) + \cdots\;,$$
 
- with \kbd{flag=[1,0]} or \kbd{flag=2}:
- $$\theta_{1,0}(z,\tau)=\theta_2(z,\tau)=\sum_{n\in\Bbb Z}u^{n+1/2}q^{(n+1/2)^2/2}=2q^{1/8}\cos(\pi z)+2q^{9/8}\cos(3\pi z)+\cdots\;,$$
+ $$\theta_{0,1}(z,\tau) = \theta_4(z,\tau)
+ = \sum_{n\in\Z} (-1)^{n} u^{n} q^{n^2/2}
+ = 1 - 2q^{1/2}\cos(2\pi z) + \cdots\;,$$
 
- with \kbd{flag=[1,1]}
- $$\theta_{1,1}(z,\tau)=i\sum_{n\in\Bbb Z}(-1)^nu^{n+1/2}q^{(n+1/2)^2/2}=-2q^{1/8}\sin(\pi z)+2q^{9/8}\sin(3\pi z)+\cdots\;,$$
- and \kbd{flag=1} gives $-\theta_{1,1}(z,\tau)=\theta_1(z,\tau)$.
+ $$\theta_{1,0}(z,\tau) = \theta_2(z,\tau)
+ = \sum_{n\in\Z} u^{n+1/2} q^{(n+1/2)^2/2}
+ = 2q^{1/8}\cos(\pi z) + \cdots\;,$$
 
- Finally, \kbd{flag=0} gives the vector
- $[\theta_{0,0}(z,\tau),\theta_{0,1}(z,\tau),\theta_{1,0}(z,\tau),\theta_{1,1}(z,\tau)]$.
+ $$\theta_{1,1}(z,\tau) = -\theta_1(z,\tau)
+ = i \sum_{n\in\Z}(-1)^n u^{n+1/2} q^{(n+1/2)^2/2}
+ = -2q^{1/8}\sin(\pi z) + \cdots\;,$$
+
+ \item $\fl = 1$: returns $\theta_1(z, \tau)$.
+
+ \item $\fl = \kbd{[1,1]}$: returns $\theta_{1,1}(z, \tau) = -\theta_1(z,\tau)$.
+
+ \item $\fl = 2$ or \kbd{[1,0]}: returns $\theta_2(z, \tau)$.
+
+ \item $\fl = 3$ or \kbd{[0,0]}: returns $\theta_3(z, \tau)$.
+
+ \item $\fl = 4$ or \kbd{[0,1]}: returns $\theta_4(z, \tau)$.
+
+ \noindent Finally, $\fl = 0$ returns the vector
+ $$[\theta_{0,0}(z,\tau), \theta_{0,1}(z,\tau), \theta_{1,0}(z,\tau),
+ \theta_{1,1}(z,\tau)]\;.$$
+ The Nullwerte at $z = 0$ are also directly available
+ through \kbd{thetanull}.
