@@ -3443,7 +3443,7 @@ GEN
 theta(GEN z, GEN tau, GEN flag, long prec)
 {
   pari_sp av = avma;
-  GEN TALL, R = NULL;
+  GEN T;
   if (!flag)
   {
     GEN q = z; z = tau; /* input is (q = exp(i pi tau), Pi*z) */
@@ -3453,18 +3453,18 @@ theta(GEN z, GEN tau, GEN flag, long prec)
     z = gdiv(gtofp(z, prec), mppi(prec));
     return gerepileupto(av, mtheta11(z, tau, prec));
   }
-  TALL = thetaall_i(z, tau, prec);
+  T = thetaall_i(z, tau, prec);
   switch (thetaflag(flag))
   {
-    case -1: R = gel(TALL, 4); break;
-    case 0: R = TALL; break;
-    case 1: R = gneg(gel(TALL, 4)); break;
-    case 2: R = gel(TALL, 3); break;
-    case 3: R = gel(TALL, 1); break;
-    case 4: R = gel(TALL, 2); break;
+    case -1: T = gel(T,4); break;
+    case 0: break;
+    case 1: T = gneg(gel(T,4)); break;
+    case 2: T = gel(T,3); break;
+    case 3: T = gel(T,1); break;
+    case 4: T = gel(T,2); break;
     default: pari_err_FLAG("theta");
   }
-  return gerepilecopy(av, R);
+  return gerepilecopy(av, T);
 }
 
 /* Same as 2*Pi*eta(tau,1)^3 = - thetaall_i(NULL, tau)[4], faster than both. */
@@ -3508,22 +3508,23 @@ GEN
 thetanull(GEN tau, GEN flag, long prec)
 {
   pari_sp av = avma;
-  GEN R = NULL; /* -Wall */
   long fl = thetaflag(flag);
-  if (fl == -1 || fl == 1) R = gmulsg(fl, thetanull11(tau, prec));
+  GEN T0;
+  if (fl == 1) T0 = thetanull11(tau, prec);
+  else if (fl == -1) T0 = gneg(thetanull11(tau, prec));
   else
   {
-    GEN T0ALL = thetanull_i(tau, prec);
+    T0 = thetanull_i(tau, prec);
     switch (fl)
     {
-      case 0: R = T0ALL; break;
-      case 2: R = gel(T0ALL, 3); break;
-      case 3: R = gel(T0ALL, 1); break;
-      case 4: R = gel(T0ALL, 2); break;
+      case 0: break;
+      case 2: T0 = gel(T0,3); break;
+      case 3: T0 = gel(T0,1); break;
+      case 4: T0 = gel(T0,2); break;
       default: pari_err_FLAG("thetanull");
     }
   }
-  return gerepilecopy(av, R);
+  return gerepilecopy(av, T0);
 }
 
 /* Basic Jacobi elliptic functions in terms of thetas */
@@ -3533,13 +3534,13 @@ elljacobi(GEN z, GEN k, long prec)
   pari_sp av = avma;
   GEN K = ellK(k, prec), Kp = ellK(gsqrt(gsubsg(1, gsqr(k)), prec), prec);
   GEN zet = gdiv(gmul2n(z, -1), K), tau = mulcxI(gdiv(Kp, K));
-  GEN TALL = thetaall_i(zet, tau, prec), T0ALL = thetanull_i(tau, prec);
-  GEN T1 = gneg(gel(TALL, 4)), T2 = gel(TALL, 3), T3 = gel(TALL, 1);
-  GEN T4 = gel(TALL, 2), Z2 = gel(T0ALL, 3), Z3 = gel(T0ALL, 1);
-  GEN Z4 = gel(T0ALL, 2), Z2T4 = gmul(Z2, T4), SN, CN, DN;
-  SN = gdiv(gmul(Z3, T1), Z2T4);
-  CN = gdiv(gmul(Z4, T2), Z2T4);
-  DN = gdiv(gmul(Z4, T3), gmul(Z3, T4));
+  GEN T = thetaall_i(zet, tau, prec), T0 = thetanull_i(tau, prec);
+  GEN t1 = gneg(gel(T,4)), t2 = gel(T,3), t3 = gel(T,1), t4 = gel(T,2);
+  GEN z2 = gel(T0,3), z3 = gel(T0,1), z4 = gel(T0,2), z2t4 = gmul(z2, t4);
+  GEN SN, CN, DN;
+  SN = gdiv(gmul(z3, t1), z2t4);
+  CN = gdiv(gmul(z4, t2), z2t4);
+  DN = gdiv(gmul(z4, t3), gmul(z3, t4));
   return gerepilecopy(av, mkvec3(SN, CN, DN));
 }
 
@@ -3563,24 +3564,29 @@ weta1eta2(GEN tau, long prec)
 }
 
 static GEN
-wg2g3(GEN T0ALL, long prec)
+wg2g3(GEN T0, long prec)
 {
-  GEN Z2 = gpowgs(gel(T0ALL, 3), 4), Z3 = gpowgs(gel(T0ALL, 1), 4);
-  GEN Z4 = gpowgs(gel(T0ALL, 2), 4), pi2 = sqrr(mppi(prec));
-  GEN g2 = divru(shiftr(sqrr(pi2), 1), 3);
-  GEN g3 = divru(shiftr(powru(pi2,3), 2), 27);
-  g2 = gmul(g2, gadd3(gsqr(Z2), gsqr(Z3), gsqr(Z4)));
-  g3 = gmul(g3, gmul3(gadd(Z2, Z3), gadd(Z3, Z4), gsub(Z4, Z2)));
+  GEN z2 = gel(T0,3), z3 = gel(T0,1), z4 = gel(T0,2);
+  GEN a = shiftr(szeta(2,prec), 1), a2 = sqrr(a);
+  GEN g2 = mulru(a2, 6);
+  GEN g3 = shiftr(mulrr(a,a2), 2);
+  z2 = gpowgs(z2, 4);
+  z3 = gpowgs(z3, 4);
+  z4 = gpowgs(z4, 4);
+  g2 = gmul(g2, gadd3(gsqr(z2), gsqr(z3), gsqr(z4)));
+  g3 = gmul(g3, gmul3(gadd(z2, z3), gadd(z3, z4), gsub(z4, z2)));
   return mkvec2(g2, g3);
 }
 
 static GEN
-we1e2e3(GEN T0ALL, long prec)
+we1e2e3(GEN T0, long prec)
 {
-  GEN Z2 = gpowgs(gel(T0ALL, 3), 4), Z3 = gpowgs(gel(T0ALL, 1), 4);
-  GEN Z4 = gpowgs(gel(T0ALL, 2), 4);
-  return gmul(divru(sqrr(mppi(prec)), 3),
-              mkvec3(gadd(Z3, Z4), gsub(Z2, Z4), gneg(gadd(Z2, Z3))));
+  GEN z2 = gel(T0,3), z3 = gel(T0,1), z4 = gel(T0,2);
+  GEN a = shiftr(szeta(2,prec), 1);
+  z2 = gpowgs(z2, 4);
+  z3 = gpowgs(z3, 4);
+  z4 = gpowgs(z4, 4);
+  return gmul(a, mkvec3(gadd(z3, z4), gsub(z2, z4), gneg(gadd(z2, z3))));
 }
 
 static GEN
@@ -3605,36 +3611,35 @@ wzeta(GEN z, GEN tau, long prec)
 }
 
 static GEN
-wp(GEN z, GEN TALL, GEN T0ALL, long prec)
+wp(GEN z, GEN T, GEN T0, long prec)
 {
-  GEN Z2 = gel(T0ALL, 3), Z3 = gel(T0ALL, 1);
-  GEN T1 = gneg(gel(TALL, 4)), T4 = gel(TALL, 2);
+  GEN t1 = gneg(gel(T,4)), t4 = gel(T,2);
+  GEN z2 = gel(T0,3), z3 = gel(T0,1);
   return gmul(sqrr(mppi(prec)),
-              gsub(gsqr(gdiv(gmul3(Z2, Z3, T4), T1)),
-                   gdivgs(gadd(gpowgs(Z2, 4), gpowgs(Z3, 4)), 3)));
+              gsub(gsqr(gdiv(gmul3(z2, z3, t4), t1)),
+                   gdivgs(gadd(gpowgs(z2,4), gpowgs(z3,4)), 3)));
 }
 
 static GEN
-wpprime(GEN tau, GEN TALL, long prec)
+wpprime(GEN tau, GEN T, long prec)
 {
-  GEN T1 = gneg(gel(TALL, 4)), T2 = gel(TALL, 3);
-  GEN T3 = gel(TALL, 1), T4 = gel(TALL, 2);
-  GEN T0 = gneg(gmul(Pi2n(1, prec), gsqr(thetanull11(tau, prec))));
-  return gdiv(gmul4(T0, T2, T3, T4), gpowgs(T1, 3));
+  GEN t1 = gneg(gel(T,4)), t2 = gel(T,3), t3 = gel(T,1), t4 = gel(T,2);
+  GEN t0 = gneg(gmul(Pi2n(1, prec), gsqr(thetanull11(tau, prec))));
+  return gdiv(gmul4(t0, t2, t3, t4), gpowgs(t1, 3));
 }
 
 GEN
 ellweierstrass(GEN z, GEN tau, long prec)
 {
   pari_sp av = avma;
-  GEN T0ALL = thetanull_i(tau, prec);
-  GEN R = mkvec4(mkvec2(gen_m1, tau), wg2g3(T0ALL, prec),
-                 we1e2e3(T0ALL, prec), weta1eta2(tau, prec));
+  GEN T0 = thetanull_i(tau, prec);
+  GEN R = mkvec4(mkvec2(gen_m1, tau), wg2g3(T0, prec), we1e2e3(T0, prec),
+                 weta1eta2(tau, prec));
   if (!gequal0(z))
   {
-    GEN TALL = thetaall_i(z, tau, prec);
+    GEN T = thetaall_i(z, tau, prec);
     R = shallowconcat(R, mkvec4(wsigma(z,tau, prec), wzeta(z,tau, prec),
-                         wp(z, TALL, T0ALL, prec), wpprime(tau, TALL, prec)));
+                         wp(z, T, T0, prec), wpprime(tau, T, prec)));
   }
   return gerepilecopy(av, R);
 }
