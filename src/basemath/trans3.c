@@ -1771,7 +1771,8 @@ szeta(long k, long prec)
     }
     /* B = B_k */
     z = gmul(powru(Pi2n(1, prec + EXTRAPREC64), k), B);
-    z = divrr(z, mpfactr(k,prec));
+    z = k < 410? rtor(divri(z, mpfact(k)), prec)
+               : divrr(z, mpfactr(k,prec));
     setsigne(z, 1); shiftr_inplace(z, -1);
   }
   else
@@ -3557,89 +3558,70 @@ mfE2eval(GEN tau, long prec)
 }
 
 static GEN
-weta1eta2(GEN tau, long prec)
+weta1eta2(GEN tau, GEN e, long prec)
+{ return mkvec2(gneg(e), gsub(gmul(tau, e), PiI2n(1, prec))); }
+
+static GEN
+wg2g3(GEN T0, GEN a, GEN *pe)
 {
-  GEN E1 = gmul(gdivgs(gsqr(mppi(prec)), 3), mfE2eval(tau, prec));
-  return mkvec2(gneg(E1), gsub(gmul(tau, E1), PiI2n(1, prec)));
+  GEN z2 = gel(T0,3), z3 = gel(T0,1), z4 = gel(T0,2), g2, g3, e1, e2, e3;
+  z2 = gmul(a, gpowgs(z2, 4));
+  z3 = gmul(a, gpowgs(z3, 4));
+  z4 = gmul(a, gpowgs(z4, 4));
+  e1 = gadd(z3, z4); e2 = gsub(z2, z4); e3 = gneg(gadd(z2, z3));
+  g2 = gmulgs(gadd3(gsqr(z2), gsqr(z3), gsqr(z4)), 6);
+  g3 = gmul2n(gmul3(e1, e2, e3), 2);
+  *pe = mkvec3(e1, e2, e3); return mkvec2(g2, g3);
 }
 
 static GEN
-wg2g3(GEN T0, long prec)
+wsigma(GEN z, GEN T, GEN T0, GEN e, long prec)
 {
-  GEN z2 = gel(T0,3), z3 = gel(T0,1), z4 = gel(T0,2);
-  GEN a = shiftr(szeta(2,prec), 1), a2 = sqrr(a);
-  GEN g2 = mulru(a2, 6);
-  GEN g3 = shiftr(mulrr(a,a2), 2);
-  z2 = gpowgs(z2, 4);
-  z3 = gpowgs(z3, 4);
-  z4 = gpowgs(z4, 4);
-  g2 = gmul(g2, gadd3(gsqr(z2), gsqr(z3), gsqr(z4)));
-  g3 = gmul(g3, gmul3(gadd(z2, z3), gadd(z3, z4), gsub(z4, z2)));
-  return mkvec2(g2, g3);
-}
-
-static GEN
-we1e2e3(GEN T0, long prec)
-{
-  GEN z2 = gel(T0,3), z3 = gel(T0,1), z4 = gel(T0,2);
-  GEN a = shiftr(szeta(2,prec), 1);
-  z2 = gpowgs(z2, 4);
-  z3 = gpowgs(z3, 4);
-  z4 = gpowgs(z4, 4);
-  return gmul(a, mkvec3(gadd(z3, z4), gsub(z2, z4), gneg(gadd(z2, z3))));
-}
-
-static GEN
-wsigma(GEN z, GEN tau, long prec)
-{
-  GEN E = gexp(gmul(gsqr(z), gmul(szeta(2,prec), mfE2eval(tau, prec))), prec);
-  return gdiv(gmul(E, mtheta11(z, tau, prec)), thetanull11(tau, prec));
+  GEN E = gexp(gmul(gsqr(z), shiftr(e,-1)), prec);
+  return gdiv(gmul(E, gel(T,4)), gel(T0,4));
 }
 
 static GEN
 _thetaz(void *E, GEN z, long prec)
-{
-  GEN v = (GEN)E, tau = gel(v,1), flag = gel(v,2);
-  return theta(z, tau, flag, prec);
-}
+{ GEN T = thetaall_i(z, (GEN)E, prec); return gel(T,4); }
 static GEN
-wzeta(GEN z, GEN tau, long prec)
+wzeta(GEN z, GEN tau, GEN T, GEN e, long prec)
 {
-  GEN TP = derivnum((void*)mkvec2(tau, mkvec2(gen_1,gen_1)), _thetaz, z, prec);
-  GEN E1 = gmul(shiftr(szeta(2,prec), 1), mfE2eval(tau, prec));
-  return gsub(gmul(z, E1), gdiv(TP, mtheta11(z, tau, prec)));
+  GEN TP = derivnum((void*)tau, _thetaz, z, prec);
+  return gadd(gmul(z, e), gdiv(TP, gel(T,4)));
 }
 
 static GEN
-wp(GEN z, GEN T, GEN T0, long prec)
+wp(GEN T, GEN T0, GEN a, long prec)
 {
-  GEN t1 = gneg(gel(T,4)), t4 = gel(T,2);
-  GEN z2 = gel(T0,3), z3 = gel(T0,1);
-  return gmul(sqrr(mppi(prec)),
-              gsub(gsqr(gdiv(gmul3(z2, z3, t4), t1)),
-                   gdivgs(gadd(gpowgs(z2,4), gpowgs(z3,4)), 3)));
+  GEN t4 = gel(T,2), z2 = gel(T0,3), z3 = gel(T0,1);
+  return gmul(a, gsub(gmulgs(gsqr(gdiv(gmul3(z2, z3, t4), gel(T,4))), 3),
+                      gadd(gpowgs(z2,4), gpowgs(z3,4))));
 }
 
 static GEN
-wpprime(GEN tau, GEN T, long prec)
+wpprime(GEN T, GEN T0, long prec)
 {
-  GEN t1 = gneg(gel(T,4)), t2 = gel(T,3), t3 = gel(T,1), t4 = gel(T,2);
-  GEN t0 = gneg(gmul(Pi2n(1, prec), gsqr(thetanull11(tau, prec))));
-  return gdiv(gmul4(t0, t2, t3, t4), gpowgs(t1, 3));
+  GEN t2 = gel(T,3), t3 = gel(T,1), t4 = gel(T,2);
+  GEN c = gmul(Pi2n(1, prec), gsqr(gel(T0,4)));
+  return gdiv(gmul4(c, t2, t3, t4), gpowgs(gel(T,4), 3));
 }
 
 GEN
 ellweierstrass(GEN z, GEN tau, long prec)
 {
   pari_sp av = avma;
-  GEN T0 = thetanull_i(tau, prec);
-  GEN R = mkvec4(mkvec2(gen_m1, tau), wg2g3(T0, prec), we1e2e3(T0, prec),
-                 weta1eta2(tau, prec));
+  long prec2 = prec + EXTRAPREC64;
+  GEN T0 = thetanull_i(tau, prec), a = divru(sqrr(mppi(prec2)), 3);
+  GEN e = mulrr(a, mfE2eval(tau, prec2));
+  GEN e1e2e3, g2g3 = wg2g3(T0, a, &e1e2e3);
+  GEN R = mkvec4(mkvec2(gen_m1, tau), g2g3, e1e2e3, weta1eta2(tau, e, prec));
   if (!gequal0(z))
   {
     GEN T = thetaall_i(z, tau, prec);
-    R = shallowconcat(R, mkvec4(wsigma(z,tau, prec), wzeta(z,tau, prec),
-                         wp(z, T, T0, prec), wpprime(tau, T, prec)));
+    R = shallowconcat(R, mkvec4(wsigma(z, T, T0, e, prec),
+                         wzeta(z, tau, T, e, prec),
+                         wp(T, T0, a, prec), wpprime(T, T0, prec)));
   }
   return gerepilecopy(av, R);
 }
