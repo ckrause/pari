@@ -3622,7 +3622,7 @@ ellweierstrass(GEN z, GEN tau, long prec)
   pari_sp av = avma;
   long prec2 = prec + EXTRAPREC64;
   GEN T0 = thetanull_i(tau, prec), a = divru(sqrr(mppi(prec2)), 3);
-  GEN e = mulrr(a, mfE2eval(tau, prec2));
+  GEN e = gmul(a, mfE2eval(tau, prec2));
   GEN e1e2e3, g2g3 = wg2g3(T0, a, &e1e2e3);
   GEN R = mkvec4(mkvec2(gen_m1, tau), g2g3, e1e2e3, weta1eta2(tau, e, prec));
   z = redmodZ(z);
