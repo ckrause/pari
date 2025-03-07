@@ -3343,6 +3343,20 @@ thetaprec(GEN z, GEN tau, long prec)
   return l? l: prec;
 }
 
+static GEN
+redmodZ(GEN z)
+{
+  if (typ(z) != t_COMPLEX) return gfrac(z);
+  return mkcomplex(gfrac(gel(z,1)), gel(z,2));
+}
+static GEN
+redmod2Z(GEN z)
+{
+  GEN k = ground(gmul2n(real_i(z), -1));
+  if (signe(k)) z = gsub(z, shifti(k, 1));
+  return z;
+}
+
 /* If z = NULL, we are at z = 0 and compute theta[1,1]' instead of
  * theta[1,1] = 0 */
 static GEN
@@ -3352,6 +3366,7 @@ thetaall_i(GEN z, GEN tau, long prec)
   GEN S, S00, S01, S10, S11, tmp, sumr, u2, ui2, uin;
   long n, ct, eS, B, precold = prec;
 
+  if (z) z = redmod2Z(z);
   prec = thetaprec(z, tau, prec);
   zold = z? gtofp(z, prec): NULL;
   tauold = gtofp(tau, prec);
@@ -3431,14 +3446,8 @@ thetaall_i(GEN z, GEN tau, long prec)
   return clearimall(zold, tauold, gmul(S, mkvec4(S00, S01, S10, S11)));
 }
 
-/* -theta_{1,1}(z,tau) */
 static GEN
-mtheta11(GEN z, GEN tau, long prec)
-{ GEN T = thetaall_i(z, tau, prec); return gneg(gel(T,4)); }
-
-static GEN
-thetanull_i(GEN tau, long prec)
-{ return thetaall_i(NULL, tau, prec); }
+thetanull_i(GEN tau, long prec) { return thetaall_i(NULL, tau, prec); }
 
 GEN
 theta(GEN z, GEN tau, GEN flag, long prec)
@@ -3446,13 +3455,13 @@ theta(GEN z, GEN tau, GEN flag, long prec)
   pari_sp av = avma;
   GEN T;
   if (!flag)
-  {
-    GEN q = z; z = tau; /* input is (q = exp(i pi tau), Pi*z) */
+  { /* backward compatibility: sine theta */
+    GEN pi = mppi(prec), q = z; z = tau; /* input (q = exp(i pi tau), Pi*z) */
     prec = thetaprec(z, tau, prec);
     q = check_unit_disc("theta", q, prec);
-    tau = gdiv(glog(q, prec), PiI2n(0, prec));
-    z = gdiv(gtofp(z, prec), mppi(prec));
-    return gerepileupto(av, mtheta11(z, tau, prec));
+    z = gdiv(gtofp(z, prec), pi);
+    tau = gdiv(mulcxmI(glog(q, prec)), pi);
+    flag = gen_1;
   }
   T = thetaall_i(z, tau, prec);
   switch (thetaflag(flag))
@@ -3616,6 +3625,7 @@ ellweierstrass(GEN z, GEN tau, long prec)
   GEN e = mulrr(a, mfE2eval(tau, prec2));
   GEN e1e2e3, g2g3 = wg2g3(T0, a, &e1e2e3);
   GEN R = mkvec4(mkvec2(gen_m1, tau), g2g3, e1e2e3, weta1eta2(tau, e, prec));
+  z = redmodZ(z);
   if (!gequal0(z))
   {
     GEN T = thetaall_i(z, tau, prec);
