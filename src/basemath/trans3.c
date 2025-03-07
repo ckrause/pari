@@ -3563,7 +3563,8 @@ mfE2eval(GEN tau, long prec)
   tau1 = cxredsl2(tau, &M);
   c = gcoeff(M, 2, 1); d = gcoeff(M, 2, 2); J = gadd(d, gmul(c, tau));
   R = mfeval(mfinit(mkvec2(gen_1, gen_2), 4), mfEk(2), tau1, prec);
-  return gdiv(gadd(R, gdiv(gmulsg(6, mulcxI(gmul(c, J))), mppi(prec))), gsqr(J));
+  if (signe(c)) R = gadd(R, gdiv(mulcxI(gmul(mului(6,c), J)), mppi(prec)));
+  return gdiv(R, gsqr(J));
 }
 
 static GEN
