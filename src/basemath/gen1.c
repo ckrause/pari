@@ -1756,7 +1756,9 @@ mulcxI(GEN x)
   GEN z;
   switch(typ(x))
   {
-    case t_INT: case t_REAL: case t_FRAC:
+    case t_INT:
+      if (!signe(x)) return gen_0;
+    case t_REAL: case t_FRAC:
       return mkcomplex(gen_0, x);
     case t_COMPLEX:
       if (isintzero(gel(x,1))) return gneg(gel(x,2));
@@ -1773,7 +1775,9 @@ mulcxmI(GEN x)
   GEN z;
   switch(typ(x))
   {
-    case t_INT: case t_REAL: case t_FRAC:
+    case t_INT:
+      if (!signe(x)) return gen_0;
+    case t_REAL: case t_FRAC:
       return mkcomplex(gen_0, gneg(x));
     case t_COMPLEX:
       if (isintzero(gel(x,1))) return gel(x,2);
