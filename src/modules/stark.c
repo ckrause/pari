@@ -3099,7 +3099,7 @@ ellphistinit(GEN om, long prec)
   if (gsigne(imag_i(gdiv(om1,om2))) < 0) { swap(om1,om2); om = mkvec2(om1,om2); }
   om1b = conj_i(om1);
   om2b = conj_i(om2); res = cgetg(4,t_VEC);
-  gel(res,1) = gdivgu(elleisnum(om,2,0,prec),12);
+  gel(res,1) = gdivgu(elleisnum(om,2,prec),12);
   gel(res,2) = gdiv(PiI2(prec), gmul(om2, imag_i(gmul(om1b,om2))));
   gel(res,3) = om2b; return res;
 }

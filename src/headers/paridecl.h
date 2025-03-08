@@ -3360,7 +3360,7 @@ GEN     ellchangepointinv0(GEN E, GEN x, GEN ch);
 GEN     ellchangepointinv(GEN x, GEN ch);
 GEN     ellcharpoly(GEN E, GEN p);
 GEN     elldivpol(GEN e, long n, long v);
-GEN     elleisnum(GEN om, long k, long flag, long prec);
+GEN     elleisnum(GEN om, long k, long prec);
 GEN     elleta(GEN om, long prec);
 GEN     elleulerf(GEN e, GEN p);
 GEN     ellff_get_card(GEN E);

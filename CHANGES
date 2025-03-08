@@ -44,6 +44,8 @@ HC  15- New semantics for theta, now computes all four 1-variable theta
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b)
+     2- removed elleisnum optional flag. If you really want elliptic
+        invariants, use E4/12 and -E6/216.
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed

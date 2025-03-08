@@ -524,7 +524,7 @@ _elleisnum(ellred_t *T, long k)
  * E_k(tau) = 1 + 2/zeta(1-k) * sum(n>=1, n^(k-1) q^n/(1-q^n))
  * If flag is != 0 and k=4 or 6, compute g2 = E4/12 or g3 = -E6/216 resp. */
 GEN
-elleisnum(GEN om, long k, long flag, long prec)
+elleisnum(GEN om, long k, long prec)
 {
   pari_sp av = avma;
   GEN y;
@@ -539,8 +539,6 @@ elleisnum(GEN om, long k, long flag, long prec)
     GEN a = gmul(Pi2n(1,T.prec), mului(12, T.c));
     y = gsub(y, mulcxI(gdiv(a, gmul(T.w2, T.W2))));
   }
-  else if (k==4 && flag) y = gdivgu(y,  12);
-  else if (k==6 && flag) y = gdivgs(y,-216);
   return gerepilecopy(av, gprec_wtrunc(y, T.prec0));
 }
 

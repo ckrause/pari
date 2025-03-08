@@ -16,6 +16,8 @@ This file lists the incompatible changes between Version 2.x and older versions
     ellchangepoint(P, urst) still works when it used to do; but
     ellchangepoint(E, P, urst) now works also when E, P, urst are defined
     over a number field with components in basis form
+  - removed elleisnum optional flag. If you really want elliptic
+    invariants, use E4/12 and -E6/216.
 
 * Specific to the PARI library:
 ===============================

@@ -1,11 +1,10 @@
 Function: elleisnum
 Section: elliptic_curves
 C-Name: elleisnum
-Prototype: GLD0,L,p
-Help: elleisnum(w,k,{flag=0}): k being an even positive integer, computes the
+Prototype: GLp
+Help: elleisnum(w,k): k being an even positive integer, computes the
  numerical value of the Eisenstein series of weight k at the lattice
- w, as given by ellperiods. When flag is nonzero and k=4 or 6, this gives the
- elliptic invariants g2 or g3 with the correct normalization.
+ w, as given by ellperiods.
 Doc: $k$ being an even positive integer, computes the numerical value of the
  Eisenstein series of weight $k$ at the lattice $w$, as given by
  \tet{ellperiods}, namely
@@ -15,25 +14,27 @@ Doc: $k$ being an even positive integer, computes the numerical value of the
  $$
  where $q = \exp(2i\pi \tau)$ and $\tau:=\omega_{1}/\omega_{2}$ belongs to the
  complex upper half-plane. It is also possible to directly input $w =
- [\omega_{1},\omega_{2}]$, or an elliptic curve $E$ as given by \kbd{ellinit}.
+ [\omega_{1},\omega_{2}]$, or an elliptic curve $e$ as given by \kbd{ellinit}.
  \bprog
  ? w = ellperiods([1,I]);
  ? elleisnum(w, 4)
  %2 = 2268.8726415508062275167367584190557607
  ? elleisnum(w, 6)
  %3 = -3.977978632282564763 E-33
- ? E = ellinit([1, 0]);
- ? elleisnum(E, 4)
- %5 = -48.000000000000000000000000000000000000
+ ? e = ellinit([1, 2]);
+ ? E4 = elleisnum(e, 4)
+ %5 = -48.000000000000000000000000000000000000 - 6.11... E-56*I
+ ? E6 = elleisnum(e, 4)
+ %5 = 1728.000000000000000000000000000000000000 - 1.30... E-54*I
  @eprog
 
- When \fl\ is nonzero and $k=4$ or 6, returns the elliptic invariants $g_{2}$
- or $g_{3}$, such that
+ Note that the elliptic invariants $g_{2}$ or $g_{3}$, such that
  $$y^{2} = 4x^{3} - g_{2} x - g_{3}$$
- is a Weierstrass equation for $E$.
+ is a Weierstrass equation for $e$ are given by $g_{2} = E_{4}/12$ and
+ $g_{3} = -E_{6}/216$.
  \bprog
- ? g2 = elleisnum(E, 4, 1)
- %6 = -4.0000000000000000000000000000000000000
- ? g3 = elleisnum(E, 6, 1)  \\ ~ 0
- %7 = 0.E-114 - 3.909948178422242682 E-57*I
+ ? g2 = E4 / 12
+ %6 = -4.0000000000000000000000000000000000000 - 5.09... E-57*I
+ ? g3 = - E6 / 216 \\ ~ 0
+ %7 = -8.0000000000000000000000000000000000000 + 6.04... E-57*I
  @eprog
