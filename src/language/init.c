@@ -1377,8 +1377,8 @@ gp_context_restore(struct gp_context* rec)
 
   if (!try_to_restore) return;
   /* disable gp_context_restore() and SIGINT */
-  try_to_restore = 0;
   BLOCK_SIGINT_START
+  try_to_restore = 0;
   if (DEBUGMEM>2) err_printf("entering recover(), loc = %ld\n", rec->listloc);
   evalstate_restore(&rec->eval);
   parsestate_restore(&rec->parse);
@@ -1404,8 +1404,8 @@ gp_context_restore(struct gp_context* rec)
     }
   }
   varstate_restore(&rec->var);
-  BLOCK_SIGINT_END
   try_to_restore = 1;
+  BLOCK_SIGINT_END
   if (DEBUGMEM>2) err_printf("leaving recover()\n");
 }
 
