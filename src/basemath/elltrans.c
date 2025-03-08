@@ -2206,7 +2206,7 @@ wg2g3(GEN T0, GEN a, GEN *pe)
 static GEN
 wsigma(GEN z, GEN T, GEN T0, GEN e, long prec)
 {
-  GEN E = gexp(gmul(gsqr(z), shiftr(e,-1)), prec);
+  GEN E = gexp(gmul(gsqr(z), gmul2n(e,-1)), prec);
   return gdiv(gmul(E, gel(T,4)), gel(T0,4));
 }
 
