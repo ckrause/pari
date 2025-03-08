@@ -1922,10 +1922,11 @@ gzeta(GEN x, long prec)
     {
       GEN a, b;
       long n = lg(x) - 1;
-      if (n > 1 && gcmpgs(gel(x,1), 1) > 0 && gcmpgs(gel(x,n), 1) > 0
-                && RgV_is_arithprog(x, &b, &a))
+      if (n > 1 && RgV_is_arithprog(x, &b, &a))
       {
-        if (!is_real_t(typ(a)) || !is_real_t(typ(b))) { set_avma(av); break; }
+        if (!is_real_t(typ(a)) || !is_real_t(typ(b))
+            || gcmpgs(gel(x,1), 1) <= 0
+            || gcmpgs(gel(x,n), 1) <= 0) { set_avma(av); break; }
         a = veczeta(a, b, n, prec);
         settyp(a, typ(x)); return a;
       }
