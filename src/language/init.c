@@ -626,7 +626,7 @@ pari_daemon(void)
 /*                       SYSTEM INITIALIZATION                       */
 /*                                                                   */
 /*********************************************************************/
-static int try_to_recover = 0;
+static int try_to_restore = 0;
 THREAD VOLATILE int PARI_SIGINT_block = 0, PARI_SIGINT_pending = 0;
 
 /*********************************************************************/
@@ -1288,7 +1288,7 @@ pari_init_opts(size_t parisize, ulong maxprime, ulong init_opts)
   pari_init_timer();
   pari_init_buffers();
   (void)getabstime();
-  try_to_recover = 1;
+  try_to_restore = 1;
   if (!(init_opts&INIT_noIMTm)) pari_mt_init();
   if ((init_opts&INIT_SIGm)) pari_sig_init(pari_sighandler);
 }
@@ -1375,9 +1375,9 @@ gp_context_restore(struct gp_context* rec)
 {
   long i;
 
-  if (!try_to_recover) return;
+  if (!try_to_restore) return;
   /* disable gp_context_restore() and SIGINT */
-  try_to_recover = 0;
+  try_to_restore = 0;
   BLOCK_SIGINT_START
   if (DEBUGMEM>2) err_printf("entering recover(), loc = %ld\n", rec->listloc);
   evalstate_restore(&rec->eval);
@@ -1404,9 +1404,9 @@ gp_context_restore(struct gp_context* rec)
     }
   }
   varstate_restore(&rec->var);
-  if (DEBUGMEM>2) err_printf("leaving recover()\n");
   BLOCK_SIGINT_END
-  try_to_recover = 1;
+  try_to_restore = 1;
+  if (DEBUGMEM>2) err_printf("leaving recover()\n");
 }
 
 static void
