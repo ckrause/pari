@@ -1879,7 +1879,9 @@ thetaflag(GEN v)
   v2 = equali01(gel(v,2)); return v1? (v2? -1: 2): (v2? 4: 3);
 }
 
-/* Automorphy factor for tau -> -1/tau. At z = 0 if NULL */
+/* Automorphy factor for bringing tau towards standard fundamental domain
+ * (we stop when im(tau) >= 1/2, no need to go all the way to sqrt(3)/2).
+ * At z = 0 if NULL */
 static GEN
 autojtau(GEN *pz, GEN tau, long *pct, long prec)
 {

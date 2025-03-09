@@ -2333,7 +2333,7 @@ expIPifrac(GEN z, long prec)
 {
   GEN n = gel(z,1), d = gel(z,2);
   ulong r, q = uabsdivui_rem(12, d, &r);
-  if (!r) return e12(q * umodiu(n, 24), prec); /* 12 | d */
+  if (!r) return e12(q * umodiu(n, 24), prec); /* d | 12 */
   n = centermodii(n, shifti(d,1), d);
   return expIr(divri(mulri(mppi(prec), n), d));
 }
