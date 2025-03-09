@@ -2176,12 +2176,15 @@ elljacobi(GEN z, GEN k, long prec)
 static GEN
 mfE2eval(GEN tau, long prec)
 {
-  GEN tau1, M, c, d, J, R;
-  tau1 = cxredsl2(tau, &M);
-  c = gcoeff(M, 2, 1); d = gcoeff(M, 2, 2); J = gadd(d, gmul(c, tau));
-  R = mfeval(mfinit(mkvec2(gen_1, gen_2), 4), mfEk(2), tau1, prec);
-  if (signe(c)) R = gadd(R, gdiv(mulcxI(gmul(mului(6,c), J)), mppi(prec)));
-  return gdiv(R, gsqr(J));
+  GEN M, c, taured = cxredsl2(tau, &M), R = cxEk(taured, 2, prec);
+  c = gcoeff(M,2,1);
+  if (signe(c))
+  {
+    GEN d = gcoeff(M,2,2), J = gadd(d, gmul(c, tau));
+    R = gadd(R, gdiv(mulcxI(gmul(mului(6,c), J)), mppi(prec)));
+    R = gdiv(R, gsqr(J));
+  }
+  return R;
 }
 
 static GEN
