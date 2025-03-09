@@ -1902,12 +1902,10 @@ autojtau(GEN *pz, GEN tau, long *pct, long prec)
   *pz = z; return mkvec3(tau, S, sumr);
 }
 
-/* At 0 if z = NULL */
+/* At 0 if z = NULL. Real(tau) = n is an integer; 4 | n if fl = 1 or 2 */
 static void
-clearim(GEN *v, GEN z, GEN tau, long fl)
+clearim(GEN *v, GEN z, long fl)
 {
-  GEN r = real_i(tau), ri = ground(r);
-  if (!gequal(r, ri) || (fl <= 2 && Mod4(ri))) return;
   if (!z || gequal0(imag_i(z)) || (fl != 1 && gequal0(real_i(z))))
     *v = real_i(*v);
 }
@@ -1915,10 +1913,19 @@ clearim(GEN *v, GEN z, GEN tau, long fl)
 static GEN
 clearimall(GEN z, GEN tau, GEN VS)
 {
-  clearim(&gel(VS,1), z, tau, 3);
-  clearim(&gel(VS,2), z, tau, 4);
-  clearim(&gel(VS,3), z, tau, 2);
-  clearim(&gel(VS,4), z, tau, 1); return VS;
+  GEN n;
+  if (isint(real_i(tau), &n))
+  {
+    long nmod4 = Mod4(n);
+    clearim(&gel(VS,1), z, 3);
+    clearim(&gel(VS,2), z, 4);
+    if (!nmod4)
+    {
+      clearim(&gel(VS,3), z, 2);
+      clearim(&gel(VS,4), z, 1);
+    }
+  }
+  return VS;
 }
 
 static GEN
@@ -2119,7 +2126,8 @@ thetanull11(GEN tau, long prec)
   if (precold < prec) { prec = precold; S11 = gprec_w(S11, prec); }
   S11 = gmul3(S11, q8, expIPiC(gmul2n(sumr, -2), prec));
   S11 = gmul3(Pi2n(1, prec), gpowgs(S, 3), S11);
-  clearim(&S11, z, tauold, 1); return S11;
+  if (isint(tauold, &q) && !Mod4(q)) clearim(&S11, z, 1);
+  return S11;
 }
 
 GEN
