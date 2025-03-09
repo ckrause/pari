@@ -998,8 +998,131 @@ pointell(GEN e, GEN z, long prec)
 }
 
 /********************************************************************/
+/**        exp(I*Pi*x) with attention for rational arguments        **/
+/********************************************************************/
+
+/* sqrt(3)/2 */
+static GEN
+sqrt32(long prec) { GEN z = sqrtr_abs(utor(3,prec)); setexpo(z, -1); return z; }
+/* exp(i x), x = k pi/12 */
+static GEN
+e12(ulong k, long prec)
+{
+  int s, sPi, sPiov2;
+  GEN z, t;
+  k %= 24;
+  if (!k) return gen_1;
+  if (k == 12) return gen_m1;
+  if (k >12) { s = 1; k = 24 - k; } else s = 0; /* x -> 2pi - x */
+  if (k > 6) { sPi = 1; k = 12 - k; } else sPi = 0; /* x -> pi  - x */
+  if (k > 3) { sPiov2 = 1; k = 6 - k; } else sPiov2 = 0; /* x -> pi/2 - x */
+  z = cgetg(3, t_COMPLEX);
+  switch(k)
+  {
+    case 0: gel(z,1) = icopy(gen_1); gel(z,2) = gen_0; break;
+    case 1: t = gmul2n(addrs(sqrt32(prec), 1), -1);
+      gel(z,1) = sqrtr(t);
+      gel(z,2) = gmul2n(invr(gel(z,1)), -2); break;
+
+    case 2: gel(z,1) = sqrt32(prec);
+            gel(z,2) = real2n(-1, prec); break;
+
+    case 3: gel(z,1) = sqrtr_abs(real2n(-1,prec));
+            gel(z,2) = rcopy(gel(z,1)); break;
+  }
+  if (sPiov2) swap(gel(z,1), gel(z,2));
+  if (sPi) togglesign(gel(z,1));
+  if (s)   togglesign(gel(z,2));
+  return z;
+}
+/* z a t_FRAC */
+static GEN
+expIPifrac(GEN z, long prec)
+{
+  GEN n = gel(z,1), d = gel(z,2);
+  ulong r, q = uabsdivui_rem(12, d, &r);
+  if (!r) return e12(q * umodiu(n, 24), prec); /* d | 12 */
+  n = centermodii(n, shifti(d,1), d);
+  return expIr(divri(mulri(mppi(prec), n), d));
+}
+/* exp(i Pi z), z a t_INT or t_FRAC */
+GEN
+expIPiQ(GEN z, long prec)
+{
+  if (typ(z) == t_INT) return mpodd(z)? gen_m1: gen_1;
+  return expIPifrac(z, prec);
+}
+
+/* convert power of 2 t_REAL to rational */
+static GEN
+real2nQ(GEN x)
+{
+  long e = expo(x);
+  GEN z;
+  if (e < 0)
+    z = mkfrac(signe(x) < 0? gen_m1: gen_1, int2n(-e));
+  else
+  {
+    z = int2n(e);
+    if (signe(x) < 0) togglesign_safe(&z);
+  }
+  return z;
+}
+/* x a real number */
+GEN
+expIPiR(GEN x, long prec)
+{
+  if (typ(x) == t_REAL && absrnz_equal2n(x)) x = real2nQ(x);
+  switch(typ(x))
+  {
+    case t_INT:  return mpodd(x)? gen_m1: gen_1;
+    case t_FRAC: return expIPifrac(x, prec);
+  }
+  return expIr(mulrr(mppi(prec), x));
+}
+/* z a t_COMPLEX */
+GEN
+expIPiC(GEN z, long prec)
+{
+  GEN pi, r, x, y;
+  if (typ(z) != t_COMPLEX) return expIPiR(z, prec);
+  x = gel(z,1);
+  y = gel(z,2); if (gequal0(y)) return expIPiR(x, prec);
+  pi = mppi(prec);
+  r = gmul(pi, y); togglesign(r); r = mpexp(r); /* exp(-pi y) */
+  if (typ(x) == t_REAL && absrnz_equal2n(x)) x = real2nQ(x);
+  switch(typ(x))
+  {
+    case t_INT: if (mpodd(x)) togglesign(r);
+                return r;
+    case t_FRAC: return gmul(r, expIPifrac(x, prec));
+  }
+  return gmul(r, expIr(mulrr(pi, x)));
+}
+/* exp(I x y), more efficient for x in R, y pure imaginary */
+GEN
+expIxy(GEN x, GEN y, long prec) { return gexp(gmul(x, mulcxI(y)), prec); }
+
+/********************************************************************/
 /**                 Eta function(s) and j-invariant                **/
 /********************************************************************/
+GEN
+upper_to_cx(GEN x, long *prec)
+{
+  long tx = typ(x), l;
+  if (tx == t_QUAD) { x = quadtofp(x, *prec); tx = typ(x); }
+  switch(tx)
+  {
+    case t_COMPLEX:
+      if (gsigne(gel(x,2)) > 0) break; /*fall through*/
+    case t_REAL: case t_INT: case t_FRAC:
+      pari_err_DOMAIN("modular function", "Im(argument)", "<=", gen_0, x);
+    default:
+      pari_err_TYPE("modular function", x);
+  }
+  l = precision(x); if (l) *prec = l;
+  return x;
+}
 
 static GEN
 qq(GEN x, long prec)

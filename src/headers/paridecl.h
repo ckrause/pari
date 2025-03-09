@@ -3311,8 +3311,6 @@ void    checkellisog(GEN v);
 void    checkellpt(GEN z);
 int     checkellpt_i(GEN z);
 void    checkell5(GEN e);
-GEN     cxredsl2(GEN t, GEN *U);
-GEN     cxredsl2_i(GEN z, GEN *pU, GEN *czd);
 GEN     ec_2divpol_evalx(GEN E, GEN x);
 GEN     ec_3divpol_evalx(GEN E, GEN x);
 GEN     ec_bmodel(GEN e, long v);
@@ -3339,8 +3337,6 @@ GEN     ellQp_root(GEN E, long prec);
 GEN     ellQtwist_bsdperiod(GEN E, long s);
 GEN     ellR_area(GEN E, long prec);
 GEN     ellR_ab(GEN E, long prec);
-GEN     ellR_eta(GEN E, long prec);
-GEN     ellR_omega(GEN x, long prec);
 GEN     ellR_roots(GEN E, long prec);
 GEN     elladd(GEN e, GEN z1, GEN z2);
 GEN     ellan(GEN e, long n);
@@ -3360,8 +3356,6 @@ GEN     ellchangepointinv0(GEN E, GEN x, GEN ch);
 GEN     ellchangepointinv(GEN x, GEN ch);
 GEN     ellcharpoly(GEN E, GEN p);
 GEN     elldivpol(GEN e, long n, long v);
-GEN     elleisnum(GEN om, long k, long prec);
-GEN     elleta(GEN om, long prec);
 GEN     elleulerf(GEN e, GEN p);
 GEN     ellff_get_card(GEN E);
 GEN     ellff_get_gens(GEN E);
@@ -3406,7 +3400,6 @@ long    ellorder_Q(GEN E, GEN P);
 GEN     ellordinate(GEN e, GEN x, long prec);
 GEN     ellpadicheight0(GEN e, GEN p, long n, GEN P, GEN Q);
 GEN     ellpadicheightmatrix(GEN e, GEN p, long n, GEN P);
-GEN     ellperiods(GEN w, long flag, long prec);
 GEN     ellrandom(GEN e);
 long    ellrootno(GEN e, GEN p);
 long    ellrootno_global(GEN e);
@@ -3424,17 +3417,11 @@ GEN     elltors_psylow(GEN e, ulong p);
 GEN     elltrace(GEN e, GEN P);
 GEN     elltwist(GEN E, GEN D);
 GEN     ellweilpairing(GEN E, GEN t, GEN s, GEN m);
-GEN     ellwp(GEN w, GEN z, long prec);
-GEN     ellwp0(GEN w, GEN z, long flag, long prec);
-GEN     ellwpseries(GEN e, long v, long PRECDL);
 GEN     ellxn(GEN e, long n, long v);
-GEN     ellzeta(GEN om, GEN z, long prec);
 int     ellisoncurve_i(GEN e, GEN z);
 GEN     orderell(GEN e, GEN p);
-GEN     pointell(GEN e, GEN z, long prec);
 GEN     point_to_a4a6(GEN E, GEN P, GEN p, GEN *pa4);
 GEN     point_to_a4a6_Fl(GEN E, GEN P, ulong p, ulong *pa4);
-GEN     zell(GEN e, GEN z, long prec);
 
 /* ellpadic.c */
 GEN     Qp_agm2_sequence(GEN a1, GEN b1);
@@ -3467,6 +3454,46 @@ long    nfhilbert0(GEN bnf,GEN a,GEN b,GEN p);
 /* elltors.c */
 
 long    ellisdivisible(GEN E, GEN P, GEN n, GEN *Q);
+
+/* elltrans.c */
+
+GEN     cxEk(GEN tau, long k, long prec);
+GEN     cxredsl2(GEN t, GEN *U);
+GEN     cxredsl2_i(GEN z, GEN *pU, GEN *czd);
+GEN     ellR_eta(GEN E, long prec);
+GEN     ellR_omega(GEN x, long prec);
+GEN     elleisnum(GEN om, long k, long prec);
+GEN     elleta(GEN om, long prec);
+GEN     elljacobi(GEN z, GEN k, long prec);
+GEN     ellperiods(GEN w, long flag, long prec);
+GEN     ellweierstrass(GEN z, GEN tau, long prec);
+GEN     ellwp(GEN w, GEN z, long prec);
+GEN     ellwp0(GEN w, GEN z, long flag, long prec);
+GEN     ellwpseries(GEN e, long v, long PRECDL);
+GEN     ellzeta(GEN om, GEN z, long prec);
+GEN     expIPiQ(GEN z, long prec);
+GEN     expIPiR(GEN x, long prec);
+GEN     expIPiC(GEN z, long prec);
+GEN     expIxy(GEN x, GEN y, long prec);
+GEN     eta(GEN x, long prec);
+GEN     eta0(GEN x, long flag,long prec);
+GEN     jell(GEN x, long prec);
+GEN     pointell(GEN e, GEN z, long prec);
+GEN     sumdedekind(GEN h, GEN k);
+GEN     sumdedekind_coprime(GEN h, GEN k);
+GEN     theta(GEN z, GEN tau, GEN flag, long prec);
+GEN     thetanull(GEN tau, GEN flag, long prec);
+GEN     thetanullk(GEN q, long k, long prec);
+GEN     trueeta(GEN x, long prec);
+GEN     u_sumdedekind_coprime(long h, long k);
+GEN     upper_to_cx(GEN x, long *prec);
+GEN     vecthetanullk(GEN q, long k, long prec);
+GEN     vecthetanullk_tau(GEN tau, long k, long prec);
+GEN     weber0(GEN x, long flag,long prec);
+GEN     weberf(GEN x, long prec);
+GEN     weberf1(GEN x, long prec);
+GEN     weberf2(GEN x, long prec);
+GEN     zell(GEN e, GEN z, long prec);
 
 /* ellisog.c */
 
@@ -5776,21 +5803,13 @@ GEN     psi1series(long n, long v, long prec);
 GEN     sumformal(GEN T, long v);
 
 /* trans3.c */
-
 int     RgV_is_arithprog(GEN v, GEN *a, GEN *b);
 GEN     besseljzero(GEN nu, long n, long b);
 GEN     besselyzero(GEN nu, long n, long b);
 GEN     constzeta(long n, long prec);
-GEN     cxEk(GEN tau, long k, long prec);
 double  dblmodulus(GEN x);
 GEN     dilog(GEN x, long prec);
 GEN     eint1(GEN x, long prec);
-GEN     expIPiQ(GEN z, long prec);
-GEN     expIPiR(GEN x, long prec);
-GEN     expIPiC(GEN z, long prec);
-GEN     expIxy(GEN x, GEN y, long prec);
-GEN     eta(GEN x, long prec);
-GEN     eta0(GEN x, long flag,long prec);
 GEN     gerfc(GEN x, long prec);
 GEN     gpolylog(long m, GEN x, long prec);
 GEN     gzeta(GEN x, long prec);
@@ -5803,30 +5822,13 @@ GEN     incgam0(GEN a, GEN x, GEN z,long prec);
 GEN     incgamc(GEN a, GEN x, long prec);
 GEN     jbessel(GEN n, GEN z, long prec);
 GEN     jbesselh(GEN n, GEN z, long prec);
-GEN     jell(GEN x, long prec);
 GEN     kbessel(GEN nu, GEN gx, long prec);
 GEN     mpeint1(GEN x, GEN expx);
 GEN     mpveceint1(GEN C, GEN eC, long n);
 GEN     polylog0(long m, GEN x, long flag, long prec);
-GEN     sumdedekind(GEN h, GEN k);
-GEN     sumdedekind_coprime(GEN h, GEN k);
 GEN     szeta(long x, long prec);
-GEN     theta(GEN z, GEN tau, GEN flag, long prec);
-GEN     thetanull(GEN tau, GEN flag, long prec);
-GEN     thetanullk(GEN q, long k, long prec);
-GEN     elljacobi(GEN z, GEN k, long prec);
-GEN     ellweierstrass(GEN z, GEN tau, long prec);
-GEN     trueeta(GEN x, long prec);
-GEN     u_sumdedekind_coprime(long h, long k);
-GEN     upper_to_cx(GEN x, long *prec);
 GEN     veceint1(GEN nmax, GEN C, long prec);
-GEN     vecthetanullk(GEN q, long k, long prec);
-GEN     vecthetanullk_tau(GEN tau, long k, long prec);
 GEN     veczeta(GEN a, GEN b, long N, long prec);
-GEN     weber0(GEN x, long flag,long prec);
-GEN     weberf(GEN x, long prec);
-GEN     weberf1(GEN x, long prec);
-GEN     weberf2(GEN x, long prec);
 GEN     ybessel(GEN n, GEN z, long prec);
 
 /* modsym.c */
