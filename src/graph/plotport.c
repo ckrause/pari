@@ -1500,11 +1500,7 @@ Draw(PARI_plot *T, GEN w, GEN x, GEN y)
 static void
 set_range(double m, double M, double *sml, double *big)
 {
-  if (M - m < 1.e-9)
-  {
-    double d = fabs(m)/10; if (!d) d = 0.1;
-    M += d; m -= d;
-  }
+  if (M - m < 1.e-9) { double d = fabs(m)/10; M += d; m -= d; }
   *sml = m; *big = M;
 }
 /* Plot a dblPointList. Complete with axes, bounding box, etc.
