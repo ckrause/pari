@@ -2302,6 +2302,7 @@ parforeach(GEN x, GEN code, void *E, long call(void*, GEN, GEN))
         br_status = br_NONE;
         stop = workid;
       }
+    if (!stop) set_avma(av2);
   }
   set_avma(av2);
   mt_queue_end(&pt);
