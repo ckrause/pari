@@ -1881,9 +1881,9 @@ thetaflag(GEN v)
 
 /* Automorphy factor for tau -> -1/tau. At z = 0 if NULL */
 static GEN
-autojtau(GEN z, GEN tau, long *pct, long prec)
+autojtau(GEN *pz, GEN tau, long *pct, long prec)
 {
-  GEN S = gen_1, sumr = gen_0;
+  GEN S = gen_1, sumr = gen_0, z = *pz;
   long ct = 0;
   if (z && gequal0(z)) z = NULL;
   while (gexpo(imag_i(tau)) < -1)
@@ -1899,18 +1899,7 @@ autojtau(GEN z, GEN tau, long *pct, long prec)
     ct++; tau = taup; sumr = addii(sumr, r);
   }
   if (pct) *pct = ct;
-  return mkvec4(z? z: gen_0, tau, S, sumr);
-}
-
-/* Automorphy factor for z -> z+tau */
-static GEN
-autojz(GEN z, GEN tau, long prec)
-{
-  GEN zy = imag_i(z), k = gen_0, S;
-  if (!gequal0(zy)) k = roundr(divrr(zy, gneg(imag_i(tau))));
-  if (!signe(k)) return mkvec3(z, gen_1, gen_0);
-  S = expIPiC(gadd(gmul(sqri(k), tau), gmul(shifti(k,1), z)), prec);
-  z = gadd(z, gmul(tau, k)); return mkvec3(z, S, k);
+  *pz = z; return mkvec3(tau, S, sumr);
 }
 
 /* At 0 if z = NULL */
@@ -1968,27 +1957,33 @@ redmod2Z(GEN z)
   return z;
 }
 
-/* If z = NULL, we are at z = 0 and compute theta[1,1]' instead of
- * theta[1,1] = 0 */
+/* If z = NULL assume z = 0 and compute theta[1,1]' instead of theta[1,1] = 0 */
 static GEN
 thetaall_i(GEN z, GEN tau, long prec)
 {
-  GEN zold, tauold, redt, k = NULL, u, un, q, q2, qd, qn;
+  GEN zold, tauold, redt, k, u, un, q, q2, qd, qn;
   GEN S, S00, S01, S10, S11, tmp, sumr, u2, ui2, uin;
   long n, ct, eS, B, precold = prec;
+  int theta1p = !z;
 
   if (z) z = redmod2Z(z);
   prec = thetaprec(z, tau, prec);
-  zold = z? gtofp(z, prec): NULL;
+  z = zold = z? gtofp(z, prec): NULL;
   tauold = gtofp(tau, prec);
   if (gsigne(imag_i(tauold)) <= 0)
     pari_err_DOMAIN("theta", "imag(tau)", "<=", gen_0, tau);
-  redt = autojtau(zold, tauold, &ct, prec);
-  tau = gel(redt, 2); S = gel(redt, 3); sumr = gel(redt, 4);
+  redt = autojtau(&z, tauold, &ct, prec);
+  tau = gel(redt, 1); S = gel(redt, 2); sumr = gel(redt, 3); k = gen_0;
   if (z)
   {
-    GEN redz = autojz(gel(redt,1), tau, prec);
-    z = gel(redz, 1); S = gmul(S, gel(redz, 2)); k = gel(redz, 3);
+    GEN y = imag_i(z);
+    if (!gequal0(y)) k = roundr(divrr(y, gneg(imag_i(tau))));
+    if (signe(k))
+    {
+      GEN Sz = expIPiC(gadd(gmul(sqri(k), tau), gmul(shifti(k,1), z)), prec);
+      S = gmul(S, Sz);
+      z = gadd(z, gmul(tau, k));
+    }
   }
   S00 = S01 = gen_1; S10 = S11 = gen_0;
   if ((eS = gexpo(S)) > 0)
@@ -2012,9 +2007,11 @@ thetaall_i(GEN z, GEN tau, long prec)
     qn = gmul(qn, qd); /* q^((2n-1)^2) */
     tmp = u? gmul(qn, gadd(un, uin)): gmul2n(qn, 1);
     S10 = gadd(S10, tmp);
-    tmp = z? gmul(qn, gsub(un, uin)): gmulsg(2*n-1, tmp);
-    S11 = odd(n)? gsub(S11, tmp): gadd(S11, tmp);
-
+    if (z || theta1p) /* else theta[1,1] = 0 */
+    {
+      tmp = theta1p? gmulsg(2*n-1, tmp): gmul(qn, gsub(un, uin));
+      S11 = odd(n)? gsub(S11, tmp): gadd(S11, tmp);
+    }
     if (u)
     {
       e = maxss(0, gexpo(un)); un = gmul(un, u2);
@@ -2098,8 +2095,8 @@ thetanull11(GEN tau, long prec)
   prec = thetaprec(z, tau, prec); tauold = gtofp(tau, prec);
   if (gsigne(imag_i(tauold)) <= 0)
     pari_err_DOMAIN("thetanull11", "imag(tau)", "<=", gen_0, tau);
-  redt = autojtau(z, tauold, NULL, prec);
-  tau = gel(redt, 2); S = gel(redt, 3); sumr = gel(redt, 4);
+  redt = autojtau(&z, tauold, NULL, prec);
+  tau = gel(redt, 1); S = gel(redt, 2); sumr = gel(redt, 3);
   S11 = gen_1; ;
   if ((eS = gexpo(S)) > 0)
   {
