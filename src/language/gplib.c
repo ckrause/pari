@@ -716,6 +716,12 @@ what_cc(void)
 static char *
 convert_time(char *s, long delay)
 {
+  /* Do not do month and year: ambiguous definition and overflows 32 bits. */
+  if (delay >= 86400000)
+  {
+    sprintf(s, "%ldd, ", delay / 86400000); s+=strlen(s);
+    delay %= 86400000;
+  }
   if (delay >= 3600000)
   {
     sprintf(s, "%ldh, ", delay / 3600000); s+=strlen(s);

@@ -36,6 +36,7 @@ strjoin([])
 strjoin(["a"])
 strjoin([1])
 strtime(12345678)
+strtime(123456789)
 
 \\ Errors, keep at end of file
 strchr(-1)

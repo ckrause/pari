@@ -36,6 +36,7 @@ Vecsmall([104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33])
 "a"
 "1"
 "3h, 25min, 45,678 ms"
+"1d, 10h, 17min, 36,789 ms"
   ***   at top-level: strchr(-1)
   ***                 ^----------
   *** strchr: out of range in integer -> character conversion (-1).
