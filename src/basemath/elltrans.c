@@ -2228,7 +2228,7 @@ thetanull11(GEN tau, long prec)
   S11 = gen_1; ;
   if ((eS = gexpo(S)) > 0)
   {
-    prec = nbits2prec(eS + prec2nbits(prec));
+    prec += nbits2extraprec(eS);
     tau = gprec_w(tau, prec);
   }
   q8 = expIPiC(gmul2n(tau,-2), prec); q = gpowgs(q8, 8);
@@ -2244,7 +2244,7 @@ thetanull11(GEN tau, long prec)
     prec2 = minss(prec, nbits2prec(eqn + B + 32));
     qn = gprec_w(qn, prec2); qd = gprec_w(qd, prec2);
   }
-  if (precold < prec) { prec = precold; S11 = gprec_w(S11, prec); }
+  if (precold < prec) prec = precold;
   S11 = gmul3(S11, q8, e12(3*sumr, prec));
   S11 = gmul3(Pi2n(1, prec), gpowgs(S, 3), S11);
   if (isint(real_i(tauold), &q) && !Mod4(q)) clearim(&S11, z, 1);
@@ -2348,7 +2348,7 @@ wzeta(GEN z, GEN tau, GEN T, GEN e, long prec)
 }
 
 static GEN
-wp(GEN T, GEN T0, GEN a, long prec)
+wp(GEN T, GEN T0, GEN a)
 {
   GEN t4 = gel(T,2), z2 = gel(T0,3), z3 = gel(T0,1);
   return gmul(a, gsub(gmulgs(gsqr(gdiv(gmul3(z2, z3, t4), gel(T,4))), 3),
@@ -2378,7 +2378,7 @@ ellweierstrass(GEN z, GEN tau, long prec)
     GEN T = thetaall_i(z, tau, prec);
     R = shallowconcat(R, mkvec4(wsigma(z, T, T0, e, prec),
                          wzeta(z, tau, T, e, prec),
-                         wp(T, T0, a, prec), wpprime(T, T0, prec)));
+                         wp(T, T0, a), wpprime(T, T0, prec)));
   }
   return gerepilecopy(av, R);
 }
