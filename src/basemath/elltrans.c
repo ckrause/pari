@@ -1004,7 +1004,7 @@ pointell(GEN e, GEN z, long prec)
 /* sqrt(3)/2 */
 static GEN
 sqrt32(long prec) { GEN z = sqrtr_abs(utor(3,prec)); setexpo(z, -1); return z; }
-/* exp(i x), x = k pi/12 */
+/* exp(i k pi/12)  */
 static GEN
 e12(ulong k, long prec)
 {
@@ -2094,7 +2094,7 @@ static GEN
 thetaall_i(GEN z, GEN tau, long prec)
 {
   GEN zold, tauold, k, u, un, q, q2, qd, qn;
-  GEN S, S00, S01, S10, S11, tmp, u2, ui2, uin;
+  GEN S, S00, S01, S10, S11, u2, ui2, uin;
   long n, ct, eS, B, sumr, precold = prec;
   int theta1p = !z;
 
@@ -2133,19 +2133,22 @@ thetaall_i(GEN z, GEN tau, long prec)
   for (n = 1;; n++)
   { /* qd = q^(4n-3), qn = q^(4(n-1)^2), un = u^(2n-2), uin = 1/un */
     long e = 0, eqn, prec2;
+    GEN tmp;
     if (u) uin = gmul(uin, ui2);
     qn = gmul(qn, qd); /* q^((2n-1)^2) */
     tmp = u? gmul(qn, gadd(un, uin)): gmul2n(qn, 1);
     S10 = gadd(S10, tmp);
-    if (z || theta1p) /* else theta[1,1] = 0 */
+    if (z)
     {
-      tmp = theta1p? gmulsg(2*n-1, tmp): gmul(qn, gsub(un, uin));
+      tmp = gmul(qn, gsub(un, uin));
       S11 = odd(n)? gsub(S11, tmp): gadd(S11, tmp);
-    }
-    if (u)
-    {
       e = maxss(0, gexpo(un)); un = gmul(un, u2);
       e = maxss(e, gexpo(un));
+    }
+    else if (theta1p) /* theta'[1,1] at 0 */
+    {
+      tmp = gmulsg(2*n-1, tmp);
+      S11 = odd(n)? gsub(S11, tmp): gadd(S11, tmp);
     }
     qd = gmul(qd, q2); qn = gmul(qn, qd); /* q^(4n^2) */
     tmp = u? gmul(qn, gadd(un, uin)): gmul2n(qn, 1);
@@ -2156,12 +2159,6 @@ thetaall_i(GEN z, GEN tau, long prec)
     prec2 = minss(prec, nbits2prec(eqn + B + 64));
     qn = gprec_w(qn, prec2); qd = gprec_w(qd, prec2);
     if (u) { un = gprec_w(un, prec2); uin = gprec_w(uin, prec2); }
-  }
-  if (precold < prec)
-  {
-    prec = precold;
-    S00 = gprec_w(S00, prec); S01 = gprec_w(S01, prec);
-    S10 = gprec_w(S10, prec); S11 = gprec_w(S11, prec);
   }
   if (u)
   {
@@ -2175,12 +2172,21 @@ thetaall_i(GEN z, GEN tau, long prec)
    *   theta[1,1]: (-1)^k exp(-I*Pi/4*sumr) */
   S11 = z? mulcxpowIs(S11, ct + 3): gmul(mppi(prec), S11);
   if (ct&1L) swap(S10, S01);
-  if (odd(sumr)) swap(S01, S00);
-  tmp = e12(sumr * 3, prec); /* exp(I Pi sumr / 4) */
-  S10 = gmul(S10, tmp);
-  S11 = gmul(S11, tmp);
-  if (!z) S11 = gmul(gsqr(S), S11);
+  if (sumr & 7)
+  {
+    GEN zet = e12(sumr * 3, prec); /* exp(I Pi sumr / 4) */
+    if (odd(sumr)) swap(S01, S00);
+    S10 = gmul(S10, zet);
+    S11 = gmul(S11, zet);
+  }
+  if (theta1p) S11 = gmul(gsqr(S), S11);
   else if (mpodd(k)) { S01 = gneg(S01); S11 = gneg(S11); }
+  if (precold < prec)
+  {
+    prec = precold;
+    S00 = gprec_w(S00, prec); S01 = gprec_w(S01, prec);
+    S10 = gprec_w(S10, prec); S11 = gprec_w(S11, prec);
+  }
   return clearimall(zold, tauold, gmul(S, mkvec4(S00, S01, S10, S11)));
 }
 
