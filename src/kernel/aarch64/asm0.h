@@ -40,21 +40,17 @@ __extension__ ({ ulong __value, __arg1 = (a), __arg2 = (b); \
 
 #define addllx8(a,b,c,overflow) \
 do { long *__arg1 = a, *__arg2 = b, *__out = c; \
-     ulong __temp1, __temp2; \
+     ulong __temp1, __temp2, __temp3, __temp4 ; \
      __asm__( \
-"subs xzr,%6,#1\n\t" \
-" ldr %0, [%3]     \n\t ldr %1, [%4]    \n\t adcs %1, %0, %1\n\t str %1, [%5]    \n\t" \
-" ldr %0, [%3,-8]  \n\t ldr %1, [%4,-8] \n\t adcs %1, %0, %1\n\t str %1, [%5,-8] \n\t" \
-" ldr %0, [%3,-16] \n\t ldr %1, [%4,-16]\n\t adcs %1, %0, %1\n\t str %1, [%5,-16]\n\t" \
-" ldr %0, [%3,-24] \n\t ldr %1, [%4,-24]\n\t adcs %1, %0, %1\n\t str %1, [%5,-24]\n\t" \
-" ldr %0, [%3,-32] \n\t ldr %1, [%4,-32]\n\t adcs %1, %0, %1\n\t str %1, [%5,-32]\n\t" \
-" ldr %0, [%3,-40] \n\t ldr %1, [%4,-40]\n\t adcs %1, %0, %1\n\t str %1, [%5,-40]\n\t" \
-" ldr %0, [%3,-48] \n\t ldr %1, [%4,-48]\n\t adcs %1, %0, %1\n\t str %1, [%5,-48]\n\t" \
-" ldr %0, [%3,-56] \n\t ldr %1, [%4,-56]\n\t adcs %1, %0, %1\n\t str %1, [%5,-56]\n\t" \
-"adc %2,xzr,xzr\n\t" \
-        : "=&r" (__temp1), "=&r" (__temp2), "=&r" (overflow) \
+"subs xzr,%8,#1\n\t" \
+" ldp %2, %0, [%5,-8]  \n\t ldp %3, %1, [%6,-8]  \n\t adcs %1, %0, %1\n\t adcs %3, %2, %3\n\t stp %3, %1, [%7,-8]  \n\t" \
+" ldp %2, %0, [%5,-24] \n\t ldp %3, %1, [%6,-24] \n\t adcs %1, %0, %1\n\t adcs %3, %2, %3\n\t stp %3, %1, [%7,-24] \n\t" \
+" ldp %2, %0, [%5,-40] \n\t ldp %3, %1, [%6,-40] \n\t adcs %1, %0, %1\n\t adcs %3, %2, %3\n\t stp %3, %1, [%7,-40] \n\t" \
+" ldp %2, %0, [%5,-56] \n\t ldp %3, %1, [%6,-56] \n\t adcs %1, %0, %1\n\t adcs %3, %2, %3\n\t stp %3, %1, [%7,-56] \n\t" \
+"adc %4,xzr,xzr\n\t" \
+        : "=&r" (__temp1), "=&r" (__temp2), "=&r" (__temp3), "=&r" (__temp4), "=&r" (overflow) \
         : "r" (__arg1), "r" (__arg2), "r" (__out), "r" (overflow), \
-          "0" ((ulong)0), "1" ((ulong)0) \
+          "0" ((ulong)0), "1" ((ulong)0), "2" ((ulong)0), "3" ((ulong)0) \
         : "cc"); \
 } while(0)
 
@@ -76,21 +72,17 @@ __extension__ ({ ulong __value, __arg1 = (a), __arg2 = (b); \
 
 #define subllx8(a,b,c,overflow) \
 do { long *__arg1 = a, *__arg2 = b, *__out = c; \
-     ulong __temp1, __temp2; \
+     ulong __temp1, __temp2, __temp3, __temp4 ; \
      __asm__( \
-"subs xzr,xzr,%6\n\t" \
-" ldr %0, [%3]     \n\t ldr %1, [%4]    \n\t sbcs %1, %0, %1\n\t str %1, [%5]    \n\t" \
-" ldr %0, [%3,-8]  \n\t ldr %1, [%4,-8] \n\t sbcs %1, %0, %1\n\t str %1, [%5,-8] \n\t" \
-" ldr %0, [%3,-16] \n\t ldr %1, [%4,-16]\n\t sbcs %1, %0, %1\n\t str %1, [%5,-16]\n\t" \
-" ldr %0, [%3,-24] \n\t ldr %1, [%4,-24]\n\t sbcs %1, %0, %1\n\t str %1, [%5,-24]\n\t" \
-" ldr %0, [%3,-32] \n\t ldr %1, [%4,-32]\n\t sbcs %1, %0, %1\n\t str %1, [%5,-32]\n\t" \
-" ldr %0, [%3,-40] \n\t ldr %1, [%4,-40]\n\t sbcs %1, %0, %1\n\t str %1, [%5,-40]\n\t" \
-" ldr %0, [%3,-48] \n\t ldr %1, [%4,-48]\n\t sbcs %1, %0, %1\n\t str %1, [%5,-48]\n\t" \
-" ldr %0, [%3,-56] \n\t ldr %1, [%4,-56]\n\t sbcs %1, %0, %1\n\t str %1, [%5,-56]\n\t" \
-"ngc %2,xzr\n\tsub %2,xzr,%2\n\t" \
-        : "=&r" (__temp1), "=&r" (__temp2), "=&r" (overflow) \
+"subs xzr,xzr,%8\n\t" \
+" ldp %2, %0, [%5,-8]  \n\t ldp %3, %1, [%6,-8]  \n\t sbcs %1, %0, %1\n\t sbcs %3, %2, %3\n\t stp %3, %1, [%7,-8]  \n\t" \
+" ldp %2, %0, [%5,-24] \n\t ldp %3, %1, [%6,-24] \n\t sbcs %1, %0, %1\n\t sbcs %3, %2, %3\n\t stp %3, %1, [%7,-24] \n\t" \
+" ldp %2, %0, [%5,-40] \n\t ldp %3, %1, [%6,-40] \n\t sbcs %1, %0, %1\n\t sbcs %3, %2, %3\n\t stp %3, %1, [%7,-40] \n\t" \
+" ldp %2, %0, [%5,-56] \n\t ldp %3, %1, [%6,-56] \n\t sbcs %1, %0, %1\n\t sbcs %3, %2, %3\n\t stp %3, %1, [%7,-56] \n\t" \
+"ngc %4,xzr\n\tsub %4,xzr,%4\n\t" \
+        : "=&r" (__temp1), "=&r" (__temp2), "=&r" (__temp3), "=&r" (__temp4), "=&r" (overflow) \
         : "r" (__arg1), "r" (__arg2), "r" (__out), "r" (overflow), \
-          "0" ((ulong)0), "1" ((ulong)0) \
+          "0" ((ulong)0), "1" ((ulong)0), "2" ((ulong)0), "3" ((ulong)0) \
         : "cc"); \
 } while(0)
 
