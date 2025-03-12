@@ -321,6 +321,7 @@ mt_queue_reset(void)
   pari_mt = NULL;
   BLOCK_SIGINT_END
   if (DEBUGLEVEL) pari_warn(warner,"stopping %ld threads", mt->n);
+  BLOCK_SIGINT_START
   for (i=0;i<mt->n;i++)
   {
     struct mt_queue *mq = mt->mq+i;
@@ -328,6 +329,9 @@ mt_queue_reset(void)
     pthread_mutex_destroy(&mq->mut);
     pari_thread_free(&mt->pth[i]);
   }
+  pthread_cond_destroy(mt->pcond);
+  pthread_cond_destroy(mt->pmut);
+  BLOCK_SIGINT_END
   pari_free(mt->mq);
   pari_free(mt->pth);
   pari_free(mt->th);
