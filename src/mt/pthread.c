@@ -329,8 +329,8 @@ mt_queue_reset(void)
     pthread_mutex_destroy(&mq->mut);
     pari_thread_free(&mt->pth[i]);
   }
-  pthread_cond_destroy(mt->pcond);
-  pthread_cond_destroy(mt->pmut);
+  pthread_cond_destroy(&mt->pcond);
+  pthread_mutex_destroy(&mt->pmut);
   BLOCK_SIGINT_END
   pari_free(mt->mq);
   pari_free(mt->pth);
