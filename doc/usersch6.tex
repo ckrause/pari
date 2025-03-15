@@ -2804,6 +2804,21 @@ integral, and \kbd{NULL} if it is not.
 \fun{int}{hnfdivide}{GEN A, GEN B} $A$ and $B$ are two upper triangular
 \kbd{ZM}. Return $1$ if $A^{-1} B$ is integral, and $0$ otherwise.
 
+\fun{GEN}{ZC_modhnf}{GEN A, GEN H, GEN *pQ} reduce the integral column vector
+$A$ modulo the HNF matrix $H$ (of compatible dimensions). The reduction
+$R$ is a \kbd{ZC} satisfying $0\leq R_i < H_{i,i}$ for all $i$. If \kbd{pQ}
+is not \kbd{NULL}, \kbd{*pQ} is set to the \kbd{ZC} $Q$ such that
+$A = HQ + R$. Both $Q$ and $R$ are unique.
+
+The function does not in fact assume that $H$ is in HNF, it needs only be
+upper triangular with positive diagonal entries.
+
+\fun{GEN}{ZM_modhnf}{GEN A, GEN H, GEN *Q} reduces the integral matrix $A$
+modulo the HNF matrix $H$ (of compatible dimensions). This is
+the same as applying \kbd{ZC\_modhnf} to successive columns of $A$.
+We still have $A = HQ + R$ as a matrix equality, with unique $Q$ and $R$,
+both of them \kbd{ZM}.
+
 \misctitle{Smith Normal Form}
 
 \fun{GEN}{ZM_snf}{GEN x} returns the Smith Normal Form (vector of
