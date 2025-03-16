@@ -1270,6 +1270,22 @@ forqfvec0(GEN a, GEN BORNE, GEN code)
 
 enum { min_ALL = 0, min_FIRST, min_VECSMALL, min_VECSMALL2 };
 
+static int
+stockmax_init(const char *fun, GEN STOCKMAX, long *maxrank)
+{
+  long r = 200;
+  if (!STOCKMAX) { *maxrank = 200; return 1; }
+  STOCKMAX = gfloor(STOCKMAX);
+  if (typ(STOCKMAX) != t_INT) pari_err_TYPE(fun, STOCKMAX);
+  r = itos(STOCKMAX);
+  if (r < 0)
+  {
+    char *e = stack_strcat(fun, "[negative number of vectors]");
+    pari_err_TYPE(e, STOCKMAX);
+  }
+  *maxrank = r; return 0;
+}
+
 /* Minimal vectors for the integral definite quadratic form: a.
  * Result u:
  *   u[1]= Number of vectors of square norm <= BORNE
@@ -1291,7 +1307,7 @@ minim0_dolll(GEN a, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
   pari_sp av = avma, av1;
   double p,maxnorm,BOUND,*v,*y,*z,**q;
   const double eps = 1e-10;
-  int stockall = 0;
+  int stockall;
   struct qfvec qv;
 
   if (!BORNE)
@@ -1304,19 +1320,7 @@ minim0_dolll(GEN a, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
     sBORNE = itos(BORNE); set_avma(av);
     if (sBORNE < 0) sBORNE = 0;
   }
-  if (!STOCKMAX)
-  {
-    stockall = 1;
-    maxrank = 200;
-  }
-  else
-  {
-    STOCKMAX = gfloor(STOCKMAX);
-    if (typ(STOCKMAX) != t_INT) pari_err_TYPE("minim0",STOCKMAX);
-    maxrank = itos(STOCKMAX);
-    if (maxrank < 0)
-      pari_err_TYPE("minim0 [negative number of vectors]",STOCKMAX);
-  }
+  stockall = stockmax_init("minim0", STOCKMAX, &maxrank);
 
   switch(flag)
   {
@@ -1396,7 +1400,8 @@ minim0_dolll(GEN a, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
     while (k > 1);
     if (! x[1] && y[1]<=eps) break;
 
-    p = (double)x[1] + z[1]; p = y[1] + p*p*v[1]; /* norm(x) */
+    p = (double)x[1] + z[1];
+    p = y[1] + p*p*v[1]; /* norm(x) */
     if (maxnorm >= 0)
     {
       if (p > maxnorm) maxnorm = p;
@@ -1476,47 +1481,31 @@ static GEN
 cvp0_dolll(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
 {
   GEN x, u, r, L;
-  GEN uinv, tv;
-  GEN pd;
-  long n = lg(a)-1, nt = lg(target)-1, i, j, k, s, maxrank;
+  long n = lg(a)-1, i, j, k, s, maxrank;
   pari_sp av = avma, av1;
   double p,maxnorm,BOUND,*v,*y,*z,*tt,**q, *tpre, sBORNE;
   const double eps = 1e-10;
-  int stockall = 0;
+  int stockall;
   struct qfvec qv;
   int done = 0;
-  if (typ(target) != t_VEC && typ(target) != t_COL ) pari_err_TYPE("cvp0",target);
-  if (n != nt) pari_err_TYPE("cvp0 [different dimensions]",target);
+
+  if (!is_vec_t(typ(target))) pari_err_TYPE("cvp0",target);
+  if (n != lg(target)-1) pari_err_TYPE("cvp0 [different dimensions]",target);
   if (!BORNE)
     sBORNE = 0.;
   else
   {
-    if (typ(BORNE) != t_REAL && typ(BORNE) != t_INT && typ(BORNE) != t_FRAC ) pari_err_TYPE("cvp0",BORNE);
-    sBORNE = gtodouble(BORNE); set_avma(av);
+    if (!is_real_t(typ(BORNE))) pari_err_TYPE("cvp0",BORNE);
+    sBORNE = gtodouble(BORNE);
     if (sBORNE < 0.) sBORNE = 0.;
   }
-  if (!STOCKMAX)
-  {
-    stockall = 1;
-    maxrank = 200;
-  }
-  else
-  {
-    STOCKMAX = gfloor(STOCKMAX);
-    if (typ(STOCKMAX) != t_INT) pari_err_TYPE("cvp0",STOCKMAX);
-    maxrank = itos(STOCKMAX);
-    if (maxrank < 0)
-      pari_err_TYPE("cvp0 [negative number of vectors]",STOCKMAX);
-  }
+  stockall = stockmax_init("cvp0", STOCKMAX, &maxrank);
 
   L = (flag==min_ALL) ? new_chunk(1+maxrank) : NULL;
-  if (n == 0 ) {
-    if (flag==min_ALL) {
-      retmkvec3(gen_0, gen_0, cgetg(1, t_MAT));
-    }
-    else {
-      return cgetg(1,t_VEC);
-    }
+  if (n == 0)
+  {
+    if (flag==min_ALL) retmkvec3(gen_0, gen_0, cgetg(1, t_MAT));
+    return cgetg(1,t_VEC);
   }
 
   minim_alloc(n+1, &q, &x, &y, &z, &v);
@@ -1532,43 +1521,30 @@ cvp0_dolll(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
     for (i=1; i<j; i++) q[i][j] = rtodbl(gcoeff(r,i,j)); /* |.| <= 1/2 */
   }
 
-  if( dolll ) {
-    /* compute U^-1 * tt */
-    uinv = ZM_inv(u, &pd);
-    tv = RgM_RgC_mul(uinv, target);
-    for (j=1; j<=n; j++)
-    {
-      tt[j] = gtodouble(gel(tv, j));
-    }
-  } else {
-    for (j=1; j<=n; j++)
-    {
-      tt[j] = gtodouble(gel(target, j));
-    }
+  if (dolll)
+  {
+    GEN tv = RgM_RgC_mul(ZM_inv(u, NULL), target);
+    for (j=1; j<=n; j++) tt[j] = gtodouble(gel(tv, j));
+  } else
+    for (j=1; j<=n; j++) tt[j] = gtodouble(gel(target, j));
+  /* precompute contribution of tt to z[l] */
+  for(k=1; k <= n; k++)
+  {
+    tpre[k] = -tt[k];
+    for(j=k+1; j<=n; j++) tpre[k] -= q[k][j] * tt[j];
   }
 
   if (sBORNE) maxnorm = 0.;
   else
   {
     GEN B = gcoeff(a,1,1);
-    for (i = 2; i <= n; i++)
-      B = addii(B, gcoeff(a,i,i));
+    for (i = 2; i <= n; i++) B = addii(B, gcoeff(a,i,i));
     maxnorm = -1.; /* don't update maxnorm */
     if (is_bigint(B)) return NULL;
     sBORNE = 0.;
-    for(i=1; i<=n; i++)
-      sBORNE += v[i];
+    for(i=1; i<=n; i++) sBORNE += v[i];
   }
   BOUND = sBORNE * (1 + eps);
-
-  /* precompute contribution of tt to z[l] */
-
-  for(k=1; k <= n; k++) {
-    tpre[k] = -tt[k];
-    for(j=k+1; j<=n; j++) {
-      tpre[k] -= q[k][j] * tt[j];
-    }
-  }
 
   s = 0;
   k = n; y[n] = 0;
@@ -1592,10 +1568,7 @@ cvp0_dolll(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
       {
         p = (double)x[k] + z[k];
         if (y[k] + p*p*v[k] <= BOUND) break;
-        if (k >= n) {
-          done = 1;
-          break;
-        }
+        if (k >= n) { done = 1; break; }
         k++; x[k]--;
       }
     }
@@ -1646,7 +1619,8 @@ cvp0_dolll(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
   k = minss(s,maxrank);
   L[0] = evaltyp(t_MAT) | evallg(k + 1);
   for (j=1; j<=k; j++)
-    gel(L,j) = (dolll==1) ? ZM_zc_mul(u, gel(L,j)) : zc_to_ZC(gel(L,j));
+    gel(L,j) = dolll==1 ? ZM_zc_mul(u, gel(L,j))
+                        : zc_to_ZC(gel(L,j));
   return gerepilecopy(av, mkvec3(stoi(s), r, L));
 }
 
