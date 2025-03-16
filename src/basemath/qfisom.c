@@ -97,13 +97,8 @@ zm_apply_zm(GEN M, GEN U)
 { return zm_mul(zm_transpose(U),zm_mul(M, U)); }
 
 static GEN
-zmV_apply_zm(GEN v, GEN U)
-{
-  long i, l;
-  GEN V = cgetg_copy(v, &l);
-  for (i=1; i<l; i++) gel(V,i) = zm_apply_zm(gel(v,i), U);
-  return V;
-}
+zmV_apply_zm(GEN x, GEN U)
+{ pari_APPLY_same(zm_apply_zm(gel(x,i), U)); }
 
 /********************************************************************/
 /**                                                                **/
