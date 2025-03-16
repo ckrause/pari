@@ -1076,11 +1076,10 @@ bestapprnf(GEN x, GEN T, GEN roT, long prec)
 void
 minim_alloc(long n, double ***q, GEN *x, double **y,  double **z, double **v)
 {
-  long i, s;
+  long i, s = n * sizeof(double);
 
   *x = cgetg(n, t_VECSMALL);
   *q = (double**) new_chunk(n);
-  s = n * sizeof(double);
   *y = (double*) stack_malloc_align(s, sizeof(double));
   *z = (double*) stack_malloc_align(s, sizeof(double));
   *v = (double*) stack_malloc_align(s, sizeof(double));
@@ -1088,19 +1087,11 @@ minim_alloc(long n, double ***q, GEN *x, double **y,  double **z, double **v)
 }
 
 static void
-cvp_alloc(long n, double ***q, GEN *x, double **y,  double **z, double **v, double **t, double **tpre)
+cvp_alloc(long n, double **t, double **tpre)
 {
-  long i, s;
-
-  *x = cgetg(n, t_VECSMALL);
-  *q = (double**) new_chunk(n);
-  s = n * sizeof(double);
-  *y = (double*) stack_malloc_align(s, sizeof(double));
-  *z = (double*) stack_malloc_align(s, sizeof(double));
-  *v = (double*) stack_malloc_align(s, sizeof(double));
+  long s = n * sizeof(double);
   *t = (double*) stack_malloc_align(s, sizeof(double));
   *tpre = (double*) stack_malloc_align(s, sizeof(double));
-  for (i=1; i<n; i++) (*q)[i] = (double*) stack_malloc_align(s, sizeof(double));
 }
 
 static GEN
@@ -1528,7 +1519,8 @@ cvp0_dolll(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
     }
   }
 
-  cvp_alloc(n+1, &q, &x, &y, &z, &v, &tt, &tpre);
+  minim_alloc(n+1, &q, &x, &y, &z, &v);
+  cvp_alloc(n+1, &tt, &tpre);
 
   forqfvec_init_dolll(&qv, &a, dolll);
   av1 = avma;
