@@ -1157,6 +1157,18 @@ zv_abs(GEN x)
 GEN
 ZM_neg(GEN x)
 { pari_APPLY_same(ZC_neg(gel(x,i))) }
+int
+zv_canon_inplace(GEN x)
+{
+  long l = lg(x), j, k;
+  for (j = 1; j < l && x[j] == 0; ++j);
+  if (j < l && x[j] < 0)
+  {
+    for (k = j; k < l; ++k) x[k] = -x[k];
+    return -1;
+  }
+  return 1;
+}
 
 void
 ZV_togglesign(GEN M)

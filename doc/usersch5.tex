@@ -9452,6 +9452,11 @@ occurs in the fringe case where an entry is equal to $2^{\B-1}$.
 for overflow is done, which occurs in the fringe case where an entry is equal
 to $2^{\B-1}$.
 
+\fun{int}{zv_canon_inplace}{GEN x} return $1$ if the first non-zero entry of
+$x$ is positive (or $x$ is $0$); else return $-1$ and replace $x$ by $-x$ in
+place by negating its entries. No check for overflow is done, which occurs in
+the fringe case where an entry is equal to $2^{\B-1}$.
+
 \fun{GEN}{zm_zc_mul}{GEN x, GEN y}
 
 \fun{GEN}{zm_mul}{GEN x, GEN y}

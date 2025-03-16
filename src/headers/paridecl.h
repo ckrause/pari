@@ -1594,6 +1594,7 @@ GEN     zm_to_ZM(GEN z);
 GEN     zm_zc_mul(GEN x, GEN y);
 GEN     zmV_to_ZMV(GEN z);
 GEN     zv_abs(GEN x);
+int     zv_canon_inplace(GEN x);
 long    zv_content(GEN x);
 long    zv_dotproduct(GEN x, GEN y);
 int     zv_equal(GEN V, GEN W);

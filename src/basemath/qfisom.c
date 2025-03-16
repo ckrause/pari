@@ -71,24 +71,12 @@ zm_divmod(GEN A, GEN B, ulong p)
   return gerepileupto(av, C);
 }
 
-static int
-zv_canon(GEN V)
-{
-  long l = lg(V), j, k;
-  for (j = 1; j < l && V[j] == 0; ++j);
-  if (j < l && V[j] < 0)
-  {
-    for (k = j; k < l; ++k) V[k] = -V[k];
-    return -1;
-  }
-  return 1;
-}
 static GEN
 ZM_to_zm_canon(GEN V)
 {
   GEN W = ZM_to_zm(V);
   long i, l = lg(W);
-  for (i=1; i<l; i++) (void)zv_canon(gel(W,i));
+  for (i=1; i<l; i++) (void)zv_canon_inplace(gel(W,i));
   return W;
 }
 
@@ -387,7 +375,7 @@ operate(long nr, GEN A, GEN V)
   pari_sp av = avma;
   long im,eps;
   GEN w = zm_zc_mul(A,gel(V,labs(nr)));
-  eps = zv_canon(w);
+  eps = zv_canon_inplace(w);
   if (nr < 0) eps = -eps; /* -w */
   if ((im = vecvecsmall_search(V,w)) < 0)
     pari_err_BUG("qfauto, image of vector not found");
@@ -738,7 +726,7 @@ qfisom_candidates(GEN CI, long I, GEN x, struct qfauto *qf,
        list comb[I-1].list */
     if (!zv_equal0(scpvec))
     {
-      sign = zv_canon(scpvec);
+      sign = zv_canon_inplace(scpvec);
       /* x[0..I-1] not a partial automorphism ? */
       if ((num = vecvecsmall_search(list,scpvec)) < 0) return gc_long(av,0);
       else
@@ -1061,7 +1049,7 @@ scpvecs(GEN *pt_vec, long I, GEN b, long dep, struct qfauto *qf)
     GEN Vvj = gel(V,j), scpvec = scpvector(Vvj, b, I, dep, v);
     long i, nr, sign;
     if (zv_equal0(scpvec)) continue;
-    sign = zv_canon(scpvec);
+    sign = zv_canon_inplace(scpvec);
     nr = vecvecsmall_search(list, scpvec);
     if (nr > 0) /* scpvec already in list */
     {
@@ -1580,7 +1568,7 @@ qforbits(GEN G, GEN V)
       {
         GEN Vij = zm_zc_mul(gel(gen, j), gel(v, o[cnd]));
         long k;
-        (void) zv_canon(Vij);
+        (void) zv_canon_inplace(Vij);
         if ((k = vecvecsmall_search(v, Vij)) < 0) return gc_const(av, gen_0);
         if (w[k] == 0) { o[++no] = k; w[k] = nborbits; }
       }
