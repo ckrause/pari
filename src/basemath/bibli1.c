@@ -1097,23 +1097,19 @@ cvp_alloc(long n, double **t, double **tpre)
 static GEN
 ZC_canon(GEN V)
 {
-  long l = lg(V), j;
-  for (j = 1; j < l  &&  signe(gel(V,j)) == 0; ++j);
-  return (j < l  &&  signe(gel(V,j)) < 0)? ZC_neg(V): V;
+  long l = lg(V), j, s;
+  for (j = 1; j < l; j++)
+    if ((s = signe(gel(V,j)))) return s < 0? ZC_neg(V): V;
+  return V;
 }
-
 static GEN
-ZM_zc_mul_canon(GEN u, GEN x)
-{
-  return ZC_canon(ZM_zc_mul(u,x));
-}
-
+ZM_zc_mul_canon(GEN u, GEN x) { return ZC_canon(ZM_zc_mul(u,x)); }
 static GEN
 ZM_zc_mul_canon_zm(GEN u, GEN x)
 {
   pari_sp av = avma;
-  GEN M = ZV_to_zv(ZC_canon(ZM_zc_mul(u,x)));
-  return gerepileupto(av, M);
+  GEN y = ZV_to_zv(ZM_zc_mul(u,x));
+  zv_canon_inplace(y); return gerepileupto(av, y);
 }
 
 struct qfvec
