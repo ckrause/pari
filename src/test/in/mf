@@ -861,3 +861,5 @@ mf=mfinit([27,2],0);f=mfeigenbasis(mf)[1];
 symb=mfsymbol(mf,f);a=(-1+sqrt(-3))/2;
 F(s,t)=mfsymboleval(symb,[s,t]);
 exponent(F(oo,0)+F(0,a)-F(oo,a))<-128
+
+mfpetersson(mfsymbol(D), mfsymbol(mflinear([D,mfEk(12)] ,[1,2])))

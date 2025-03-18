@@ -22,6 +22,7 @@ BA  15- Flx_mod_Xn1(T,n), deg T >= 2*n -> wrong result
         domain error when "close" to boundary, e.g., sumeulerrat(1/p, 1+1e-17)
     18- Z[CM]_hnfremdiv(A, B, &Q) set Q to the negative of documented value
 BA  19- parforeach([1..1000],j,vector(10^5,i,i)) -> stack overflow
+    20- mfpetersson() incorrect when one form not cuspidal
 
   Added
      1- [libpari] prodprimes, prodprimeslim

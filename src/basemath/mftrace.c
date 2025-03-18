@@ -12605,7 +12605,7 @@ mfpetersson_i(GEN FS, GEN GS)
       pari_err_TYPE("mfpetersson [different mf]", mkvec2(FS,GS));
   }
   ESG = fs_get_vES(GS);
-  if (!gequal0(gel(ESF,1)) && !gequal0(gel(ESG,1)))
+  if (!gequal0(gel(ESF,1)) || !gequal0(gel(ESG,1)))
     return mfpeterssonnoncusp(FS, GS);
   if (gequal0(gel(ESF,2)) || gequal0(gel(ESG,2))) return gc_const(av, gen_0);
   N = MF_get_N(mf);
