@@ -2132,6 +2132,7 @@ check_modinv(long inv)
   case INV_W3W3E2:
   case INV_W5W7:
   case INV_W3W13:
+  case INV_ATKIN3:
     break;
   default:
     pari_err_DOMAIN("polmodular", "inv", "invalid invariant", stoi(inv), gen_0);
