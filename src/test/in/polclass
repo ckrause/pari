@@ -37,8 +37,8 @@ check_disc(D, hash, seed = 0) =
      error("polisclass(polclass(",D[1],"))!=",D[1]));
    my (h = hash_ZX(P));
    if (h != hash,
-       error("Wrong class polynomial for D = ", D[1], ", inv = ", D[2]),
-             "hash = ", h);
+       error("Wrong class polynomial for D = ", D[1], ", inv = ", D[2],
+             ", hash = ", h));
 }
 
 {
