@@ -711,7 +711,8 @@ modfn_unambiguous_root(ulong *r, long inv, ulong j0, norm_eqn_t ne, GEN jdb)
   if (p2 == p1) {
     if (!next_surface_nbr(&j1, phi, p1, p1_depth, j1, &j0, p, pi))
       pari_err_BUG("modfn_unambiguous_root");
-  } else {
+  } else if (p2 > 1)
+  {
     long p2_depth = u_lval(v, p2);
     phi = polmodular_db_getp(jdb, p2, p);
     if (!next_surface_nbr(&j1, phi, p2, p2_depth, j1, NULL, p, pi))
@@ -3257,8 +3258,8 @@ orientation_ambiguity(long D1, long L0, long modinv_p1, long modinv_p2, long mod
   {
     GEN P = gsqr(primeform_u(D, L0));
     if (equalii(gel(P,1), gel(Q1,1))
-        || (modinv_p2 && modinv_p1 != modinv_p2
-                      && equalii(gel(P,1), gel(Q2,1)))) {
+        || (modinv_p2 > 1 && modinv_p1 != modinv_p2
+                          && equalii(gel(P,1), gel(Q2,1)))) {
       dbg_printf(3)("Bad D=%ld, a=b^{+/-2} problem between modinv_N=%ld and L0=%ld\n",
                     D1, modinv_N, L0);
       ambiguity = 1;
