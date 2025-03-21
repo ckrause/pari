@@ -1725,7 +1725,7 @@ genus2_red5(GEN P, GEN T, GEN p)
   {
     GEN Pr, R, r, Rs;
     (void) ZXX_pvalrem(P, p, &Pr);
-    R = FpXQX_roots_mult(Pr, 3, T, p);
+    R = FpXQX_roots_mult(Pr, 2, T, p);
     if (lg(R)==1) return P;
     r = FpX_center(gel(R,1), p, shifti(p,-1));
     r = gel(R,1);
