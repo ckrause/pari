@@ -1807,18 +1807,21 @@ GEN
 genus2_eulerfact(GEN P, GEN p, long ra, long rt)
 {
   pari_sp av = avma;
-  GEN W, R = genus2_type5(P, p), E;
+  GEN W, R, E;
+  long d = 2*ra+rt;
+  if (d == 0) return pol_1(0);
+  R = genus2_type5(P, p);
   if (R) return R;
   W = hyperellextremalmodels(P, 2, p);
   if (lg(W) < 3)
   {
     GEN F = genus2_eulerfact_semistable(P,p);
-    if (degpol(F)!=2*ra+rt)
+    if (degpol(F)!=d)
     {
       GEN S = genus2_halfstablemodel(P, p);
       F = genus2_eulerfact_semistable(S, p);
+      if (degpol(F)!=d) pari_err_BUG("genus2charpoly");
     }
-    if (degpol(F)!=2*ra+rt) pari_err_BUG("genus2charpoly");
     return F;
   }
   E =  gmul(genus2_eulerfact_semistable(gel(W,1),p),
