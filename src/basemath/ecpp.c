@@ -549,9 +549,9 @@ static GEN
 polmodular_db_init_allinv(void)
 {
   const long DEFAULT_MODPOL_DB_LEN = 32;
-  GEN a, b = cgetg(39+1, t_VEC);
+  GEN a, b = cgetg(INV_LAST+1, t_VEC);
   long i;
-  for (i = 1; i < 40; i++) gel(b,i) = zerovec_block(DEFAULT_MODPOL_DB_LEN);
+  for (i = 1; i <= INV_LAST; i++) gel(b,i) = zerovec_block(DEFAULT_MODPOL_DB_LEN);
   a = zerovec_block(DEFAULT_MODPOL_DB_LEN);
   return mkvec2(a, b);
 }
