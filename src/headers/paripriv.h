@@ -168,7 +168,13 @@ GEN  FpM_ratlift_worker(GEN A, GEN mod, GEN B);
 GEN  ellQ_factorback_worker(GEN P, GEN E, GEN A, GEN L, ulong l);
 GEN  chinese_unit_worker(GEN P, GEN A, GEN U, GEN B, GEN D, GEN C);
 GEN  partmap_reverse_frac_worker(GEN t, GEN a, GEN b, GEN la, GEN lb, long v);
+GEN  parsqf_worker(GEN gk, GEN vR, GEN data);
 GEN  parsum_slice_worker(GEN a, GEN b, GEN m, GEN worker);
+GEN  parsumprimefun_worker(GEN gk, GEN s, GEN zerf, GEN data, GEN vW, GEN f);
+GEN  lerch_worker(GEN t, GEN E);
+GEN  ramanujantau_worker(GEN gt, GEN p2_7, GEN p_9, GEN p);
+GEN  taugen_n_worker(GEN t, GEN pol, GEN p4);
+GEN  serh_worker(GEN gk, GEN V, GEN a, GEN ns, GEN gprec);
 
 /* Relative number fields */
 enum { rnf_NFABS = 1, rnf_MAPS };
@@ -691,8 +697,6 @@ void    random_curves_with_m_torsion(ulong *a4, ulong *a6, ulong *tx, ulong *ty,
 /* dirichlet.c */
 
 GEN     direuler_factor(GEN s, long n);
-GEN     parsqf_worker(GEN gk, GEN vR, GEN data);
-GEN     parsumprimefun_worker(GEN gk, GEN s, GEN zerf, GEN data, GEN vW, GEN f);
 
 /* ellanal.c */
 
@@ -803,15 +807,12 @@ GEN     contfracinit_i(GEN M, long n);
 
 /* lfunlarge.c */
 
-GEN     int_h0_worker(GEN j, GEN sel, GEN s, GEN chi, GEN gprec);
-
 /* FIXME: delete */
 GEN     lerchzetalarge(GEN s, GEN a, GEN lam, long prec);
 GEN     lfunloglambdalarge(GEN CHI, GEN s, long bitprec);
 GEN     lfunlambdalarge(GEN CHI, GEN s, long bitprec);
 GEN     lfunlarge(GEN CHI, GEN s, long bitprec);
 GEN     zetahurwitzlarge(GEN s, GEN a, long prec);
-GEN     serh_worker(GEN gk, GEN V, GEN a, GEN ns, GEN gprec);
 
 /* mftrace.c */
 
@@ -882,10 +883,6 @@ long    ceilsqrtdiv(GEN x, GEN y);
 
 GEN     nflistQT(long n, long k, long v);
 
-/* ramanujantau.c */
-GEN     ramanujantau_worker(GEN gt, GEN p2_7, GEN p_9, GEN p);
-GEN     taugen_n_worker(GEN t, GEN pol, GEN p4);
-
 /* readline.c */
 
 char**  pari_completion(pari_rl_interface *pari_rl, char *text, int START, int END);
@@ -924,7 +921,6 @@ GEN     trans_fix_arg(long *prec, GEN *s0, GEN *sig, GEN *tau, pari_sp *av, GEN 
 
 GEN     double_eta_quotient(GEN a, GEN w, GEN D, long p, long q, GEN pq, GEN sqrtD);
 GEN     inv_szeta_euler(long n, long prec);
-GEN     lerch_worker(GEN t, GEN E);
 
 /* volcano.c */
 
