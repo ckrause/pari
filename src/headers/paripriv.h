@@ -573,20 +573,20 @@ GEN  export_get(const char *str);
 
 /* parinf.h */
 
-GEN  coltoalg(GEN nf,GEN x);
-GEN  fincke_pohst(GEN a,GEN BOUND,long stockmax,long PREC, FP_chk_fun *CHECK);
-void init_zlog(zlog_S *S, GEN bid);
-GEN  log_gen_arch(zlog_S *S, long index);
-GEN  log_gen_pr(zlog_S *S, long index, GEN nf, long e);
-GEN  make_integral(GEN nf, GEN L0, GEN f, GEN listpr);
-GEN  poltobasis(GEN nf,GEN x);
-GEN  rnfdisc_get_T(GEN nf, GEN P, GEN *lim);
-GEN  rnfallbase(GEN nf, GEN pol, GEN lim, GEN eq, GEN *pD, GEN *pfi, GEN *pdKP);
-GEN  sprk_log_gen_pr(GEN nf, GEN sprk, long e);
-GEN  sprk_log_gen_pr2(GEN nf, GEN sprk, long e);
-GEN  sprk_log_prk1(GEN nf, GEN a, GEN sprk);
-GEN  sprk_to_bid(GEN nf, GEN L, long flag);
-GEN  subgroupcondlist(GEN cyc, GEN bound, GEN listKer);
+GEN     coltoalg(GEN nf,GEN x);
+GEN     fincke_pohst(GEN a,GEN BOUND,long stockmax,long PREC, FP_chk_fun *CHECK);
+void    init_zlog(zlog_S *S, GEN bid);
+GEN     log_gen_arch(zlog_S *S, long index);
+GEN     log_gen_pr(zlog_S *S, long index, GEN nf, long e);
+GEN     make_integral(GEN nf, GEN L0, GEN f, GEN listpr);
+GEN     poltobasis(GEN nf,GEN x);
+GEN     rnfdisc_get_T(GEN nf, GEN P, GEN *lim);
+GEN     rnfallbase(GEN nf, GEN pol, GEN lim, GEN eq, GEN *pD, GEN *pfi, GEN *pdKP);
+GEN     sprk_log_gen_pr(GEN nf, GEN sprk, long e);
+GEN     sprk_log_gen_pr2(GEN nf, GEN sprk, long e);
+GEN     sprk_log_prk1(GEN nf, GEN a, GEN sprk);
+GEN     sprk_to_bid(GEN nf, GEN L, long flag);
+GEN     subgroupcondlist(GEN cyc, GEN bound, GEN listKer);
 
 /* Qfb.c */
 
@@ -595,9 +595,9 @@ GEN     redimagsl2(GEN q, GEN *U);
 /* alglin1.c */
 
 typedef long (*pivot_fun)(GEN,GEN,long,GEN);
-GEN ZM_pivots(GEN x0, long *rr);
-GEN RgM_pivots(GEN x0, long *rr, pivot_fun pivot, GEN data);
-void RgMs_structelim_col(GEN M, long nbcol, long nbrow, GEN A, GEN *p_col, GEN *p_lin);
+GEN     ZM_pivots(GEN x0, long *rr);
+GEN     RgM_pivots(GEN x0, long *rr, pivot_fun pivot, GEN data);
+void    RgMs_structelim_col(GEN M, long nbcol, long nbrow, GEN A, GEN *p_col, GEN *p_lin);
 
 /* arith1.c */
 
@@ -654,11 +654,11 @@ GEN     condliftS4(GEN nf);
 GEN     producttree_scheme(long n);
 
 /* bern.c */
-long bernbitprec(long N);
+long    bernbitprec(long N);
 
 /* bibli2.c */
 
-GEN sort_factor_pol(GEN y, int (*cmp)(GEN,GEN));
+GEN     sort_factor_pol(GEN y, int (*cmp)(GEN,GEN));
 
 /* buch1.c */
 
@@ -686,28 +686,28 @@ GEN     subgrouplist_cond_sub(GEN bnr, GEN C, GEN bound);
 
 /* crvwtors.c */
 
-void random_curves_with_m_torsion(ulong *a4, ulong *a6, ulong *tx, ulong *ty, long ncurves, long m, ulong p, ulong pi);
+void    random_curves_with_m_torsion(ulong *a4, ulong *a6, ulong *tx, ulong *ty, long ncurves, long m, ulong p, ulong pi);
 
 /* dirichlet.c */
 
-GEN direuler_factor(GEN s, long n);
-GEN parsqf_worker(GEN gk, GEN vR, GEN data);
-GEN parsumprimefun_worker(GEN gk, GEN s, GEN zerf, GEN data, GEN vW, GEN f);
+GEN     direuler_factor(GEN s, long n);
+GEN     parsqf_worker(GEN gk, GEN vR, GEN data);
+GEN     parsumprimefun_worker(GEN gk, GEN s, GEN zerf, GEN data, GEN vW, GEN f);
 
 /* ellanal.c */
 
-GEN hnaive_max(GEN ell, GEN ht);
+GEN     hnaive_max(GEN ell, GEN ht);
 
 /* elliptic.c */
 
-GEN  ellQ_genreduce(GEN E, GEN G, GEN M, long prec);
-GEN  ellQ_isdivisible(GEN E, GEN P, ulong l);
-GEN  ellminimalbmodel(GEN E, GEN *ptv);
-GEN  ellintegralbmodel(GEN e, GEN *pv);
-GEN  ellnfembed(GEN E, long prec);
-void ellnfembed_free(GEN L);
-GEN  ellpointnfembed(GEN E, GEN P, long prec);
-void ellprint(GEN e);
+GEN     ellQ_genreduce(GEN E, GEN G, GEN M, long prec);
+GEN     ellQ_isdivisible(GEN E, GEN P, ulong l);
+GEN     ellminimalbmodel(GEN E, GEN *ptv);
+GEN     ellintegralbmodel(GEN e, GEN *pv);
+GEN     ellnfembed(GEN E, long prec);
+void    ellnfembed_free(GEN L);
+GEN     ellpointnfembed(GEN E, GEN P, long prec);
+void    ellprint(GEN e);
 
 /* ellrank.c */
 
@@ -742,8 +742,8 @@ GEN     Flm_pivots(GEN x, ulong p, long *rr, long inplace);
 
 /* Flxq_log.c */
 
-GEN Flxq_log_index(GEN a0, GEN b0, GEN m, GEN T0, ulong p);
-int Flxq_log_use_index(GEN m, GEN T0, ulong p);
+GEN     Flxq_log_index(GEN a0, GEN b0, GEN m, GEN T0, ulong p);
+int     Flxq_log_use_index(GEN m, GEN T0, ulong p);
 
 /* FlxqE.c */
 
@@ -752,8 +752,8 @@ long    zx_is_pcyc(GEN T);
 
 /* FpV.c */
 
-GEN FpMs_leftkernel_elt_col(GEN M, long nbcol, long nbrow, GEN p);
-GEN FpX_to_mod_raw(GEN z, GEN p);
+GEN     FpMs_leftkernel_elt_col(GEN M, long nbcol, long nbrow, GEN p);
+GEN     FpX_to_mod_raw(GEN z, GEN p);
 
 /* FpX.c */
 
@@ -803,24 +803,24 @@ GEN     contfracinit_i(GEN M, long n);
 
 /* lfunlarge.c */
 
-GEN int_h0_worker(GEN j, GEN sel, GEN s, GEN chi, GEN gprec);
+GEN     int_h0_worker(GEN j, GEN sel, GEN s, GEN chi, GEN gprec);
 
 /* FIXME: delete */
-GEN lerchzetalarge(GEN s, GEN a, GEN lam, long prec);
-GEN lfunloglambdalarge(GEN CHI, GEN s, long bitprec);
-GEN lfunlambdalarge(GEN CHI, GEN s, long bitprec);
-GEN lfunlarge(GEN CHI, GEN s, long bitprec);
-GEN zetahurwitzlarge(GEN s, GEN a, long prec);
-GEN serh_worker(GEN gk, GEN V, GEN a, GEN ns, GEN gprec);
+GEN     lerchzetalarge(GEN s, GEN a, GEN lam, long prec);
+GEN     lfunloglambdalarge(GEN CHI, GEN s, long bitprec);
+GEN     lfunlambdalarge(GEN CHI, GEN s, long bitprec);
+GEN     lfunlarge(GEN CHI, GEN s, long bitprec);
+GEN     zetahurwitzlarge(GEN s, GEN a, long prec);
+GEN     serh_worker(GEN gk, GEN V, GEN a, GEN ns, GEN gprec);
 
 /* mftrace.c */
 
-void pari_close_mf(void);
-long polishomogeneous(GEN P);
-GEN sertocol(GEN S);
-GEN mfrhopol(long n);
-GEN mfrhopol_u_eval(GEN Q, ulong t2);
-GEN mfrhopol_eval(GEN Q, GEN t2);
+void    pari_close_mf(void);
+long    polishomogeneous(GEN P);
+GEN     sertocol(GEN S);
+GEN     mfrhopol(long n);
+GEN     mfrhopol_u_eval(GEN Q, ulong t2);
+GEN     mfrhopol_eval(GEN Q, GEN t2);
 
 /* prime.c */
 
@@ -837,27 +837,27 @@ GEN     vecperm_extendschreier(GEN C, GEN v, long n);
 
 /* polclass.c */
 
-GEN polclass0(long D, long inv, long vx, GEN *db);
+GEN     polclass0(long D, long inv, long vx, GEN *db);
 
 /* polmodular.c */
 
-GEN polmodular0_ZM(long L, long inv, GEN J, GEN Q, int compute_derivs, GEN *db);
-GEN Flm_Fl_polmodular_evalx(GEN phi, long L, ulong j, ulong p, ulong pi);
-GEN polmodular_db_init(long inv);
-void polmodular_db_clear(GEN db);
-void polmodular_db_add_level(GEN *db, long L, long inv);
-void polmodular_db_add_levels(GEN *db, long *levels, long k, long inv);
-GEN polmodular_db_for_inv(GEN db, long inv);
-GEN polmodular_db_getp(GEN fdb, long L, ulong p);
+GEN     polmodular0_ZM(long L, long inv, GEN J, GEN Q, int compute_derivs, GEN *db);
+GEN     Flm_Fl_polmodular_evalx(GEN phi, long L, ulong j, ulong p, ulong pi);
+GEN     polmodular_db_init(long inv);
+void    polmodular_db_clear(GEN db);
+void    polmodular_db_add_level(GEN *db, long L, long inv);
+void    polmodular_db_add_levels(GEN *db, long *levels, long k, long inv);
+GEN     polmodular_db_for_inv(GEN db, long inv);
+GEN     polmodular_db_getp(GEN fdb, long L, ulong p);
 
-long modinv_level(long inv);
-long modinv_degree(long *p1, long *p2, long inv);
-long modinv_ramified(long D, long inv, long *pN);
-long modinv_j_from_2double_eta(GEN F, long inv, ulong x0, ulong x1, ulong p, ulong pi);
-GEN double_eta_raw(long inv);
-ulong modfn_root(ulong j, norm_eqn_t ne, long inv);
-long modfn_unambiguous_root(ulong *r, long inv, ulong j0, norm_eqn_t ne, GEN jdb);
-GEN qfb_nform(long D, long n);
+long    modinv_level(long inv);
+long    modinv_degree(long *p1, long *p2, long inv);
+long    modinv_ramified(long D, long inv, long *pN);
+long    modinv_j_from_2double_eta(GEN F, long inv, ulong x0, ulong x1, ulong p, ulong pi);
+GEN     double_eta_raw(long inv);
+ulong   modfn_root(ulong j, norm_eqn_t ne, long inv);
+long    modfn_unambiguous_root(ulong *r, long inv, ulong j0, norm_eqn_t ne, GEN jdb);
+GEN     qfb_nform(long D, long n);
 
 /* Fle.c */
 
@@ -875,12 +875,12 @@ GEN     nf_direct_compositum(GEN nf, GEN A, GEN B);
 
 /* nflist.c */
 
-GEN veccond_to_A5(GEN L, long s);
-long ceilsqrtdiv(GEN x, GEN y);
+GEN     veccond_to_A5(GEN L, long s);
+long    ceilsqrtdiv(GEN x, GEN y);
 
 /* nflistQT.c */
 
-GEN nflistQT(long n, long k, long v);
+GEN     nflistQT(long n, long k, long v);
 
 /* ramanujantau.c */
 GEN     ramanujantau_worker(GEN gt, GEN p2_7, GEN p_9, GEN p);
@@ -928,10 +928,10 @@ GEN     lerch_worker(GEN t, GEN E);
 
 /* volcano.c */
 
-long j_level_in_volcano(GEN phi, ulong j, ulong p, ulong pi, long L, long depth);
-ulong ascend_volcano(GEN phi, ulong j, ulong p, ulong pi, long level, long L, long depth, long steps);
-ulong descend_volcano(GEN phi, ulong j, ulong p, ulong pi, long level, long L, long depth, long steps);
-long next_surface_nbr(ulong *nJ, GEN phi, long L, long h, ulong J, const ulong *pJ, ulong p, ulong pi);
-GEN enum_roots(ulong j, norm_eqn_t ne, GEN fdb, GEN G, GEN vshape);
+long    j_level_in_volcano(GEN phi, ulong j, ulong p, ulong pi, long L, long depth);
+ulong   ascend_volcano(GEN phi, ulong j, ulong p, ulong pi, long level, long L, long depth, long steps);
+ulong   descend_volcano(GEN phi, ulong j, ulong p, ulong pi, long level, long L, long depth, long steps);
+long    next_surface_nbr(ulong *nJ, GEN phi, long L, long h, ulong J, const ulong *pJ, ulong p, ulong pi);
+GEN     enum_roots(ulong j, norm_eqn_t ne, GEN fdb, GEN G, GEN vshape);
 
 ENDEXTERN
