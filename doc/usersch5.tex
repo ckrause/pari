@@ -5975,6 +5975,9 @@ $\prod_i (\kbd{pol\_x[v]} - \kbd{V[i]})$.
 \fun{GEN}{init_Fq}{GEN p, long n, long v} returns an irreducible polynomial
 of degree $\kbd{n} > 0$ over $\F_p$, in variable \kbd{v}.
 
+\fun{int}{FpXQX_is_squarefree}{GEN P, GEN T, GEN p} returns $1$ if $P$ is
+squarefree, $0$ otherwise.
+
 \fun{int}{FqX_is_squarefree}{GEN P, GEN T, GEN p}
 
 \fun{GEN}{FpXQX_roots}{GEN f, GEN T, GEN p} return the roots of $f$ in

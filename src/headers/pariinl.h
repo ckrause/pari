@@ -2470,6 +2470,9 @@ FqX_normalize(GEN z, GEN T, GEN p)
 { return T? FpXQX_normalize(z, T, p): FpX_normalize(z, p); }
 INLINE GEN
 FqX_deriv(GEN f, GEN T, GEN p) { return T? FpXX_deriv(f, p): FpX_deriv(f, p); }
+INLINE long
+FqX_is_squarefree(GEN P, GEN T, GEN p)
+{ return T ? FpXQX_is_squarefree(P, T, p): FpX_is_squarefree(P, p); }
 INLINE GEN
 FqX_integ(GEN f, GEN T, GEN p) { return T? FpXX_integ(f, p): FpX_integ(f, p); }
 INLINE GEN

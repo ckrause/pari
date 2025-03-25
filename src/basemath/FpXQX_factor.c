@@ -2912,10 +2912,10 @@ FlxqX_is_squarefree(GEN P, GEN T, ulong p)
 }
 
 long
-FqX_is_squarefree(GEN P, GEN T, GEN p)
+FpXQX_is_squarefree(GEN P, GEN T, GEN p)
 {
   pari_sp av = avma;
-  GEN z = FqX_gcd(P, FqX_deriv(P, T, p), T, p);
+  GEN z = FpXQX_gcd(P, FpXX_deriv(P, p), T, p);
   return gc_long(av, degpol(z)==0);
 }
 
