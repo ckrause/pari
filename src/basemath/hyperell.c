@@ -1719,22 +1719,22 @@ static GEN
 genus2_red5(GEN P, GEN T, GEN p)
 {
   long vx = varn(P), vy = varn(T);
-  GEN f = shallowcopy(T);
+  GEN f = shallowcopy(T), pi = shifti(p,-1);
   setvarn(f, vx);
   while(1)
   {
     GEN Pr, R, r, Rs;
-    (void) ZXX_pvalrem(P, p, &Pr);
-    R = FpXQX_roots_mult(Pr, 2, T, p);
+    long v = ZXX_pvalrem(P, p, &Pr);
+    R = FpXQX_roots_mult(Pr, 2-v, T, p);
     if (lg(R)==1) return P;
-    r = FpX_center(gel(R,1), p, shifti(p,-1));
-    r = gel(R,1);
-    P = RgX_affine(P, p, r);
+    r = FpX_center(gel(R,1), p, pi);
+    Pr = RgX_affine(P, p, r);
     setvarn(r, vx);
     f = RgX_Rg_div(gsub(f, r), p);
-    Rs = RgX_rem(RgXY_swap(P, 3, vy), gsub(f, pol_x(vy)));
-    P = RgXY_swap(Rs, 3, vy);
-    (void) ZXX_pvalrem(P, sqri(p), &P);
+    Rs = RgX_rem(RgXY_swap(Pr, 3, vy), gsub(f, pol_x(vy)));
+    Pr = RgXY_swap(Rs, 3, vy);
+    if (ZXX_pvalrem(Pr, sqri(p), &Pr)==0) return P;
+    P = Pr;
   }
 }
 
@@ -1743,6 +1743,8 @@ genus2_type5(GEN P, GEN p)
 {
   GEN E, F, T, a, a2, Q;
   long v;
+  if (equaliu(p, 2))
+    (void) ZXX_pvalrem(P, sqri(p), &P);
   (void) ZX_pvalrem(P, p, &F);
   F = FpX_red(F, p);
   if (degpol(F) < 1) return NULL;
