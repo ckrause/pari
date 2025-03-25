@@ -1216,6 +1216,10 @@ issues (by invalidating the PARI stack below \kbd{av}).
 \fun{ulong}{get_avma}{void} return \kbd{avma}. Useful for languages that
 do not provide access to TLS variables.
 
+\fun{GEN}{gc_GEN}{pari_sp av, GEN x} cleans up the stack from
+\kbd{av} on, recopying the object \kbd{x} to a new address which is
+returned.
+
 \fun{GEN}{gc_NULL}{pari_sp av} reset \kbd{avma} to \kbd{av} and return
 \kbd{NULL}.
 

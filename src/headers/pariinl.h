@@ -1282,7 +1282,7 @@ gerepileupto(pari_sp av, GEN x)
 
 /* gerepileupto(av, gcopy(x)) */
 INLINE GEN
-gerepilecopy(pari_sp av, GEN x)
+gc_GEN(pari_sp av, GEN x)
 {
   if (is_recursive_t(typ(x)))
   {

@@ -51,6 +51,7 @@ BA  18- polclass: support for Atkin modular function of level 3
      2- removed elleisnum optional flag. If you really want elliptic
         invariants, use E4/12 and -E6/216.
 AP   3- strtime: use days in addition to hours, minutes, ms.
+BA   4- gerepilecopy renamed to gc_GEN.
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed
