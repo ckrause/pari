@@ -471,7 +471,7 @@ gp_readvec_stream(FILE *fi)
   }
   if (DEBUGLEVEL) err_printf("gp_readvec_stream: found %ld entries\n",i-1);
   setlg(z,i); delete_buffer(b);
-  return gerepilecopy(ltop,z);
+  return gc_GEN(ltop,z);
 }
 
 GEN
@@ -4126,7 +4126,7 @@ get_lines(FILE *F)
     gel(z,i++) = strtoGENstr(s);
   }
   delete_buffer(b); setlg(z, i);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 GEN
@@ -4440,7 +4440,7 @@ readbin(const char *name, FILE *f, int *vector)
       if (DEBUGLEVEL)
         pari_warn(warner,"%ld unnamed objects read. Returning then in a vector",
                   s_obj.n - 1);
-      x = gerepilecopy(av, obj);
+      x = gc_GEN(av, obj);
       if (vector) *vector = 1;
   }
   pari_stack_delete(&s_obj);

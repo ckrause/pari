@@ -136,7 +136,7 @@ rnfisnorminit(GEN T, GEN R, long galois)
   gel(y,5) = S;
   gel(y,6) = nf_pV_to_prV(nf, S);
   gel(y,7) = nf_pV_to_prV(nfabs, S);
-  gel(y,8) = stoi(galois); return gerepilecopy(av, y);
+  gel(y,8) = stoi(galois); return gc_GEN(av, y);
 }
 
 /* T as output by rnfisnorminit
@@ -228,7 +228,7 @@ rnfisnorm(GEN T, GEN x, long flag)
   x = lift_if_rational(x);
   if (typ(aux) == t_POLMOD && degpol(nfpol) == 1)
     gel(aux,2) = lift_if_rational(gel(aux,2));
-  return gerepilecopy(av, mkvec2(aux, x));
+  return gc_GEN(av, mkvec2(aux, x));
 }
 
 GEN

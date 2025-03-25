@@ -112,7 +112,7 @@ ZM_permanent(GEN M)
     if (gc_needed(av, 1)) gerepileall(av, 2, &in, &p);
   }
   if (n&1) togglesign_safe(&p);
-  return gerepilecopy(av, p);
+  return gc_GEN(av, p);
 }
 
 /* Assumes M square; dimensions <= 31x31 (32-bit) or 63x63 (64-bit). */

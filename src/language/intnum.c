@@ -344,7 +344,7 @@ intnumgauss(void *E, GEN (*eval)(void*, GEN), GEN a, GEN b, GEN tab, long prec)
     S = gadd(S, gmul(gel(W,i), gadd(P,M)));
     S = gprec_wensure(S, prec2);
   }
-  return gerepilecopy(ltop, gprec_wtrunc(gmul(bma,S), prec));
+  return gc_GEN(ltop, gprec_wtrunc(gmul(bma,S), prec));
 }
 
 GEN
@@ -1096,7 +1096,7 @@ GEN
 intnuminit(GEN a, GEN b, long m, long prec)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, intnuminit_i(a,b,m,prec));
+  return gc_GEN(av, intnuminit_i(a,b,m,prec));
 }
 
 static GEN
@@ -1160,7 +1160,7 @@ intfuncinit(void *E, GEN (*eval)(void*, GEN), GEN a, GEN b, long m, long prec)
   if (is_fin_f(transcode(a,"intfuncinit")) ||
       is_fin_f(transcode(b,"intfuncinit")))
     pari_err_IMPL("intfuncinit with finite endpoints");
-  return gerepilecopy(av, intfuncinit_i(E, eval, tab));
+  return gc_GEN(av, intfuncinit_i(E, eval, tab));
 }
 
 static GEN
@@ -1293,11 +1293,11 @@ intnum(void *E, GEN (*eval)(void*, GEN), GEN a, GEN b, GEN tab, long prec)
     S = intnum(E, eval, na ? na : a, nb ? nb : b, tab, prec);
     if (na) S = gsub(S, intnum(E, eval, na, a, tab, prec));
     if (nb) S = gsub(S, intnum(E, eval, b, nb, tab, prec));
-    return gerepilecopy(ltop, S);
+    return gc_GEN(ltop, S);
   }
   tab = intnuminit0(a, b, tab, prec);
   S = intnum_i(E, eval, gprec_wensure(a, l), gprec_wensure(b, l), tab, prec);
-  return gerepilecopy(ltop, gprec_wtrunc(S, prec));
+  return gc_GEN(ltop, gprec_wtrunc(S, prec));
 }
 
 typedef struct auxint_s {
@@ -1532,7 +1532,7 @@ quodif(GEN M, long n)
   pari_sp av = avma;
   GEN C = quodif_i(M, n);
   if (!C) pari_err(e_MISC, "0 divisor in QD algorithm");
-  return gerepilecopy(av, C);
+  return gc_GEN(av, C);
 }
 GEN
 contfracinit(GEN M, long n)
@@ -1541,7 +1541,7 @@ contfracinit(GEN M, long n)
   GEN C = quodif_i(M, n);
   if (!C) pari_err(e_MISC, "0 divisor in QD algorithm");
   if (lg(C) < 3) { set_avma(av); retmkvec2(cgetg(1,t_VEC), cgetg(1,t_VEC)); }
-  return gerepilecopy(av, contfrac_Euler(C));
+  return gc_GEN(av, contfrac_Euler(C));
 }
 GEN
 contfracinit_i(GEN M, long n)
@@ -1591,7 +1591,7 @@ contfraceval_inv(GEN CF, GEN tinv, long nlim)
     S2 = gadd(gmul(gadd(gel(A, j-1), tinv), S1), gel(B, j-1));
     S3 = gadd(gmul(gadd(gel(A, j-2), tinv), S2), gmul(gel(B, j-2), S1));
     S = gdiv(gmul(gel(B, j-3), S2), S3);
-    if (gc_needed(av, 3)) S = gerepilecopy(av, S);
+    if (gc_needed(av, 3)) S = gc_GEN(av, S);
   }
   return gdiv(tinv, gadd(gadd(gel(A, 1), tinv), S));
 }
@@ -1842,7 +1842,7 @@ sumnummonieninit(GEN asymp, GEN w, GEN n0, long prec)
       if (lg(w) == 3 && typ(gel(w,1)) == t_CLOSURE) break;
     default: pari_err_TYPE(fun, w);
   }
-  return gerepilecopy(av, sumnummonieninit_i(a, b, w, n0, prec));
+  return gc_GEN(av, sumnummonieninit_i(a, b, w, n0, prec));
 }
 
 GEN
@@ -1870,7 +1870,7 @@ sumnummonien(void *E, GEN (*eval)(void*,GEN), GEN n0, GEN tab, long prec)
     S = gadd(S, gmul(gel(vwt,i), eval(E, gel(vabs,i))));
     S = gprec_wensure(S, prec);
   }
-  return gerepilecopy(av, gprec_wtrunc(S, prec));
+  return gc_GEN(av, gprec_wtrunc(S, prec));
 }
 
 static GEN
@@ -1978,7 +1978,7 @@ sumnum(void *E, GEN (*eval)(void*, GEN), GEN a, GEN tab, long prec)
     S = gprec_wensure(S, prec2);
   }
   S = gadd(S, intnum(E, eval,stoi(N), fast, tabint, prec2));
-  return gerepilecopy(av, gprec_wtrunc(S, prec));
+  return gc_GEN(av, gprec_wtrunc(S, prec));
 }
 
 GEN
@@ -2018,7 +2018,7 @@ intnumgauexpinit(long prec)
     gel(vwt, j) = gprec_wtrunc(poleval(R, a), prec0);
     gel(vabs, j) = gprec_wtrunc(sqrtr_abs(a), prec0);
   }
-  return gerepilecopy(ltop, mkvec2(vabs, vwt));
+  return gc_GEN(ltop, mkvec2(vabs, vwt));
 }
 
 /* Compute \int_{-oo}^oo w(x)f(x) dx, where w(x)=x/(exp(2pi x)-1)
@@ -2041,7 +2041,7 @@ intnumgauexp(void *E, GEN (*eval)(void*,GEN), GEN gN, GEN tab, long prec)
     S = gadd(S, gmul(gdiv(w,x), cxtoreal(t)));
     S = gprec_wensure(S, prec);
   }
-  return gerepilecopy(av, gprec_wtrunc(S, prec));
+  return gc_GEN(av, gprec_wtrunc(S, prec));
 }
 
 GEN
@@ -2158,7 +2158,7 @@ intnumainfrat(GEN F, long N, GEN r, long prec)
   for (k = lim; k >= v; k--) /* S <- (S + coeff(ser,k)/(k-1)) / N */
     S = gdivgu(gadd(S, gdivgu(sercoeff(ser,k), k-1)), N);
   if (v-2) S = gdiv(S, powuu(N, v-2));
-  return gerepilecopy(av, gprec_wtrunc(S, prec));
+  return gc_GEN(av, gprec_wtrunc(S, prec));
 }
 
 static GEN
@@ -2481,7 +2481,7 @@ sumeulerrat(GEN F, GEN s, long a, long prec)
   P = N < 1000000? primes_interval(gen_2, utoipos(N)): NULL;
   z = sumlogzeta(ser, s, P, N, rs, lN, vF, lim, prec);
   z = gadd(z, opFps(&gadd, P, N, a, F, s, prec));
-  return gerepilecopy(av, gprec_wtrunc(z, prec));
+  return gc_GEN(av, gprec_wtrunc(z, prec));
 }
 
 /* F = N/D; return F'/F. Assume D a t_POL */
@@ -2537,7 +2537,7 @@ prodeulerrat(GEN F, GEN s, long a, long prec)
   P = N < 1000000? primes_interval(gen_2, utoipos(N)): NULL;
   z = gexp(sumlogzeta(ser, s, P, N, rs, lN, vF, lim, prec), prec);
   z = gmul(z, opFps(&gmul, P, N, a, F, s, prec));
-  return gerepilecopy(ltop, gprec_wtrunc(z, prec));
+  return gc_GEN(ltop, gprec_wtrunc(z, prec));
 }
 
 /* Compute $\sum_{n\ge a}c(n)$ using Lagrange extrapolation.
@@ -2568,7 +2568,7 @@ sumnumlagrange1init(GEN c1, long flag, long prec)
     gel(V, n) = gerepileuptoint(av, t);
   }
   V = gdiv(RgV_gtofp(V, prec2), mpfact(N));
-  return gerepilecopy(av, mkvec4(gen_1, stoi(prec2), gen_1, V));
+  return gc_GEN(av, mkvec4(gen_1, stoi(prec2), gen_1, V));
 }
 
 static GEN
@@ -2594,7 +2594,7 @@ sumnumlagrange2init(GEN c1, long flag, long prec)
     gel(V, n) = told; told = tnew;
   }
   V = gdiv(RgV_gtofp(V, prec2), mpfact(2*N));
-  return gerepilecopy(av, mkvec4(gen_2, stoi(prec2), gen_1, V));
+  return gc_GEN(av, mkvec4(gen_2, stoi(prec2), gen_1, V));
 }
 
 static GEN
@@ -2653,7 +2653,7 @@ sumnumlagrangeinit_i(GEN al, GEN c1, long flag, long prec)
   }
   if (flag)
     for (n = N-1; n >= 1; n--) gel(W, n) = gadd(gel(W, n+1), gel(W, n));
-  return gerepilecopy(av, mkvec4(al, stoi(prec2), gen_1, W));
+  return gc_GEN(av, mkvec4(al, stoi(prec2), gen_1, W));
 }
 
 GEN
@@ -2689,7 +2689,7 @@ sumnumlagrangeinit(GEN al, GEN c1, long prec)
     S = gadd(S, tmp);
     gel(V, n) = (n == N)? tmp: gadd(gel(V, n+1), tmp);
   }
-  return gerepilecopy(ltop, mkvec4(al, stoi(prec2), S, V));
+  return gc_GEN(ltop, mkvec4(al, stoi(prec2), S, V));
 }
 
 /* - sum_{n=1}^{as-1} f(n) */
@@ -2748,7 +2748,7 @@ sumnumlagrange(void *E, GEN (*eval)(void*,GEN,long), GEN a, GEN tab, long prec)
     s = gprec_wensure(s, prec);
   }
   if (!gequal1(S)) s = gdiv(s,S);
-  return gerepilecopy(av, gprec_wtrunc(s, prec));
+  return gc_GEN(av, gprec_wtrunc(s, prec));
 }
 
 GEN
@@ -2863,7 +2863,7 @@ intnumosc(void *E, GEN (*f)(void*, GEN), GEN a, GEN H, long flag, GEN tab,
             break;
     default: S = sumpos((void*)&D, osc_wrap, gen_0, prec); break;
   }
-  return gerepilecopy(av, S);
+  return gc_GEN(av, S);
 }
 
 GEN

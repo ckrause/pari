@@ -1211,7 +1211,7 @@ pol_chi_xi(GEN K, long p, long j, long n)
     err_printf("(wd,d_chi,p,f,d,j,H)=(%ld,%ld,%ld,%ld,%ld,%ld,%Ps)\n",
         wd,d_chi,p,f,d,j,gmael3(K, 1, 1, 1));
 #endif
-  return gerepilecopy(av, pol);
+  return gc_GEN(av, pol);
 }
 
 /* return 0 if lam_psi (psi=chi^j) is determined to be zero.
@@ -1279,7 +1279,7 @@ imag_cyc_pol(GEN K, long p, long n)
     K2 = shallowconcat(K, mkvec2(MinPol2, zx_ber_num(Chi, f, d_K)));
     for (i=1; i<=n_conj; i++)
       if ((Lam[i] = lam_chi_ber(K2, p, C[i])) == 0) n_done++;
-    if (n_conj==n_done) return gerepilecopy(av, z); /* all chi-parts trivial */
+    if (n_conj==n_done) return gc_GEN(av, z); /* all chi-parts trivial */
   }
   q0 = (f%p)? f*p: f;
   pn1 = upowuu(p, n+1);
@@ -1296,7 +1296,7 @@ imag_cyc_pol(GEN K, long p, long n)
     z1 = pol_chi_xi(K2, p, C[i], n);
     if (degpol(z1)) z = vec_append(z, z1);  /* degpol(z1) may be zero */
   }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 /* K is an imaginary cyclic extension of degree d contained in Q(zeta_f)
@@ -1699,7 +1699,7 @@ xi_approx(GEN K, long prec)
     gel(xi, i) = y;
     g = Fl_mul(g, g_K, f);
   }
-  return gerepilecopy(av, xi);
+  return gc_GEN(av, xi);
 }
 
 static GEN
@@ -1727,7 +1727,7 @@ theta_xi_el(GEN K, ulong el)
     xi[i] = y;
     g = Fl_mul(g, g_K, f);
   }
-  return gerepilecopy(av, mkvec2(theta, xi));
+  return gc_GEN(av, mkvec2(theta, xi));
 }
 
 static GEN
@@ -1763,7 +1763,7 @@ Xi_el(GEN K, GEN tInvA, ulong el)
   if ((Theta = make_Theta(gel(tx, 1), d_K, el))==NULL) return NULL;
   Xi = make_Xi(gel(tx, 2), d_K);
   X = Flm_mul(Flm_mul(Xi, Theta, el), ZM_to_Flm(tInvA, el), el);
-  return gerepilecopy(av, X);
+  return gc_GEN(av, X);
 }
 
 static GEN
@@ -1788,7 +1788,7 @@ pol_xi_el(GEN K, ulong el)
     xi[i] = y;
     g = Fl_mul(g, g_K, f);
   }
-  return gerepilecopy(av, Flv_roots_to_pol(xi, el, 0));
+  return gc_GEN(av, Flv_roots_to_pol(xi, el, 0));
 }
 
 /* theta[1+i] = i-th conj of theta; xi[1+i] = i-th conj of xi. */
@@ -1815,7 +1815,7 @@ theta_xi_approx(GEN K, long prec)
     gel(xi, i) = y;
     g = Fl_mul(g, g_K, f);
   }
-  return gerepilecopy(av, mkvec2(theta, xi));
+  return gc_GEN(av, mkvec2(theta, xi));
 }
 
 static GEN
@@ -1835,7 +1835,7 @@ bound_coeff_xi(GEN K, GEN tInvA)
   tInvV = RgM_mul(RgM_inv(R), tInvA);
   x1 = gsupnorm(tInvV, prec); x2 = gsupnorm(xi, prec);
   bound = mulrs(mulrr(x1, x2), 3*d_K);
-  return gerepilecopy(av, bound);
+  return gc_GEN(av, bound);
 }
 
 static GEN
@@ -1885,7 +1885,7 @@ xi_data_basis(GEN K)
   if (A_den==NULL) A_den = gen_1;
   Xi = get_Xi(K, shallowtrans(InvA));
   if (DEBUGLEVEL>1) timer_printf(&ti, "xi_data_basis");
-  return gerepilecopy(av, mkvec5(T, B, shallowtrans(A), Xi, A_den));
+  return gc_GEN(av, mkvec5(T, B, shallowtrans(A), Xi, A_den));
 }
 
 /* When factorization of polcyclo mod el is difficult, one can try to
@@ -1942,7 +1942,7 @@ bound_pol_xi(GEN K)
 
   for (i=1; i<n; i++) M = mulrr(M, addrr(one, gel(xi, i)));
   M = mulrs(M, 3);
-  return gerepilecopy(av, M);
+  return gc_GEN(av, M);
 }
 
 static GEN
@@ -2050,7 +2050,7 @@ xi_data_galois(GEN K)
   pol2 = galoispermtopol(G, perm_powu(perm, k));
   pol2 = Q_remove_denom(pol2, &Den);
   if (Den==NULL) Den = gen_1;
-  return gerepilecopy(av, mkvec3(T, pol2, Den));
+  return gc_GEN(av, mkvec3(T, pol2, Den));
 }
 
 /* If g(X)\in Q[X] s.t. g(xi)=xi^{g_K} was found,
@@ -2286,7 +2286,7 @@ G_K_vell(GEN K, GEN vellg, ulong gk)
   z_f = ZV_chinese(A, P, &M);
   vz_f = Fp_powers(z_f, f-1, M)+1;
   for (i=1; i<=h; i++) gel(z, i) = gel(vz_f, Fl_mul(H[i], gk, f));
-  return gerepilecopy(av, FpV_roots_to_pol(z, M, 0));
+  return gc_GEN(av, FpV_roots_to_pol(z, M, 0));
 }
 
 /* f=cond(K), M=product of ell in vell, G(K/Q)=<g_K>
@@ -2317,7 +2317,7 @@ G_K_p(GEN K, GEN ellg, ulong gk)
   z_f = Fp_pow(g_ell, diviuexact(subiu(ell, 1), f), ell);
   vz_f = Fp_powers(z_f, f-1, ell)+1;
   for (i=1; i<=h; i++) gel(z, i) = gel(vz_f, Fl_mul(H[i], gk, f));
-  return gerepilecopy(av, FpV_roots_to_pol(z, ell, 0));
+  return gc_GEN(av, FpV_roots_to_pol(z, ell, 0));
 }
 
 static GEN
@@ -2331,7 +2331,7 @@ G_K_l(GEN K, GEN ellg, ulong gk)
   z_f = Fl_powu(g_ell, (ell-1) / f, ell);
   vz_f = Fl_powers(z_f, f-1, ell)+1;
   for (i=1; i<=h; i++) z[i] = vz_f[Fl_mul(H[i], gk, f)];
-  return gerepilecopy(av, Flv_roots_to_pol(z, ell, 0));
+  return gc_GEN(av, Flv_roots_to_pol(z, ell, 0));
 }
 
 static GEN
@@ -2415,9 +2415,9 @@ D_xi_el_vell_FFT(GEN K, GEN elg, GEN vellg, ulong d, ulong j0, GEN vG_K)
       GEN x2 = Fp_powu(x1, e_chi[(k+i-1)%d_K], M);
       gel(z, i) = Fp_mul(gel(z, i), x2, M);
     }
-    z = gerepilecopy(av, z);
+    z = gc_GEN(av, z);
   }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 static GEN
@@ -2470,9 +2470,9 @@ D_xi_el_vell(GEN K, GEN elg, GEN vellg, ulong d, ulong j0)
       GEN x2 = Fp_powu(x0, e_chi[(k+i-1)%d_K], M);
       gel(z, i) = Fp_mul(gel(z, i), x2, M);
     }
-    z = gerepilecopy(av, z);
+    z = gc_GEN(av, z);
   }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 static GEN
@@ -2546,7 +2546,7 @@ D_xi_el_Flx_mul(GEN K, GEN elg, GEN ellg, GEN vG_K, ulong d, ulong j0)
     }
     set_avma(av);
   }
-  return gerepilecopy(av, Flv_to_ZV(z));
+  return gc_GEN(av, Flv_to_ZV(z));
 }
 
 static GEN
@@ -2621,9 +2621,9 @@ D_xi_el_ZX_mul(GEN K, GEN elg, GEN ellg, GEN vG_K, ulong d, ulong j0)
       GEN x2 = Fp_powu(x1, e_chi[(k+i-1)%d_K], ell);
       gel(z, i) = Fp_mul(gel(z, i), x2, ell);
     }
-    z = gerepilecopy(av, z);
+    z = gc_GEN(av, z);
   }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 static GEN
@@ -2713,10 +2713,10 @@ D_xi_el_sl(GEN K, GEN elg, GEN ellg, ulong d, ulong j0)
       gel(z, i) = Fp_mul(gel(z, i), x2, ell);
     }
     if (k == d_K-1) break;
-    z = gerepilecopy(av2, z);
+    z = gc_GEN(av2, z);
     gk = Fl_mul(gk, g_K, f);
   }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 static long
@@ -2944,7 +2944,7 @@ cyc_real_ss(GEN K, GEN xi, ulong p, long j, long pow, long el, ulong pn, long fl
     pari_sp av = avma;
     GEN gr = (K_get_d(K) == 2)? cyc_buch(K_get_f(K), utoi(p), pow)
                                : cyc_real_MLL(K, p, pow, j, flag);
-    return gerepilecopy(av, mkvec3(utoipos(d_chi * pow), gr, gen_0));
+    return gc_GEN(av, mkvec3(utoipos(d_chi * pow), gr, gen_0));
   }
   if (pow==1) return mkvec3(utoi(d_chi), onevec(d_chi), gen_0);
   return mkvec3(utoi(pow*d_chi), nullvec(), gen_0);
@@ -2988,7 +2988,7 @@ xi_conj_s(GEN K, ulong el)
     xi[i] = x;
     gi = Fl_mul(gi, g, f);
   }
-  return gerepilecopy(av, xi);
+  return gc_GEN(av, xi);
 }
 
 static GEN
@@ -3010,7 +3010,7 @@ xi_conj_l(GEN K, GEN el)
     gel(xi, i) = x;
     gi = Fl_mul(gi, g, f);
   }
-  return gerepilecopy(av, xi);
+  return gc_GEN(av, xi);
 }
 
 static GEN
@@ -3155,7 +3155,7 @@ gauss_Flx_mul(ulong f, GEN elg, GEN ellg)
     if ((i2+=i+i+1)>=f2) i2%=f2;
   }
   /* W[r]=tau_{LL}^{sigma_r}, 1<= r <= f-1 */
-  return gerepilecopy(av, Flv_to_ZV(W));
+  return gc_GEN(av, Flv_to_ZV(W));
 }
 
 static GEN
@@ -3206,7 +3206,7 @@ gauss_ZX_mul(ulong f, GEN elg, GEN ellg)
     {
       w = both_odd(f,i)? FpV_shift_sub(w, w0, ell, start, end)
                        : FpV_shift_add(w, w0, ell, start, end);
-      if ((i & 7) == 0) w = gerepilecopy(av2, w);
+      if ((i & 7) == 0) w = gc_GEN(av2, w);
     }
     for (i = 1; i <= f; i++) gel(W, i) = addii(gel(w, i), gel(w, i+lv));
   }
@@ -3215,7 +3215,7 @@ gauss_ZX_mul(ulong f, GEN elg, GEN ellg)
     gel(W, i) = Fp_mul(gel(W, 1+i), gel(vz_2f, 1+i2), ell);
     if ((i2+=i+i+1) >= f2) i2 %= f2;
   }
-  return gerepilecopy(av, W);  /* W[r]=tau_{LL}^{sigma_r}, 1<= r <= f-1 */
+  return gc_GEN(av, W);  /* W[r]=tau_{LL}^{sigma_r}, 1<= r <= f-1 */
 }
 
 /* fast but consumes memory */
@@ -3264,7 +3264,7 @@ gauss_el_vell(ulong f, GEN elg, GEN vellg, GEN vz_2f)
     {
       w = both_odd(f,i)? FpV_shift_sub(w, w0, M, start, end)
                        : FpV_shift_add(w, w0, M, start, end);
-      if ((i & 7) == 0) w = gerepilecopy(av2, w);
+      if ((i & 7) == 0) w = gc_GEN(av2, w);
     }
     for (i = 1; i <= f; i++) gel(W, i) = Fp_add(gel(w, i), gel(w, i+lv), M);
   }
@@ -3273,7 +3273,7 @@ gauss_el_vell(ulong f, GEN elg, GEN vellg, GEN vz_2f)
     gel(W, i) = Fp_mul(gel(W, 1+i), gel(vz_2f, 1+i2), M);
     if ((i2+=i+i+1) >= f2) i2 %= f2;
   }
-  return gerepilecopy(av, W);  /* W[r]=tau_{LL}^{sigma_r}, 1<= r <= f-1 */
+  return gc_GEN(av, W);  /* W[r]=tau_{LL}^{sigma_r}, 1<= r <= f-1 */
 }
 
 static GEN
@@ -3298,7 +3298,7 @@ norm_chi(GEN K, GEN TAU, ulong p, long d_pow, GEN ell, long j0)
       gel(z, j) = Fp_mul(gel(z, j), y2, ell);
     }
   }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 static void
@@ -3450,7 +3450,7 @@ cyc_imag(GEN K, GEN B, GEN p, long j, GEN powp, long flag)
   if (x==1) return mkvec3(utoi(d_chi), onevec(d_chi), gen_1);
   if ((flag&USE_MLL)==0) return mkvec3(utoi(x*d_chi), nullvec(), gen_1);
   gr = d_K == 2? cyc_buch(-f_K, p, x): cyc_imag_MLL(K, itou(p), x, j, flag);
-  return gerepilecopy(av, mkvec3(utoipos(d_chi * x), gr, gen_1));
+  return gc_GEN(av, mkvec3(utoipos(d_chi * x), gr, gen_1));
 }
 
 /* handle representatives of all injective characters, d_chi=[Q_p(zeta_d):Q_p],
@@ -3623,13 +3623,13 @@ pclgp(GEN p0, long f, GEN HH, long degF, long flag)
       else { set_avma(av2); continue; }
       n_sub++; n_chi += gmael(vData, d_K, 4)[2]; /* += n_conj */
       if (lg(z1) == 1) set_avma(av2);
-      else gr = gerepilecopy(av2, shallowconcat(gr, z1));
+      else gr = gc_GEN(av2, shallowconcat(gr, z1));
     }
     zi = mkcol(p);
     zi = vec_append(zi, (flag&NO_PLUS_PART)?nullvec():gather_part(gr, 0));
     zi = vec_append(zi, (flag&NO_MINUS_PART)?nullvec():gather_part(gr, 1));
     zi = shallowconcat(zi, mkcol3(cycGH, utoi(n_sub), utoi(n_chi)));
-    gel(z, ip) = gerepilecopy(av, zi);
+    gel(z, ip) = gc_GEN(av, zi);
   }
   return typ(p0) == t_INT? shallowtrans(gel(z,1)): shallowtrans(z);
 }
@@ -3660,7 +3660,7 @@ ber_norm_cyc(GEN x0, long g, long n, long d)
     if (odd(di))
       xi = ZX_mod_Xnm1(ZX_mul(xi, ber_conj(x0, Fl_powu(g, fi, d), d)), d);
   }
-  return gerepilecopy(av, xi);
+  return gc_GEN(av, xi);
 }
 
 /* x0 a ZX of deg < d */
@@ -3679,7 +3679,7 @@ ber_norm_by_cyc(GEN x0, long d, GEN MinPol)
   x = ZX_rem(x, MinPol);  /* slow */
   if (DEBUGLEVEL>1) timer_printf(&ti, "ber_norm_by_cyc [ZX_rem]");
   if (lg(x) != 3) pari_err_BUG("subcyclohminus [norm of Bernoulli number]");
-  return gerepilecopy(av, gel(x, 2));
+  return gc_GEN(av, gel(x, 2));
 }
 
 /* MinPol = polcyclo(d_K, 0).
@@ -3875,7 +3875,7 @@ ber_cyc5(GEN K, GEN p)
     x2 = shifti(x2, dMinPol);
   }
   if (p) x = stoi(itou(x1)-Z_pval(x2, p)); else x = reduce_gcd(x1, x2);
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 /*  Hirabayashi-Yoshino, Manuscripta Math. vol.60, 423-436 (1988), Theorem 1
@@ -4035,7 +4035,7 @@ subcyclopclgp(GEN FH, GEN p, long flag)
     if (f == 1) { set_avma(av); return nullvec(); }
   }
   if (flag >= USE_BASIS) pari_err_FLAG("subcyclopclgp");
-  return gerepilecopy(av, pclgp(p, f, H, degF, flag));
+  return gc_GEN(av, pclgp(p, f, H, degF, flag));
 }
 
 static GEN
@@ -4074,7 +4074,7 @@ subcycloiwasawa(GEN FH, GEN P, long n)
   pari_sp av = avma;
   GEN z = subcycloiwasawa_i(FH, P, n);
   if (!z) { set_avma(av); return n? nullvec(): mkvec(gen_0); }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 GEN
@@ -4090,5 +4090,5 @@ subcyclohminus(GEN FH, GEN P)
     if (isintzero(P)) P = NULL; else checkp(fun, 0, P);
   }
   if (degF == 1 ||  srh_1(H) == 1) return gen_1;
-  return gerepilecopy(av, rel_class_num(f, H, degF, P));
+  return gc_GEN(av, rel_class_num(f, H, degF, P));
 }

@@ -1060,7 +1060,7 @@ ellfacteur(GEN N, int insist)
       if (DEBUGLEVEL >= 4)
         err_printf("ECM: time = %6ld ms\n\tfound factor = %Ps\n",
                    timer_delay(&E.T), g);
-      return gerepilecopy(av, g);
+      return gc_GEN(av, g);
     }
     if (dsn < dsnmax)
     {
@@ -1089,7 +1089,7 @@ Z_ECM(GEN N, long rounds, long seed, ulong B1)
   for (i = rounds; i--; )
   {
     GEN g = ECM_loop(&E, N, B1);
-    if (g) return gerepilecopy(av, g);
+    if (g) return gc_GEN(av, g);
   }
   return gc_NULL(av);
 }
@@ -1342,7 +1342,7 @@ Z_pollardbrent(GEN n, long rounds, long seed)
   if (typ(v) == t_INT) v = mkvec2(v, diviiexact(n,v));
   else if (lg(v) == 7) v = mkvec2(gel(v,1), gel(v,4));
   else v = mkvec3(gel(v,1), gel(v,4), gel(v,7));
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 /***********************************************************************/
@@ -4447,7 +4447,7 @@ Z_factor_until(GEN n, GEN limit)
     F2 = sort_factor(F2, (void*)&abscmpii, cmp_nodata);
     F = merge_factor(F, F2, (void*)&abscmpii, cmp_nodata);
   }
-  return gerepilecopy(av, F);
+  return gc_GEN(av, F);
 }
 
 static void
@@ -4558,7 +4558,7 @@ GEN
 vecfactoru(ulong a, ulong b)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, vecfactoru_i(a,b));
+  return gc_GEN(av, vecfactoru_i(a,b));
 }
 
 /* Assume a and b odd, return L s.t. L[k] = factoru(a + 2*(k-1))
@@ -4600,7 +4600,7 @@ GEN
 vecfactoroddu(ulong a, ulong b)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, vecfactoroddu_i(a,b));
+  return gc_GEN(av, vecfactoroddu_i(a,b));
 }
 
 /* If 0 <= a <= c <= b; L[c-a+1] = factoru(c)[,1] if c squarefree, else NULL */

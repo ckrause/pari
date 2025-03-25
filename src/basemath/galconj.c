@@ -363,7 +363,7 @@ monoratlift(void *E, GEN S, GEN q)
     if (galoisfrobeniustest(tlift, gl, frob))
     {
       if(DEBUGLEVEL>=4) err_printf("MonomorphismLift: true early solution.\n");
-      return gerepilecopy(ltop, tlift);
+      return gc_GEN(ltop, tlift);
     }
     if(DEBUGLEVEL>=4) err_printf("MonomorphismLift: false early solution.\n");
   }
@@ -843,7 +843,7 @@ listznstarelts(long m, long o)
     gel(L,i) = subgrouplist(gel(zn,2), mkvec(utoipos(ind)));
   L = shallowconcat1(L); l = lg(L);
   for (i = 1; i < l; i++) gel(L,i) = znstar_hnf_elts(zns, gel(L,i));
-  return gerepilecopy(av, L);
+  return gc_GEN(av, L);
 }
 
 /* A sympol is a symmetric polynomial
@@ -1007,7 +1007,7 @@ fixedfieldsympol(GEN O, ulong l)
   }
   if (!sym) pari_err_BUG("fixedfieldsympol [p too small]");
   if (DEBUGLEVEL>=2) err_printf("FixedField: Found: %Ps\n",gel(sym,1));
-  return gerepilecopy(ltop,sym);
+  return gc_GEN(ltop,sym);
 }
 
 /* Let O a set of orbits as indices and L the corresponding roots.
@@ -1891,7 +1891,7 @@ galoisfindgroups(GEN lo, GEN sg, long f)
     if (zv_equal(W, sg)) gel(V,j++) = loi;
     set_avma(av);
   }
-  setlg(V,j); return gerepilecopy(ltop,V);
+  setlg(V,j); return gc_GEN(ltop,V);
 }
 
 static GEN
@@ -2385,7 +2385,7 @@ genorbit(GEN ordH, GEN permfact_Hp, long fr, long n, long k, long j)
     no++;
   }
   if(no<l) pari_err_BUG("genorbit");
-  return gerepilecopy(av, mkvec2(orb,gen));
+  return gc_GEN(av, mkvec2(orb,gen));
 }
 
 INLINE GEN br_get(GEN br, long i, long j) { return gmael(br,j,i-j); }
@@ -2693,7 +2693,7 @@ nilp_froblift(GEN genG, GEN autH, long j, GEN pcgrp,
         GEN pfi = perm_inv(pf);
         long d = get_pow(pfi, uel(ord,j+1), pcp, genG);
         gel(br,j+1) = brj;
-        return gerepilecopy(av,mkvec3(pfi,mkvec2(const_vecsmall(d,1),A),id));
+        return gc_GEN(av,mkvec3(pfi,mkvec2(const_vecsmall(d,1),A),id));
       }
       set_avma(av2);
     }
@@ -2846,7 +2846,7 @@ galoisgen(GEN T, GEN L, GEN M, GEN den, GEN bad, struct galois_borne *gb,
   {
     GEN Tp = ZX_to_Flx(gel(gf.Tmod,1), gf.p);
     res = mkvec5(mkvec(frob), mkvec(Tp), mkvec(sigma), mkvecsmall(gf.p), cyclic_pc(n));
-    return gerepilecopy(ltop, res);
+    return gc_GEN(ltop, res);
   }
   O = perm_cycles(frob);
   if (DEBUGLEVEL >= 9) err_printf("GaloisConj: Frobenius:%Ps\n", sigma);
@@ -2873,7 +2873,7 @@ galoisgen(GEN T, GEN L, GEN M, GEN den, GEN bad, struct galois_borne *gb,
     res = galoisgenlift(gg_get_std(gel(PG,1)), gel(PG,2), O, L, M, frob, gb, &gf);
   }
   if (!res) return gc_NULL(ltop);
-  return gerepilecopy(ltop, res);
+  return gc_GEN(ltop, res);
 }
 
 /* T = polcyclo(N) */
@@ -2904,7 +2904,7 @@ aut_to_groupelts(GEN aut, GEN L, ulong p)
   GEN G = cgetg(d+1, t_VEC);
   for (i=1; i<=d; i++)
     gel(G,i) = perm_mul(vecsmall_indexsort(gel(N,i)), q);
-  return gerepilecopy(av, vecvecsmall_sort_shallow(G));
+  return gc_GEN(av, vecvecsmall_sort_shallow(G));
 }
 
 static ulong
@@ -2972,7 +2972,7 @@ galoisinitfromaut(GEN T, GEN aut, ulong l)
   gel(grp,6) = A;
   gel(grp,7) = gel(G,1);
   gel(grp,8) = gel(G,2);
-  return gerepilecopy(ltop, grp);
+  return gc_GEN(ltop, grp);
 }
 
 GEN
@@ -3052,7 +3052,7 @@ galoisconj4_main(GEN T, GEN den, long flag)
   gel(grp,6) = group_elts(G,n);
   gel(grp,7) = gel(G,1);
   gel(grp,8) = gel(G,2);
-  if (flag) return gerepilecopy(ltop, grp);
+  if (flag) return gc_GEN(ltop, grp);
   aut = galoisvecpermtopol(grp, gal_get_group(grp), gb.ladicabs, shifti(gb.ladicabs,-1));
   settyp(aut, t_COL);
   if (DEBUGLEVEL >= 1) timer_printf(&ti, "Computation of polynomials");
@@ -3209,7 +3209,7 @@ galoispermtopol(GEN gal, GEN perm)
   gal = checkgal(gal);
   mod = gal_get_mod(gal);
   mod2 = shifti(mod,-1);
-  return gerepilecopy(av, galoispermtopol_i(gal, perm, mod, mod2));
+  return gc_GEN(av, galoispermtopol_i(gal, perm, mod, mod2));
 }
 
 GEN
@@ -3302,7 +3302,7 @@ galoisfixedfield(GEN gal, GEN perm, long flag, long y)
   sym = fixedfieldsympol(OL, itou(gal_get_p(gal)));
   PL = sympol_eval(sym, OL, mod);
   P = FpX_center_i(FpV_roots_to_pol(PL, mod, vT), mod, mod2);
-  if (flag==1) return gerepilecopy(ltop,P);
+  if (flag==1) return gc_GEN(ltop,P);
   S = fixedfieldinclusion(O, PL);
   S = vectopol(S, gal_get_invvdm(gal), gal_get_den(gal), mod, mod2, vT);
   if (flag==0)
@@ -3435,7 +3435,7 @@ galoisconjclasses(GEN G)
     gmael(e, ci, c[ci]) = gel(elts, i);
     c[ci]--;
   }
-  return gerepilecopy(av, e);
+  return gc_GEN(av, e);
 }
 
 static GEN
@@ -3670,7 +3670,7 @@ galoischartable(GEN gal)
 {
   pari_sp av = avma;
   GEN cc = group_to_cc(gal);
-  return gerepilecopy(av, cc_chartable(cc));
+  return gc_GEN(av, cc_chartable(cc));
 }
 
 static void
@@ -3721,7 +3721,7 @@ galoischarpoly(GEN gal, GEN ch, long o)
 {
   pari_sp av = avma;
   GEN cc = group_to_cc(gal);
-  return gerepilecopy(av, galoischar_charpoly(cc, ch, o));
+  return gc_GEN(av, galoischar_charpoly(cc, ch, o));
 }
 
 static GEN
@@ -3738,5 +3738,5 @@ galoischardet(GEN gal, GEN ch, long o)
 {
   pari_sp av = avma;
   GEN cc = group_to_cc(gal);
-  return gerepilecopy(av, cc_char_det(cc, ch, o));
+  return gc_GEN(av, cc_char_det(cc, ch, o));
 }

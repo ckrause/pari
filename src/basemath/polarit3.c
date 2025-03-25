@@ -814,10 +814,10 @@ FpX_translate_basecase(GEN P, GEN c, GEN p)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"FpX_translate, i = %ld/%ld", i,n);
-      Q = gerepilecopy(av, Q); R = (GEN*)Q+2;
+      Q = gc_GEN(av, Q); R = (GEN*)Q+2;
     }
   }
-  return gerepilecopy(av, FpX_renormalize(Q, lg(Q)));
+  return gc_GEN(av, FpX_renormalize(Q, lg(Q)));
 }
 
 GEN
@@ -857,10 +857,10 @@ FqX_translate(GEN P, GEN c, GEN T, GEN p)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"FqX_translate, i = %ld/%ld", i,n);
-      Q = gerepilecopy(av, Q); R = (GEN*)Q+2;
+      Q = gc_GEN(av, Q); R = (GEN*)Q+2;
     }
   }
-  return gerepilecopy(av, FpXQX_renormalize(Q, lg(Q)));
+  return gc_GEN(av, FpXQX_renormalize(Q, lg(Q)));
 }
 
 GEN
@@ -1644,7 +1644,7 @@ FlxX_pseudorem(GEN x, GEN y, ulong p, ulong pi)
     GEN t = Flx_powu_pre(gel(y,0), dp, p, pi);
     for (i=2; i<lx; i++) gel(x,i) = Flx_mul_pre(gel(x,i), t, p, pi);
   }
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 /* return a Flx */
@@ -2043,7 +2043,7 @@ QXQ_charpoly(GEN A, GEN T, long v)
   pari_sp av = avma;
   GEN den, B = Q_remove_denom(A, &den);
   GEN P = ZXQ_charpoly(B, T, v);
-  return gerepilecopy(av, den ? RgX_rescale(P, ginv(den)): P);
+  return gc_GEN(av, den ? RgX_rescale(P, ginv(den)): P);
 }
 
 static ulong
@@ -2462,7 +2462,7 @@ QXQ_inv_slice(GEN A, GEN B, GEN P, GEN *mod)
       set_avma(av);
       *mod = gen_1; return pol_0(v);
     }
-    H = gerepilecopy(av, Flx_to_ZX(U));
+    H = gc_GEN(av, Flx_to_ZX(U));
     *mod = utoipos(p); return H;
   }
   T = ZV_producttree(P);
@@ -2542,7 +2542,7 @@ QXQ_inv(GEN A, GEN B)
     if (degpol(res)<0)
     {
       if (D) U = RgX_Rg_div(U, D);
-      return gerepilecopy(av, U);
+      return gc_GEN(av, U);
     }
   }
 }
@@ -2564,7 +2564,7 @@ QXQ_div_slice(GEN A, GEN B, GEN C, GEN P, GEN *mod)
       *mod = gen_1; return pol_0(v);
     }
     U = Flxq_mul(a, bi, c, p);
-    H = gerepilecopy(av, Flx_to_ZX(U));
+    H = gc_GEN(av, Flx_to_ZX(U));
     *mod = utoipos(p); return H;
   }
   T = ZV_producttree(P);
@@ -2649,7 +2649,7 @@ QXQ_div(GEN A, GEN B, GEN C)
       if (DA && DB) U = RgX_Rg_mul(U, gdiv(DA,DB));
       else if (DA) U = RgX_Rg_mul(U, DA);
       else if (DB) U = RgX_Rg_div(U, DB);
-      return gerepilecopy(av, U);
+      return gc_GEN(av, U);
     }
   }
 }
@@ -2710,7 +2710,7 @@ ZXQ_minpoly(GEN A, GEN B, long d, ulong bound)
   init_modular_big(&S);
   H = gen_crt("ZXQ_minpoly", worker, &S, dB, bound, 0, NULL,
                nxV_chinese_center, FpX_center_i);
-  return gerepilecopy(av, H);
+  return gc_GEN(av, H);
 }
 
 /************************************************************************
@@ -2814,7 +2814,7 @@ ZX_ZXY_resultant(GEN A, GEN B)
   H = gen_crt("ZX_ZXY_resultant_all", worker, &S, dB, bound, 0, NULL,
                nxV_chinese_center, FpX_center_i);
   setvarn(H, vX); (void)delete_var();
-  return gerepilecopy(av, H);
+  return gc_GEN(av, H);
 }
 
 static long
@@ -3011,7 +3011,7 @@ ZXQX_composedsum(GEN A, GEN B, GEN T, ulong bound)
   if (DEBUGLEVEL > 4)
     err_printf("nfcompositum: a priori bound: %lu, a posteriori: %lu\n",
                bound, expi(gsupnorm(H, DEFAULTPREC)));
-  return gerepilecopy(av, RgM_to_RgXX(H, varn(A), varn(T)));
+  return gc_GEN(av, RgM_to_RgXX(H, varn(A), varn(T)));
 }
 
 static long
@@ -3279,7 +3279,7 @@ ffembed(GEN a, GEN b)
   if (degpol(Tb)%degpol(Ta)!=0)
     pari_err_DOMAIN("ffembed",GENtostr_raw(a),"is not a subfield of",b,a);
   r = gel(FFX_roots(Ta, b), 1);
-  return gerepilecopy(av, mkvec2(g,r));
+  return gc_GEN(av, mkvec2(g,r));
 }
 
 GEN
@@ -3296,7 +3296,7 @@ ffextend(GEN a, GEN P, long v)
   n = FF_f(T) * degpol(P); R = ffinit(p, n, v); g = ffgen(R, v);
   m = ffembed(a, g);
   R = FFX_roots(ffmap(m, P),g);
-  return gerepilecopy(av, mkvec2(gel(R,1), m));
+  return gc_GEN(av, mkvec2(gel(R,1), m));
 }
 
 GEN
@@ -3327,7 +3327,7 @@ ffinvmap(GEN m)
   }
   if (f==NULL) pari_err_TYPE("ffinvmap", m);
   if (degpol(f)==1) f = FF_neg_i(gel(f,2));
-  return gerepilecopy(av, mkvec2(FF_gen(r),f));
+  return gc_GEN(av, mkvec2(FF_gen(r),f));
 }
 
 static GEN
@@ -3473,5 +3473,5 @@ ffcompomap(GEN m, GEN n)
       setvarn(r, varn(n2));
     }
   }
-  return gerepilecopy(av, mkvec2(g,r));
+  return gc_GEN(av, mkvec2(g,r));
 }

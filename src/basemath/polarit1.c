@@ -356,7 +356,7 @@ Zp_appr(GEN f, GEN a)
   a = padic_to_Fp(a, p);
   if (signe(FpX_eval(f,a,p))) { set_avma(av); return cgetg(1,t_COL); }
   z = ZX_Zp_root(f, a, p, prec);
-  return gerepilecopy(av, ZV_to_ZpV(z, p, prec));
+  return gc_GEN(av, ZV_to_ZpV(z, p, prec));
 }
 static long
 pval(GEN x, GEN p) { return typ(x) == t_INT? Z_pval(x,p): ZX_pval(x,p); }
@@ -462,7 +462,7 @@ padicappr(GEN f, GEN a)
   if (!gequal0(FqX_eval(FqX_red(f,Tp,p), a, Tp,p)))
   { set_avma(av); return cgetg(1,t_COL); } /* f(a) != 0 (mod p,T) */
   z = ZXY_ZpQ_root(f, a, T, p, prec);
-  return gerepilecopy(av, ZXV_to_ZpXQV(z, T, p, prec));
+  return gc_GEN(av, ZXV_to_ZpXQV(z, T, p, prec));
 }
 
 /* vector of p-adic roots of the ZX f, leading term prime to p. Shallow */
@@ -515,7 +515,7 @@ polrootspadic(GEN f, GEN Tp, long prec)
   if (reverse)
     for (i=1; i<k; i++) gel(y,i) = ginv(gel(y,i));
   if (v) y = shallowconcat(zeropadic_shallow(p, prec), y);
-  return gerepilecopy(av, y);
+  return gc_GEN(av, y);
 }
 
 /*******************************************************************/
@@ -598,5 +598,5 @@ factorpadic(GEN f, GEN p, long r)
     y = famat_mulpow_shallow(y, X, utoipos(v));
   }
   if (!exact) y = famat_flatten(y);
-  return gerepilecopy(av, sort_factor_pol(y, cmp_padic));
+  return gc_GEN(av, sort_factor_pol(y, cmp_padic));
 }

@@ -276,7 +276,7 @@ gtoser_prec(GEN x, long v, long prec)
   switch(typ(x))
   {
     case t_SER: if (varn(x) != v) break;
-                return gerepilecopy(av, sertoser(x, prec));
+                return gc_GEN(av, sertoser(x, prec));
     case t_QFB:
       x = RgV_to_ser_i(mkvec3(gel(x,1),gel(x,2),gel(x,3)), v, prec+2, 1);
       return gerepileupto(av, x);

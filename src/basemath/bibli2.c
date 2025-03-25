@@ -241,7 +241,7 @@ polhermite_eval0(long n, GEN x, long flag)
     t = gsub(gmul(x2, u), gmulsg(2*i,v));
     v = u; u = t;
   }
-  if (flag) return gerepilecopy(av, mkvec2(v, u));
+  if (flag) return gc_GEN(av, mkvec2(v, u));
   return gerepileupto(av, u);
 }
 GEN
@@ -341,7 +341,7 @@ pollegendre_eval0(long n, GEN x, long flag)
     t = gdivgu(gsub(gmul(gmulsg(2*i+1,x), u), gmulsg(i,v)), i+1);
     v = u; u = t;
   }
-  if (flag) return gerepilecopy(av, mkvec2(v, u));
+  if (flag) return gc_GEN(av, mkvec2(v, u));
   return gerepileupto(av, u);
 }
 GEN
@@ -369,7 +369,7 @@ pollaguerre(long n, GEN a, long v)
       c1 = gdivgu(gmul(c1, gaddsg(i,a)), n+1-i);
     }
   }
-  return gerepilecopy(av, L);
+  return gc_GEN(av, L);
 }
 static void
 err_lag(long n)
@@ -412,7 +412,7 @@ pollaguerre_eval0(long n, GEN a, GEN x, long flag)
     t = gdivgu(gsub(gmul(gsub(gaddsg(2*i+1,a),x), u), gmul(gaddsg(i,a),v)), i+1);
     v = u; u = t;
   }
-  if (flag) return gerepilecopy(av, mkvec2(v, u));
+  if (flag) return gc_GEN(av, mkvec2(v, u));
   return gerepileupto(av, u);
 }
 GEN
@@ -455,7 +455,7 @@ polcyclo(long n, long v)
   /* s = squarefree part of n */
   q = n / s;
   if (q == 1) return gerepileupto(av, T);
-  return gerepilecopy(av, RgX_inflate(T,q));
+  return gc_GEN(av, RgX_inflate(T,q));
 }
 
 /* cyclotomic polynomial */
@@ -493,7 +493,7 @@ polcyclo_eval(long n, GEN x)
     if (gequal1(x))
     { /* n is prime, return n; multiply by x to keep the type */
       if (l == 1) return gerepileupto(av, gmulgu(x,n));
-      return gerepilecopy(av, x); /* else 1 */
+      return gc_GEN(av, x); /* else 1 */
     }
     if (gequalm1(x)) return gerepileupto(av, gneg(x)); /* -1 */
   }
@@ -626,7 +626,7 @@ matqpascal(long n, GEN q)
     for (   ; j<=i; j++) gcoeff(m,i,j) = gcoeff(m,i,i+1-j);
     for (   ; j<=n; j++) gcoeff(m,i,j) = gen_0;
   }
-  return gerepilecopy(av, m);
+  return gc_GEN(av, m);
 }
 
 GEN
@@ -651,12 +651,12 @@ eulerianpol(long N, long v)
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"eulerianpol, %ld/%ld",n,N);
       for (k = odd(n)? n2+1: n2; k < N; k++) gel(A,k+1) = gen_0;
-      A = gerepilecopy(av, A);
+      A = gc_GEN(av, A);
     }
   }
   k = N >> 1; if (odd(N)) k++;
   for (; k < N; k++) gel(A,k+1) = gel(A, N-k);
-  return gerepilecopy(av, RgV_to_RgX(A, v));
+  return gc_GEN(av, RgV_to_RgX(A, v));
 }
 
 /******************************************************************/
@@ -670,7 +670,7 @@ gprec(GEN x, long d)
 {
   pari_sp av = avma;
   if (d <= 0) pari_err_DOMAIN("gprec", "precision", "<=", gen_0, stoi(d));
-  return gerepilecopy(av, gprec_w(x, ndec2prec(d)));
+  return gc_GEN(av, gprec_w(x, ndec2prec(d)));
 }
 
 /* not GC-safe */
@@ -773,7 +773,7 @@ laplace(GEN x)
     default: if (is_scalar_t(typ(x))) return gcopy(x);
              pari_err_TYPE("laplace",x);
   }
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 /********************************************************************/
@@ -858,10 +858,10 @@ dirmul(GEN x, GEN y)
     if (gc_needed(av2,3))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"dirmul, %ld/%ld",j,nx);
-      z = gerepilecopy(av2,z);
+      z = gc_GEN(av2,z);
     }
   }
-  return gerepilecopy(av,z);
+  return gc_GEN(av,z);
 }
 
 GEN
@@ -906,10 +906,10 @@ dirdiv(GEN x, GEN y)
     if (gc_needed(av2,3))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"dirdiv, %ld/%ld",j,nz);
-      x = gerepilecopy(av2,x);
+      x = gc_GEN(av2,x);
     }
   }
-  return gerepilecopy(av,x);
+  return gc_GEN(av,x);
 }
 
 /*******************************************************************/
@@ -1230,7 +1230,7 @@ vandermondeinverse(GEN L, GEN T, GEN den, GEN V)
                                      den? gdiv(den,d): ginv(d));
     gel(M,i) = RgX_to_RgC(P, n);
   }
-  return gerepilecopy(av, M);
+  return gc_GEN(av, M);
 }
 
 static GEN
@@ -1415,7 +1415,7 @@ RgXQ_reverse(GEN a, GEN T)
   y = RgXV_to_RgM(RgXQ_powers(a,n-1,T), n);
   y = RgM_solve(y, col_ei(n, 2));
   if (!y) err_reverse(a,T);
-  return gerepilecopy(av, RgV_to_RgX(y, varn(T)));
+  return gc_GEN(av, RgV_to_RgX(y, varn(T)));
 }
 GEN
 QXQ_reverse(GEN a, GEN T)
@@ -1433,7 +1433,7 @@ QXQ_reverse(GEN a, GEN T)
   y = RgXV_to_RgM(QXQ_powers(a,n-1,T), n);
   y = QM_gauss(y, col_ei(n, 2));
   if (!y) err_reverse(a,T);
-  return gerepilecopy(av, RgV_to_RgX(y, varn(T)));
+  return gc_GEN(av, RgV_to_RgX(y, varn(T)));
 }
 
 GEN
@@ -1897,7 +1897,7 @@ vec_equiv(GEN F)
       if (!gequal(gel(F,o), gel(F, perm[j]))) break;
     setlg(v, l); gel(w, k++) = v;
   }
-  setlg(w, k); return gerepilecopy(av,w);
+  setlg(w, k); return gc_GEN(av,w);
 }
 
 GEN
@@ -2231,7 +2231,7 @@ setunion(GEN x, GEN y)
   pari_sp av = avma;
   if (typ(x) != t_VEC) pari_err_TYPE("setunion",x);
   if (typ(y) != t_VEC) pari_err_TYPE("setunion",y);
-  return gerepilecopy(av, setunion_i(x, y));
+  return gc_GEN(av, setunion_i(x, y));
 }
 
 GEN
@@ -2251,7 +2251,7 @@ setdelta(GEN x, GEN y)
   }
   while (ix<lx) gel(z,iz++) = gel(x,ix++);
   while (iy<ly) gel(z,iz++) = gel(y,iy++);
-  setlg(z,iz); return gerepilecopy(av,z);
+  setlg(z,iz); return gc_GEN(av,z);
 }
 
 GEN
@@ -2269,7 +2269,7 @@ setintersect(GEN x, GEN y)
     else if (c > 0) iy++;
     else { gel(z, iz++) = gel(x,ix); ix++; iy++; }
   }
-  setlg(z,iz); return gerepilecopy(av,z);
+  setlg(z,iz); return gc_GEN(av,z);
 }
 
 GEN
@@ -2287,7 +2287,7 @@ gen_setminus(GEN A, GEN B, int (*cmp)(GEN,GEN))
     }
   while (i < lx) gel(diff,k++) = gel(A,i++);
   setlg(diff,k);
-  return gerepilecopy(ltop,diff);
+  return gc_GEN(ltop,diff);
 }
 
 GEN

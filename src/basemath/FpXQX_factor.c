@@ -59,7 +59,7 @@ FpXQ_ffisom_inv(GEN S,GEN T, GEN p)
   GEN M = FpXQ_matrix_pow(S,n,n,T,p);
   GEN V = FpM_FpC_invimage(M, col_ei(n, 2), p);
   if (!V) err_FpXQ("Flxq_ffisom_inv", T, p);
-  return gerepilecopy(ltop, RgV_to_RgX(V, get_FpX_var(T)));
+  return gc_GEN(ltop, RgV_to_RgX(V, get_FpX_var(T)));
 }
 
 /* Let M the matrix of the Frobenius automorphism of Fp[X]/(T). Compute M^d
@@ -83,7 +83,7 @@ FpM_Frobenius_pow(GEN M, long d, GEN T, GEN p)
   GEN R, W = gel(M,2);
   for (i = 2; i <= d; ++i) W = FpM_FpC_mul(M,W,p);
   R=FpXQ_matrix_pow(RgV_to_RgX(W, get_FpX_var(T)),l,l,T,p);
-  return gerepilecopy(ltop,R);
+  return gc_GEN(ltop,R);
 }
 
 /* Essentially we want to compute FqM_ker(MA-pol_x(v),U,l)
@@ -165,7 +165,7 @@ FpX_intersect_ker(GEN P, GEN MA, GEN U, GEN l)
   for(i=r-1;i>1;i--)
     gel(R,i) = FpC_add(FpM_FpC_mul(MA,gel(R,i+1),l),
         FpC_Fp_mul(gel(R,r), gel(U,i+2), l),l);
-  return gerepilecopy(ltop,RgM_to_RgXX(shallowtrans(R),vp,vu));
+  return gc_GEN(ltop,RgM_to_RgXX(shallowtrans(R),vp,vu));
 }
 
 /* n must divide both the degree of P and Q.  Compute SP and SQ such
@@ -572,7 +572,7 @@ FpX_factorff_irred(GEN P, GEN Q, GEN p)
     for(i=1;i<=d;i++)
       gel(res,i) = RgM_to_RgXX(gel(V,i),vp,vq);
   }
-  return gerepilecopy(ltop,res);
+  return gc_GEN(ltop,res);
 }
 
 /* not memory-clean, as Flx_factorff_i, returning only linear factors */
@@ -601,7 +601,7 @@ GEN
 Flx_rootsff(GEN P, GEN T, ulong p)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, Flx_rootsff_i(P, T, p));
+  return gc_GEN(av, Flx_rootsff_i(P, T, p));
 }
 
 /* dummy implementation */
@@ -645,7 +645,7 @@ GEN
 FpX_rootsff(GEN P, GEN T, GEN p)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, FpX_rootsff_i(P, T, p));
+  return gc_GEN(av, FpX_rootsff_i(P, T, p));
 }
 
 static GEN
@@ -731,7 +731,7 @@ GEN
 FpX_factorff(GEN P, GEN T, GEN p)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, FpX_factorff_i(P, T, p));
+  return gc_GEN(av, FpX_factorff_i(P, T, p));
 }
 
 /***********************************************************************/
@@ -790,7 +790,7 @@ FpXQXQ_halfFrobenius(GEN a, GEN S, GEN T, GEN p)
     Xp = FpXQXQ_pow(pol_x(get_FpXQX_var(S)), p, S, T, p);
     z = FpXQXQ_halfFrobenius_i(a, xp, Xp, S, T, p);
   }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 static GEN
@@ -812,7 +812,7 @@ FlxqX_Frobenius_pre(GEN S, GEN T, ulong p, ulong pi)
   GEN xp = Flx_Frobenius_pre(T, p, pi);
   GEN Xp = FlxqXQ_powu_pre(X, p, S, T, p, pi);
   GEN Xq = FlxqXQ_Frobenius(xp, Xp, S, T, p, pi);
-  return gerepilecopy(av, Xq);
+  return gc_GEN(av, Xq);
 }
 GEN
 FlxqX_Frobenius(GEN S, GEN T, ulong p)
@@ -837,7 +837,7 @@ FpXQX_Frobenius(GEN S, GEN T, GEN p)
   GEN xp = FpX_Frobenius(T, p);
   GEN Xp = FpXQXQ_pow(X, p, S, T, p);
   GEN Xq = FpXQXQ_Frobenius(xp, Xp, S, T, p);
-  return gerepilecopy(av, Xq);
+  return gc_GEN(av, Xq);
 }
 
 static GEN
@@ -861,7 +861,7 @@ F2xqX_Frobenius(GEN S, GEN T)
   GEN xp = F2x_Frobenius(T);
   GEN Xp = F2xqXQ_sqr(X, S, T);
   GEN Xq = F2xqXQ_Frobenius(xp, Xp, S, T);
-  return gerepilecopy(av, Xq);
+  return gc_GEN(av, Xq);
 }
 
 static GEN
@@ -1204,7 +1204,7 @@ F2xqX_factor_squarefree(GEN f, GEN T)
   }
   for (i = n; i; i--)
     if (degpol(gel(u,i))) break;
-  setlg(u,i+1); return gerepilecopy(av, u);
+  setlg(u,i+1); return gc_GEN(av, u);
 }
 
 long
@@ -1377,7 +1377,7 @@ FlxqX_factor_squarefree_i(GEN f, GEN xp, GEN T, ulong p, ulong pi)
   }
   for (i = n; i; i--)
     if (degpol(gel(u,i))) break;
-  setlg(u,i+1); return gerepilecopy(av, u);
+  setlg(u,i+1); return gc_GEN(av, u);
 }
 
 GEN
@@ -1531,7 +1531,7 @@ FpXQX_factor_Yun(GEN f, GEN T, GEN p)
     r = FpXQX_div(r, v, T, p);
     t = v;
   }
-  setlg(u, j+1); return gerepilecopy(av, u);
+  setlg(u, j+1); return gc_GEN(av, u);
 }
 
 GEN
@@ -1566,7 +1566,7 @@ FpXQX_roots_mult(GEN f, long n, GEN T, GEN p)
     gel(W,i-n+1) = FpXQX_roots(gel(V,i), T, p);
   W = shallowconcat1(W);
   gen_sort_inplace(W, (void*) &cmp_RgX, &cmp_nodata, NULL);
-  return gerepilecopy(av, W);
+  return gc_GEN(av, W);
 }
 
 long
@@ -1712,7 +1712,7 @@ GEN
 F2xqX_roots(GEN x, GEN T)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, F2xqX_roots_i(x, T));
+  return gc_GEN(av, F2xqX_roots_i(x, T));
 }
 
 GEN
@@ -1724,14 +1724,14 @@ FlxqX_roots(GEN x, GEN T, ulong p)
     GEN V = F2xqX_roots_i(FlxX_to_F2xX(x), Flx_to_F2x(get_Flx_mod(T)));
     return gerepileupto(av, F2xC_to_FlxC(V));
   }
-  return gerepilecopy(av, FlxqX_roots_i(x, T, p));
+  return gc_GEN(av, FlxqX_roots_i(x, T, p));
 }
 
 GEN
 FpXQX_roots(GEN x, GEN T, GEN p)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, FpXQX_roots_i(x, T, p));
+  return gc_GEN(av, FpXQX_roots_i(x, T, p));
 }
 
 static GEN
@@ -1890,7 +1890,7 @@ F2xqX_ddf_Shoup(GEN S, GEN Xq, GEN T)
   }
   if (DEBUGLEVEL>=7) timer_printf(&ti,"F2xqX_ddf_Shoup: f");
   if (degpol(Sr)) gel(f, degpol(Sr)) = Sr;
-  return gerepilecopy(av, f);
+  return gc_GEN(av, f);
 }
 
 static GEN
@@ -2225,7 +2225,7 @@ FlxqX_ddf_Shoup(GEN S, GEN Xq, GEN T, ulong p, ulong pi)
   }
   if (DEBUGLEVEL>=7) timer_printf(&ti,"FlxqX_ddf_Shoup: f");
   if (degpol(Sr)) gel(f, degpol(Sr)) = Sr;
-  return gerepilecopy(av, f);
+  return gc_GEN(av, f);
 }
 
 static GEN
@@ -2467,14 +2467,14 @@ GEN
 FlxqX_factor(GEN x, GEN T, ulong p)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, FlxqX_factor_Cantor(x, T, p));
+  return gc_GEN(av, FlxqX_factor_Cantor(x, T, p));
 }
 
 GEN
 F2xqX_factor(GEN x, GEN T)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, F2xqX_factor_Cantor(x, T));
+  return gc_GEN(av, F2xqX_factor_Cantor(x, T));
 }
 
 long
@@ -2607,7 +2607,7 @@ FpXQX_ddf_Shoup(GEN S, GEN Xq, GEN T, GEN p)
   }
   if (DEBUGLEVEL>=7) timer_printf(&ti,"FpXQX_ddf_Shoup: f");
   if (degpol(Sr)) gel(f, degpol(Sr)) = Sr;
-  return gerepilecopy(av, f);
+  return gc_GEN(av, f);
 }
 
 static GEN
@@ -2643,7 +2643,7 @@ FpXQX_ddf_raw(GEN f, GEN T, GEN p)
 
 GEN
 FpXQX_ddf(GEN x, GEN T, GEN p)
-{ pari_sp av = avma; return gerepilecopy(av, FpXQX_ddf_raw(x,T,p)); }
+{ pari_sp av = avma; return gc_GEN(av, FpXQX_ddf_raw(x,T,p)); }
 
 static GEN
 FpXQX_degfact_raw(GEN f, GEN T, GEN p)
@@ -2668,7 +2668,7 @@ FpXQX_degfact_raw(GEN f, GEN T, GEN p)
 
 GEN
 FpXQX_degfact(GEN x, GEN T, GEN p)
-{ pari_sp av = avma; return gerepilecopy(av, FpXQX_degfact_raw(x,T,p)); }
+{ pari_sp av = avma; return gc_GEN(av, FpXQX_degfact_raw(x,T,p)); }
 
 static void
 FpXQX_edf_rec(GEN S, GEN xp, GEN Xp, GEN hp, GEN t, long d, GEN T, GEN p, GEN V, long idx)
@@ -2879,7 +2879,7 @@ FpXQX_factor_Berlekamp_i(GEN f, GEN T, GEN p)
 }
 GEN
 FpXQX_factor_Berlekamp(GEN x, GEN T, GEN p)
-{ pari_sp av = avma; return gerepilecopy(av, FpXQX_factor_Berlekamp_i(x,T,p)); }
+{ pari_sp av = avma; return gc_GEN(av, FpXQX_factor_Berlekamp_i(x,T,p)); }
 
 static GEN
 FpXQX_factor_i(GEN f, GEN T, GEN p)
@@ -2901,7 +2901,7 @@ FpXQX_factor_i(GEN f, GEN T, GEN p)
 }
 GEN
 FpXQX_factor(GEN x, GEN T, GEN p)
-{ pari_sp av = avma; return gerepilecopy(av, FpXQX_factor_i(x,T,p)); }
+{ pari_sp av = avma; return gc_GEN(av, FpXQX_factor_i(x,T,p)); }
 
 long
 FlxqX_is_squarefree(GEN P, GEN T, ulong p)
@@ -3037,7 +3037,7 @@ factmod(GEN f, GEN D)
     gel(y,1) = FpXC_to_mod(P, p);
     gel(y,2) = Flc_to_ZC(E); return gerepileupto(av, y);
   }
-  F = gerepilecopy(av, mkmat2(simplify_shallow(P), Flc_to_ZC(E)));
+  F = gc_GEN(av, mkmat2(simplify_shallow(P), Flc_to_ZC(E)));
   return to_Fq_fact(F, T, p);
 }
 GEN
@@ -3079,7 +3079,7 @@ factormodSQF(GEN f, GEN D)
     F = sqf_to_fact(FqX_factor_squarefree(f,T,p));
     gel(F,1) = FqXC_to_mod(gel(F,1), T,p);
   }
-  settyp(F,t_MAT); return gerepilecopy(av, F);
+  settyp(F,t_MAT); return gc_GEN(av, F);
 }
 GEN
 factormodDDF(GEN f, GEN D)
@@ -3092,7 +3092,7 @@ factormodDDF(GEN f, GEN D)
   F = FqX_ddf(f,T,p);
   gel(F,1) = FqXC_to_mod(gel(F,1), T,p);
   gel(F,2) = Flc_to_ZC(gel(F,2));
-  settyp(F, t_MAT); return gerepilecopy(av, F);
+  settyp(F, t_MAT); return gc_GEN(av, F);
 }
 
 GEN
@@ -3111,7 +3111,7 @@ polrootsmod(GEN f, GEN D)
   if (!D) return FFX_roots(f, T);
   av = avma; y = FqX_roots(f, T, p);
   if (!T) return gerepileupto(av, FpC_to_mod(y,p));
-  y = gerepilecopy(av, simplify_shallow(y));
+  y = gc_GEN(av, simplify_shallow(y));
   return to_FqC(y, T, p);
 }
 

@@ -563,7 +563,7 @@ gammamellininvasymp(GEN Vga, long nlim, long m)
   Vga = get_Vga(Vga, &ldata);
   if (!is_vec_t(typ(Vga)) || lg(Vga) == 1)
     pari_err_TYPE("gammamellininvasymp",Vga);
-  return gerepilecopy(av, gammamellininvasymp_i(Vga, nlim, m, &status, 0));
+  return gc_GEN(av, gammamellininvasymp_i(Vga, nlim, m, &status, 0));
 }
 
 /* Does the continued fraction of the asymptotic expansion M at oo of inverse
@@ -641,7 +641,7 @@ gammamellininvinit(GEN Vga, long m, long bitprec)
     M = contfracinit(M, lg(M)-2);
   }
   VL = mkvec3(mkvec2(M, stoi(status)), cd, A2);
-  return gerepilecopy(ltop, mkvec5(dbltor(tmax), Vga, stoi(m), VS, VL));
+  return gc_GEN(ltop, mkvec5(dbltor(tmax), Vga, stoi(m), VS, VL));
 }
 
 /* Compute m-th derivative of inverse Mellin at s2d = s^(d/2) using

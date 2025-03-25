@@ -94,7 +94,7 @@ lfuncreate(GEN data)
   {
     pari_sp av = avma;
     GEN L = closure2ldata(data, DEFAULTPREC);
-    gel(L,1) = tag(data, t_LFUN_CLOSURE0); return gerepilecopy(av, L);
+    gel(L,1) = tag(data, t_LFUN_CLOSURE0); return gc_GEN(av, L);
   }
   return lfunmisc_to_ldata(data);
 }
@@ -118,7 +118,7 @@ lfunparams(GEN L, long prec)
     long t = mael(van,1,1);
     if (t == t_LFUN_CLOSURE0) L = closure2ldata(an, prec);
   }
-  return gerepilecopy(av, mkvec3(N, k, v));
+  return gc_GEN(av, mkvec3(N, k, v));
 }
 
 /********************************************************************/
@@ -375,7 +375,7 @@ lfunmul(GEN ldata1, GEN ldata2, long bitprec)
   k = ldata_get_k(ldata1);
   if (!gequal(ldata_get_k(ldata2),k))
     pari_err_OP("lfunmul [weight]",ldata1, ldata2);
-  return gerepilecopy(ltop, lfunmul_k(ldata1, ldata2, k, bitprec));
+  return gc_GEN(ltop, lfunmul_k(ldata1, ldata2, k, bitprec));
 }
 
 static GEN
@@ -446,7 +446,7 @@ lfundiv(GEN ldata1, GEN ldata2, long bitprec)
   eno2 = ldata_get_rootno(ldata2);
   eno = isintzero(eno2)? gen_0: gdiv(ldata_get_rootno(ldata1), eno2);
   v = lfunvgasub(ldata_get_gammavec(ldata1), ldata_get_gammavec(ldata2));
-  return gerepilecopy(ltop,  mkvecn(r? 7: 6, a1a2, b1b2, v, k, N, eno, r));
+  return gc_GEN(ltop,  mkvecn(r? 7: 6, a1a2, b1b2, v, k, N, eno, r));
 }
 
 static GEN
@@ -494,7 +494,7 @@ lfuntwist(GEN ldata1, GEN chi, long bitprec)
   a1 = ldata_get_an(ldata1);
   a2 = ldata_get_an(ldata2);
   if (t == t_LFUN_ZETA)
-    return gerepilecopy(ltop, ldata1);
+    return gc_GEN(ltop, ldata1);
   if (t != t_LFUN_CHIZ && t != t_LFUN_KRONECKER &&
     ( t != t_LFUN_CHIGEN || nf_get_degree(bnr_get_nf(gmael(a2,2,1))) != 1))
     pari_err_TYPE("lfuntwist", chi);
@@ -520,7 +520,7 @@ lfuntwist(GEN ldata1, GEN chi, long bitprec)
   else
     b = tag(mkvec2(b1,lfunconj(a2)), t_LFUN_TWIST);
   L = mkvecn(6, a, b, gam, k, N, gen_0);
-  return gerepilecopy(ltop, L);
+  return gc_GEN(ltop, L);
 }
 
 static GEN
@@ -572,7 +572,7 @@ lfundual(GEN L, long bitprec)
   }
   ed = isintzero(e) ? e: ginvvec(e);
   ldual = mkvecn(Rd ? 7:6, ad, bd, gel(ldata,3), gel(ldata,4), gel(ldata,5), ed, Rd);
-  return gerepilecopy(av, ldual);
+  return gc_GEN(av, ldual);
 }
 
 static GEN
@@ -636,7 +636,7 @@ lfunshift(GEN ldata, GEN s, long flag, long bitprec)
     }
   L = mkvecn(res ? 7: 6, a, b, gam, mkvec2(k, k1), N, eps, res);
   if (flag) L = lfunmul_k(ldata, L, gsub(k, s), bitprec);
-  return gerepilecopy(ltop, L);
+  return gc_GEN(ltop, L);
 }
 
 /*****************************************************************/
@@ -1018,7 +1018,7 @@ lfunzetak_i(GEN T)
 /* truen nf or t_POL */
 static GEN
 lfunzetak(GEN T)
-{ pari_sp av = avma; return gerepilecopy(av, lfunzetak_i(T)); }
+{ pari_sp av = avma; return gc_GEN(av, lfunzetak_i(T)); }
 
 /* C = normalized character of order dividing o; renormalize so that it has
  * apparent order o */
@@ -1089,7 +1089,7 @@ lfunchiZ(GEN G, GEN CHI)
   real = abscmpiu(gel(nchi,1), 2) <= 0;
   r = mkvecn(6, tag(mkvec2(G,nchi), t_LFUN_CHIZ),
                 real? gen_0: gen_1, sig, gen_1, N, gen_0);
-  return gerepilecopy(av, r);
+  return gc_GEN(av, r);
 }
 
 static GEN
@@ -1146,7 +1146,7 @@ lfunchigen(GEN bnr, GEN CHI)
   if (!nchi)
   {
     if (equali1(NN)) { set_avma(av); return lfunzeta(); }
-    if (ZV_equal0(CHI)) return gerepilecopy(av, lfunzetak_i(bnr_get_nf(bnr)));
+    if (ZV_equal0(CHI)) return gc_GEN(av, lfunzetak_i(bnr_get_nf(bnr)));
     nchi = char_normalize(CHI, cyc_normalize(bnr_get_cyc(bnr)));
   }
   real = abscmpiu(gel(nchi,1), 2) <= 0;
@@ -1154,7 +1154,7 @@ lfunchigen(GEN bnr, GEN CHI)
   sig = vec01(r1+r2-n1, r2+n1);
   Ldchi = mkvecn(6, tag(mkvec2(bnr, nchi), t_LFUN_CHIGEN),
                     real? gen_0: gen_1, sig, gen_1, NN, gen_0);
-  return gerepilecopy(av, Ldchi);
+  return gc_GEN(av, Ldchi);
 }
 
 /* Find all characters of clgp whose kernel contain group given by HNF H.
@@ -1267,7 +1267,7 @@ lfunabelrel_i(GEN bnr, GEN H, GEN mod)
 }
 static GEN
 lfunabelrel(GEN bnr, GEN H, GEN mod)
-{ pari_sp av = avma; return gerepilecopy(av, lfunabelrel_i(bnr, H, mod)); }
+{ pari_sp av = avma; return gc_GEN(av, lfunabelrel_i(bnr, H, mod)); }
 
 
 static GEN
@@ -1459,7 +1459,7 @@ lfunellnf(GEN e)
   gel(ldata, 4) = gen_2;
   gel(ldata, 5) = mulii(idealnorm(nf,N), sqri(nf_get_disc(nf)));
   gel(ldata, 6) = stoi(ellrootno_global(e));
-  return gerepilecopy(av, ldata);
+  return gc_GEN(av, ldata);
 }
 
 static GEN
@@ -1473,7 +1473,7 @@ lfunellQ(GEN e)
   gel(ldata, 4) = gen_2;
   gel(ldata, 5) = ellQ_get_N(e);
   gel(ldata, 6) = stoi(ellrootno_global(e));
-  return gerepilecopy(av, ldata); /* ellanal_globalred not gerepile-safe */
+  return gc_GEN(av, ldata); /* ellanal_globalred not gerepile-safe */
 }
 
 static GEN
@@ -1547,7 +1547,7 @@ ellsympow_abelian(GEN p, GEN ap, long m, long o)
     gel(F,3) = negi(mulii(gel(tv,m-2*i+1), gel(pk,i+1)));
     v = ZX_mul(v, F);
   }
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 static GEN
@@ -1576,7 +1576,7 @@ direllsympow_worker(GEN P, ulong X, GEN E, ulong m)
     long d = ulogint(X, p) + 1; /* minimal d such that p^d > X */
     gel(W,i) = ellsympow(E, m, utoi(uel(P,i)), d);
   }
-  return gerepilecopy(av, mkvec2(P,W));
+  return gc_GEN(av, mkvec2(P,W));
 }
 
 static GEN
@@ -1871,7 +1871,7 @@ lfunellsympow(GEN e, ulong m)
   ld = mkvecn(mero? 7: 6, tag(mkvec2(mkvec2(e,utoi(m)),bad), t_LFUN_SYMPOW_ELL),
         gen_0, ellsympow_gamma(m), stoi(m+1), B, stoi(w), pole);
   if (et) obj_free(et);
-  return gerepilecopy(av, ld);
+  return gc_GEN(av, ld);
 }
 
 GEN
@@ -1927,7 +1927,7 @@ GEN
 lfunmfspec(GEN lmisc, long bit)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, lfunmfspec_i(lmisc, bit));
+  return gc_GEN(av, lfunmfspec_i(lmisc, bit));
 }
 
 static long
@@ -2004,7 +2004,7 @@ lfunellsymsqmintwist(GEN e)
   }
   setlg(V, k);
   ld = lfunellsympow(e, 2);
-  return gerepilecopy(av, mkvec2(ld, V));
+  return gc_GEN(av, mkvec2(ld, V));
 }
 
 static GEN
@@ -2154,7 +2154,7 @@ dirgenus2_worker(GEN P, ulong X, GEN Q)
     long d = ulogint(X, p) + 1; /* minimal d such that p^d > X */
     gel(V,i) = dirgenus2(Q, utoi(uel(P,i)), d);
   }
-  return gerepilecopy(av, mkvec2(P,V));
+  return gc_GEN(av, mkvec2(P,V));
 }
 
 static GEN
@@ -2198,7 +2198,7 @@ lfungenus2(GEN G)
   }
   Ldata = mkvecn(6, tag(mkvec2(F,e), t_LFUN_GENUS2),
       gen_0, mkvec4(gen_0, gen_0, gen_1, gen_1), gen_2, N, gen_0);
-  return gerepilecopy(ltop, Ldata);
+  return gc_GEN(ltop, Ldata);
 }
 
 /*************************************************************/
@@ -2245,7 +2245,7 @@ eta_product_ZXn(GEN eta, long L)
     if (gc_needed(av,1) && i > 1)
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"eta_product_ZXn");
-      P = gerepilecopy(av, P);
+      P = gc_GEN(av, P);
     }
   }
   return P;
@@ -2366,7 +2366,7 @@ lfunetaquo(GEN eta0)
   if (typ(k) != t_INT) pari_err_TYPE("lfunetaquo [nonintegral weight]", eta0);
   BR = mkvec3(ZV_to_zv(gel(eta,1)), ZV_to_zv(gel(eta,2)), stoi(v - 1));
   Ldata = mkvecn(6, tag(BR,t_LFUN_ETA), gen_0, mkvec2(gen_0,gen_1), k,N, gen_1);
-  return gerepilecopy(ltop, Ldata);
+  return gc_GEN(ltop, Ldata);
 }
 
 static GEN
@@ -2411,7 +2411,7 @@ lfunqf(GEN M, long prec)
                  mkvec2(gen_0, simple_pole(gen_m2)));
   Ldata = mkvecn(7, tag(M, t_LFUN_QF), dual,
        mkvec2(gen_0, gen_1), k, d, eno, poles);
-  return gerepilecopy(ltop, Ldata);
+  return gc_GEN(ltop, Ldata);
 }
 
 /********************************************************************/
@@ -2554,7 +2554,7 @@ artin_badprimes(GEN N, GEN G, GEN aut, GEN ch)
     gel(C, i) = powiu(p, v/ndec);
     gel(B, i) = mkvec2(p, artin_ram(N, G, aut, pr, J, ch, sdec));
   }
-  return gerepilecopy(av, mkvec2(ZV_prod(C), B));
+  return gc_GEN(av, mkvec2(ZV_prod(C), B));
 }
 
 /* p does not divide nf.index */
@@ -2643,7 +2643,7 @@ dirartin_worker(GEN P, ulong X, GEN nf, GEN G, GEN V, GEN aut)
     long d = ulogint(X, p) + 1; /* minimal d such that p^d > X */
     gel(W,i) = dirartin(nf, G, V, aut, utoi(uel(P,i)), d);
   }
-  return gerepilecopy(av, mkvec2(P,W));
+  return gc_GEN(av, mkvec2(P,W));
 }
 
 static GEN
@@ -2760,7 +2760,7 @@ lfunartin(GEN nf, GEN gal, GEN ch, long o, long bitprec)
     for(i=1; i<=tmult; i++)
       Ldata = lfunmul(Ldata, gen_1, bitprec);
   }
-  return gerepilecopy(av, Ldata);
+  return gc_GEN(av, Ldata);
 }
 
 /* true nf */
@@ -2994,5 +2994,5 @@ lfuneuler(GEN ldata, GEN p, long prec)
   pari_sp av = avma;
   if (typ(p)!=t_INT || signe(p)<=0) pari_err_TYPE("lfuneuler", p);
   ldata = ldata_newprec(lfunmisc_to_ldata_shallow(ldata), prec);
-  return gerepilecopy(av, ldata_eulerf(ldata_get_an(ldata), p, prec));
+  return gc_GEN(av, ldata_eulerf(ldata_get_an(ldata), p, prec));
 }

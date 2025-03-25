@@ -738,7 +738,7 @@ nfpow(GEN nf, GEN z, GEN n)
   if (cx)
     x = gerepileupto(av, gmul(x, powgi(cx, n)));
   else
-    x = gerepilecopy(av, x);
+    x = gc_GEN(av, x);
   return x;
 }
 /* Compute z^n in nf, left-shift binary powering */
@@ -758,7 +758,7 @@ nfpow_u(GEN nf, GEN z, ulong n)
     x = gmul(x, powgi(cx, utoipos(n)));
     return gerepileupto(av,x);
   }
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 long
@@ -778,7 +778,7 @@ nfissquare(GEN nf, GEN z, GEN *px)
   z = nf_to_scalar_or_alg(nf, z);
   R = nfroots(nf, deg2pol_shallow(gen_m1, gen_0, z, v));
   delete_var(); if (lg(R) == 1) return gc_long(av, 0);
-  if (px) *px = gerepilecopy(av, nf_to_scalar_or_basis(nf, gel(R,1)));
+  if (px) *px = gc_GEN(av, nf_to_scalar_or_basis(nf, gel(R,1)));
   else set_avma(av);
   return 1;
 }
@@ -802,12 +802,12 @@ nfispower(GEN nf, GEN z, long n, GEN *px)
   z = nf_to_scalar_or_alg(nf, z);
   if (n==1)
   {
-    if (px) *px = gerepilecopy(av, z);
+    if (px) *px = gc_GEN(av, z);
     return 1;
   }
   R = nfroots(nf, gsub(pol_xn(n, v), z));
   delete_var(); if (lg(R) == 1) return gc_long(av, 0);
-  if (px) *px = gerepilecopy(av, nf_to_scalar_or_basis(nf, gel(R,1)));
+  if (px) *px = gc_GEN(av, nf_to_scalar_or_basis(nf, gel(R,1)));
   else set_avma(av);
   return 1;
 }
@@ -1062,7 +1062,7 @@ nfvalrem(GEN nf, GEN x, GEN pr, GEN *py)
   x = nf_to_scalar_or_basis(nf, x);
   if (typ(x) != t_COL) {
     w = Q_pvalrem(x,p, py);
-    if (!w) { *py = gerepilecopy(av, x); return 0; }
+    if (!w) { *py = gc_GEN(av, x); return 0; }
     *py = gerepileupto(av, gmul(powp(nf, pr, w), *py));
     return e*w;
   }
@@ -1076,7 +1076,7 @@ nfvalrem(GEN nf, GEN x, GEN pr, GEN *py)
     w += e*v;
   }
   else
-    *py = gerepilecopy(av, *py);
+    *py = gc_GEN(av, *py);
   return w;
 }
 GEN
@@ -1105,7 +1105,7 @@ basistoalg(GEN nf, GEN x)
   {
     case t_COL: {
       pari_sp av = avma;
-      return gerepilecopy(av, coltoalg(nf, x));
+      return gc_GEN(av, coltoalg(nf, x));
     }
     case t_POLMOD:
       T = nf_get_pol(nf);
@@ -1434,7 +1434,7 @@ rnfalgtobasis(GEN rnf,GEN x)
     case t_COL:
       if (lg(x)-1 != rnf_get_degree(rnf)) pari_err_DIM(f);
       x = RgV_nffix(f, T, x, 0);
-      return gerepilecopy(av, x);
+      return gc_GEN(av, x);
 
     case t_POLMOD:
       x = polmod_nffix(f, rnf, x, 0);
@@ -1723,7 +1723,7 @@ nfembed(GEN nf, GEN x, long k)
   pari_sp av = avma;
   nf = checknf(nf);
   x = nf_to_scalar_or_basis(nf,x);
-  if (typ(x) != t_COL) return gerepilecopy(av, x);
+  if (typ(x) != t_COL) return gc_GEN(av, x);
   return gerepileupto(av, nfembed_i(nf_get_M(nf),x,k));
 }
 
@@ -2094,7 +2094,7 @@ idealchinese(GEN nf, GEN x0, GEN w)
   GEN x = x0, x1, x2, s, dw, F;
 
   nf = checknf(nf);
-  if (!w) return gerepilecopy(av, chineseinit_i(nf,x,NULL,NULL));
+  if (!w) return gc_GEN(av, chineseinit_i(nf,x,NULL,NULL));
 
   if (typ(w) != t_VEC) pari_err_TYPE(fun,w);
   w = Q_remove_denom(matalgtobasis(nf,w), &dw);
@@ -2332,7 +2332,7 @@ GEN
 nfeltembed(GEN nf, GEN x, GEN ind0, long prec0)
 {
   pari_sp av = avma; nf = checknf(nf);
-  return gerepilecopy(av, nfeltembed_i(&nf, x, ind0, prec0));
+  return gc_GEN(av, nfeltembed_i(&nf, x, ind0, prec0));
 }
 
 /* number of distinct roots of sigma(f) */
@@ -2748,7 +2748,7 @@ idealprincipalunits(GEN nf, GEN pr, long k)
   nf = checknf(nf);
   if (k == 1) { checkprid(pr); retmkvec3(gen_1,cgetg(1,t_VEC),cgetg(1,t_VEC)); }
   av = avma; v = idealprincipalunits_i(nf, pr, k, NULL);
-  return gerepilecopy(av, mkvec3(powiu(pr_norm(pr), k-1), gel(v,1), gel(v,2)));
+  return gc_GEN(av, mkvec3(powiu(pr_norm(pr), k-1), gel(v,1), gel(v,2)));
 }
 
 /* true nf; given an ideal pr^k dividing an integral ideal x (in HNF form)
@@ -3410,7 +3410,7 @@ Idealstarmod(GEN nf, GEN ideal, long flag, GEN MOD)
 {
   pari_sp av = avma;
   nf = nf? checknf(nf): nfinit(pol_x(0), DEFAULTPREC);
-  return gerepilecopy(av, Idealstarmod_i(nf, ideal, flag, MOD));
+  return gc_GEN(av, Idealstarmod_i(nf, ideal, flag, MOD));
 }
 GEN
 Idealstar(GEN nf, GEN ideal, long flag) { return Idealstarmod(nf, ideal, flag, NULL); }
@@ -3419,7 +3419,7 @@ Idealstarprk(GEN nf, GEN pr, long k, long flag)
 {
   pari_sp av = avma;
   GEN z = Idealstarmod_i(nf, mkmat2(mkcol(pr),mkcols(k)), flag, NULL);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 /* FIXME: obsolete */
@@ -3612,7 +3612,7 @@ join_bid(GEN nf, GEN bid1, GEN bid2)
   y = bid_grp(nf, u1, cyc, gen, x, sarch);
   x = mkvec2(x, bid_get_arch(bid1));
   y = mkvec5(x, y, mkvec2(fa, fa2), mkvec2(sprk, sarch), U);
-  return gerepilecopy(av,y);
+  return gc_GEN(av,y);
 }
 
 typedef struct _ideal_data {
@@ -3726,7 +3726,7 @@ Ideallist(GEN bnf, ulong bound, long flag)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"Ideallist");
-      z = gerepilecopy(av, z);
+      z = gc_GEN(av, z);
     }
   }
   return z;
@@ -3744,17 +3744,17 @@ gideallist(GEN bnf, GEN B, long flag)
   if (signe(B) < 0)
   {
     if (flag != 4) pari_err_IMPL("ideallist with bid for single norm");
-    return gerepilecopy(av, ideals_by_norm(checknf(bnf), absi(B)));
+    return gc_GEN(av, ideals_by_norm(checknf(bnf), absi(B)));
   }
   if (flag < 0 || flag > 15) pari_err_FLAG("ideallist");
-  return gerepilecopy(av, Ideallist(bnf, itou(B), flag));
+  return gc_GEN(av, Ideallist(bnf, itou(B), flag));
 }
 GEN
 ideallist0(GEN bnf, long bound, long flag)
 {
   pari_sp av = avma;
   if (flag < 0 || flag > 15) pari_err_FLAG("ideallist");
-  return gerepilecopy(av, Ideallist(bnf, bound, flag));
+  return gc_GEN(av, Ideallist(bnf, bound, flag));
 }
 GEN
 ideallist(GEN bnf,long bound) { return ideallist0(bnf,bound,4); }
@@ -3780,7 +3780,7 @@ join_bid_arch(GEN nf, GEN bid, GEN archp)
   y = bid_grp(nf, u1, cyc, gen, x, sarch);
   U = split_U(U, sprk);
   y = mkvec5(mkvec2(x, archp), y, gel(bid,3), mkvec2(sprk, sarch), U);
-  return gerepilecopy(av,y);
+  return gc_GEN(av,y);
 }
 static GEN
 join_arch(ideal_data *D, GEN x) {
@@ -3829,5 +3829,5 @@ ideallistarch(GEN bnf, GEN L, GEN arch)
     gel(V,i) = v = cgetg(lz,t_VEC);
     for (j=1; j<lz; j++) gel(v,j) = join_z(&ID, gel(z,j));
   }
-  return gerepilecopy(av,V);
+  return gc_GEN(av,V);
 }

@@ -1474,7 +1474,7 @@ C4vec(GEN X, GEN Xinf, GEN m, long s)
     if ((n & 0xfff) == 0 && gc_needed(av, 3))
     { /* let parisizemax handle some of it */
       if (DEBUGMEM>1) pari_warn(warnmem,"C4vec, n = %ld/%ld", n, l-1);
-      v = gerepilecopy(av, v);
+      v = gc_GEN(av, v);
     }
   }
   setlg(v, c); return myshallowconcat1(v);
@@ -1484,7 +1484,7 @@ GEN
 nflist_C4vec_worker(GEN m, GEN X, GEN Xinf, GEN gs)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, C4vec(X, Xinf, m, itos(gs)));
+  return gc_GEN(av, C4vec(X, Xinf, m, itos(gs)));
 }
 
 static GEN
@@ -1629,7 +1629,7 @@ nflist_V4_worker(GEN D1, GEN X, GEN Xinf, GEN gs)
       { set_avma(av2); vectrunc_append(W, polV4(d1, -d2a)); av2 = avma; }
     }
   }
-  return gerepilecopy(av, mkvec2(e1 < 0? cgetg(1, t_VEC): V, W));
+  return gc_GEN(av, mkvec2(e1 < 0? cgetg(1, t_VEC): V, W));
 }
 
 static GEN
@@ -1869,7 +1869,7 @@ nflist_D4_worker(GEN D, GEN X, GEN Xinf, GEN listarch)
   setlg(v0,c0); v0 = myshallowconcat1(v0);
   setlg(v1,c1); v1 = myshallowconcat1(v1);
   setlg(v2,c2); v2 = myshallowconcat1(v2);
-  return gerepilecopy(av, mkvec3(v0, v1, v2));
+  return gc_GEN(av, mkvec3(v0, v1, v2));
 }
 
 static GEN
@@ -2368,7 +2368,7 @@ A4S4_fa(GEN DATA, GEN fa, long cond, long s)
     if (E[1] > 4 || !zv_is_1(E, 2)) return gc_NULL(av);
   if (!(w = makeA4S4(DATA, mkvec2(Flv_to_ZV(P), utoipos(cond)), s)))
     return gc_NULL(av);
-  return gerepilecopy(av, w);
+  return gc_GEN(av, w);
 }
 static GEN
 nflist_A4S4_worker_i(GEN P3, GEN X, GEN Xinf, long s)
@@ -2387,7 +2387,7 @@ GEN
 nflist_A4S4_worker(GEN P3, GEN X, GEN Xinf, GEN gs)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, nflist_A4S4_worker_i(P3, X, Xinf, gs[1]));
+  return gc_GEN(av, nflist_A4S4_worker_i(P3, X, Xinf, gs[1]));
 }
 
 static GEN
@@ -2542,7 +2542,7 @@ nflist_C5_worker(GEN N, GEN T)
   pari_sp av = avma;
   GEN v = polsubcycloC5_i(N, T);
   if (!v) { set_avma(av); return cgetg(1, t_VEC); }
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 static GEN
@@ -2737,7 +2737,7 @@ nflist_DL_worker(GEN P2, GEN X1pow, GEN X0pow, GEN X2, GEN Xinf2, GEN gell)
     for (k = 1; k < lR; k++) gel(R,k) = polredabs(getpol(bnf, gel(R,k)));
     gel(V, c++) = R;
   }
-  setlg(V,c); return gerepilecopy(av, myshallowconcat1(V));
+  setlg(V,c); return gc_GEN(av, myshallowconcat1(V));
 }
 
 static GEN
@@ -2823,7 +2823,7 @@ nflist_D9_worker(GEN P2, GEN X, GEN Xinf)
     }
     if (ci > 1) { setlg(R, ci); gel(v, c++) = R; }
   }
-  setlg(v,c); return gerepilecopy(av, myshallowconcat1(v));
+  setlg(v,c); return gc_GEN(av, myshallowconcat1(v));
 }
 
 static GEN
@@ -3026,7 +3026,7 @@ nflist_Mgen_worker(GEN field, GEN X, GEN Xinf, GEN T)
     if (ci > 1) { setlg(K, ci); gel(v, c++) = K; }
   }
   setlg(v, c); v = gtoset_shallow(myshallowconcat1(v));
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 /* (a,ell) = (3,7), (4,5) or (6,7) */
@@ -3181,7 +3181,7 @@ veccond_to_A5(GEN D, long s)
       gel(W, c++) = vecslice(V, i, ii-1);
     }
   }
-  setlg(W, c); return gerepilecopy(av, shallowconcat1(W));
+  setlg(W, c); return gc_GEN(av, shallowconcat1(W));
 }
 
 /* Sextic resolvent of A5 field */
@@ -3427,7 +3427,7 @@ nflist_C6_worker(GEN P3, GEN X, GEN Xinf, GEN M, GEN T)
     if ((m << 3) <= limD2 && ok_int(shifti(g,9), G, Ginf))
       C6fill(m << 3, P3, s, vp, vm);
   }
-  return gerepilecopy(av, mkvec2(vp, vm));
+  return gc_GEN(av, mkvec2(vp, vm));
 }
 
 static GEN
@@ -3589,7 +3589,7 @@ makeS36vec(GEN X, GEN Xinf, GEN field, long s)
         pari_sp av = avma;
         GEN w, N = mulii(powuu(F, 4), D2a3);
         if (!(w = makeS36(N, field, s))) set_avma(av);
-        else gel(RES, c++) = gerepilecopy(av, w);
+        else gel(RES, c++) = gc_GEN(av, w);
       }
       setlg(RES,c); return myshallowconcat1(RES);
     }
@@ -3703,7 +3703,7 @@ nflist_D612_worker(GEN P3, GEN X, GEN Xinf, GEN limd2s2)
       }
     }
   }
-  setlg(v, c); return gerepilecopy(av, v);
+  setlg(v, c); return gc_GEN(av, v);
 }
 
 static GEN
@@ -3861,7 +3861,7 @@ nflist_A46S46P_worker(GEN P3, GEN Xinf, GEN sqX, GEN cards)
     if ((w = A4S4_fa(DATA, gel(F,i), f, snew)))
       gel(V, c++) = makeS46Ppols(card, w);
   setlg(V,c); V = myshallowconcat1(V);
-  return gerepilecopy(av, V);
+  return gc_GEN(av, V);
 }
 
 static GEN
@@ -4145,7 +4145,7 @@ nflist_A462_worker(GEN P3, GEN X, GEN Xinf, GEN Arch, GEN GAL)
   v = ideallist(bnf, lim); l = lg(v);
   for (c = 1, j = liminf; j < l; j++)
     if ((t = doA462(bnf, gel(v,j), Arch, aut, G, GAL))) gel(v,c++) = t;
-  setlg(v, c); return gerepilecopy(av, myshallowconcat1(v));
+  setlg(v, c); return gc_GEN(av, myshallowconcat1(v));
 }
 static GEN
 makeA462vec(GEN X, GEN Xinf, GEN field, long s)
@@ -4252,7 +4252,7 @@ nflist_S3C3_worker(GEN D2, GEN X, GEN Xinf)
     if (cL == 1) { set_avma(av2); continue; }
     setlg(L, cL); gel(v, c++) = shallowconcat1(L);
   }
-  setlg(v, c); return gerepilecopy(av, gtoset_shallow(myshallowconcat1(v)));
+  setlg(v, c); return gc_GEN(av, gtoset_shallow(myshallowconcat1(v)));
 }
 
 static GEN
@@ -4388,7 +4388,7 @@ nflist_S462_worker(GEN P3, GEN X, GEN Xinf, GEN vArch, GEN GAL)
     if (lg(REU) > 1) gel(v, c++) = REU;
   }
   setlg(v,c); v = myshallowconcat1(v);
-  return gerepilecopy(av, gtoset_shallow(v));
+  return gc_GEN(av, gtoset_shallow(v));
 }
 static GEN
 makeS462vec(GEN X, GEN Xinf, GEN field, long s)
@@ -4527,7 +4527,7 @@ ideallistsquare(GEN bnf, long lim)
     }
     V = W;
   }
-  return gerepilecopy(av, V);
+  return gc_GEN(av, V);
 }
 
 GEN
@@ -4541,7 +4541,7 @@ nflist_C32C4_worker(GEN P4, GEN X, GEN Xinf, GEN GAL)
   vI = ideallistsquare(bnf, limf); v = cgetg(limf + 1, t_VEC);
   for (c = 1, f = liminf; f <= limf; f++)
     if ((w = doC32C4_i(bnf,  gel(vI, f), GAL))) gel(v, c++) = w;
-  setlg(v,c); return gerepilecopy(av, gtoset_shallow(myshallowconcat1(v)));
+  setlg(v,c); return gc_GEN(av, gtoset_shallow(myshallowconcat1(v)));
 }
 static GEN
 makeC32C4vec(GEN X, GEN Xinf, GEN field, long s)
@@ -4635,7 +4635,7 @@ nflist_C9_worker(GEN T, GEN X, GEN Xinf)
     if (lg(t) > 1) gel(v, c++) = t;
   }
   if (c == 1) { set_avma(av); return cgetg(1, t_VEC); }
-  setlg(v,c); return gerepilecopy(av, myshallowconcat1(v));
+  setlg(v,c); return gc_GEN(av, myshallowconcat1(v));
 }
 
 static GEN
@@ -4735,7 +4735,7 @@ nflist_C3C3_worker(GEN gi, GEN w, GEN F, GEN X)
   for (j = i + 1, c = 1; j < l; j++)
     if (ok_intu(lcmuu(f, F[j]), x, xinf))
       gel(v, c++) = polredabs(polcompositum0(P3, gel(w, j), 2));
-  setlg(v, c); return gerepilecopy(av, v);
+  setlg(v, c); return gc_GEN(av, v);
 }
 
 static GEN
@@ -4868,7 +4868,7 @@ nflist_S32_worker(GEN S1, GEN X, GEN Xinf, GEN w, GEN gs)
     P = makepolS32(pol1, gel(S2,1));
     if (ok_int(nfdisc(P), X, Xinf)) gel(v, c++) = P;
   }
-  setlg(v, c); return gerepilecopy(av, v);
+  setlg(v, c); return gc_GEN(av, v);
 }
 
 static GEN
@@ -4997,7 +4997,7 @@ nflist_C32D4_worker(GEN P, GEN X, GEN Xinf, GEN gs)
         if (gel(v,n) && prMconj(nf, vk, gel(v,n), aut)) {gel(v,n)=NULL; break;}
     }
   }
-  return gerepilecopy(av, RES);
+  return gc_GEN(av, RES);
 }
 
 static GEN
@@ -5277,7 +5277,7 @@ nfresolvent_i(GEN pol, long flag)
 }
 GEN
 nfresolvent(GEN pol, long flag)
-{ pari_sp av = avma; return gerepilecopy(av, nfresolvent_i(pol, flag)); }
+{ pari_sp av = avma; return gc_GEN(av, nfresolvent_i(pol, flag)); }
 
 /* 1 <= Xinf <= X */
 static GEN
@@ -5449,9 +5449,9 @@ nflist(GEN GP, GEN N, long s, GEN field)
   Also supported are \"Cp\"=[p,1] and \"Dp\"=[p,2] for any odd prime p";
     pari_err(e_MISC, s, GP);
   }
-  if (QT) return gerepilecopy(av, nflistQT(n, t, varn(N)));
+  if (QT) return gc_GEN(av, nflistQT(n, t, varn(N)));
   if (s > (n >> 1)) return cgetg(1, t_VEC);
-  if (!N) return gerepilecopy(av, nfmakesome(n, t, s));
+  if (!N) return gc_GEN(av, nfmakesome(n, t, s));
   switch(typ(N))
   {
     case t_INT: X = Xinf = N; break;
@@ -5487,7 +5487,7 @@ nflist(GEN GP, GEN N, long s, GEN field)
     set_avma(av); if (s != -2) return cgetg(1,t_VEC);
     retconst_vec((n>>1) + 1, cgetg(1,t_VEC));
   }
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 /*****************************************************************/
@@ -5719,5 +5719,5 @@ polsubcyclofast(GEN n, long ell, long s, long fli)
   pari_sp av = avma;
   GEN v = polsubcyclofast_i(n, ell, s, fli);
   if (!v) { set_avma(av); return cgetg(1, t_VEC); }
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }

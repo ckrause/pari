@@ -1067,7 +1067,7 @@ _rnfkummer(GEN bnr, GEN H, long prec)
 
 GEN
 rnfkummer(GEN bnr, GEN H, long prec)
-{ pari_sp av = avma; return gerepilecopy(av, _rnfkummer(bnr, H, prec)); }
+{ pari_sp av = avma; return gc_GEN(av, _rnfkummer(bnr, H, prec)); }
 
 /*******************************************************************/
 /*                        bnrclassfield                            */
@@ -1206,7 +1206,7 @@ bnrclassfield_tower(GEN bnr, GEN subgroup, GEN TB, GEN p, long finaldeg, long ab
   if (!last) pol2 = rnfpolredbest(nf, pol2, 0);
 
   obj_free(rnf);
-  pol2 = gerepilecopy(av, pol2);
+  pol2 = gc_GEN(av, pol2);
   if (last) return pol2;
   TB = mkvec2(pol2, gel(TB,2));
   return bnrclassfield_tower(bnr, subgroup, TB, p, finaldeg, absolute, prec);
@@ -1225,7 +1225,7 @@ cyclic_compos(GEN subgroup)
   pe = gel(D,1);
   for (i = 1; i < l; i++)
     gel(L,i) = hnfmodid(shallowconcat(subgroup, vecsplice(Ui,i)),pe);
-  return gerepilecopy(av, L);
+  return gc_GEN(av, L);
 }
 
 /* p prime; set pkum=NULL if p-th root of unity in base field
@@ -1440,7 +1440,7 @@ bnrclassfield(GEN bnr, GEN subgroup, long flag, long prec)
     if (nftyp(bnr)==typ_BNF) bnr = Buchray(bnr, gen_1, nf_INIT);
     else checkbnr(bnr);
     if (!char_check(bnr_get_cyc(bnr), subgroup))
-      return gerepilecopy(av, bnrclassfieldvec(bnr, subgroup, flag, prec));
+      return gc_GEN(av, bnrclassfieldvec(bnr, subgroup, flag, prec));
   }
   bnrclassfield_sanitize(&bnr, &subgroup);
   N = ZM_det_triangular(subgroup);
@@ -1450,10 +1450,10 @@ bnrclassfield(GEN bnr, GEN subgroup, long flag, long prec)
     case 1: set_avma(av); return pol_x(0);
     default: /* 2 */
       P = shallowcopy(nf_get_pol(bnr_get_nf(bnr)));
-      setvarn(P,0); return gerepilecopy(av,P);
+      setvarn(P,0); return gc_GEN(av,P);
   }
   if (is_bigint(N)) pari_err_OVERFLOW("bnrclassfield [too large degree]");
   fa = Z_factor(N); P = disc_primes(bnr);
   vkum = rnfkummer_initall(bnr, ZV_to_zv(gel(fa,1)), P, prec);
-  return  gerepilecopy(av, bnrclassfield_H(vkum, bnr, P, subgroup, fa, flag, prec));
+  return  gc_GEN(av, bnrclassfield_H(vkum, bnr, P, subgroup, fa, flag, prec));
 }

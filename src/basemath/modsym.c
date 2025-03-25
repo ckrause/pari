@@ -675,7 +675,7 @@ mssplit(GEN W, GEN H, long deglim)
     pari_err_DOMAIN("mssplit","abs(sign)","!=",gen_1,gen_0);
   if (!H) H = msnew(W);
   H = Qevproj_init0(H);
-  return gerepilecopy(av, mssplit_i(W,H,deglim));
+  return gc_GEN(av, mssplit_i(W,H,deglim));
 }
 
 /* proV = Qevproj_init of a Hecke simple subspace, return [ a_n, n <= B ] */
@@ -734,7 +734,7 @@ msqexpansion_i(GEN W, GEN proV, ulong B)
     Tv = Qevproj_apply_vecei(T, proV, 1); /* Tp.v */
     /* Write Tp.v = \sum u_i T^i v */
     u = RgC_Rg_div(RgM_RgC_mul(iM, Tv), diM);
-    ap = gerepilecopy(av, RgV_to_RgX(u, 0));
+    ap = gc_GEN(av, RgV_to_RgX(u, 0));
     if (d > 1)
       ap = mkpolmod(ap,ch);
     else
@@ -773,7 +773,7 @@ msqexpansion(GEN W, GEN proV, long B)
   checkms(W);
   if (B < 0) pari_err_DOMAIN("msqexpansion", "B", "<", gen_0, stoi(B));
   proV = Qevproj_init0(proV);
-  return gerepilecopy(av, msqexpansion_i(W,proV,(ulong)B));
+  return gc_GEN(av, msqexpansion_i(W,proV,(ulong)B));
 }
 
 static GEN
@@ -894,7 +894,7 @@ msnew(GEN W)
     S = ZM_mul(S, QM_ker(matconcat(v))); /* Snew */
     S = Qevproj_init(vec_Q_primpart(S));
   }
-  return gerepilecopy(av, S);
+  return gc_GEN(av, S);
 }
 
 /* Solve the Manin relations for a congruence subgroup \Gamma by constructing
@@ -1025,7 +1025,7 @@ form_list_of_cusps(ulong N, GEN p1N)
   }
   L = cgetg(nbC+1, t_VEC); i = 1;
   for (c = C; c; c = c->next) gel(L,i++) = c->data;
-  return gerepilecopy(av, L);
+  return gc_GEN(av, L);
 }
 
 /* W an msN. M in PSL2(Z). Return index of M in P1^(Z/NZ) = Gamma0(N) \ PSL2(Z),
@@ -1569,7 +1569,7 @@ GEN
 mspathgens(GEN W)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, mspathgens_i(W));
+  return gc_GEN(av, mspathgens_i(W));
 }
 /* Modular symbols in weight k: Hom_Gamma(Delta, Q[x,y]_{k-2}) */
 /* A symbol phi is represented by the {phi(g_i)}, {phi(g'_i)}, {phi(g''_i)}
@@ -1657,7 +1657,7 @@ act_ZGl2Q(GEN z, struct m_act *T, hashtable *H)
       S = gerepileupto(av, S);
     }
   }
-  return gerepilecopy(av, S);
+  return gc_GEN(av, S);
 }
 static GEN
 _RgX_act_Gl2Q(struct m_act *S, GEN z) { return RgX_act_Gl2Q(z, S->k); }
@@ -1970,7 +1970,7 @@ mspathlog(GEN W, GEN p)
 {
   pari_sp av = avma;
   checkms(W);
-  return gerepilecopy(av, M2_log(W, path_to_M2(p)));
+  return gc_GEN(av, M2_log(W, path_to_M2(p)));
 }
 
 /** HECKE OPERATORS **/
@@ -2069,7 +2069,7 @@ M2_logf(GEN Wp, GEN path, GEN f)
   L = RgV_sparse(L,&ind); l = lg(L);
   for (i = 1; i < l; i++) gel(L,i) = ZSl2_star(gel(L,i));
   if (f) ZGC_G_mul_inplace(L, mat2_to_ZM(f));
-  return gerepilecopy(av, mkvec2(ind,L));
+  return gc_GEN(av, mkvec2(ind,L));
 }
 
 static hashtable *
@@ -2111,7 +2111,7 @@ init_dual_act(GEN v, GEN W1, GEN W2, struct m_act *S)
       tk = M2_logf(W1, w, f); /* mu_{.,j}(v[k]) as sparse vector */
       t = t? ZGCs_add(t, tk): tk;
     }
-    gel(T,j) = gerepilecopy(av, t);
+    gel(T,j) = gc_GEN(av, t);
   }
   for (j = 1; j <= dim; j++)
   {
@@ -2374,7 +2374,7 @@ getMorphism(GEN W1, GEN W2, GEN v)
     pari_sp av = avma;
     GEN phi = dual_act(S.dim, act, gel(B1,a));
     GEN D = getMorphism_basis(W2, phi);
-    gel(M,a) = gerepilecopy(av, D);
+    gel(M,a) = gc_GEN(av, D);
   }
   return M;
 }
@@ -2403,7 +2403,7 @@ mshecke(GEN W, long p, GEN H)
   if (p <= 1) pari_err_PRIME("mshecke",stoi(p));
   T = mshecke_i(W,p);
   T = endo_project(W,T,H);
-  return gerepilecopy(av, T);
+  return gc_GEN(av, T);
 }
 
 static GEN
@@ -2430,7 +2430,7 @@ msatkinlehner(GEN W, long Q, GEN H)
   w = msatkinlehner_i(W,Q);
   w = endo_project(W,w,H);
   if (k > 2 && Q != 1) w = RgM_Rg_div(w, powuu(Q,(k-2)>>1));
-  return gerepilecopy(av, w);
+  return gc_GEN(av, w);
 }
 
 static GEN
@@ -2443,7 +2443,7 @@ msstar(GEN W, GEN H)
   checkms(W);
   s = msstar_i(W);
   s = endo_project(W,s,H);
-  return gerepilecopy(av, s);
+  return gc_GEN(av, s);
 }
 
 #if 0
@@ -2555,7 +2555,7 @@ msfromcusp(GEN W, GEN c)
     default:
       pari_err_TYPE("msfromcusp",c);
   }
-  return gerepilecopy(av, msfromcusp_i(W,c));
+  return gc_GEN(av, msfromcusp_i(W,c));
 }
 
 static GEN
@@ -2572,7 +2572,7 @@ GEN
 mseisenstein(GEN W)
 {
   pari_sp av = avma;
-  checkms(W); return gerepilecopy(av, mseisenstein_i(W));
+  checkms(W); return gc_GEN(av, mseisenstein_i(W));
 }
 
 /* upper bound for log_2 |charpoly(T_p|S)|, where S is a cuspidal subspace of
@@ -2686,7 +2686,7 @@ mscuspidal(GEN W, long flag)
     M = QM_image_shallow(M); /* = Im chE(T / dT) */
   }
   S = Qevproj_init(M);
-  return gerepilecopy(av, flag? mkvec2(S,E): S);
+  return gc_GEN(av, flag? mkvec2(S,E): S);
 }
 
 /** INIT ELLSYM STRUCTURE **/
@@ -2950,7 +2950,7 @@ msinit(GEN N, GEN K, long s)
   if (signe(N) <= 0) pari_err_DOMAIN("msinit","N", "<=", gen_0,N);
   if (labs(s) > 1) pari_err_DOMAIN("msinit", "|sign|", ">", gen_1, stoi(s));
   W = mskinit(itou(N), k, s);
-  return gerepilecopy(av, W);
+  return gc_GEN(av, W);
 }
 
 /* W = msinit, xpm integral modular symbol of weight 2, c t_FRAC
@@ -3089,7 +3089,7 @@ mseval(GEN W, GEN s, GEN p)
       if (!isintzero(c)) gel(s,i) = RgV_to_RgX(gel(s,i), v);
     }
   }
-  return gerepilecopy(av, s);
+  return gc_GEN(av, s);
 }
 
 static GEN
@@ -3295,7 +3295,7 @@ msfromell(GEN E0, long sign)
   /* must make it integral for ellap; we have minimal model at hand */
   T = obj_check(E, Q_MINIMALMODEL); if (lg(T) != 2) E = gel(T,3);
   N = itou(NE); av2 = avma;
-  W = gerepilecopy(av2, mskinit(N,2,0));
+  W = gc_GEN(av2, mskinit(N,2,0));
   star = msk_get_star(W);
   (void)u_forprime_init(&Sl, 1UL<<29, ULONG_MAX);
   /* loop for p <= count_Manin_symbols(N) / 6 would be enough */
@@ -3308,7 +3308,7 @@ msfromell(GEN E0, long sign)
     if (N % p == 0) continue;
     av2 = avma;
     M = RgM_Rg_sub_shallow(mshecke_i(W, p), ellap(E, utoipos(p)));
-    M = gerepilecopy(av2, M);
+    M = gc_GEN(av2, M);
     vT = vec_append(vT, M); /* for certification at the end */
     K = msfromell_ker(K, M, l);
     if (lg(K) == 3) break;
@@ -3346,7 +3346,7 @@ msfromell(GEN E0, long sign)
     for (i=1; i<lE; i++) gel(v,i) = msfromell_scale(xr, Cw, gel(E0,i), sign);
     x = v;
   }
-  return gerepilecopy(av, mkvec2(W, x));
+  return gc_GEN(av, mkvec2(W, x));
 }
 
 GEN
@@ -3381,7 +3381,7 @@ msfromhecke(GEN W, GEN v, GEN H)
     if (!K) K = K2;
     else if (lg(K2) < lg(K)) K = ZM_mul(K,K2);
   }
-  return gerepilecopy(av, K);
+  return gc_GEN(av, K);
 }
 
 /* OVERCONVERGENT MODULAR SYMBOLS */
@@ -3463,7 +3463,7 @@ moments_act_i(struct m_act *S, GEN f)
 }
 static GEN
 moments_act(struct m_act *S, GEN f)
-{ pari_sp av = avma; return gerepilecopy(av, moments_act_i(S,f)); }
+{ pari_sp av = avma; return gc_GEN(av, moments_act_i(S,f)); }
 static GEN
 init_moments_act(GEN W, long p, long n, GEN q, GEN v)
 {
@@ -3632,7 +3632,7 @@ msomseval(GEN W, GEN phi, GEN path)
   S.act = &moments_act;
   path = path_to_M2(path);
   v = omseval_int(&S, phi, M2_logf(Wp,path,NULL), NULL);
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 /* W = msinit(N,k,...); if flag < 0 or flag >= k-1, allow all symbols;
  * else commit to v_p(a_p) <= flag (ordinary if flag = 0)*/
@@ -3720,7 +3720,7 @@ mspadicinit(GEN W, long p, long n, long flag)
       }
     }
   }
-  return gerepilecopy(av, mkvecn(8, Wp,Tp, bin, actUp, q,
+  return gc_GEN(av, mkvecn(8, Wp,Tp, bin, actUp, q,
                                  mkvecsmall3(p,n,flag), M, C));
 }
 
@@ -3864,7 +3864,7 @@ mstooms(GEN W, GEN phi)
      * vden + k is the denominator of this matrix */
   }
   /* phi is integral-valued */
-  return gerepilecopy(av, mkcol3(phi, stoi(vden), alpha));
+  return gc_GEN(av, mkcol3(phi, stoi(vden), alpha));
 }
 
 /* HACK: the v[j] have different lengths */
@@ -3944,7 +3944,7 @@ mspadicmoments(GEN W, GEN PHI, long D)
         GEN d;
         z = moments_act_i(&S, mkmat22(gaD,utoipos(b), gen_0,gaD));
         d = s > 0? Dk: Fp_neg(Dk, pn);
-        z = equali1(d)? gerepilecopy(av2, z)
+        z = equali1(d)? gc_GEN(av2, z)
                       : gerepileupto(av2, FpM_Fp_mul(z, d, pn));
       }
       gel(Dact,b) = z;
@@ -4007,9 +4007,9 @@ mspadicmoments(GEN W, GEN PHI, long D)
     { for (i=1; i<lphi; i++) gel(va,i) = twistmoment_4(gel(vca,i)); }
     else /* \tilde{a} = -1 */
     { for (i=1; i<lphi; i++) gel(va,i) = twistmoment_m4(gel(vca,i)); }
-    gel(v,ia) = gerepilecopy(av2, va);
+    gel(v,ia) = gc_GEN(av2, va);
   }
-  return gerepilecopy(av, mkvec3(v, gel(PHI,3), mkvecsmall4(p,n+vden,n,D)));
+  return gc_GEN(av, mkvec3(v, gel(PHI,3), mkvecsmall4(p,n+vden,n,D)));
 }
 static void
 checkoms(GEN v)
@@ -4126,7 +4126,7 @@ mspadicseries(GEN oms, long teichi)
   {
     s = zeroser(0,0);
     if (oms_is_supersingular(oms)) s = mkvec2(s,s);
-    return gerepilecopy(av, s);
+    return gc_GEN(av, s);
   }
   p = oms_get_p(oms);
   vlog = cgetg(n+1, t_VEC);
@@ -4165,7 +4165,7 @@ mspadicseries(GEN oms, long teichi)
   }
   s = RgV_to_ser(s,0,lg(s)+1);
   if (s2) { s2 = RgV_to_ser(s2,0,lg(s2)+1); s = mkvec2(s, s2); }
-  if (kross(oms_get_D(oms), p) >= 0) return gerepilecopy(av, s);
+  if (kross(oms_get_D(oms), p) >= 0) return gc_GEN(av, s);
   return gerepileupto(av, gneg(s));
 }
 void
@@ -4206,7 +4206,7 @@ mspadicL(GEN oms, GEN s, long r)
   z = mspadicint(oms, teich, S);
   if (lg(z) == 2) z = gel(z,1);
   if (kross(oms_get_D(oms), p) < 0) z = gneg(z);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 /****************************************************************************/
@@ -4433,7 +4433,7 @@ get_g(struct siegel *S, long a1)
     GEN tau = mkmat22(gen_0,gen_m1, gen_1,gen_m1); /*[0,-1;1,-1]*/
     g = ZM2_div(ZM_mul(ar, tau), ar, Dar, 0);
   }
-  return gerepilecopy(av, g);
+  return gc_GEN(av, g);
 }
 /* input V = (X1 a X2 | X3 a^* X4) + Ast
  * a1 = index of a
@@ -4809,7 +4809,7 @@ mspolygon(GEN M, long flag)
     v = mkvec5(T.V, T.Ast, G, polygon2tex(T.V,T.Ast,G), circle2tex(T.Ast,G));
   else
     v = mkvec3(T.V, T.Ast, G);
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 #if 0
@@ -4866,7 +4866,7 @@ mslattice(GEN M, GEN F)
   }
   setlg(vB, ivB);
   vB = shallowmatconcat(vB);
-  if (ZM_equal0(vB)) return gerepilecopy(av, F);
+  if (ZM_equal0(vB)) return gc_GEN(av, F);
 
   (void)QM_ImQ_hnfall(vB, &U, 0);
   if (k > 2) U = rowslice(U, 1, lgcols(U)-k); /* remove coboundary part */

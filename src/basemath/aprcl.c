@@ -233,12 +233,12 @@ _powpolmod(GEN C, GEN jac, Red *R, GEN (*_sqr)(GEN, Red *))
     while (tf--) {
       res = _sqr(res, R);
       if (gc_needed(av,1)) {
-        res = gerepilecopy(av, res);
+        res = gc_GEN(av, res);
         if(DEBUGMEM>1) pari_warn(warnmem,"powpolmod: f = %ld",f);
       }
     }
   }
-  return gerepilecopy(av0, res);
+  return gc_GEN(av0, res);
 }
 
 static GEN

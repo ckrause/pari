@@ -90,7 +90,7 @@ ellcompisog(GEN F, GEN G)
   den = gmul(Gh3, gel(g1,2));
   num = gadd(gmul(gel(g0,1),den), gmul(gmul(gel(G,2),gel(g1,1)),gel(g0,2)));
   g = gdiv(gmul(gmul(K3,num),gel(h3,2)),gmul(gmul(gel(g0,2),den), gel(h3,1)));
-  return gerepilecopy(av, mkvec3(f,g,K));
+  return gc_GEN(av, mkvec3(f,g,K));
 }
 
 static GEN
@@ -178,7 +178,7 @@ ellnfcompisog(GEN nf, GEN F, GEN G)
   if (DEBUGLEVEL) timer_printf(&ti,"ellnfcompisog: gd");
   g = divy(gn0, gn1, gd, T, vy);
   if (DEBUGLEVEL) timer_printf(&ti,"ellnfcompisog: divy");
-  return gerepilecopy(av, gmul(mkvec3(f,g,K),gmodulo(gen_1,T)));
+  return gc_GEN(av, gmul(mkvec3(f,g,K),gmodulo(gen_1,T)));
 }
 
 /* Given an isogeny phi from ellisogeny() and a point P in the domain of phi,
@@ -665,7 +665,7 @@ ellisogeny(GEN E, GEN G, long only_image, long vx, long vy)
     z = NULL;
     pari_err_TYPE("ellisogeny", G);
   }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 static GEN
@@ -858,7 +858,7 @@ ellisog_by_j(GEN e, GEN jt, long n, GEN P, long flag)
   GEN s0 = gdiv(gadd(gadd(gmul(gsqr(jp),Pxxj),gmul(gmul(jp,jtpn),gmul2n(Pxyj,1))),
                 gmul(gsqr(jtpn),Pyyj)),gmul(jp,Pxj));
   GEN et = ellisog_by_jt(c4, c6, jt, jtp, s0, n, flag);
-  return gerepilecopy(av, et);
+  return gc_GEN(av, et);
 }
 
 static GEN
@@ -912,7 +912,7 @@ isograph_p(GEN nf, GEN e, ulong p, GEN P, long flag)
     iso = ellisograph_r(nf, e, p, P, NULL, flag);
   else
     iso = ellisograph_Kohel_r(nf, e, p, NULL, flag);
-  return gerepilecopy(av, iso);
+  return gc_GEN(av, iso);
 }
 
 static GEN
@@ -1582,7 +1582,7 @@ ellisomat(GEN E, long p, long flag)
       r = nf? ellnf_isomat(E, flag): ellQ_isomat(E, flag);
     if (typ(r) == t_VEC) gel(r,1) = list_to_crv(gel(r,1));
   }
-  return gerepilecopy(av, r);
+  return gc_GEN(av, r);
 }
 
 static GEN
@@ -1648,7 +1648,7 @@ ellweilcurve(GEN E, GEN *ms)
   }
   for (i = 1; i < l; i++) obj_free(gel(vE,i));
   vE = mkvec2(vE, vL);
-  if (!ms) return gerepilecopy(av, vE);
+  if (!ms) return gc_GEN(av, vE);
   *ms = Wx; return gc_all(av, 2, &vE, ms);
 }
 
@@ -1676,7 +1676,7 @@ ellisotree(GEN E)
         gcoeff(M,j,i) = p;
     }
   for (i = 1; i <= n; i++) obj_free(gel(vE,i));
-  return gerepilecopy(av, mkvec2(vE,M));
+  return gc_GEN(av, mkvec2(vE,M));
 }
 
 /* Shortest path between x and y on the adjencc graph of A-A~

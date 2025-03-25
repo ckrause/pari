@@ -390,7 +390,7 @@ polissquareall(GEN x, GEN *pt)
   }
 END:
   if (v) y = RgX_shift_shallow(y, v>>1);
-  *pt = gerepilecopy(av, y); return 1;
+  *pt = gc_GEN(av, y); return 1;
 }
 
 static long
@@ -409,7 +409,7 @@ polmodispower(GEN x, GEN K, GEN *pt)
       x = Fp_to_mod(x,p);
     else
       x = mkpolmod(FpX_to_mod(x,p), FpX_to_mod(T,p));
-    *pt = gerepilecopy(av, x); return 1;
+    *pt = gc_GEN(av, x); return 1;
   }
   pari_err_IMPL("ispower for general t_POLMOD");
   return 0;
@@ -624,7 +624,7 @@ polispower(GEN x, GEN K, GEN *pt)
       y = gmul(b,y);
     }
     if (v) y = RgX_shift_shallow(y, v);
-    *pt = gerepilecopy(av, y);
+    *pt = gc_GEN(av, y);
   }
   else set_avma(av);
   return 1;
@@ -806,7 +806,7 @@ gisanypower(GEN x, GEN *pty)
     if (k == 1) return gc_long(av,0);
     if (!pty) return gc_long(av,k);
     if (k != h) a = powiu(a, h/k);
-    *pty = gerepilecopy(av, mkfrac(a, b));
+    *pty = gc_GEN(av, mkfrac(a, b));
     return k;
   }
   pari_err_TYPE("gisanypower", x);
@@ -1003,7 +1003,7 @@ Z_isanypower(GEN x, GEN *pty)
     if (pty) togglesign_safe(pty);
   }
   if (!pty) return gc_long(av, k);
-  *pty = gerepilecopy(av, *pty); return k;
+  *pty = gc_GEN(av, *pty); return k;
 }
 
 /* Faster than expi(n) == vali(n) or hamming(n) == 1 even for single-word
@@ -1059,7 +1059,7 @@ isprimepower_i(GEN n, GEN *pt, long flag)
   /* p | n => p >= 103 */
   v = Z_isanypower_101(&n); /* expensive */
   if (!(flag? isprime(n): BPSW_psp(n))) return gc_long(av,0);
-  if (pt) *pt = gerepilecopy(av, n); else set_avma(av);
+  if (pt) *pt = gc_GEN(av, n); else set_avma(av);
   return v;
 }
 long

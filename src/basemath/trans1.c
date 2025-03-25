@@ -1019,7 +1019,7 @@ powgi(GEN x, GEN n)
       pari_sp av = avma;
       y = gen_pow_i(x, n, NULL, &_sqr, &_mul);
       if (signe(n) < 0) return gerepileupto(av, ginv(y));
-      return gerepilecopy(av,y);
+      return gc_GEN(av,y);
     }
   }
 }
@@ -1238,7 +1238,7 @@ gpow(GEN x, GEN n, long prec)
       if (valser(x))
         pari_err_DOMAIN("gpow [irrational exponent]",
                         "valuation", "!=", gen_0, x);
-      if (lg(x) == 2) return gerepilecopy(av, x); /* O(1) */
+      if (lg(x) == 2) return gc_GEN(av, x); /* O(1) */
       return gerepileupto(av, ser_pow(x, n, prec));
   }
   if (gequal0(x)) return gpow0(x, n, prec);
@@ -1254,7 +1254,7 @@ gpow(GEN x, GEN n, long prec)
         {
           z = powgi(z, a);
           if (Mod4(a) == 3) z = gneg(z);
-          return gerepilecopy(av, mkcomplex(gen_0, z));
+          return gc_GEN(av, mkcomplex(gen_0, z));
         }
         break;
       }
@@ -1264,7 +1264,7 @@ gpow(GEN x, GEN n, long prec)
       if (signe(gel(x,1)) < 0)
       {
         if (equaliu(d, 2) && ispower(absfrac(x), d, &z))
-          return gerepilecopy(av, mkcomplex(gen_0, powgi(z, a)));
+          return gc_GEN(av, mkcomplex(gen_0, powgi(z, a)));
         break;
       }
       if (ispower(x, d, &z)) return powgi(z, a);
@@ -1307,7 +1307,7 @@ gpow(GEN x, GEN n, long prec)
   y = gmul(n, glog(x,prec));
   y = gexp(y,prec);
   if (prec0 == prec) return gerepileupto(av, y);
-  return gerepilecopy(av, gprec_wtrunc(y,prec0));
+  return gc_GEN(av, gprec_wtrunc(y,prec0));
 }
 GEN
 powPis(GEN s, long prec)
@@ -1613,7 +1613,7 @@ gsqrt(GEN x, long prec)
 
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      return gerepilecopy(av, sqrt_ser(y, prec));
+      return gc_GEN(av, sqrt_ser(y, prec));
   }
   return trans_eval("sqrt",gsqrt,x,prec);
 }
@@ -1979,7 +1979,7 @@ sqrtnof1(ulong n, long prec)
     z = gdiv(y, gaddgs(gmulsg(n1, y), n2));
     shiftc_inplace(z,1);
     x = gmul(x, gsubsg(1, z));
-    if (mask == 1) return gerepilecopy(av, gprec_w(x,prec));
+    if (mask == 1) return gc_GEN(av, gprec_w(x,prec));
     eold = enew;
   }
 }
@@ -2000,14 +2000,14 @@ rootsof1u_cx(ulong n, long prec)
       GEN sq3 = sqrtr_abs(utor(3, prec));
       shiftr_inplace(sq3, -1);
       a = (n == 12)? mkcomplex(sq3, a): mkcomplex(a, sq3);
-      return gerepilecopy(av, a);
+      return gc_GEN(av, a);
     }
     case 8:
     {
       pari_sp av = avma;
       GEN sq2 = sqrtr_abs(utor(2, prec));
       shiftr_inplace(sq2,-1);
-      return gerepilecopy(av, mkcomplex(sq2, sq2));
+      return gc_GEN(av, mkcomplex(sq2, sq2));
     }
   }
   return sqrtnof1(n, prec);
@@ -2274,7 +2274,7 @@ gexpm1(GEN x, long prec)
         GEN e1 = gexpm1(gel(y,2), prec), e = gaddgs(e1,1);
         y = gmul(e, serexp(serchop0(y),prec));
         gel(y,2) = e1;
-        return gerepilecopy(av, y);
+        return gc_GEN(av, y);
       }
     }
   }
@@ -2486,7 +2486,7 @@ serchop(GEN s, long n)
 {
   pari_sp av = avma;
   if (typ(s) != t_SER) pari_err_TYPE("serchop",s);
-  return gerepilecopy(av, serchop_i(s,n));
+  return gc_GEN(av, serchop_i(s,n));
 }
 
 static GEN
@@ -2691,7 +2691,7 @@ agm1cx(GEN x, long prec)
     b1 = gsqrt(gmul(a,b1), prec);
   }
   if (rotate) a1 = rotate>0 ? mulcxI(a1):mulcxmI(a1);
-  return gerepilecopy(av,a1);
+  return gc_GEN(av,a1);
 }
 
 GEN
@@ -2796,13 +2796,13 @@ agm1(GEN x, long prec)
         b1 = Qp_sqrt(a); if (!b1) pari_err_SQRTN("Qp_sqrt",a);
         p1 = gsub(b1,a1); ep = valp(p1)-valp(b1);
         if (ep<=0) { b1 = gneg_i(b1); p1 = gsub(b1,a1); ep=valp(p1)-valp(b1); }
-        if (ep >= l || gequal0(p1)) return gerepilecopy(av,a1);
+        if (ep >= l || gequal0(p1)) return gc_GEN(av,a1);
       }
     }
 
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      return gerepilecopy(av, ser_agm1(y, prec));
+      return gc_GEN(av, ser_agm1(y, prec));
   }
   return trans_eval("agm",agm1,x,prec);
 }
@@ -3216,7 +3216,7 @@ glog(GEN x, long prec)
         av = avma; b = Pi2n(-1,prec);
         if (gsigne(a) < 0) { setsigne(b, -1); a = gabs(a,prec); }
         a = isint1(a) ? gen_0: glog(a,prec);
-        return gerepilecopy(av, mkcomplex(a, b));
+        return gc_GEN(av, mkcomplex(a, b));
       }
       if (prec >= LOGAGMCX_LIMIT) return logagmcx(x, prec);
       y = cgetg(3,t_COMPLEX);
@@ -3510,7 +3510,7 @@ gcos(GEN x, long prec)
       if (valser(y) < 0)
         pari_err_DOMAIN("cos","valuation", "<", gen_0, x);
       gsincos(y,&u,&v,prec);
-      return gerepilecopy(av,v);
+      return gc_GEN(av,v);
   }
   return trans_eval("cos",gcos,x,prec);
 }
@@ -3570,11 +3570,11 @@ gsin(GEN x, long prec)
 
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      if (gequal0(y)) return gerepilecopy(av, y);
+      if (gequal0(y)) return gc_GEN(av, y);
       if (valser(y) < 0)
         pari_err_DOMAIN("sin","valuation", "<", gen_0, x);
       gsincos(y,&u,&v,prec);
-      return gerepilecopy(av,u);
+      return gc_GEN(av,u);
   }
   return trans_eval("sin",gsin,x,prec);
 }
@@ -3650,7 +3650,7 @@ expIr(GEN x)
   pari_sp av = avma;
   GEN v = cgetg(3,t_COMPLEX);
   mpsincos(x, (GEN*)(v+2), (GEN*)(v+1));
-  if (!signe(gel(v,2))) return gerepilecopy(av, gel(v,1));
+  if (!signe(gel(v,2))) return gc_GEN(av, gel(v,1));
   return v;
 }
 
@@ -3661,7 +3661,7 @@ expm1_Ir(GEN x)
   pari_sp av = avma;
   GEN v = cgetg(3,t_COMPLEX);
   mpsincosm1(x, (GEN*)(v+2), (GEN*)(v+1));
-  if (!signe(gel(v,2))) return gerepilecopy(av, gel(v,1));
+  if (!signe(gel(v,2))) return gc_GEN(av, gel(v,1));
   return v;
 }
 
@@ -3723,13 +3723,13 @@ gsincos(GEN x, GEN *s, GEN *c, long prec)
 
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      if (gequal0(y)) { *s = gerepilecopy(av,y); *c = gaddsg(1,*s); return; }
+      if (gequal0(y)) { *s = gc_GEN(av,y); *c = gaddsg(1,*s); return; }
 
       ex = valser(y); lx = lg(y); ex2 = 2*ex+2;
       if (ex < 0) pari_err_DOMAIN("gsincos","valuation", "<", gen_0, x);
       if (ex2 > lx)
       {
-        *s = x == y? gcopy(y): gerepilecopy(av, y); av = avma;
+        *s = x == y? gcopy(y): gc_GEN(av, y); av = avma;
         *c = gerepileupto(av, gsubsg(1, gdivgu(gsqr(y),2)));
         return;
       }
@@ -3927,7 +3927,7 @@ gtan(GEN x, long prec)
 
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      if (gequal0(y)) return gerepilecopy(av, y);
+      if (gequal0(y)) return gc_GEN(av, y);
       if (valser(y) < 0)
         pari_err_DOMAIN("tan","valuation", "<", gen_0, x);
       gsincos(y,&s,&c,prec);

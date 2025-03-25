@@ -1342,7 +1342,7 @@ mpqs_eval_cand(mpqs_handle_t *h, long nc, hashtable *frel, hashtable *lprel, int
     setlg(relp, nb+1);
     if (is_pm1(Qx))
     {
-      GEN rel = gerepilecopy(btop, mkvec2(absi_shallow(Y), relp));
+      GEN rel = gc_GEN(btop, mkvec2(absi_shallow(Y), relp));
 #ifdef MPQS_DEBUG
       mpqs_check_rel(h, rel, 1, mode);
 #endif
@@ -1363,14 +1363,14 @@ mpqs_eval_cand(mpqs_handle_t *h, long nc, hashtable *frel, hashtable *lprel, int
       mpqs_check_rel(h, rel, q, mode);
 #endif
       if (!col) /* relation up to large prime */
-        hash_insert(lprel, (void*)q, (void*)gerepilecopy(btop,rel));
+        hash_insert(lprel, (void*)q, (void*)gc_GEN(btop,rel));
       else if ((rel = combine_large_primes(h, q, rel, col, mode)))
       {
         if (typ(rel) == t_INT) return rel; /* very unlikely */
 #ifdef MPQS_DEBUG
         mpqs_check_rel(h, rel, 1, mode);
 #endif
-        frel_add(frel, gerepilecopy(btop,rel));
+        frel_add(frel, gc_GEN(btop,rel));
       }
       else
         set_avma(btop);
@@ -1861,5 +1861,5 @@ mpqs_class_rels(mpqs_handle_t *H, ulong nb, GEN missing_primes)
     break;
   }
   if (DEBUGLEVEL >= 4) err_printf("\n");
-  return gerepilecopy(av, rels_to_quad(H, hash_keys_GEN(&frel)));
+  return gc_GEN(av, rels_to_quad(H, hash_keys_GEN(&frel)));
 }

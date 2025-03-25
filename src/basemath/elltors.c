@@ -398,7 +398,7 @@ ellisdivisible(GEN E, GEN Q, GEN n, GEN *pQ)
         if (is_bigint(n)) pari_err_IMPL("ellisdivisible for huge torsion");
         if (!ellisdivisible(E, Q, n, pQ)) return gc_long(av, 0);
         if (!pQ) return gc_long(av, 1);
-        *pQ = gerepilecopy(av, *pQ); return 1;
+        *pQ = gc_GEN(av, *pQ); return 1;
       }
       if (!K)
       { /* could use elltors instead of a multiple ? */
@@ -435,7 +435,7 @@ ellisdivisible(GEN E, GEN Q, GEN n, GEN *pQ)
   if (!P) return gc_long(av, 0);
   if (!pQ) return gc_long(av, 1);
   if (gequal(Q, ellmul(E, P, N)))
-    P = gerepilecopy(av, P);
+    P = gc_GEN(av, P);
   else
     P = gerepileupto(av, ellneg(E, P));
   *pQ = P; return 1;
@@ -620,7 +620,7 @@ elltors(GEN e)
     case t_ELL_Fq: return ellgroup0(e,NULL,1);
     default: pari_err_TYPE("elltors",e);
   }
-  return gerepilecopy(av, t);
+  return gc_GEN(av, t);
 }
 
 GEN
@@ -638,7 +638,7 @@ elltors_psylow(GEN e, ulong p)
     case t_ELL_NF: t = ellnftors(e, p); break;
     default: pari_err_TYPE("elltors_psylow",e);
   }
-  return gerepilecopy(av, t);
+  return gc_GEN(av, t);
 }
 
 /********************************************************************/

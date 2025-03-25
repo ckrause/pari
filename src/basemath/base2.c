@@ -148,7 +148,7 @@ poldiscfactors(GEN T, long flag)
   if (flag < 0 || flag > 1) pari_err_FLAG("poldiscfactors");
   dT = ZX_disc(T);
   if (!signe(dT)) retmkvec2(gen_0, Z_factor(gen_0));
-  return gerepilecopy(av, mkvec2(dT, poldiscfactors_i(T, dT, flag)));
+  return gc_GEN(av, mkvec2(dT, poldiscfactors_i(T, dT, flag)));
 }
 
 static void
@@ -568,7 +568,7 @@ nfdiscfactors(GEN x)
     P = S.dTP;
   }
   setPE(D, P, &P, &E); settyp(P, t_COL);
-  return gerepilecopy(av, mkvec2(D, mkmat2(P, zc_to_ZC(E))));
+  return gc_GEN(av, mkvec2(D, mkmat2(P, zc_to_ZC(E))));
 }
 
 static ulong
@@ -696,7 +696,7 @@ maxord(GEN p, GEN f, long mf)
     w = merge_sort_uniq(gel(F1,1),gel(F2,1),(void*)cmpii,&gen_cmp_RgX);
     res = maxord_i(&S, p, f, mf, w, 0);
   }
-  return gerepilecopy(av,res);
+  return gc_GEN(av,res);
 }
 /* T monic separable ZX, p prime */
 GEN
@@ -716,7 +716,7 @@ ZpX_primedec(GEN T, GEN p)
     long f = degpol(S.nu), e = degpol(T) / f;
     set_avma(av); retmkmat2(mkcols(f), mkcols(e));
   }
-  return gerepilecopy(av,res);
+  return gc_GEN(av,res);
 }
 
 static GEN
@@ -764,7 +764,7 @@ Zlx_gcd(GEN f1, GEN f2, ulong p, ulong pm)
     if (t)
     {
       a = Flx_to_ZX(Flv_to_Flx(gel(a,c), sv));
-      if (t == 1) return gerepilecopy(av, a);
+      if (t == 1) return gc_GEN(av, a);
       return gerepileupto(av, RgX_Rg_div(a, utoipos(t)));
     }
   }
@@ -790,7 +790,7 @@ ZpX_gcd(GEN f1, GEN f2, GEN p, GEN pm)
     if (signe(t))
     {
       a = RgV_to_RgX(gel(a,c), v);
-      if (equali1(t)) return gerepilecopy(av, a);
+      if (equali1(t)) return gc_GEN(av, a);
       return gerepileupto(av, RgX_Rg_div(a, t));
     }
   }
@@ -1863,7 +1863,7 @@ ZpX_monic_factor_squarefree(GEN f, GEN p, long prec)
                           : ZpX_round4(gel(L,i), p, mkvec(gel(w,i)), prec);
     L = shallowconcat1(L);
   }
-  return gerepilecopy(av, L);
+  return gc_GEN(av, L);
 }
 
 /* assume T a ZX with leading_coeff 1, degree > 0 */
@@ -2187,7 +2187,7 @@ pol_min(GEN mul, GEN p)
 {
   pari_sp av = avma;
   GEN z = FpM_deplin(get_powers(mul, p), p);
-  return gerepilecopy(av, RgV_to_RgX(z,0));
+  return gc_GEN(av, RgV_to_RgX(z,0));
 }
 
 static GEN
@@ -2369,7 +2369,7 @@ idealprimedec_galois(GEN nf, GEN p)
 {
   pari_sp av = avma;
   GEN v = primedec_aux(nf, p, -1);
-  return gerepilecopy(av,v);
+  return gc_GEN(av,v);
 }
 /* true nf */
 GEN
@@ -2522,7 +2522,7 @@ modprinit(GEN nf, GEN pr, int zk, long vT)
     res = cgetg(SMALLMODPR, t_COL);
     gel(res,mpr_TAU) = tau;
     gel(res,mpr_FFP) = dim1proj(prh);
-    gel(res,3) = pr; return gerepilecopy(av, res);
+    gel(res,3) = pr; return gc_GEN(av, res);
   }
 
   c = cgetg(f+1, t_VECSMALL);
@@ -2564,7 +2564,7 @@ modprinit(GEN nf, GEN pr, int zk, long vT)
     gel(res,mpr_TAU) = tau;
     gel(res,mpr_FFP) = ffproj;
     gel(res,3) = pr;
-    gel(res,4) = T; return gerepilecopy(av, res);
+    gel(res,4) = T; return gc_GEN(av, res);
   }
 
   if (uisprime(f))
@@ -2621,7 +2621,7 @@ modprinit(GEN nf, GEN pr, int zk, long vT)
   gel(res,mpr_FFP) = ffproj;
   gel(res,3) = pr;
   gel(res,4) = T;
-  gel(res,mpr_NFP) = nfproj; return gerepilecopy(av, res);
+  gel(res,mpr_NFP) = nfproj; return gc_GEN(av, res);
 }
 
 GEN
@@ -2806,7 +2806,7 @@ nfmodpr(GEN nf, GEN x, GEN pr)
     x = nf_to_Fq_i(nf, x, modpr);
   if (!T) return gerepileupto(av, Fp_to_mod(x, p));
   x = Fq_to_FF(x, Tp_to_FF(T,p));
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 GEN
 nfmodprlift(GEN nf, GEN x, GEN pr)
@@ -2829,7 +2829,7 @@ nfmodprlift(GEN nf, GEN x, GEN pr)
   d = degpol(x);
   if (d <= 0) { set_avma(av); return d? gen_0: icopy(gel(x,2)); }
   modpr = nf_to_Fq_init(nf, &pr, &T, &p);
-  return gerepilecopy(av, Fq_to_nf(x, modpr));
+  return gc_GEN(av, Fq_to_nf(x, modpr));
 }
 
 /* lift A from residue field to nf */
@@ -3048,7 +3048,7 @@ rnfeltid_powmod(GEN multab, long h, GEN n, GEN T, GEN p)
   D.T = T;
   D.p = p;
   y = gen_pow_fold(NULL, n, (void*)&D, &_sqr, &_msqr);
-  return gerepilecopy(av, y);
+  return gc_GEN(av, y);
 }
 
 /* P != 0 has at most degpol(P) roots. Look for an element in Fq which is not
@@ -3297,7 +3297,7 @@ rnfdedekind(GEN nf, GEN P, GEN pr, long flag)
   if (z)
   {
     if (flag) { set_avma(av); return gen_0; }
-    z = gerepilecopy(av, z);
+    z = gc_GEN(av, z);
   }
   else
   {
@@ -3343,7 +3343,7 @@ rnfmaxord(GEN nf, GEN pol, GEN pr, long vdisc)
   av1 = avma;
   p1 = rnfdedekind_i(nf, pol, modpr, vdisc, 0);
   if (!p1) return gc_NULL(av);
-  if (is_pm1(gel(p1,1))) return gerepilecopy(av,gel(p1,2));
+  if (is_pm1(gel(p1,1))) return gc_GEN(av,gel(p1,2));
   sep = itos(gel(p1,3));
   W = gmael(p1,2,1);
   I = gmael(p1,2,2);
@@ -3445,7 +3445,7 @@ rnfmaxord(GEN nf, GEN pol, GEN pr, long vdisc)
       gerepileall(av1,2, &W,&I);
     }
   }
-  return gerepilecopy(av, mkvec2(W, I));
+  return gc_GEN(av, mkvec2(W, I));
 }
 
 GEN
@@ -3788,7 +3788,7 @@ rnfdiscf(GEN nf, GEN pol)
   pari_sp av = avma;
   GEN d, fa;
   nf = checknf(nf); fa = rnfdisc_factored(nf, pol, &d);
-  return gerepilecopy(av, mkvec2(pr_factorback_scal(nf,fa), d));
+  return gc_GEN(av, mkvec2(pr_factorback_scal(nf,fa), d));
 }
 
 GEN
@@ -3836,7 +3836,7 @@ rnfsimplifybasis(GEN bnf, GEN M)
       gel(Az,i) = nfC_nf_mul(nf, gel(Az,i), d);
     }
   }
-  return gerepilecopy(av, y);
+  return gc_GEN(av, y);
 }
 
 static GEN
@@ -3923,7 +3923,7 @@ rnfsteinitz(GEN nf, GEN M)
     }
   }
   gel(M,1) = A;
-  gel(M,2) = I; return gerepilecopy(av, M);
+  gel(M,2) = I; return gc_GEN(av, M);
 }
 
 /* Given bnf and a proj. module (or a t_POL -> rnfpseudobasis), and outputs a
@@ -3951,7 +3951,7 @@ rnfbasis(GEN bnf, GEN M)
     a = gel(v,2);
   }
   A = vec_append(A, nfC_nf_mul(nf, col, a));
-  return gerepilecopy(av, A);
+  return gc_GEN(av, A);
 }
 
 /* Given a Z_K-module M (or a polynomial => rnfpseudobasis) outputs a
@@ -3980,7 +3980,7 @@ rnfhnfbasis(GEN bnf, GEN M)
     if (!a) return gc_const(av, gen_0);
     gel(A,j) = nfC_nf_mul(nf, gel(A,j), a);
   }
-  return gerepilecopy(av,A);
+  return gc_GEN(av,A);
 }
 
 long
@@ -4148,7 +4148,7 @@ nfcompositum(GEN nf, GEN A, GEN B, long flag)
   (void)delete_var();
   settyp(C, t_VEC);
   if (flag&2) C = gel(C,1);
-  return gerepilecopy(av, C);
+  return gc_GEN(av, C);
 }
 GEN
 polcompositum0(GEN A, GEN B, long flag)

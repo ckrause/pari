@@ -292,7 +292,7 @@ RgXY_factor_squarefree(GEN f, GEN dom)
     err_printf("bifactor: %ld local factors\n",lg(Lmod)-1);
   (void)RgX_cmbf(NULL, 1, BLOC, Lmod, Lfac, &f);
   if (degpol(f)) vectrunc_append(Lfac, f);
-  return gerepilecopy(av, Lfac);
+  return gc_GEN(av, Lfac);
 }
 
 static GEN
@@ -332,7 +332,7 @@ RgXY_factor(GEN f, GEN dom)
   }
   f = FE_matconcat(F,E,j);
   (void)sort_factor(f,(void*)cmp_universal, &gen_cmp_RgXY);
-  return gerepilecopy(av, f);
+  return gc_GEN(av, f);
 }
 
 /***********************************************************************/
@@ -879,7 +879,7 @@ Qi_factor(GEN x)
     gel(fa,1) = vec_prepend(gel(fa,1), y);
     gel(fa,2) = vec_prepend(gel(fa,2), gen_1);
   }
-  return gerepilecopy(av, fa);
+  return gc_GEN(av, fa);
 }
 
 GEN
@@ -890,7 +890,7 @@ Q_factor_limit(GEN x, ulong lim)
   if (typ(x) == t_INT) return Z_factor_limit(x, lim);
   a = Z_factor_limit(gel(x,1), lim);
   b = Z_factor_limit(gel(x,2), lim); gel(b,2) = ZC_neg(gel(b,2));
-  return gerepilecopy(av, ZM_merge_factor(a,b));
+  return gc_GEN(av, ZM_merge_factor(a,b));
 }
 GEN
 Q_factor(GEN x)
@@ -900,7 +900,7 @@ Q_factor(GEN x)
   if (typ(x) == t_INT) return Z_factor(x);
   a = Z_factor(gel(x,1));
   b = Z_factor(gel(x,2)); gel(b,2) = ZC_neg(gel(b,2));
-  return gerepilecopy(av, ZM_merge_factor(a,b));
+  return gc_GEN(av, ZM_merge_factor(a,b));
 }
 
 /* replace quadratic number over Fp or Q by t_POL in v */
@@ -954,7 +954,7 @@ RgXQ_factor(GEN x, GEN T, GEN p, long tx)
   /* substitute back w */
   w = (t1 == t_COMPLEX)? gen_I(): mkquad(T,gen_0,gen_1);
   gel(y,1) = gsubst(liftpol_shallow(gel(y,1)), v, w);
-  (void)delete_var(); return gerepilecopy(av, y);
+  (void)delete_var(); return gc_GEN(av, y);
 }
 
 static GEN
@@ -1034,7 +1034,7 @@ factor_domain(GEN x, GEN dom)
       GEN a = gel(x,1), b = gel(x,2);
       GEN y = famat_inv_shallow(RgX_factor(b, dom));
       if (typ(a)==t_POL) y = famat_mul_shallow(RgX_factor(a, dom), y);
-      return gerepilecopy(av, sort_factor_pol(y, cmp_universal));
+      return gc_GEN(av, sort_factor_pol(y, cmp_universal));
     }
     case t_INT:  if (tdom==0 || tdom==t_INT) return Z_factor(x);
     case t_FRAC: if (tdom==0 || tdom==t_INT) return Q_factor(x);
@@ -1346,7 +1346,7 @@ vecprod(GEN v)
   if (!is_vec_t(typ(v)))
     pari_err_TYPE("vecprod", v);
   if (lg(v) == 1) return gen_1;
-  return gerepilecopy(av, gen_product(v, NULL, mul));
+  return gc_GEN(av, gen_product(v, NULL, mul));
 }
 
 static int
@@ -1459,7 +1459,7 @@ Qi_gcd(GEN x, GEN y)
     if      (gequal0(gel(x,2))) x = gel(x,1);
     else if (gequal0(gel(x,1))) x = gel(x,2);
   }
-  if (!dx && !dy) return gerepilecopy(av, x);
+  if (!dx && !dy) return gc_GEN(av, x);
   return gerepileupto(av, gdiv(x, dx? (dy? lcmii(dx, dy): dx): dy));
 }
 
@@ -1981,7 +1981,7 @@ ghalfgcd(GEN x, GEN y)
   {
     pari_sp av = avma;
     GEN a, b, M = RgX_halfgcd_all(x, y, &a, &b);
-    return gerepilecopy(av, mkvec2(M, mkcol2(a,b)));
+    return gc_GEN(av, mkvec2(M, mkcol2(a,b)));
   }
   pari_err_OP("halfgcd", x, y);
   return NULL; /* LCOV_EXCL_LINE */
@@ -3182,7 +3182,7 @@ RgX_resultant_all(GEN P, GEN Q, GEN *sol)
   if (DQ) s = gdiv(s, gpowgs(DQ,dP));
   if (cP) s = gmul(s, gpowgs(cP,dQ));
   if (cQ) s = gmul(s, gpowgs(cQ,dP));
-  if (!sol) return gerepilecopy(av, s);
+  if (!sol) return gc_GEN(av, s);
   *sol = P; return gc_all(av, 2, &s, sol);
 }
 
@@ -3398,7 +3398,7 @@ polresultantext0(GEN x, GEN y, long v)
     if (typ(U) == t_POL && varn(U) != v) U = poleval(U, pol_x(v));
     if (typ(V) == t_POL && varn(V) != v) V = poleval(V, pol_x(v));
   }
-  return gerepilecopy(av, mkvec3(U,V,R));
+  return gc_GEN(av, mkvec3(U,V,R));
 }
 GEN
 polresultantext(GEN x, GEN y) { return polresultantext0(x,y,-1); }
@@ -3514,7 +3514,7 @@ rnfcharpoly(GEN nf, GEN Q, GEN x, long v)
   /* x a t_POL in variable vQ */
   if (degpol(x) >= dQ) x = RgX_rem(x, Q);
   if (dQ <= 1) return caract_const(av, constant_coeff(x), v, 1);
-  return gerepilecopy(av, lift_if_rational( RgXQ_charpoly(x, Q, v) ));
+  return gc_GEN(av, lift_if_rational( RgXQ_charpoly(x, Q, v) ));
 }
 
 /*******************************************************************/
@@ -3619,7 +3619,7 @@ RgX_gcd_ZXQX(GEN x, GEN y, GEN T)
 {
   pari_sp av = avma;
   GEN r = ZXQX_gcd(RgX_liftred(x, T), RgX_liftred(y, T), T);
-  return gerepilecopy(av, QXQX_to_mod_shallow(r, T));
+  return gc_GEN(av, QXQX_to_mod_shallow(r, T));
 }
 
 static GEN
@@ -3627,7 +3627,7 @@ RgX_gcd_QXQX(GEN x, GEN y, GEN T)
 {
   pari_sp av = avma;
   GEN r = QXQX_gcd(RgX_liftred(x, T), RgX_liftred(y, T), T);
-  return gerepilecopy(av, QXQX_to_mod_shallow(r, T));
+  return gc_GEN(av, QXQX_to_mod_shallow(r, T));
 }
 
 static GEN

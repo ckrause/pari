@@ -101,7 +101,7 @@ airy_i(GEN x, long prec)
 }
 GEN
 airy(GEN z, long prec)
-{ pari_sp av = avma; return gerepilecopy(av, airy_i(z, prec)); }
+{ pari_sp av = avma; return gc_GEN(av, airy_i(z, prec)); }
 
 /* Gamma(a)*Gamma(b); allow a = NULL [omit] */
 static GEN
@@ -240,7 +240,7 @@ hyperu_i(GEN a, GEN b, GEN x, long prec)
 }
 GEN
 hyperu(GEN a, GEN b, GEN x, long prec)
-{ pari_sp av = avma; return gerepilecopy(av, hyperu_i(a,b,x,prec)); }
+{ pari_sp av = avma; return gc_GEN(av, hyperu_i(a,b,x,prec)); }
 
 static GEN
 mkendpt(GEN z, GEN a)
@@ -1188,7 +1188,7 @@ hypergeom(GEN N, GEN D, GEN y, long prec)
       pari_err_DOMAIN("hypergeom", stack_sprintf("b[%ld]", j + n),
                       "<=", gen_0, gel(D,j));
   if (is_scalar_t(typ(y)))
-    return gerepilecopy(av, hypergeom_i(N, D, y, prec));
+    return gc_GEN(av, hypergeom_i(N, D, y, prec));
   if (!(z = toser_i(y))) pari_err_TYPE("hypergeom", y);
   return gerepileupto(av, serhypergeom(N, D, z, prec));
 }

@@ -80,7 +80,7 @@ ZiX_sqr(GEN P)
     Qi = ZX_sub(ZX_sqr(ZX_add(Pr, Pi)), ZX_add(Pr2, Pi2));
   else
     Qi = ZX_shifti(ZX_mul(Pr, Pi), 1);
-  return gerepilecopy(av, ZX_to_ZiX(Qr, Qi));
+  return gc_GEN(av, ZX_to_ZiX(Qr, Qi));
 }
 
 static GEN
@@ -963,7 +963,7 @@ refine_H(GEN F, GEN G, GEN HH, long bit, long Sbit)
     error = gexpo(D); if (error < -bit1) error = -bit1;
   }
   if (error > -bit/2) return NULL; /* FAIL */
-  return gerepilecopy(ltop,H);
+  return gc_GEN(ltop,H);
 }
 
 /* return 0 if fails, 1 else */
@@ -1932,7 +1932,7 @@ roots_aux(GEN p, long l, long clean)
   if (l < LOWDEFAULTPREC) l = LOWDEFAULTPREC;
   bit = prec2nbits(l);
   L = roots_com(p, bit);
-  return gerepilecopy(av, clean_roots(L, l, bit, clean));
+  return gc_GEN(av, clean_roots(L, l, bit, clean));
 }
 GEN
 roots(GEN p, long l) { return roots_aux(p,l, 0); }
@@ -1971,7 +1971,7 @@ QX_complex_roots(GEN p, long l)
   v = RgX_valrem(p, &p);
   L = lg(p) > 3? all_roots(Q_primpart(p), bit): cgetg(1,t_COL);
   if (v) L = shallowconcat(const_vec(v, real_0_bit(-bit)), L);
-  return gerepilecopy(av, clean_roots(L, l, bit, 1));
+  return gc_GEN(av, clean_roots(L, l, bit, 1));
 }
 
 /********************************************************************/
@@ -2014,7 +2014,7 @@ X2XP1(GEN P, GEN *Premapped)
     {
       if (DEBUGMEM>1) pari_warn(warnmem, "X2XP1, i = %ld/%ld", i, dP-1);
       if (!Premapped) setlg(v, vlim + 2);
-      v = gerepilecopy(av, v);
+      v = gc_GEN(av, v);
     }
   }
   if (vlim >= 2 && s == signe(gel(v, vlim))) nb++;
@@ -2293,7 +2293,7 @@ usp(GEN Q0, long flag, long bitprec)
       if (flag == 0)
       {
         s = mkvec2(gmul2n(c,-k), gmul2n(addiu(c,1),-k));
-        s = gerepilecopy(av2, s);
+        s = gc_GEN(av2, s);
       }
       else if (flag == 1) /* Caveat: Qremapped is the reciprocal polynomial */
       {
@@ -2341,7 +2341,7 @@ usp(GEN Q0, long flag, long bitprec)
     }
   }
   setlg(sol, nbr+1);
-  return gerepilecopy(av, sol);
+  return gc_GEN(av, sol);
 }
 
 static GEN
@@ -2413,7 +2413,7 @@ ZX_Uspensky(GEN P, GEN ab, long flag, long bitprec)
     switch (gcmp(a, b))
     {
       case 1: set_avma(av); return ZX_Uspensky_no(flag);
-      case 0: return gerepilecopy(av, ZX_Uspensky_equal(P, a, flag, bitprec));
+      case 0: return gc_GEN(av, ZX_Uspensky_equal(P, a, flag, bitprec));
     }
     sol = nfrootsQ(P);
   }
@@ -2431,7 +2431,7 @@ ZX_Uspensky(GEN P, GEN ab, long flag, long bitprec)
   }
   else if (flag == 2) sol = gen_0;
   deg = degpol(P);
-  if (deg == 0) return gerepilecopy(av, sol);
+  if (deg == 0) return gc_GEN(av, sol);
   if (typ(a) == t_INFINITY && typ(b) != t_INFINITY && gsigne(b))
   {
     fb = fujiwara_bound_real(P, -1);
@@ -2451,7 +2451,7 @@ ZX_Uspensky(GEN P, GEN ab, long flag, long bitprec)
     GEN d, ad, bd, diff;
     long i;
     /* can occur if one of a,b was initially a t_INFINITY */
-    if (gequal(a,b)) return gerepilecopy(av, sol);
+    if (gequal(a,b)) return gc_GEN(av, sol);
     d = lcmii(Q_denom(a), Q_denom(b));
     if (is_pm1(d)) { d = NULL; ad = a; bd = b; }
     else
@@ -2607,7 +2607,7 @@ ZX_realroots_irred(GEN P, long prec)
   if (h == dP)
   {
     GEN r = _sqrtnr(ZX_deg1root(P, prec), h);
-    return gerepilecopy(av, odd(h)? mkvec(r): mkvec2(negr(r), r));
+    return gc_GEN(av, odd(h)? mkvec(r): mkvec2(negr(r), r));
   }
   sol = ZX_Uspensky(P, odd(h)? NULL: gen_0, 1 | 4, prec2nbits(prec));
   n = lg(sol); sol2 = odd(h)? NULL: cgetg(n, t_COL);

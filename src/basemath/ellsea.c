@@ -138,7 +138,7 @@ ellmodulareqn(long ell, long vx, long vy)
   C = seadata_cache(ell);
   if (!C) pari_err_FILE("seadata file", seadata_filename(ell));
   seadata_parse(&meqn, C, vx, vy);
-  return gerepilecopy(av, mkvec2(meqn.eq, meqn.type=='A'? gen_1: gen_0));
+  return gc_GEN(av, mkvec2(meqn.eq, meqn.type=='A'? gen_1: gen_0));
 }
 
 /***********************************************************************/
@@ -506,7 +506,7 @@ Fq_ellyn(struct divpolmod_red *d, long k)
     GEN f2 = divpol_f2(t,r2,k,E,ff);
     GEN f3 = ff->mul(E,f,f2);
     if (!odd(k)) f3 = ff->mul(E,f3,r2);
-    return gerepilecopy(av,mkvec2(on, f3));
+    return gc_GEN(av,mkvec2(on, f3));
   }
 }
 
@@ -965,7 +965,7 @@ find_isogenous_from_Atkin(GEN a4, GEN a6, ulong ell, struct meqn *MEQN, GEN g, G
       a4a6t(&a4t, &a6t, ell, E4t, E6t, T, p);
       h = find_kernel(a4, a6, ell, a4t, a6t, pp1, T, p, pp, e);
       if (h && signe(Fq_elldivpolmod(a4, a6, ell, h, T, pp))==0)
-        return gerepilecopy(ltop, mkvec3(a4t, a6t, h));
+        return gc_GEN(ltop, mkvec3(a4t, a6t, h));
     }
   }
   pari_err_BUG("find_isogenous_from_Atkin, kernel not found");
@@ -1052,7 +1052,7 @@ find_isogenous_from_canonical(GEN a4, GEN a6, ulong ell, struct meqn *MEQN, GEN 
   a4a6t(&a4t, &a6t, ell, E4l, E6l, T, p);
   h = find_kernel(a4, a6, ell, a4t, a6t, p_1, T, p, pp, e);
   if (!h) return NULL;
-  return gerepilecopy(ltop, mkvec3(a4t, a6t, h));
+  return gc_GEN(ltop, mkvec3(a4t, a6t, h));
 }
 
 static GEN
@@ -1092,7 +1092,7 @@ Fq_polmodular_eval(GEN meqn, GEN j, long N, GEN T, GEN p, long vJ)
     R = FpXY_Fq_evaly(P, j, T, p, vJ);
     dR = FpXY_Fq_evaly(dP, j, T, p, vJ);
     ddR = FpXY_Fq_evaly(ddP, j, T, p, vJ);
-    return gerepilecopy(av, mkvec3(R,dR,ddR));
+    return gc_GEN(av, mkvec3(R,dR,ddR));
   }
   else
   {
@@ -1141,7 +1141,7 @@ Fq_polmodular_eval(GEN meqn, GEN j, long N, GEN T, GEN p, long vJ)
     ddR1 = FqX_sub(ddh13, FqX_mulu(ddh012, 3, T, p), T, p);
     ddR2 = FqX_add(FqX_add(FqX_Fq_mul(ddh23, Fq_sqr(j, T, p), T, p), FqX_Fq_mul(dh23, Fq_mulu(j, 4, T, p), T, p), T, p), FqX_mulu(h23, 2, T, p), T, p);
     ddR = FqX_add(FqX_add(RgX_shift_shallow(ddR2, t2), RgX_shift_shallow(FqX_add(FqX_mulu(dR1, 2, T, p), FqX_Fq_mul(ddR1, j, T, p), T, p), 1), T, p), RgX_shift_shallow(ddh03, t0), T, p);
-    return gerepilecopy(av, mkvec3(R ,dR ,ddR));
+    return gc_GEN(av, mkvec3(R ,dR ,ddR));
   }
 }
 
@@ -1215,7 +1215,7 @@ find_isogenous_from_J(GEN a4, GEN a6, ulong ell, struct meqn *MEQN, GEN g, GEN T
   a4a6t_from_J(&a4t, &a6t, ell, C4t, C6t, T, p);
   h = find_kernel(a4, a6, ell, a4t, a6t, p_1, T, p, pp, e);
   if (!h) return NULL;
-  return gerepilecopy(ltop, mkvec3(a4t, a6t, h));
+  return gc_GEN(ltop, mkvec3(a4t, a6t, h));
 }
 
 static GEN
@@ -1295,7 +1295,7 @@ find_kernel_power(GEN Eba4, GEN Eba6, GEN Eca4, GEN Eca6, ulong ell, struct meqn
     {
       GEN Ic = FqX_homogenous_div(num_iso,kpoly2, numer_i(Ib),denom_i(Ib), T,p);
       GEN kpoly_new = FqX_homogenous_eval(gtmp,   numer_i(Ic),denom_i(Ic), T,p);
-      return gerepilecopy(ltop, mkvecn(5, a4t, a6t, kpoly_new, gtmp, Ic));
+      return gc_GEN(ltop, mkvecn(5, a4t, a6t, kpoly_new, gtmp, Ic));
     }
     set_avma(btop);
   }
@@ -1380,7 +1380,7 @@ study_modular_eqn(long ell, GEN mpoly, GEN T, GEN p, enum mod_type *mt, long *pt
     case MTpathological: err_printf("Pathological\n"); break;
     case MTcm: err_printf("CM\t"); break;
   }
-  return g ? gerepilecopy(ltop, g): NULL;
+  return g ? gc_GEN(ltop, g): NULL;
 }
 
 /*Returns the trace modulo ell^k when ell is an Elkies prime */
@@ -1752,7 +1752,7 @@ champion(GEN atkin, long k, GEN bound_champ)
       if (res && gcmp(b, gel(res, 2)) >=0) continue;
       res = mkvec2(utoi(B[i]), b);
     }
-  return gerepilecopy(ltop, res);
+  return gc_GEN(ltop, res);
 }
 
 static GEN
@@ -1800,7 +1800,7 @@ BSGS_pre(GEN *pdiff, GEN V, GEN P, void *E, const struct bb_group *grp)
     pari_sp av = avma;
     GEN d = subii(gel(diff, i), gel(diff, i-1));
     GEN Q = grp->mul(E, gel(pre, i-1), grp->pow(E, P, d));
-    gel(pre, i) = gerepilecopy(av, Q);
+    gel(pre, i) = gc_GEN(av, Q);
   }
   *pdiff = diff; return pre;
 }

@@ -93,7 +93,7 @@ ellconvertname(GEN n)
       GEN f=gel(n,1), c=gel(n,2), s=gel(n,3);
       if (typ(f)!=t_INT || typ(c)!=t_INT || typ(s)!=t_INT)
         pari_err_TYPE("ellconvertname",n);
-      return gerepilecopy(av, shallowconcat1(mkvec3(f, ellrecode(itos(c)), s)));
+      return gc_GEN(av, shallowconcat1(mkvec3(f, ellrecode(itos(c)), s)));
     }
     /*fall through*/
   }
@@ -207,7 +207,7 @@ ellsearch(GEN A)
   V = ellcondlist(f);
   if (c >= 0)
     V = (i < 0)? ellsearchbyclass(V,c): ellsearchbyname(V, GSTR(A));
-  return gerepilecopy(av, V);
+  return gc_GEN(av, V);
 }
 
 GEN
@@ -217,7 +217,7 @@ ellsearchcurve(GEN name)
   long f, c, i;
   if (!ellparsename(GSTR(name),&f,&c,&i)) pari_err_TYPE("ellsearch",name);
   if (f<0 || c<0 || i<0) pari_err_TYPE("ellsearch [incomplete name]", name);
-  return gerepilecopy(ltop, ellsearchbyname(ellcondlist(f), GSTR(name)));
+  return gc_GEN(ltop, ellsearchbyname(ellcondlist(f), GSTR(name)));
 }
 
 GEN
@@ -232,7 +232,7 @@ ellidentify(GEN E)
   M = ellchangecurve(vecslice(E,1,5),gel(G,2));
   for (j=1; j<lg(V); j++)
     if (ZV_equal(gmael(V,j,2), M))
-      return gerepilecopy(ltop, mkvec2(gel(V,j),gel(G,2)));
+      return gc_GEN(ltop, mkvec2(gel(V,j),gel(G,2)));
   pari_err_BUG("ellidentify [missing curve]");
   return NULL;/*LCOV_EXCL_LINE*/
 }

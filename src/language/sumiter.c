@@ -956,7 +956,7 @@ prodinf(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
       x = gerepileupto(av,x);
     }
   }
-  return gerepilecopy(av0,x);
+  return gc_GEN(av0,x);
 }
 GEN
 prodinf1(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
@@ -981,7 +981,7 @@ prodinf1(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
       x = gerepileupto(av,x);
     }
   }
-  return gerepilecopy(av0,x);
+  return gc_GEN(av0,x);
 }
 GEN
 prodinf0(GEN a, GEN code, long flag, long prec)
@@ -1012,10 +1012,10 @@ prodeuler(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long prec)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"prodeuler");
-      x = gerepilecopy(av, x);
+      x = gc_GEN(av, x);
     }
   }
-  return gerepilecopy(av0,x);
+  return gc_GEN(av0,x);
 }
 GEN
 prodeuler0(GEN a, GEN b, GEN code, long prec)
@@ -1220,7 +1220,7 @@ polzag1(long n, long m)
     if (gc_needed(av,4))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"polzag, i = %ld/%ld", i,r);
-      g = gerepilecopy(av, g);
+      g = gc_GEN(av, g);
     }
   }
   return g;
@@ -1610,7 +1610,7 @@ solvestep(void *E, GEN (*f)(void *,GEN), GEN a, GEN b, GEN step, long flag, long
       }
     }
     if ((!(flag&2) || lg(v) > 1) && (!(flag&8) || ct))
-      return gerepilecopy(av, v);
+      return gc_GEN(av, v);
     step = (flag&4)? sqrtnr(step,4): gmul2n(step, -2);
     gerepileall(av2, 2, &fa, &step);
   }
@@ -1668,7 +1668,7 @@ derivnum(void *E, GEN (*eval)(void *, GEN, long), GEN x, long prec)
   u = eval(E, gsub(x, eps), newprec);
   v = eval(E, gadd(x, eps), newprec);
   y = gmul2n(gsub(v,u), e-1);
-  return gerepilecopy(av, gprec_wtrunc(y, nbits2prec(b0)));
+  return gc_GEN(av, gprec_wtrunc(y, nbits2prec(b0)));
 }
 
 /* Fornberg interpolation algorithm for finite differences coefficients
@@ -1777,7 +1777,7 @@ derivnumk(void *E, GEN (*eval)(void *, GEN, long), GEN x, GEN ind0, long prec)
     X = eval(E, x, prec);
     for (i = 1; i < l; i++) { chk_ord(ind[i]); gel(F,i) = X; }
     if (typ(ind0) == t_INT) F = gel(F,1);
-    return gerepilecopy(av, F);
+    return gc_GEN(av, F);
   }
   N2 = 3*M - 1; if (odd(N2)) N2++;
   N = N2 >> 1;
@@ -1836,7 +1836,7 @@ derivnumk(void *E, GEN (*eval)(void *, GEN, long), GEN x, GEN ind0, long prec)
     gel(F,i) = gmul(t, gmul2n(gel(v, m), e*m));
   }
   if (typ(ind0) == t_INT) F = gel(F,1);
-  return gerepilecopy(av, F);
+  return gc_GEN(av, F);
 }
 /* v(t') */
 static long
@@ -1886,7 +1886,7 @@ derivfunk(void *E, GEN (*eval)(void *, GEN, long), GEN x, GEN ind0, long prec)
     gel(G,i) = gel(F,m+1);
   }
   if (typ(ind0) == t_INT) G = gel(G,1);
-  return gerepilecopy(av, G);
+  return gc_GEN(av, G);
 }
 
 GEN
@@ -1967,7 +1967,7 @@ derivfun0(GEN args, GEN def, GEN code, long k, long prec)
   GEN z;
   E.code=code; E.args=args; E.def=def;
   z = gel(derivfunk((void*)&E, deriv_eval, gel(args,1), mkvecs(k), prec),1);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 /********************************************************************/
@@ -2168,7 +2168,7 @@ limitnum(void *E, GEN (*f)(void *, GEN, long), GEN alpha, long prec)
   limit_Nprec(&L, alpha, prec);
   limit_init(&L, alpha, 0);
   u = get_u(E, f, L.N, L.prec);
-  return gerepilecopy(av, limitnum_i(&L, u, prec));
+  return gc_GEN(av, limitnum_i(&L, u, prec));
 }
 typedef GEN (*LIMIT_FUN)(void*,GEN,long);
 static LIMIT_FUN get_fun(GEN u, const char *s)
@@ -2213,7 +2213,7 @@ asympnum(void *E, GEN (*f)(void *, GEN, long), GEN alpha, long prec)
     gel(A,i) = a;
     for (n = 1; n <= L.N; n++) gel(u,n) = gmul(gsub(gel(u,n), a), gel(L.na,n));
   }
-  setlg(A,i); return gerepilecopy(av, A);
+  setlg(A,i); return gc_GEN(av, A);
 }
 GEN
 asympnumraw(void *E, GEN (*f)(void *,GEN,long), long LIM, GEN alpha, long prec)
@@ -2242,7 +2242,7 @@ asympnumraw(void *E, GEN (*f)(void *,GEN,long), long LIM, GEN alpha, long prec)
       gel(u,n) = gprec_wensure(gmul(gsub(gel(u,n), a), gel(L.na,n)), L.prec);
     gel(A,i+1) = gprec_wtrunc(a, prec);
   }
-  return gerepilecopy(av, A);
+  return gc_GEN(av, A);
 }
 GEN
 asympnum0(GEN u, GEN alpha, long prec)

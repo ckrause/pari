@@ -271,7 +271,7 @@ ellfromeqn0(GEN P, GEN p)
     d_2 = gsqr(d); d_3 = gmul(d, d_2);
     gel(r,2) = mkvec2(gdiv(x, d_2), gdiv(y, d_3));
   }
-  return gerepilecopy(av, r);
+  return gc_GEN(av, r);
 }
 
 GEN

@@ -130,7 +130,7 @@ direuler_bad(void *E, GEN (*eval)(void *,GEN,long), GEN a,GEN b,GEN c, GEN Sbad)
       if (lg(s) > 3 && !gequal0(gel(s,3)))
         dirmuleuler_large(V, p, gel(s,3));
     }
-  return gerepilecopy(av0,V);
+  return gc_GEN(av0,V);
 }
 
 /* return a t_SER or a truncated t_POL to precision n */
@@ -255,7 +255,7 @@ pardireuler(GEN worker, GEN a, GEN b, GEN c, GEN Sbad)
     }
   }
   mt_queue_end(&pt);
-  return gerepilecopy(av0,V);
+  return gc_GEN(av0,V);
 }
 
 /********************************************************************/
@@ -397,7 +397,7 @@ dirpowers(long n, GEN x, long prec)
   av = avma; v = vecpowug(n, x, prec);
   if (typ(x) == t_INT && lgefint(x) <= 3 && signe(x) >= 0 && cmpiu(x, 2) <= 0)
     return v;
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 /* f is a totally multiplicative function of modulus 0 or 1
@@ -812,7 +812,7 @@ dirpowerssumfun(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
                 long both, long prec)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, dirpowerssumfun_i(N, s, E, f, both, prec));
+  return gc_GEN(av, dirpowerssumfun_i(N, s, E, f, both, prec));
 }
 
 GEN
@@ -838,7 +838,7 @@ parsqf_worker(GEN gk, GEN vR, GEN gN)
   v2unpack(vR, &R, &RB); onef = gmael(R,1,1);
   S = SB = is_vec_t(typ(onef)) ? zerovec(lg(onef) - 1): gen_0;
   (void)mksqfloop(N, x1, R, RB, &S, &SB);
-  return gerepilecopy(av, v2pack(S, RB? SB: NULL));
+  return gc_GEN(av, v2pack(S, RB? SB: NULL));
 }
 
 static GEN
@@ -862,7 +862,7 @@ parsumprimefun_worker(GEN gk, GEN s, GEN zerf, GEN data, GEN vW, GEN f)
   if (isintzero(f)) f = NULL;
   u_forprime_init(&T, k * STEP + sq + 1, minss(N, (k + 1) * STEP + sq));
   S = sumprimeloop(&T, s, N, data, zerf, W, WB, (void*)f, mycallvec);
-  return gerepilecopy(av, S);
+  return gc_GEN(av, S);
 }
 
 static GEN
@@ -899,7 +899,7 @@ GEN
 pardirpowerssumfun(GEN f, ulong N, GEN s, long both, long prec)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, pardirpowerssumfun_i(f, N, s, both, prec));
+  return gc_GEN(av, pardirpowerssumfun_i(f, N, s, both, prec));
 }
 GEN
 pardirpowerssum0(GEN N, GEN s, GEN f, long both, long prec)

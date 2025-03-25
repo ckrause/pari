@@ -318,7 +318,7 @@ shallowconcat1(GEN x)
     if (gc_needed(av,3))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"concat: i = %ld", i);
-      z = gerepilecopy(av, z);
+      z = gc_GEN(av, z);
     }
   }
   return z;
@@ -328,7 +328,7 @@ GEN
 gconcat1(GEN x)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, shallowconcat1(x));
+  return gc_GEN(av, shallowconcat1(x));
 }
 
 /* fill M[xoff+i, yoff+j] with the contents of c ( c * Id_n if scalar ) */
@@ -454,7 +454,7 @@ GEN
 matconcat(GEN v)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, shallowmatconcat(v));
+  return gc_GEN(av, shallowmatconcat(v));
 }
 
 GEN

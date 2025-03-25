@@ -144,11 +144,11 @@ gatan(GEN x, long prec)
     case t_REAL: return mpatan(x);
     case t_COMPLEX: /* atan(x) = -i atanh(ix) */
       if (ismpzero(gel(x,2))) return gatan(gel(x,1), prec);
-      av = avma; return gerepilecopy(av, mulcxmI(gatanh(mulcxI(x),prec)));
+      av = avma; return gc_GEN(av, mulcxmI(gatanh(mulcxI(x),prec)));
     default:
       av = avma; if (!(y = toser_i(x))) break;
       if (valser(y) < 0) pari_err_DOMAIN("atan","valuation", "<", gen_0, x);
-      if (lg(y)==2) return gerepilecopy(av, y);
+      if (lg(y)==2) return gc_GEN(av, y);
       /* lg(y) > 2 */
       a = integser(gdiv(derivser(y), gaddsg(1,gsqr(y))));
       if (!valser(y)) a = gadd(a, gatan(gel(y,2),prec));
@@ -199,10 +199,10 @@ gasin(GEN x, long prec)
     case t_COMPLEX: /* asin(z) = -i asinh(iz) */
       if (ismpzero(gel(x,2))) return gasin(gel(x,1), prec);
       av = avma;
-      return gerepilecopy(av, mulcxmI(gasinh(mulcxI(x), prec)));
+      return gc_GEN(av, mulcxmI(gasinh(mulcxI(x), prec)));
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      if (gequal0(y)) return gerepilecopy(av, y);
+      if (gequal0(y)) return gc_GEN(av, y);
       /* lg(y) > 2*/
       if (valser(y) < 0) pari_err_DOMAIN("asin","valuation", "<", gen_0, x);
       p1 = gsubsg(1,gsqr(y));
@@ -268,7 +268,7 @@ gacos(GEN x, long prec)
       av = avma;
       p1 = gadd(x, mulcxI(gsqrt(gsubsg(1,gsqr(x)), prec)));
       y = glog(p1,prec); /* log(x + I*sqrt(1-x^2)) */
-      return gerepilecopy(av, mulcxmI(y));
+      return gc_GEN(av, mulcxmI(y));
     default:
       av = avma; if (!(y = toser_i(x))) break;
       if (valser(y) < 0) pari_err_DOMAIN("acos","valuation", "<", gen_0, x);
@@ -395,7 +395,7 @@ gcosh(GEN x, long prec)
       return gerepileupto(av, gmul2n(p1,-1));
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      if (gequal0(y) && valser(y) == 0) return gerepilecopy(av, y);
+      if (gequal0(y) && valser(y) == 0) return gc_GEN(av, y);
       v = valser(y);
       if (v > 0) y = sertoser(y, lg(y) - 2 + v);
       p1 = gexp(y,prec); p1 = gadd(p1, ginv(p1));
@@ -486,7 +486,7 @@ gsinh(GEN x, long prec)
       return gerepileupto(av, gmul2n(p1,-1));
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      if (gequal0(y) && valser(y) == 0) return gerepilecopy(av, y);
+      if (gequal0(y) && valser(y) == 0) return gc_GEN(av, y);
       p1 = gexp(y, prec); p1 = gsub(p1, ginv(p1));
       return gerepileupto(av, gmul2n(p1,-1));
   }
@@ -539,7 +539,7 @@ gtanh(GEN x, long prec)
       return gerepileupto(av, gaddsg(1,t));
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      if (gequal0(y)) return gerepilecopy(av, y);
+      if (gequal0(y)) return gc_GEN(av, y);
       t = gexp(gmul2n(y, 1),prec);
       t = gdivsg(-2, gaddgs(t,1));
       return gerepileupto(av, gaddsg(1,t));
@@ -588,7 +588,7 @@ gcotanh(GEN x, long prec)
       return gerepileupto(av, gaddsg(1, gdivsg(2,t)));
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      if (gequal0(y)) return gerepilecopy(av, y);
+      if (gequal0(y)) return gc_GEN(av, y);
       t = gexpm1(gmul2n(y,1),prec);
       return gerepileupto(av, gaddsg(1, gdivsg(2,t)));
   }
@@ -631,7 +631,7 @@ gasinh(GEN x, long prec)
       if (ismpzero(gel(x,2))) return gasinh(gel(x,1), prec);
       av = avma;
       if (ismpzero(gel(x,1))) /* avoid cancellation */
-        return gerepilecopy(av, mulcxI(gasin(gel(x,2), prec)));
+        return gc_GEN(av, mulcxI(gasin(gel(x,2), prec)));
       d = gsqrt(gaddsg(1,gsqr(x)), prec); /* Re(d) >= 0 */
       a = gadd(d, x);
       b = gsub(d, x);
@@ -644,7 +644,7 @@ gasinh(GEN x, long prec)
     }
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      if (gequal0(y)) return gerepilecopy(av, y);
+      if (gequal0(y)) return gc_GEN(av, y);
       if (valser(y) < 0) pari_err_DOMAIN("asinh","valuation", "<", gen_0, x);
       p1 = gaddsg(1,gsqr(y));
       if (gequal0(p1))
@@ -728,7 +728,7 @@ gacosh(GEN x, long prec)
       if (v < 0) pari_err_DOMAIN("acosh","valuation", "<", gen_0, x);
       if (gequal0(y))
       {
-        if (!v) return gerepilecopy(av, y);
+        if (!v) return gc_GEN(av, y);
         return gerepileupto(av, gadd(y, PiI2n(-1, prec)));
       }
       d = gsubgs(gsqr(y),1);
@@ -2174,7 +2174,7 @@ Hseries(long m, long L, long v, long prec)
     if (gc_needed(av,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"Hseries, i = %ld/%ld", i,M);
-      H = gerepilecopy(av, H);
+      H = gc_GEN(av, H);
     }
   }
   if (m > 0)

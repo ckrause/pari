@@ -1403,14 +1403,14 @@ gen_FpM_Wiedemann(void *E, GEN (*f)(void*, GEN), GEN B, GEN p)
     }
     V = FpC_red(V, p);
     W = FpC_sub(f(E,V), B, p);
-    if (ZV_equal0(W)) return gerepilecopy(ltop, V);
+    if (ZV_equal0(W)) return gc_GEN(ltop, V);
     av = avma;
     for (i = 1; i <= n; ++i)
     {
       V = W;
       W = f(E, V);
       if (ZV_equal0(W))
-        return gerepilecopy(ltop, shallowtrans(V));
+        return gc_GEN(ltop, shallowtrans(V));
       gerepileall(av, 2, &V, &W);
     }
     set_avma(btop);
@@ -1602,7 +1602,7 @@ ZpMs_ZpCs_solve(GEN M, GEN A, long nbrow, GEN p, long e)
     GEN R = zerocol(nbi+1);
     for (i=1; i<=lR; i++)
        gel(R,pcol[i]) = gel(Rp,i);
-    return gerepilecopy(av, R);
+    return gc_GEN(av, R);
   }
   for (i = 1; i <= lR; ++i)
     if (signe(gel(Rp, i)))
@@ -1715,7 +1715,7 @@ FpMs_leftkernel_elt_col(GEN M, long nbcol, long nbrow, GEN p)
     }
     R = FpMs_structelim_back(M, Rp, prow, p);
     if (DEBUGLEVEL) timer_printf(&ti,"Wiedemann left kernel");
-    return gerepilecopy(av, R);
+    return gc_GEN(av, R);
   }
 }
 

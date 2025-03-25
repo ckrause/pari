@@ -2048,7 +2048,7 @@ strtoclosure(const char *s, long n,  ...)
     for(i = 1; i <= n; i++) gmael(C,7,i) = va_arg(ap, GEN);
     va_end(ap);
   }
-  return gerepilecopy(av, C);
+  return gc_GEN(av, C);
 }
 
 GEN
@@ -2409,7 +2409,7 @@ closure_derivn(GEN G, long n)
   op_push_loc(OCpushlong, n, code);
   op_push_loc(OCprecreal, 0, code);
   op_push_loc(OCcallgen, (long)is_entry("_derivfun"), code);
-  return gerepilecopy(ltop, getfunction(&pos, arity, 0, text, 0));
+  return gc_GEN(ltop, getfunction(&pos, arity, 0, text, 0));
 }
 
 GEN

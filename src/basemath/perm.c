@@ -453,7 +453,7 @@ GEN
 vecperm_orbits(GEN v, long n)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, vecperm_orbits_i(v, n));
+  return gc_GEN(av, vecperm_orbits_i(v, n));
 }
 
 static int
@@ -478,7 +478,7 @@ GEN
 perm_cycles(GEN v)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, vecperm_orbits_i(mkvec(v), lg(v)-1));
+  return gc_GEN(av, vecperm_orbits_i(mkvec(v), lg(v)-1));
 }
 
 GEN
@@ -989,7 +989,7 @@ groupelts_quotient(GEN elt, GEN H)
     for (j = 1; j <= o; j++)
       p3[mael(V, j, 1)] = i;
   }
-  return gerepilecopy(ltop,mkvec2(p2,p3));
+  return gc_GEN(ltop,mkvec2(p2,p3));
 }
 
 GEN
@@ -1062,7 +1062,7 @@ quotient_group(GEN C, GEN G)
   }
   setlg(Qgen,j);
   setlg(Qord,j); Q = mkvec2(Qgen, Qord);
-  return gerepilecopy(ltop,Q);
+  return gc_GEN(ltop,Q);
 }
 
 GEN
@@ -1110,7 +1110,7 @@ liftlistsubgroups(GEN L, GEN C, long r)
     }
   }
   setlg(R, k);
-  return gerepilecopy(ltop, R);
+  return gc_GEN(ltop, R);
 }
 
 /* H is a normal subgroup, C is the quotient map G -->G/H,
@@ -1131,7 +1131,7 @@ liftsubgroup(GEN C, GEN H, GEN S)
     GEN W = group_leftcoset(H, gel(Cgen, mael(Sgen, i, 1)));
     V = liftlistsubgroups(V, W, Sord[i]);
   }
-  return gerepilecopy(ltop,V);
+  return gc_GEN(ltop,V);
 }
 
 /* 1:A4, 2:S4, 3:F36, 0: other */
@@ -1179,7 +1179,7 @@ group_subgroups(GEN G)
     for (i=2; i<10; i++)
       gel(V,i) = cyclicgroup(perm_mul(gmael3(V,i-1,1,1),gel(gen,i%3==1 ? 2:1)),4);
     gel(V,10) = G;
-    return gerepilecopy(ltop,shallowconcat(S,V));
+    return gc_GEN(ltop,shallowconcat(S,V));
   }
   else if (t)
   {
@@ -1512,7 +1512,7 @@ groupelts_abelian_group(GEN S)
   }
   setlg(Qgen,j);
   setlg(Qord,j);
-  return gerepilecopy(ltop, mkvec2(Qgen, Qord));
+  return gc_GEN(ltop, mkvec2(Qgen, Qord));
 }
 
 GEN
@@ -1531,7 +1531,7 @@ group_export_GAP(GEN G)
     gel(s,k++) = perm_to_GAP(gel(g,i));
   }
   gel(s,k++) = strtoGENstr(")");
-  return gerepilecopy(av, shallowconcat1(s));
+  return gc_GEN(av, shallowconcat1(s));
 }
 
 GEN
@@ -1550,7 +1550,7 @@ group_export_MAGMA(GEN G)
     gel(s,k++) = GENtoGENstr( vecsmall_to_vec(gel(g,i)) );
   }
   gel(s,k++) = strtoGENstr(">");
-  return gerepilecopy(av, shallowconcat1(s));
+  return gc_GEN(av, shallowconcat1(s));
 }
 
 GEN
@@ -1591,7 +1591,7 @@ groupelts_cyclic_subgroups(GEN G)
   setlg(gen, j);
   setlg(ord, j);
   f = vecsmall_indexsort(ord);
-  return gerepilecopy(av, mkvec2(vecsmallpermute(gen, f),
+  return gc_GEN(av, mkvec2(vecsmallpermute(gen, f),
                                  vecsmallpermute(ord, f)));
 }
 
@@ -1617,24 +1617,24 @@ groupelts_to_group(GEN G)
       GEN Q = quotient_groupelts(C);
       GEN R = groupelts_to_group(Q);
       if (!R) return gc_NULL(av);
-      return gerepilecopy(av, quotient_subgroup_lift(C, H, R));
+      return gc_GEN(av, quotient_subgroup_lift(C, H, R));
     }
   }
   if (n==12 && l==9 && ord[2]==2 && ord[3]==2 && ord[5]==3)
-    return gerepilecopy(av,
+    return gc_GEN(av,
       mkvec2(mkvec3(gel(G,cyc[2]), gel(G,cyc[3]), gel(G,cyc[5])), mkvecsmall3(2,2,3)));
   if (n==24 && l==18 && ord[11]==3 && ord[15]==4 && ord[16]==4)
   {
     GEN t21 = perm_sqr(gel(G,cyc[15]));
     GEN t22 = perm_sqr(gel(G,cyc[16]));
     GEN s = perm_mul(t22, gel(G,cyc[15]));
-    return gerepilecopy(av,
+    return gc_GEN(av,
       mkvec2(mkvec4(t21,t22, gel(G,cyc[11]), s), mkvecsmall4(2,2,3,2)));
   }
   if (n==36 && l==24 && ord[11]==3 && ord[15]==4)
   {
     GEN t1 = gel(G,cyc[11]), t3 = gel(G,cyc[15]);
-    return gerepilecopy(av,
+    return gc_GEN(av,
       mkvec2(mkvec3(perm_conj(t3, t1), t1, t3), mkvecsmall3(3,3,4)));
   }
   return gc_NULL(av);
@@ -1826,7 +1826,7 @@ groupelts_residuum(GEN elts)
     o = F2v_hamming(set);
   } while (o > 1 && o < oo);
   if (o==1) return NULL;
-  return gerepilecopy(av,mkvec2(set_idx(set), set));
+  return gc_GEN(av,mkvec2(set_idx(set), set));
 }
 
 static GEN
@@ -1888,7 +1888,7 @@ groupelts_subgroups_raw(GEN elts)
     }
     setlg(W, nW);
     L = W;
-    if (nW > 1) gel(S, nS++) = L = gerepilecopy(av2, W);
+    if (nW > 1) gel(S, nS++) = L = gc_GEN(av2, W);
     if (DEBUGLEVEL) err_printf("subgroups: level %ld: %ld\n",nS-1,nW-1);
     if (lg(L)==1 && !R)
     {
@@ -1898,7 +1898,7 @@ groupelts_subgroups_raw(GEN elts)
     }
   }
   setlg(S, nS);
-  return gerepilecopy(av, shallowconcat1(S));
+  return gc_GEN(av, shallowconcat1(S));
 }
 
 static GEN
@@ -1911,5 +1911,5 @@ groupelts_solvablesubgroups(GEN G)
   pari_sp av = avma;
   GEN S = vecvecsmall_sort(checkgroupelts(G));
   GEN L = groupelts_subgroups_raw(S);
-  return gerepilecopy(av, subg_to_elts(S, L));
+  return gc_GEN(av, subg_to_elts(S, L));
 }

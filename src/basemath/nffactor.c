@@ -301,7 +301,7 @@ nffactormod(GEN nf, GEN x, GEN pr)
     gel(F,j) = FqX_to_nfX(gel(F,j), modpr);
     gel(E,j) = stoi(E[j]);
   }
-  return gerepilecopy(av, rep);
+  return gc_GEN(av, rep);
 }
 
 /*******************************************************************/
@@ -442,7 +442,7 @@ nfroots(GEN nf,GEN pol)
   {
     A = QXQX_normalize(A,T);
     A = mkpolmod(gneg_i(gel(A,2)), T);
-    return gerepilecopy(av, mkcol(A));
+    return gc_GEN(av, mkcol(A));
   }
   dT = degpol(T);
   if (dT == 1) return gerepileupto(av, nfrootsQ(simplify_shallow(A)));
@@ -629,7 +629,7 @@ nffactor_i(GEN nf,GEN T,GEN pol)
   if (dA == 1) {
     GEN c;
     A = Q_primpart( QXQX_normalize(A, T) );
-    A = gerepilecopy(av, A); c = gel(A,2);
+    A = gc_GEN(av, A); c = gel(A,2);
     if (typ(c) == t_POL && degpol(c) > 0) gel(A,2) = mkpolmod(c, ZX_copy(T));
     gel(rep,1) = mkcol(A);
     gel(rep,2) = mkcol(gen_1); return rep;
@@ -670,7 +670,7 @@ nffactor(GEN nf, GEN P)
     y = famat_inv_shallow(nffactor_i(nf, T, b));
     if (typ(a) == t_POL && varn(a) == varn(b))
       y = famat_mul_shallow(nffactor_i(nf, T, a), y);
-    y = gerepilecopy(av, y);
+    y = gc_GEN(av, y);
   }
   else
     y = nffactor_i(nf, T, P);
@@ -1202,7 +1202,7 @@ END:
   }
   if (DEBUGLEVEL>6) err_printf("\n");
   setlg(fa, cnt);
-  return gerepilecopy(av0, fa);
+  return gc_GEN(av0, fa);
 }
 
 static GEN
@@ -1229,7 +1229,7 @@ nf_chk_factors(nfcmbf_t *T, GEN P, GEN M_L, GEN famod, GEN pk)
     y = chk_factors_get(D.lt, famod, gel(piv,i), Tpk, pk);
 
     if (! (y = nf_pol_lift(y, bound, T->L)) ) return NULL;
-    y = gerepilecopy(av, y);
+    y = gc_GEN(av, y);
     /* y is the candidate factor */
     pol = RgXQX_divrem(D.C2ltpol, y, nfT, ONLY_DIVIDES);
     if (!pol) return NULL;
@@ -1537,7 +1537,7 @@ AGAIN:
     if (!CM_L) { list = mkcol(RgX_int_normalize(P)); break; }
     if (b > bmin)
     {
-      CM_L = gerepilecopy(av2, CM_L);
+      CM_L = gc_GEN(av2, CM_L);
       goto AGAIN;
     }
     if (DEBUGLEVEL>2) timer_printf(&ti2, "for this trace");
@@ -1571,7 +1571,7 @@ AGAIN:
                       &CM_L,&TT,&Tra,&famod,&L->GSmin,&L->pk,&L->prk,&L->iprk,
                       &L->Tpk);
     }
-    else CM_L = gerepilecopy(av2, CM_L);
+    else CM_L = gc_GEN(av2, CM_L);
   }
   if (DEBUGLEVEL>2)
     err_printf("* Time LLL: %ld\n* Time Check Factor: %ld\n",ti_LLL,ti_CF);
@@ -1975,7 +1975,7 @@ nfroots_if_split(GEN *pnf, GEN pol)
   pari_sp av = avma;
   GEN z = nfsqff(*pnf, pol, ROOTS_SPLIT, den);
   if (lg(z) == 1) return gc_NULL(av);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 /*******************************************************************/
@@ -2160,7 +2160,7 @@ nfrootsof1(GEN nf)
     if (z)
     {
       if (nf) z = nf_to_scalar_or_basis(nf,z);
-      return gerepilecopy(av, mkvec2(utoipos(nbguessed), z));
+      return gc_GEN(av, mkvec2(utoipos(nbguessed), z));
     }
     set_avma(av);
   }
@@ -2193,7 +2193,7 @@ nfrootsof1(GEN nf)
     }
   }
   if (nf) z = nf_to_scalar_or_basis(nf,z);
-  return gerepilecopy(av, mkvec2(utoi(nbroots), z));
+  return gc_GEN(av, mkvec2(utoi(nbroots), z));
 }
 
 /*******************************************************************/
@@ -2267,7 +2267,7 @@ FlxqXQV_fixedalg(GEN aut, GEN S, GEN T, ulong p)
     GEN K = FlxqM_ker(FlxXV_to_FlxM(M, d, sv), T, p);
     C = FlxM_to_FlxXV(FlxqM_mul(FlxXV_to_FlxM(C, d, sv), K, T, p), v);
   }
-  return gerepilecopy(av, C);
+  return gc_GEN(av, C);
 }
 
 static long
@@ -2365,7 +2365,7 @@ rnfabelianconjgen(GEN nf, GEN P)
 {
   pari_sp av = avma;
   GEN G = rnfabelianconjgen_i(nf, P);
-  return G? gerepilecopy(av, G): gc_const(av, gen_0);
+  return G? gc_GEN(av, G): gc_const(av, gen_0);
 }
 
 long

@@ -607,7 +607,7 @@ AGAIN:
     if (!CM_L) { list = mkvec(P); break; }
     if (b > bmin)
     {
-      CM_L = gerepilecopy(av2, CM_L);
+      CM_L = gc_GEN(av2, CM_L);
       goto AGAIN;
     }
     if (DEBUGLEVEL>2) timer_printf(&ti2, "for this block of traces");
@@ -635,7 +635,7 @@ AGAIN:
       if (list) break;
       if (DEBUGLEVEL>2) err_printf("LLL_cmbf: chk_factors failed");
     }
-    CM_L = gerepilecopy(av2, CM_L);
+    CM_L = gc_GEN(av2, CM_L);
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"LLL_cmbf");
@@ -847,7 +847,7 @@ ZX_DDF_max(GEN a, long dmax)
   z = combine_factors(a, FlxV_to_ZXV(famod), prime, degpol(a)-1);
   if (DEBUGLEVEL>2)
     err_printf("Total Time: %ld\n===========\n", ti + timer_delay(&T));
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 /* Distinct Degree Factorization (deflating first)
@@ -1206,7 +1206,7 @@ GEN
 ZX_gcd(GEN A, GEN B)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, ZX_gcd_all(A,B,NULL));
+  return gc_GEN(av, ZX_gcd_all(A,B,NULL));
 }
 
 GEN
@@ -1347,7 +1347,7 @@ polcyclofactors(GEN f)
   if (degpol(f))
   {
     f = BD(ZX_radical(f));
-    if (f) return gerepilecopy(av, f);
+    if (f) return gc_GEN(av, f);
   }
   set_avma(av); return cgetg(1,t_VEC);
 }

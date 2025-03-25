@@ -732,7 +732,7 @@ primecert0(GEN x, long flag, long stopat)
   switch(flag)
   {
     case 0: return ecpp0(x, stopat);
-    case 1: { pari_sp av = avma; return gerepilecopy(av, primecertPL(x)); }
+    case 1: { pari_sp av = avma; return gc_GEN(av, primecertPL(x)); }
   }
   pari_err_FLAG("primecert");
   return NULL;/*LCOV_EXCL_LINE*/
@@ -1077,7 +1077,7 @@ randomprime0(GEN N, GEN q)
   }
   if (!equali1(gcdii(C,D)))
   {
-    if (isprime(a)) return gerepilecopy(av, a);
+    if (isprime(a)) return gc_GEN(av, a);
     pari_err_COPRIME("randomprime", C, D);
   }
   d = divii(d, D); if (!signe(d)) d = gen_1;

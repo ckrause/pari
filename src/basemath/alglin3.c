@@ -539,7 +539,7 @@ genindexselect(void *E, long (*f)(void* E, GEN x), GEN A)
       if (list_typ(A)==t_LIST_MAP)
       {
         av = avma;
-        return gerepilecopy(av, mapselect_shallow(E, f, A));
+        return gc_GEN(av, mapselect_shallow(E, f, A));
       }
       break;
     case t_VEC: case t_COL: case t_MAT:
@@ -679,7 +679,7 @@ veccatapply(void *E, GEN (*f)(void*, GEN), GEN x)
 {
   pari_sp av = avma;
   GEN v = vecapply(E, f, x);
-  return lg(v) == 1? v: gerepilecopy(av, shallowconcat1(v));
+  return lg(v) == 1? v: gc_GEN(av, shallowconcat1(v));
 }
 
 static GEN
@@ -776,7 +776,7 @@ veccatselapply(void *Epred, long (*pred)(void* E, GEN x), void *Efun,
 {
   pari_sp av = avma;
   GEN v = vecselapply(Epred, pred, Efun, fun, A);
-  return lg(v) == 1? v: gerepilecopy(av, shallowconcat1(v));
+  return lg(v) == 1? v: gc_GEN(av, shallowconcat1(v));
 }
 
 /* suitable for gerepileupto */
@@ -875,11 +875,11 @@ genfold(void *E, GEN (*f)(void* E, GEN x, GEN y), GEN x)
     if (gc_needed(av, 2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"fold");
-      z = gerepilecopy(av, z);
+      z = gc_GEN(av, z);
     }
   }
   clone_unlock_deep(x);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 GEN

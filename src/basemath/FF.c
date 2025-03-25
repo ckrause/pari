@@ -669,7 +669,7 @@ FFX_preimagerel(GEN x, GEN F, GEN y)
   if (FF_equal0(x)) return FF_zero(y);
   _getFF(y,&T,&p,&pp);
   r = FFX_preimage_i(x, y, F, T, p, pp);
-  return gerepilecopy(av, raw_to_FFX(r, y));
+  return gc_GEN(av, raw_to_FFX(r, y));
 }
 
 GEN
@@ -1019,7 +1019,7 @@ FF_conjvec(GEN x)
   l = lg(v); r = cgetg(l, t_COL);
   for(i=1; i<l; i++)
     gel(r,i) = mkFF_i(x, gel(v,i));
-  return gerepilecopy(av, r);
+  return gc_GEN(av, r);
 }
 
 GEN
@@ -1415,7 +1415,7 @@ FF_elltwist(GEN E)
           mkvec5(gen_0, gen_0, gen_0, mkFF_i(fg, a), mkFF_i(fg, a6)):
           mkvec5(gen_0, mkFF_i(fg, gel(a,1)), gen_0, gen_0, mkFF_i(fg, a6));
   }
-  return gerepilecopy(av, V);
+  return gc_GEN(av, V);
 }
 
 static long
@@ -1459,7 +1459,7 @@ FF_ellrandom(GEN E)
     Q = random_FlxqE(gel(e,1), gel(e,2), T, pp);
     Q = FlxqE_changepoint(Q, gel(e,3), T, pp);
   }
-  return gerepilecopy(av, to_FFE(Q, fg));
+  return gc_GEN(av, to_FFE(Q, fg));
 }
 
 GEN
@@ -1488,7 +1488,7 @@ FF_ellmul(GEN E, GEN P, GEN n)
     Qp = FlxqE_mul(Pp, n, gel(e,1), T, pp);
     Q = FlxqE_changepoint(Qp, gel(e,3), T, pp);
   }
-  return gerepilecopy(av, to_FFE(Q, fg));
+  return gc_GEN(av, to_FFE(Q, fg));
 }
 
 GEN
@@ -1625,7 +1625,7 @@ FFX_roots(GEN Pf, GEN ff)
   default:
     r = FlxqX_roots(P, T, pp);
   }
-  return gerepilecopy(av, raw_to_FFC(r, ff));
+  return gc_GEN(av, raw_to_FFC(r, ff));
 }
 
 long
@@ -1702,7 +1702,7 @@ FFX_add(GEN Pf, GEN Qf, GEN ff)
     r = FlxX_add(P, Q, pp);
   }
   if (!lgpol(r)) { set_avma(av); return FFX_zero(ff, varn(Pf)); }
-  return gerepilecopy(av, raw_to_FFX(r, ff));
+  return gc_GEN(av, raw_to_FFX(r, ff));
 }
 
 static GEN
@@ -1727,7 +1727,7 @@ FFX_wrap2(GEN Pf, GEN Qf, GEN ff, GEN FpXQX(GEN, GEN, GEN, GEN),
     r = FlxqX(P, Q, T, pp);
   }
   if (!lgpol(r)) { set_avma(av); return FFX_zero(ff, varn(Pf)); }
-  return gerepilecopy(av, raw_to_FFX(r, ff));
+  return gc_GEN(av, raw_to_FFX(r, ff));
 }
 
 GEN
@@ -1758,7 +1758,7 @@ FFX_sqr(GEN Pf, GEN ff)
     r = FlxqX_sqr(P, T, pp);
   }
   if (!lgpol(r)) { set_avma(av); return FFX_zero(ff, varn(Pf)); }
-  return gerepilecopy(av, raw_to_FFX(r, ff));
+  return gc_GEN(av, raw_to_FFX(r, ff));
 }
 
 GEN
@@ -1813,7 +1813,7 @@ FFX_disc(GEN Pf, GEN ff)
 static GEN
 gc_gcdext(pari_sp av, GEN r, GEN *u, GEN *v)
 {
-  if (!u && !v) return gerepilecopy(av, r);
+  if (!u && !v) return gc_GEN(av, r);
   if (u  &&  v) return gc_all(av, 3, &r, u, v);
   else          return gc_all(av, 2, &r, u ? u: v);
 }
@@ -1863,7 +1863,7 @@ FFX_halfgcd(GEN Pf, GEN Qf, GEN ff)
   default:
     r = FlxqX_halfgcd(P, Q, T, pp);
   }
-  return gerepilecopy(av, raw_to_FFXM(r, ff));
+  return gc_GEN(av, raw_to_FFXM(r, ff));
 }
 
 GEN
@@ -1922,7 +1922,7 @@ FFXQ_mul(GEN Pf, GEN Qf, GEN Sf, GEN ff)
     r = FlxqXQ_mul(P, Q, S, T, pp);
   }
   if (!lgpol(r)) { set_avma(av); return FFX_zero(ff, varn(Pf)); }
-  return gerepilecopy(av, raw_to_FFX(r, ff));
+  return gc_GEN(av, raw_to_FFX(r, ff));
 }
 
 GEN
@@ -1945,7 +1945,7 @@ FFXQ_minpoly(GEN Pf, GEN Qf, GEN ff)
   default:
     r = FlxqXQ_minpoly(P, Q, T, pp);
   }
-  return gerepilecopy(av, raw_to_FFX(r, ff));
+  return gc_GEN(av, raw_to_FFX(r, ff));
 }
 
 long
@@ -1971,7 +1971,7 @@ FFX_ispower(GEN Pf, long k, GEN ff, GEN *pt_r)
   }
   if (s==0) return gc_long(av,0);
   if (pt_r)
-    *pt_r = gerepilecopy(av, raw_to_FFX(*pt_r, ff));
+    *pt_r = gc_GEN(av, raw_to_FFX(*pt_r, ff));
   else set_avma(av);
   return 1;
 }
@@ -1995,7 +1995,7 @@ FFX_factor(GEN Pf, GEN ff)
   default:
     r = FlxqX_factor(P, T, pp);
   }
-  return gerepilecopy(av, raw_to_FFX_fact(r, ff));
+  return gc_GEN(av, raw_to_FFX_fact(r, ff));
 }
 
 GEN
@@ -2017,7 +2017,7 @@ FFX_factor_squarefree(GEN Pf, GEN ff)
   default:
     r = FlxqX_factor_squarefree(P, T, pp);
   }
-  return gerepilecopy(av, raw_to_FFXC(r, ff));
+  return gc_GEN(av, raw_to_FFXC(r, ff));
 }
 
 GEN
@@ -2039,7 +2039,7 @@ FFX_ddf(GEN Pf, GEN ff)
   default:
     r = FlxqX_ddf(P, T, pp);
   }
-  return gerepilecopy(av, raw_to_FFX_fact(r, ff));
+  return gc_GEN(av, raw_to_FFX_fact(r, ff));
 }
 
 GEN
@@ -2061,7 +2061,7 @@ FFX_degfact(GEN Pf, GEN ff)
   default:
     r = FlxqX_degfact(P, T, pp);
   }
-  return gerepilecopy(av, r);
+  return gc_GEN(av, r);
 }
 
 GEN
@@ -2321,7 +2321,7 @@ FFM_wrap(GEN M, GEN ff, GEN (*Fq)(GEN,GEN,GEN),
   default: M = Flxq(M,T,pp); break;
   }
   if (!M) return gc_NULL(av);
-  return gerepilecopy(av, raw_to_FFM(M, ff));
+  return gc_GEN(av, raw_to_FFM(M, ff));
 }
 
 /* for functions (t_MAT, t_MAT) -> t_MAT */
@@ -2346,7 +2346,7 @@ FFM_FFM_wrap(GEN M, GEN N, GEN ff,
   default: M = Flxq(M, N, T, pp); break;
   }
   if (!M) return gc_NULL(av);
-  return gerepilecopy(av, raw_to_FFM(M, ff));
+  return gc_GEN(av, raw_to_FFM(M, ff));
 }
 
 /* for functions (t_MAT, t_COL) -> t_COL */
@@ -2370,7 +2370,7 @@ FFM_FFC_wrap(GEN M, GEN C, GEN ff,
   default: C = Flxq(M, C, T, pp); break;
   }
   if (!C) return gc_NULL(av);
-  return gerepilecopy(av, raw_to_FFC(C, ff));
+  return gc_GEN(av, raw_to_FFC(C, ff));
 }
 
 GEN
@@ -2400,7 +2400,7 @@ FFM_deplin(GEN M, GEN ff)
   default: C = FlxqM_deplin(M, T, pp); break;
   }
   if (!C) return gc_NULL(av);
-  return gerepilecopy(av, raw_to_FFC(C, ff));
+  return gc_GEN(av, raw_to_FFC(C, ff));
 }
 
 GEN
@@ -2447,7 +2447,7 @@ FFM_det(GEN M, GEN ff)
   case t_FF_F2xq: d = F2xqM_det(M,T); break;
   default: d = FlxqM_det(M,T,pp); break;
   }
-  return gerepilecopy(av, mkFF_i(ff, d));
+  return gc_GEN(av, mkFF_i(ff, d));
 }
 
 GEN
@@ -2509,5 +2509,5 @@ FFV_roots_to_pol(GEN V, GEN ff, long v)
   P = raw_to_FFX(P, ff);
   setvarn(P, v);
   delete_var();
-  return gerepilecopy(av, P);
+  return gc_GEN(av, P);
 }

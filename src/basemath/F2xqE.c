@@ -234,7 +234,7 @@ _F2xqE_mul(void *E, GEN P, GEN n)
   if (!s || ell_is_inf(P)) return ellinf();
   if (s<0) P = F2xqE_neg(P, e->a2, e->T);
   if (is_pm1(n)) return s>0? gcopy(P): P;
-  return gerepilecopy(av, gen_pow_i(P, n, e, &_F2xqE_dbl, &_F2xqE_add));
+  return gc_GEN(av, gen_pow_i(P, n, e, &_F2xqE_dbl, &_F2xqE_add));
 }
 
 GEN
@@ -273,7 +273,7 @@ random_F2xqE(GEN a, GEN a6, GEN T)
     }
   } while (F2xq_trace(rhs,T));
   y = F2xq_mul(F2xq_Artin_Schreier(rhs, T), u, T);
-  return gerepilecopy(ltop, mkvec2(x, y));
+  return gc_GEN(ltop, mkvec2(x, y));
 }
 
 static GEN
@@ -904,5 +904,5 @@ F2xq_ellgens(GEN a2, GEN a6, GEN ch, GEN D, GEN m, GEN T)
     gel(P,2) = F2xqE_changepoint(gel(P,2), ch, T);
     break;
   }
-  return gerepilecopy(av, P);
+  return gc_GEN(av, P);
 }

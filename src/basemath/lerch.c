@@ -345,7 +345,7 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
   S2 = gmul(S3, gadd(gdiv(Nx, gaddsg(1, a)), S2));
   S1 = gprec_wtrunc(gsub(S1, S2), prec0);
   if (sch) return gerepileupto(av, gsubst(S1, 0, sch));
-  return gerepilecopy(av, S1);
+  return gc_GEN(av, S1);
 }
 
 /* New Lerch, inspired by Fredrik Johansson. */

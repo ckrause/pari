@@ -66,7 +66,7 @@ FpXXQ_red(GEN S, GEN T, GEN p)
   }
   gel(A,2) = FpX_add(C, gel(S,2), p);
   A[1] = S[1];
-  return gerepilecopy(av, FpXX_renormalize(A,dS+3));
+  return gc_GEN(av, FpXX_renormalize(A,dS+3));
 }
 
 static GEN
@@ -96,7 +96,7 @@ ZpXXQ_invsqrt(GEN S, GEN T, ulong p, long e)
   ulong mask;
   long v = varn(S), n=1;
   GEN a = pol_1(v);
-  if (e <= 1) return gerepilecopy(av, a);
+  if (e <= 1) return gc_GEN(av, a);
   mask = quadratic_prec_mask(e);
   av2 = avma;
   for (;mask>1;)
@@ -199,7 +199,7 @@ ZpXXQ_frob(GEN S, GEN U, GEN V, long k, GEN T, ulong p, long e)
     R = FpX_sub(R, FpX_Fp_mul(Tp, c, q), q);
     return gerepileupto(av, R);
   } else
-    return gerepilecopy(av, R);
+    return gc_GEN(av, R);
 }
 
 static GEN
@@ -316,7 +316,7 @@ ZlX_hyperellpadicfrobenius(GEN H, ulong p, long n)
     if (DEBUGLEVEL>1) timer_printf(&ti,"red");
     M = ZpXXQ_frob(D, U, V, (k-1)>>1, Q, p, N + 1);
     if (DEBUGLEVEL>1) timer_printf(&ti,"frob");
-    gel(F, i) = gerepilecopy(av2, RgX_to_RgC(M, d-1));
+    gel(F, i) = gc_GEN(av2, RgX_to_RgC(M, d-1));
   }
   return gerepileupto(av, F);
 }
@@ -351,7 +351,7 @@ ZpXQXXQ_red(GEN F, GEN S, GEN T, GEN q, GEN p, long e)
   }
   gel(A,2) = FpXX_add(C, gel(F,2), q);
   A[1] = F[1];
-  return gerepilecopy(av, FpXXX_renormalize(A,dF+3));
+  return gc_GEN(av, FpXXX_renormalize(A,dF+3));
 }
 
 static GEN
@@ -409,7 +409,7 @@ ZpXQXXQ_invsqrt(GEN F, GEN S, GEN T, ulong p, long e)
   pari_timer ti;
   GEN a = pol_1(v), pp = utoipos(p);
   if (DEBUGLEVEL>1) timer_start(&ti);
-  if (e <= 1) return gerepilecopy(av, a);
+  if (e <= 1) return gc_GEN(av, a);
   mask = quadratic_prec_mask(e);
   av2 = avma;
   for (;mask>1;)
@@ -491,7 +491,7 @@ ZpXQXXQ_frob(GEN F, GEN U, GEN V, long k, GEN S, GEN T, ulong p, long e)
     R = FpXX_sub(R, FpXQX_FpXQ_mul(Sp, c, T, q), q);
     return gerepileupto(av, R);
   } else
-    return gerepilecopy(av, R);
+    return gc_GEN(av, R);
 }
 
 static GEN
@@ -832,9 +832,9 @@ hyperellordinate(GEN W, GEN x)
   if (typ(W)==t_POL)
   {
     GEN d = poleval(W,x), y;
-    if (gequal0(d)) { return gerepilecopy(av, mkvec(d)); }
+    if (gequal0(d)) { return gc_GEN(av, mkvec(d)); }
     if (!issquareall(d, &y)) { set_avma(av); return cgetg(1,t_VEC); }
-    return gerepilecopy(av, mkvec2(y, gneg(y)));
+    return gc_GEN(av, mkvec2(y, gneg(y)));
   }
   else
   {
@@ -842,10 +842,10 @@ hyperellordinate(GEN W, GEN x)
     if (typ(W)!=t_VEC || lg(W)!=3) pari_err_TYPE("hyperellisoncurve",W);
     b = poleval(gel(W,2), x); c = poleval(gel(W,1), x);
     d = gadd(gsqr(b), gmul2n(c, 2));
-    if (gequal0(d)) { return gerepilecopy(av, mkvec(gmul2n(gneg(b),-1))); }
+    if (gequal0(d)) { return gc_GEN(av, mkvec(gmul2n(gneg(b),-1))); }
     if (!issquareall(d, &rd)) { set_avma(av); return cgetg(1,t_VEC); }
     y = gmul2n(gsub(rd, b), -1);
-    return gerepilecopy(av, mkvec2(y, gsub(y,rd)));
+    return gc_GEN(av, mkvec2(y, gsub(y,rd)));
   }
 }
 
@@ -1054,7 +1054,7 @@ algo56bis(GEN W, long g, long inf, long thr)
     }
   }
   setlg(vl, nl);
-  return gerepilecopy(av,vl);
+  return gc_GEN(av,vl);
 }
 
 /* return the (degree 2) apolar invariant (the nth transvectant of P and P) */
@@ -1159,7 +1159,7 @@ algo57bis(GEN F, long g, GEN p, long inf, long thr)
     if (lambda == thr) gel(vl,nl++) = odd(lambda)? ZX_Z_mul(Fj, p): Fj;
   }
   setlg(vl, nl);
-  return gerepilecopy(av,vl);
+  return gc_GEN(av,vl);
 }
 
 static GEN
@@ -1201,7 +1201,7 @@ hyperellextremalmodels(GEN F, long g, GEN p)
   gel(R,1) = get_extremal(F, gel(W,1), g, p);
   gel(R,2) = l==3 ? get_extremal(F, gel(W,2), g, p) : F;
   if (gel(R,2) == gel(R,1)) setlg(R,2);
-  return gerepilecopy(av, R);
+  return gc_GEN(av, R);
 }
 
 static GEN
@@ -1302,7 +1302,7 @@ hyperellminimalmodel(GEN W, GEN *pM, GEN pr)
   }
   Modd = gel(algo57(F2, g, pr), 2);
   Wf = hyperell_redQ(minimalmodel_merge(W2, Modd, g, v));
-  if (!pM) return gerepilecopy(av, Wf);
+  if (!pM) return gc_GEN(av, Wf);
   ef = mulii(gel(M2,1), gel(Modd,1));
   Mf = ZM2_mul(gel(M2,2), gel(Modd,2));
   Hf = minimalmodel_getH(W, gel(Wf,2), ef, Mf, g, v);
@@ -1473,7 +1473,7 @@ hyperellchangecurve(GEN W, GEN C)
   Q = RgX_RgM2_eval(Q, A, Bp, g+1);
   P = RgX_Rg_div(RgX_sub(P, RgX_mul(H,RgX_add(Q,H))), gsqr(e));
   Q = RgX_Rg_div(RgX_add(Q, RgX_mul2n(H,1)), e);
-  return gerepilecopy(av, mkvec2(P,Q));
+  return gc_GEN(av, mkvec2(P,Q));
 }
 
 /****************************************************************************/
@@ -1531,7 +1531,7 @@ Zst_val(GEN P, GEN f, GEN p, long vt, GEN *pR)
     Pm = RgX_renormalize(Pm);
     if (ZX_pval(Pm,p)==0)
     {
-      *pR = gerepilecopy(av, P);
+      *pR = gc_GEN(av, P);
       return dm;
     }
     Pm = RgX_homogenize_deg(Pm, dm, vt);
@@ -1576,7 +1576,7 @@ Zst_red1(GEN P, GEN f, GEN p, long vt)
   P2 = gsubst(gdiv(r, monomial(gen_1,ww,vt)),vs,st);
   f2 = RgXY_swapsafe(f2, vs, vt);
   P2 = RgXY_swapsafe(P2, vs, vt);
-  return gerepilecopy(av, mkvec4(P1, f1, P2, f2));
+  return gc_GEN(av, mkvec4(P1, f1, P2, f2));
 }
 
 static GEN
@@ -1644,7 +1644,7 @@ genus2_halfstablemodel(GEN P, GEN p)
   long vt = fetch_var(), vs = varn(P);
   GEN S = genus2_halfstablemodel_i(P, p, vt);
   setvarn(S, vs); delete_var();
-  return gerepilecopy(av, S);
+  return gc_GEN(av, S);
 }
 
 /* semi-stable reduction */

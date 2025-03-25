@@ -601,7 +601,7 @@ qfminimize(GEN G)
   symmetric_non0_coeff(G, &i, &j);
   U = gel(H,2); H = gel(H,1);
   c = gdiv(gcoeff(H,i,j), RgV_dotproduct(gel(U,i), RgM_RgC_mul(G, gel(U,j))));
-  return gerepilecopy(av, mkvec3(H, U, c));
+  return gc_GEN(av, mkvec3(H, U, c));
 }
 
 /* CLASS GROUP COMPUTATIONS */
@@ -1056,7 +1056,7 @@ qfsolve_i(GEN G)
 }
 GEN
 qfsolve(GEN G)
-{ pari_sp av = avma; return gerepilecopy(av, qfsolve_i(G)); }
+{ pari_sp av = avma; return gc_GEN(av, qfsolve_i(G)); }
 
 /* G is a symmetric 3x3 matrix, and sol a solution of sol~*G*sol=0.
  * Returns a parametrization of the solutions with the good invariants,

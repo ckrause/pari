@@ -151,7 +151,7 @@ _FpJ_mul(void *E, GEN P, GEN n)
   if (!s || signe(gel(P,3))==0) return ellinf_FpJ();
   if (s < 0) P = FpJ_neg(P, e->p);
   if (is_pm1(n)) return s > 0 ? gcopy(P): P;
-  return gerepilecopy(av, gen_pow_i(P, n, e, &_FpJ_dbl, &_FpJ_add));
+  return gc_GEN(av, gen_pow_i(P, n, e, &_FpJ_dbl, &_FpJ_add));
 }
 
 GEN
@@ -381,7 +381,7 @@ random_FpE(GEN a4, GEN a6, GEN p)
           || kronecker(rhs, p) < 0);
   y = Fp_sqrt(rhs, p);
   if (!y) pari_err_PRIME("random_FpE", p);
-  return gerepilecopy(ltop, mkvec2(x, y));
+  return gc_GEN(ltop, mkvec2(x, y));
 }
 
 static GEN
@@ -1481,7 +1481,7 @@ Fp_ellgens(GEN a4, GEN a6, GEN ch, GEN D, GEN m, GEN p)
     gel(P,2) = FpE_changepoint(gel(P,2), ch, p);
     break;
   }
-  return gerepilecopy(av, P);
+  return gc_GEN(av, P);
 }
 
 /* Not so fast arithmetic with points over elliptic curves over FpXQ */
@@ -1661,7 +1661,7 @@ _FpXQE_mul(void *E, GEN P, GEN n)
   if (!s || ell_is_inf(P)) return ellinf();
   if (s<0) P = FpXQE_neg(P, e->T, e->p);
   if (is_pm1(n)) return s>0? gcopy(P): P;
-  return gerepilecopy(av, gen_pow_i(P, n, e, &_FpXQE_dbl, &_FpXQE_add));
+  return gc_GEN(av, gen_pow_i(P, n, e, &_FpXQE_dbl, &_FpXQE_add));
 }
 
 GEN
@@ -1690,7 +1690,7 @@ random_FpXQE(GEN a4, GEN a6, GEN T, GEN p)
           || !FpXQ_issquare(rhs, T, p));
   y = FpXQ_sqrt(rhs, T, p);
   if (!y) pari_err_PRIME("random_FpE", p);
-  return gerepilecopy(ltop, mkvec2(x, y));
+  return gc_GEN(ltop, mkvec2(x, y));
 }
 
 static GEN
@@ -2237,5 +2237,5 @@ FpXQ_ellgens(GEN a4, GEN a6, GEN ch, GEN D, GEN m, GEN T, GEN p)
     gel(P,2) = FpXQE_changepoint(gel(P,2), ch, T, p);
     break;
   }
-  return gerepilecopy(av, P);
+  return gc_GEN(av, P);
 }

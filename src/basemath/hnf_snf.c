@@ -352,7 +352,7 @@ hnfspec_i(GEN mat0, GEN perm, GEN* ptdep, GEN* ptB, GEN* ptC, long k0)
     if (gc_needed(av,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"hnfspec[1]");
-      if (T) T = gerepilecopy(av, T); else set_avma(av);
+      if (T) T = gc_GEN(av, T); else set_avma(av);
     }
   }
   /* As above with lines containing a +/- 1 (no other assumption).
@@ -960,7 +960,7 @@ hnf_i(GEN A, int remove)
       if (gc_needed(av,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"ZM_hnf[1]. li=%ld",li);
-        A = gerepilecopy(av, A);
+        A = gc_GEN(av, A);
       }
     }
     s = signe(gcoeff(A,li,def));
@@ -975,7 +975,7 @@ hnf_i(GEN A, int remove)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"ZM_hnf[2]. li=%ld",li);
-      A = gerepilecopy(av, A);
+      A = gc_GEN(av, A);
     }
   }
   /* rank A = n - def */
@@ -1068,7 +1068,7 @@ ZpM_echelon(GEN x, long early_abort, GEN p, GEN pm)
       if (gc_needed(av,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"ZpM_echelon. i=%ld",i);
-        x = gerepilecopy(av, x); pvmin = gcoeff(x,i,def);
+        x = gc_GEN(av, x); pvmin = gcoeff(x,i,def);
       }
     }
     def--;
@@ -1078,7 +1078,7 @@ ZpM_echelon(GEN x, long early_abort, GEN p, GEN pm)
     x += co - li;
     x[0] = evaltyp(t_MAT) | _evallg(li);
   }
-  return gerepilecopy(av0, x);
+  return gc_GEN(av0, x);
 }
 GEN
 zlm_echelon(GEN x, long early_abort, ulong p, ulong pm)
@@ -1139,7 +1139,7 @@ zlm_echelon(GEN x, long early_abort, ulong p, ulong pm)
     x += co - li;
     x[0] = evaltyp(t_MAT) | _evallg(li);
   }
-  return gerepilecopy(av0, x);
+  return gc_GEN(av0, x);
 }
 
 static int
@@ -1273,7 +1273,7 @@ ZM_hnfmodall_i(GEN x, GEN D, long flag)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"ZM_hnfmod[1]. i=%ld",i);
-      x = gerepilecopy(av, x);
+      x = gc_GEN(av, x);
     }
     if (moddiag && !signe(gcoeff(x,i,def)))
     { /* missing pivot on line i, insert column */
@@ -1368,7 +1368,7 @@ GEN
 ZM_hnfmodall(GEN x, GEN dm, long flag)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, ZM_hnfmodall_i(x, dm, flag));
+  return gc_GEN(av, ZM_hnfmodall_i(x, dm, flag));
 }
 GEN
 ZM_hnfmod(GEN x, GEN d) { return ZM_hnfmodall(x,d,0); }
@@ -1421,7 +1421,7 @@ FpM_echelon(GEN x, GEN *pP, GEN p)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FpM_echelon. i=%ld",i);
-      x = gerepilecopy(av, x);
+      x = gc_GEN(av, x);
     }
     def--;
   }
@@ -1456,7 +1456,7 @@ FpM_hnfend(pari_sp av, GEN x, GEN p)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FpM_hnfend. i=%ld",i);
-      x = gerepilecopy(av, x);
+      x = gc_GEN(av, x);
     }
   }
   return x;
@@ -1474,7 +1474,7 @@ ZM_hnfmodprime(GEN x, GEN p)
   if (lP == l) { set_avma(av); return matid(l-1); }
   y = scalarmat_shallow(p, l-1);
   for (i = 1; i < lP; i++) gel(y,P[i]) = gel(x,i);
-  return gerepilecopy(av, FpM_hnfend(av,y,p));
+  return gc_GEN(av, FpM_hnfend(av,y,p));
 }
 
 static GEN
@@ -1531,7 +1531,7 @@ ZM_hnfcenter(GEN M)
       if (gc_needed(av,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"ZM_hnfcenter, j = %ld",j);
-        M = gerepilecopy(av, M);
+        M = gc_GEN(av, M);
       }
     }
   }
@@ -1683,12 +1683,12 @@ affii2_or_copy_gc(pari_sp av, GEN x, GEN *y, GEN x1, GEN *y1)
   else if (lgefint(x) <= l && isonstack(*y))
   {
     affii(x,*y);
-    *y1 = gerepilecopy(av, x1);
+    *y1 = gc_GEN(av, x1);
   }
   else if (lgefint(x1) <= l1 && isonstack(*y1))
   {
     affii(x1,*y1);
-    *y = gerepilecopy(av, x);
+    *y = gc_GEN(av, x);
   }
   else
   {
@@ -1902,7 +1902,7 @@ GEN
 ZV_extgcd(GEN A)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, ZV_gcdext_i(A));
+  return gc_GEN(av, ZV_gcdext_i(A));
 }
 /* as ZV_extgcd, transforming the gcd into a t_MAT, for mathnf0 */
 static GEN
@@ -1913,7 +1913,7 @@ ZV_hnfgcdext(GEN A)
   if (lg(A) == 1) retmkvec2(cgetg(1,t_MAT),cgetg(1,t_MAT));
   z = ZV_gcdext_i(A);
   gel(z,1) = mkmat(mkcol(gel(z,1)));
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 /* HNF with permutation. */
@@ -2851,7 +2851,7 @@ RgXM_snf(GEN x,long all)
     gcoeff(x,k,k) = T;
   }
   z = all? mkvec3(shallowtrans(U), V, x): RgM_diagonal_shallow(x);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 GEN

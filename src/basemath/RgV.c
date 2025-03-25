@@ -620,7 +620,7 @@ RgM_mul_ZXQM(GEN x, GEN y, GEN T)
 {
   pari_sp av = avma;
   GEN b = ZXQM_mul(RgM_liftred(x,T), RgM_liftred(y, T), T);
-  return gerepilecopy(av, QXQM_to_mod_shallow(b,T));
+  return gc_GEN(av, QXQM_to_mod_shallow(b,T));
 }
 
 static GEN
@@ -628,7 +628,7 @@ RgM_sqr_ZXQM(GEN x, GEN T)
 {
   pari_sp av = avma;
   GEN b = ZXQM_sqr(RgM_liftred(x, T), T);
-  return gerepilecopy(av, QXQM_to_mod_shallow(b,T));
+  return gc_GEN(av, QXQM_to_mod_shallow(b,T));
 }
 
 static GEN
@@ -636,7 +636,7 @@ RgM_mul_QXQM(GEN x, GEN y, GEN T)
 {
   pari_sp av = avma;
   GEN b = QXQM_mul(RgM_liftred(x, T), RgM_liftred(y, T), T);
-  return gerepilecopy(av, QXQM_to_mod_shallow(b,T));
+  return gc_GEN(av, QXQM_to_mod_shallow(b,T));
 }
 
 static GEN
@@ -644,7 +644,7 @@ RgM_sqr_QXQM(GEN x, GEN T)
 {
   pari_sp av = avma;
   GEN b = QXQM_sqr(RgM_liftred(x, T), T);
-  return gerepilecopy(av, QXQM_to_mod_shallow(b,T));
+  return gc_GEN(av, QXQM_to_mod_shallow(b,T));
 }
 
 INLINE int

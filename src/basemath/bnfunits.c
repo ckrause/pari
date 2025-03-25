@@ -113,7 +113,7 @@ bnfisunit(GEN bnf, GEN x)
     e *= Fl_inv(umodiu(p2,n), n);
     e %= n;
   }
-  gel(ex,RU) = utoi(e); setlg(ex, RU+1); return gerepilecopy(av, ex);
+  gel(ex,RU) = utoi(e); setlg(ex, RU+1); return gc_GEN(av, ex);
 }
 
 /* split M a square ZM in HNF as [H, B; 0, Id], H in HNF without 1-eigenvalue */
@@ -231,7 +231,7 @@ bnfsunit(GEN bnf,GEN S,long prec)
   }
   gel(v,4) = R;
   gel(v,5) = cl;
-  gel(v,6) = S; return gerepilecopy(av, v);
+  gel(v,6) = S; return gc_GEN(av, v);
 }
 GEN
 bnfunits(GEN bnf, GEN S)
@@ -251,7 +251,7 @@ bnfunits(GEN bnf, GEN S)
   }
   tu = nf_to_scalar_or_basis(bnf_get_nf(bnf), bnf_get_tuU(bnf));
   U = shallowconcat(U, vec_append(fu, to_famat_shallow(tu,gen_1)));
-  return gerepilecopy(av, mkvec4(U, S, A, den));
+  return gc_GEN(av, mkvec4(U, S, A, den));
 }
 GEN
 sunits_mod_units(GEN bnf, GEN S)
@@ -259,7 +259,7 @@ sunits_mod_units(GEN bnf, GEN S)
   pari_sp av = avma;
   GEN A, den;
   bnf = checkbnf(bnf);
-  return gerepilecopy(av, bnfsunit_i(bnf, S, NULL, &A, &den));
+  return gc_GEN(av, bnfsunit_i(bnf, S, NULL, &A, &den));
 }
 
 /* v_S(x), x in famat form */
@@ -360,7 +360,7 @@ bnfisunit0(GEN bnf, GEN x, GEN U)
   if (!checkU(U)) pari_err_TYPE("bnfisunit",U);
   z = bnfissunit_i(bnf, x, U);
   if (!z) { set_avma(av); return cgetg(1,t_COL); }
-  return gerepilecopy(av, shallowconcat(gel(z,2), gel(z,1)));
+  return gc_GEN(av, shallowconcat(gel(z,2), gel(z,1)));
 }
 
 /* OBSOLETE */
@@ -383,5 +383,5 @@ bnfissunit(GEN bnf, GEN bnfS, GEN x)
   U = mkvec4(gel(bnfS,1), gel(bnfS,6), gmael(bnfS,2,1), gmael(bnfS,2,2));
   z = bnfissunit_i(bnf, x, U);
   if (!z) { set_avma(av); return cgetg(1,t_COL); }
-  return gerepilecopy(av, shallowconcat(gel(z,1), gel(z,2)));
+  return gc_GEN(av, shallowconcat(gel(z,1), gel(z,2)));
 }

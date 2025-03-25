@@ -164,7 +164,7 @@ lfunlarge_char(GEN VCALL, GEN s, long bitprec)
       gel(Vz,j) = applyfuneq(gel(gau,j), s, gel(z,j), odd[j], q, bitprec);
     z = Vz;
   }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 static GEN
@@ -879,7 +879,7 @@ RZlerch_easy(GEN s, GEN a, GEN lam, long prec)
   z = typ(lam) == t_INT ? gen_1 : gexp(gmul(PiI2(prec), lam), prec);
   y = parsum(gen_0, N, snm_closure(is_entry("_serh_worker"),
                                    mkvec4(z, a, gneg(s), stoi(prec))));
-  return gerepilecopy(av, gprec_wtrunc(y, prec));
+  return gc_GEN(av, gprec_wtrunc(y, prec));
 }
 
 static GEN
@@ -923,7 +923,7 @@ lerchlarge(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
   lam = gprec_w(lam, prec2);
   sel = RZLERinit(s, a, lam, al, numpoles, prec2);
   val = lerch_ours(sel, s, a, lam, prec2);
-  return gerepilecopy(av, gprec_wtrunc(val, prec));
+  return gc_GEN(av, gprec_wtrunc(val, prec));
 }
 
 GEN

@@ -1036,7 +1036,7 @@ hgmcoef(GEN hgm, GEN t, GEN n)
     A = frobpoltrunc(hgm, t, c, p, f, &e);
     T = gmul(T, RgX_coeff(RgXn_inv(A, f+1), f));
   }
-  return gerepilecopy(av, T);
+  return gc_GEN(av, T);
 }
 
 static GEN
@@ -1117,7 +1117,7 @@ hgmeulerfactor(GEN hgm, GEN t, long p, GEN* pE)
   if (!is_rational_t(typ(t))) pari_err_TYPE("hgmeulerfactor",t);
   if (hgm_get_SWAP(hgm)) t = ginv(t);
   B = (long)(hgm_get_DEG(hgm) * log(p)) + 1;
-  P = gerepilecopy(av, hgmeulerfactorlimit(hgm, t, p, B, 1, &e));
+  P = gc_GEN(av, hgmeulerfactorlimit(hgm, t, p, B, 1, &e));
   if (pE) *pE = stoi(e);
   return P;
 }
@@ -1462,7 +1462,7 @@ hgminit_i(GEN a, GEN b)
 }
 GEN
 hgminit(GEN val, GEN vbe)
-{ pari_sp av = avma; return gerepilecopy(av, hgminit_i(val, vbe)); }
+{ pari_sp av = avma; return gc_GEN(av, hgminit_i(val, vbe)); }
 
 GEN
 hgmalpha(GEN hgm)
@@ -1481,7 +1481,7 @@ hgmgamma(GEN hgm)
   if (!checkhgm(hgm)) pari_err_TYPE("hgmgamma", hgm);
   g = hgm_get_VPOLGA(hgm);
   if (hgm_get_SWAP(hgm)) g = zv_neg(g);
-  return gerepilecopy(av, g);
+  return gc_GEN(av, g);
 }
 GEN
 hgmcyclo(GEN hgm)
@@ -1491,7 +1491,7 @@ hgmcyclo(GEN hgm)
   if (!checkhgm(hgm)) pari_err_TYPE("hgmcyclo", hgm);
   C = hgm_get_CYCLOE(hgm); A = gel(C,1); B = gel(C,2);
   if (hgm_get_SWAP(hgm)) swap(A, B);
-  return gerepilecopy(av, cycloE2cyclo(A, B));
+  return gc_GEN(av, cycloE2cyclo(A, B));
 }
 
 GEN
@@ -1505,7 +1505,7 @@ hgmtwist(GEN hgm)
   if (hgm_get_SWAP(hgm)) swap(val, vbe);
   val = sort(RgV_addhalf(val));
   vbe = sort(RgV_addhalf(vbe));
-  return gerepilecopy(av, initab(val, vbe));
+  return gc_GEN(av, initab(val, vbe));
 }
 
 GEN
@@ -1518,7 +1518,7 @@ hgmparams(GEN hgm)
   H = zx_to_ZX(hgm_get_HODGE(hgm));
   TT = hgm_get_TT(hgm); DEG = hgm_get_DEG(hgm);
   WT = hgm_get_WT(hgm); M = hgm_get_MVALUE(hgm);
-  return gerepilecopy(av, mkvec4(utoipos(DEG), utoi(WT),
+  return gc_GEN(av, mkvec4(utoipos(DEG), utoi(WT),
                                  mkvec2(H,stoi(TT)), M));
 }
 
@@ -1672,7 +1672,7 @@ hgmbydegree(long n)
     gmael(w, k, c[k]++) = z;
   }
   for (i = 1; i <= n; i++) setlg(gel(w,i), c[i]);
-  return gerepilecopy(av, w);
+  return gc_GEN(av, w);
 }
 
 /***************************************************************/
@@ -1780,7 +1780,7 @@ hgmlfuninfty(GEN hgm, GEN t)
   for (i = j = 1; i < l; i++) /* FIXME: precompute wild Euler factors */
     if (hgmclass(hgm, BAD[i], t) == C_BAD)
       gel(v,j++) = mkvec2(utoipos(BAD[i]), pol_1(0));
-  setlg(v, j); return gerepilecopy(av, mkvec4(VGA, utoi(k), v, COND));
+  setlg(v, j); return gc_GEN(av, mkvec4(VGA, utoi(k), v, COND));
 }
 
 /***************************************************************/
@@ -2122,7 +2122,7 @@ hgmmoments(GEN H, GEN t, GEN M, long nb)
       for (j = 1; j < lm; j++)
         gel(S,j) = gadd(gel(S,j), gpow(T, gel(M,j), DEFAULTPREC));
     }
-    if ((i & 0xf) == 0) S = gerepilecopy(av2, S);
+    if ((i & 0xf) == 0) S = gc_GEN(av2, S);
   }
   if (tm != t_VEC && tm != t_COL && tm != t_VECSMALL) S = gel(S, 1);
   return gerepileupto(av, gdivgu(S, ct));
@@ -2186,7 +2186,7 @@ lfunhgm(GEN hgm, GEN t, GEN hint, long bit)
 {
   pari_sp av = avma;
   if (!checkhgm(hgm)) pari_err_TYPE("lfunhgm", hgm);
-  return gerepilecopy(av, lfunhgm_i(hgm, t, hint, bit));
+  return gc_GEN(av, lfunhgm_i(hgm, t, hint, bit));
 }
 
 GEN
@@ -2201,7 +2201,7 @@ dirhgm_worker(GEN P, ulong X, GEN hgm, GEN t)
     long e, d = ulogint(X, p) + 1; /* minimal d such that p^d > X */
     gel(W,i) = RgXn_inv(hgmeulerfactorlimit(hgm, t, p, d-1, 0, &e), d);
   }
-  return gerepilecopy(av, mkvec2(P,W));
+  return gc_GEN(av, mkvec2(P,W));
 }
 
 GEN

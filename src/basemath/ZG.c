@@ -83,7 +83,7 @@ ZG_mul(GEN x, GEN y)
     if (gc_needed(av,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZG_mul, i = %ld/%ld",i,l-1);
-      z = gerepilecopy(av, z);
+      z = gc_GEN(av, z);
     }
   }
   return z;

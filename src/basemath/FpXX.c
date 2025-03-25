@@ -58,7 +58,7 @@ FpXX_red(GEN z, GEN p)
       c = FpX_red(zi,p);
       switch(lg(c)) {
         case 2: set_avma(av); c = gen_0; break;
-        case 3: c = gerepilecopy(av, gel(c,2)); break;
+        case 3: c = gc_GEN(av, gel(c,2)); break;
       }
     }
     gel(res,i) = c;
@@ -407,7 +407,7 @@ FpXY_FpY_mulspec(GEN x, GEN y, GEN T, GEN p, long lx, long ly)
   GEN z = RgXY_swapspec(x,get_FpX_degree(T)-1,v,lx);
   z = FpXX_FpX_mulspec(z,y,p,v,ly);
   z = RgXY_swapspec(z+2,lx+ly+3,v,lgpol(z));
-  return gerepilecopy(av,z);
+  return gc_GEN(av,z);
 }
 
 static GEN
@@ -1158,7 +1158,7 @@ FpXQX_invBarrett_Newton(GEN S, GEN T, GEN p)
     for (i = 0; i < lz; i++) gel(y,i) = Fq_neg(gel(z,i), T, p);
   }
   x -= 2; setlg(x, lx + 2); x[1] = S[1];
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 GEN
@@ -1304,7 +1304,7 @@ FpXQX_divrem(GEN x, GEN S, GEN T, GEN p, GEN *pr)
     GEN mg = B? B: FpXQX_invBarrett(y, T, p);
     GEN q = FpXQX_divrem_Barrett(x,mg,y,T,p,pr);
     if (!q) return gc_NULL(av);
-    if (!pr || pr==ONLY_DIVIDES) return gerepilecopy(av, q);
+    if (!pr || pr==ONLY_DIVIDES) return gc_GEN(av, q);
     return gc_all(av, 2, &q, pr);
   }
 }
@@ -1542,7 +1542,7 @@ FpXYQQ_redswap(GEN x, GEN S, GEN T, GEN p)
   GEN V = RgXY_swap(x,m,v);
   V = FpXQX_red(V,S,p);
   V = RgXY_swap(V,n,v);
-  return gerepilecopy(ltop,V);
+  return gc_GEN(ltop,V);
 }
 static GEN
 FpXYQQ_sqr(void *data, GEN x)
@@ -1709,7 +1709,7 @@ FpXQXQ_pow(GEN x, GEN n, GEN S, GEN T, GEN p)
     D.S = S; D.T = T; D.p = p;
     if (s < 0) x = FpXQXQ_inv(x,S,T,p);
     y = gen_pow_i(x, n, (void*)&D,&_FpXQXQ_sqr,&_FpXQXQ_mul);
-    return gerepilecopy(ltop, y);
+    return gc_GEN(ltop, y);
   }
 }
 
@@ -1762,7 +1762,7 @@ FpXQXQ_transmul(GEN tau, GEN a, long n, GEN T, GEN p)
   GEN bt = gel(tau, 1), bht = gel(tau, 2), ft = gel(tau, 3);
   if (signe(a)==0) return pol_0(varn(a));
   t2 = FpXX_shift(FpXQX_mul(bt, a, T, p),1-n);
-  if (signe(bht)==0) return gerepilecopy(ltop, t2);
+  if (signe(bht)==0) return gc_GEN(ltop, t2);
   t1 = FpXX_shift(FpXQX_mul(ft, a, T, p),-n);
   t3 = FpXQXn_mul(t1, bht, n-1, T, p);
   vec = FpXX_sub(t2, FpXX_shift(t3, 1), p);
@@ -1822,7 +1822,7 @@ FpXQXQ_minpoly(GEN x, GEN S, GEN T, GEN p)
     tau = FpXQXQ_mul(tau, FpXQX_FpXQXQV_eval(g_prime, v_x, S, T, p), S, T, p);
   }
   g = FpXQX_normalize(g,T, p);
-  return gerepilecopy(ltop,g);
+  return gc_GEN(ltop,g);
 }
 
 GEN
@@ -1892,7 +1892,7 @@ FpXQXQ_autpow(GEN aut, long n, GEN S, GEN T, GEN p)
   S = FpXQX_get_red(S, T, p);
   D.S=S; D.T=T; D.p=p;
   aut = gen_powu_i(aut,n,&D,FpXQXQ_autpow_sqr,FpXQXQ_autpow_mul);
-  return gerepilecopy(av, aut);
+  return gc_GEN(av, aut);
 }
 
 static GEN
@@ -1924,7 +1924,7 @@ FpXQXQ_auttrace(GEN aut, long n, GEN S, GEN T, GEN p)
   S = FpXQX_get_red(S, T, p);
   D.S=S; D.T=T; D.p=p;
   aut = gen_powu_i(aut,n,&D,FpXQXQ_auttrace_sqr,FpXQXQ_auttrace_mul);
-  return gerepilecopy(av, aut);
+  return gc_GEN(av, aut);
 }
 
 static GEN
@@ -1960,7 +1960,7 @@ FpXQXQ_autsum(GEN aut, long n, GEN S, GEN T, GEN p)
   S = FpXQX_get_red(S, T, p);
   D.S=S; D.T=T; D.p=p;
   aut = gen_powu_i(aut,n,&D,FpXQXQ_autsum_sqr,FpXQXQ_autsum_mul);
-  return gerepilecopy(av, aut);
+  return gc_GEN(av, aut);
 }
 
 GEN
@@ -2123,7 +2123,7 @@ FpXQXn_div(GEN g, GEN f, long e, GEN T, GEN p)
     if (signe(b)==0) return scalarpol(a, v);
     if (!is_pm1(a)) b = Fq_mul(b, Fq_sqr(a, T, p), T, p);
     W = deg1pol_shallow(b, a, v);
-    return gerepilecopy(av, W);
+    return gc_GEN(av, W);
   }
   W = scalarpol_shallow(Fq_inv(gel(f,2), T, p),v);
   mask = quadratic_prec_mask(e);

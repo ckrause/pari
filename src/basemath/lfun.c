@@ -626,7 +626,7 @@ lfunrtoR_i(GEN ldata, GEN r, GEN eno, long prec)
   if (!r || isintzero(eno) || !residues_known(r))
     return gen_0;
   r = normalizepoles(r, k);
-  if (typ(r) == t_COL) return gerepilecopy(av, r);
+  if (typ(r) == t_COL) return gc_GEN(av, r);
   if (typ(ldata_get_dual(ldata)) != t_INT)
     pari_err(e_MISC,"please give the Taylor expansion of Lambda");
   vr = lfunrtopoles(r); lr = lg(vr);
@@ -648,7 +648,7 @@ lfunrtoR_i(GEN ldata, GEN r, GEN eno, long prec)
       gel(R,jR++) = mkvec2(b, Rb);
     }
   }
-  setlg(R, jR); return gerepilecopy(av, R);
+  setlg(R, jR); return gc_GEN(av, R);
 }
 static GEN
 lfunrtoR_eno(GEN ldata, GEN eno, long prec)
@@ -709,7 +709,7 @@ lfunthetainit(GEN ldata, GEN tdom, long m, long bitprec)
 {
   pari_sp av = avma;
   GEN S = lfunthetainit_i(ldata, tdom? tdom: gen_1, m, bitprec);
-  return gerepilecopy(av, S);
+  return gc_GEN(av, S);
 }
 
 GEN
@@ -718,7 +718,7 @@ lfunan(GEN ldata, long L, long prec)
   pari_sp av = avma;
   GEN an ;
   ldata = ldata_newprec(lfunmisc_to_ldata_shallow(ldata), prec);
-  an = gerepilecopy(av, ldata_vecan(ldata_get_an(ldata), L, prec));
+  an = gc_GEN(av, ldata_vecan(ldata_get_an(ldata), L, prec));
   if (typ(an) != t_VEC) an = vecsmall_to_vec_inplace(an);
   return an;
 }
@@ -898,7 +898,7 @@ lfuntheta(GEN data, GEN t, long m, long bitprec)
   {
     set_avma(ltop); S = real_0_bit(-bitprec);
     if (!is_real_t(typ(t)) || !ldata_isreal(ldata))
-      S = gerepilecopy(ltop, mkcomplex(S,S));
+      S = gc_GEN(ltop, mkcomplex(S,S));
     return S;
   }
   t = gmul(t, isqN);
@@ -1499,12 +1499,12 @@ lfuninit(GEN lmisc, GEN dom, long der, long bitprec)
   case t_LFUN_NF:
     {
       GEN T = gel(ldata_get_an(ldata), 2);
-      return gerepilecopy(av, lfunzetakinit(T, dom, der, bitprec));
+      return gc_GEN(av, lfunzetakinit(T, dom, der, bitprec));
     }
   case t_LFUN_ABELREL:
     {
       GEN T = gel(ldata_get_an(ldata), 2);
-      return gerepilecopy(av, lfunabelianrelinit(gel(T,1), gel(T,2), dom, der, bitprec));
+      return gc_GEN(av, lfunabelianrelinit(gel(T,1), gel(T,2), dom, der, bitprec));
     }
   }
   k = ldata_get_k(ldata);
@@ -1519,7 +1519,7 @@ lfuninit(GEN lmisc, GEN dom, long der, long bitprec)
       pari_err_IMPL("domain = [] for derivatives in lfuninit");
     if (!is_dirichlet(ldata))
       pari_err_IMPL("domain = [] for L functions of degree > 1");
-    return gerepilecopy(av, lfunnoinit(ldata, bitprec));
+    return gc_GEN(av, lfunnoinit(ldata, bitprec));
   }
 
   lfunp_set(ldata, der, bitprec, &S);
@@ -1565,7 +1565,7 @@ lfuninit(GEN lmisc, GEN dom, long der, long bitprec)
     AB = lfuninit_pol(AB, poqk, S.precmax);
   tech = mkvec3(h, AB, R);
   domain = mkvec2(dom, mkvecsmall2(der, bitprec));
-  return gerepilecopy(av, lfuninit_make(t_LDESC_INIT, ldata, tech, domain));
+  return gc_GEN(av, lfuninit_make(t_LDESC_INIT, ldata, tech, domain));
 }
 
 GEN
@@ -1602,7 +1602,7 @@ veccothderivn(GEN a, long n)
     c = ZX_mul(ZX_deriv(c), cp);
     gel(v, i) = gdiv(poleval(c, a), mpfact(i-1));
   }
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 static GEN
@@ -1815,12 +1815,12 @@ lfunlambda(GEN lmisc, GEN s, long bitprec)
     }
     if (is_linit(lmisc)) linit = lmisc; else lmisc = ldata;
     if (t == 2)
-      return gerepilecopy(av, linit? _product(&lfunlambda, linit, s, bitprec)
+      return gc_GEN(av, linit? _product(&lfunlambda, linit, s, bitprec)
                                    : lfunlambdalarge(ldata, s, bitprec));
   }
   linit = lfuninit(lmisc, dom, der, bitprec);
   z = lfunlambda_OK(linit,s, dom, bitprec);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 static long
@@ -1930,12 +1930,12 @@ lfun(GEN lmisc, GEN s, long bitprec)
     }
     if (is_linit(lmisc)) linit = lmisc; else lmisc = ldata;
     if (t == 2)
-      return gerepilecopy(av, linit? _product(&lfun, linit, s, bitprec)
+      return gc_GEN(av, linit? _product(&lfun, linit, s, bitprec)
                                    : lfunlarge(ldata, s, bitprec));
   }
   linit = lfuninit(lmisc, dom, der, bitprec);
   z = lfun_OK(linit, s, dom, bitprec);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 /* given a t_SER a+x*s(x), return x*s(x), shallow */
@@ -2035,7 +2035,7 @@ lfunderiv(GEN lmisc, long m, GEN s, long flag, long bitprec)
   }
   else if (is_ser(res))
     res = derservec(res, m);
-  return gerepilecopy(ltop, gprec_w(res, prec));
+  return gc_GEN(ltop, gprec_w(res, prec));
 }
 
 GEN
@@ -2375,7 +2375,7 @@ lfunrootres(GEN data, long bitprec)
       r = R = gen_0;
     else
       R = lfunrtoR_eno(ldata, w, nbits2prec(bitprec));
-    return gerepilecopy(ltop, mkvec3(r, R, w));
+    return gc_GEN(ltop, mkvec3(r, R, w));
   }
   linit = lfunthetacheckinit(data, dbltor(sqrt(0.5)), 0, bitprec);
   prec = nbits2prec(bitprec);
@@ -2423,7 +2423,7 @@ lfunrootres(GEN data, long bitprec)
   }
   r = normalize_simple_pole(Rtor(be, R, ldata, prec), be);
   R = lfunrtoR_i(ldata, r, w, prec);
-  return gerepilecopy(ltop, mkvec3(r, R, w));
+  return gc_GEN(ltop, mkvec3(r, R, w));
 }
 
 /*******************************************************************/
@@ -2616,7 +2616,7 @@ lfunzeros(GEN ldata, GEN lim, long divz, long bitprec)
   }
   if (s2 > 0 && (T || s1 >= 0))
     lfunzeros_i(&S, &w, &c, T? T: h1, h2, d, cN, pi2, pi2div, prec0, prec);
-  return gerepilecopy(ltop, w);
+  return gc_GEN(ltop, w);
 }
 
 /*******************************************************************/
@@ -2798,10 +2798,10 @@ lfunconductor(GEN data, GEN maxcond, long flag, long bitprec)
       else if (e == beste) beste = besti = 0; /* tie: forget */
     }
     if (!besti) { set_avma(av); return cgetg(1,t_VEC); }
-    return gerepilecopy(av, mkvec2(gel(M,besti), stoi(beste)));
+    return gc_GEN(av, mkvec2(gel(M,besti), stoi(beste)));
   }
   v = solvestep((void*)&S, eval, ghalf, M, gen_2, 14, prec);
-  return gerepilecopy(av, checkconductor(v, bitprec/2, flag));
+  return gc_GEN(av, checkconductor(v, bitprec/2, flag));
 }
 
 /* assume chi primitive */

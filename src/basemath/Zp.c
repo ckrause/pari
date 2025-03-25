@@ -642,7 +642,7 @@ ZpX_liftfact(GEN pol, GEN Q, GEN pe, GEN p, long e)
   pari_sp av = avma;
   pol = FpX_normalize(pol, pe);
   if (lg(Q) == 2) return mkvec(pol);
-  return gerepilecopy(av, MultiLift(pol, Q, NULL, p, e, 0));
+  return gc_GEN(av, MultiLift(pol, Q, NULL, p, e, 0));
 }
 
 GEN
@@ -651,7 +651,7 @@ ZpXQX_liftfact(GEN pol, GEN Q, GEN T, GEN pe, GEN p, long e)
   pari_sp av = avma;
   pol = FpXQX_normalize(pol, T, pe);
   if (lg(Q) == 2) return mkvec(pol);
-  return gerepilecopy(av, MultiLift(pol, Q, T, p, e, 0));
+  return gc_GEN(av, MultiLift(pol, Q, T, p, e, 0));
 }
 
 GEN
@@ -705,7 +705,7 @@ bezout_lift_fact(GEN pol, GEN Q, GEN p, long e)
     long t = link[i];
     if (t < 0) E[-t] = w[i];
   }
-  return gerepilecopy(av, E);
+  return gc_GEN(av, E);
 }
 
 /* Front-end for ZpX_liftfact:
@@ -731,7 +731,7 @@ polhensellift(GEN pol, GEN L, GEN Tp, long N)
     if (typ(q) != t_POL) gel(L,i) = scalar_ZX_shallow(q, varn(pol));
     else chk(q, "polhensellift");
   }
-  return gerepilecopy(av, ZqX_liftfact(pol, L, T, powiu(p,N), p, N));
+  return gc_GEN(av, ZqX_liftfact(pol, L, T, powiu(p,N), p, N));
 }
 
 static GEN
@@ -1326,7 +1326,7 @@ ZpXQM_prodFrobenius(GEN M, GEN T, GEN p, long e)
   pari_sp av = avma;
   GEN xp = ZpX_Frobenius(T, p, e);
   GEN z = FpXQM_autsum(mkvec2(xp, M), get_FpX_degree(T), T, powiu(p,e));
-  return gerepilecopy(av, gel(z,2));
+  return gc_GEN(av, gel(z,2));
 }
 
 GEN
@@ -1502,7 +1502,7 @@ _can5_iter(void *E, GEN f, GEN q)
   gel(V,1) = ZX_mulu(gel(d,1), p);
   for(i=2; i<= (long)p; i++)
     gel(V,i) = ZX_mulu(RgX_shift_shallow(gel(d,p+2-i), 1), p);
-  (void)delete_var(); return gerepilecopy(av, mkvec2(ZX_sub(f,P),V));
+  (void)delete_var(); return gc_GEN(av, mkvec2(ZX_sub(f,P),V));
 }
 
 static GEN

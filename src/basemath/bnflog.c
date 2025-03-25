@@ -445,7 +445,7 @@ GEN
 bnflog(GEN bnf, GEN ell)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, bnflog_i(bnf, ell));
+  return gc_GEN(av, bnflog_i(bnf, ell));
 }
 
 GEN

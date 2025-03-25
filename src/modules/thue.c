@@ -777,7 +777,7 @@ thueinit(GEN pol, long flag, long prec)
       if (lfa == 2) {
         tnf = mkvec3(mkvec3(POL,C,L), thueinit(f, flag, prec), E);
         delete_var(); delete_var(); delete_var();
-        return gerepilecopy(av, tnf);
+        return gc_GEN(av, tnf);
       }
       P = gpowgs(f,e);
     }
@@ -789,7 +789,7 @@ thueinit(GEN pol, long flag, long prec)
     R = polresultant0(P, Q, -1, 0);
     tnf = mkvec3(mkvec3(POL,C,L), mkvecsmall4(degpol(f), e, va,vb),  R);
     delete_var(); delete_var(); delete_var();
-    return gerepilecopy(av, tnf);
+    return gc_GEN(av, tnf);
   }
   /* POL monic irreducible: POL(x) = C pol(x/L), L integer */
   POL = ZX_primitive_to_monic(POL, &L);
@@ -844,7 +844,7 @@ thueinit(GEN pol, long flag, long prec)
     setsigne(c0,1); c0 = invr(c0); tnf = mkvec3(pol, bnf, c0);
   }
   gel(tnf,1) = mkvec3(gel(tnf,1), C, L);
-  return gerepilecopy(av,tnf);
+  return gc_GEN(av,tnf);
 }
 
 /* arg(t^2) / 2Pi; arg(t^2) = arg(t/conj(t)) */
@@ -1009,7 +1009,7 @@ LargeSols(GEN P, GEN tnf, GEN rhs, GEN ne)
 START:
   if (S) /* restart from precision problems */
   {
-    S = gerepilecopy(av, S);
+    S = gc_GEN(av, S);
     prec = precdbl(prec);
     if (DEBUGLEVEL) pari_warn(warnprec,"thue",prec);
     tnf = inithue(P, bnf, 0, prec);
@@ -1762,5 +1762,5 @@ bnfisintnorm0(GEN bnf, GEN a, long flag)
     case t_VEC: a = gel(a,1); break;
     case t_MAT: a = factorback(a); break;
   }
-  return gerepilecopy(av, bnfisintnorm_i(bnf, a, signe(a), ne, flag));
+  return gc_GEN(av, bnfisintnorm_i(bnf, a, signe(a), ne, flag));
 }

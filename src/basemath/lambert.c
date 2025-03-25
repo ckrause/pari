@@ -309,7 +309,7 @@ lambertWC(GEN z, long branch, long prec)
     L = gadd(gmulsg(branch, PiI2(p)), glog(gprec_w(z, p), p));
     w = lamaux(gprec_w(w, p), L, NULL, p);
   }
-  return gerepilecopy(av, gprec_w(w, nbits2prec(bit)));
+  return gc_GEN(av, gprec_w(w, nbits2prec(bit)));
 }
 
 /* exp(t (1 + O(t^n))), n >= 0 */

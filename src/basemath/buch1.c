@@ -107,10 +107,10 @@ qfr5_rho_pow(GEN x, long n, struct qfr_data *S)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"qfr5_rho_pow");
-      x = gerepilecopy(av, x);
+      x = gc_GEN(av, x);
     }
   }
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 static GEN
@@ -1239,7 +1239,7 @@ Buchquad(GEN D, double c, double c2, long prec)
 {
   pari_sp av = avma;
   GEN z = Buchquad_i(D, c, c2, prec);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 GEN

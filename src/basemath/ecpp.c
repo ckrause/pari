@@ -409,7 +409,7 @@ ecpp_disclist_init(ulong maxdisc, GEN primelist)
   }
   setlg(merge, lmerge);
   gen_sort_inplace(merge, NULL, &sort_disclist, NULL);
-  return gerepilecopy(av, merge);
+  return gc_GEN(av, merge);
 }
 
 static GEN
@@ -463,7 +463,7 @@ ecpp_param_set(GEN tune, GEN x)
   dbg_mode() err_printf(", %ld",timer_delay(&ti));
   primorial = primorial_vec(tdivexp);
   dbg_mode() err_printf(", %ld\n",timer_delay(&ti));
-  return gerepilecopy(av, mkvec3(mkvec5(T,Utree,Plist,Dlist,Olist),
+  return gc_GEN(av, mkvec3(mkvec5(T,Utree,Plist,Dlist,Olist),
                                  primorial, tune));
 }
 
@@ -753,7 +753,7 @@ ecpp_step2_worker(GEN S, GEN HD, GEN primelist, long dbg)
   t = subii(addiu(N, 1), m); /* t = N+1-m */
   res = mkvec2(mkvec5(N, t, s, gel(EP,1), gel(EP,2)),mkvecsmall4(C2,C3,C4,D1));
   setrand(c);
-  return gerepilecopy(av, res);
+  return gc_GEN(av, res);
 }
 
 /* This uses [N, D, m, q] from step 1 to find the appropriate j-invariants
@@ -1033,7 +1033,7 @@ Dmbatch_factor_Dmqvec(GEN N, long expiN, GEN* X0, GEN Dmbatch, GEN param)
    *     and cardinalities in which we didn't win enough bits */
   Dmqvec = Dmqvec_slice(N, Dmqvec);
   if (!Dmqvec) return gc_NULL(av); /* nothing is left */
-  return gerepilecopy(av, Dmqvec);
+  return gc_GEN(av, Dmqvec);
 }
 
 GEN
@@ -1235,7 +1235,7 @@ ecpp_step1(GEN N, GEN param, GEN* X0, long stopat)
   GEN downrun = N_downrun(N, param, worker, X0, &depth, 1, stopat);
   if (downrun == NULL) return gc_NULL(av);
   if (typ(downrun) != t_VEC) return gen_0;
-  return gerepilecopy(av, ecpp_flattencert(downrun, depth));
+  return gc_GEN(av, ecpp_flattencert(downrun, depth));
 }
 
 /* The input is an integer N.
@@ -1279,7 +1279,7 @@ ecpp_param(GEN N, GEN param, long stopat)
   }
     err_printf("\n" ANSI_BRIGHT_RED "\nFAILS: %16ld" ANSI_RESET "\n", umael(X0, 3, 1));
   }
-  return gerepilecopy(av, answer);
+  return gc_GEN(av, answer);
 }
 
 static const long ecpp_tune[][4]=
@@ -1338,7 +1338,7 @@ ecpp0(GEN C, long stopat)
     param = ecpp_param_set(tune, x);
     C2 = ecpp_param(N, param, stopat);
     if (C2)
-      return typ(C)==t_INT? C2: gerepilecopy(av, shallowconcat(C,C2));
+      return typ(C)==t_INT? C2: gc_GEN(av, shallowconcat(C,C2));
     x[1] *= 2;
     x[2] *= 2;
     x[3] = minss(x[3]+1, 30);

@@ -391,7 +391,7 @@ rhoimag(GEN x)
   }
   swap(a,c); b = negi(b);
   REDB(a, &b, &c);
-  return gerepilecopy(av, mkqfb(a,b,c, qfb_disc(x)));
+  return gc_GEN(av, mkqfb(a,b,c, qfb_disc(x)));
 }
 
 /* qfr3 / qfr5 */
@@ -525,7 +525,7 @@ qfr5_red(GEN x, struct qfr_data *S)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"qfr5_red");
-      x = gerepilecopy(av, x);
+      x = gc_GEN(av, x);
     }
   }
   return x;
@@ -651,7 +651,7 @@ qfbredsl2_real_basecase(GEN V, GEN rd)
       gerepileall(av, 7, &a,&b,&c,&u1,&u2,&v1,&v2);
     }
   }
-  return gerepilecopy(av, mkvec2(mkqfb(a,b,c,d), mkmat22(u1,v1,u2,v2)));
+  return gc_GEN(av, mkvec2(mkqfb(a,b,c,d), mkmat22(u1,v1,u2,v2)));
 }
 
 /* fast reduction of qfb with positive coefficients, based on
@@ -861,7 +861,7 @@ qfbredsl2_real(GEN Q, GEN isqrtD)
     W = qfbredsl2_real_basecase(Qr, isqrtD);
     Qf = gel(W,1);
     U = ZM2_mul(U,gel(W,2));
-    return gerepilecopy(av, mkvec2(Qf,U));
+    return gc_GEN(av, mkvec2(Qf,U));
   }
 }
 
@@ -885,7 +885,7 @@ qfbredsl2_imag(GEN Q)
       gcoeff(U,2,2) = negi(gcoeff(U,2,2));
     }
   }
-  return gerepilecopy(av, mkvec2(Qt,U));
+  return gc_GEN(av, mkvec2(Qt,U));
 }
 
 GEN
@@ -968,7 +968,7 @@ qfbred_imag_basecase_av(pari_sp av, GEN q)
     }
   }
   if (cmp == 0 && signe(b) < 0) b = negi(b);
-  return gerepilecopy(av, mkqfb(a, b, c, D));
+  return gc_GEN(av, mkqfb(a, b, c, D));
 }
 static GEN
 qfbred_imag_av(pari_sp av, GEN Q)
@@ -995,7 +995,7 @@ qfbred0(GEN x, long flag, GEN isqrtD, GEN sqrtD)
   if (typ(x)==t_QFB) flag |= qf_NOD;
   else               flag &= ~qf_NOD;
   av = avma;
-  return gerepilecopy(av, qfbred_real_i(x,flag,isqrtD,sqrtD));
+  return gc_GEN(av, qfbred_real_i(x,flag,isqrtD,sqrtD));
 }
 /* t_QFB */
 GEN
@@ -1119,7 +1119,7 @@ qficomp0(GEN x, GEN y, int raw)
   GEN z = cgetg(5,t_QFB);
   gel(z,4) = gel(x,4);
   qfb_comp(z, x,y);
-  if (raw) return gerepilecopy(av,z);
+  if (raw) return gc_GEN(av,z);
   return qfbred_imag_av(av, z);
 }
 static GEN
@@ -1134,7 +1134,7 @@ qfrcomp0(GEN x, GEN y, int raw)
   qfb_comp(z, x,y);
   if (dx) z = mkvec2(z, dy? addrr(dx, dy): dx); else if (dy) z = mkvec2(z, dy);
   if (!raw) z = qfbred_real(z);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 /* same discriminant, no distance, no checks */
 GEN
@@ -1172,7 +1172,7 @@ qfbcompraw(GEN x, GEN y)
     if (typ(x) == t_VEC || typ(y) == t_VEC)
       pari_err_IMPL("Shanks's distance in general composition");
     if (!z) pari_err_OP("qfbcompraw",x,y);
-    return gerepilecopy(av, z);
+    return gc_GEN(av, z);
   }
   if (!equalii(gel(qx,4),gel(qy,4))) pari_err_OP("qfbcompraw",x,y);
   return qfb_is_qfi(qx)? qficomp0(x,y,1): qfrcomp0(x,y,1);
@@ -1185,7 +1185,7 @@ qfisqr0(GEN x, long raw)
   GEN z = cgetg(5,t_QFB);
   gel(z,4) = gel(x,4);
   qfb_sqr(z,x);
-  if (raw) return gerepilecopy(av,z);
+  if (raw) return gc_GEN(av,z);
   return qfbred_imag_av(av, z);
 }
 static GEN
@@ -1197,7 +1197,7 @@ qfrsqr0(GEN x, long raw)
   gel(z,4) = gel(x,4); qfb_sqr(z,x);
   if (dx) z = mkvec2(z, shiftr(dx,1));
   if (!raw) z = qfbred_real(z);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 /* same discriminant, no distance, no checks */
 GEN
@@ -1305,7 +1305,7 @@ qfipowraw(GEN x, long n)
   if (n==-1) { x = gcopy(x); togglesign(gel(x,2)); return x; }
   if (n < 0) x = qfb_inv(x);
   y = gen_powu(x, labs(n), NULL, &_qfisqrraw, &_qfimulraw);
-  return gerepilecopy(av,y);
+  return gc_GEN(av,y);
 }
 
 static GEN
@@ -1317,7 +1317,7 @@ qfipow(GEN x, GEN n)
   if (!s) return qfi_1(x);
   if (s < 0) x = qfb_inv(x);
   y = gen_pow(qfbred_i(x), n, NULL, &_qfisqr, &_qfimul);
-  return gerepilecopy(av,y);
+  return gc_GEN(av,y);
 }
 
 static long
@@ -1468,7 +1468,7 @@ nupow(GEN x, GEN n, GEN L)
   if (signe(n) < 0
   && !absequalii(gel(y,1),gel(y,2))
   && !absequalii(gel(y,1),gel(y,3))) togglesign(gel(y,2));
-  return gerepilecopy(av, y);
+  return gc_GEN(av, y);
 }
 
 /* Not stack-clean */
@@ -1601,7 +1601,7 @@ qfrpowraw(GEN x, long n)
     if (labs(n) != 1) x = qfr5_powraw(x, n);
     x = qfr5_to_qfr(x, S.D, mulrs(d0,n));
   }
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 static GEN
 qfrpow(GEN x, GEN n)
@@ -1627,7 +1627,7 @@ qfrpow(GEN x, GEN n)
     x = is_pm1(n)? qfr5_red(x, &S): qfr5_pow(x, n, &S);
     x = qfr5_to_qfr(x, S.D, mulri(d0,n));
   }
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 GEN
 qfbpowraw(GEN x, long n)
@@ -1876,7 +1876,7 @@ qfisolvep(GEN Q, GEN p)
 {
   pari_sp av = avma;
   GEN x = qfisolvep_all(Q, p, 0);
-  return x? gerepilecopy(av, x): gc_const(av, gen_0);
+  return x? gc_GEN(av, x): gc_const(av, gen_0);
 }
 
 static GEN
@@ -1988,7 +1988,7 @@ qfbsolve(GEN Q, GEN n, long fl)
   pari_sp av = avma;
   if (typ(Q) != t_QFB) pari_err_TYPE("qfbsolve",Q);
   if (fl < 0 || fl > 3) pari_err_FLAG("qfbsolve");
-  return gerepilecopy(av, (fl & 2)? qfbsolve_all(Q, n, fl & 1)
+  return gc_GEN(av, (fl & 2)? qfbsolve_all(Q, n, fl & 1)
                                   : qfbsolve_primitive(Q, n, fl & 1));
 }
 
@@ -2094,6 +2094,6 @@ qfbcornacchia(GEN d, GEN p)
   if (typ(d) != t_INT || signe(d) <= 0) pari_err_TYPE("qfbcornacchia", d);
   if (typ(p) != t_INT || cmpiu(p, 2) < 0) pari_err_TYPE("qfbcornacchia", p);
   if (mod4(p)? cornacchia(d, p, &x, &y): cornacchia2(d, shifti(p, -2), &x, &y))
-    return gerepilecopy(av, mkvec2(x, y));
+    return gc_GEN(av, mkvec2(x, y));
   set_avma(av); return cgetg(1, t_VEC);
 }

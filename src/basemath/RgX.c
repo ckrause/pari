@@ -540,7 +540,7 @@ RgX_translate_basecase(GEN P, GEN c)
       if (gc_needed(av,2))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"RgX_translate(1), i = %ld/%ld", i,n);
-        Q = gerepilecopy(av, Q); R = Q+2;
+        Q = gc_GEN(av, Q); R = Q+2;
       }
     }
   }
@@ -552,7 +552,7 @@ RgX_translate_basecase(GEN P, GEN c)
       if (gc_needed(av,2))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"RgX_translate(-1), i = %ld/%ld", i,n);
-        Q = gerepilecopy(av, Q); R = Q+2;
+        Q = gc_GEN(av, Q); R = Q+2;
       }
     }
   }
@@ -564,11 +564,11 @@ RgX_translate_basecase(GEN P, GEN c)
       if (gc_needed(av,2))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"RgX_translate, i = %ld/%ld", i,n);
-        Q = gerepilecopy(av, Q); R = Q+2;
+        Q = gc_GEN(av, Q); R = Q+2;
       }
     }
   }
-  return gerepilecopy(av, Q);
+  return gc_GEN(av, Q);
 }
 
 static GEN
@@ -666,10 +666,10 @@ RgXQX_translate(GEN P, GEN c, GEN T)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgXQX_translate, i = %ld/%ld", i,n);
-      Q = gerepilecopy(av, Q); R = Q+2;
+      Q = gc_GEN(av, Q); R = Q+2;
     }
   }
-  return gerepilecopy(av, Q);
+  return gc_GEN(av, Q);
 }
 
 /********************************************************************/
@@ -1850,7 +1850,7 @@ RgX_divrem_i(GEN x, GEN y, GEN *pr)
       if (pr == ONLY_REM)
       {
         if (dx < 0)
-          return gerepilecopy(av, scalarpol(p2, varn(x)));
+          return gc_GEN(av, scalarpol(p2, varn(x)));
         else
         {
           GEN t;
@@ -2178,7 +2178,7 @@ RgXQX_pseudorem(GEN x, GEN y, GEN T)
     }
     if (!T) return gerepileupto(av, x);
   }
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 GEN
@@ -2394,7 +2394,7 @@ RgXn_powu(GEN x, ulong m, long n)
 {
   pari_sp av;
   if (n == 0) return gcopy(x);
-  av = avma; return gerepilecopy(av, RgXn_powu_i(x, m, n));
+  av = avma; return gc_GEN(av, RgXn_powu_i(x, m, n));
 }
 
 GEN
@@ -2669,7 +2669,7 @@ RgXn_reverse(GEN f, long e)
     pari_err_INV("serreverse",f);
   fi = ginv(gel(f,3));
   a = deg1pol_shallow(fi,gen_0,v);
-  if (e <= 2) return gerepilecopy(av, a);
+  if (e <= 2) return gc_GEN(av, a);
   W = scalarpol(fi,v);
   df = RgX_deriv(f);
   mask = quadratic_prec_mask(e);
@@ -2742,7 +2742,7 @@ RgXQ_powu(GEN x, ulong n, GEN T)
   if (!n) return pol_1(varn(x));
   if (n == 1) return RgX_copy(x);
   x = gen_powu_i(x, n, (void*)T, &_sqr, &_mul);
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 /* x,T in Rg[X], n in N, compute lift(x^n mod T)) */
 GEN
@@ -2757,7 +2757,7 @@ RgXQ_pow(GEN x, GEN n, GEN T)
   av = avma;
   if (s < 0) x = RgXQ_inv(x, T);
   x = gen_pow_i(x, n, (void*)T, &_sqr, &_mul);
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 static GEN
 _ZXQsqr(void *data, GEN x) { return ZXQ_sqr(x, (GEN)data); }
@@ -2781,7 +2781,7 @@ ZXQ_powu(GEN x, ulong n, GEN T)
   if (!n) return pol_1(varn(x));
   if (n == 1) return ZX_copy(x);
   x = gen_powu_i(x, n, (void*)T, &_ZXQsqr, &_ZXQmul);
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 /* generates the list of powers of x of degree 0,1,2,...,l*/
@@ -3098,7 +3098,7 @@ RgX_rem_QXQX(GEN x, GEN y, GEN T)
   pari_sp av = avma;
   GEN r;
   r = RgXQX_rem(RgX_liftred(x, T), RgX_liftred(y, T), T);
-  return gerepilecopy(av, QXQX_to_mod_shallow(r, T));
+  return gc_GEN(av, QXQX_to_mod_shallow(r, T));
 }
 static GEN
 RgX_rem_FpXQX(GEN x, GEN y, GEN pol, GEN p)
@@ -3221,7 +3221,7 @@ RgXn_mul(GEN f, GEN g, long n)
   GEN h = RgX_mul_fast(f,g);
   if (!h) return RgXn_mul2(f,g,n);
   if (degpol(h) < n) return h;
-  return gerepilecopy(av, RgXn_red_shallow(h, n));
+  return gc_GEN(av, RgXn_red_shallow(h, n));
 }
 
 GEN
@@ -3231,7 +3231,7 @@ RgXn_sqr(GEN f, long n)
   GEN g = RgX_sqr_fast(f);
   if (!g) return RgXn_sqr2(f,n);
   if (degpol(g) < n) return g;
-  return gerepilecopy(av, RgXn_red_shallow(g, n));
+  return gc_GEN(av, RgXn_red_shallow(g, n));
 }
 
 /* (f*g) \/ x^n */

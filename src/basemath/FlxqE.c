@@ -235,7 +235,7 @@ _FlxqE_mul(void *E, GEN P, GEN n)
   if (!s || ell_is_inf(P)) return ellinf();
   if (s < 0) P = FlxqE_neg(P, e->T, e->p);
   if (is_pm1(n)) return s>0? gcopy(P): P;
-  return gerepilecopy(av, gen_pow_i(P, n, e, &_FlxqE_dbl, &_FlxqE_add));
+  return gc_GEN(av, gen_pow_i(P, n, e, &_FlxqE_dbl, &_FlxqE_add));
 }
 
 GEN
@@ -263,7 +263,7 @@ random_F3xqE(GEN a2, GEN a6, GEN T)
   } while ((!lgpol(rhs) && !lgpol(x)) || !Flxq_issquare(rhs, T, p));
   y = Flxq_sqrt(rhs, T, p);
   if (!y) pari_err_PRIME("random_F3xqE", T);
-  return gerepilecopy(ltop, mkvec2(x, y));
+  return gc_GEN(ltop, mkvec2(x, y));
 }
 
 /* Finds a random nonsingular point on E */
@@ -283,7 +283,7 @@ random_FlxqE_pre(GEN a4, GEN a6, GEN T, ulong p, ulong pi)
           || !Flxq_issquare(rhs, T, p));
   y = Flxq_sqrt(rhs, T, p);
   if (!y) pari_err_PRIME("random_FlxqE", T);
-  return gerepilecopy(ltop, mkvec2(x, y));
+  return gc_GEN(ltop, mkvec2(x, y));
 }
 GEN
 random_FlxqE(GEN a4, GEN a6, GEN T, ulong p)
@@ -537,7 +537,7 @@ Flxq_ellgens(GEN a4, GEN a6, GEN ch, GEN D, GEN m, GEN T, ulong p)
     gel(P,2) = FlxqE_changepoint(gel(P,2), ch, T, p);
     break;
   }
-  return gerepilecopy(av, P);
+  return gc_GEN(av, P);
 }
 /***********************************************************************/
 /**                          Point counting                           **/

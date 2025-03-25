@@ -1096,7 +1096,7 @@ chinese_unit(GEN nf, GEN nX, GEN dX, GEN U, ulong bnd)
                mkcol5(nX, U, invzk, dX? dX: gen_0, T));
   init_modular_big(&S);
   H = gen_crt("chinese_units", worker, &S, f, bnd, 0, &mod, nmV_chinese_center, FpM_center);
-  settyp(H, t_VEC); return gerepilecopy(av, H);
+  settyp(H, t_VEC); return gc_GEN(av, H);
 }
 
 /* *pE a ZM */
@@ -1897,7 +1897,7 @@ triv_gen(GEN bnf, GEN x, long flag)
     if (!(flag & nf_GENMAT)) return algtobasis(nf,x);
     x = nf_to_scalar_or_basis(nf,x);
     if (typ(x) == t_INT && is_pm1(x)) return trivial_fact();
-    return gerepilecopy(av, to_famat_shallow(x, gen_1));
+    return gc_GEN(av, to_famat_shallow(x, gen_1));
   }
   c = lg(bnf_get_cyc(bnf)) - 1;
   if (flag & nf_GENMAT)
@@ -1936,7 +1936,7 @@ bnfisprincipal0(GEN bnf,GEN x,long flag)
   {
     pari_sp av1 = avma;
     GEN y = isprincipalall(bnf,x,&pr,flag);
-    if (y) return gerepilecopy(av, y);
+    if (y) return gc_GEN(av, y);
 
     if (DEBUGLEVEL) pari_warn(warnprec,"isprincipal",pr);
     set_avma(av1); bnf = bnfnewprec_shallow(bnf,pr); setrand(c);
@@ -2098,7 +2098,7 @@ isprincipalfact(GEN bnf, GEN C, GEN P, GEN e, long flag)
         if (!gen || typ(y) != t_VEC) return gerepileupto(av,y);
         if (lg(u) != 1) gel(y,2) = add_principal_part(nf, u, Cext, flag);
       }
-      return gerepilecopy(av, y);
+      return gc_GEN(av, y);
     }
     if (DEBUGLEVEL) pari_warn(warnprec,"isprincipal",prec);
     set_avma(av1); bnf = bnfnewprec_shallow(bnf,prec); setrand(c);
@@ -2125,7 +2125,7 @@ isprincipalfact_or_fail(GEN bnf, GEN C, GEN P, GEN e)
   if (!y) return gc_utoipos(av, prec);
   u = gel(y,2);
   if (lg(u) != 1) gel(y,2) = add_principal_part(nf, u, Cext, flag);
-  return gerepilecopy(av, y);
+  return gc_GEN(av, y);
 }
 
 GEN
@@ -3347,7 +3347,7 @@ get_archclean(GEN nf, GEN x, long prec, int units)
     pari_sp av = avma;
     GEN c = nf_cxlog(nf, gel(x,k), prec);
     if (!c || (!units && !(c = cleanarch(c, N, NULL,prec)))) return NULL;
-    gel(M,k) = gerepilecopy(av, c);
+    gel(M,k) = gc_GEN(av, c);
   }
   return M;
 }
@@ -3425,7 +3425,7 @@ GEN
 bnfnewprec(GEN bnf, long prec)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, bnfnewprec_shallow(checkbnf(bnf), prec));
+  return gc_GEN(av, bnfnewprec_shallow(checkbnf(bnf), prec));
 }
 
 GEN
@@ -3766,7 +3766,7 @@ Buchall_param(GEN P, double cbach, double cbach2, long Nrelid, long flag, long p
   if (N <= 1)
   {
     if (!nf) nf = nfinit_complete(&nfT, flag_nfinit, PREC);
-    return gerepilecopy(av0, Buchall_deg1(nf));
+    return gc_GEN(av0, Buchall_deg1(nf));
   }
   D = absi_shallow(D);
   LOGD = dbllog2(D) * M_LN2;
@@ -4196,7 +4196,7 @@ START:
   res = mkvec5(clg1, R, SUnits, zu, fu);
   res = buchall_end(nf,res,clg2,W,B,A,Ce,Vbase);
   delete_FB(&F);
-  res = gerepilecopy(av0, res);
+  res = gc_GEN(av0, res);
   if (flag) obj_insert_shallow(res, MATAL, cgetg(1,t_VEC));
   if (nfisclone) gunclone(nf);
   delete_cache(&cache);

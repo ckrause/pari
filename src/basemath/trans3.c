@@ -531,7 +531,7 @@ kbesselintern(GEN n, GEN z, long N, long prec)
           if (ki >= 0 || !odd(k)) p2 = gneg(p2);
         } else
           if (odd(k)) p2 = gneg(p2);
-        return gerepilecopy(av, p2);
+        return gc_GEN(av, p2);
       }
 
       n = gtofp(n, precnew);
@@ -551,7 +551,7 @@ kbesselintern(GEN n, GEN z, long N, long prec)
       else
         p1 = gmul(gsub(pm,pp), Pi2n(-1,precnew));
       p1 = gdiv(p1, s);
-      return gerepilecopy(av, gprec_wtrunc(p1,prec));
+      return gc_GEN(av, gprec_wtrunc(p1,prec));
 
     case t_PADIC: pari_err_IMPL(stack_strcat("p-adic ",f));
     default:
@@ -565,7 +565,7 @@ kbesselintern(GEN n, GEN z, long N, long prec)
         if (v == 0) pari_err_IMPL(stack_strcat(f, " around a!=0"));
         mv = m - (v >> 1);
         if (mv <= 0) { set_avma(av); return scalarser(gen_1, varn(z), v); }
-        setlg(y, mv+2); return gerepilecopy(av, _kbessel(k, y, m, prec));
+        setlg(y, mv+2); return gc_GEN(av, _kbessel(k, y, m, prec));
       }
       if (!issmall(gmul2n(n,1),&ki))
         pari_err_DOMAIN(f, "2n mod Z", "!=", gen_0, n);
@@ -704,7 +704,7 @@ besselzero(GEN nu, long n, GEN (*B)(GEN,GEN,long), long bit)
     m = gmul2n(gsqr(nu),2);
     z = gsub(b, gdiv(gsubgs(m, 1), gmul2n(b, 3)));
   }
-  return gerepilecopy(av, besselrefine(z, nu, B, bit));
+  return gc_GEN(av, besselrefine(z, nu, B, bit));
 }
 GEN
 besseljzero(GEN nu, long k, long b) { return besselzero(nu, k, jbessel, b); }
@@ -1657,7 +1657,7 @@ veczeta(GEN a, GEN b, long N, long prec)
   long n, j, k;
   GEN L, c, d, z;
   if (typ(a) == t_INT && typ(b) == t_INT)
-    return gerepilecopy(av, veczetas(itos(a),  itos(b), N, prec));
+    return gc_GEN(av, veczetas(itos(a),  itos(b), N, prec));
   z = zerovec(N);
   n = ceil(2 + prec2nbits_mul(prec, M_LN2/1.7627));
   c = d = int2n(2*n-1);
@@ -1690,7 +1690,7 @@ veczeta(GEN a, GEN b, long N, long prec)
     GEN w = gexp(gmul(u, L), prec); /* 2^u */
     gel(z,j+1) = gdiv(gmul(gel(z,j+1), w), gmul(d,gsubgs(w,1)));
   }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 GEN
@@ -2239,7 +2239,7 @@ gpolylog_i(void *E, GEN x, long prec)
       av = avma; if (!(y = toser_i(x))) break;
       if (!m) { set_avma(av); return mkfrac(gen_m1,gen_2); }
       if (m==1) return gerepileupto(av, Li1(y, prec));
-      if (gequal0(y)) return gerepilecopy(av, y);
+      if (gequal0(y)) return gc_GEN(av, y);
       v = valser(y);
       if (v < 0) pari_err_DOMAIN("polylog","valuation", "<", gen_0, x);
       if (v > 0) {

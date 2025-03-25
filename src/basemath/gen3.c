@@ -1041,7 +1041,7 @@ divrem(GEN x, GEN y, long v)
     r = gsubst(r, vz, X);
     if (vz != v) (void)delete_var();
   }
-  return gerepilecopy(av, mkcol2(q, r));
+  return gc_GEN(av, mkcol2(q, r));
 }
 
 GEN
@@ -1191,7 +1191,7 @@ ser_inv(GEN b)
   }
   y = RgXn_inv_i(y, l-2);
   x = RgX_to_ser(y, l); setvalser(x, - valser(b) - e);
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 /* T t_POL in var v, mod out by T components of x which are t_POL/t_RFRAC in v.
@@ -1317,7 +1317,7 @@ serdeflate(GEN x, long v, long d)
   }
   if (dy > 0) y = RgX_deflate(y, d);
   y = RgX_to_ser(y, 3 + (lx-3)/d);
-  setvalser(y, V/d); return gerepilecopy(av, y);
+  setvalser(y, V/d); return gc_GEN(av, y);
 }
 static GEN
 poldeflate(GEN x, long v, long d)
@@ -1329,7 +1329,7 @@ poldeflate(GEN x, long v, long d)
   av = avma;
   /* x nonconstant */
   if (RgX_deflate_order(x) % d != 0) return NULL;
-  return gerepilecopy(av, RgX_deflate(x,d));
+  return gc_GEN(av, RgX_deflate(x,d));
 }
 static GEN
 listdeflate(GEN x, long v, long d)
@@ -1619,7 +1619,7 @@ gsubst(GEN x, long v, GEN y)
               gerepileall(av,2, &z,&t);
             }
           }
-          if (!ex) return gerepilecopy(av,z);
+          if (!ex) return gc_GEN(av,z);
           if (ex < 0) { ex = -ex; y = ginv(y); }
           return gerepileupto(av, gmul(z, gpowgs(sertrunc(y, l-2), ex)));
 
@@ -1650,7 +1650,7 @@ gsubst(GEN x, long v, GEN y)
             if (varn(z) == vy) z = RgX_to_ser(z, n+2);
             else z = scalarser(z, vy, n);
           }
-          if (!ex) return gerepilecopy(av, z);
+          if (!ex) return gc_GEN(av, z);
           return gerepileupto(av,  gmul(z, gpowgs(y,ex)));
         }
 
@@ -1744,7 +1744,7 @@ gsubstvec(GEN e, GEN v, GEN r)
     if (is_vec_t(typ(gel(R,i))) && k++) e = shallowconcat1(e);
   }
   for(i = 1; i < j; i++) (void)delete_var();
-  return k > 1? gerepilecopy(av, e): gerepileupto(av, e);
+  return k > 1? gc_GEN(av, e): gerepileupto(av, e);
 }
 
 /*******************************************************************/
@@ -1808,7 +1808,7 @@ serreverse(GEN x)
     }
   }
   if (a) y = ser_unscale(y, ginv(a));
-  return gerepilecopy(av0,y);
+  return gc_GEN(av0,y);
 }
 
 /*******************************************************************/
@@ -1868,7 +1868,7 @@ rfrac_deriv(GEN x, long v)
     {
       gel(y,1) = a;
       gel(y,2) = RgX_Rg_mul(RgX_sqr(b0), t);
-      y = gerepilecopy(av, y);
+      y = gc_GEN(av, y);
     }
     return y;
   }
@@ -1889,7 +1889,7 @@ rfrac_deriv(GEN x, long v)
   }
   gel(y,1) = a;
   gel(y,2) = gmul(RgX_sqr(b0), t);
-  return gerepilecopy(av, y);
+  return gc_GEN(av, y);
 }
 
 GEN
@@ -2520,7 +2520,7 @@ ground(GEN x)
       if (signe(v) < 0) { z = addiu(z,1); togglesign(z); }
       /* z = floor(v * sqrt(|D|)) */
       v = truedivii(addii(z, d), shifti(d,1));
-      return gerepilecopy(av, signe(v)? mkcomplex(u,v): u);
+      return gc_GEN(av, signe(v)? mkcomplex(u,v): u);
     }
     case t_POLMOD:
       retmkpolmod(ground(gel(x,2)), RgX_copy(gel(x,1)));
@@ -2781,7 +2781,7 @@ static GEN
 ser2rfrac(GEN x)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, ser2rfrac_i(x));
+  return gc_GEN(av, ser2rfrac_i(x));
 }
 
 /* x t_PADIC, truncate to rational (t_INT/t_FRAC) */
@@ -3545,7 +3545,7 @@ polcoef(GEN x, long n, long v)
   pari_sp av = avma;
   x = polcoef_i(x,n,v);
   if (x == gen_0) return x;
-  return (avma == av)? gcopy(x): gerepilecopy(av, x);
+  return (avma == av)? gcopy(x): gc_GEN(av, x);
 }
 
 static GEN
@@ -3619,7 +3619,7 @@ denompol(GEN x, long v)
   return NULL; /* LCOV_EXCL_LINE */
 }
 GEN
-denom(GEN x) { pari_sp av = avma; return gerepilecopy(av, denom_i(x)); }
+denom(GEN x) { pari_sp av = avma; return gc_GEN(av, denom_i(x)); }
 
 static GEN
 denominator_v(GEN x, long v)
@@ -3642,7 +3642,7 @@ denominator(GEN x, GEN D)
   {
     d = Q_denom_safe(x);
     if (!d) { set_avma(av); return gen_1; }
-    return gerepilecopy(av, d);
+    return gc_GEN(av, d);
   }
   if (!gequalX(D)) pari_err_TYPE("denominator", D);
   return gerepileupto(av, denominator_v(x, varn(D)));
@@ -3712,7 +3712,7 @@ numer_i(GEN x)
   return NULL; /* LCOV_EXCL_LINE */
 }
 GEN
-numer(GEN x) { pari_sp av = avma; return gerepilecopy(av, numer_i(x)); }
+numer(GEN x) { pari_sp av = avma; return gc_GEN(av, numer_i(x)); }
 
 /* Lift only intmods if v does not occur in x, lift with respect to main
  * variable of x if v < 0, with respect to variable v otherwise */
@@ -3803,7 +3803,7 @@ liftall_shallow(GEN x)
 }
 GEN
 liftall(GEN x)
-{ pari_sp av = avma; return gerepilecopy(av, liftall_shallow(x)); }
+{ pari_sp av = avma; return gc_GEN(av, liftall_shallow(x)); }
 
 GEN
 liftint_shallow(GEN x)
@@ -3831,7 +3831,7 @@ liftint_shallow(GEN x)
 }
 GEN
 liftint(GEN x)
-{ pari_sp av = avma; return gerepilecopy(av, liftint_shallow(x)); }
+{ pari_sp av = avma; return gc_GEN(av, liftint_shallow(x)); }
 
 GEN
 liftpol_shallow(GEN x)
@@ -3858,7 +3858,7 @@ liftpol_shallow(GEN x)
 }
 GEN
 liftpol(GEN x)
-{ pari_sp av = avma; return gerepilecopy(av, liftpol_shallow(x)); }
+{ pari_sp av = avma; return gc_GEN(av, liftpol_shallow(x)); }
 
 static GEN
 centerliftii(GEN x, GEN y)
@@ -4202,7 +4202,7 @@ simplify(GEN x)
 {
   pari_sp av = avma;
   GEN y = simplify_shallow(x);
-  return av == avma ? gcopy(y): gerepilecopy(av, y);
+  return av == avma ? gcopy(y): gc_GEN(av, y);
 }
 
 /*******************************************************************/
@@ -4272,7 +4272,7 @@ qfb_ZM_apply(GEN q, GEN M)
   C = addii(mulii(z, addii(mulii(a,z), bt)), mulii(c, sqri(t)));
   q = leafcopy(q);
   gel(q,1) = A; gel(q,2) = B; gel(q,3) = C;
-  return gerepilecopy(av, q);
+  return gc_GEN(av, q);
 }
 
 static GEN
@@ -4423,7 +4423,7 @@ poleval(GEN x, GEN y)
       if (typ(y) == t_POL && varn(x) == varn(y) && degpol(y) == 1)
       {
         if (isint1(gel(y,3))) return RgX_translate(x, gel(y,2));
-        return gerepilecopy(av0, RgX_affine(x, gel(y,3), gel(y,2)));
+        return gc_GEN(av0, RgX_affine(x, gel(y,3), gel(y,2)));
       }
 
       i = lg(x)-1; imin = 2; break;

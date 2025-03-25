@@ -1032,7 +1032,7 @@ F2x_halfgcd_i(GEN a, GEN b)
       gerepileall(av,6, &a,&b,&u1,&v1,&u,&v);
     }
   }
-  return gerepilecopy(av, mkmat22(u,v,u1,v1));
+  return gc_GEN(av, mkmat22(u,v,u1,v1));
 }
 
 GEN
@@ -1046,7 +1046,7 @@ F2x_halfgcd(GEN x, GEN y)
   M = F2x_halfgcd_i(x,r);
   gcoeff(M,1,1) = F2x_add(gcoeff(M,1,1), F2x_mul(q, gcoeff(M,1,2)));
   gcoeff(M,2,1) = F2x_add(gcoeff(M,2,1), F2x_mul(q, gcoeff(M,2,2)));
-  return gerepilecopy(av, M);
+  return gc_GEN(av, M);
 }
 
 GEN
@@ -1128,7 +1128,7 @@ F2xq_pow(GEN x, GEN n, GEN pol)
 
   if (signe(n) < 0) x = F2xq_inv(x,pol);
   y = gen_pow_i(x, n, (void*)pol, &_F2xq_sqr, &_F2xq_mul);
-  return gerepilecopy(av, y);
+  return gc_GEN(av, y);
 }
 
 GEN
@@ -1143,7 +1143,7 @@ F2xq_powu(GEN x, ulong n, GEN pol)
     case 2: return F2xq_sqr(x,pol);
   }
   y = gen_powu_i(x, n, (void*)pol, &_F2xq_sqr, &_F2xq_mul);
-  return gerepilecopy(av, y);
+  return gc_GEN(av, y);
 }
 
 GEN
@@ -1527,7 +1527,7 @@ F2xq_log_Coppersmith_worker(GEN u, long i, GEN V, GEN R)
     }
   }
   setlg(L,rel);
-  return gerepilecopy(ltop, mkvec2(stoi(nbtest), L));
+  return gc_GEN(ltop, mkvec2(stoi(nbtest), L));
 }
 
 static GEN
@@ -1750,7 +1750,7 @@ gener_F2xq(GEN T, GEN *po)
     }
     if (i == j) break;
   }
-  if (!po) g = gerepilecopy(av0, g);
+  if (!po) g = gc_GEN(av0, g);
   else {
     *po = mkvec2(int2um1(f), o);
     gerepileall(av0, 2, &g, po);
@@ -2410,7 +2410,7 @@ F2xqX_invBarrett_Newton(GEN S, GEN T)
     for (i = 0; i < lz; i++) gel(y,i) = gel(z,i);
   }
   x -= 2; setlg(x, lx + 2); x[1] = S[1];
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 GEN
@@ -2541,7 +2541,7 @@ F2xqX_divrem(GEN x, GEN S, GEN T, GEN *pr)
     GEN mg = B? B: F2xqX_invBarrett(y, T);
     GEN q = F2xqX_divrem_Barrett(x,mg,y,T,pr);
     if (!q) return gc_NULL(av);
-    if (!pr || pr==ONLY_DIVIDES) return gerepilecopy(av, q);
+    if (!pr || pr==ONLY_DIVIDES) return gc_GEN(av, q);
     return gc_all(av,2,&q,pr);
   }
 }

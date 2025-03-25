@@ -242,7 +242,7 @@ hnf_block(GEN m, long r0, long nr, long c0, long nc)
   (void)ZM_hnfall(block, &u, 1);
   vecreverse_inplace(u); uu = matid(nm); /* embed in matid */
   for (k = 1; k <= nc; k++) gel(uu,c0+k) = embedcol(gel(u,k),nm,c0);
-  return gerepilecopy(av, uu);
+  return gc_GEN(av, uu);
 }
 
 /* (matrix, starting row, nb rows, starting column, nb columns) */
@@ -257,7 +257,7 @@ lll_block(GEN m, long r0, long nr, long c0, long nc)
   u = lll(block); if (lg(u) <= nc) return NULL;
   vecreverse_inplace(u); uu = matid(nm); /* embed in matid */
   for (k = 1; k <= nc; k++) gel(uu,c0+k) = embedcol(gel(u,k),nm,c0);
-  return gerepilecopy(av, uu);
+  return gc_GEN(av, uu);
 }
 
 /* insert a column at index i, no copy */
@@ -557,7 +557,7 @@ gcharinit(GEN bnf, GEN mod, long prec)
 
   /* D) transpose inverse m_inv = (m0*u)~^-1 (may increase precision) */
   gcharmat_tinverse(gc, m, prec);
-  return gerepilecopy(av, gc);
+  return gc_GEN(av, gc);
 }
 
 /* b) do HNF reductions + LLL, keep base change u0 */
@@ -906,7 +906,7 @@ gcharnewprec(GEN gc, long newprec)
   pari_sp av = avma;
   GEN gc2 = gcharnewprec_i(gc, newprec + EXTRAPREC64);
   gchar_set_evalprec(gc2, newprec);
-  return gerepilecopy(av, gc2);
+  return gc_GEN(av, gc2);
 }
 
 static void
@@ -1107,7 +1107,7 @@ gcharalgebraic(GEN gc, GEN type)
   check_gchar_group(gc);
   b = type? gchar_algebraicoftype(gc, type): gchar_algebraic_basis(gc);
   if (!b) { set_avma(av); return cgetg(1, t_VEC); }
-  return gerepilecopy(av, b);
+  return gc_GEN(av, b);
 }
 
 /*********************************************************************/
@@ -1269,7 +1269,7 @@ gchar_conductor(GEN gc, GEN chi)
 {
   pari_sp av = avma;
   check_gchar_group(gc);
-  return gerepilecopy(av, gchari_conductor(gc, gchar_internal(gc, chi, NULL)));
+  return gc_GEN(av, gchari_conductor(gc, gchar_internal(gc, chi, NULL)));
 }
 
 int
@@ -1325,7 +1325,7 @@ gcharisalgebraic(GEN gc, GEN chi, GEN *pq)
       }
     }
   }
-  if (pq) { *pq = gerepilecopy(av, v); av = avma; }
+  if (pq) { *pq = gc_GEN(av, v); av = avma; }
   return gc_bool(av, 1);
 }
 
@@ -1395,7 +1395,7 @@ gcharlocal(GEN gc, GEN chi, GEN v, long prec, GEN* pbid)
       if (pbid) { *pbid = bid; return gc_all(av, 2, &chiv, pbid); }
     }
   }
-  return gerepilecopy(av, chiv);
+  return gc_GEN(av, chiv);
 }
 
 
@@ -1411,7 +1411,7 @@ gcharduallog(GEN gc, GEN chi)
   GEN logchi, s;
   check_gchar_group(gc);
   logchi = gchari_duallog(gc, gchar_internal(gc, chi, &s));
-  return gerepilecopy(av, shallowconcat1(mkcol2(logchi,s)));
+  return gc_GEN(av, shallowconcat1(mkcol2(logchi,s)));
 }
 
 static GEN
@@ -1465,7 +1465,7 @@ gcharlog(GEN gc, GEN x, long prec)
   check_gchar_group(gc);
   norm = idealnorm(gchar_get_nf(gc), x);
   norm = mkcomplex(gen_0, gdiv(glog(norm,prec), Pi2n(1,prec)));
-  return gerepilecopy(av, vec_append(gchar_log(gc, x, NULL, prec), norm));
+  return gc_GEN(av, vec_append(gchar_log(gc, x, NULL, prec), norm));
 }
 
 static GEN
@@ -1728,7 +1728,7 @@ gchar_identify(GEN gc, GEN Lv, GEN Lchiv, long prec)
 {
   pari_sp av = avma;
   GEN idinit = gchar_identify_init(gc, Lv, prec);
-  return gerepilecopy(av, gchar_identify_i(gc,idinit,Lchiv));
+  return gc_GEN(av, gchar_identify_i(gc,idinit,Lchiv));
 }
 
 /*******************************************************************/
@@ -1932,5 +1932,5 @@ lfungchar(GEN gc, GEN chi)
   GEN s;
   check_gchar_group(gc);
   chi = gchar_internal(gc, chi, &s);
-  return gerepilecopy(av, gchari_lfun(gc, chi, s));
+  return gc_GEN(av, gchari_lfun(gc, chi, s));
 }

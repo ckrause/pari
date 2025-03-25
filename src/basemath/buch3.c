@@ -84,7 +84,7 @@ bnfnarrow(GEN bnf)
     }
     gel(Gen,j) = g;
   }
-  return gerepilecopy(av, mkvec3(shifti(bnf_get_no(bnf),r1-t), Cyc, Gen));
+  return gc_GEN(av, mkvec3(shifti(bnf_get_no(bnf),r1-t), Cyc, Gen));
 }
 
 /********************************************************************/
@@ -315,7 +315,7 @@ bnr_grp(GEN nf, GEN U, GEN gen, GEN cyc, GEN bid)
     I = idealmul(nf,I,G);
     /* more or less useless, but cheap at this point */
     I = idealmoddivisor_aux(nf,I,f,sarch);
-    gel(basecl,i) = gerepilecopy(av, I);
+    gel(basecl,i) = gc_GEN(av, I);
   }
   return mkvec3(h, cyc, basecl);
 }
@@ -523,7 +523,7 @@ GEN
 Buchraymod(GEN bnf, GEN f, long flag, GEN MOD)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, Buchraymod_i(bnf, f, flag, MOD));
+  return gc_GEN(av, Buchraymod_i(bnf, f, flag, MOD));
 }
 GEN
 bnrinitmod(GEN bnf, GEN f, long flag, GEN MOD)
@@ -656,7 +656,7 @@ bnrisprincipalmod(GEN bnr, GEN x, GEN MOD, long flag)
   }
   alpha = famat_reduce(alpha);
   if (!(flag & nf_GENMAT)) alpha = nffactorback(nf, alpha, NULL);
-  return gerepilecopy(av, mkvec2(ex,alpha));
+  return gc_GEN(av, mkvec2(ex,alpha));
 }
 
 GEN
@@ -1028,7 +1028,7 @@ compute_M0(GEN M_star,long N)
           }
         }
       }
-      if (!M0) set_avma(av); else M0 = gerepilecopy(av, M0);
+      if (!M0) set_avma(av); else M0 = gc_GEN(av, M0);
     }
   }
   for (i=1;i<=4;i++) (void)delete_var();
@@ -1375,7 +1375,7 @@ GEN
 bnrchar(GEN bnr, GEN g, GEN v)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, bnrchar_i(bnr,g,v));
+  return gc_GEN(av, bnrchar_i(bnr,g,v));
 }
 
 /* Let bnr1, bnr2 be such that mod(bnr2) | mod(bnr1), compute surjective map
@@ -1459,7 +1459,7 @@ bnrmap(GEN A, GEN B)
     checkbnr(A); checkbnr(B); KB = bnr_get_bnf(B);
     if (!gidentical(KA, KB))
       pari_err_TYPE("bnrmap [different fields]", mkvec2(KA,KB));
-    return gerepilecopy(av, bnrsurjection(A,B));
+    return gc_GEN(av, bnrsurjection(A,B));
   }
   if (lg(A) != 4 || typ(A) != t_VEC) pari_err_TYPE("bnrmap [not a map]", A);
   M = gel(A,1); c = gel(A,2); C = gel(A,3);
@@ -1484,7 +1484,7 @@ bnrmap(GEN A, GEN B)
       B = ZV_ZV_mod(ZM_ZC_mul(M, B), C);
       return gerepileupto(av, B);
   }
-  return gerepilecopy(av, B);
+  return gc_GEN(av, B);
 }
 
 /* Given normalized chi on bnr.clgp of conductor bnrc.mod,
@@ -1530,7 +1530,7 @@ bnrconductor0(GEN A, GEN B, GEN C, long flag)
 {
   pari_sp av = avma;
   GEN H, bnr = ABC_to_bnr(A,B,C,&H, 0);
-  return gerepilecopy(av, bnrconductor(bnr, H, flag));
+  return gc_GEN(av, bnrconductor(bnr, H, flag));
 }
 
 long
@@ -1699,7 +1699,7 @@ bnrconductor(GEN bnr, GEN H, long flag)
 {
   pari_sp av = avma;
   if (flag > 2 || flag < 0) pari_err_FLAG("bnrconductor");
-  return gerepilecopy(av, bnrconductor_i(bnr, H, flag));
+  return gc_GEN(av, bnrconductor_i(bnr, H, flag));
 }
 
 long
@@ -1896,7 +1896,7 @@ rnfconductor0(GEN bnf, GEN T, long flag)
   MOD = flag? utoipos(degpol(T)): NULL;
   bnr = Buchraymod_i(bnf, module, nf_INIT|nf_GEN, MOD);
   H = rnfnormgroup_i(bnr,T); if (!H) return gc_const(av,gen_0);
-  return gerepilecopy(av, flag == 2? bnrconductor_factored(bnr, H)
+  return gc_GEN(av, flag == 2? bnrconductor_factored(bnr, H)
                                    : bnrconductormod(bnr, H, MOD));
 }
 GEN
@@ -1970,7 +1970,7 @@ bnrdisc(GEN bnr, GEN H, long flag)
 {
   pari_sp av = avma;
   GEN D = bnrdisc_i(bnr, H, flag);
-  return D? gerepilecopy(av, D): gc_const(av, gen_0);
+  return D? gc_GEN(av, D): gc_const(av, gen_0);
 }
 GEN
 bnrdisc0(GEN A, GEN B, GEN C, long flag)
@@ -1986,7 +1986,7 @@ GEN
 bnrconductorofchar(GEN bnr, GEN chi)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, bnrconductor_raw(bnr, chi));
+  return gc_GEN(av, bnrconductor_raw(bnr, chi));
 }
 
 /* \sum U[i]*y[i], U[i],y[i] ZM, we allow lg(y) > lg(U). */
@@ -2045,7 +2045,7 @@ bnrclassnolist(GEN bnf,GEN L)
     gel(V,i) = v = cgetg(lz,t_VEC);
     for (j=1; j<lz; j++) gel(v,j) = get_classno(gel(z,j), h);
   }
-  return gerepilecopy(av, V);
+  return gc_GEN(av, V);
 }
 
 static GEN
@@ -2240,7 +2240,7 @@ discrayabslist(GEN bnf, GEN L)
       gel(v,j) = get_discray(&ID, D, gel(d,j), i);
     }
   }
-  return gerepilecopy(av, V);
+  return gc_GEN(av, V);
 }
 
 /* a zsimp is [fa, cyc, v]
@@ -2455,7 +2455,7 @@ discrayabslistarch(GEN bnf, GEN arch, ulong bound)
     {
       flbou = 1;
       if (DEBUGLEVEL>1) err_printf("\nStarting bnrclassno computations\n");
-      Z = gerepilecopy(av,Z);
+      Z = gc_GEN(av,Z);
       Ray = cgetg(bound+1, t_VEC);
       for (i=1; i<=bound; i++) gel(Ray,i) = bnrclassno_all(gel(Z,i),h,sgnU);
       Z = vecslice(Z, 1, sqbou);
@@ -2513,7 +2513,7 @@ discrayabslistarch(GEN bnf, GEN arch, ulong bound)
     Ray = cgetg(bound+1, t_VEC);
     for (i=1; i<=bound; i++) gel(Ray,i) = bnrclassno_all(gel(Z,i),h,sgnU);
   }
-  Ray = gerepilecopy(av, Ray);
+  Ray = gc_GEN(av, Ray);
 
   if (DEBUGLEVEL>1) err_printf("Starting discrayabs computations\n");
   if (allarch) nbarch = 1L<<r1;
@@ -2588,12 +2588,12 @@ STORE:  gel(discall,karch+1) = res;
         long jj;
         if(DEBUGMEM>1) pari_warn(warnmem,"[2]: discrayabslistarch");
         for (jj=j+1; jj<ls; jj++) gel(sousdisc,jj) = gen_0; /* dummy */
-        Disc = gerepilecopy(av1, Disc);
+        Disc = gc_GEN(av1, Disc);
         sousdisc = gel(Disc,i);
       }
     }
   }
-  return gerepilecopy(av0, Disc);
+  return gc_GEN(av0, Disc);
 }
 
 int
@@ -2645,7 +2645,7 @@ subgrouplist_cond_sub(GEN bnr, GEN C, GEN bound)
     if (subgroup_conductor_ok(H, L)) gel(subgrp, j++) = H;
   }
   setlg(subgrp, j);
-  return gerepilecopy(av, subgrp);
+  return gc_GEN(av, subgrp);
 }
 
 static GEN
@@ -2663,7 +2663,7 @@ subgroupcond(GEN bnr, GEN indexbound)
     for (i=1; i<l; i++) gel(D,i) = ZM_det_triangular(gel(L,i));
     L = vecreverse( vecpermute(L, indexsort(D)) );
   }
-  return gerepilecopy(av, L);
+  return gc_GEN(av, L);
 }
 
 GEN
@@ -2697,7 +2697,7 @@ bnrautmatrix(GEN bnr, GEN aut)
   for (i = 1; i < l; i++)
     gel(M,i) = isprincipalray(bnr, nfgaloismatrixapply(nf, aut, gel(Gen,i)));
   M = ZM_mul(M, bnr_get_Ui(bnr));
-  return gerepilecopy(av, ZM_ZV_mod(M, cyc));
+  return gc_GEN(av, ZM_ZV_mod(M, cyc));
 }
 
 GEN
@@ -2821,5 +2821,5 @@ bnrcompositum(GEN fH1, GEN fH2)
   H1 = bnrliftsubgroup(bnr, bnr1, H1);
   H2 = bnrliftsubgroup(bnr, bnr2, H2);
   H = ZM_intersect(H1, H2);
-  return gerepilecopy(av, mkvec2(bnr, ZM_hnfmodid(H, bnr_get_cyc(bnr))));
+  return gc_GEN(av, mkvec2(bnr, ZM_hnfmodid(H, bnr_get_cyc(bnr))));
 }

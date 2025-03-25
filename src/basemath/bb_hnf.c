@@ -900,7 +900,7 @@ gen_inv(GEN A, void* data, const struct bb_hermite *R)
   H = gen_howell_i(A, 0, 0, 1, 0, &ops, data, R);
   if (!H) pari_err_INV("gen_inv", ops);
   n2 = lg(H)-1;
-  ops = gerepilecopy(av,ops); /* get rid of H */
+  ops = gc_GEN(av,ops); /* get rid of H */
   U = gen_zeromat(n2, m, data, R);
   for (j=1; j<=m; j++)
     gcoeff(U,j+n2-m,j) = un;
@@ -959,7 +959,7 @@ gen_solve_from_howell(GEN H, GEN ops, long m, long n, GEN Y, void* data, const s
   for (i=lg(ops)-1; i>0; i--) gen_leftapply(X, gel(ops,i), data, R);
   X = vecslice(X, n2-n+1, n2);
   gen_redcol(X, n, data, R);
-  return gerepilecopy(av, X);
+  return gc_GEN(av, X);
 }
 
 /* return NULL if no solution, not GC-clean */
@@ -1006,7 +1006,7 @@ ZM_hnfmodid2(GEN A, GEN d)
   H = gen_howell_i(A, 1, 0, 0, 0, NULL, data, R);
   for (i=1; i<lg(H); i++)
     if (!signe(gcoeff(H,i,i))) gcoeff(H,i,i) = d;
-  return gerepilecopy(av,H);
+  return gc_GEN(av,H);
 }
 #endif
 
@@ -1070,7 +1070,7 @@ matinvmod(GEN A, GEN d)
   }
   R = get_Fp_hermite(&data, d);
   U = gen_inv(shallowtrans(A), data, R);
-  return gerepilecopy(av, shallowtrans(U));
+  return gc_GEN(av, shallowtrans(U));
 }
 
 /* assume all D[i]>0, not GC-clean */
@@ -1234,7 +1234,7 @@ matsolvemod(GEN M, GEN D, GEN Y, long flag)
         pari_err_DOMAIN("matsolvemod","D[i]","<",gen_0,gel(D,i));
       if (!signe(gel(D,i))) char0 = 1;
     }
-  return gerepilecopy(av, char0? msolvemod0(M,D,Y,flag)
+  return gc_GEN(av, char0? msolvemod0(M,D,Y,flag)
                                : matsolvemod_finite(M,D,Y,flag));
 }
 GEN

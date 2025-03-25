@@ -833,7 +833,7 @@ subfieldsall(GEN nf0, long fl)
     L = lift_shallow( galoissubfields(G, fl, varn(T)) );
     l = lg(L); S = cgetg(l, t_VECSMALL);
     for (i=1; i<l; i++) S[i] = lg(fl==1? gel(L,i): gmael(L,i,1));
-    return gerepilecopy(av, vecpermute(L, vecsmall_indexsort(S)));
+    return gc_GEN(av, vecpermute(L, vecsmall_indexsort(S)));
   }
   v = varn(T); N = degpol(T);
   dg = divisorsu(N); ld = lg(dg)-1;
@@ -842,7 +842,7 @@ subfieldsall(GEN nf0, long fl)
   {
     if (ld == 2)
       LSB = shallowconcat(LSB, fl==1? mkvec(T): _subfield(T, pol_x(v)));
-    return gerepilecopy(av, LSB);
+    return gc_GEN(av, LSB);
   }
   if (varn(T) != 0) { T = leafcopy(T); setvarn(T, 0); }
   if (!choose_prime(&S, T)) { set_avma(av); return nfsubfields_fa(nf0, 0, fl); }
@@ -863,7 +863,7 @@ subfieldsall(GEN nf0, long fl)
   (void)delete_var(); /* from init_primedata() */
   LSB = shallowconcat(LSB, fl==1? mkvec(T):_subfield(T, pol_x(0)));
   if (DEBUGLEVEL) err_printf("\n***** Leaving subfields\n\n");
-  return fix_var(gerepilecopy(av, LSB), v, fl);
+  return fix_var(gc_GEN(av, LSB), v, fl);
 }
 
 GEN
@@ -883,9 +883,9 @@ nfsubfields0(GEN nf0, long d, long fl)
   T = get_nfpol(nf0, &nf); v0 = varn(T); N = degpol(T);
   RgX_check_ZX(T,"nfsubfields");
   if (d == N)
-    return gerepilecopy(av, fl==1 ? mkvec(T) : _subfield(T, pol_x(v0)));
+    return gc_GEN(av, fl==1 ? mkvec(T) : _subfield(T, pol_x(v0)));
   if (d == 1)
-    return gerepilecopy(av, fl==1 ? mkvec(pol_x(v0)) : _subfield(pol_x(v0), zeropol(v0)));
+    return gc_GEN(av, fl==1 ? mkvec(pol_x(v0)) : _subfield(pol_x(v0), zeropol(v0)));
   if (d < 1 || d > N || N % d) return cgetg(1,t_VEC);
 
   /* much easier if nf is Galois (WSS) */
@@ -903,7 +903,7 @@ nfsubfields0(GEN nf0, long d, long fl)
         gel(F,k++) = lift_shallow(galoisfixedfield(G, gel(H,1), fl, v0));
     }
     setlg(F, k);
-    return gerepilecopy(av, F);
+    return gc_GEN(av, F);
   }
   if (varn(T) != 0) { T = leafcopy(T); setvarn(T, 0); }
   if (!choose_prime(&S, T)) { set_avma(av); return nfsubfields_fa(nf0, d, fl); }
@@ -1304,9 +1304,9 @@ nfsubfieldscm(GEN nf, long fl)
   if (!ro) return gc_const(av, gen_0);
   /* now r2 == 2*n */
 
-  if (n==2) return gerepilecopy(av, quadsubfieldcm(pol, fl));
+  if (n==2) return gc_GEN(av, quadsubfieldcm(pol, fl));
   G = galoisinit(nf? nf: pol, NULL);
-  if (G != gen_0) return gerepilecopy(av, galoissubfieldcm(G, fl));
+  if (G != gen_0) return gc_GEN(av, galoissubfieldcm(G, fl));
 
   ero = 0;
   for (i=1; i<lg(ro); i++)
@@ -1351,7 +1351,7 @@ nfsubfieldscm(GEN nf, long fl)
   if (lg(V)==1) { delete_var(); return gc_const(av, gen_0); }
   res = subfield_generator(pol, V, 2*(lg(V)-1), ero, fl);
   delete_var();
-  return gerepilecopy(av, res);
+  return gc_GEN(av, res);
 }
 
 static int
@@ -1460,7 +1460,7 @@ maxgen_subfields(GEN pol, GEN fa, long flag)
   if (!flgene) res = Lmax;
   else if (!flmax) res = Lgene;
   else res = mkvec2(Lmax,Lgene);
-  return gerepilecopy(av, res);
+  return gc_GEN(av, res);
 }
 
 GEN
@@ -1473,7 +1473,7 @@ nfsubfieldsmax(GEN nf, long fl)
   subfields_cleanup(&nf, &pol, &n, &fa);
   if (n==1) { set_avma(av); return cgetg(1,t_VEC); }
   if (uisprime(n))
-    return gerepilecopy(av, fl==1 ? mkvec(pol_x(varn(pol)))
+    return gc_GEN(av, fl==1 ? mkvec(pol_x(varn(pol)))
       : mkvec(mkvec2(pol_x(varn(pol)),gen_0)));
   ero = subfields_get_ero(pol, nf);
   fa = subfields_get_fa(pol, nf, fa);
@@ -1484,7 +1484,7 @@ nfsubfieldsmax(GEN nf, long fl)
     gel(Lmax,i) = subfield_generator(pol, V, lg(V)-1, ero, fl);
   }
   delete_var();
-  return gerepilecopy(av, Lmax);
+  return gc_GEN(av, Lmax);
 }
 
 static void
@@ -1546,13 +1546,13 @@ nfsubfields_fa(GEN nf, long d, long fl)
   long n, r, i, j, nres, len, s, newfield, ero, vp;
 
   subfields_cleanup(&nf, &pol, &n, &fa); vp = varn(pol);
-  if (d && (d<1 || d>n || n%d)) return gerepilecopy(av, cgetg(1,t_VEC));
-  if (!d && uisprime(n)) return gerepilecopy(av,
+  if (d && (d<1 || d>n || n%d)) return gc_GEN(av, cgetg(1,t_VEC));
+  if (!d && uisprime(n)) return gc_GEN(av,
     fl==1 ? mkvec2( pol_x(varn(pol)), pol)
           : mkvec2( mkvec2(pol_x(vp),pol_0(vp)), mkvec2(pol,pol_x(vp))));
-  if (n==1 || d==1) return gerepilecopy(av,
+  if (n==1 || d==1) return gc_GEN(av,
     fl==1 ? mkvec(pol_x(varn(pol))): _subfield(pol_x(vp),pol_0(vp)));
-  if (d==n) return gerepilecopy(av,
+  if (d==n) return gc_GEN(av,
     fl==1 ? mkvec(pol): _subfield(pol,pol_x(vp)));
   ero = subfields_get_ero(pol, nf);
   fa = subfields_get_fa(pol, nf, fa);
@@ -1616,5 +1616,5 @@ nfsubfields_fa(GEN nf, long d, long fl)
   vecreverse_inplace(res);
 
   delete_var();
-  return gerepilecopy(av, res);
+  return gc_GEN(av, res);
 }

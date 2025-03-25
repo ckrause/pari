@@ -517,7 +517,7 @@ idealtwoelt(GEN nf, GEN x)
   if (tx == id_PRIME) return mkvec2copy(gel(x,1), gel(x,2));
   /* id_PRINCIPAL */
   av = avma; x = nf_to_scalar_or_basis(nf, x);
-  return gerepilecopy(av, typ(x)==t_COL? mkvec2(gen_0,x):
+  return gc_GEN(av, typ(x)==t_COL? mkvec2(gen_0,x):
                                          mkvec2(Q_abs_shallow(x),gen_0));
 }
 
@@ -777,7 +777,7 @@ idealfactor_partial(GEN nf, GEN x, GEN L)
     if (v) { gel(P,j) = gel(P,i); gel(E,j) = stoi(v); j++; }
   }
   setlg(P,j);
-  setlg(E,j); return gerepilecopy(av, mkmat2(P, E));
+  setlg(E,j); return gc_GEN(av, mkmat2(P, E));
 }
 GEN
 idealfactor_limit(GEN nf, GEN x, ulong lim)
@@ -795,13 +795,13 @@ idealfactor_limit(GEN nf, GEN x, ulong lim)
   if (tx == id_PRINCIPAL)
   {
     y = nf_to_scalar_or_basis(nf, x);
-    if (typ(y) != t_COL) return gerepilecopy(av, Q_nffactor(nf, y, lim));
+    if (typ(y) != t_COL) return gc_GEN(av, Q_nffactor(nf, y, lim));
   }
   y = idealnumden(nf, x);
   fa = idealHNF_factor(nf, gel(y,1), lim);
   if (!isint1(gel(y,2)))
     fa = famat_div_shallow(fa, idealHNF_factor(nf, gel(y,2), lim));
-  fa = gerepilecopy(av, fa);
+  fa = gc_GEN(av, fa);
   return sort_factor(fa, (void*)&cmp_prime_ideal, &cmp_nodata);
 }
 GEN
@@ -967,7 +967,7 @@ idealredmodpower(GEN nf, GEN x, ulong n, ulong B)
   a = idealredmodpower_i(nf, gel(x,1), n, B);
   b = idealredmodpower_i(nf, gel(x,2), n, B);
   if (!isint1(b)) a = nf_to_scalar_or_basis(nf, nfdiv(nf, a, b));
-  return gerepilecopy(av, a);
+  return gc_GEN(av, a);
 }
 
 /* P prime ideal in idealprimedec format. Return valuation(A) at P */
@@ -1016,8 +1016,8 @@ idealadd(GEN nf, GEN x, GEN y)
   ty = idealtyp(&y, NULL); nf = checknf(nf);
   if (tx != id_MAT) x = idealhnf_shallow(nf,x);
   if (ty != id_MAT) y = idealhnf_shallow(nf,y);
-  if (lg(x) == 1) return gerepilecopy(av,y);
-  if (lg(y) == 1) return gerepilecopy(av,x); /* check for 0 ideal */
+  if (lg(x) == 1) return gc_GEN(av,y);
+  if (lg(y) == 1) return gc_GEN(av,x); /* check for 0 ideal */
   dx = Q_denom(x);
   dy = Q_denom(y); dz = lcmii(dx,dy);
   if (is_pm1(dz)) dz = NULL; else {
@@ -1129,7 +1129,7 @@ idealaddmultoone(GEN nf, GEN list)
     }
     gel(L,i) = c;
   }
-  return gerepilecopy(av, L);
+  return gc_GEN(av, L);
 }
 
 /* multiplication */
@@ -1383,7 +1383,7 @@ famat_Z_gcd(GEN M, GEN n)
     }
   }
   setlg(gel(F,1),j); setlg(gel(F,2),j);
-  return gerepilecopy(av,F);
+  return gc_GEN(av,F);
 }
 
 /* x assumed to be a t_MATs (factorization matrix), or compatible with
@@ -1467,7 +1467,7 @@ matreduce(GEN f)
     case t_VEC: case t_COL:
     {
       GEN e; f = vec_reduce(f, &e); settyp(f, t_COL);
-      return gerepilecopy(av, mkmat2(f, zc_to_ZC(e)));
+      return gc_GEN(av, mkmat2(f, zc_to_ZC(e)));
     }
     case t_MAT:
       if (lg(f) == 3) break;
@@ -1481,7 +1481,7 @@ matreduce(GEN f)
     if (!RgV_is_ZV(gel(f,2))) pari_err_TYPE("matreduce",f);
     f = famat_reduce(f);
   }
-  return gerepilecopy(av, f);
+  return gc_GEN(av, f);
 }
 
 GEN
@@ -2008,7 +2008,7 @@ idealdown(GEN nf, GEN x)
   if (is_rational_t(typ(x))) return Q_abs(x);
   x = Q_primitive_part(x, &c);
   y = zkmultable_capZ(zk_multable(nf, x));
-  return gerepilecopy(av, mul_content(c, y));
+  return gc_GEN(av, mul_content(c, y));
 }
 
 /* true nf */
@@ -2088,7 +2088,7 @@ idealismaximal(GEN nf, GEN x)
   pari_sp av = avma;
   x = idealismaximal_i(checknf(nf), x);
   if (!x) { set_avma(av); return gen_0; }
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 /* I^(-1) = { x \in K, Tr(x D^(-1) I) \in Z }, D different of K/Q
@@ -2192,12 +2192,12 @@ idealnumden(GEN nf, GEN x)
       x = nf_to_scalar_or_basis(nf, x);
       switch(typ(x))
       {
-        case t_INT: return gerepilecopy(av, mkvec2(absi_shallow(x),gen_1));
-        case t_FRAC:return gerepilecopy(av, mkvec2(absi_shallow(gel(x,1)), gel(x,2)));
+        case t_INT: return gc_GEN(av, mkvec2(absi_shallow(x),gen_1));
+        case t_FRAC:return gc_GEN(av, mkvec2(absi_shallow(gel(x,1)), gel(x,2)));
       }
       /* t_COL */
       x = Q_remove_denom(x, &d);
-      if (!d) return gerepilecopy(av, mkvec2(idealhnf_shallow(nf, x), gen_1));
+      if (!d) return gc_GEN(av, mkvec2(idealhnf_shallow(nf, x), gen_1));
       mx = zk_multable(nf, x);
       xZ = zkmultable_capZ(mx);
       x = ZM_hnfmodid(mx, xZ); /* principal ideal (x) */
@@ -2210,7 +2210,7 @@ idealnumden(GEN nf, GEN x)
       if (n == 0) return mkvec2(gen_0, gen_1);
       if (n != nf_get_degree(nf)) pari_err_DIM("idealnumden");
       x0 = x = Q_remove_denom(x, &d);
-      if (!d) return gerepilecopy(av, mkvec2(x, gen_1));
+      if (!d) return gc_GEN(av, mkvec2(x, gen_1));
       break;
     }
   }
@@ -2220,7 +2220,7 @@ idealnumden(GEN nf, GEN x)
   if (!equalii(c,d)) B = ZM_Z_mul(B, diviiexact(d,c)); /* = B ! */
   A = idealHNF_mul(nf, B, x0); /* d * (original x) * B = d A */
   A = ZM_Z_divexact(A, d); /* = A ! */
-  return gerepilecopy(av, mkvec2(A, B));
+  return gc_GEN(av, mkvec2(A, B));
 }
 
 /* Return x, integral in 2-elt form, such that pr^n = c * x. Assume n != 0.
@@ -2411,7 +2411,7 @@ idealpowred(GEN nf, GEN x, GEN n)
   av2 = avma;
   if (s < 0) y = idealinv(nf,y);
   if (s < 0 || is_pm1(n)) y = idealred(nf,y);
-  return avma == av2? gerepilecopy(av,y): gerepileupto(av,y);
+  return avma == av2? gc_GEN(av,y): gerepileupto(av,y);
 }
 
 GEN
@@ -2499,7 +2499,7 @@ idealdivexact(GEN nf, GEN x0, GEN y0)
   y = Q_primitive_part(y, &cy);
   if (cy) x = RgM_Rg_div(x,cy);
   xZ = gcoeff(x,1,1); if (typ(xZ) != t_INT) err_divexact(x,y);
-  yZ = gcoeff(y,1,1); if (isint1(yZ)) return gerepilecopy(av, x);
+  yZ = gcoeff(y,1,1); if (isint1(yZ)) return gc_GEN(av, x);
   Nx = idealnorm(nf,x);
   Ny = idealnorm(nf,y);
   if (typ(Nx) != t_INT) err_divexact(x,y);
@@ -2682,7 +2682,7 @@ idealred0(GEN nf, GEN I, GEN vdir)
   y = idealpseudomin(J, G); /* small elt in (I\cap Z)I^(-1), integral */
   if (ZV_isscalar(y))
   { /* already reduced */
-    if (!aI) return gerepilecopy(av, I);
+    if (!aI) return gc_GEN(av, I);
     goto END;
   }
 
@@ -2710,7 +2710,7 @@ idealred0(GEN nf, GEN I, GEN vdir)
     c1 = c1? RgC_Rg_mul(yi, c1): yi;
 END:
   if (c1) aI = ext_mul(nf, aI,c1);
-  return gerepilecopy(av, mkvec2(I, aI));
+  return gc_GEN(av, mkvec2(I, aI));
 }
 
 /* I integral ZM (not HNF), G ZM, rounded Cholesky form of a weighted
@@ -3286,7 +3286,7 @@ nfkermodpr(GEN nf, GEN x, GEN modpr)
   nf = checknf(nf); modpr = nf_to_Fq_init(nf, &pr,&T,&p);
   if (typ(x)!=t_MAT) pari_err_TYPE("nfkermodpr",x);
   x = nfM_to_FqM(x, nf, modpr);
-  return gerepilecopy(av, FqM_to_nfM(FqM_ker(x,T,p), modpr));
+  return gc_GEN(av, FqM_to_nfM(FqM_ker(x,T,p), modpr));
 }
 
 GEN
@@ -3316,5 +3316,5 @@ nfsolvemodpr(GEN nf, GEN a, GEN b, GEN pr)
       break;
     default: pari_err_TYPE(f,b);
   }
-  return gerepilecopy(av, a);
+  return gc_GEN(av, a);
 }

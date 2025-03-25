@@ -292,7 +292,7 @@ mscosets(GEN G, void *E, long (*in)(void *, GEN))
         gerepileall(av, 2, &M, &L);
       }
     }
-  return gerepilecopy(av, mkvec2(L, M));
+  return gc_GEN(av, mkvec2(L, M));
 }
 
 int

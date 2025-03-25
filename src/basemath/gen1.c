@@ -545,7 +545,7 @@ conj_i(GEN x)
 }
 GEN
 gconj(GEN x)
-{ pari_sp av = avma; return gerepilecopy(av, conj_i(x)); }
+{ pari_sp av = avma; return gc_GEN(av, conj_i(x)); }
 
 GEN
 conjvec(GEN x,long prec)
@@ -942,7 +942,7 @@ add_rfrac(GEN x, GEN y)
       if (isrationalzero(n)) { set_avma(av); return zeropol(varn(x2)); }
       return gerepileupto(av, scalarpol(n, varn(x2)));
     }
-    return gerepilecopy(av, mkrfrac(n, RgX_mul(gel(x,2),y2)));
+    return gc_GEN(av, mkrfrac(n, RgX_mul(gel(x,2),y2)));
   }
   if (degpol(n) == 0)
     return gerepileupto(av, gred_rfrac_simple(gel(n,2), RgX_mul(gel(x,2),y2)));
@@ -1896,7 +1896,7 @@ gmul(GEN x, GEN y)
       x = ser2pol_i(x, lx);
       y = ser2pol_i(y, lx);
       y = RgXn_mul(x, y, lx-2);
-      return gerepilecopy(av, fill_ser(z,y));
+      return gc_GEN(av, fill_ser(z,y));
     }
     case t_VEC:
       if (!is_ext_qfr(x) || !is_ext_qfr(y)) pari_err_TYPE2("*",x,y);
@@ -2080,7 +2080,7 @@ gmul(GEN x, GEN y)
           {
             z = init_ser(ly, vx, v);
             x = RgXn_mul(x, ser2pol_i(y, ly), ly-2);
-            return gerepilecopy(av, fill_ser(z, x));
+            return gc_GEN(av, fill_ser(z, x));
           }
           /* take advantage of x = c*t^v */
           set_avma(av); y = mul_ser_scal(y, gel(x,2));
@@ -2224,7 +2224,7 @@ gsqr(GEN x)
         GEN z = init_ser(lx, varn(x), 2*valser(x));
         x = ser2pol_i(x, lx);
         x = RgXn_sqr(x, lx-2);
-        return gerepilecopy(av, fill_ser(z,x));
+        return gc_GEN(av, fill_ser(z,x));
       }
 
     case t_RFRAC: z = cgetg(3,t_RFRAC);
@@ -2380,7 +2380,7 @@ div_ser(GEN x, GEN y, long vx)
   }
   x = ser2pol_i(x, ly);
   y = RgXn_div_i(x, y, ly-2);
-  return gerepilecopy(av, fill_ser(z,y));
+  return gc_GEN(av, fill_ser(z,y));
 }
 /* x,y compatible PADIC */
 static GEN
@@ -2803,7 +2803,7 @@ gdiv(GEN x, GEN y)
             ly -= i; v -= i; if (ly <= 2) pari_err_INV("gdiv", y0);
           }
           z = init_ser(ly, vx, v);
-          return gerepilecopy(av, fill_ser(z, RgXn_div(x, y, ly-2)));
+          return gc_GEN(av, fill_ser(z, RgXn_div(x, y, ly-2)));
         }
 
         case t_RFRAC:
@@ -2829,7 +2829,7 @@ gdiv(GEN x, GEN y)
           x = ser2pol_i(x, lx); v -= RgX_valrem_inexact(y, &y);
           z = init_ser(lx, vx, v);
           if (!signe(x)) setsigne(z,0);
-          return gerepilecopy(av, fill_ser(z, RgXn_div(x, y, lx - 2)));
+          return gc_GEN(av, fill_ser(z, RgXn_div(x, y, lx - 2)));
         }
         case t_RFRAC:
           av = avma;

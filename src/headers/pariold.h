@@ -422,7 +422,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define lnorml2 (long)gnorml2
 #define lnorm   (long)gnorm
 #define lpile   (long)gerepile
-#define lpilecopy (long)gerepilecopy
+#define lpilecopy (long)gc_GEN
 #define lpileupto (long)gerepileupto
 #define lpileuptoint (long)gerepileuptoint
 #define lpileuptoleaf (long)gerepileuptoleaf

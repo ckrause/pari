@@ -2331,7 +2331,7 @@ polgaloisnamesbig(long n, long k)
   V = f? gp_read_stream(f->file): NULL;
   if (!V || typ(V)!=t_VEC || k>=lg(V)) pari_err_FILE("galois file %s",s);
   pari_fclose(f);
-  return gerepilecopy(av, gel(V,k));
+  return gc_GEN(av, gel(V,k));
 }
 
 /* pol a monic ZX */

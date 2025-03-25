@@ -107,7 +107,7 @@ sliding_window_pow(GEN x, GEN n, long e, void *E, GEN (*sqr)(void*,GEN),
       if (gc_needed(av,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"sliding_window_pow (%ld)", l);
-        z = gerepilecopy(av, z);
+        z = gc_GEN(av, z);
       }
       if (int_bit(n,l)) break;
       z = sqr(E, z); l--;
@@ -137,7 +137,7 @@ leftright_binary_powu(GEN x, ulong n, void *E, GEN (*sqr)(void*,GEN),
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"leftright_powu (%d)", j);
-      y = gerepilecopy(av, y);
+      y = gc_GEN(av, y);
     }
   }
   return y;
@@ -160,7 +160,7 @@ gen_powu(GEN x, ulong n, void *E, GEN (*sqr)(void*,GEN),
 {
   pari_sp av = avma;
   if (n == 1) return gcopy(x);
-  return gerepilecopy(av, gen_powu_i(x,n,E,sqr,mul));
+  return gc_GEN(av, gen_powu_i(x,n,E,sqr,mul));
 }
 
 GEN
@@ -183,7 +183,7 @@ gen_pow(GEN x, GEN n, void *E, GEN (*sqr)(void*,GEN),
                                GEN (*mul)(void*,GEN,GEN))
 {
   pari_sp av = avma;
-  return gerepilecopy(av, gen_pow_i(x,n,E,sqr,mul));
+  return gc_GEN(av, gen_pow_i(x,n,E,sqr,mul));
 }
 
 /* assume n > 0. Compute x^n using left-right binary powering */
@@ -207,7 +207,7 @@ gen_powu_fold_i(GEN x, ulong n, void *E, GEN  (*sqr)(void*,GEN),
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"gen_powu_fold (%d)", j);
-      y = gerepilecopy(av, y);
+      y = gc_GEN(av, y);
     }
   }
   return y;
@@ -218,7 +218,7 @@ gen_powu_fold(GEN x, ulong n, void *E, GEN (*sqr)(void*,GEN),
 {
   pari_sp av = avma;
   if (n == 1) return gcopy(x);
-  return gerepilecopy(av, gen_powu_fold_i(x,n,E,sqr,msqr));
+  return gc_GEN(av, gen_powu_fold_i(x,n,E,sqr,msqr));
 }
 
 /* assume N != 0, t_INT. Compute x^|N| using left-right binary powering */
@@ -254,7 +254,7 @@ gen_pow_fold_i(GEN x, GEN N, void *E, GEN (*sqr)(void*,GEN),
         if (gc_needed(av,1))
         {
           if (DEBUGMEM>1) pari_warn(warnmem,"gen_pow_fold (%ld,%d)", i,j);
-          y = gerepilecopy(av, y);
+          y = gc_GEN(av, y);
         }
       }
       if (--i == 0) return y;
@@ -268,7 +268,7 @@ gen_pow_fold(GEN x, GEN n, void *E, GEN (*sqr)(void*,GEN),
                                     GEN (*msqr)(void*,GEN))
 {
   pari_sp av = avma;
-  return gerepilecopy(av, gen_pow_fold_i(x,n,E,sqr,msqr));
+  return gc_GEN(av, gen_pow_fold_i(x,n,E,sqr,msqr));
 }
 
 GEN
@@ -677,10 +677,10 @@ rec_order(GEN a, GEN o, GEN m,
     long i, e = itos(gcoeff(m,x,2));
     for (i = 0; i < e; i++)
     {
-      if (grp->equal1(b)) return gerepilecopy(av, powiu(p, i));
+      if (grp->equal1(b)) return gc_GEN(av, powiu(p, i));
       b = grp->pow(E, b, p);
     }
-    return gerepilecopy(av, powiu(p, e));
+    return gc_GEN(av, powiu(p, e));
   }
   else
   {
@@ -692,7 +692,7 @@ rec_order(GEN a, GEN o, GEN m,
     o1 = rec_order(b, diviiexact(o, cof), m, E, grp, z+1, y);
     b = grp->pow(E, a, o1);
     o2 = rec_order(b, diviiexact(o, o1), m, E, grp, x, z);
-    return gerepilecopy(av, mulii(o1, o2));
+    return gc_GEN(av, mulii(o1, o2));
   }
 }
 
@@ -708,7 +708,7 @@ gen_order(GEN a, GEN o, void *E, const struct bb_group *grp)
   if (!m) pari_err_TYPE("gen_order [missing order]",a);
   o = gel(m,1);
   m = gel(m,2); l = lgcols(m);
-  return gerepilecopy(av, rec_order(a, o, m, E, grp, 1, l-1));
+  return gc_GEN(av, rec_order(a, o, m, E, grp, 1, l-1));
 }
 
 /*Find the exact order of a assuming a^o==1, return [order,factor(order)] */
@@ -754,7 +754,7 @@ gen_factored_order(GEN a, GEN o, void *E, const struct bb_group *grp)
   }
   setlg(P, ind); P = vecreverse(P);
   setlg(F, ind); F = vecreverse(F);
-  return gerepilecopy(av, mkvec2(o, mkmat2(P,F)));
+  return gc_GEN(av, mkvec2(o, mkmat2(P,F)));
 }
 
 /* E has order o[1], ..., or o[#o], draw random points until all solutions
@@ -893,7 +893,7 @@ gen_Shanks_sqrtl(GEN a, GEN l, long e, GEN r, GEN y, GEN m,void *E,
       gerepileall(av,4, &y,&v,&w,&m);
     }
   }
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 /* Return one solution of x^n = a in a cyclic group of order q
  *
@@ -1036,7 +1036,7 @@ gen_ellgroup(GEN N, GEN d, GEN *pm, void *E, const struct bb_group *grp,
           if (equali1(g2)) { set_avma(av); return mkveccopy(N); }
           if (pm) *pm = g1;
           g = mkvec2(mulii(g1, N1), g2);
-          if (!pm) return gerepilecopy(av, g);
+          if (!pm) return gc_GEN(av, g);
           *pm = m; return gc_all(av, 2, &g, pm);
         }
         uel(E0, j) = 0; /* done with this prime l */
@@ -1069,5 +1069,5 @@ gen_ellgens(GEN D1, GEN d2, GEN m, void *E, const struct bb_group *grp,
     Q = grp->rand(E);
     d = pairorder(E, grp->pow(E, P, dm), grp->pow(E, Q, dm), m, F);
   } while (!equalii(d, d2));
-  return gerepilecopy(ltop, mkvec2(P,Q));
+  return gc_GEN(ltop, mkvec2(P,Q));
 }

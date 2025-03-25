@@ -361,7 +361,7 @@ caradj(GEN x, long v, GEN *py)
     t = gdivgs(mattrace(y), -k);
     for (i = 1; i <= n; i++) gcoeff(y,i,i) = gadd(gcoeff(y,i,i), t);
     y = gclone(y);
-    gel(T,n-k+2) = gerepilecopy(av, t); av = avma;
+    gel(T,n-k+2) = gc_GEN(av, t); av = avma;
     if (k > 2) gunclone(y0);
   }
   t = gmul(gcoeff(x,1,1),gcoeff(y,1,1));
@@ -906,7 +906,7 @@ hess(GEN x)
     case t_COMPLEX: break;
     default: prec = 0;
   }
-  return gerepilecopy(av, RgM_hess(RgM_shallowcopy(x),prec));
+  return gc_GEN(av, RgM_hess(RgM_shallowcopy(x),prec));
 }
 
 GEN
@@ -992,7 +992,7 @@ FpM_hess(GEN x, GEN p)
       }
     }
   }
-  return gerepilecopy(av,x);
+  return gc_GEN(av,x);
 }
 /* H in Hessenberg form */
 static GEN
@@ -1111,20 +1111,20 @@ QM_charpoly_ZX_bound(GEN M, long bit)
 {
   pari_sp av = avma;
   GEN dM; M = Q_remove_denom(M, &dM);
-  return gerepilecopy(av, QM_charpoly_ZX_i(M, dM, bit));
+  return gc_GEN(av, QM_charpoly_ZX_i(M, dM, bit));
 }
 GEN
 QM_charpoly_ZX(GEN M)
 {
   pari_sp av = avma;
   GEN dM; M = Q_remove_denom(M, &dM);
-  return gerepilecopy(av, QM_charpoly_ZX_i(M, dM, -1));
+  return gc_GEN(av, QM_charpoly_ZX_i(M, dM, -1));
 }
 GEN
 ZM_charpoly(GEN M)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, QM_charpoly_ZX_i(M, NULL, -1));
+  return gc_GEN(av, QM_charpoly_ZX_i(M, NULL, -1));
 }
 
 /*******************************************************************/
@@ -1444,7 +1444,7 @@ gsupnorm(GEN x, long prec)
     msq = gsqrt(msq, prec);
     if (!m || gcmp(m, msq) < 0) m = msq;
   } else if (!m) m = gen_0;
-  return gerepilecopy(av, m);
+  return gc_GEN(av, m);
 }
 
 /*******************************************************************/
@@ -1571,10 +1571,10 @@ qfgaussred_positive(GEN a)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"qfgaussred_positive");
-      b=gerepilecopy(av,b);
+      b=gc_GEN(av,b);
     }
   }
-  return gerepilecopy(av,b);
+  return gc_GEN(av,b);
 }
 
 GEN
@@ -1659,7 +1659,7 @@ gaussred(GEN a, long signature)
       if (gc_needed(av1,1))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"gaussred (t = %ld)", t);
-        a = gerepilecopy(av1, a);
+        a = gc_GEN(av1, a);
       }
     }
     else
@@ -1705,14 +1705,14 @@ gaussred(GEN a, long signature)
         if (gc_needed(av1,1))
         {
           if(DEBUGMEM>1) pari_warn(warnmem,"gaussred");
-          a = gerepilecopy(av1, a);
+          a = gc_GEN(av1, a);
         }
         break;
       }
       if (k > n) break;
     }
   }
-  if (!signature) return gerepilecopy(av, a);
+  if (!signature) return gc_GEN(av, a);
   set_avma(av); return mkvec2s(sp, sn);
 }
 
@@ -1731,7 +1731,7 @@ qfgaussred2(GEN a)
     gel(D,i) = gcoeff(M,i,i);
     gcoeff(M,i,i) = gen_1;
   }
-  return gerepilecopy(av, mkvec2(M,D));
+  return gc_GEN(av, mkvec2(M,D));
 }
 
 GEN
@@ -1947,11 +1947,11 @@ QM_minors_coprime(GEN x, GEN D)
       if (gc_needed(av1,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"QM_minors_coprime, p = %Ps", p);
-        x = gerepilecopy(av1, x); pov2 = shifti(p, -1);
+        x = gc_GEN(av1, x); pov2 = shifti(p, -1);
       }
     }
   }
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 static GEN
@@ -2031,7 +2031,7 @@ QM_ImQ_all(GEN x, GEN *U, long remove, long hnf)
     if (!remove) x = shallowconcat(zeromatcopy(m-1,lg(K)-1), x);
     gerepileall(av, 2, &x, U);
   }
-  else x = gerepilecopy(av,x);
+  else x = gc_GEN(av,x);
   return x;
 }
 GEN

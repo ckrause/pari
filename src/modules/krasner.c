@@ -320,7 +320,7 @@ GetSharp(FAD_t *fdata, GEN pp, GEN ppp, GEN pol, GEN beta, long *pl)
     gel(p1, i+2) = Fq_mul(gel(p1, i+2),
                           gel(fdata->pik, i-v+1), fdata->topr, pp);
 
-  return gerepilecopy(av, normalizepol(p1));
+  return gc_GEN(av, normalizepol(p1));
 }
 
 /* Compute roots of pol in the residue field. Use table look-up if possible */
@@ -494,7 +494,7 @@ TamelyRamifiedCase(KRASNER_t *data)
     }
     setlg(rep, ct+1);
   }
-  return gerepilecopy(av, rep);
+  return gc_GEN(av, rep);
 }
 
 static long
@@ -824,7 +824,7 @@ pols_from_efj(pari_sp av, GEN EFJ, GEN p, long flag)
   if (l == 1) { set_avma(av); return flag == 2? gen_0: cgetg(1, t_VEC); }
   for (i = 1; i < l; i++) gel(L,i) = GetRamifiedPol(p, gel(EFJ,i), flag);
   if (flag == 2) return gerepileuptoint(av, ZV_sum(L));
-  return gerepilecopy(av, shallowconcat1(L));
+  return gc_GEN(av, shallowconcat1(L));
 }
 
 /* return a minimal list of polynomials generating all the extensions of

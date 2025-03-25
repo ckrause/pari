@@ -1580,7 +1580,7 @@ select_classpoly_primes(ulong *vfactors, ulong *biggest_v, double delta,
   }
   dbg_printf(1)("Selected %ld primes; largest is %lu ~ 2^%.2f\n",
              i, biggest_p, log2(biggest_p));
-  return gerepilecopy(av, vecslice(prime_pool, 1, i));
+  return gc_GEN(av, vecslice(prime_pool, 1, i));
 }
 
 /* This is Sutherland 2009 Algorithm 1.2. */
@@ -2105,7 +2105,7 @@ polclass0(long D, long inv, long vx, GEN *db)
   dbg_printf(1)("Total number of curves tested: %ld\n", n_curves_tested);
   H = ncV_chinese_center(H, plist, NULL);
   dbg_printf(1)("Result height: %.2f\n", dbllog2(gsupnorm(H, DEFAULTPREC)));
-  return gerepilecopy(av, RgV_to_RgX(H, vx));
+  return gc_GEN(av, RgV_to_RgX(H, vx));
 }
 
 void

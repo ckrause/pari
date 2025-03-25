@@ -516,7 +516,7 @@ END:
   if (DEBUGLEVEL>1)
     err_printf("No, we're done!\nModulus = %Ps and subgroup = %Ps\n",
                bnr_get_mod(gel(rep,1)), gel(rep,2));
-  CharNewPrec(rep, *newprec); return gerepilecopy(av, rep);
+  CharNewPrec(rep, *newprec); return gc_GEN(av, rep);
 }
 
 /********************************************************************/
@@ -691,7 +691,7 @@ AllArtinNumbers(GEN CR, long prec)
     WbyCond = ArtinNumber(bnr, LCHI, prec);
     for (k = 1; k < l; k++) gel(W,LChar[k]) = gel(WbyCond,k);
   }
-  return gerepilecopy(av, W);
+  return gc_GEN(av, W);
 }
 
 /* compute the constant W of the functional equation of
@@ -717,7 +717,7 @@ bnrrootnumber(GEN bnr, GEN chi, long flag, long prec)
   chi = char_normalize(chi, cyc_normalize(cyc));
   chi = get_Char(chi, prec);
   W = ArtinNumber(bnr, mkvec(chi), prec);
-  return gerepilecopy(av, gel(W,1));
+  return gc_GEN(av, gel(W,1));
 }
 
 /********************************************************************/
@@ -1612,7 +1612,7 @@ RecCoeff(GEN nf,  GEN pol,  long v, long flag, long prec)
     gel(pol, cf+2) = coltoalg(nf,t);
   }
   gel(pol,cl+2) = gen_1;
-  return gerepilecopy(av, pol);
+  return gc_GEN(av, pol);
 }
 
 /* an[q * i] *= chi for all (i,p)=1 */
@@ -2303,7 +2303,7 @@ LABDOUB:
     }
     timer_printf(&ti, "Compute %s", flag? "quickpol": "polrelnum");
   }
-  if (flag == 1) return gerepilecopy(av, polrelnum);
+  if (flag == 1) return gc_GEN(av, polrelnum);
   /* try to recognize this polynomial */
   polrel = RecCoeff(nf, polrelnum, v, flag, newprec);
 
@@ -2343,7 +2343,7 @@ LABDOUB:
     if (DEBUGLEVEL>1) err_printf("polrel = %Ps\n", polrel);
     timer_printf(&ti, "Recpolnum");
   }
-  return gerepilecopy(av, polrel);
+  return gc_GEN(av, polrel);
 }
 
 /********************************************************************/
@@ -2484,7 +2484,7 @@ bnrL1(GEN bnr, GEN subgp, long flag, long prec)
     }
     gel(L1,h) = z;
   }
-  return gerepilecopy(av, L1);
+  return gc_GEN(av, L1);
 }
 
 /*******************************************************************/
@@ -3142,7 +3142,7 @@ PRECPB:
   if (!first)
   {
     if (DEBUGLEVEL) pari_warn(warnprec,"computeP2",prec);
-    nf = gerepilecopy(av2, nfnewprec_shallow(bnr_get_nf(bnr),prec));
+    nf = gc_GEN(av2, nfnewprec_shallow(bnr_get_nf(bnr),prec));
   }
   first = 0; lanum = to_approx(nf,la);
   P = cgetg(clrayno+1,t_VEC);
@@ -3156,7 +3156,7 @@ PRECPB:
   P0 = roots_to_pol(P, 0);
   P = findbezk_pol(nf, P0);
   if (!P) { prec = get_prec(P0, prec); goto PRECPB; }
-  return gerepilecopy(av, P);
+  return gc_GEN(av, P);
 }
 
 #define nexta(a) (a>0 ? -a : 1-a)

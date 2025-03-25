@@ -514,7 +514,7 @@ quadunit(GEN D0)
     else /* w_D = sqrt(D), w_D0 = N sqrt(D) */
       v = diviiexact(v, N);
   }
-  return gerepilecopy(av, mkquad(quadpoly_i(D0), u, v));
+  return gc_GEN(av, mkquad(quadpoly_i(D0), u, v));
 }
 long
 quadunitnorm(GEN D)
@@ -872,7 +872,7 @@ relative_order(void *E, GEN a, GEN o, ulong N,  GEN T)
       }
     }
   }
-  return gerepilecopy(av, o);
+  return gc_GEN(av, o);
 }
 
 /* h(x) for x<0 using Baby Step/Giant Step.
@@ -893,7 +893,7 @@ classno(GEN x)
   if (abscmpiu(x,12) <= 0) return gen_1;
 
   Hf = quadclassnoF(x, &D);
-  if (abscmpiu(D,12) <= 0) return gerepilecopy(av, Hf);
+  if (abscmpiu(D,12) <= 0) return gc_GEN(av, Hf);
   forms =  get_forms(D, &L);
   r2 = two_rank(D);
   hin = roundr(shiftr(L, -r2)); /* rough approximation for #G, G = Cl(K)^2 */
@@ -982,7 +982,7 @@ classno2(GEN x)
   if (s < 0 && abscmpiu(x,12) <= 0) return gen_1;
 
   Hf = quadclassnoF(x, &D);
-  if (s < 0 && abscmpiu(D,12) <= 0) return gerepilecopy(av, Hf); /* |D| < 12*/
+  if (s < 0 && abscmpiu(D,12) <= 0) return gc_GEN(av, Hf); /* |D| < 12*/
 
   Pi = mppi(prec);
   sqrtd = sqrtr_abs(itor(D, prec));
@@ -1169,7 +1169,7 @@ Zn_quad_roots(GEN N, GEN B, GEN C)
     for (i = 1; i < l; i++) E[i] = (E[i]+1) >> 1;
     Np = factorback2(P, E); /* x = -B mod N' */
     B = shifti(B,-1);
-    return gerepilecopy(av, mkvec2(Np, mkvec(Fp_neg(B,Np))));
+    return gc_GEN(av, mkvec2(Np, mkvec(Fp_neg(B,Np))));
   }
   if (!fa)
     fa = Z_factor(N4);

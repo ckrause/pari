@@ -63,7 +63,7 @@ doellR_omega(GEN E, long prec)
   b = gel(z,2);
   c = gabs(z, prec);
   z = ellomega_agm(a,b,c,prec);
-  return gerepilecopy(av, mkvec2(gel(z,1),gmul2n(gadd(gel(z,1),gel(z,2)),-1)));
+  return gc_GEN(av, mkvec2(gel(z,1),gmul2n(gadd(gel(z,1),gel(z,2)),-1)));
 }
 static GEN
 doellR_eta(GEN E, long prec)
@@ -244,7 +244,7 @@ ellQp_t2P(GEN E, GEN t, long prec)
   x0 = gsub(gadd(x1, gdiv(ar, x1)), gmul2n(r0,-1));
   s0 = gmul2n(ec_h_evalx(E, x0), -1);
   y0 = gsub(gmul(y1, gsubsg(1, gdiv(ar,gsqr(x1)))), s0);
-  return gerepilecopy(av, mkvec2(x0,y0));
+  return gc_GEN(av, mkvec2(x0,y0));
 }
 
 static GEN
@@ -278,7 +278,7 @@ zell(GEN E, GEN P, long prec)
       GEN Ee = ellnfembed(E, prec), Pe = ellpointnfembed(E, P, prec);
       long i, l = lg(Pe);
       for (i = 1; i < l; i++) gel(Pe,i) = zell_i(gel(Ee,i), gel(Pe,i), prec);
-      ellnfembed_free(Ee); return gerepilecopy(av, Pe);
+      ellnfembed_free(Ee); return gc_GEN(av, Pe);
     }
     case t_ELL_Q: break;
     case t_ELL_Rg: break;
@@ -539,7 +539,7 @@ elleisnum(GEN om, long k, long prec)
     GEN a = gmul(Pi2n(1,T.prec), mului(12, T.c));
     y = gsub(y, mulcxI(gdiv(a, gmul(T.w2, T.W2))));
   }
-  return gerepilecopy(av, gprec_wtrunc(y, T.prec0));
+  return gc_GEN(av, gprec_wtrunc(y, T.prec0));
 }
 
 /* return quasi-periods attached to [T->W1,T->W2] */
@@ -590,7 +590,7 @@ elleta(GEN om, long prec)
     case t_INT: case t_FRAC: case t_REAL:
       y1 = real_i(y1);
   }
-  return gerepilecopy(av, mkvec2(y1,y2));
+  return gc_GEN(av, mkvec2(y1,y2));
 }
 GEN
 ellperiods(GEN w, long flag, long prec)
@@ -600,8 +600,8 @@ ellperiods(GEN w, long flag, long prec)
   if (!get_periods(w, NULL, &T, prec)) pari_err_TYPE("ellperiods",w);
   switch(flag)
   {
-    case 0: return gerepilecopy(av, mkvec2(T.W1, T.W2));
-    case 1: return gerepilecopy(av, mkvec2(mkvec2(T.W1, T.W2), _elleta(&T)));
+    case 0: return gc_GEN(av, mkvec2(T.W1, T.W2));
+    case 1: return gc_GEN(av, mkvec2(mkvec2(T.W1, T.W2), _elleta(&T)));
     default: pari_err_FLAG("ellperiods");
              return NULL;/*LCOV_EXCL_LINE*/
   }
@@ -690,7 +690,7 @@ ellwpnum_all(GEN e, GEN z, long flall, long prec)
     }
     y = mkvec2(y, yp);
   }
-  return gerepilecopy(av, gprec_wtrunc(y, T.prec0));
+  return gc_GEN(av, gprec_wtrunc(y, T.prec0));
 }
 static GEN
 ellwpseries_aux(GEN c4, GEN c6, long v, long PRECDL)
@@ -795,7 +795,7 @@ ellwp0(GEN w, GEN z, long flag, long prec)
     else
     {
       GEN R = mkvec2(Q, gdiv(derivser(Q), derivser(y)));
-      return gerepilecopy(av, R);
+      return gc_GEN(av, R);
     }
   }
   y = ellwpnum_all(w,z,flag,prec);
@@ -872,7 +872,7 @@ ellzeta(GEN w, GEN z, long prec0)
     }
   }
   if (et) y = gadd(y, et);
-  return gerepilecopy(av, gprec_wtrunc(y, T.prec0));
+  return gc_GEN(av, gprec_wtrunc(y, T.prec0));
 }
 
 /* if flag=0, return ellsigma, otherwise return log(ellsigma) */
@@ -975,7 +975,7 @@ ellsigma(GEN w, GEN z, long flag, long prec0)
       else if (cx && typ(y) == t_COMPLEX) gel(y,1) = gen_0;
     }
   }
-  return gerepilecopy(av, gprec_wtrunc(y, T.prec0));
+  return gc_GEN(av, gprec_wtrunc(y, T.prec0));
 }
 
 GEN
@@ -994,7 +994,7 @@ pointell(GEN e, GEN z, long prec)
   if (!v) { set_avma(av); return ellinf(); }
   gel(v,1) = gsub(gel(v,1), gdivgu(ell_get_b2(e),12));
   gel(v,2) = gmul2n(gsub(gel(v,2), ec_h_evalx(e,gel(v,1))),-1);
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 /********************************************************************/
@@ -1289,7 +1289,7 @@ eta(GEN x, long prec)
 {
   pari_sp av = avma;
   GEN z = inteta( qq(x,prec) );
-  if (typ(z) == t_SER) return gerepilecopy(av, z);
+  if (typ(z) == t_SER) return gc_GEN(av, z);
   return gerepileupto(av, z);
 }
 
@@ -1791,7 +1791,7 @@ weberf(GEN x, long prec)
   t0 = mkfrac(gen_m1, utoipos(24));
   z = apply_eta_correction(z, st_a, st_b, t0, NULL, prec);
   if (typ(z) == t_COMPLEX && isexactzero(real_i(x)))
-    z = gerepilecopy(av, gel(z,1));
+    z = gc_GEN(av, gel(z,1));
   else
     z = gerepileupto(av, z);
   return z;
@@ -2218,7 +2218,7 @@ theta(GEN z, GEN tau, GEN flag, long prec)
     case 4: T = gel(T,2); break;
     default: pari_err_FLAG("theta");
   }
-  return gerepilecopy(av, T);
+  return gc_GEN(av, T);
 }
 
 /* Same as 2*Pi*eta(tau,1)^3 = - thetaall_i(NULL, tau)[4], faster than both. */
@@ -2277,7 +2277,7 @@ thetanull(GEN tau, GEN flag, long prec)
       default: pari_err_FLAG("thetanull");
     }
   }
-  return gerepilecopy(av, T0);
+  return gc_GEN(av, T0);
 }
 
 /********************************************************************/
@@ -2298,7 +2298,7 @@ elljacobi(GEN z, GEN k, long prec)
   SN = gdiv(gmul(z3, t1), z2t4);
   CN = gdiv(gmul(z4, t2), z2t4);
   DN = gdiv(gmul(z4, t3), gmul(z3, t4));
-  return gerepilecopy(av, mkvec3(SN, CN, DN));
+  return gc_GEN(av, mkvec3(SN, CN, DN));
 }
 
 /********************************************************************/
@@ -2386,5 +2386,5 @@ ellweierstrass(GEN z, GEN tau, long prec)
                          wzeta(z, tau, T, e, prec),
                          wp(T, T0, a), wpprime(T, T0, prec)));
   }
-  return gerepilecopy(av, R);
+  return gc_GEN(av, R);
 }

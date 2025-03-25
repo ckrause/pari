@@ -92,7 +92,7 @@ gen_digits(GEN x, GEN B, long n, void *E, struct bb_ring *r,
                           GEN (*div)(void *E, GEN x, GEN y, GEN *r))
 {
   pari_sp av = avma;
-  return gerepilecopy(av, gen_digits_i(x, B, n, E, r, div));
+  return gc_GEN(av, gen_digits_i(x, B, n, E, r, div));
 }
 
 GEN
@@ -102,7 +102,7 @@ gen_fromdigits(GEN x, GEN B, void *E, struct bb_ring *r)
   long n = lg(x)-1;
   GEN vB = get_vB(B, n, E, r);
   GEN z = gen_fromdigits_dac(x, vB, 1, n, E, r->add, r->mul);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 static GEN
@@ -208,8 +208,8 @@ digits_i(GEN x, GEN B)
   pari_sp av = avma;
   B = check_basis(B);
   if (!signe(x))       {set_avma(av); return cgetg(1,t_VEC); }
-  if (signe(B) > 0) return gerepilecopy(av, digits_pos(x, B));
-  return gerepilecopy(av, digits_neg(x, negi(B)));
+  if (signe(B) > 0) return gc_GEN(av, digits_pos(x, B));
+  return gc_GEN(av, digits_neg(x, negi(B)));
 }
 
 GEN

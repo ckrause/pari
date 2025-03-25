@@ -354,7 +354,7 @@ ZX_translate_basecase(GEN P, GEN c)
       if (gc_needed(av,2))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"ZX_translate(1), i = %ld/%ld", i,n);
-        Q = gerepilecopy(av, Q); R = Q+2;
+        Q = gc_GEN(av, Q); R = Q+2;
       }
     }
   }
@@ -366,7 +366,7 @@ ZX_translate_basecase(GEN P, GEN c)
       if (gc_needed(av,2))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"ZX_translate(-1), i = %ld/%ld", i,n);
-        Q = gerepilecopy(av, Q); R = Q+2;
+        Q = gc_GEN(av, Q); R = Q+2;
       }
     }
   }
@@ -378,11 +378,11 @@ ZX_translate_basecase(GEN P, GEN c)
       if (gc_needed(av,2))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"ZX_translate, i = %ld/%ld", i,n);
-        Q = gerepilecopy(av, Q); R = Q+2;
+        Q = gc_GEN(av, Q); R = Q+2;
       }
     }
   }
-  return gerepilecopy(av, Q);
+  return gc_GEN(av, Q);
 }
 
 GEN
@@ -1335,7 +1335,7 @@ ZXQX_sqr(GEN x, GEN T)
   long n = degpol(T);
   GEN z = ZXX_sqr_Kronecker(x, n);
   z = Kronecker_to_ZXQX(z, T);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 GEN
@@ -1345,7 +1345,7 @@ ZXQX_mul(GEN x, GEN y, GEN T)
   long n = degpol(T);
   GEN z = ZXX_mul_Kronecker(x, y, n);
   z = Kronecker_to_ZXQX(z, T);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 GEN

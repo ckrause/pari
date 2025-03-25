@@ -93,7 +93,7 @@ ApplyAllQ(GEN Q, GEN r, long j)
   long i;
   r = leafcopy(r);
   for (i=1; i<j; i++) ApplyQ(gel(Q,i), r);
-  return gerepilecopy(av, r);
+  return gc_GEN(av, r);
 }
 
 /* same, arbitrary coefficients [20% slower for t_REAL at DEFAULTPREC] */
@@ -117,7 +117,7 @@ RgC_ApplyAllQ(GEN Q, GEN r, long j)
   long i;
   r = leafcopy(r);
   for (i=1; i<j; i++) RgC_ApplyQ(gel(Q,i), r);
-  return gerepilecopy(av, r);
+  return gc_GEN(av, r);
 }
 
 int
@@ -174,7 +174,7 @@ matqr(GEN x, long flag, long prec)
   if (n != nbrows(x)) pari_err_DIM("matqr");
   if (!RgM_QR_init(x, &B,&Q,&L, prec)) pari_err_PREC("matqr");
   if (!flag) Q = shallowtrans(mathouseholder(Q, matid(n)));
-  return gerepilecopy(av, mkvec2(Q, shallowtrans(L)));
+  return gc_GEN(av, mkvec2(Q, shallowtrans(L)));
 }
 
 /* compute B = | x[k] |^2, Q = Householder transforms and L = mu_{i,j} */
@@ -732,7 +732,7 @@ lindep_bit(GEN x, long bit)
   GEN v, M = lindepfull_bit(x,bit);
   if (!M) { set_avma(av); return cgetg(1, t_COL); }
   v = gel(M,1); setlg(v, lg(M));
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 /* deprecated */
 GEN
@@ -788,7 +788,7 @@ lindep_padic(GEN x)
     gel(m,i) = c;
   }
   m = ZM_lll(ZM_hnfmodid(m, pn), 0.99, LLL_INPLACE);
-  return gerepilecopy(av, gel(m,1));
+  return gc_GEN(av, gel(m,1));
 }
 /* x is a vector of t_POL/t_SER */
 GEN
@@ -892,7 +892,7 @@ algdep0(GEN x, long n, long bit)
     y = lindep2(y, bit);
   if (lg(y) == 1) pari_err(e_DOMAIN,"algdep", "degree(x)",">", stoi(n), x);
   y = RgV_to_RgX(y, 0);
-  if (signe(leading_coeff(y)) > 0) return gerepilecopy(av, y);
+  if (signe(leading_coeff(y)) > 0) return gc_GEN(av, y);
   return gerepileupto(av, ZX_neg(y));
 }
 
@@ -947,7 +947,7 @@ seralgdep(GEN s, long p, long r)
   v = cgetg(p+1, t_VEC);
   for (n = 0; n < p; n++)
     gel(v, n+1) = RgV_to_RgX(vecslice(D, r*n+1, r*n+r), vy);
-  return gerepilecopy(av, RgV_to_RgX(v, 0));
+  return gc_GEN(av, RgV_to_RgX(v, 0));
 }
 
 GEN
@@ -975,7 +975,7 @@ serdiffdep(GEN s, long p, long r)
   v = cgetg(p, t_VEC);
   for (n = 1; n < p; n++)
     gel(v, n) = RgV_to_RgX(vecslice(D, r*n+1, r*n+r), vy);
-  return gerepilecopy(av, mkvec2(RgV_to_RgX(v, 0), gneg(P)));
+  return gc_GEN(av, mkvec2(RgV_to_RgX(v, 0), gneg(P)));
 }
 
 /* FIXME: could precompute ZM_lll attached to V[2..] */
@@ -1065,7 +1065,7 @@ bestapprnf(GEN x, GEN T, GEN roT, long prec)
   }
   V = vec_prepend(gpowers(roT, dT-1), NULL);
   bit = prec2nbits_mul(prec, 0.8);
-  return gerepilecopy(av, bestapprnf_i(x, T, V, bit));
+  return gc_GEN(av, bestapprnf_i(x, T, V, bit));
 }
 
 /********************************************************************/
@@ -1361,7 +1361,7 @@ minim0_dolll(GEN a, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
       GEN c = gcoeff(a,i,i);
       if (cmpii(c, B) < 0) { B = c; t = i; }
     }
-    if (flag == min_FIRST) return gerepilecopy(av, mkvec2(B, gel(u,t)));
+    if (flag == min_FIRST) return gc_GEN(av, mkvec2(B, gel(u,t)));
     maxnorm = -1.; /* don't update maxnorm */
     if (is_bigint(B)) return NULL;
     sBORNE = itos(B);
@@ -1421,7 +1421,7 @@ minim0_dolll(GEN a, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
     {
       case min_FIRST:
         if (dolll) x = ZM_zc_mul_canon(u,x);
-        return gerepilecopy(av, mkvec2(roundr(dbltor(p)), x));
+        return gc_GEN(av, mkvec2(roundr(dbltor(p)), x));
 
       case min_ALL:
         if (s > maxrank && stockall) /* overflow */
@@ -1459,7 +1459,7 @@ minim0_dolll(GEN a, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
     for (j=1; j<=k; j++)
       gel(L,j) = dolll==1 ? ZM_zc_mul_canon(u, gel(L,j))
                           : ZM_zc_mul_canon_zm(u, gel(L,j));
-  return gerepilecopy(av, mkvec3(stoi(s<<1), r, L));
+  return gc_GEN(av, mkvec3(stoi(s<<1), r, L));
 }
 
 /* Closest vectors for the integral definite quadratic form: a.
@@ -1592,7 +1592,7 @@ cvp0_dolll(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
     {
       case min_FIRST:
         if (dolll) x = ZM_zc_mul(u,x);
-        return gerepilecopy(av, mkvec2(dbltor(p), x));
+        return gc_GEN(av, mkvec2(dbltor(p), x));
 
       case min_ALL:
         if (s > maxrank && stockall) /* overflow */
@@ -1617,7 +1617,7 @@ cvp0_dolll(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
   for (j=1; j<=k; j++)
     gel(L,j) = dolll==1 ? ZM_zc_mul(u, gel(L,j))
                         : zc_to_ZC(gel(L,j));
-  return gerepilecopy(av, mkvec3(stoi(s), r, L));
+  return gc_GEN(av, mkvec3(stoi(s), r, L));
 }
 
 static GEN

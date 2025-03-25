@@ -578,7 +578,7 @@ znstar0(GEN N, long flag)
                     : mkvec2(mkcol(gen_2), mkvecsmall(1));
       G = mkvec5(mkvec2(N,mkvec(gen_0)), G, F, v, cgetg(1,t_MAT));
     }
-    return gerepilecopy(av,G);
+    return gc_GEN(av,G);
   }
   if (!F) F = Z_factor(N);
   P = gel(F,1); nbprimes = lg(P)-1;
@@ -712,7 +712,7 @@ znstar0(GEN N, long flag)
     G = mkvec5(mkvec2(N,mkvec(gen_0)), G, F,
                mkvecn(6,mod,fao,Ui,gen,cyc,lo), U);
   }
-  return gerepilecopy(av, G);
+  return gc_GEN(av, G);
 }
 GEN
 znstar(GEN N) { return znstar0(N, 0); }
@@ -826,7 +826,7 @@ znconreylog(GEN bid, GEN x)
       if (!RgV_is_ZV(x) || lg(x) != lg(Ui)) pari_err_TYPE("znconreylog", x);
       return gerepileupto(av, ZV_ZV_mod(ZM_ZC_mul(Ui,x), cycg));
     case t_VEC:
-      return gerepilecopy(av, znconreyfromchar(bid, x));
+      return gc_GEN(av, znconreyfromchar(bid, x));
     default: pari_err_TYPE("znconreylog", x);
   }
   F = znstar_get_faN(bid); /* factor(N) */
@@ -866,7 +866,7 @@ znconreylog(GEN bid, GEN x)
     if (!a) pari_err_COPRIME("znconreylog", x, N);
     gel(y, i++) = a;
   }
-  return gerepilecopy(av, y);
+  return gc_GEN(av, y);
 }
 GEN
 Zideallog(GEN bid, GEN x)
@@ -929,7 +929,7 @@ znconreyexp(GEN bid, GEN x)
   v = chinese1_coprime_Z(v);
   vmod = gel(v,1);
   v = gel(v,2);
-  if (mpodd(v) || mpodd(N)) return gerepilecopy(av, v);
+  if (mpodd(v) || mpodd(N)) return gc_GEN(av, v);
   /* handle N = 2 mod 4 */
   return gerepileuptoint(av, addii(v, vmod));
 }
@@ -959,7 +959,7 @@ znconreychar(GEN bid, GEN m)
   }
   d = gel(nchi,1);
   c = ZV_ZM_mul(gel(nchi,2), znstar_get_Ui(bid)); /* images of bid gens */
-  return gerepilecopy(av, char_denormalize(znstar_get_cyc(bid),d,c));
+  return gc_GEN(av, char_denormalize(znstar_get_cyc(bid),d,c));
 }
 
 /* chi a t_INT or Conrey log describing a character. Return conductor, as an
@@ -1105,7 +1105,7 @@ zncharinduce(GEN G, GEN chi, GEN N)
   }
   l = lg(P);
   /* q = N or q = 2N, N odd */
-  if (cmpii(N,q) <= 0) return gerepilecopy(av, chi);
+  if (cmpii(N,q) <= 0) return gc_GEN(av, chi);
   /* N > 1 => l > 1*/
   if (typ(E) != t_VECSMALL) E = ZV_to_zv(E);
   e2 = (E[1] >= 3 && absequaliu(gel(P,1),2)); /* 2 generators at 2 mod N */
@@ -1147,7 +1147,7 @@ zncharinduce(GEN G, GEN chi, GEN N)
     long k = ZV_search(Pq, p);
     gel(CHI,j) = k? mulii(gel(chi,k), powiu(p, E[i]-Eq[k])): gen_0;
   }
-  return gerepilecopy(av, CHI);
+  return gc_GEN(av, CHI);
 }
 
 /* m a Conrey log [on the canonical primitive roots], cycg the primitive
@@ -1294,7 +1294,7 @@ znchar(GEN D)
       pari_err_TYPE("znchar", D);
       return NULL; /*LCOV_EXCL_LINE*/
   }
-  return gerepilecopy(av, chi);
+  return gc_GEN(av, chi);
 }
 
 /* G a znstar, not stack clean */
@@ -1440,7 +1440,7 @@ zncharconductor(GEN G, GEN chi)
   pari_sp av = avma;
   GEN F = znconreyconductor(G, chi, NULL);
   if (typ(F) == t_INT) return F;
-  return gerepilecopy(av, gel(F,1));
+  return gc_GEN(av, gel(F,1));
 }
 GEN
 znchartoprimitive(GEN G, GEN chi)
@@ -1451,5 +1451,5 @@ znchartoprimitive(GEN G, GEN chi)
     chi = mkvec2(G,chi);
   else
     chi = mkvec2(znstar0(F,1), chi0);
-  return gerepilecopy(av, chi);
+  return gc_GEN(av, chi);
 }

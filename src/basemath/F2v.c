@@ -1074,7 +1074,7 @@ F2Ms_ker(GEN M, long nbrow)
     R = block_lanczos(Mp, nbrow);
   } while(!R);
   Rp = F2m_inflate(R, p, nbcol);
-  return gerepilecopy(av, Rp);
+  return gc_GEN(av, Rp);
 }
 
 GEN

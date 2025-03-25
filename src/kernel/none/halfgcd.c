@@ -295,7 +295,7 @@ HGCD_basecase(GEN y, GEN x)
     u1 = addii(mulii(u, q), u1);
     v1 = addii(mulii(v, q), v1);
   }
-  return gerepilecopy(av, mkvec3(mkmat22(u1,u,v1,v), d, d1));
+  return gc_GEN(av, mkvec3(mkmat22(u1,u,v1,v), d, d1));
 }
 
 static GEN HGCD(GEN x, GEN y);
@@ -316,24 +316,24 @@ HGCD_split(GEN a, GEN b)
   GEN a0, b0, ap, bp, c, d, c0, d0, cp, dp, R, S, T, q, r;
   if (signe(b) < 0  || cmpii(a,b)<0) pari_err_BUG("HGCD_split");
   if (expi(b) < m)
-    return gerepilecopy(av, mkvec3(matid2(), a, b));
+    return gc_GEN(av, mkvec3(matid2(), a, b));
   a0 = addiu(shifti(a, -m), 1);
   if (cmpiu(a0,7) <= 0)
   {
     R = FIXUP0(matid2(), &a, &b, m);
-    return gerepilecopy(av, mkvec3(R, a, b));
+    return gc_GEN(av, mkvec3(R, a, b));
   }
   b0 = shifti(b,-m);
   t = magic_threshold(a0);
   R = FIXUP1(HGCD(a0,b0),a, b, m, t, &ap, &bp);
   if (expi(bp) < m)
-    return gerepilecopy(av, mkvec3(R, ap, bp));
+    return gc_GEN(av, mkvec3(R, ap, bp));
   q = dvmdii(ap, bp, &r);
   c = bp; d = r;
   if (cmpiu(shifti(c,-m),6) <= 0)
   {
     R = FIXUP0(mulq(R, q), &c, &d, m);
-    return gerepilecopy(av, mkvec3(R, c, d));
+    return gc_GEN(av, mkvec3(R, c, d));
   }
   l = uexpi(c);
   k = 2*m-l-1; if (k<0) pari_err_BUG("halfgcd");
@@ -343,7 +343,7 @@ HGCD_split(GEN a, GEN b)
   S = FIXUP1(HGCD(c0,d0), c, d, k, tp, &cp, &dp);
   if (!(expi(cp)>=m+1 && m+1 > expi(dp))) pari_err_BUG("halfgcd");
   T = FIXUP0(ZM2_mul(mulq(R, q), S), &cp, &dp, m);
-  return gerepilecopy(av, mkvec3(T, cp, dp));
+  return gc_GEN(av, mkvec3(T, cp, dp));
 }
 
 static GEN
@@ -393,5 +393,5 @@ halfgcdii(GEN A, GEN B)
     a = b; b = r;
     Q = mulq(Q, q);
   }
-  return gerepilecopy(av, mkvec2(ZM_inv2(Q),mkcol2(a,b)));
+  return gc_GEN(av, mkvec2(ZM_inv2(Q),mkcol2(a,b)));
 }

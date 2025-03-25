@@ -32,7 +32,7 @@ boundfact(GEN n, ulong lim)
       GEN a = Z_factor_limit(gel(n,1),lim);
       GEN b = Z_factor_limit(gel(n,2),lim);
       gel(b,2) = ZC_neg(gel(b,2));
-      return gerepilecopy(av, ZM_merge_factor(a,b));
+      return gc_GEN(av, ZM_merge_factor(a,b));
     }
   }
   pari_err_TYPE("boundfact",n);
@@ -130,7 +130,7 @@ factor_pn_1_limit(GEN p, long n, ulong lim)
       B = factorlim(polcyclo_eval(d[i],p), lim);
     A = ZM_merge_factor(A, B);
   }
-  return gerepilecopy(av, A);
+  return gc_GEN(av, A);
 }
 GEN
 factor_pn_1(GEN p, ulong n)
@@ -462,7 +462,7 @@ divisors_factored(GEN N)
       }
   if (isint) gen_sort_inplace(D,NULL,&cmpi1,NULL);
   for (i = 1; i <= n; i++) gmael(D,i,2) = fa_clean(P, gmael(D,i,2));
-  return gerepilecopy(av, D);
+  return gc_GEN(av, D);
 }
 static int
 cmpu1(void *E, GEN va, GEN vb)
@@ -504,7 +504,7 @@ divisorsu_fact_factored(GEN fa)
     vD[i] = umael(D,i,1);
     gel(D,i) = fa_clean_u(P, gmael(D,i,2));
   }
-  return gerepilecopy(av, mkvec2(vD,D));
+  return gc_GEN(av, mkvec2(vD,D));
 }
 GEN
 divisors(GEN N)
@@ -594,7 +594,7 @@ core2partial(GEN n, long all)
 {
   pari_sp av = avma;
   if (typ(n) != t_INT) pari_err_TYPE("core2partial",n);
-  return gerepilecopy(av, core2fa(Z_factor_limit(n,all)));
+  return gc_GEN(av, core2fa(Z_factor_limit(n,all)));
 }
 /* given an arithmetic function argument, return the underlying integer */
 static GEN
@@ -615,7 +615,7 @@ core2_i(GEN n)
   return mkvec2(f, sqrtint(diviiexact(arith_n(n), f)));
 }
 GEN
-core2(GEN n) { pari_sp av = avma; return gerepilecopy(av, core2_i(n)); }
+core2(GEN n) { pari_sp av = avma; return gc_GEN(av, core2_i(n)); }
 
 GEN
 core0(GEN n,long flag) { return flag? core2(n): core(n); }
@@ -652,7 +652,7 @@ coredisc2(GEN n)
   pari_sp av = avma;
   GEN y = core2_i(n);
   GEN c = gel(y,1), f = gel(y,2);
-  if (_mod4(c)<=1) return gerepilecopy(av, y);
+  if (_mod4(c)<=1) return gc_GEN(av, y);
   y = cgetg(3,t_VEC);
   gel(y,1) = shifti(c,2);
   gel(y,2) = gmul2n(f,-1); return gerepileupto(av, y);

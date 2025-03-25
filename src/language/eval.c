@@ -630,7 +630,7 @@ bitprecision0(GEN x, long n)
   if (n) {
     pari_sp av = avma;
     GEN y = gprec_w(x, nbits2prec(n));
-    return gerepilecopy(av, y);
+    return gc_GEN(av, y);
   }
   return _bitprecision0(x);
 }
@@ -2209,7 +2209,7 @@ parforvec(GEN x, GEN code, long flag, void *E, long call(void*, GEN, GEN))
       {
         status = br_status;
         br_status = br_NONE;
-        stop = gerepilecopy(av2, gel(done,1));
+        stop = gc_GEN(av2, gel(done,1));
       }
     if (!stop) set_avma(av2);
   }

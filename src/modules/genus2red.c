@@ -2327,5 +2327,5 @@ genus2red(GEN PQ, GEN p)
   cond = factorback(facto);
   /* remove denominator 2 coming from f = -1 in genuslocalred(, p = 2) */
   if (typ(cond) != t_INT) cond = gel(cond,1);
-  return gerepilecopy(av, mkvec4(cond, facto, PQ, V));
+  return gc_GEN(av, mkvec4(cond, facto, PQ, V));
 }

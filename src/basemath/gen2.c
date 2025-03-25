@@ -1348,7 +1348,7 @@ gvaluation(GEN x, GEN p)
             if (gc_needed(av,1))
             {
               if(DEBUGMEM>1) pari_warn(warnmem,"gvaluation");
-              x = gerepilecopy(av, x);
+              x = gc_GEN(av, x);
             }
           }
         }
@@ -2494,7 +2494,7 @@ quadtofp(GEN x, long prec)
   if (signe(D) < 0)
   {
     z = mkcomplex(cxcompotor(u, prec), z);
-    if (!b) return gerepilecopy(av, z);
+    if (!b) return gc_GEN(av, z);
     z = gmul2n(z, -1);
   }
   else

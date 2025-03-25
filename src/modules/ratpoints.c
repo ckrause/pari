@@ -1779,7 +1779,7 @@ ZX_hyperellratpoints(GEN P, GEN h, long flag)
   find_points_work(&args, process, (void *)&data);
 
   setlg(data.z, data.i+1);
-  return gerepilecopy(av, data.z);
+  return gc_GEN(av, data.z);
 }
 
 /* The ordinates of the points returned need to be divided by den
@@ -1847,7 +1847,7 @@ hyperellratpoints(GEN PQ, GEN h, long flag)
       if (den) zdy = mulii(zdy, den);
       gel(L,i) = mkvec2(gdiv(x,z), gdiv(y, zdy));
     }
-    return gerepilecopy(av, L);
+    return gc_GEN(av, L);
   }
   H = RgX_add(RgX_muls(P,4), RgX_sqr(Q));
   dy = (degpol(H)+1)>>1; dQ = degpol(Q);
@@ -1863,7 +1863,7 @@ hyperellratpoints(GEN PQ, GEN h, long flag)
     if (den) zdy = mulii(zdy, den);
     gel(L,i) = mkvec2(gdiv(x,z), gmul2n(gsub(gdiv(y,zdy),Qx),-1));
   }
-  return gerepilecopy(av, L);
+  return gc_GEN(av, L);
 }
 
 GEN
@@ -1893,5 +1893,5 @@ ellratpoints(GEN E, GEN h, long flag)
     }
     gel(L,i) = P;
   }
-  return gerepilecopy(av, L);
+  return gc_GEN(av, L);
 }

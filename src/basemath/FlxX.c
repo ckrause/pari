@@ -442,10 +442,10 @@ FlxY_Flx_translate(GEN P, GEN c, ulong p)
     {
       if(DEBUGMEM>1)
         pari_warn(warnmem,"FlxY_Flx_translate, i = %ld/%ld", i,n);
-      Q = gerepilecopy(av, Q);
+      Q = gc_GEN(av, Q);
     }
   }
-  return gerepilecopy(av, Q);
+  return gc_GEN(av, Q);
 }
 
 /* allow pi = 0 */
@@ -989,7 +989,7 @@ FlxqX_invBarrett_Newton(GEN S, GEN T, ulong p, ulong pi)
     for (i = 0; i < lz; i++) gel(y,i) = Flx_neg(gel(z,i), p);
   }
   x -= 2; setlg(x, lx + 2); x[1] = S[1];
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 
 GEN
@@ -1131,7 +1131,7 @@ FlxqX_divrem_pre(GEN x, GEN S, GEN T, ulong p, long pi, GEN *pr)
     GEN mg = B? B: FlxqX_invBarrett_pre(y, T, p, pi);
     GEN q = FlxqX_divrem_Barrett(x,mg,y,T,p,pi,pr);
     if (!q) return gc_NULL(av);
-    if (!pr || pr==ONLY_DIVIDES) return gerepilecopy(av, q);
+    if (!pr || pr==ONLY_DIVIDES) return gc_GEN(av, q);
     return gc_all(av, 2, &q, pr);
   }
 }
@@ -1804,7 +1804,7 @@ FlxqX_Newton_pre(GEN P, long n, GEN T, ulong p, ulong pi)
   GEN dP = FlxXn_recip(FlxX_deriv(P, p), d, vT);
   GEN Q = FlxqXn_mul_pre(FlxqXn_inv_pre(FlxXn_recip(P, d+1, vT), n, T,p,pi),
                          dP, n, T, p, pi);
-  return gerepilecopy(av, Q);
+  return gc_GEN(av, Q);
 }
 GEN
 FlxqX_Newton(GEN P, long n, GEN T, ulong p)
@@ -1818,7 +1818,7 @@ FlxqX_fromNewton_pre(GEN P, GEN T, ulong p, ulong pi)
   long n = Flx_constant(constant_coeff(P))+1;
   GEN z = FlxX_neg(FlxX_shift(P, -1, vT), p);
   GEN Q = FlxXn_recip(FlxqXn_expint_pre(z, n, T, p, pi), n, vT);
-  return gerepilecopy(av, Q);
+  return gc_GEN(av, Q);
 }
 GEN
 FlxqX_fromNewton(GEN P, GEN T, ulong p)
@@ -1994,7 +1994,7 @@ FlxqXQ_pow_pre(GEN x, GEN n, GEN S, GEN T, ulong p, ulong pi)
   S = FlxqX_get_red_pre(S, T, p, pi);
   D.S = S; D.T = T; D.p = p; D.pi = pi;
   x = gen_pow_i(x, n, (void*)&D, &_FlxqXQ_sqr, &_FlxqXQ_mul);
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 GEN
 FlxqXQ_pow(GEN x, GEN n, GEN S, GEN T, ulong p)
@@ -2016,7 +2016,7 @@ FlxqXQ_powu_pre(GEN x, ulong n, GEN S, GEN T, ulong p, ulong pi)
   S = FlxqX_get_red_pre(S, T, p, pi);
   D.S = S; D.T = T; D.p = p; D.pi = pi;
   x = gen_powu_i(x, n, (void*)&D, &_FlxqXQ_sqr, &_FlxqXQ_mul);
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 GEN
 FlxqXQ_powu(GEN x, ulong n, GEN S, GEN T, ulong p)
@@ -2067,7 +2067,7 @@ FlxqXQ_transmul(GEN tau, GEN a, long n, GEN T, ulong p, ulong pi)
   long vT = get_Flx_var(T);
   if (signe(a)==0) return pol_0(varn(a));
   t2 = FlxX_shift(FlxqX_mul_pre(bt, a, T, p, pi),1-n,vT);
-  if (signe(bht)==0) return gerepilecopy(ltop, t2);
+  if (signe(bht)==0) return gc_GEN(ltop, t2);
   t1 = FlxX_shift(FlxqX_mul_pre(ft, a, T, p, pi),-n,vT);
   t3 = FlxqXn_mul_pre(t1, bht, n-1, T, p, pi);
   vec = FlxX_sub(t2, FlxX_shift(t3, 1, vT), p);
@@ -2128,7 +2128,7 @@ FlxqXQ_minpoly_pre(GEN x, GEN S, GEN T, ulong p, ulong pi)
                          S, T, p,pi);
   }
   g = FlxqX_normalize_pre(g,T,p,pi);
-  return gerepilecopy(ltop,g);
+  return gc_GEN(ltop,g);
 }
 GEN
 FlxqXQ_minpoly(GEN x, GEN S, GEN T, ulong p)
@@ -2186,7 +2186,7 @@ FlxqX_FlxqXQV_eval_pre(GEN Q, GEN x, GEN S, GEN T, ulong p, ulong pi)
     if (gc_needed(btop,1))
       R = gerepileupto(btop, R);
   }
-  return gerepilecopy(av, R);
+  return gc_GEN(av, R);
 }
 GEN
 FlxqX_FlxqXQV_eval(GEN Q, GEN x, GEN S, GEN T, ulong p)
@@ -2266,7 +2266,7 @@ FlxqXQ_autpow_pre(GEN aut, long n, GEN S, GEN T, ulong p, ulong pi)
   S = FlxqX_get_red_pre(S, T, p, pi);
   D.S = S; D.T = T; D.p = p; D.pi = pi;
   aut = gen_powu_i(aut,n,&D,FlxqXQ_autpow_sqr,FlxqXQ_autpow_mul);
-  return gerepilecopy(av, aut);
+  return gc_GEN(av, aut);
 }
 GEN
 FlxqXQ_autpow(GEN aut, long n, GEN S, GEN T, ulong p)
@@ -2306,7 +2306,7 @@ FlxqXQ_autsum_pre(GEN aut, long n, GEN S, GEN T, ulong p, ulong pi)
   S = FlxqX_get_red_pre(S, T, p, pi);
   D.S=S; D.T=T; D.p=p; D.pi=pi;
   aut = gen_powu_i(aut,n,&D,FlxqXQ_autsum_sqr,FlxqXQ_autsum_mul);
-  return gerepilecopy(av, aut);
+  return gc_GEN(av, aut);
 }
 GEN
 FlxqXQ_autsum(GEN aut, long n, GEN S, GEN T, ulong p)
@@ -2341,7 +2341,7 @@ FlxqXQ_auttrace_pre(GEN x, ulong n, GEN S, GEN T, ulong p, ulong pi)
   S = FlxqX_get_red_pre(S, T, p, pi);
   D.S=S; D.T=T; D.p=p; D.pi = pi;
   x = gen_powu_i(x,n,(void*)&D,FlxqXQ_auttrace_sqr,FlxqXQ_auttrace_mul);
-  return gerepilecopy(av, x);
+  return gc_GEN(av, x);
 }
 GEN
 FlxqXQ_auttrace(GEN x, ulong n, GEN S, GEN T, ulong p)
@@ -2370,7 +2370,7 @@ FlxYqq_redswap(GEN x, GEN S, GEN T, ulong p, ulong pi)
   GEN V = FlxX_swap(x,m,w);
   V = FlxqX_red_pre(V,S,p,pi);
   V = FlxX_swap(V,n,w);
-  return gerepilecopy(ltop,V);
+  return gc_GEN(ltop,V);
 }
 static GEN
 FlxYqq_sqr(void *data, GEN x)
@@ -2459,7 +2459,7 @@ FlxqXn_inv_pre(GEN f, long e, GEN T, ulong p, ulong pi)
     if (lgpol(b)==0) return scalarpol(a, v);
     b = Flxq_mul_pre(b, Flxq_sqr_pre(a, T, p, pi), T, p, pi);
     W = deg1pol_shallow(b, a, v);
-    return gerepilecopy(av, W);
+    return gc_GEN(av, W);
   }
   W = scalarpol_shallow(Flxq_inv_pre(gel(f,2), T, p, pi), v);
   mask = quadratic_prec_mask(e);

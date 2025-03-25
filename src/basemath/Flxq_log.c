@@ -141,7 +141,7 @@ Flx_addifsmooth3(pari_sp *av, struct Flxq_log_rel *r, GEN h, long u, long v, lon
       z = famatsmall_reduce(mkmat2(
             vecsmall_concat(gel(z,1),mkvecsmall3(off+u,off+v,off+w)),
             vecsmall_concat(gel(z,2),mkvecsmall3(-1,-1,-1))));
-    gel(r->rel,++r->nbrel) = gerepilecopy(*av,z);
+    gel(r->rel,++r->nbrel) = gc_GEN(*av,z);
     if (DEBUGLEVEL && (r->nbrel&511UL)==0)
       err_printf("%ld%% ",r->nbrel*100/r->nbexp);
     *av = avma;
@@ -216,7 +216,7 @@ Flxq_log_find_rel(GEN b, long r, GEN T, ulong p, ulong pi, GEN *g, long *e)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"Flxq_log_find_rel");
-      *g = gerepilecopy(av, *g);
+      *g = gc_GEN(av, *g);
     }
   }
 }
@@ -358,7 +358,7 @@ check_kernel(long r, GEN M, long nbi, long nbrow, GEN T, ulong p, ulong pi, GEN 
   }
   if (DEBUGLEVEL) timer_printf(&ti,"found %ld/%ld logs", f, nbi);
   if (f < maxss(3,maxss(p/2,nbi/p))) return NULL; /* Not enough logs found */
-  return gerepilecopy(av, K);
+  return gc_GEN(av, K);
 }
 
 static GEN
@@ -512,7 +512,7 @@ Flxq_log_Coppersmith_worker(GEN u, long i, GEN V, GEN R)
     }
   }
   setlg(L,rel);
-  return gerepilecopy(ltop, mkvec2(stoi(nbtest), L));
+  return gc_GEN(ltop, mkvec2(stoi(nbtest), L));
 }
 
 static GEN

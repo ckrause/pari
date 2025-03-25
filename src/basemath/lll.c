@@ -205,7 +205,7 @@ RgM_Cholesky_dynprec(GEN M)
     bitprec = maxss((4*bitprec)/3, mbitprec);
     set_avma(ltop);
   }
-  return gerepilecopy(ltop, L);
+  return gc_GEN(ltop, L);
 }
 
 static GEN
@@ -233,7 +233,7 @@ gramschmidt_dynprec(GEN M)
     }
     mbitprec = minprec + GS_extraprec(L, 1);
     if (bitprec >= mbitprec)
-      return gerepilecopy(ltop, shallowtrans(L));
+      return gc_GEN(ltop, shallowtrans(L));
     bitprec = maxss((4*bitprec)/3, mbitprec);
     set_avma(ltop);
   }
@@ -334,16 +334,16 @@ ZM_flatter(GEN M, long flag)
       if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
     }
     else
-      if (gc_needed(av, 1)) M = gerepilecopy(av, M);
+      if (gc_needed(av, 1)) M = gc_GEN(av, M);
   }
   if (DEBUGLEVEL>=3 && (cert || timer_get(&ti) > 1000))
     dbg_flatter(&ti, n, -1, i == lti? -1: lti, s, pot);
   if (!inplace)
   {
     if (!T) return gc_NULL(av);
-    return gerepilecopy(av, T);
+    return gc_GEN(av, T);
   }
-  return  gerepilecopy(av, M);
+  return  gc_GEN(av, M);
 }
 
 static GEN
@@ -371,9 +371,9 @@ ZM_flatter_rank(GEN M, long rank, long flag)
   if (!inplace)
   {
     if (!T) { set_avma(av); return matid(n); }
-    return gerepilecopy(av, T);
+    return gc_GEN(av, T);
   }
-  return  gerepilecopy(av, M);
+  return  gc_GEN(av, M);
 }
 
 static GEN
@@ -427,7 +427,7 @@ ZM_flattergram(GEN M, long flag)
   }
   if (DEBUGLEVEL >= 3) dbg_flattergram(&ti, n, i, s);
   if (!T && ZM_isidentity(T)) return gc_NULL(av);
-  return gerepilecopy(av, T);
+  return gc_GEN(av, T);
 }
 
 /* return base change, NULL if identity */
@@ -451,7 +451,7 @@ ZM_flattergram_rank(GEN M, long rank, long flag)
     if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
   }
   if (!T || ZM_isidentity(T)) return gc_NULL(av);
-  return gerepilecopy(av, T);
+  return gc_GEN(av, T);
 }
 
 /* round to closest integer (as a double). If |a| >= 2^52, return it */
@@ -2384,7 +2384,7 @@ get_gaussred(GEN M, long rank)
   if (rank < r) M = RgM_Rg_add(gshift(M, 1), gen_1);
   R = RgM_Cholesky(RgM_gtofp(M, prec), prec);
   if (!R) return NULL;
-  return gerepilecopy(ltop, R);
+  return gc_GEN(ltop, R);
 }
 
 /* Assume x a ZM, if pN != NULL, set it to Gram-Schmidt (squared) norms
@@ -2667,7 +2667,7 @@ lllallgen(GEN x, long flag)
   pari_sp av = avma;
   if (!(flag & LLL_GRAM)) x = gram_matrix(x);
   else if (!RgM_is_square_mat(x)) pari_err_DIM("qflllgram");
-  return gerepilecopy(av, lllgramallgen(x, flag));
+  return gc_GEN(av, lllgramallgen(x, flag));
 }
 GEN
 lllgen(GEN x) { return lllallgen(x, LLL_IM); }
@@ -2680,7 +2680,7 @@ lllgramkerimgen(GEN x)  { return lllallgen(x, LLL_ALL|LLL_GRAM); }
 
 static GEN
 lllall(GEN x, long flag)
-{ pari_sp av = avma; return gerepilecopy(av, ZM_lll(x, LLLDFT, flag)); }
+{ pari_sp av = avma; return gc_GEN(av, ZM_lll(x, LLLDFT, flag)); }
 GEN
 lllint(GEN x) { return lllall(x, LLL_IM); }
 GEN
@@ -2712,7 +2712,7 @@ lllfp(GEN x, double D, long flag)
     }
   }
   h = ZM_lll(RgM_rescale_to_int(x), D, flag);
-  return gerepilecopy(av, h);
+  return gc_GEN(av, h);
 }
 
 GEN
@@ -2780,7 +2780,7 @@ GEN
 kerint(GEN M)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, kerint0(M));
+  return gc_GEN(av, kerint0(M));
 }
 /* OBSOLETE: use kerint */
 GEN
@@ -2793,7 +2793,7 @@ matkerint0(GEN M, long flag)
   switch(flag)
   {
     case 0:
-    case 1: return gerepilecopy(av, kerint0(M));
+    case 1: return gc_GEN(av, kerint0(M));
     default: pari_err_FLAG("matkerint");
   }
   return NULL; /* LCOV_EXCL_LINE */

@@ -429,7 +429,7 @@ ellanalyticrank(GEN E, GEN eps, long bitprec)
     Lrk = ellL1_der(e, vec, &C, t, rk, prec);
     if (DEBUGLEVEL) timer_printf(&ti, "L^(%ld)=%Ps", rk, Lrk);
     if (abscmprr(Lrk, eps) > 0)
-      return gerepilecopy(av, mkvec2(stoi(rk), Lrk));
+      return gc_GEN(av, mkvec2(stoi(rk), Lrk));
     set_avma(av2);
   }
 }
@@ -559,7 +559,7 @@ heegner_psi(GEN E, GEN N, GEN points, long bitprec)
   {
     baby_init3(&bb, Q, bnd, rbnd, prec);
     gen_BG_rec((void*)&bb, heegner_L1, &bg);
-    return gerepilecopy(av, bb.sum);
+    return gc_GEN(av, bb.sum);
   }
 }
 
@@ -588,7 +588,7 @@ lambda1(GEN E, GEN nv, GEN p, long prec)
     long m = -lam[kod+4];
     res = mkvec(divru(mulrs(lp, m), 6));
   }
-  return gerepilecopy(av, res);
+  return gc_GEN(av, res);
 }
 
 static GEN
@@ -624,7 +624,7 @@ lambdalist(GEN E, long prec)
     }
     n = m;
   }
-  return gerepilecopy(ltop, res);
+  return gc_GEN(ltop, res);
 }
 
 /* P a t_INT or t_FRAC, return its logarithmic height */
@@ -1206,7 +1206,7 @@ listheegner(GEN N, GEN faN4, GEN listQ, GEN D)
   if (DEBUGLEVEL > 1)
     err_printf("Disc %Ps : N*ymin = %Pg\n", D,
                            gmul(gsqrt(ymin, DEFAULTPREC),N));
-  return gerepilecopy(av, mkvec3(ymin, L, D));
+  return gc_GEN(av, mkvec3(ymin, L, D));
 }
 
 /* Q | N, P = prime divisors of N, R[i] = local epsilon-factor at P[i].
@@ -1392,7 +1392,7 @@ ellheegner(GEN E)
   P = heegner_find_point(E, nfA, om, ht, gmulsg(2*lint, z), indx, prec);
   if (DEBUGLEVEL) timer_printf(&ti,"heegner_find_point");
   if (cb) P = ellchangepointinv(P, cb);
-  return gerepilecopy(av, P);
+  return gc_GEN(av, P);
 }
 
 /* Modular degree */

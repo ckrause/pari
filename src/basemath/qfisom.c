@@ -267,7 +267,7 @@ bacher(long I, long S, struct qfauto *qf)
   if (DEBUGLEVEL)
     err_printf("QFIsom: mind=%ld maxd=%ld sum=%ld\n",mind,maxd,sum);
   /* Bacher polynomial = sum_{mind <= i <= maxd} coef[i - mind] * X^i */
-  return gerepilecopy(av, mkvec2(mkvecsmall3(sum, mind, maxd), coef));
+  return gc_GEN(av, mkvec2(mkvecsmall3(sum, mind, maxd), coef));
 }
 
 static GEN
@@ -1113,7 +1113,7 @@ gen_comb(long cdep, GEN A, GEN e, struct qfauto *qf, long lim)
     trans = ZM_trunc_to_zm(T);
     ccoef = ZM_trunc_to_zm(RgM_mul(BI,M));
     cF = scpforms(sumvecbase, qf);
-    gel(comb,i) = gerepilecopy(av, mkvec4(list, trans, ccoef, cF));
+    gel(comb,i) = gc_GEN(av, mkvec4(list, trans, ccoef, cF));
   }
   return comb;
 }
@@ -1270,7 +1270,7 @@ qfauto(GEN F, GEN flags)
   (void)init_qfisom(F, &fp, &cand, &qf, flags, &max, NULL);
   init_qfgroup(&G, &fp, &qf);
   autom(&G, &qf, &fp, &cand);
-  return gerepilecopy(av, gen_group(&G, qf.U));
+  return gc_GEN(av, gen_group(&G, qf.U));
 }
 
 static GEN
@@ -1296,7 +1296,7 @@ qfauto0(GEN x, GEN flags)
     if (!F) pari_err_TYPE("qfauto",x);
   }
   G = qfauto(F, flags);
-  return gerepilecopy(av, mkvec2(gel(G,1), zmV_to_ZMV(gel(G,2))));
+  return gc_GEN(av, mkvec2(gel(G,1), zmV_to_ZMV(gel(G,2))));
 }
 /* computes the orbit of V.v[pt] under the generators G[0],...,G[nG-1] and
  * elements stabilizing V.v[pt], which are stored in H, returns the number of
@@ -1362,7 +1362,7 @@ isostab(long pt, GEN G, GEN V, long Maxfail, ulong p)
     }
     ++cnd;
   }
-  setlg(H, nH+1); return gerepilecopy(av, H);
+  setlg(H, nH+1); return gc_GEN(av, H);
 }
 
 /* the heart of the program: the recursion */
@@ -1425,7 +1425,7 @@ qfisominit(GEN F, GEN flags, GEN minvec)
   struct qfcand cand;
   long max;
   GEN norm = init_qfisom(F, &fp, &cand, &qf, flags, &max, minvec);
-  return gerepilecopy(av, mkvec5(F, norm,
+  return gc_GEN(av, mkvec5(F, norm,
                           mkvecn(qf.U?6:5, qf.F, qf.V, qf.W, qf.v, utoi(qf.p), qf.U),
                           mkvec3(fp.diag, fp.per, fp.e),
                           mkvec3(stoi(cand.cdep),cand.comb?cand.comb:cgetg(1,t_VEC),
@@ -1460,7 +1460,7 @@ qfisom(GEN F, GEN FF, GEN flags, GEN G)
   if (!G) G = mkvec(scalar_Flm(-1, qff.dim));
   res = isometry(&qf, &qff, &fp, G, &cand);
   if (!res) return gc_const(av, gen_0);
-  return gerepilecopy(av, zm_to_ZM(qf.U? zm_mul(res,gel(qf.U, 2)): res));
+  return gc_GEN(av, zm_to_ZM(qf.U? zm_mul(res,gel(qf.U, 2)): res));
 }
 
 static GEN
@@ -1507,7 +1507,7 @@ ZM_to_GAP(GEN M)
     gel(s,c++) = ket;
   }
   gel(s,c++) = ket;
-  return gerepilecopy(av, shallowconcat1(s));
+  return gc_GEN(av, shallowconcat1(s));
 }
 
 GEN
@@ -1534,7 +1534,7 @@ qfautoexport(GEN G, long flag)
     gel(str,c++) = ZM_to_GAP(gel(gen,i));
   }
   gel(str,c++) = strtoGENstr(flag ? ">":")");
-  return gerepilecopy(av, shallowconcat1(str));
+  return gc_GEN(av, shallowconcat1(str));
 }
 
 GEN
@@ -1575,5 +1575,5 @@ qforbits(GEN G, GEN V)
     gel(orb, nborbits) = T = cgetg(no+1, t_VEC);
     for (j=1; j<=no; j++) gel(T,j) = gel(V,p[o[j]]);
   }
-  setlg(orb, nborbits+1); return gerepilecopy(av, orb);
+  setlg(orb, nborbits+1); return gc_GEN(av, orb);
 }

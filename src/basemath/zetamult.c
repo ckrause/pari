@@ -325,7 +325,7 @@ zetamult_interpolate2_i(GEN avec, GEN t, long prec)
     if (gc_needed(av, 1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"zetamult: i = %ld", i);
-      ze = gerepilecopy(av, ze);
+      ze = gc_GEN(av, ze);
     }
   }
   return gel(ze, 1);
@@ -760,7 +760,7 @@ polylogmult_interpolate(GEN a, GEN z, GEN t, long prec)
   }
   if (lg(z) != lg(a))
     pari_err_TYPE("polylogmult [#s != #z]", mkvec2(a,z));
-  if (!t) return gerepilecopy(av, zetamultevec(aztoe(a,z,prec), prec));
+  if (!t) return gc_GEN(av, zetamultevec(aztoe(a,z,prec), prec));
   avec = zetamultconvert_i(a, 1); la = lg(avec);
   AZ = allstar2(avec, z);
   A = gel(AZ, 1); l = lg(A);
@@ -986,11 +986,11 @@ zetamultall(long k, long flag, long prec)
   { /* not star */
     Lind = zetamultall_i(k, flag, prec);
     res = (flag & 8L)? Lind : gel(Lind, 1);
-    return gerepilecopy(av, res);
+    return gc_GEN(av, res);
   }
   /* star */
   fl = flag & 4L; /* 4 if k, else 0 (all <= k) */
-  Lind = gerepilecopy(av, zetamultall_i(k, fl, prec)); /* full */
+  Lind = gc_GEN(av, zetamultall_i(k, fl, prec)); /* full */
   L = gel(Lind, 1);
   K = 1 << (k - 2);
   res = cgetg(fl? K+1: 2*K, t_VEC);
@@ -1007,5 +1007,5 @@ zetamultall(long k, long flag, long prec)
     }
   }
   if (flag & 8L) res = mkvec2(res, gel(Lind, 2));
-  return gerepilecopy(av, res);
+  return gc_GEN(av, res);
 }

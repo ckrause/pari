@@ -956,7 +956,7 @@ projratpointxz2(GEN T, long lim, long effort, GEN *py)
     {
       if (DEBUGMEM > 1)
         pari_warn(warnmem, "projratpointxz2: #list = %ld",lg(list)-1);
-      list = gerepilecopy(av, list);
+      list = gc_GEN(av, list);
     }
     L = gel(list, 1);
     list = vecsplice(list, 1);
@@ -1032,7 +1032,7 @@ polrootsmodpn(GEN pol, GEN p)
     if (gc_needed(av2, 1)) gerepileall(av2, 1, &v);
   }
   if (lg(v) == 1) { set_avma(av); retmkvec(zerovec(2)); }
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 /* \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
@@ -1260,7 +1260,7 @@ bnfselmer(GEN bnf, GEN S)
   r = n2all - n3;
   e = shallowconcat(zeromat(n, r), e);
   f = shallowconcat(const_vec(r, gen_1), f);
-  return gerepilecopy(av, mkvec3(LS2gen,e,f));
+  return gc_GEN(av, mkvec3(LS2gen,e,f));
 }
 
 static GEN
@@ -1342,7 +1342,7 @@ nf2selmer_quad(GEN nf, GEN S)
     if (!idealispower(nf, id, 2, &gel(f,i))) pari_err_BUG("nf2selmer_quad");
     gel(gen, i) = nf_to_scalar_or_alg(nf, x);
   }
-  return gerepilecopy(ltop, mkvec3(gen, e, f));
+  return gc_GEN(ltop, mkvec3(gen, e, f));
 }
 
 static GEN
@@ -1454,7 +1454,7 @@ ellsearchtrivialpoints(GEN ell, GEN lim, GEN help)
   GEN tors2 = gel(elltors_psylow(ell,2),3);
   GEN triv = lim ? ellratpoints(ell, lim, 0): cgetg(1,t_VEC);
   if (help) triv = shallowconcat(triv, help);
-  return gerepilecopy(av, shallowconcat(tors2, triv));
+  return gc_GEN(av, shallowconcat(tors2, triv));
 }
 
 GEN
@@ -1463,7 +1463,7 @@ ellrankinit(GEN ell, long prec)
   pari_sp av = avma;
   GEN urst;
   checkell_Q(ell); ell = ellminimalbmodel(ell, &urst);
-  return gerepilecopy(av, mkvec3(ell, urst, makevbnf(ell, prec)));
+  return gc_GEN(av, mkvec3(ell, urst, makevbnf(ell, prec)));
 }
 
 INLINE GEN
@@ -1729,7 +1729,7 @@ liftselmer(GEN b, GEN expo, GEN sbase, GEN LS2, GEN pol, GEN discF, GEN K, long 
     P = mkvec2(x, y);
     if (DEBUGLEVEL) err_printf("Found point: %Ps\n", P);
     if (pt_Q) *pt_Q = gen_0;
-    return gerepilecopy(av, P);
+    return gc_GEN(av, P);
   }
   return NULL;
 }
@@ -2123,7 +2123,7 @@ ellrank_flag(GEN e, long effort, GEN help, long flag, long prec)
   }
   if (newell) obj_free(e);
   if (eK != e) obj_free(eK);
-  return gerepilecopy(ltop, v);
+  return gc_GEN(ltop, v);
 }
 
 GEN

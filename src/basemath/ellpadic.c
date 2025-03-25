@@ -364,7 +364,7 @@ ellformalw(GEN e, long n, long v)
     w = gerepileupto(av2, gsub(w, gdiv(num, den)));
     nold = nnew;
   }
-  return gerepilecopy(av, w);
+  return gc_GEN(av, w);
 }
 
 static GEN
@@ -377,7 +377,7 @@ ellformalpoint(GEN e, long n, long v)
 {
   pari_sp av = avma;
   GEN w = ellformalw(e, n, v), wi = ser_inv(w);
-  return gerepilecopy(av, ellformalpoint_i(w, wi));
+  return gc_GEN(av, ellformalpoint_i(w, wi));
 }
 
 static GEN
@@ -404,7 +404,7 @@ ellformaldifferential(GEN e, long n, long v)
   pari_sp av = avma;
   GEN w = ellformalw(e, n, v), wi = ser_inv(w), x;
   GEN w1 = ellformaldifferential_i(e, w, wi, &x);
-  return gerepilecopy(av, mkvec2(w1,gmul(x,w1)));
+  return gc_GEN(av, mkvec2(w1,gmul(x,w1)));
 }
 
 /* t to z, dz = w1 dt */
@@ -434,7 +434,7 @@ ellformallogsigma_t(GEN e, long n)
   GEN w = ellformalw(e, n, 0), wi = ser_inv(w), t = pol_x(0);
   GEN x, s = ellformaldifferential_i(e, w, wi, &x);
   GEN f = gmul(s, gadd(integser(gmul(x,s)), gmul2n(ell_get_a1(e),-1)));
-  return gerepilecopy(av, mkvec2(integser( gsub(ginv(gneg(t)), f) ),
+  return gc_GEN(av, mkvec2(integser( gsub(ginv(gneg(t)), f) ),
                                  integser(s)));
 }
 
@@ -531,7 +531,7 @@ xmP(GEN e, GEN xP, GEN m, GEN N)
     n = Fp_sub(Fp_mul(Fp_mul(B6,C,N), n, N), D, N);
     d = Fp_mul(Fp_mul(C,d,N), B6, N);
   }
-  return gerepilecopy(av, mkvec2(n,d));
+  return gc_GEN(av, mkvec2(n,d));
 }
 /* given [n,d2], x = n/d2 (coprime, d2 = d^2), p | den,
  * return t = -x/y + O(p^v) */
@@ -669,7 +669,7 @@ ellnonsingularmultiple(GEN e, GEN P)
     }
   }
   if (E != e) P = ellchangepointinv(P, ch);
-  return gerepilecopy(av, mkvec2(P,g));
+  return gc_GEN(av, mkvec2(P,g));
 }
 
 GEN
@@ -746,7 +746,7 @@ ellpadicheight(GEN e, GEN p, long v0, GEN P)
   H = mkvec2(a,b);
   gel(H,1) = precp_fix(gel(H,1),v0);
   gel(H,2) = precp_fix(gel(H,2),v0);
-  return gerepilecopy(av, H);
+  return gc_GEN(av, H);
 }
 
 GEN
@@ -817,7 +817,7 @@ ellpadics2(GEN E, GEN p, long n)
     else Ep = ellinit(E, zeropadic_shallow(p,n), 0);
     l = ellpadics2_tate(Ep, n);
     if (Ep != E) obj_free(Ep);
-    return gerepilecopy(av, l);
+    return gc_GEN(av, l);
   }
   pp = itou(p);
   F = ellpadicfrobenius(E, pp, n);
@@ -964,7 +964,7 @@ ellpadicbsd(GEN E, GEN p, long n, GEN D)
   if (D) C = gmul(C, get_Euler(ED, D));
   C = gdiv(sqru(torsion_order(ED)), C);
   if (D) obj_free(ED);
-  return gerepilecopy(av, mkvec2(utoi(r), gmul(U, C)));
+  return gc_GEN(av, mkvec2(utoi(r), gmul(U, C)));
 }
 
 GEN
@@ -999,5 +999,5 @@ ellpadicregulator(GEN E, GEN p, long n, GEN S)
       s2 = ellpadics2(E,p,n);
     R = det( RgM_sub(F, RgM_Rg_mul(G,s2)) );
   }
-  return gerepilecopy(av, R);
+  return gc_GEN(av, R);
 }

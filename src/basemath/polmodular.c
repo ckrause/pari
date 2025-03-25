@@ -1182,7 +1182,7 @@ find_L_tors_point(
     P = Q;
   }
   if (ival) *ival = i;
-  return gerepilecopy(av, P);
+  return gc_GEN(av, P);
 }
 
 static GEN
@@ -1217,7 +1217,7 @@ select_curve_with_L_tors_point(
     lswap(A6, A6t);
   }
   *a4 = A4;
-  *a6 = A6; return gerepilecopy(av, P);
+  *a6 = A6; return gc_GEN(av, P);
 }
 
 /* Return 1 if the L-Sylow subgroup of the curve [a4, a6] (mod p) is
@@ -1748,7 +1748,7 @@ sympol_to_ZM(GEN phi, long L)
     for (j = 1; j <= i; ++j, ++c)
       gcoeff(res, i, j) = gcoeff(res, j, i) = gel(phi, c);
   gcoeff(res, L + 2, 1) = gcoeff(res, 1, L + 2) = gen_1;
-  return gerepilecopy(av, res);
+  return gc_GEN(av, res);
 }
 
 static GEN polmodular_small_ZM(long L, long inv, GEN *db);
@@ -1889,7 +1889,7 @@ polmodular_ZXX(long L, long inv, long vx, long vy)
   if (vy < 0) vy = 1;
   if (varncmp(vx, vy) >= 0)
     pari_err_PRIORITY("polmodular_ZXX", pol_x(vx), "<=", vy);
-  return gerepilecopy(av, RgM_to_RgXX(phi, vx, vy));
+  return gc_GEN(av, RgM_to_RgXX(phi, vx, vy));
 }
 
 INLINE GEN
@@ -1921,14 +1921,14 @@ Fp_polmodular_evalx(long L, long inv, GEN J, GEN P, long v, int compute_derivs)
       gel(tmp, 3) = RgV_to_RgX(FpM_FpC_mul(phi, j_powers, P), v);
     } else
       tmp = modpol;
-    return gerepilecopy(av, tmp);
+    return gc_GEN(av, tmp);
   }
 
   db = polmodular_db_init(inv);
   phi = polmodular0_ZM(L, inv, J, P, compute_derivs, &db);
   phi = RgM_to_RgXV(phi, v);
   gunclone_deep(db);
-  return gerepilecopy(av, compute_derivs? phi: gel(phi, 1));
+  return gc_GEN(av, compute_derivs? phi: gel(phi, 1));
 }
 
 GEN

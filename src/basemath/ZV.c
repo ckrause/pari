@@ -366,7 +366,7 @@ ZM_mul_sw(GEN A, GEN B, long m, long n, long p)
   if (gc_needed(av, 1))
     gerepileall(av, 4, &C11, &C12, &C21, &C22);  /* destroy V2, M3 */
   C = shallowconcat(vconcat(C11, C21), vconcat(C12, C22));
-  return gerepilecopy(av, C);
+  return gc_GEN(av, C);
 }
 
 /* x[i,]*y. Assume lg(x) > 1 and 0 < i < lgcols(x) */
@@ -756,7 +756,7 @@ ZC_Q_mul(GEN A, GEN z)
         gel(B, i) = mkfrac(ni, diviiexact(d, di));
     }
   }
-  return gerepilecopy(av, B);
+  return gc_GEN(av, B);
 }
 
 GEN
@@ -840,14 +840,14 @@ ZM_pow(GEN x, GEN n)
 {
   pari_sp av = avma;
   if (!signe(n)) return matid(lg(x)-1);
-  return gerepilecopy(av, gen_pow_i(x, n, NULL, &_ZM_sqr, &_ZM_mul));
+  return gc_GEN(av, gen_pow_i(x, n, NULL, &_ZM_sqr, &_ZM_mul));
 }
 GEN
 ZM_powu(GEN x, ulong n)
 {
   pari_sp av = avma;
   if (!n) return matid(lg(x)-1);
-  return gerepilecopy(av, gen_powu_i(x, n, NULL, &_ZM_sqr, &_ZM_mul));
+  return gc_GEN(av, gen_powu_i(x, n, NULL, &_ZM_sqr, &_ZM_mul));
 }
 /********************************************************************/
 /**                                                                **/
@@ -1725,7 +1725,7 @@ ZC_reducemodmatrix_i(GEN v, GEN y)
 GEN
 ZC_reducemodmatrix(GEN v, GEN y) {
   pari_sp av = avma;
-  return gerepilecopy(av, ZC_reducemodmatrix_i(v,y));
+  return gc_GEN(av, ZC_reducemodmatrix_i(v,y));
 }
 
 /* Variant reducemodinvertible(ZM v, ZM y), when y singular.
@@ -1752,7 +1752,7 @@ ZM_reducemodmatrix_i(GEN v, GEN y)
 GEN
 ZM_reducemodmatrix(GEN v, GEN y) {
   pari_sp av = avma;
-  return gerepilecopy(av, ZM_reducemodmatrix_i(v,y));
+  return gc_GEN(av, ZM_reducemodmatrix_i(v,y));
 }
 
 GEN
@@ -1760,12 +1760,12 @@ ZC_reducemodlll(GEN x,GEN y)
 {
   pari_sp av = avma;
   GEN z = ZC_reducemodmatrix(x, ZM_lll(y, 0.75, LLL_INPLACE));
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 GEN
 ZM_reducemodlll(GEN x,GEN y)
 {
   pari_sp av = avma;
   GEN z = ZM_reducemodmatrix(x, ZM_lll(y, 0.75, LLL_INPLACE));
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }

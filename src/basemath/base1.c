@@ -485,7 +485,7 @@ ZX_Q_mul(GEN A, GEN z)
         gel(B, i) = mkfrac(ni, diviiexact(d, di));
     }
   }
-  return gerepilecopy(av, B);
+  return gc_GEN(av, B);
 }
 
 /* T != 0 in Z[x], returns a monic polynomial U in Z[x] generating the
@@ -694,7 +694,7 @@ galoisapply(GEN nf, GEN aut, GEN x)
       {
         case 6:
           if (pr_is_inert(x)) { set_avma(av); return gcopy(x); }
-          return gerepilecopy(av, pr_galoisapply(nf, x, aut));
+          return gc_GEN(av, pr_galoisapply(nf, x, aut));
         case 3: y = cgetg(3,t_VEC);
           gel(y,1) = galoisapply(nf, aut, gel(x,1));
           gel(y,2) = elt_galoisapply(nf, aut, gel(x,2));
@@ -740,7 +740,7 @@ nfgaloismatrixapply(GEN nf, GEN M, GEN x)
       {
         case 6:
           if (pr_is_inert(x)) { set_avma(av); return gcopy(x); }
-          return gerepilecopy(av, pr_galoismatrixapply(nf, x, M));
+          return gc_GEN(av, pr_galoismatrixapply(nf, x, M));
         case 3: y = cgetg(3,t_VEC);
           gel(y,1) = nfgaloismatrixapply(nf, M, gel(x,1));
           gel(y,2) = elt_galoismatrixapply(nf, M, gel(x,2));
@@ -1067,7 +1067,7 @@ idealramgroups_aut(GEN nf, GEN gal, GEN pr, GEN aut)
     if (ix==0) pari_err_BUG("idealramgroups");
     gel(res,i) = gel(sub, ix);
   }
-  return gerepilecopy(av, res);
+  return gc_GEN(av, res);
 }
 
 GEN
@@ -1196,7 +1196,7 @@ nfisisom(GEN a, GEN b)
   if (ZX_equal(a, b))
   {
     y = galoisconj(nfb? nfb: b, NULL); settyp(y, t_VEC);
-    return gerepilecopy(av,y);
+    return gc_GEN(av,y);
   }
   if (nfa && !nfb) { swap(a,b); nfb = nfa; nfa = NULL; sw = 1; }
   if (!tests_OK(a, nfa, b, nfb, 1)) { set_avma(av); return gen_0; }
@@ -1217,7 +1217,7 @@ nfisisom(GEN a, GEN b)
     if (la != gen_1) t = RgX_Rg_div(t, la);
     gel(y,i) = sw? RgXQ_reverse(t, b): t;
   }
-  settyp(y, t_VEC); return gerepilecopy(av,y);
+  settyp(y, t_VEC); return gc_GEN(av,y);
 }
 
 static GEN
@@ -1231,7 +1231,7 @@ partmap_reverse(GEN a, GEN b, GEN t, GEN la, GEN lb, long v)
   setvarn(z, v);
   if (!isint1(lb)) z = RgX_unscale(z, lb);
   if (!isint1(la)) z = RgX_Rg_div(z, la);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 static GEN
@@ -1251,7 +1251,7 @@ partmap_reverse_frac(GEN a, GEN b, GEN t, GEN la, GEN lb, long v)
   if (degpol(G)) { N = RgX_div(N,G); D = RgX_div(D,G); }
   if (!isint1(lb)) { N = RgX_unscale(N, lb); D = RgX_unscale(D, lb); }
   if (!isint1(la)) D = RgX_Rg_mul(D, la);
-  return gerepilecopy(av, mkrfrac(N,D));
+  return gc_GEN(av, mkrfrac(N,D));
 }
 
 GEN
@@ -1315,7 +1315,7 @@ nfisincl0(GEN fa, GEN fb, long flag)
       return degpol(b) > 1 ? x: RgX_rem(x,b);
     }
     x = galoisconj(fb, NULL); settyp(x, t_VEC);
-    return gerepilecopy(av,x);
+    return gc_GEN(av,x);
   }
   if (flag==0 && !tests_OK(a, nfa, b, nfb, 0)) { set_avma(av); return gen_0; }
 
@@ -1329,7 +1329,7 @@ nfisincl0(GEN fa, GEN fb, long flag)
   else
     x = nfisincl_from_fact(nfa, degpol(a), b, la, lb, vb, y, flag);
   if (newvar) (void)delete_var();
-  return gerepilecopy(av,x);
+  return gc_GEN(av,x);
 }
 
 GEN
@@ -1466,7 +1466,7 @@ nfsplitting0(GEN T0, GEN D, long flag)
   }
   setvarn(F, v); (void)delete_var();
   if (flag) F = flag == 3? nfsplitting_auto(F, N): mkvec2(F, N);
-  return gerepilecopy(av, F);
+  return gc_GEN(av, F);
 }
 
 GEN
@@ -1882,7 +1882,7 @@ nfcertify(GEN nf)
   GEN vw;
   nf = checknf(nf);
   vw = primes_certify(nf_get_disc(nf), nf_get_ramified_primes(nf));
-  return gerepilecopy(av, gel(vw,1));
+  return gc_GEN(av, gel(vw,1));
 }
 
 /* set *pro to roots of S->T */
@@ -1908,7 +1908,7 @@ get_red_G(nfmaxord_t *S, GEN *pro)
       if (lg(u)-1 == n) break;
       /* singular ==> loss of accuracy */
       if (u0) u0 = gerepileupto(av, RgM_mul(u0,u));
-      else    u0 = gerepilecopy(av, u);
+      else    u0 = gc_GEN(av, u);
     }
     prec = precdbl(prec) + nbits2extraprec(gexpo(u0));
     F.ro = NULL;
@@ -2178,7 +2178,7 @@ nfinit0(GEN x, long flag,long prec)
   if (flag < 0 || flag > 7) pari_err_FLAG("nfinit");
   if (checkrnf_i(x)) return rnf_build_nfabs(x, prec);
   nfinit_basic(&S, x);
-  return gerepilecopy(av, nfinit_complete(&S, flag, prec));
+  return gc_GEN(av, nfinit_complete(&S, flag, prec));
 }
 GEN
 nfinitred(GEN x, long prec)  { return nfinit0(x, nf_RED, prec); }
@@ -2228,7 +2228,7 @@ rnfnewprec(GEN rnf, long prec)
 {
   pari_sp av = avma;
   checkrnf(rnf);
-  return gerepilecopy(av, rnfnewprec_shallow(rnf, prec));
+  return gc_GEN(av, rnfnewprec_shallow(rnf, prec));
 }
 
 GEN
@@ -2244,7 +2244,7 @@ nfnewprec(GEN nf, long prec)
     case typ_NF:  z = nfnewprec_shallow(nf, prec); break;
     case typ_BNR: return bnrnewprec(nf,prec);
   }
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 /********************************************************************/
@@ -2388,7 +2388,7 @@ try_polmin(CG_data *d, nfmaxord_t *S, GEN v, long flag, GEN *ai)
   if (!g) { set_avma(av); g = ZXQ_charpoly(*ai, S->T, varn(S->T)); }
   g = ZX_radical(g);
   if (best && degpol(g) != degpol(S->T)) return gc_NULL(av);
-  g = gerepilecopy(av, g);
+  g = gc_GEN(av, g);
   d->expo_best_disc = ed;
   if (flag & nf_ORIG)
   {
@@ -2590,7 +2590,7 @@ Polred(GEN x, long flag, GEN fa)
     nfinit_basic(&S, mkvec2(x,fa));
   else
     nfinit_basic_flag(&S, x, flag);
-  return gerepilecopy(av, polred_aux(&S, NULL, flag));
+  return gc_GEN(av, polred_aux(&S, NULL, flag));
 }
 
 /* finds "best" polynomial in polred_aux list, defaulting to S->T if none of
@@ -2650,7 +2650,7 @@ polredbest(GEN T, long flag)
 {
   pari_sp av = avma;
   if (flag < 0 || flag > 1) pari_err_FLAG("polredbest");
-  return gerepilecopy(av, polredbest_i(T, flag));
+  return gc_GEN(av, polredbest_i(T, flag));
 }
 GEN
 polredord(GEN x)
@@ -2662,7 +2662,7 @@ polredord(GEN x)
   if (typ(x) != t_POL) pari_err_TYPE("polredord",x);
   x = Q_primpart(x); RgX_check_ZX(x,"polredord");
   n = degpol(x); if (n <= 0) pari_err_CONSTPOL("polredord");
-  if (n == 1) return gerepilecopy(av, mkvec(x));
+  if (n == 1) return gc_GEN(av, mkvec(x));
   lt = leading_coeff(x); vx = varn(x);
   if (is_pm1(lt))
   {
@@ -2763,7 +2763,7 @@ chk_gen_init(FP_chk_fun *chk, GEN R, GEN U)
     pari_sp av2 = avma;
     P = get_pol(d, gel(M,i));
     if (!P) pari_err_PREC("chk_gen_init");
-    P = gerepilecopy(av2, ZX_radical(P));
+    P = gc_GEN(av2, ZX_radical(P));
     D[i] = degpol(P);
     if (D[i] == N)
     { /* primitive element */
@@ -2947,7 +2947,7 @@ polredabs0(GEN x, long flag)
     }
     gel(Y,i) = mkvec2(y, a);
   }
-  return gerepilecopy(av, (flag & nf_ALL)? Y: gel(Y,1));
+  return gc_GEN(av, (flag & nf_ALL)? Y: gel(Y,1));
 }
 
 GEN
@@ -3026,7 +3026,7 @@ rnfpolred_i(GEN nf, GEN R, long flag, long best)
       a = RgX_RgXQ_eval(a, lift_shallow(A), P); /* Mod(a, P) root of T */
       P = mkvec3(P, mkpolmod(a,P), gsub(A, gmul(k,a)));
     }
-    return gerepilecopy(av, P);
+    return gc_GEN(av, P);
   }
   if (typ(A) != t_VEC)
   {
@@ -3051,7 +3051,7 @@ rnfpolred_i(GEN nf, GEN R, long flag, long best)
     A = besta;
   }
   if (flag & nf_ORIG) P = mkvec2(P, mkpolmod(RgXQ_reverse(A,R),P));
-  return gerepilecopy(av, P);
+  return gc_GEN(av, P);
 }
 GEN
 rnfpolredabs(GEN nf, GEN R, long flag)

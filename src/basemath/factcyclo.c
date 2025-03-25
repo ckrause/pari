@@ -414,7 +414,7 @@ get_vT(GEN Data, int NEW)
     M1 = m;
   }
   if (DEBUGLEVEL >= 6) timer_printf(&ti, "get_vT");
-  return gerepilecopy(av, vT);
+  return gc_GEN(av, vT);
 }
 
 /* return sorted kT={i_t[k] | 1<=k<=d}
@@ -1151,7 +1151,7 @@ FpX_factcyclo_lift(long n1, GEN v1, long n2, GEN v2, GEN p, long m)
   if (DEBUGLEVEL >= 6)
     timer_printf(&ti, "FpX_factcyclo_lift (%ld,%ld)*(%ld,%ld)-->(%ld,%ld)-->(%ld,%ld)",
         d1, nf1, d2, nf2, degpol(z), nf1*nf2, d1*d2/e, nf);
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 /* n is any integer prime to p; d>1 and f>1 */
@@ -1283,7 +1283,7 @@ static GEN
 FpX_factcyclo_prime_power(long el, long e, GEN p, long m)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, FpX_factcyclo_prime_power_i(el, e, p, m));
+  return gc_GEN(av, FpX_factcyclo_prime_power_i(el, e, p, m));
 }
 
 static GEN
@@ -1413,7 +1413,7 @@ FpX_factcyclo_i(ulong n, GEN p, long fl)
 
 GEN
 FpX_factcyclo(ulong n, GEN p, ulong m)
-{ pari_sp av = avma; return gerepilecopy(av, FpX_factcyclo_i(n, p, m)); }
+{ pari_sp av = avma; return gc_GEN(av, FpX_factcyclo_i(n, p, m)); }
 
 /*  Data = [H, GH, i_t, d0, kT, [n, d, f, n_T, mitk]]
  *  N2 = [p, pr, pu, pru] */
@@ -1666,7 +1666,7 @@ Flx_factcyclo_lift(long n1, GEN v1, long n2, GEN v2, long p, long m)
   if (DEBUGLEVEL >= 6)
     timer_printf(&ti, "Flx_factcyclo_lift (%ld,%ld)*(%ld,%ld)-->(%ld,%ld)-->(%ld,%ld)",
         d1, nf1, d2, nf2, degpol(z), nf1*nf2, d1*d2/e, nf);
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 /* factor polcyclo(n) mod p based on an idea of Bill Allombert; d>1 and nf>1 */
@@ -1775,7 +1775,7 @@ static GEN
 Flx_factcyclo_prime_power(long el, long e, long p, long m)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, Flx_factcyclo_prime_power_i(el, e, p, m));
+  return gc_GEN(av, Flx_factcyclo_prime_power_i(el, e, p, m));
 }
 
 static GEN
@@ -1844,7 +1844,7 @@ Flx_factcyclo_i(ulong n, ulong p, ulong fl)
 
 GEN
 Flx_factcyclo(ulong n, ulong p, ulong m)
-{ pari_sp av = avma; return gerepilecopy(av, Flx_factcyclo_i(n, p, m)); }
+{ pari_sp av = avma; return gc_GEN(av, Flx_factcyclo_i(n, p, m)); }
 
 GEN
 factormodcyclo(long n, GEN p, long fl, long v)

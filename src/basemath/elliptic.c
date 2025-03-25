@@ -893,7 +893,7 @@ ellinit(GEN x, GEN D, long prec)
   pari_sp av = avma;
   GEN y = ellinit_i(x, D, prec);
   if (!y) { set_avma(av); return cgetg(1,t_VEC); }
-  return gerepilecopy(av,y);
+  return gc_GEN(av,y);
 }
 
 /********************************************************************/
@@ -1002,10 +1002,10 @@ ellchangecompose(GEN E, GEN v, GEN w)
   if (is_trivial_change(v, "ellchangecompose"))
   {
     if (is_trivial_change(w, "ellchangecompose")) return gc_const(av, gen_1);
-    return nf? gerepilecopy(av, w): gcopy(w);
+    return nf? gc_GEN(av, w): gcopy(w);
   }
   if (is_trivial_change(w, "ellchajgecompose"))
-    return nf? gerepilecopy(av, v): gcopy(v);
+    return nf? gc_GEN(av, v): gcopy(v);
   return gerepileupto(av, ellchangecompose_i(v, w));
 }
 
@@ -1497,7 +1497,7 @@ ellchangecurve(GEN e, GEN w)
       case t_ELL_NF: E = ch_NF(E,e,w); break;
     }
   }
-  return gerepilecopy(av, E);
+  return gc_GEN(av, E);
 }
 
 static GEN
@@ -1529,7 +1529,7 @@ ellQ_isisom(GEN E, GEN F)
   s = gdivgs(gsub(gmul(u, Fa1), Ea1), 2);
   r = gdivgs(gadd(gsub(gadd(gmul(u2, Fa2), gmul(s, Ea1)), Ea2), gsqr(s)), 3);
   t = gdivgs(gsub(gsub(gmul(u3, Fa3), gmul(r, Ea1)), Ea3), 2);
-  return gerepilecopy(av, mkvec4(u,r,s,t));
+  return gc_GEN(av, mkvec4(u,r,s,t));
 }
 
 static GEN
@@ -1564,7 +1564,7 @@ ellnf_isisom(GEN nf, GEN E, GEN F)
   t = gdivgs(nfsub(nf, nfsub(nf, nfmul(nf, u3, Fa3), nfmul(nf, r, Ea1)), Ea3), 2);
   u = basistoalg(nf, u); r = basistoalg(nf, r);
   s = basistoalg(nf, s); t = basistoalg(nf, t);
-  return gerepilecopy(av, mkvec4(u,r,s,t));
+  return gc_GEN(av, mkvec4(u,r,s,t));
 }
 
 GEN
@@ -1714,7 +1714,7 @@ ellchangepoint0(GEN E, GEN x, GEN ch)
   v = ginv(u); v2 = gsqr(v); v3 = gmul(v,v2);
   y = vec? ellchangevecpt(nf, x,v2,v3,r,s,t)
          : ellchangept(nf, x,v2,v3,r,s,t);
-  return gerepilecopy(av,y);
+  return gc_GEN(av,y);
 }
 GEN
 ellchangepoint(GEN x, GEN ch) { return ellchangepoint0(x, ch, NULL); }
@@ -1758,7 +1758,7 @@ ellchangepointinv0(GEN E, GEN x, GEN ch)
   u2 = gsqr(u); u3 = gmul(u,u2);
   y = vec? ellchangevecptinv(nf,x,u2,u3,r,s,t)
          : ellchangeptinv(nf,x,u2,u3,r,s,t);
-  return gerepilecopy(av,y);
+  return gc_GEN(av,y);
 }
 GEN
 ellchangepointinv(GEN x, GEN ch) { return ellchangepointinv0(x, ch, NULL); }
@@ -1801,7 +1801,7 @@ elltwist(GEN E, GEN P)
     }
     if ((S = obj_check(E, FF_CARD)))
       obj_insert_shallow(Et, FF_CARD, elltwist_card(S, q));
-    return gerepilecopy(av, Et);
+    return gc_GEN(av, Et);
   }
   if (isell && ell_get_type(E) == t_ELL_NF)
     if (!(DOM = ellnf_get_bnf(E))) DOM = ellnf_get_nf(E);
@@ -1848,7 +1848,7 @@ elltwist(GEN E, GEN P)
   }
   E = ellinit_i(V, DOM, prec);
   if (!E) pari_err_TYPE("elltwist", V);
-  return gerepilecopy(av, E);
+  return gc_GEN(av, E);
 }
 
 /********************************************************************/
@@ -2434,7 +2434,7 @@ ellmul(GEN e, GEN z, GEN n)
   if (ell_is_inf(z)) return ellinf();
   switch(typ(n))
   {
-    case t_INT: return gerepilecopy(av, ellmul_Z(e,z,n));
+    case t_INT: return gc_GEN(av, ellmul_Z(e,z,n));
     case t_QUAD: {
       GEN pol = gel(n,1), a = gel(n,2), b = gel(n,3);
       if (signe(gel(pol,2)) < 0) pari_err_TYPE("ellmul_CM",n); /* disc > 0 ? */
@@ -3437,7 +3437,7 @@ elllocalred(GEN E, GEN p)
     else
       gel(w,1) = gmul(u, gel(w,1));
   }
-  return gerepilecopy(av, q);
+  return gc_GEN(av, q);
 }
 
 /* typ(c) = t_INT or t_FRAC */
@@ -3521,7 +3521,7 @@ ellintegralmodel(GEN e, GEN *pv)
   }
   e = ellintegralmodel_i(e, pv);
   if (pv && *pv) return gc_all(av, 2, &e, pv);
-  e = gerepilecopy(av, e);
+  e = gc_GEN(av, e);
   if (pv) *pv = init_ch();
   return e;
 }
@@ -4029,7 +4029,7 @@ ellQminimalmodel(GEN E, GEN *ptv)
   if (!is_trivial_change(v, NULL)) ch_Q(y, E, v);
   DP = gel(S,1);
   obj_insert_shallow(y, Q_MINIMALMODEL, mkvec(DP));
-  if (!ptv) return gerepilecopy(av, y);
+  if (!ptv) return gc_GEN(av, y);
   *ptv = v; return gc_all(av, 2, &y, ptv);
 }
 
@@ -4082,7 +4082,7 @@ ellnfminimalmodel(GEN E, GEN *ptv)
   pari_sp av = avma;
   GEN v, y = ellnfminimalmodel_i(E, &v);
   if (v) obj_insert_shallow(y, NF_MINIMALMODEL, cgetg(1,t_VEC));
-  if (!v || !ptv) return gerepilecopy(av, y);
+  if (!v || !ptv) return gc_GEN(av, y);
   *ptv = v; return gc_all(av, 2, &y, ptv);
 }
 GEN
@@ -4235,7 +4235,7 @@ ellglobalred(GEN E)
       v = obj_checkbuild(E, NF_GLOBALRED, &ellnfglobalred);
       break;
   }
-  return gerepilecopy(av, v);
+  return gc_GEN(av, v);
 }
 
 static GEN doellrootno(GEN e);
@@ -4411,7 +4411,7 @@ ellnf_vec_wrap(GEN (*fun)(GEN, long), GEN E, long prec)
   GEN P = cgetg(l, t_VEC);
   for(i=1; i<l; i++) gel(P,i) = fun(gel(V,i), prec);
   ellnfembed_free(V);
-  return gerepilecopy(av, P);
+  return gc_GEN(av, P);
 }
 
 GEN
@@ -4502,7 +4502,7 @@ QE_to_ZJ(GEN P)
     GEN Q2 = gmul(gel(P,2),R3);
     GEN Z  = denom(mkvec2(Q1, Q2));
     GEN Z2 = sqri(Z), Z3 = mulii(Z, Z2);
-    return gerepilecopy(av, mkvec3(gmul(Q1, Z2), gmul(Q2, Z3), mulii(Z, R)));
+    return gc_GEN(av, mkvec3(gmul(Q1, Z2), gmul(Q2, Z3), mulii(Z, R)));
   }
 }
 
@@ -4680,7 +4680,7 @@ ellQ_genreduce(GEN E, GEN G, GEN M, long prec)
     if (expo(h) > -prec/2)
       gel(V,j++) = ellQ_factorback(E, G, Li, 1, h, prec);
   }
-  setlg(V, j); return gerepilecopy(av, V);
+  setlg(V, j); return gc_GEN(av, V);
 }
 
 static long
@@ -5139,7 +5139,7 @@ ellnf_reladelicvolume(GEN E, GEN P, GEN C, GEN z, long prec)
   GEN E2 = ellnf2isog(Et, rnfeltreltoabs(rnf, z));
   GEN c1 = ellnf_adelicvolume(Et, prec), c2 = ellnf_adelicvolume(E2, prec);
   obj_free(rnf); obj_free(Et); obj_free(E2);
-  return gerepilecopy(av, mkvec2(c1,c2));
+  return gc_GEN(av, mkvec2(c1,c2));
 }
 
 static long
@@ -5445,7 +5445,7 @@ ellQ_charpoly(GEN e, GEN p)
     T =  deg2pol_shallow(gen_1, gneg(ap), p, 0);
   else if (!signe(ap)) { set_avma(av); return pol_1(0); }
   else T = deg1pol_shallow(gen_1, negi(ap), 0);
-  return gerepilecopy(av, T);
+  return gc_GEN(av, T);
 }
 
 static GEN
@@ -5458,7 +5458,7 @@ ellnf_charpoly(GEN e, GEN pr)
     T =  deg2pol_shallow(gen_1, gneg(ap), pr_norm(pr), 0);
   else if (!signe(ap)) { set_avma(av); return pol_1(0); }
   else T = deg1pol_shallow(gen_1, negi(ap), 0);
-  return gerepilecopy(av, T);
+  return gc_GEN(av, T);
 }
 
 static GEN
@@ -5467,7 +5467,7 @@ ellff_charpoly(GEN E)
   pari_sp av = avma;
   GEN f = ellff_get_field(E), q = typ(f)==t_INT ? f : FF_q(f);
   GEN mt = subii(ellff_get_card(E), addiu(q,1));
-  return gerepilecopy(av, deg2pol_shallow(gen_1, mt, q, 0));
+  return gc_GEN(av, deg2pol_shallow(gen_1, mt, q, 0));
 }
 
 GEN
@@ -5510,7 +5510,7 @@ ellnflocal(GEN E, GEN p, long n)
     T = T? ZX_mul(T, T2): T2;
   }
   if (!T) { set_avma(av); return pol_1(0); }
-  if (n==0) return gerepilecopy(av, mkrfrac(gen_1,T));
+  if (n==0) return gc_GEN(av, mkrfrac(gen_1,T));
   return gerepileupto(av, RgXn_inv_i(T, n));
 }
 
@@ -5545,7 +5545,7 @@ direllnf_worker(GEN P, ulong X, GEN E)
     long d = ulogint(X, p) + 1; /* minimal d such that p^d > X */
     gel(W,i) = ellnflocal(E, utoi(uel(P,i)), d);
   }
-  return gerepilecopy(av, mkvec2(P,W));
+  return gc_GEN(av, mkvec2(P,W));
 }
 
 static GEN
@@ -5693,7 +5693,7 @@ elllseries(GEN e, GEN s, GEN A, long prec)
     if (gc_needed(av1,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"lseriesell");
-      z = gerepilecopy(av1,z);
+      z = gc_GEN(av1,z);
     }
   }
   return gerepileupto(av, gdiv(z,gs));
@@ -6076,7 +6076,7 @@ ellpadicheightmatrix(GEN e, GEN p, long n, GEN x)
         gcoeff(A,j,i) = gcoeff(A,i,j) = h;
     }
   }
-  return gerepilecopy(av, p? mkvec2(A,B): A);
+  return gc_GEN(av, p? mkvec2(A,B): A);
 }
 GEN
 ellheightmatrix(GEN E, GEN x, long n)
@@ -6478,7 +6478,7 @@ ellgroup(GEN E, GEN p)
       pari_err_TYPE("ellgroup", E);
       return NULL;/*LCOV_EXCL_LINE*/
   }
-  return gerepilecopy(av, G);
+  return gc_GEN(av, G);
 }
 
 GEN
@@ -6525,7 +6525,7 @@ ellgroup0(GEN E, GEN p, long flag)
     freeE = 1;
   }
   G = mkvec3(ellff_get_card(E), ellff_get_group(E), ellff_get_gens(E));
-  if (!freeE) return gerepilecopy(av, G);
+  if (!freeE) return gc_GEN(av, G);
   G = gcopy(G); obj_free(E); return gerepileupto(av, G);
 }
 
@@ -6686,7 +6686,7 @@ ellsupersingularj(GEN a)
   r = Fq_to_FF(ellsupersingularj_FpXQ(T, p), Tp_to_FF(T, p));
   if (d != 2)
     r = ffmap(ffembed(r, a), r);
-  return gerepilecopy(av, r);
+  return gc_GEN(av, r);
 }
 
 /* n <= 4, N is the characteristic of the base ring or NULL (char 0) */
@@ -6765,7 +6765,7 @@ elldivpol(GEN e, long n0, long v)
     if (n%2==0) f = RgX_mul(f, d2);
   }
   if (n0 < 0) return gerepileupto(av, RgX_neg(f));
-  return gerepilecopy(av, f);
+  return gc_GEN(av, f);
 }
 
 /* return [phi_n, (psi_n)^2] such that x[nP] = phi_n / (psi_n)^2 */
@@ -6811,7 +6811,7 @@ ellxn(GEN e, long n, long v)
     /* A = psi_n^2, u = psi_{n-1} psi_{n+1} */
     B = RgX_sub(RgX_shift(A,1), u);
   }
-  return gerepilecopy(av, mkvec2(B,A));
+  return gc_GEN(av, mkvec2(B,A));
 }
 
 /* l and p primes; p = 1 mod l; return an element of order l in (Z/pZ)^* */
@@ -7017,7 +7017,7 @@ ellsaturation(GEN E, GEN P, long B, long prec)
   else P = ellchangepoint(P, urst);
   P = ellQ_saturation(E, P, B, prec);
   if (urst) P = ellchangepoint(P, ellchangeinvert_i(urst));
-  obj_free(E); return gerepilecopy(av, P);
+  obj_free(E); return gc_GEN(av, P);
 }
 
 static GEN
@@ -7052,7 +7052,7 @@ elltrace(GEN E, GEN P)
   if (!T) pari_err_TYPE("elltrace",yP);
   v = varn(T); n = degpol(T);
   /* Trivial cases */
-  if (n == 1) { return gerepilecopy(av, mkvec2(xP,yP)); }
+  if (n == 1) { return gc_GEN(av, mkvec2(xP,yP)); }
   xP = to_RgX(xP, v);
   yP = to_RgX(yP, v);
   if (degpol(xP) <= 0)

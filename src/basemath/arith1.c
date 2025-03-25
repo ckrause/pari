@@ -222,7 +222,7 @@ znprimroot(GEN N)
       x = gener_Zp(N,F);
       break;
   }
-  return gerepilecopy(av, mkintmod(x, N));
+  return gc_GEN(av, mkintmod(x, N));
 }
 
 /* n | (p-1), returns a primitive n-th root of 1 in F_p^* */
@@ -1362,7 +1362,7 @@ padic2mod(GEN x)
     pd = mulii(pd, pv);
     u = mulii(u, pv);
   }
-  return gerepilecopy(av, mkintmod(u, pd));
+  return gc_GEN(av, mkintmod(u, pd));
 
 }
 /* x t_INTMOD, y t_POLMOD; promote x to t_POLMOD mod Pol(x.mod): makes Mod(0,1)
@@ -1806,7 +1806,7 @@ GEN
 Z_ZV_mod(GEN A, GEN P)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, Z_ZV_mod_tree(A, P, ZV_producttree(P)));
+  return gc_GEN(av, Z_ZV_mod_tree(A, P, ZV_producttree(P)));
 }
 /* P a t_VECSMALL */
 GEN
@@ -1862,7 +1862,7 @@ ZXX_nv_mod_tree(GEN P, GEN xa, GEN T, long w)
   }
   for (j=1; j <= n; j++)
     (void) FlxX_renormalize(gel(V, j), l);
-  return gerepilecopy(av, V);
+  return gc_GEN(av, V);
 }
 
 GEN
@@ -1879,7 +1879,7 @@ ZXC_nv_mod_tree(GEN C, GEN xa, GEN T, long w)
     for (j = 1; j <= n; j++)
       gmael(V, j, i) = gel(v,j);
   }
-  return gerepilecopy(av, V);
+  return gc_GEN(av, V);
 }
 
 GEN
@@ -1896,7 +1896,7 @@ ZXM_nv_mod_tree(GEN M, GEN xa, GEN T, long w)
     for (j=1; j <= n; j++)
       gmael(V, j, i) = gel(v,j);
   }
-  return gerepilecopy(av, V);
+  return gc_GEN(av, V);
 }
 
 GEN
@@ -1928,7 +1928,7 @@ ZM_nv_mod_tree_t(GEN M, GEN xa, GEN T, long t)
     GEN v = ZV_nv_mod_tree(gel(M, i), xa, T);
     for (j=1; j <= n; j++) gmael(V, j, i) = gel(v,j);
   }
-  return gerepilecopy(av, V);
+  return gc_GEN(av, V);
 }
 
 GEN
@@ -2780,7 +2780,7 @@ Fp_log_sieve_worker(long a, long prmax, GEN C, GEN c, GEN Ci, GEN ci, GEN pi, GE
     if ((z = Z_issmooth_fact(h, prmax)))
       gel(L, rel++) = mkvec2(z, mkvecsmall3(1, a, -2));
   }
-  setlg(L, rel); return gerepilecopy(ltop, L);
+  setlg(L, rel); return gc_GEN(ltop, L);
 }
 
 static long
@@ -3000,7 +3000,7 @@ Fp_log_index(GEN a, GEN b, GEN m, GEN p)
     timer_printf(&ti," %ld relations, %ld generators", r.nbrel, nbi+nbg);
   }
   setlg(r.rel,r.nbrel+1);
-  r.rel = gerepilecopy(av2, r.rel);
+  r.rel = gc_GEN(av2, r.rel);
   K = check_kernel(nbi+nbrow-r.prmax, nbrow, r.prmax, C, r.rel, p, m);
   if (DEBUGLEVEL) timer_start(&ti);
   Ao = Fp_log_find_ind(a, K, r.prmax, C, p, m);
@@ -3595,7 +3595,7 @@ gboundcf(GEN x, long k)
         y = int2n(e);
         a = Qsfcont(c,y, NULL, k);
         b = addsi(signe(x), c);
-        return gerepilecopy(av, Qsfcont(b,y, a, k));
+        return gc_GEN(av, Qsfcont(b,y, a, k));
 
       case t_FRAC:
         av = avma;
@@ -3612,7 +3612,7 @@ gboundcf(GEN x, long k)
       return gerepileupto(av, gboundcf(ser2rfrac_i(x), k));
     case t_RFRAC:
       av = avma;
-      return gerepilecopy(av, sersfcont(gel(x,1), gel(x,2), k));
+      return gc_GEN(av, sersfcont(gel(x,1), gel(x,2), k));
   }
   pari_err_TYPE("gboundcf",x);
   return NULL; /* LCOV_EXCL_LINE */
@@ -3658,7 +3658,7 @@ sfcont2(GEN b, GEN x, long k)
     x = gdiv(gel(b,i),p1);
   }
   setlg(y,i);
-  return gerepilecopy(av,y);
+  return gc_GEN(av,y);
 }
 
 GEN
@@ -3711,10 +3711,10 @@ contfracpnqn(GEN x, long n)
   if (n >= 0)
   {
     lx = minss(lx, n+2);
-    if (lx == 2) return gerepilecopy(av, mkmat(mkcol2(p1,q1)));
+    if (lx == 2) return gc_GEN(av, mkmat(mkcol2(p1,q1)));
   }
   else if (lx == 2)
-    return gerepilecopy(av, mkmat2(mkcol2(p1,q1), mkcol2(gen_1,gen_0)));
+    return gc_GEN(av, mkmat2(mkcol2(p1,q1), mkcol2(gen_1,gen_0)));
   /* lx >= 3 */
   p0 = gen_1;
   q0 = gen_0; /* p[-1], q[-1] */
@@ -3733,7 +3733,7 @@ contfracpnqn(GEN x, long n)
     gel(M,i) = mkcol2(p1,q1);
   }
   if (n < 0) M = mkmat2(gel(M,lx-1), gel(M,lx-2));
-  return gerepilecopy(av, M);
+  return gc_GEN(av, M);
 }
 GEN
 pnqn(GEN x) { return contfracpnqn(x,-1); }
@@ -3870,7 +3870,7 @@ bestappr_real(GEN x, GEN k)
     if (!signe(x)) { p1 = p0; q1 = q0; break; }
   }
   if (signe(q1) < 0) { togglesign_safe(&p1); togglesign_safe(&q1); }
-  return gerepilecopy(av, equali1(q1)? p1: mkfrac(p1,q1));
+  return gc_GEN(av, equali1(q1)? p1: mkfrac(p1,q1));
 }
 
 /* k t_INT or NULL */
@@ -3893,14 +3893,14 @@ bestappr_Q(GEN x, GEN k)
     case t_INTMOD: {
       pari_sp av = avma;
       a = mod_to_frac(gel(x,2), gel(x,1), k); if (!a) return NULL;
-      return gerepilecopy(av, a);
+      return gc_GEN(av, a);
     }
     case t_PADIC: {
       pari_sp av = avma;
       long v = valp(x);
       a = mod_to_frac(padic_u(x), padic_pd(x), k); if (!a) return NULL;
       if (v) a = gmul(a, powis(padic_p(x), v));
-      return gerepilecopy(av, a);
+      return gc_GEN(av, a);
     }
 
     case t_COMPLEX: {

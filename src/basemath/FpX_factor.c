@@ -1173,7 +1173,7 @@ FpX_ddf(GEN f, GEN p)
              FlxV_to_ZXV_inplace(gel(F,1)); break;
     default: F = FpX_ddf_i(f,p); break;
   }
-  return gerepilecopy(av, F);
+  return gc_GEN(av, F);
 }
 
 static GEN Flx_simplefact_Cantor(GEN T, ulong p);
@@ -1762,7 +1762,7 @@ F2x_ddf_simple(GEN T, GEN XP)
     z = F2xq_sqr(z, Tr);
   }
   if (F2x_degree(Tr)) gel(f, F2x_degree(Tr)) = Tr;
-  return gerepilecopy(av, f);
+  return gc_GEN(av, f);
 }
 
 GEN
@@ -1948,7 +1948,7 @@ F2x_degfact(GEN f)
 {
   pari_sp av = avma;
   GEN z = F2x_factor_i(f, 1);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 int
@@ -2099,7 +2099,7 @@ Flx_ddf_Shoup(GEN T, GEN XP, ulong p, ulong pi)
   }
   if (DEBUGLEVEL>=7) timer_printf(&ti,"Flx_ddf_Shoup: f");
   if (degpol(Tr)) gel(f, degpol(Tr)) = Tr;
-  return gerepilecopy(av, f);
+  return gc_GEN(av, f);
 }
 
 static void
@@ -2323,7 +2323,7 @@ Flx_degfact(GEN f, ulong p)
 {
   pari_sp av = avma;
   GEN z = Flx_factor_i(Flx_normalize(f,p),p,1);
-  return gerepilecopy(av, z);
+  return gc_GEN(av, z);
 }
 
 /* T must be squarefree mod p*/
@@ -2403,7 +2403,7 @@ FpX_degfact(GEN f, GEN p) {
     case 1:  F = Flx_factor_i(f,p[2],1); break;
     default: F = FpX_factor_i(f,p,1); break;
   }
-  return gerepilecopy(av, F);
+  return gc_GEN(av, F);
 }
 
 #if 0
@@ -2439,18 +2439,18 @@ FpX_factor(GEN f, GEN p)
              FlxV_to_ZXV_inplace(gel(F,1)); break;
     default: F = FpX_factor_i(f,p,0); break;
   }
-  return gerepilecopy(av, F);
+  return gc_GEN(av, F);
 }
 
 GEN
 Flx_factor(GEN f, ulong p)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, Flx_factor_i(Flx_normalize(f,p),p,0));
+  return gc_GEN(av, Flx_factor_i(Flx_normalize(f,p),p,0));
 }
 GEN
 F2x_factor(GEN f)
 {
   pari_sp av = avma;
-  return gerepilecopy(av, F2x_factor_i(f,0));
+  return gc_GEN(av, F2x_factor_i(f,0));
 }
