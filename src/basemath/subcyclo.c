@@ -418,7 +418,7 @@ static GEN
 polsubcyclo_complex_bound(pari_sp av, GEN V, long prec)
 {
   GEN pol = real_i(roots_to_pol(V,0));
-  return gerepileuptoint(av, ceil_safe(gsupnorm(pol,prec)));
+  return gc_INT(av, ceil_safe(gsupnorm(pol,prec)));
 }
 
 /* Newton sums mod le. if le==NULL, works with complex instead */
@@ -1087,7 +1087,7 @@ factor_Aurifeuille_prime(GEN p, long d)
   fd = factoru(odd(d)? d: d>>2);
   pp = itos(p);
   Aurifeuille_init(p, d, fd, &S);
-  return gerepileuptoint(av, factor_Aurifeuille_aux(p, pp, d, gel(fd,1), &S));
+  return gc_INT(av, factor_Aurifeuille_aux(p, pp, d, gel(fd,1), &S));
 }
 
 /* an algebraic factor of Phi_d(a), a != 0 */
@@ -1110,7 +1110,7 @@ factor_Aurifeuille(GEN a, long d)
     if (d == 1)
     {
       if (!Z_issquareall(a, &A)) return gen_1;
-      return gerepileuptoint(av, addiu(A,1));
+      return gc_INT(av, addiu(A,1));
     }
     A = va? shifti(a, -va): a;
     a4 = mod4(A); if (sa < 0) a4 = 4 - a4;
@@ -1140,5 +1140,5 @@ factor_Aurifeuille(GEN a, long d)
   if (D != d) { a = powiu(a, d/D); d = D; }
 
   Aurifeuille_init(a, d, fd, &S);
-  return gerepileuptoint(av, factor_Aurifeuille_aux(a, astar, d, P, &S));
+  return gc_INT(av, factor_Aurifeuille_aux(a, astar, d, P, &S));
 }

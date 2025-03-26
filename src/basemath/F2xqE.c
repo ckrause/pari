@@ -300,7 +300,7 @@ F2xqE_order(GEN z, GEN o, GEN a2, GEN T)
   pari_sp av = avma;
   struct _F2xqE e;
   e.a2=a2; e.T=T;
-  return gerepileuptoint(av, gen_order(z, o, (void*)&e, &F2xqE_group));
+  return gc_INT(av, gen_order(z, o, (void*)&e, &F2xqE_group));
 }
 
 GEN
@@ -309,7 +309,7 @@ F2xqE_log(GEN a, GEN b, GEN o, GEN a2, GEN T)
   pari_sp av = avma;
   struct _F2xqE e;
   e.a2=a2; e.T=T;
-  return gerepileuptoint(av, gen_PH_log(a, b, o, (void*)&e, &F2xqE_group));
+  return gc_INT(av, gen_PH_log(a, b, o, (void*)&e, &F2xqE_group));
 }
 
 /***********************************************************************/
@@ -773,7 +773,7 @@ F2xq_elltrace_Harley(GEN a6, GEN T2)
   if (DEBUGLEVEL>1) timer_printf(&ti,"Norm");
   if (cmpii(sqri(t), int2n(n + 2)) > 0)
     t = subii(t, int2n(N));
-  return gerepileuptoint(ltop, t);
+  return gc_INT(ltop, t);
 }
 
 static GEN
@@ -856,7 +856,7 @@ F2xq_ellcard(GEN a, GEN a6, GEN T)
     GEN q = int2u(n);
     c = subii(addiu(q,1), F2xq_elltracej(a, a6, T, q, n));
   }
-  return gerepileuptoint(av, c);
+  return gc_INT(av, c);
 }
 
 /***********************************************************************/

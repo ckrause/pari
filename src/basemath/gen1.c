@@ -172,7 +172,7 @@ add_intmod_same(GEN z, GEN X, GEN x, GEN y) {
   }
   else {
     GEN u = addii(x,y); if (cmpii(u, X) >= 0) u = subii(u, X);
-    gel(z,2) = gerepileuptoint((pari_sp)z, u);
+    gel(z,2) = gc_INT((pari_sp)z, u);
   }
   gel(z,1) = icopy(X); return z;
 }
@@ -184,7 +184,7 @@ sub_intmod_same(GEN z, GEN X, GEN x, GEN y) {
   }
   else {
     GEN u = subii(x,y); if (signe(u) < 0) u = addii(u, X);
-    gel(z,2) = gerepileuptoint((pari_sp)z, u);
+    gel(z,2) = gc_INT((pari_sp)z, u);
   }
   gel(z,1) = icopy(X); return z;
 }
@@ -196,7 +196,7 @@ mul_intmod_same(GEN z, GEN X, GEN x, GEN y) {
     set_avma((pari_sp)z); gel(z,2) = utoi(u);
   }
   else
-    gel(z,2) = gerepileuptoint((pari_sp)z, remii(mulii(x,y), X) );
+    gel(z,2) = gc_INT((pari_sp)z, remii(mulii(x,y), X) );
   gel(z,1) = icopy(X); return z;
 }
 /* cf add_intmod_same */
@@ -208,7 +208,7 @@ div_intmod_same(GEN z, GEN X, GEN x, GEN y)
     set_avma((pari_sp)z); gel(z,2) = utoi(u);
   }
   else
-    gel(z,2) = gerepileuptoint((pari_sp)z, remii(mulii(x, Fp_inv(y,X)), X) );
+    gel(z,2) = gc_INT((pari_sp)z, remii(mulii(x, Fp_inv(y,X)), X) );
   gel(z,1) = icopy(X); return z;
 }
 
@@ -867,7 +867,7 @@ addsub_frac_i(GEN z, GEN Q, GEN a, GEN b)
   GEN q = Qdivii(a, b); /* != 0 */
   if (typ(q) == t_INT)
   {
-    gel(z,1) = gerepileuptoint((pari_sp)Q, q);
+    gel(z,1) = gc_INT((pari_sp)Q, q);
     gel(z,2) = Q; return z;
   }
   return setfrac(z, gel(q,1), mulii(gel(q,2), Q));
@@ -903,7 +903,7 @@ addsub_frac(GEN x, GEN y, GEN (*op)(GEN,GEN))
   /* delta = gcd(x2,y2) */
   if (equali1(delta))
   { /* numerator is nonzero */
-    gel(z,1) = gerepileuptoint((pari_sp)z, op(mulii(x1,y2), mulii(y1,x2)));
+    gel(z,1) = gc_INT((pari_sp)z, op(mulii(x1,y2), mulii(y1,x2)));
     gel(z,2) = mulii(x2,y2); return z;
   }
   x2 = diviiexact(x2,delta);
@@ -984,7 +984,7 @@ gadd(GEN x, GEN y)
       gel(z,1) = gcdii(X,Y);
       warn_coercion(X,Y,gel(z,1));
       av = avma; p1 = addii(gel(x,2),gel(y,2));
-      gel(z,2) = gerepileuptoint(av, remii(p1, gel(z,1))); return z;
+      gel(z,2) = gc_INT(av, remii(p1, gel(z,1))); return z;
     }
     case t_FRAC: return addsub_frac(x,y,addii);
     case t_COMPLEX: z = cgetg(3,t_COMPLEX);
@@ -1061,7 +1061,7 @@ gadd(GEN x, GEN y)
           z = cgetg(3, t_INTMOD);
           return add_intmod_same(z, gel(y,1), gel(y,2), modii(x, gel(y,1)));
         case t_FRAC: z = cgetg(3,t_FRAC);
-          gel(z,1) = gerepileuptoint((pari_sp)z, addii(gel(y,1), mulii(gel(y,2),x)));
+          gel(z,1) = gc_INT((pari_sp)z, addii(gel(y,1), mulii(gel(y,2),x)));
           gel(z,2) = icopy(gel(y,2)); return z;
         case t_COMPLEX: return addRc(x, y);
         case t_PADIC:
@@ -1221,7 +1221,7 @@ gaddsg(long x, GEN y)
       z = cgetg(3, t_INTMOD);
       return add_intmod_same(z, gel(y,1), gel(y,2), modsi(x, gel(y,1)));
     case t_FRAC: z = cgetg(3,t_FRAC);
-      gel(z,1) = gerepileuptoint((pari_sp)z, addii(gel(y,1), mulis(gel(y,2),x)));
+      gel(z,1) = gc_INT((pari_sp)z, addii(gel(y,1), mulis(gel(y,2),x)));
       gel(z,2) = icopy(gel(y,2)); return z;
     case t_COMPLEX:
       z = cgetg(3, t_COMPLEX);
@@ -1246,7 +1246,7 @@ gsubsg(long x, GEN y)
       z = cgetg(3, t_INTMOD); a = gel(y,1); b = gel(y,2);
       return add_intmod_same(z, a, Fp_neg(b,a), modsi(x, a));
     case t_FRAC: z = cgetg(3,t_FRAC); a = gel(y,1); b = gel(y,2);
-      gel(z,1) = gerepileuptoint((pari_sp)z, subii(mulis(b,x), a));
+      gel(z,1) = gc_INT((pari_sp)z, subii(mulis(b,x), a));
       gel(z,2) = icopy(gel(y,2)); return z;
     case t_COMPLEX:
       z = cgetg(3, t_COMPLEX);
@@ -1280,7 +1280,7 @@ gsub(GEN x, GEN y)
       gel(z,1) = gcdii(X,Y);
       warn_coercion(X,Y,gel(z,1));
       av = avma; p1 = subii(gel(x,2),gel(y,2));
-      gel(z,2) = gerepileuptoint(av, modii(p1, gel(z,1))); return z;
+      gel(z,2) = gc_INT(av, modii(p1, gel(z,1))); return z;
     }
     case t_FRAC: return addsub_frac(x,y, subii);
     case t_COMPLEX: z = cgetg(3,t_COMPLEX);
@@ -1691,7 +1691,7 @@ mulcc(GEN x, GEN y)
     gel(z,1) = subii(p1,p2);
     gel(z,2) = subii(p3,p4);
     if (!signe(gel(z,2)))
-      return gerepileuptoint((pari_sp)(z+3), gel(z,1));
+      return gc_INT((pari_sp)(z+3), gel(z,1));
   }
   else
   { /* naive 4M formula: avoid all loss of accuracy */
@@ -1850,7 +1850,7 @@ gmul(GEN x, GEN y)
       gel(z,1) = gcdii(X,Y);
       warn_coercion(X,Y,gel(z,1));
       av = avma; p1 = mulii(gel(x,2),gel(y,2));
-      gel(z,2) = gerepileuptoint(av, remii(p1, gel(z,1))); return z;
+      gel(z,2) = gc_INT(av, remii(p1, gel(z,1))); return z;
     }
     case t_FRAC:
     {
@@ -2150,7 +2150,7 @@ gsqr(GEN x)
     case t_REAL: return sqrr(x);
     case t_INTMOD: { GEN X = gel(x,1);
       z = cgetg(3,t_INTMOD);
-      gel(z,2) = gerepileuptoint((pari_sp)z, remii(sqri(gel(x,2)), X));
+      gel(z,2) = gc_INT((pari_sp)z, remii(sqri(gel(x,2)), X));
       gel(z,1) = icopy(X); return z;
     }
     case t_FRAC: return sqrfrac(x);
@@ -2442,7 +2442,7 @@ gdiv(GEN x, GEN y)
       gel(z,1) = gcdii(X,Y);
       warn_coercion(X,Y,gel(z,1));
       av = avma; p1 = mulii(gel(x,2), Fp_inv(gel(y,2), gel(z,1)));
-      gel(z,2) = gerepileuptoint(av, remii(p1, gel(z,1))); return z;
+      gel(z,2) = gc_INT(av, remii(p1, gel(z,1))); return z;
     }
     case t_FRAC: {
       GEN x1 = gel(x,1), x2 = gel(x,2);
@@ -2869,7 +2869,7 @@ gmulsg(long s, GEN x)
     case t_REAL: return s? mulsr(s,x): gen_0; /* gmul semantic */
     case t_INTMOD: { GEN p = gel(x,1);
       z = cgetg(3,t_INTMOD);
-      gel(z,2) = gerepileuptoint((pari_sp)z, modii(mulsi(s,gel(x,2)), p));
+      gel(z,2) = gc_INT((pari_sp)z, modii(mulsi(s,gel(x,2)), p));
       gel(z,1) = icopy(p); return z;
     }
     case t_FFELT: return FF_Z_mul(x,stoi(s));
@@ -2944,7 +2944,7 @@ gmulug(ulong s, GEN x)
     case t_REAL: return s? mulur(s,x): gen_0; /* gmul semantic */
     case t_INTMOD: { GEN p = gel(x,1);
       z = cgetg(3,t_INTMOD);
-      gel(z,2) = gerepileuptoint((pari_sp)z, modii(mului(s,gel(x,2)), p));
+      gel(z,2) = gc_INT((pari_sp)z, modii(mului(s,gel(x,2)), p));
       gel(z,1) = icopy(p); return z;
     }
     case t_FFELT: return FF_Z_mul(x,utoi(s));
@@ -3199,7 +3199,7 @@ gmul2n(GEN x, long n)
     case t_INTMOD: b = gel(x,1); a = gel(x,2);
       z = cgetg(3,t_INTMOD);
       if (n <= 0) return div_intmod_same(z, b, a, modii(int2n(-n), b));
-      gel(z,2) = gerepileuptoint((pari_sp)z, modii(shifti(a,n), b));
+      gel(z,2) = gc_INT((pari_sp)z, modii(shifti(a,n), b));
       gel(z,1) = icopy(b); return z;
 
     case t_FFELT: return FF_mul2n(x,n);

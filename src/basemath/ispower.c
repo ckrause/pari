@@ -94,7 +94,7 @@ logintall(GEN B, GEN y, GEN *ptq)
       if (fl >= 0)
       {
         if (fl) { e--; cgiv(r); r = r2; }
-        if (ptq) *ptq = gerepileuptoint(av, r); else set_avma(av);
+        if (ptq) *ptq = gc_INT(av, r); else set_avma(av);
         return e;
       }
       r2 = r; r = mulii(r,y);
@@ -113,7 +113,7 @@ logintall(GEN B, GEN y, GEN *ptq)
     if (!fl)
     {
       e = 1L<<i;
-      if (ptq) *ptq = gerepileuptoint(av, r); else set_avma(av);
+      if (ptq) *ptq = gc_INT(av, r); else set_avma(av);
       return e;
     }
     if (fl > 0) { i--; break; }
@@ -138,7 +138,7 @@ logintall(GEN B, GEN y, GEN *ptq)
       if (!fl) break; /* B = r */
     }
   }
-  if (ptq) *ptq = gerepileuptoint(av, q); else set_avma(av);
+  if (ptq) *ptq = gc_INT(av, q); else set_avma(av);
   return e;
 }
 
@@ -183,7 +183,7 @@ logint0(GEN B, GEN y, GEN *ptq)
       a = logintall(b, y, ptq);
     }
     if (!ptq) return gc_long(av, a);
-    *ptq = gerepileuptoint(av, *ptq); return a;
+    *ptq = gc_INT(av, *ptq); return a;
   }
   if (signe(B) <= 0) pari_err_DOMAIN(f, "x" ,"<=", gen_0, B);
   return logintall(B,y,ptq);
@@ -563,7 +563,7 @@ ispolygonal(GEN x, GEN S, GEN *N)
     n = dvmdii(shifti(d,-1), S_2, &r);
     if (r != gen_0) return gc_long(av,0);
   }
-  if (N) *N = gerepileuptoint(av, n); else set_avma(av);
+  if (N) *N = gc_INT(av, n); else set_avma(av);
   return 1;
 }
 
@@ -997,7 +997,7 @@ Z_isanypower(GEN x, GEN *pty)
       k >>= v;
       if (k == 1) return gc_long(av,0);
       if (!pty) return gc_long(av,k);
-      *pty = gerepileuptoint(av, powiu(*pty, 1<<v));
+      *pty = gc_INT(av, powiu(*pty, 1<<v));
       togglesign(*pty); return k;
     }
     if (pty) togglesign_safe(pty);

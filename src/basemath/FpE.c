@@ -419,7 +419,7 @@ FpE_order(GEN z, GEN o, GEN a4, GEN p)
     e.p = p;
     r = gen_order(z, o, (void*)&e, &FpE_group);
   }
-  return gerepileuptoint(av, r);
+  return gc_INT(av, r);
 }
 
 GEN
@@ -439,7 +439,7 @@ FpE_log(GEN a, GEN b, GEN o, GEN a4, GEN p)
     e.p = p;
     r = gen_PH_log(a, b, o, (void*)&e, &FpE_group);
   }
-  return gerepileuptoint(av, r);
+  return gc_INT(av, r);
 }
 
 /***********************************************************************/
@@ -582,7 +582,7 @@ FpE_Miller(GEN Q, GEN P, GEN m, GEN a4, GEN p)
   v = gen_pow_i(mkvec3(gen_1,gen_1,Q), m, (void*)&d,
                 FpE_Miller_dbl, FpE_Miller_add);
   N = gel(v,1); D = gel(v,2);
-  return gerepileuptoint(av, Fp_div(N, D, p));
+  return gc_INT(av, Fp_div(N, D, p));
 }
 
 GEN
@@ -602,7 +602,7 @@ FpE_weilpairing(GEN P, GEN Q, GEN m, GEN a4, GEN p)
   D = FpE_Miller(Q, P, m, a4, p);
   w = Fp_div(N, D, p);
   if (mpodd(m)) w  = Fp_neg(w, p);
-  return gerepileuptoint(av, w);
+  return gc_INT(av, w);
 }
 
 GEN
@@ -923,7 +923,7 @@ Fp_ellcard_Shanks(GEN c4, GEN c6, GEN p)
 
   if (!signe(c6)) {
     GEN ap = ap_j1728(c4, p);
-    return gerepileuptoint(av, subii(addiu(p,1), ap));
+    return gc_INT(av, subii(addiu(p,1), ap));
   }
 
   if (DEBUGLEVEL >= 6) timer_start(&T);
@@ -1123,7 +1123,7 @@ FOUND: /* found a point of exponent h on E_u */
   }
   if (tx) killblock(tx);
   h = closest_lift(A, B, p1p);
-  return gerepileuptoint(av, KRO==1? h: subii(p2p,h));
+  return gc_INT(av, KRO==1? h: subii(p2p,h));
 }
 
 typedef struct
@@ -1373,7 +1373,7 @@ Fp_ellj(GEN a4, GEN a6, GEN p)
     return utoi(Fl_ellj(umodiu(a4,pp), umodiu(a6,pp), pp));
   }
   z = Fp_ellj_nodiv(a4, a6, p);
-  return gerepileuptoint(av,Fp_div(gel(z,1),gel(z,2),p));
+  return gc_INT(av,Fp_div(gel(z,1),gel(z,2),p));
 }
 
 void
@@ -1406,7 +1406,7 @@ Fp_ellcard_CM(GEN a4, GEN a6, GEN p)
     if (!CM) return gc_NULL(av);
     a = ec_ap_cm(CM,a4,a6,p);
   }
-  return gerepileuptoint(av, subii(addiu(p,1),a));
+  return gc_INT(av, subii(addiu(p,1),a));
 }
 
 GEN
@@ -1717,7 +1717,7 @@ FpXQE_order(GEN z, GEN o, GEN a4, GEN T, GEN p)
   pari_sp av = avma;
   struct _FpXQE e;
   e.a4=a4; e.T=T; e.p=p;
-  return gerepileuptoint(av, gen_order(z, o, (void*)&e, &FpXQE_group));
+  return gc_INT(av, gen_order(z, o, (void*)&e, &FpXQE_group));
 }
 
 GEN
@@ -1726,7 +1726,7 @@ FpXQE_log(GEN a, GEN b, GEN o, GEN a4, GEN T, GEN p)
   pari_sp av = avma;
   struct _FpXQE e;
   e.a4=a4; e.T=T; e.p=p;
-  return gerepileuptoint(av, gen_PH_log(a, b, o, (void*)&e, &FpXQE_group));
+  return gc_INT(av, gen_PH_log(a, b, o, (void*)&e, &FpXQE_group));
 }
 
 /***********************************************************************/
@@ -2036,7 +2036,7 @@ elltrace_extension(GEN t, long n, GEN q)
   pari_sp av = avma;
   GEN v = RgX_to_RgC(RgXQ_powu(pol_x(0), n, mkpoln(3,gen_1,negi(t),q)),2);
   GEN te = addii(shifti(gel(v,1),1), mulii(t,gel(v,2)));
-  return gerepileuptoint(av, te);
+  return gc_INT(av, te);
 }
 
 GEN
@@ -2045,7 +2045,7 @@ Fp_ffellcard(GEN a4, GEN a6, GEN q, long n, GEN p)
   pari_sp av = avma;
   GEN ap = subii(addiu(p, 1), Fp_ellcard(a4, a6, p));
   GEN te = elltrace_extension(ap, n, p);
-  return gerepileuptoint(av, subii(addiu(q, 1), te));
+  return gc_INT(av, subii(addiu(q, 1), te));
 }
 
 static GEN
@@ -2164,7 +2164,7 @@ FpXQ_ellcard_supersingular(GEN a4, GEN a6, GEN T, GEN p)
     r = qm4 ^ FpXQ_is4power(D, T, p) ? subii(addiu(q, 1), t)
                                      : addii(addiu(q, 1), t);
   }
-  return gerepileuptoint(av, r);
+  return gc_INT(av, r);
 }
 
 GEN
@@ -2199,7 +2199,7 @@ GEN
 FpXQ_ellcard(GEN a4, GEN a6, GEN T, GEN p)
 {
   pari_sp av = avma;
-  return gerepileuptoint(av, FpXQ_ellcard_i(a4, a6, T, p));
+  return gc_INT(av, FpXQ_ellcard_i(a4, a6, T, p));
 }
 
 static GEN

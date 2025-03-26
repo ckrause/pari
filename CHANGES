@@ -52,7 +52,7 @@ BA  19- [libpari] FpXQX_is_squarefree
      2- removed elleisnum optional flag. If you really want elliptic
         invariants, use E4/12 and -E6/216.
 AP   3- strtime: use days in addition to hours, minutes, ms.
-BA   4- gerepilecopy renamed to gc_GEN.
+BA   4- gerepilecopy renamed to gc_GEN, gerepileuptoint to gc_INT
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed

@@ -140,7 +140,7 @@ ZM_nc_mul_i(GEN x, GEN y, long c, long l)
     av = avma; s = muliu(gcoeff(x,i,1),y[1]);
     for (j=2; j<c; j++)
       if (y[j]) s = addii(s, muliu(gcoeff(x,i,j),y[j]));
-    gel(z,i) = gerepileuptoint(av,s);
+    gel(z,i) = gc_INT(av,s);
   }
   return z;
 }
@@ -154,7 +154,7 @@ ZV_zc_mul(GEN x, GEN y)
   GEN s = mulis(gel(x,1),y[1]);
   for (j=2; j<l; j++)
     if (y[j]) s = addii(s, mulis(gel(x,j),y[j]));
-  return gerepileuptoint(av,s);
+  return gc_INT(av,s);
 }
 
 /* x nonempty ZM, y a compatible zc (dimension > 0). */
@@ -170,7 +170,7 @@ ZM_zc_mul_i(GEN x, GEN y, long c, long l)
     GEN s = mulis(gcoeff(x,i,1),y[1]);
     for (j=2; j<c; j++)
       if (y[j]) s = addii(s, mulis(gcoeff(x,i,j),y[j]));
-    gel(z,i) = gerepileuptoint(av,s);
+    gel(z,i) = gc_INT(av,s);
   }
   return z;
 }
@@ -194,7 +194,7 @@ zv_ZM_mul(GEN x, GEN y) {
     GEN s = mulsi(x[1], gcoeff(y,1,j));
     for (i=2; i<lx; i++)
       if (x[i]) s = addii(s, mulsi(x[i], gcoeff(y,i,j)));
-    gel(z,j) = gerepileuptoint(av,s);
+    gel(z,j) = gc_INT(av,s);
   }
   return z;
 }
@@ -381,7 +381,7 @@ ZMrow_ZC_mul_i(GEN x, GEN y, long i, long lx)
     GEN t = mulii(gcoeff(x,i,k), gel(y,k));
     if (t != ZERO) c = addii(c, t);
   }
-  return gerepileuptoint(av, c);
+  return gc_INT(av, c);
 }
 GEN
 ZMrow_ZC_mul(GEN x, GEN y, long i)
@@ -648,7 +648,7 @@ ZV_dotproduct_i(GEN x, GEN y, long lx)
     GEN t = mulii(gel(x,i), gel(y,i));
     if (t != gen_0) c = addii(c, t);
   }
-  return gerepileuptoint(av, c);
+  return gc_INT(av, c);
 }
 
 /* x~ * y, assuming result is symmetric */
@@ -814,7 +814,7 @@ ZV_dotsquare(GEN x)
   if (lx == 1) return gen_0;
   av = avma; z = sqri(gel(x,1));
   for (i=2; i<lx; i++) z = addii(z, sqri(gel(x,i)));
-  return gerepileuptoint(av,z);
+  return gc_INT(av,z);
 }
 
 GEN
@@ -1519,7 +1519,7 @@ ZV_content(GEN x)
     c = gcdii(c, gel(x,i));
     if (is_pm1(c)) { set_avma(av); return gen_1; }
   }
-  return gerepileuptoint(av, c);
+  return gc_INT(av, c);
 }
 
 GEN
@@ -1532,7 +1532,7 @@ ZM_det_triangular(GEN mat)
   if (l<3) return l<2? gen_1: icopy(gcoeff(mat,1,1));
   av = avma; s = gcoeff(mat,1,1);
   for (i=2; i<l; i++) s = mulii(s,gcoeff(mat,i,i));
-  return gerepileuptoint(av,s);
+  return gc_INT(av,s);
 }
 
 /* assumes no overflow */
@@ -1585,7 +1585,7 @@ zv_prod_Z(GEN v)
   for (k = 1; k <= m; k++) gel(V,k) = muluu(v[k<<1], v[(k<<1)-1]);
   if (odd(n)) gel(V, ++m) = utoipos(v[n]);
   setlg(V, m+1); /* HACK: now V is a bona fide t_VEC */
-  return gerepileuptoint(av, gen_product(V, NULL, &_mulii));
+  return gc_INT(av, gen_product(V, NULL, &_mulii));
 }
 GEN
 vecsmall_prod(GEN v)
@@ -1602,7 +1602,7 @@ vecsmall_prod(GEN v)
   V = cgetg(m + (odd(n)? 2: 1), t_VEC);
   for (k = 1; k <= m; k++) gel(V,k) = mulss(v[k<<1], v[(k<<1)-1]);
   if (odd(n)) gel(V,k) = stoi(v[n]);
-  return gerepileuptoint(av, gen_product(V, NULL, &_mulii));
+  return gc_INT(av, gen_product(V, NULL, &_mulii));
 }
 
 GEN
@@ -1612,11 +1612,11 @@ ZV_prod(GEN v)
   long i, l = lg(v);
   GEN n;
   if (l == 1) return gen_1;
-  if (l > 7) return gerepileuptoint(av, gen_product(v, NULL, _mulii));
+  if (l > 7) return gc_INT(av, gen_product(v, NULL, _mulii));
   n = gel(v,1);
   if (l == 2) return icopy(n);
   for (i = 2; i < l; i++) n = mulii(n, gel(v,i));
-  return gerepileuptoint(av, n);
+  return gc_INT(av, n);
 }
 /* assumes no overflow */
 long
@@ -1646,7 +1646,7 @@ ZV_sum(GEN v)
   n = gel(v,1);
   if (l == 2) return icopy(n);
   for (i = 2; i < l; i++) n = addii(n, gel(v,i));
-  return gerepileuptoint(av, n);
+  return gc_INT(av, n);
 }
 
 /********************************************************************/
@@ -1703,7 +1703,7 @@ ZincrementalGS(GEN x, GEN L, GEN B, long k)
       u = subii(mulii(gel(B,i+1), u), mulii(gcoeff(L,k,i), gcoeff(L,j,i)));
       u = diviiexact(u, gel(B,i));
     }
-    gcoeff(L,k,j) = gerepileuptoint(av, u);
+    gcoeff(L,k,j) = gc_INT(av, u);
   }
   gel(B,k+1) = gcoeff(L,k,k); gcoeff(L,k,k) = gen_1;
 }

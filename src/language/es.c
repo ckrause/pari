@@ -2876,7 +2876,7 @@ bruti_intern(GEN g, pariout_t *T, pari_str *S, int addsign)
           if (i) VpowE(S, ev,i);
           sp_sign_sp(T,S,1);
         }
-        if ((i & 0xff) == 0) g = gerepileuptoint(av,g);
+        if ((i & 0xff) == 0) g = gc_INT(av,g);
       }
       str_puts(S, "O("); VpowE(S, ev,i); str_putc(S, ')');
       set_avma(av0); break;

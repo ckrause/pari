@@ -487,7 +487,7 @@ Fle_order(GEN z, GEN o, ulong a4, ulong p)
   struct _Fle e;
   e.a4=a4;
   e.p=p;
-  return gerepileuptoint(av, gen_order(z, o, (void*)&e, &Fle_group));
+  return gc_INT(av, gen_order(z, o, (void*)&e, &Fle_group));
 }
 
 GEN
@@ -497,7 +497,7 @@ Fle_log(GEN a, GEN b, GEN o, ulong a4, ulong p)
   struct _Fle e;
   e.a4=a4;
   e.p=p;
-  return gerepileuptoint(av, gen_PH_log(a, b, o, (void*)&e, &Fle_group));
+  return gc_INT(av, gen_PH_log(a, b, o, (void*)&e, &Fle_group));
 }
 
 ulong

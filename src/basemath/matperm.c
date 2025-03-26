@@ -94,7 +94,7 @@ ZM_permanent(GEN M)
   GEN p, in;
   long i, x, upper, n = lg(M)-1;
   if (!is_bigint(ZM_normoo(M)))
-    return gerepileuptoint(av, zm_permanent(ZM_to_zm(M)));
+    return gc_INT(av, zm_permanent(ZM_to_zm(M)));
   p = gen_0;
   in = zerocol(n);
   upper = (1L<<n);
@@ -136,8 +136,8 @@ zm_permanent(GEN M)
     c = vecsmall_prod(in);
     if (hammingl(gray)&1) togglesign_safe(&c);
     p = addii(p, c);
-    if (gc_needed(av2, 1)) p = gerepileuptoint(av2, p);
+    if (gc_needed(av2, 1)) p = gc_INT(av2, p);
   }
   if (n&1) togglesign_safe(&p);
-  return gerepileuptoint(av, p);
+  return gc_INT(av, p);
 }

@@ -438,7 +438,7 @@ ellbasechar(GEN E)
 {
   pari_sp av = avma;
   GEN D = ell_get_disc(E);
-  return gerepileuptoint(av, characteristic(D));
+  return gc_INT(av, characteristic(D));
 }
 
 /* Initialize basic elliptic struct y[1..12] for initsmall
@@ -3810,7 +3810,7 @@ ellQ_minimalu(GEN E, GEN *pDP)
     if (d) u = mulii(u, powiu(p, d));
   }
   if (pDP) *pDP = DP;
-  return gerepileuptoint(av, u);
+  return gc_INT(av, u);
 }
 
 /* Ensure a1 and a3 are 2-restricted and a2 is 3-restricted */
@@ -3967,7 +3967,7 @@ ellminimaldisc(GEN E)
   {
     case t_ELL_Q:
       E = ellminimalmodel(E,NULL);
-      return gerepileuptoint(av, absi_shallow(ell_get_disc(E)));
+      return gc_INT(av, absi_shallow(ell_get_disc(E)));
     case t_ELL_NF:
     {
       GEN nf = ellnf_get_nf(E), S, L, U, D;
@@ -4319,7 +4319,7 @@ elltamagawa(GEN E)
     case t_ELL_Q:  v = ellQ_tamagawa(E);  break;
     case t_ELL_NF: v = ellnf_tamagawa(E); break;
   }
-  return gerepileuptoint(av, v);
+  return gc_INT(av, v);
 }
 
 static GEN
@@ -5336,7 +5336,7 @@ ellcard_ram(GEN E, GEN p, int *good_red)
   {
     pari_sp av = avma;
     GEN ap = ellQap(E, p, good_red);
-    return gerepileuptoint(av, subii(addiu(p,1), ap));
+    return gc_INT(av, subii(addiu(p,1), ap));
   }
   *good_red = 1;
   if (absequaliu(p,2)) return utoi(cardmod2(E));
@@ -5627,7 +5627,7 @@ akell(GEN e, GEN n)
     GEN ap = ellap(e,p);
     y = mulii(y, apk_good(ap, p, itos(gel(E,i))));
   }
-  return gerepileuptoint(av,y);
+  return gc_INT(av,y);
 }
 
 GEN
@@ -6242,7 +6242,7 @@ elllog(GEN E, GEN a, GEN g, GEN o)
   {
     GEN a4;
     RgE2_Fp_init(E, &a, &g, &a4, p);
-    return gerepileuptoint(av, FpE_log(a, g, o, a4, p));
+    return gc_INT(av, FpE_log(a, g, o, a4, p));
   }
 }
 
@@ -6310,7 +6310,7 @@ ellap(GEN E, GEN p)
     pari_err_TYPE("ellap",E);
     return NULL; /*LCOV_EXCL_LINE*/
   }
-  return gerepileuptoint(av, subii(addiu(q,1), card));
+  return gc_INT(av, subii(addiu(q,1), card));
 }
 
 /* N.B. q > minq, then the list of potential orders in ellsea will not contain
@@ -6358,7 +6358,7 @@ ellcard(GEN E, GEN p)
       int goodred;
       GEN N = ellcard_ram(E, p, &goodred);
       if (!goodred) N = subiu(N, 1); /* remove singular point */
-      return gerepileuptoint(av, N);
+      return gc_INT(av, N);
     }
   case t_ELL_NF:
     {
@@ -6366,7 +6366,7 @@ ellcard(GEN E, GEN p)
       int goodred;
       GEN N = subii(pr_norm(p), ellnfap(E, p, &goodred));
       if (goodred) N = addiu(N, 1);
-      return gerepileuptoint(av, N);
+      return gc_INT(av, N);
     }
   default:
     pari_err_TYPE("ellcard",E);

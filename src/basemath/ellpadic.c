@@ -779,7 +779,7 @@ ellpadics2_tate(GEN Ep, long n)
   for (m = 2; m <= n; m++) /* sum sigma(m) q^m */
   {
     s = addii(s, mulii(gel(qm,m+1), usumdiv_fact(gel(v,m))));
-    if ((m & 31) == 0) s = gerepileuptoint(av, s);
+    if ((m & 31) == 0) s = gc_INT(av, s);
   }
   s = subui(1, muliu(s,24));
   s = gdivgu(gsub(b2, gdiv(s,u2)), 12);

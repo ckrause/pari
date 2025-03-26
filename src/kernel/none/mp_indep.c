@@ -774,7 +774,7 @@ truedvmdii(GEN x, GEN y, GEN *z)
     case -1: break;
   }
   q = addis(q, -signe(y));
-  if (!z) return gerepileuptoint(av, q);
+  if (!z) return gc_INT(av, q);
 
   *z = subiispec(y+2,r+2, lgefint(y)-2,lgefint(r)-2);
   gptr[0]=&q; gptr[1]=z; gerepilemanysp(av,(pari_sp)r,gptr,2);
@@ -795,7 +795,7 @@ truedvmdis(GEN x, long y, GEN *z)
     if (z) *z = utoi(r);
     return q;
   }
-  q = gerepileuptoint(av, addis(q, (y < 0)? 1: -1));
+  q = gc_INT(av, addis(q, (y < 0)? 1: -1));
   if (z) *z = utoi(r + labs(y));
   return q;
 }

@@ -587,7 +587,7 @@ corepartial(GEN n, long all)
 {
   pari_sp av = avma;
   if (typ(n) != t_INT) pari_err_TYPE("corepartial",n);
-  return gerepileuptoint(av, corefa(Z_factor_limit(n,all)));
+  return gc_INT(av, corefa(Z_factor_limit(n,all)));
 }
 GEN
 core2partial(GEN n, long all)
@@ -643,7 +643,7 @@ coredisc(GEN n)
   pari_sp av = avma;
   GEN c = core(n);
   if (_mod4(c)<=1) return c; /* c = 0 or 1 mod 4 */
-  return gerepileuptoint(av, shifti(c,2));
+  return gc_INT(av, shifti(c,2));
 }
 
 GEN
@@ -830,7 +830,7 @@ eulerphi(GEN n)
     if (v != 1) q = mulii(q, v == 2? p: powiu(p, v-1));
     gel(Q,i) = q;
   }
-  return gerepileuptoint(av, ZV_prod(Q));
+  return gc_INT(av, ZV_prod(Q));
 }
 
 long
@@ -871,7 +871,7 @@ numdiv(GEN n)
     return utoipos(numdivu(n[2]));
   else
     E = numdiv_aux(absZ_factor(n));
-  return gerepileuptoint(av, zv_prod_Z(E));
+  return gc_INT(av, zv_prod_Z(E));
 }
 
 /* 1 + p + ... + p^v, p != 2^BIL - 1 */
@@ -919,7 +919,7 @@ sumdiv(GEN n)
   }
   else
     v = sumdiv_aux(absZ_factor(n));
-  return gerepileuptoint(av, v);
+  return gc_INT(av, v);
 }
 
 static GEN
@@ -956,7 +956,7 @@ sumdivk(GEN n, long k)
     }
     else
       v = sumdivk_aux(absZ_factor(n), k);
-    if (k1 > 0) return gerepileuptoint(av, v);
+    if (k1 > 0) return gc_INT(av, v);
   }
 
   if (F) n = arith_n(n);

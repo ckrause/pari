@@ -78,7 +78,7 @@ parsum_u(ulong N, GEN worker)
     if (r <= m) { arithprogset(gel(v,1), a, N, m); a++; }
     mt_queue_submit(&pt, 0, r <= m? v: NULL);
     done = mt_queue_get(&pt, &workid, &pending);
-    if (done) s = gerepileuptoint(av, addii(s, done));
+    if (done) s = gc_INT(av, addii(s, done));
   }
   mt_queue_end(&pt); return s;
 }
@@ -112,13 +112,13 @@ tauprime(GEN p)
     for (t = 1; t <= lim; t++)
     {
       s = addii(s, tauprime_i(t, p2_7, p_9, p, tin));
-      if (!(t & 255)) s = gerepileuptoint(av2, s);
+      if (!(t & 255)) s = gc_INT(av2, s);
     }
   }
   /* 28p^3 - 28p^2 - 90p - 35 */
   T = subii(shifti(mulii(p2_7, subiu(p,1)), 2), addiu(mului(90,p), 35));
   s = shifti(diviuexact(s, 3), 6);
-  return gerepileuptoint(av, subii(mulii(mulii(p2, p), T), addui(1, s)));
+  return gc_INT(av, subii(mulii(mulii(p2, p), T), addui(1, s)));
 }
 
 static GEN
@@ -156,7 +156,7 @@ taugen_n(GEN n, GEN G)
     for (t = 1; t <= lim; t++)
     {
       S = addii(S, taugen_n_i(t, G, n4));
-      if (!(t & 255)) S = gerepileuptoint(av2, S);
+      if (!(t & 255)) S = gc_INT(av2, S);
     }
   }
   S = addii(shifti(S,1), mulii(leading_coeff(G), hclassno6(n4)));
@@ -185,7 +185,7 @@ newtrace(GEN fan, GEN n, long ell)
       break;
     }
   }
-  return gerepileuptoint(av, negi(T));
+  return gc_INT(av, negi(T));
 }
 
 #ifdef DEBUG
@@ -240,5 +240,5 @@ ramanujantau(GEN n, long ell)
 #ifdef DEBUG
   checkellcong(T, n, ell);
 #endif
-  return gerepileuptoint(av, T);
+  return gc_INT(av, T);
 }

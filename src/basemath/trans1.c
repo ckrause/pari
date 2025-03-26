@@ -93,7 +93,7 @@ abpq_sum(struct abpq_res *r, long n1, long n2, struct abpq *A)
       r->Q = mulii(A->q[n1], A->q[n1+1]);
       r->B = mulii(A->b[n1], A->b[n1+1]);
       av = avma;
-      r->T = gerepileuptoint(av, T2(A, n1));
+      r->T = gc_INT(av, T2(A, n1));
       return;
 
     case 3:
@@ -105,7 +105,7 @@ abpq_sum(struct abpq_res *r, long n1, long n2, struct abpq *A)
       av = avma;
       u1 = mulii3(b, q, A->a[n1]);
       u2 = mulii(A->b[n1], T2(A, n1+1));
-      r->T = gerepileuptoint(av, mulii(A->p[n1], addii(u1, u2)));
+      r->T = gc_INT(av, mulii(A->p[n1], addii(u1, u2)));
       return;
   }
 
@@ -532,7 +532,7 @@ powiu_sign(GEN a, ulong N, long s)
   }
   av = avma;
   y = gen_powu_i(a, N, NULL, &_sqri, &_muli);
-  setsigne(y,s); return gerepileuptoint(av, y);
+  setsigne(y,s); return gc_INT(av, y);
 }
 /* a^n */
 GEN
@@ -578,7 +578,7 @@ powuu(ulong p, ulong N)
   if (p == 2) return int2u(N);
   av = avma;
   y = gen_powu_i(utoipos(p), N, NULL, &_sqri, &_muli);
-  return gerepileuptoint(av, y);
+  return gc_INT(av, y);
 }
 
 /* return 0 if overflow */
@@ -839,7 +839,7 @@ mulpowu(GEN q, GEN p, ulong v)
 {
   pari_sp av = avma;
   if (v == 0) return icopy(q);
-  return gerepileuptoint(av, mulii(q, powiu(p,v)));
+  return gc_INT(av, mulii(q, powiu(p,v)));
 }
 
 /* x t_PADIC, n != 0 */
@@ -1277,7 +1277,7 @@ gpow(GEN x, GEN n, long prec)
       av = avma;
       z = Fp_sqrtn(gel(x,2), d, p, NULL);
       if (!z) pari_err_SQRTN("gpow",x);
-      gel(y,2) = gerepileuptoint(av, Fp_pow(z, a, p));
+      gel(y,2) = gc_INT(av, Fp_pow(z, a, p));
       return y;
 
     case t_PADIC:
@@ -1434,12 +1434,12 @@ Z2_sqrt(GEN x, long e)
     mod = int2n(ez);
     z = addii(z, remi2n(mulii(x, Fp_inv(z,mod)), ez));
     z = shifti(z, -1); /* (z + x/z) / 2 */
-    if (e == ez) return gerepileuptoint(av, z);
+    if (e == ez) return gc_INT(av, z);
     if (ez < e) ez--;
     if (gc_needed(av,2))
     {
       if (DEBUGMEM > 1) pari_warn(warnmem,"Qp_sqrt");
-      z = gerepileuptoint(av,z);
+      z = gc_INT(av,z);
     }
   }
 }
@@ -1802,7 +1802,7 @@ sqrtnint(GEN a, long n)
       if (signe(b) < 0) pari_err_DOMAIN("sqrtnint", "argument", "<", gen_0,b);
       a = sqrtnint(b, n);
     }
-    return gerepileuptoint(av, a);
+    return gc_INT(av, a);
   }
   if (n <= 0) pari_err_DOMAIN("sqrtnint", "n", "<=", gen_0, stoi(n));
   if (n == 1) return icopy(a);
@@ -3108,7 +3108,7 @@ Zp_teichmuller(GEN x, GEN p, long e, GEN pe)
       z = Fp_mul(z, addui(1,t), q);
     }
   }
-  return gerepileuptoint(av, z);
+  return gc_INT(av, z);
 }
 
 GEN

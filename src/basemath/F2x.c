@@ -1344,7 +1344,7 @@ F2xq_log_from_rel(GEN W, GEN rel, long r, long n, GEN T, GEN m)
     }
     o = Fp_add(o, mulis(R, E[i]), m);
   }
-  return gerepileuptoint(av, o);
+  return gc_INT(av, o);
 }
 
 static GEN
@@ -1399,7 +1399,7 @@ F2xq_log_Coppersmith_d(GEN W, GEN g, long r, long n, GEN T, GEN mo)
         affii(l,gel(W,g[2]));
         if (DEBUGLEVEL>1) err_printf("Found %lu\n", g[2]);
       }
-      return gerepileuptoint(av, l);
+      return gc_INT(av, l);
     }
   }
   return gc_NULL(av);

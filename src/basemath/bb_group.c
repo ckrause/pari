@@ -429,7 +429,7 @@ gen_Pollard_log(GEN x, GEN g, GEN q, void *E, const struct bb_group *grp)
     h++;
   } while (equalii(gel(A,2), gel(B,2)));
   l = Fp_div(Fp_sub(gel(B,3), gel(A,3),q),Fp_sub(gel(A,2), gel(B,2), q), q);
-  return gerepileuptoint(av, l);
+  return gc_INT(av, l);
 }
 
 /* compute a hash of g^(i-1), 1<=i<=n. Return [sorted hash, perm, g^-n] */
@@ -473,7 +473,7 @@ gen_Shanks(GEN T, GEN x, ulong N, void *E, const struct bb_group *grp)
       for (i++; i <= n && table[i] == h; i++)
       {
         GEN v = addiu(muluu(n,k), perm[i]-1);
-        if (grp->equal(grp->pow(E,g,v),x)) return gerepileuptoint(av,v);
+        if (grp->equal(grp->pow(E,g,v),x)) return gc_INT(av,v);
         if (DEBUGLEVEL)
           err_printf("gen_Shanks_log: false positive %lu, %lu\n", k,h);
       }
@@ -526,7 +526,7 @@ gen_Shanks_log(GEN x, GEN g, GEN q, void *E, const struct bb_group *grp)
       for (i++; i <= lbaby && table[i] == h; i++)
       {
         GEN v = addiu(mulss(lbaby-1,k),perm[i]-1);
-        if (grp->equal(grp->pow(E,g,v),x)) return gerepileuptoint(av,v);
+        if (grp->equal(grp->pow(E,g,v),x)) return gc_INT(av,v);
         if (DEBUGLEVEL)
           err_printf("gen_Shanks_log: false positive %ld, %lu\n", k,h);
       }
@@ -656,7 +656,7 @@ gen_PH_log(GEN a, GEN g, GEN ord, void *E, const struct bb_group *grp)
     }
     gel(v,i) = mkintmod(nq, gel(qj,e+1));
   }
-  return gerepileuptoint(av, lift(chinese1_coprime_Z(v)));
+  return gc_INT(av, lift(chinese1_coprime_Z(v)));
 }
 
 /***********************************************************************/

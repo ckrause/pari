@@ -463,7 +463,7 @@ FBquad(struct buch_quad *B, ulong C2, ulong C1, GRHcheck_t *S)
   B->KC2 = i;
   setlg(B->FB, B->KC2+1);
   if (B->badprim != gen_1)
-    B->badprim = gerepileuptoint(av, B->badprim);
+    B->badprim = gc_INT(av, B->badprim);
   else
   {
     B->badprim = NULL; set_avma(av);

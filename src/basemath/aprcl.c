@@ -942,7 +942,7 @@ aprcl_step6_worker(GEN r, long t, GEN N, GEN N1, GEN et)
     r = remii(mulii(r,N1), et);
     if (equali1(r)) break;
     if (dvdii(N,r) && !equalii(r,N)) return gen_0; /* not prime */
-    if ((i & 0x1f) == 0) r = gerepileuptoint(av, r);
+    if ((i & 0x1f) == 0) r = gc_INT(av, r);
   }
   return cgetg(1,t_VECSMALL);
 }

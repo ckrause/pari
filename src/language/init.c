@@ -2900,7 +2900,7 @@ static GEN
 timetoi(ulong s, ulong m)
 {
   pari_sp av = avma;
-  return gerepileuptoint(av, addiu(muluu(s, 1000), m));
+  return gc_INT(av, addiu(muluu(s, 1000), m));
 }
 GEN
 getwalltime(void)

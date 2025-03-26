@@ -429,7 +429,7 @@ harmonic0(ulong n, GEN k)
   if (signe(k) < 0)
   {
     GEN H = poleval(faulhaber(-itos(k), 0), utoipos(n));
-    return gerepileuptoint(av, H);
+    return gc_INT(av, H);
   }
   r = itou(k);
   if (!r) return utoipos(n);

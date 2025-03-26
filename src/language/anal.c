@@ -505,7 +505,7 @@ dec_read_more(const char **ps)
   pari_sp av = avma;
   const char *s = *ps;
   while (isdigit((unsigned char)**ps)) (*ps)++;
-  return gerepileuptoint(av, dec_strtoi_len(s, *ps-s));
+  return gc_INT(av, dec_strtoi_len(s, *ps-s));
 }
 
 static ulong
@@ -535,7 +535,7 @@ real_read_more(GEN y, const char **ps)
   const char *s = *ps;
   GEN z = dec_read(ps);
   long e = *ps-s;
-  return gerepileuptoint(av, addmulii(z, powuu(10, e), y));
+  return gc_INT(av, addmulii(z, powuu(10, e), y));
 }
 
 static long

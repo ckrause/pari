@@ -409,7 +409,7 @@ gbitneg(GEN x, long bits)
   if (bits == 0) return gen_0;
   if (signe(x) < 0) { /* Consider as if mod big power of 2 */
     pari_sp ltop = avma;
-    return gerepileuptoint(ltop, ibittrunc(inegate(x), bits));
+    return gc_INT(ltop, ibittrunc(inegate(x), bits));
   }
   xl = lgefint(x);
   len_out = nbits2lg(bits);
@@ -597,7 +597,7 @@ gbitor(GEN x, GEN y)
       z = ibitand(inegate(x),inegate(y));
       break;
   }
-  return gerepileuptoint(ltop, inegate(z));
+  return gc_INT(ltop, inegate(z));
 }
 
 GEN
@@ -621,7 +621,7 @@ gbitand(GEN x, GEN y)
       z = inegate(ibitor(inegate(x),inegate(y)));
       break;
   }
-  return gerepileuptoint(ltop, z);
+  return gc_INT(ltop, z);
 }
 
 GEN
@@ -645,7 +645,7 @@ gbitxor(GEN x, GEN y)
       z = ibitxor(inegate(x),inegate(y));
       break;
   }
-  return gerepileuptoint(ltop,z);
+  return gc_INT(ltop,z);
 }
 
 /* x & ~y */
@@ -670,7 +670,7 @@ gbitnegimply(GEN x, GEN y)
       z = ibitnegimply(inegate(y),inegate(x));
       break;
   }
-  return gerepileuptoint(ltop,z);
+  return gc_INT(ltop,z);
 }
 
 long

@@ -6585,7 +6585,7 @@ INLINE void   gerepilecoeffs(pari_sp av, GEN x, int n);
 INLINE void   gerepilemany(pari_sp av, GEN* g[], int n);
 INLINE int    gequalgs(GEN y, long s);
 INLINE GEN    gerepileupto(pari_sp av, GEN q);
-INLINE GEN    gerepileuptoint(pari_sp av, GEN q);
+INLINE GEN    gc_INT(pari_sp av, GEN q);
 INLINE GEN    gerepileuptoleaf(pari_sp av, GEN q);
 INLINE int    gisdouble(GEN x, double *g);
 INLINE GEN    gmax_shallow(GEN x, GEN y);

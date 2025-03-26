@@ -300,7 +300,7 @@ genrand(GEN N)
           return randomi(N);
         case -1:
           av = avma; N = addiu(N, 1); d = subui(1, shifti(N, 1));
-          return gerepileuptoint(av, addii(N, randomi(d)));
+          return gc_INT(av, addii(N, randomi(d)));
         default: pari_err_DOMAIN("random","N","=",gen_0,gen_0);
       }
     case t_REAL:
@@ -324,7 +324,7 @@ genrand(GEN N)
         if (typ(a) != t_INT || typ(b) != t_INT) pari_err_TYPE("random", N);
         d = subii(b,a);
         if (signe(d) < 0) pari_err_TYPE("random([a,b]) (a > b)", N);
-        return gerepileuptoint(av, addii(a, randomi(addiu(d,1))));
+        return gc_INT(av, addii(a, randomi(addiu(d,1))));
       }
       return ellrandom(N);
     default:

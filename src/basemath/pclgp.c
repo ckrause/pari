@@ -651,7 +651,7 @@ FpV_shift_add(GEN x, GEN y, GEN m, long start, long end)
   {
     pari_sp av = avma;
     GEN z = addii(gel(x, i), gel(y, j));
-    gel(x, i) = (cmpii(z, m) >= 0)? gerepileuptoint(av, subii(z, m)): z;
+    gel(x, i) = (cmpii(z, m) >= 0)? gc_INT(av, subii(z, m)): z;
   }
   return x;
 }
@@ -665,7 +665,7 @@ FpV_shift_sub(GEN x, GEN y, GEN m, long start, long end)
   {
     pari_sp av = avma;
     GEN z = subii(gel(x, i), gel(y, j));
-    gel(x, i) = (signe(z) < 0)? gerepileuptoint(av, addii(z, m)): z;
+    gel(x, i) = (signe(z) < 0)? gc_INT(av, addii(z, m)): z;
   }
   return x;
 }
@@ -2704,7 +2704,7 @@ D_xi_el_sl(GEN K, GEN elg, GEN ellg, ulong d, ulong j0)
         x1 = Fp_mul(x1, Fp_sub(x2, gel(vz_f, y), ell), ell);
       }
       x1 = Fp_powu(x1, i%d, ell);
-      x0 = gerepileuptoint(av3, Fp_mul(x0, x1, ell));
+      x0 = gc_INT(av3, Fp_mul(x0, x1, ell));
       gi = Fl_mul(gi, g_el, el);
     }
     for (i=1; i<=d_chi; i++)

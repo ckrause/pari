@@ -138,5 +138,5 @@ gcdii(GEN x, GEN y)
     }
     if (gc_needed(av, 1)) gerepileall(av,2,&x,&y);
   }
-  return gerepileuptoint(av, gcdii_basecase(x,y));
+  return gc_INT(av, gcdii_basecase(x,y));
 }

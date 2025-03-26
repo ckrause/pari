@@ -1581,7 +1581,7 @@ lfunquadneg_naive(long D, long k)
     {
       GEN t = ZX_Z_eval(B, utoi(r));
       S = c > 0 ? addii(S, t) : subii(S, t);
-      S = gerepileuptoint(av, S);
+      S = gc_INT(av, S);
     }
   }
   return gdiv(S, dS);
@@ -6160,7 +6160,7 @@ mfgaloistype(GEN NK, GEN f)
   DIH = mfdihedralnew(N, CHI, SP);
   lim = lg(DIH) == 1? 200: SB;
   DIH = mkvec2(DIH, mfvectomat(DIH,SB,1));
-  if (f) return gerepileuptoint(av, mfgaloistype0(N,CHI, f, DIH, lim));
+  if (f) return gc_INT(av, mfgaloistype0(N,CHI, f, DIH, lim));
   F = mfeigenbasis(mf); lL = lg(F);
   T = cgetg(lL, t_VEC);
   for (i=1; i < lL; i++) gel(T,i) = mfgaloistype0(N, CHI, gel(F,i), DIH, lim);

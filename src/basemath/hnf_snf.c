@@ -1709,7 +1709,7 @@ affii_or_copy_gc(pari_sp av, GEN x, GEN *y)
     set_avma(av);
   }
   else
-    *y = gerepileuptoint(av, x);
+    *y = gc_INT(av, x);
 }
 static void
 hnfswap(GEN A, GEN B, long k, GEN lambda, GEN D)
@@ -2182,12 +2182,12 @@ hnf_invscale(GEN A, GEN t)
     GEN u = cgetg(n+1, t_COL);
     pari_sp av = avma;
     gel(c,k) = u;
-    gel(u,n) = k == n? gerepileuptoint(av, diviiexact(t, gcoeff(A,n,n))): gen_0;
+    gel(u,n) = k == n? gc_INT(av, diviiexact(t, gcoeff(A,n,n))): gen_0;
     for (i=n-1; i>0; i--)
     {
       av = avma; m = i == k? t: gen_0;
       for (j=i+1; j<=n; j++) m = subii(m, mulii(gcoeff(A,i,j),gel(u,j)));
-      gel(u,i) = gerepileuptoint(av, diviiexact(m, gcoeff(A,i,i)));
+      gel(u,i) = gc_INT(av, diviiexact(m, gcoeff(A,i,i)));
     }
   }
   return c;
@@ -2206,12 +2206,12 @@ hnf_divscale(GEN A, GEN B, GEN t)
     GEN u = cgetg(n+1, t_COL), b = gel(B,k);
     pari_sp av = avma;
     gel(c,k) = u; m = mulii(gel(b,n),t);
-    gel(u,n) = gerepileuptoint(av, diviiexact(m, gcoeff(A,n,n)));
+    gel(u,n) = gc_INT(av, diviiexact(m, gcoeff(A,n,n)));
     for (i=n-1; i>0; i--)
     {
       av = avma; m = mulii(gel(b,i),t);
       for (j=i+1; j<=n; j++) m = subii(m, mulii(gcoeff(A,i,j),gel(u,j)));
-      gel(u,i) = gerepileuptoint(av, diviiexact(m, gcoeff(A,i,i)));
+      gel(u,i) = gc_INT(av, diviiexact(m, gcoeff(A,i,i)));
     }
   }
   return c;
@@ -2272,7 +2272,7 @@ hnf_invimage(GEN A, GEN b)
     }
     t = dvmdii(t, Aki, &r);
     if (r != gen_0) return gc_NULL(av);
-    gel(u,i) = gerepileuptoint(av2, t);
+    gel(u,i) = gc_INT(av2, t);
     if (--i == 0) break;
   }
   /* If there is a solution, it must be u. Check remaining equations */

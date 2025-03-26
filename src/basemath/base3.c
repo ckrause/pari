@@ -96,7 +96,7 @@ zk_ei_mul(GEN nf, GEN x, long i)
       GEN c = gcoeff(tab,k,j);
       if (signe(c)) s = addii(s, _mulii(c, gel(x,j)));
     }
-    gel(v,k) = gerepileuptoint(av, s);
+    gel(v,k) = gc_INT(av, s);
   }
   return v;
 }
@@ -357,7 +357,7 @@ nfmuli_ZC(GEN nf, GEN x, GEN y)
       }
       if (t) s = addii(s, mulii(xi, t));
     }
-    gel(v,k) = gerepileuptoint(av,s);
+    gel(v,k) = gc_INT(av,s);
   }
   return v;
 }
@@ -431,7 +431,7 @@ nfsqri_ZC(GEN nf, GEN x)
       }
       if (t) s = addii(s, mulii(xi, t));
     }
-    gel(v,k) = gerepileuptoint(av,s);
+    gel(v,k) = gc_INT(av,s);
   }
   return v;
 }
@@ -1000,7 +1000,7 @@ famat_nfvalrem(GEN nf, GEN x, GEN pr, GEN *py)
     if (v == LONG_MAX) { set_avma(av); if (py) *py = gen_0; return mkoo(); }
     V = addmulii(V, stoi(v), e);
   }
-  if (!py) V = gerepileuptoint(av, V);
+  if (!py) V = gc_INT(av, V);
   else
   {
     y = mkmat2(y, gel(x,2));

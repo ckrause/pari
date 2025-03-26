@@ -75,7 +75,7 @@ rand_INT(long n)
   GEN x, N = int2n(n*BITS_IN_LONG);
   do x = randomi(N); while (lgefint(x) != n+2);
   if (!mpodd(x)) x = addis(x,1); /*For Barrett REDC */
-  return gerepileuptoint(av, x);
+  return gc_INT(av, x);
 }
 /* real, n words */
 static GEN

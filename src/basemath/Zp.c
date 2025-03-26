@@ -192,7 +192,7 @@ Zp_sqrtnlift(GEN b, GEN n, GEN a, GEN p, long e)
     }
   }
   if (pis2 && signe(a) < 0) a = addii(a, int2n(e));
-  return gerepileuptoint(av, a);
+  return gc_INT(av, a);
 }
 
 /* ZpX_liftroot for the polynomial X^2-b */
@@ -209,7 +209,7 @@ Zp_sqrt(GEN x, GEN p, long e)
   av = avma; z = Fp_sqrt(Fp_red(x, p), p);
   if (!z) return NULL;
   if (e > 1) z = Zp_sqrtlift(x, z, p, e);
-  return gerepileuptoint(av, z);
+  return gc_INT(av, z);
 }
 
 /* p-adic logarithm of a = 1 mod p (adapted from a C program of Xavier Caruso)
@@ -289,7 +289,7 @@ Zp_log(GEN a, GEN p, ulong e)
     if (trunc > e) break;
     trunc_mod = sqri(trunc_mod); trunc <<= 1; N >>= 1;
   }
-  return gerepileuptoint(av, modii(ans, pe));
+  return gc_INT(av, modii(ans, pe));
 }
 
 /* p-adic exponential of a = 0 (mod 2p)
@@ -358,7 +358,7 @@ Zp_exp(GEN a, GEN p, ulong e)
     if (!pis2) trunc_mod = sqri(trunc_mod);
     trunc <<= 1; N >>= 1;
   }
-  return gerepileuptoint(av, Zp_div(ans, denominator, p, e));
+  return gc_INT(av, Zp_div(ans, denominator, p, e));
 }
 
 /***********************************************************************/
@@ -824,7 +824,7 @@ ZpX_liftroot(GEN f, GEN a, GEN p, long e)
     mask >>= 1;
     fr = FpX_red(f,q);
     a = Fp_sub(a, Fp_mul(W, FpX_eval(fr, a,q), q), q);
-    if (mask == 1) return gerepileuptoint(av, a);
+    if (mask == 1) return gc_INT(av, a);
     W = Fp_sub(shifti(W,1), Fp_mul(Fp_sqr(W,q), FpX_eval(ZX_deriv(fr),a,q), q), q);
   }
 }

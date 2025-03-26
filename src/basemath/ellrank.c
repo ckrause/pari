@@ -626,7 +626,7 @@ Q2_hyperell_solve_affine(GEN p, GEN q)
     q = ZX_add(q, ZX_shifti(p0, 1));
   }
   R = Q2_hyperell_regpoint(p, q);
-  if (R) return gerepileuptoint(av, R);
+  if (R) return gc_INT(av, R);
   p4 = ZX_to_Flx(p,4);
   q4 = ZX_to_Flx(q,4);
   for (x = 0; x <= 1; x++)
@@ -638,7 +638,7 @@ Q2_hyperell_solve_affine(GEN p, GEN q)
       GEN p2 = ZX_affine(p, gen_2, utoi(x));
       GEN q2 = ZX_affine(q, gen_2, utoi(x));
       GEN S = Q2_hyperell_solve_affine(p2, q2);
-      if (S) return gerepileuptoint(av, addiu(shifti(S,1),x));
+      if (S) return gc_INT(av, addiu(shifti(S,1),x));
     }
   }
   return gc_NULL(av);

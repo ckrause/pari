@@ -1496,7 +1496,7 @@ GEN
 FpXY_eval(GEN Q, GEN y, GEN x, GEN p)
 {
   pari_sp av = avma;
-  return gerepileuptoint(av, FpX_eval(FpXY_evalx(Q, x, p), y, p));
+  return gc_INT(av, FpX_eval(FpXY_evalx(Q, x, p), y, p));
 }
 
 GEN

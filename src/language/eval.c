@@ -1865,7 +1865,7 @@ parfor(GEN a, GEN b, GEN code, void *E, long call(void*, GEN, GEN))
       {
         status = br_status;
         br_status = br_NONE;
-        stop = gerepileuptoint(av2, gel(done,1));
+        stop = gc_INT(av2, gel(done,1));
       }
     gel(a,1) = incloop(gel(a,1));
     if (!stop) set_avma(av2);
@@ -2129,7 +2129,7 @@ parforprimestep(GEN a, GEN b, GEN q, GEN code, void *E, long call(void*, GEN, GE
       {
         status = br_status;
         br_status = br_NONE;
-        stop = gerepileuptoint(av2, gel(done,1));
+        stop = gc_INT(av2, gel(done,1));
       }
     if (!stop) set_avma(av2);
   }

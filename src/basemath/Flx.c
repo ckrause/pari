@@ -896,7 +896,7 @@ Flx_mulspec_Kronecker(GEN A, GEN B, long b, ulong p, long lA, long lB)
   pari_sp av = avma;
   A =  kron_pack_Flx_spec_bits(A, b, lA);
   B =  kron_pack_Flx_spec_bits(B, b, lB);
-  C = gerepileuptoint(av, mulii(A, B));
+  C = gc_INT(av, mulii(A, B));
   if (b < BITS_IN_LONG)
     D =  kron_unpack_Flx_bits_narrow(C, b, p);
   else
@@ -3392,7 +3392,7 @@ Fl_Flxq_log(ulong a, GEN g, GEN o, GEN T, ulong p)
   ord  = get_arith_Z(o);
   if (!ord) ord = T? subiu(powuu(p, get_FpX_degree(T)), 1): ordp;
   if (a == p - 1) /* -1 */
-    return gerepileuptoint(av, shifti(ord,-1));
+    return gc_INT(av, shifti(ord,-1));
   ordp = gcdii(ordp, ord);
   op = typ(o)==t_MAT ? famat_Z_gcd(o, ordp) : ordp;
 
@@ -3407,7 +3407,7 @@ Fl_Flxq_log(ulong a, GEN g, GEN o, GEN T, ulong p)
   n_q = Fp_log(utoi(a), utoipos(uel(g,2)), op, utoipos(p));
   if (lg(n_q)==1) return gerepileuptoleaf(av, n_q);
   if (q) n_q = mulii(q, n_q);
-  return gerepileuptoint(av, n_q);
+  return gc_INT(av, n_q);
 }
 
 static GEN

@@ -1510,7 +1510,7 @@ mpqs_solve_linear_system(mpqs_handle_t *h, hashtable *frel)
       if (F2m_coeff(Ker, j, i))
       {
         GEN R = gel(rels,j);
-        Y_prod = gerepileuptoint(av2, remii(mulii(Y_prod, gel(R,1)), N));
+        Y_prod = gc_INT(av2, remii(mulii(Y_prod, gel(R,1)), N));
         rel_to_ei(ei, gel(R,2));
       }
     av3 = avma;
@@ -1520,7 +1520,7 @@ mpqs_solve_linear_system(mpqs_handle_t *h, hashtable *frel)
         GEN q = utoipos(FB[j].fbe_p);
         if (ei[j] & 1) pari_err_BUG("MPQS (relation is a nonsquare)");
         X = remii(mulii(X, Fp_powu(q, (ulong)ei[j]>>1, N)), N);
-        X = gerepileuptoint(av3, X);
+        X = gc_INT(av3, X);
       }
     if (MPQS_DEBUGLEVEL >= 1 && !dvdii(subii(sqri(X), sqri(Y_prod)), N))
     {

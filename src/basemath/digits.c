@@ -250,7 +250,7 @@ fromdigitsu_i(GEN x, GEN B)
 }
 GEN
 fromdigitsu(GEN x, GEN B)
-{ pari_sp av = avma; return gerepileuptoint(av, fromdigitsu_i(x, B)); }
+{ pari_sp av = avma; return gc_INT(av, fromdigitsu_i(x, B)); }
 
 static int
 ZV_in_range(GEN v, GEN B)
@@ -282,7 +282,7 @@ fromdigits(GEN x, GEN B)
     if (zv_nonnegative(x))
     {
       B = check_basis(B); x = vecsmall_reverse(x);
-      return gerepileuptoint(av, fromdigitsu_i(x, B));
+      return gc_INT(av, fromdigitsu_i(x, B));
     }
     x = zv_to_ZV(x);
   }
@@ -291,7 +291,7 @@ fromdigits(GEN x, GEN B)
   B = check_basis(B);
   if (Z_ispow2(B) && ZV_in_range(x, B)) return fromdigits_2k(x, expi(B));
   x = vecreverse(x);
-  return gerepileuptoint(av, gen_fromdigits(x, B, NULL, &Z_ring));
+  return gc_INT(av, gen_fromdigits(x, B, NULL, &Z_ring));
 }
 
 static const ulong digsum[] ={
@@ -382,7 +382,7 @@ sumdigits(GEN n)
     }
     if (l)
       S = addiu(S, sumdigits_block(res, l));
-    return gerepileuptoint(av, S);
+    return gc_INT(av, S);
   }
 }
 
@@ -396,7 +396,7 @@ sumdigits0(GEN x, GEN B)
   if (!B) return sumdigits(x);
   if (typ(x) != t_INT) pari_err_TYPE("sumdigits", x);
   B = check_basis(B);
-  if (signe(B)<0) return gerepileuptoint(av, ZV_sum(digits_neg(x,negi(B))));
+  if (signe(B)<0) return gc_INT(av, ZV_sum(digits_neg(x,negi(B))));
   if (Z_ispow2(B))
   {
     long k = expi(B);
@@ -405,15 +405,15 @@ sumdigits0(GEN x, GEN B)
     {
       GEN z = binary_2k_nv(x, k);
       if (lg(z)-1 > 1L<<(BITS_IN_LONG-k)) /* may overflow */
-        return gerepileuptoint(av, ZV_sum(Flv_to_ZV(z)));
+        return gc_INT(av, ZV_sum(Flv_to_ZV(z)));
       return gc_utoi(av,zv_sum(z));
     }
-    return gerepileuptoint(av, ZV_sum(binary_2k(x, k)));
+    return gc_INT(av, ZV_sum(binary_2k(x, k)));
   }
   if (!signe(x))       { set_avma(av); return gen_0; }
   if (abscmpii(x,B)<0) { set_avma(av); return absi(x); }
   if (absequaliu(B,10))   { set_avma(av); return sumdigits(x); }
   x = absi_shallow(x); lz = logint(x,B) + 1;
   z = gen_digits_i(x, B, lz, NULL, &Z_ring, _dvmdii);
-  return gerepileuptoint(av, ZV_sum(z));
+  return gc_INT(av, ZV_sum(z));
 }

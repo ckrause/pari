@@ -1059,7 +1059,7 @@ diviiround(GEN x, GEN y)
   if (fl >= 0) /* If 2*|r| >= |y| */
   {
     long sz = signe(x)*signe(y);
-    if (fl || sz > 0) q = gerepileuptoint(av, addis(q,sz));
+    if (fl || sz > 0) q = gc_INT(av, addis(q,sz));
   }
   return q;
 }
@@ -2355,7 +2355,7 @@ gfloor(GEN x)
       pari_sp av = avma;
       GEN y;
       if (!(y = quad_floor(x))) break;
-      return gerepileuptoint(av, y);
+      return gc_INT(av, y);
     }
     case t_RFRAC: return gdeuc(gel(x,1),gel(x,2));
     case t_VEC: case t_COL: case t_MAT:
@@ -2393,7 +2393,7 @@ ceilr(GEN x)
 {
   pari_sp av = avma;
   GEN y = floorr(x);
-  if (cmpri(x, y)) return gerepileuptoint(av, addui(1,y));
+  if (cmpri(x, y)) return gc_INT(av, addui(1,y));
   return y;
 }
 
@@ -2409,7 +2409,7 @@ gceil(GEN x)
     case t_REAL: return ceilr(x);
     case t_FRAC:
       av = avma; y = divii(gel(x,1),gel(x,2));
-      if (signe(gel(x,1)) > 0) y = gerepileuptoint(av, addui(1,y));
+      if (signe(gel(x,1)) > 0) y = gc_INT(av, addui(1,y));
       return y;
     case t_QUAD:
       if (!is_realquad(x)) break;
@@ -2476,7 +2476,7 @@ roundr(GEN x)
                             absrnz_equal2n(x)? gen_0: gen_m1;
   av = avma; x = round_i(x, &ex);
   if (ex >= 0) pari_err_PREC( "roundr (precision loss in truncation)");
-  return gerepileuptoint(av, x);
+  return gc_INT(av, x);
 }
 GEN
 roundr_safe(GEN x)
@@ -2488,7 +2488,7 @@ roundr_safe(GEN x)
   if (ex == -1) return s>0? gen_1:
                             absrnz_equal2n(x)? gen_0: gen_m1;
   av = avma; x = round_i(x, NULL);
-  return gerepileuptoint(av, x);
+  return gc_INT(av, x);
 }
 
 GEN
@@ -2566,7 +2566,7 @@ grndtoi(GEN x, long *e)
         return gen_0;
       }
       av = avma; x = round_i(x, e);
-      return gerepileuptoint(av, x);
+      return gc_INT(av, x);
     }
     case t_FRAC:
       y = diviiround(gel(x,1), gel(x,2)); if (!e) return y;
@@ -2648,7 +2648,7 @@ gtrunc2n(GEN x, long s)
         q = dvmdii(a, b, &r);
         q = addii(shifti(q,s), divii(shifti(r,s), b));
       }
-      return gerepileuptoint(av, q);
+      return gc_INT(av, q);
     }
     case t_COMPLEX:
       z = cgetg(3, t_COMPLEX);
@@ -2744,7 +2744,7 @@ ceil_safe(GEN x)
     if (e < 0) e = 0;
     y = addii(y, int2n(e));
   }
-  return gerepileuptoint(av, y);
+  return gc_INT(av, y);
 }
 /* largest integer smaller than any incarnations of the real x
  * Avoid "precision loss in truncation" */
@@ -2762,7 +2762,7 @@ floor_safe(GEN x)
     if (e < 0) e = 0;
     y = subii(y, int2n(e));
   }
-  return gerepileuptoint(av, y);
+  return gc_INT(av, y);
 }
 
 GEN
@@ -2797,7 +2797,7 @@ padic_to_Q(GEN x)
   if (v > 0)
   {
     pari_sp av = avma;
-    return gerepileuptoint(av, mulii(u, powiu(p,v)));
+    return gc_INT(av, mulii(u, powiu(p,v)));
   }
   retmkfrac(icopy(u), powiu(p,-v));
 }
@@ -3897,7 +3897,7 @@ centerlift(GEN x)
       { /* here p^v is an integer */
         pari_sp av = avma;
         GEN z = centerliftii(u, pd);
-        return v? gerepileuptoint(av, mulii(powiu(p,v), z)): z;
+        return v? gc_INT(av, mulii(powiu(p,v), z)): z;
       }
       retmkfrac(centerliftii(u, pd), powiu(p,-v));
     default: return gcopy(x);

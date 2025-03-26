@@ -52,7 +52,7 @@ ZX_divides_i(GEN x, GEN y, GEN B)
       if (r != gen_0) return NULL;
     }
     if (B && abscmpii(p1, B) > 0) return NULL;
-    p1 = gerepileuptoint(av, p1);
+    p1 = gc_INT(av, p1);
     gel(z,i-dy) = p1;
   }
   av = avma;
@@ -100,7 +100,7 @@ two_factor_bound(GEN x)
   z = divrr(z, dbltor(pow((double)n, 0.75)));
   z = roundr_safe(sqrtr(z));
   z = mulii(z, absi_shallow(gel(x,n)));
-  return gerepileuptoint(av, shifti(z, 1));
+  return gc_INT(av, shifti(z, 1));
 }
 #endif
 
@@ -365,7 +365,7 @@ shifteval(GEN Q, long n)
   for (i = l-2; i > 1; i--)
   {
     s = addii(gel(Q,i), shifti(s, n));
-    if (gc_needed(av,1)) s = gerepileuptoint(av, s);
+    if (gc_needed(av,1)) s = gc_INT(av, s);
   }
   return s;
 }
@@ -1198,7 +1198,7 @@ maxnorm(GEN p)
     if (abscmpii(x,m) > 0) m = x;
   }
   m = divii(m, gel(p,n));
-  return gerepileuptoint(av, addiu(absi_shallow(m),1));
+  return gc_INT(av, addiu(absi_shallow(m),1));
 }
 #endif
 

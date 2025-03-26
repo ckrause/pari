@@ -516,7 +516,7 @@ perm_order(GEN v)
   GEN V = cgetg(l, t_VEC);
   for (i = 1; i < l; i++)
     gel(V,i) = utoi(lg(gel(c,i))-1);
-  return gerepileuptoint(av, gen_product(V, (void *)lcmii, _domul));
+  return gc_INT(av, gen_product(V, (void *)lcmii, _domul));
 }
 
 GEN
@@ -595,7 +595,7 @@ perm_to_Z(GEN v)
   pari_sp av = avma;
   GEN x = perm_to_Z_inplace(leafcopy(v));
   if (!x) pari_err_TYPE("permtonum",v);
-  return gerepileuptoint(av, x);
+  return gc_INT(av, x);
 }
 GEN
 permtonum(GEN p)
@@ -612,7 +612,7 @@ permtonum(GEN p)
   }
   x = perm_to_Z_inplace(v);
   if (!x) pari_err_TYPE("permtonum",p);
-  return gerepileuptoint(av, x);
+  return gc_INT(av, x);
 }
 
 GEN

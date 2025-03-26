@@ -1462,7 +1462,7 @@ static GEN
 coeffEu(GEN fa)
 {
   pari_sp av = avma;
-  return gerepileuptoint(av, mului(65520, usumdivk_fact(fa,11)));
+  return gc_INT(av, mului(65520, usumdivk_fact(fa,11)));
 }
 /* E12 = 1 + q*E/691 */
 static GEN
@@ -1524,7 +1524,7 @@ ser_j(long prec, long v)
       s3 = gel(S3,n-i); s5 = gel(S5,n-i);
       c = addii(c, mulii(gel(j,i), subii(s5, mului(i,s3))));
     }
-    gel(j,n) = gerepileuptoint(av, diviuexact(muliu(c,24), n+1));
+    gel(j,n) = gc_INT(av, diviuexact(muliu(c,24), n+1));
   }
   return J;
 }

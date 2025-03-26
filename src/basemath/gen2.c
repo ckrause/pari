@@ -2309,7 +2309,7 @@ padic_to_Fp(GEN x, GEN Y) {
   z = padic_u(x);
   if (!signe(z) || vy > vx + precp(x)) pari_err_OP("",x, mkintmod(gen_1,Y));
   if (vx) z = mulii(z, powiu(p,vx));
-  return gerepileuptoint(av, remii(z, Y));
+  return gc_INT(av, remii(z, Y));
 }
 ulong
 padic_to_Fl(GEN x, ulong Y) {

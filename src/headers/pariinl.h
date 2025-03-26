@@ -1258,7 +1258,7 @@ gerepileuptoleaf(pari_sp av, GEN x)
   return q;
 }
 INLINE GEN
-gerepileuptoint(pari_sp av, GEN x)
+gc_INT(pari_sp av, GEN x)
 {
   if (!isonstack(x) || (GEN)av<=x) return gc_const(av,x);
   set_avma((pari_sp)icopy_avma(x, av));
@@ -1270,7 +1270,7 @@ gerepileupto(pari_sp av, GEN x)
   if (!isonstack(x) || (GEN)av<=x) return gc_const(av,x);
   switch(typ(x))
   { /* non-default = !is_recursive_t(tq) */
-    case t_INT: return gerepileuptoint(av, x);
+    case t_INT: return gc_INT(av, x);
     case t_REAL:
     case t_STR:
     case t_VECSMALL: return gerepileuptoleaf(av,x);
@@ -1684,12 +1684,12 @@ Fp_add(GEN a, GEN b, GEN m)
     s = signe(t);
     if (!s) return gc_const(av, gen_0);
     if (s < 0) return gc_const((pari_sp)p, p);
-    if (cmpii(t, m) < 0) return gerepileuptoint(av, t); /* general case ! */
+    if (cmpii(t, m) < 0) return gc_INT(av, t); /* general case ! */
     p = remii(t, m);
   }
   else
     p = modii(p, m);
-  return gerepileuptoint(av, p);
+  return gc_INT(av, p);
 }
 INLINE GEN
 Fp_double(GEN x, GEN N)
@@ -1713,10 +1713,10 @@ Fp_sub(GEN a, GEN b, GEN m)
   {
     GEN t = addii(p, m);
     if (!s) return gc_const(av, gen_0);
-    if (s > 0) return gerepileuptoint(av, t); /* general case ! */
+    if (s > 0) return gc_INT(av, t); /* general case ! */
     p = modii(t, m);
   }
-  return gerepileuptoint(av, p);
+  return gc_INT(av, p);
 }
 INLINE GEN
 Fp_neg(GEN b, GEN m)
@@ -1732,7 +1732,7 @@ Fp_neg(GEN b, GEN m)
     p = modii(p, m);
   } else
     p = remii(negi(b), m);
-  return gerepileuptoint(av, p);
+  return gc_INT(av, p);
 }
 
 INLINE GEN
@@ -1759,7 +1759,7 @@ Fp_addmul(GEN x, GEN y, GEN z, GEN p)
   if (!signe(y) || !signe(z)) return Fp_red(x, p);
   if (!signe(x)) return Fp_mul(z,y, p);
   av = avma;
-  return gerepileuptoint(av, modii(addii(x, mulii(y,z)), p));
+  return gc_INT(av, modii(addii(x, mulii(y,z)), p));
 }
 
 INLINE GEN
@@ -1861,7 +1861,7 @@ Fp_divu(GEN x, ulong a, GEN p)
   }
   x = Fp_red(x, p);
   b = Fl_neg(Fl_div(umodiu(x,a), umodiu(p,a), a), a); /* x + pb = 0 (mod a) */
-  return gerepileuptoint(av, diviuexact(addmuliu(x, p, b), a));
+  return gc_INT(av, diviuexact(addmuliu(x, p, b), a));
 }
 
 INLINE GEN

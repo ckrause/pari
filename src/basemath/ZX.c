@@ -476,17 +476,17 @@ ZX_Z_eval(GEN x, GEN y)
       if (j==2)
       {
         if (i != j) y = powiu(y, i-j+1);
-        return gerepileuptoint(av, mulii(t,y));
+        return gc_INT(av, mulii(t,y));
       }
     r = (i==j)? y: powiu(y, i-j+1);
     t = addii(mulii(t,r), gel(x,j));
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"ZX_Z_eval: i = %ld",i);
-      t = gerepileuptoint(av, t);
+      t = gc_INT(av, t);
     }
   }
-  return gerepileuptoint(av, t);
+  return gc_INT(av, t);
 }
 
 /* Return 2^(n degpol(P))  P(x >> n) */
@@ -564,7 +564,7 @@ ZX_eval2BILspec(GEN x, long k, long nx)
       for (j=0; j<lc; j++) *int_W(nz,j+ki) = *int_W(c,j);
   }
   pz = int_normalize(pz,0);
-  nz = int_normalize(nz,0); return gerepileuptoint(av, subii(pz,nz));
+  nz = int_normalize(nz,0); return gc_INT(av, subii(pz,nz));
 }
 
 static long
@@ -597,7 +597,7 @@ Z_mod2BIL_ZX(GEN x, long bs, long d, long vx)
     {
       carry = (lgefint(z) == 2+bs && (HIGHBIT & *int_W(z,bs-1)));
       if (carry)
-        z = gerepileuptoint(av, (sx==-1)? subii(s1,z): subii(z,s1));
+        z = gc_INT(av, (sx==-1)? subii(s1,z): subii(z,s1));
       else if (sx==-1) togglesign(z);
     }
     gel(pol,i+2) = z;
@@ -642,7 +642,7 @@ ZX_sqrspec_basecase_limb(GEN x, long a, long i)
     if (signe(t))
       s = addii(s, sqri(t));
   }
-  return gerepileuptoint(av,s);
+  return gc_INT(av,s);
 }
 
 static GEN
@@ -736,7 +736,7 @@ ZX_mulspec(GEN x, GEN y, long nx, long ny)
     z[1] = evalvarn(0) | evalsigne(1);
     A0 = mulii(a0, b0);
     A2 = mulii(a1, b1); av = avma;
-    A1 = gerepileuptoint(av, subii(addii(A0,A2),
+    A1 = gc_INT(av, subii(addii(A0,A2),
                                    mulii(subii(a1,a0), subii(b1,b0))));
     i = 4 + v;
     gel(z,i--) = A2;
@@ -790,7 +790,7 @@ ZX_rem(GEN x, GEN y)
     av=avma; p1=gel(x,i);
     for (j=i-dy+1; j<=i && j<=dz; j++)
       p1 = subii(p1, mulii(gel(z,j),gel(y,i-j)));
-    gel(z,i-dy) = avma == av? icopy(p1): gerepileuptoint(av, p1);
+    gel(z,i-dy) = avma == av? icopy(p1): gc_INT(av, p1);
   }
   rem = (GEN)avma; av = (pari_sp)new_chunk(dx+3);
   for (sx=0; ; i--)
@@ -805,14 +805,14 @@ ZX_rem(GEN x, GEN y)
   lr=i+3; rem -= lr;
   rem[0] = evaltyp(t_POL) | _evallg(lr);
   rem[1] = z[-1];
-  p1 = gerepileuptoint((pari_sp)rem, p1);
+  p1 = gc_INT((pari_sp)rem, p1);
   rem += 2; gel(rem,i) = p1;
   for (i--; i>=0; i--)
   {
     av=avma; p1 = gel(x,i);
     for (j=0; j<=i && j<=dz; j++)
       p1 = subii(p1, mulii(gel(z,j),gel(y,i-j)));
-    gel(rem,i) = avma == av? icopy(p1): gerepileuptoint(av, p1);
+    gel(rem,i) = avma == av? icopy(p1): gc_INT(av, p1);
   }
   rem -= 2;
   if (!sx) (void)ZX_renormalize(rem, lr);
@@ -834,7 +834,7 @@ ZX_eval1(GEN x)
     GEN c = gel(x,i);
     if (signe(c)) s = addii(s, c);
   }
-  return gerepileuptoint(av,s);
+  return gc_INT(av,s);
 }
 
 /* reduce T mod X^n - 1. Shallow function */

@@ -595,7 +595,7 @@ FpX_oneroot(GEN f, GEN p)
   }
   f = FpX_oneroot_i(f, p);
   if (!f) return gc_NULL(av);
-  return gerepileuptoint(av, f);
+  return gc_INT(av, f);
 }
 
 /* returns a root of unity in F_p that is suitable for finding a factor   */
@@ -621,7 +621,7 @@ good_root_of_unity(GEN p, long deg, long deg_factor, long *pt_n)
    }
    while (!equaliu (Fp_order (zeta, factn, p), n));
    *pt_n = n;
-   return gerepileuptoint (ltop, zeta);
+   return gc_INT (ltop, zeta);
 }
 
 GEN
@@ -666,7 +666,7 @@ FpX_oneroot_split(GEN fact, GEN p)
       zeta = Fp_mul (zeta, prim, p);
     }
   }
-  return gerepileuptoint(av, FpX_oneroot(minfactor, p));
+  return gc_INT(av, FpX_oneroot(minfactor, p));
 }
 
 /*******************************************************************/

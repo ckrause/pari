@@ -1029,7 +1029,7 @@ matdetmod(GEN A, GEN d)
   D = gen_detops(ops, data, R);
   D = Fp_inv(D, d);
   for (i = 1; i <= n; i++) D = Fp_mul(D, gcoeff(H,i,i), d);
-  return gerepileuptoint(av, D);
+  return gc_INT(av, D);
 }
 
 GEN

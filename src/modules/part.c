@@ -136,7 +136,7 @@ numbpart(GEN n)
   p1 = addrr(sum, psi(C, 1, prec));
   p2 = psi(C, 2, prec);
   affrr(mod2(n)? subrr(p1,p2): addrr(p1,p2), sum);
-  return gerepileuptoint (ltop, roundr(mulrr(D,sum)));
+  return gc_INT (ltop, roundr(mulrr(D,sum)));
 }
 
 /* for loop over partitions of integer k.

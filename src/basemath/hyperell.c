@@ -1072,7 +1072,7 @@ ZX_apolar(GEN P, long n)
                    mulii(gel(P,i+2),gel(P,n-i+2)));
      s = odd(i)? subii(s, a): addii(s, a);
   }
-  return gerepileuptoint(av,s);
+  return gc_INT(av,s);
 }
 
 static GEN
@@ -1315,7 +1315,7 @@ hyperellminimaldisc(GEN W, GEN pr)
 {
   pari_sp av = avma;
   GEN C = hyperellminimalmodel(W, NULL, pr);
-  return gerepileuptoint(av, hyperelldisc(C));
+  return gc_INT(av, hyperelldisc(C));
 }
 
 static GEN

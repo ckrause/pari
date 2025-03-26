@@ -14,6 +14,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 /* For compatibility with older PARI versions */
 #define gerepilecopy gc_GEN
+#define gerepileuptoint gc_INT
 #define ZC_hnfremdiv ZC_hnfdivrem
 #define oncurve ellisoncurve_i
 #define nfinitall nfinit0
@@ -424,7 +425,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define lpile   (long)gerepile
 #define lpilecopy (long)gc_GEN
 #define lpileupto (long)gerepileupto
-#define lpileuptoint (long)gerepileuptoint
+#define lpileuptoint (long)gc_INT
 #define lpileuptoleaf (long)gerepileuptoleaf
 #define lpoleval (long)poleval
 #define lpowgs  (long)gpowgs

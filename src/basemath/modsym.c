@@ -415,7 +415,7 @@ mfnumcusps(GEN n)
     if (lgefint(n) == 3) return utoi( mfnumcuspsu(n[2]) );
     F = absZ_factor(n);
   }
-  return gerepileuptoint(av, mfnumcusps_fact(F));
+  return gc_INT(av, mfnumcusps_fact(F));
 }
 
 /* to each cusp in \Gamma_0(N) P1(Q), represented by p/q, we associate a
@@ -2963,7 +2963,7 @@ mseval2_ooQ(GEN W, GEN xpm, GEN c)
   W = get_msN(W);
   v = init_act_trivial(W);
   Q_log_trivial(v, W, c); /* oo -> (a:b), c = a/b */
-  return gerepileuptoint(av, ZV_zc_mul(xpm, v));
+  return gc_INT(av, ZV_zc_mul(xpm, v));
 }
 
 static GEN

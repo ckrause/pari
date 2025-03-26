@@ -315,7 +315,7 @@ FlxqE_order(GEN z, GEN o, GEN a4, GEN T, ulong p)
   pari_sp av = avma;
   struct _FlxqE e;
   e.a4 = a4; e.T = T; e.p = p; e.pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
-  return gerepileuptoint(av, gen_order(z, o, (void*)&e, &FlxqE_group));
+  return gc_INT(av, gen_order(z, o, (void*)&e, &FlxqE_group));
 }
 
 GEN
@@ -324,7 +324,7 @@ FlxqE_log(GEN a, GEN b, GEN o, GEN a4, GEN T, ulong p)
   pari_sp av = avma;
   struct _FlxqE e;
   e.a4 = a4; e.T = T; e.p = p; e.pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
-  return gerepileuptoint(av, gen_PH_log(a, b, o, (void*)&e, &FlxqE_group));
+  return gc_INT(av, gen_PH_log(a, b, o, (void*)&e, &FlxqE_group));
 }
 
 /***********************************************************************/
@@ -1227,7 +1227,7 @@ Flxq_ellcard_Shanks(GEN a4, GEN a6, GEN q, GEN T, ulong p)
     A = remii(subii(q2p,A), B); /* #E(Fq)+#E'(Fq) = 2q+2 */
   }
   h = closest_lift(A, B, q1p);
-  return gerepileuptoint(av, KRO == 1? h: subii(q2p,h));
+  return gc_INT(av, KRO == 1? h: subii(q2p,h));
 }
 
 static GEN
@@ -1488,7 +1488,7 @@ GEN
 Flxq_ellcard(GEN a4, GEN a6, GEN T, ulong p)
 {
   pari_sp av = avma;
-  return gerepileuptoint(av, Flxq_ellcard_i(a4, a6, T, p));
+  return gc_INT(av, Flxq_ellcard_i(a4, a6, T, p));
 }
 
 static long

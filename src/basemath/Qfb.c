@@ -52,7 +52,7 @@ quadpoly_bc(GEN D, long Dodd, GEN *b, GEN *c)
   {
     pari_sp av = avma;
     *b = gen_m1;
-    *c = gerepileuptoint(av, shifti(subui(1,D), -2));
+    *c = gc_INT(av, shifti(subui(1,D), -2));
   }
   else
   {
@@ -1247,7 +1247,7 @@ qfr_1_fill(GEN y, struct qfr_data *S)
   gel(y,1) = gen_1;
   if (mod2(S->D) != mod2(y2)) y2 = subiu(y,1);
   gel(y,2) = y2; av = avma;
-  gel(y,3) = gerepileuptoint(av, shifti(subii(sqri(y2), S->D),-2));
+  gel(y,3) = gc_INT(av, shifti(subii(sqri(y2), S->D),-2));
 }
 static GEN
 qfr5_1(struct qfr_data *S, long prec)
@@ -1683,7 +1683,7 @@ primeform_u(GEN x, ulong p)
     if ((b ^ s) & 1) b = p - b;
     c = diviuexact(shifti(subii(sqru(b), x), -2), p);
   }
-  gel(y,3) = gerepileuptoint(av, c);
+  gel(y,3) = gc_INT(av, c);
   gel(y,4) = icopy(x);
   gel(y,2) = utoi(b);
   gel(y,1) = utoipos(p); return y;
@@ -1738,10 +1738,10 @@ primeform(GEN x, GEN p)
   b = Fp_sqrt(x, absp); if (!b) pari_err_SQRTN(f, mkintmod(x,absp));
   s &= 1; /* s = x mod 2 */
   /* mod(b) != mod2(x) ? [Warning: we may have b == 0] */
-  if ((!signe(b) && s) || mod2(b) != s) b = gerepileuptoint(av, subii(absp,b));
+  if ((!signe(b) && s) || mod2(b) != s) b = gc_INT(av, subii(absp,b));
 
   av = avma;
-  gel(y,3) = gerepileuptoint(av, diviiexact(shifti(subii(sqri(b), x), -2), p));
+  gel(y,3) = gc_INT(av, diviiexact(shifti(subii(sqri(b), x), -2), p));
   gel(y,4) = icopy(x);
   gel(y,2) = b;
   gel(y,1) = icopy(p);

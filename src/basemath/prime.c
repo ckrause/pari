@@ -68,7 +68,7 @@ ispsp(MR_Jaeschke_t *S, ulong a)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ispsp, r = %ld", r);
-      c = gerepileuptoint(av, c);
+      c = gc_INT(av, c);
     }
   }
   return 0;
@@ -93,7 +93,7 @@ is2psp(GEN n)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"is2psp, r = %ld", e);
-      c = gerepileuptoint(av, c);
+      c = gc_INT(av, c);
     }
   }
   return 0;
@@ -1047,7 +1047,7 @@ randomprime(GEN N)
   for (;;)
   {
     GEN p = addii(a, randomi(d));
-    if (BPSW_psp(p)) return gerepileuptoint(av, p);
+    if (BPSW_psp(p)) return gc_INT(av, p);
     set_avma(av2);
   }
 }
@@ -1085,7 +1085,7 @@ randomprime0(GEN N, GEN q)
   for (;;)
   {
     GEN p = addii(a, mulii(D, randomi(d)));
-    if (BPSW_psp(p)) return gerepileuptoint(av, p);
+    if (BPSW_psp(p)) return gc_INT(av, p);
     set_avma(av2);
   }
   return NULL;
@@ -1149,7 +1149,7 @@ primepi(GEN x)
   nn = setloop(utoipos(n));
   pp = gen_0;
   for (; pp; incloop(nn)) pp = forprime_next(&S);
-  return gerepileuptoint(av, subiu(nn,1));
+  return gc_INT(av, subiu(nn,1));
 }
 
 /* pi(x) < x/log x * (1 + 1/log x + 2.51/log^2 x)), x>=355991 [ Dusart ]

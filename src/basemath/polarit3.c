@@ -225,7 +225,7 @@ Rg_to_Fp(GEN x, GEN p)
       pari_sp av = avma;
       GEN z = modii(gel(x,1), p);
       if (z == gen_0) return gen_0;
-      return gerepileuptoint(av, remii(mulii(z, Fp_inv(gel(x,2), p)), p));
+      return gc_INT(av, remii(mulii(z, Fp_inv(gel(x,2), p)), p));
     }
     case t_PADIC: return padic_to_Fp(x, p);
     case t_INTMOD: {
@@ -1057,7 +1057,7 @@ Fl_chinese_coprime(GEN a, ulong b, GEN q, ulong p, ulong qinv, GEN pq, GEN pq2)
     ax = addii(a, mului(d, q)); /* in ]0, pq[ assuming a in ]-q,q[ */
     if (cmpii(ax,pq2) > 0) ax = subii(ax,pq);
   }
-  return gerepileuptoint(av, ax);
+  return gc_INT(av, ax);
 }
 GEN
 Z_init_CRT(ulong Hp, ulong p) { return stoi(Fl_center(Hp, p, p>>1)); }
@@ -2125,7 +2125,7 @@ ZX_resultant_all(GEN A, GEN B, GEN dB, ulong bound)
     GEN a = gel(A,4), b = gel(A,3), c = gel(A,2);
     H = mulii(a, subii(shifti(mulii(a, c), 2), sqri(b)));
     if (dB) H = diviiexact(H, sqri(dB));
-    return gerepileuptoint(av, H);
+    return gc_INT(av, H);
   }
   if (B)
   {
@@ -2137,7 +2137,7 @@ ZX_resultant_all(GEN A, GEN B, GEN dB, ulong bound)
     {
       H = RgX_resultant_all(A, B, NULL);
       if (dB) H = diviiexact(H, powiu(dB, a));
-      return gerepileuptoint(av, H);
+      return gc_INT(av, H);
     }
     if (!bound) bound = ZX_ZXY_ResBound(A, B, dB);
   }
@@ -2146,7 +2146,7 @@ ZX_resultant_all(GEN A, GEN B, GEN dB, ulong bound)
   init_modular_big(&S);
   H = gen_crt("ZX_resultant_all", worker, &S, dB, bound, 0, NULL,
               ZV_chinese_center, Fp_center);
-  return gerepileuptoint(av, H);
+  return gc_INT(av, H);
 }
 
 /* A0 and B0 in Q[X] */
@@ -2186,7 +2186,7 @@ QXQ_intnorm(GEN A, GEN B)
   if (n && !equali1(n)) R = mulii(R, powiu(n, dB));
   lB = leading_coeff(B);
   if (!equali1(lB)) R = diviiexact(R, powiu(lB, dA));
-  return gerepileuptoint(av, R);
+  return gc_INT(av, R);
 }
 
 GEN
@@ -2222,7 +2222,7 @@ ZX_disc_all(GEN x, ulong bound)
   else
     R = diviiexact(R,l);
   if (s == -1) togglesign_safe(&R);
-  return gerepileuptoint(av,R);
+  return gc_INT(av,R);
 }
 
 GEN
@@ -3217,7 +3217,7 @@ ffnbirred(GEN p, long n)
     GEN pd = powiu(p, n / labs(md)); /* p^{n/d} */
     s = md > 0? addii(s, pd): subii(s,pd);
   }
-  return gerepileuptoint(av, diviuexact(s, n));
+  return gc_INT(av, diviuexact(s, n));
 }
 
 GEN
@@ -3239,9 +3239,9 @@ ffsumnbirred(GEN p, long n)
       GEN pd = gel(q, i / labs(md)); /* p^{i/d} */
       s = md > 0? addii(s, pd): subii(s, pd);
     }
-    t = gerepileuptoint(av2, addii(t, diviuexact(s, i)));
+    t = gc_INT(av2, addii(t, diviuexact(s, i)));
   }
-  return gerepileuptoint(av, t);
+  return gc_INT(av, t);
 }
 
 GEN

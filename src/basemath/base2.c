@@ -549,7 +549,7 @@ nfdisc(GEN x)
 {
   pari_sp av = avma;
   nfmaxord_t S;
-  return gerepileuptoint(av, maxord_disc(&S, x));
+  return gc_INT(av, maxord_disc(&S, x));
 }
 GEN
 nfdiscfactors(GEN x)
@@ -838,7 +838,7 @@ ZpX_reduced_resultant(GEN x, GEN y, GEN p, GEN pm)
     if (lg(z) > 1)
     {
       GEN c = gcoeff(z,1,1);
-      if (signe(c)) return gerepileuptoint(av, c);
+      if (signe(c)) return gc_INT(av, c);
     }
   }
   set_avma(av); return gen_0;
@@ -1340,7 +1340,7 @@ newtoncharpoly(GEN pp, GEN p, GEN NS)
       if (typ(s) != t_INT) return NULL;
     }
     s = mulii(s, Fp_inv(utoipos(z), pp));
-    gel(c,k) = gerepileuptoint(av2, Fp_center_i(s, pp, pp2));
+    gel(c,k) = gc_INT(av2, Fp_center_i(s, pp, pp2));
   }
   for (k = odd(n)? 1: 2; k <= n+1; k += 2) gel(c,k) = negi(gel(c,k));
   return gtopoly(c, 0);
@@ -1915,7 +1915,7 @@ indexpartial(GEN T, GEN DT)
     GEN p = gel(U,1), q = powiu(p, odd(e)? e2+1: e2);
     res = mulii(res, q);
   }
-  return gerepileuptoint(av,res);
+  return gc_INT(av,res);
 }
 
 /*******************************************************************/

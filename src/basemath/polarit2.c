@@ -128,7 +128,7 @@ centermod_i(GEN x, GEN p, GEN ps2)
       for (i=2; i<lx; i++)
       {
         av = avma;
-        gel(y,i) = gerepileuptoint(av, centermodii(gel(x,i),p,ps2));
+        gel(y,i) = gc_INT(av, centermodii(gel(x,i),p,ps2));
       }
       return normalizepol_lg(y, lx);
 
@@ -1625,7 +1625,7 @@ ggcd(GEN x, GEN y)
           {
             p1 = gcdii(p1,gel(y,2));
             if (equalii(p1, gel(z,1))) { cgiv(p1); p1 = gen_0; }
-            else p1 = gerepileuptoint(av, p1);
+            else p1 = gc_INT(av, p1);
           }
           gel(z,2) = p1;
         }
@@ -1673,7 +1673,7 @@ ggcd(GEN x, GEN y)
               p1 = gcdii(x,p1);
               if (equalii(p1, gel(z,1))) { cgiv(p1); p1 = gen_0; }
               else
-                p1 = gerepileuptoint(av, p1);
+                p1 = gc_INT(av, p1);
             }
             gel(z,2) = p1; return z;
 
@@ -2155,7 +2155,7 @@ ZX_content(GEN x)
   av = avma;
   for (i=3; !is_pm1(d) && i<l; i++) d = gcdii(d, gel(x,i));
   if (signe(d) < 0) d = negi(d);
-  return gerepileuptoint(av, d);
+  return gc_INT(av, d);
 }
 
 static GEN
@@ -2169,9 +2169,9 @@ Z_content_v(GEN x, long i, long l)
     GEN c = Z_content(gel(x,i));
     if (!c) return NULL;
     d = gcdii(d, c); if (equali1(d)) return NULL;
-    if ((i & 255) == 0) d = gerepileuptoint(av, d);
+    if ((i & 255) == 0) d = gc_INT(av, d);
   }
-  return gerepileuptoint(av, d);
+  return gc_INT(av, d);
 }
 /* return NULL for 1 */
 GEN
@@ -2204,9 +2204,9 @@ Q_denom_v(GEN x, long i, long l)
     GEN D = Q_denom_safe(gel(x,i));
     if (!D) return NULL;
     if (D != gen_1) d = lcmii(d, D);
-    if ((i & 255) == 0) d = gerepileuptoint(av, d);
+    if ((i & 255) == 0) d = gc_INT(av, d);
   }
-  return gerepileuptoint(av, d);
+  return gc_INT(av, d);
 }
 /* NOT MEMORY CLEAN (because of t_FRAC).
  * As denom(), but over Q. Treats polynomial as elts of Q[x1,...xn], instead
@@ -2270,7 +2270,7 @@ Q_muli_to_int(GEN x, GEN d)
       xn = gel(x,1);
       xd = gel(x,2); av = avma;
       y = mulii(xn, diviiexact(d, xd));
-      return gerepileuptoint(av, y);
+      return gc_INT(av, y);
     case t_COMPLEX:
       y = cgetg(3,t_COMPLEX);
       gel(y,1) = Q_muli_to_int(gel(x,1),d);
@@ -2370,13 +2370,13 @@ Q_divmuli_to_int(GEN x, GEN d, GEN n)
   {
     case t_INT:
       av = avma; y = diviiexact(x,d);
-      return gerepileuptoint(av, mulii(y,n));
+      return gc_INT(av, mulii(y,n));
 
     case t_FRAC:
       xn = gel(x,1);
       xd = gel(x,2); av = avma;
       y = mulii(diviiexact(xn, d), diviiexact(n, xd));
-      return gerepileuptoint(av, y);
+      return gc_INT(av, y);
 
     case t_VEC:
     case t_COL:

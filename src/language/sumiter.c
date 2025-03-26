@@ -1209,7 +1209,7 @@ polzag1(long n, long m)
       s = addii(s, t);
     }
     /* g_i = sum_{d-1-i <= k < d}, binomial(2*d, 2*k+1)*binomial(k,d-1-i) */
-    gel(g,i+2) = gerepileuptoint(av2, s);
+    gel(g,i+2) = gc_INT(av2, s);
   }
   /* sum_{0 <= i < d} g_i x^i * (x+x^2)^r */
   g = RgX_mulXn(gmul(g, gpowgs(deg1pol(gen_1,gen_1,0),r)), r);

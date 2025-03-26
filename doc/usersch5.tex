@@ -1220,6 +1220,10 @@ do not provide access to TLS variables.
 \kbd{av} on, recopying the object \kbd{x} to a new address which is
 returned.
 
+\fun{GEN}{gc_INT}{pari_sp av, GEN q} faster variant of \kbd{gc\_GEN} when
+\kbd{q} is a \typ{INT}. The length and effective length of the resulting
+\typ{INT} are equal.
+
 \fun{GEN}{gc_NULL}{pari_sp av} reset \kbd{avma} to \kbd{av} and return
 \kbd{NULL}.
 
@@ -1332,14 +1336,10 @@ created before any component. If \kbd{q} is not on the stack, this is
 equivalent to \kbd{set\_avma(av)}; in particular, sentinels which are not even
 proper \kbd{GEN}s such as \kbd{q = NULL} are allowed.
 
-\fun{GEN}{gerepileuptoint}{pari_sp av, GEN q} analogous to (but faster than)
-\kbd{gerepileupto}. Assumes further that \kbd{q} is a \typ{INT}. The
-length and effective length of the resulting \typ{INT} are equal.
-
 \fun{GEN}{gerepileuptoleaf}{pari_sp av, GEN q} analogous to (but faster than)
 \kbd{gerepileupto}. Assumes further that \kbd{q} is a leaf, i.e a
 nonrecursive type (\kbd{is\_recursive\_t(typ(q))} is nonzero). Contrary to
-\kbd{gerepileuptoint} and \kbd{gerepileupto}, \kbd{gerepileuptoleaf} leaves
+\kbd{gc\_INT} and \kbd{gerepileupto}, \kbd{gerepileuptoleaf} leaves
 length and effective length of a \typ{INT} unchanged.
 
 \subsec{Garbage collection: advanced use}

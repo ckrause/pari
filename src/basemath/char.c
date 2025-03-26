@@ -139,7 +139,7 @@ charorder(GEN cyc, GEN x)
       if (!is_pm1(c)) o = diviiexact(o,c);
       f = lcmii(f, o);
     }
-  return gerepileuptoint(av, f);
+  return gc_INT(av, f);
 }
 GEN
 charorder0(GEN x, GEN chi)
@@ -931,7 +931,7 @@ znconreyexp(GEN bid, GEN x)
   v = gel(v,2);
   if (mpodd(v) || mpodd(N)) return gc_GEN(av, v);
   /* handle N = 2 mod 4 */
-  return gerepileuptoint(av, addii(v, vmod));
+  return gc_INT(av, addii(v, vmod));
 }
 
 /* Return Dirichlet character \chi_q(m,.), where bid = znstar(q);
@@ -1225,7 +1225,7 @@ znchartokronecker(GEN G, GEN chi, long flag)
   if (typ(F) == t_INT)
   {
     if (s < 0) F = negi(F);
-    return gerepileuptoint(av, F);
+    return gc_INT(av, F);
   }
   F = gel(F,1);
   F = (s < 0)? negi(F): icopy(F);
@@ -1239,7 +1239,7 @@ znchartokronecker(GEN G, GEN chi, long flag)
       if (!dvdii(F,p)) F = mulii(F,sqri(p));
     }
   }
-  return gerepileuptoint(av, F);
+  return gc_INT(av, F);
 }
 
 /* (D/.) as a character mod N; assume |D| divides N and D = 0,1 mod 4*/

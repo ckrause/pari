@@ -921,7 +921,7 @@ randcol(long n, GEN b)
   for (i=1; i<=n; i++)
   {
     pari_sp av = avma;
-    gel(res,i) = gerepileuptoint(av, subii(randomi(N),b));
+    gel(res,i) = gc_INT(av, subii(randomi(N),b));
   }
   return res;
 }
@@ -3838,7 +3838,7 @@ algrandom(GEN al, GEN b)
     pari_sp av = avma;
     GEN t = subii(randomi(N),b);
     if (p) t = modii(t, p);
-    gel(res,i) = gerepileuptoint(av, t);
+    gel(res,i) = gc_INT(av, t);
   }
   return res;
 }
@@ -5931,7 +5931,7 @@ algdisc(GEN al)
   pari_sp av = avma;
   checkalg(al);
   if (alg_type(al) == al_REAL) pari_err_TYPE("algdisc [real algebra]", al);
-  return gerepileuptoint(av, algdisc_i(al));
+  return gc_INT(av, algdisc_i(al));
 }
 static GEN
 alg_maximal(GEN al)
@@ -6104,7 +6104,7 @@ alglatsubset(GEN al, GEN lat1, GEN lat2, GEN* pindex)
   m = RgM_Rg_mul(RgM_mul(m2i,m1), t);
   res = RgM_is_ZM(m);
   if (!res || !pindex) return gc_int(av, res);
-  *pindex = gerepileuptoint(av, mpabs(ZM_det_triangular(m)));
+  *pindex = gc_INT(av, mpabs(ZM_det_triangular(m)));
   return 1;
 }
 

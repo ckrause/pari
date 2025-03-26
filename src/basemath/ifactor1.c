@@ -136,7 +136,7 @@ nextprime(GEN n)
     if (++rcn > 47) rcn = 0;
   }
   if (avma == av) return icopy(n);
-  return gerepileuptoint(av, n);
+  return gc_INT(av, n);
 }
 
 ulong
@@ -211,7 +211,7 @@ precprime(GEN n)
     n = subiu(n, prc210_d1[rcn]);
   }
   if (avma == av) return icopy(n);
-  return gerepileuptoint(av, n);
+  return gc_INT(av, n);
 }
 
 /* Find next single-word prime strictly larger than p.
@@ -1242,7 +1242,7 @@ PB_RETRY:
     if (DEBUGLEVEL >= 4 && (l>>7) > msg_mask)
       err_printf("Rho: time = %6ld ms,\t%3ld rounds, back to normal mode\n",
                  timer_delay(&T), c0-(c>>5));
-    affii(x,y); P = gerepileuptoint(av, P); x = y;
+    affii(x,y); P = gc_INT(av, P); x = y;
   } /* forever */
 
 fin:
@@ -1954,7 +1954,7 @@ is_357_power(GEN x, GEN *pt, ulong *mask)
     if (equalii(powiu(y,e), x))
     {
       if (!pt) return gc_int(av,e);
-      set_avma((pari_sp)y); *pt = gerepileuptoint(av, y);
+      set_avma((pari_sp)y); *pt = gc_INT(av, y);
       return e;
     }
     *mask &= ~b; /* turn the bit off */
@@ -2014,7 +2014,7 @@ is_kth_power(GEN x, ulong n, GEN *pt)
     if (DEBUGLEVEL>4) err_printf("\tBut it wasn't a pure power.\n");
     return gc_ulong(av,0);
   }
-  if (!pt) set_avma(av); else { set_avma((pari_sp)y); *pt = gerepileuptoint(av,y); }
+  if (!pt) set_avma(av); else { set_avma((pari_sp)y); *pt = gc_INT(av,y); }
   return 1;
 }
 
@@ -3858,17 +3858,17 @@ core(GEN n)
   {
     ulong c = coreu(uel(n,2));
     m = muluu(m0, c); if (s < 0) setsigne(m, -1);
-    return gerepileuptoint(av, m);
+    return gc_INT(av, m);
   }
   setabssign(n); lim = tridiv_bound(n);
   /* n >= 691^2 */
   gcd = Z_oddprimedivisors_gcd(n, lim, &gcdlim);
   n = core_init_from_squarefree(n, gcd, &mpart);
   m = mului(m0, mpart); if (s < 0) setsigne(m, -1);
-  if (equali1(n)) return gerepileuptoint(av, m);
+  if (equali1(n)) return gc_INT(av, m);
   /* n has no prime divisor <= gcdlim */
   if (cmpii(sqru(gcdlim + 1), n) > 0)
-    return gerepileuptoint(av, mulii(m, n)); /* prime */
+    return gc_INT(av, mulii(m, n)); /* prime */
   l = lg(primetab);
   for (i = 1; i < l; i++)
   {
@@ -3877,11 +3877,11 @@ core(GEN n)
     if (v)
     {
       if (v & 1) m = mulii(m, q);
-      if (is_pm1(n)) return gerepileuptoint(av, m);
+      if (is_pm1(n)) return gc_INT(av, m);
     }
   }
   if (!ifac_isprime(n)) n = ifac_core(n); /* composite without small factors */
-  return gerepileuptoint(av, mulii(m, n));
+  return gc_INT(av, mulii(m, n));
 }
 
 long

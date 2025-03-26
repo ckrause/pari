@@ -454,7 +454,7 @@ FpM_FpC_mul_i(GEN x, GEN y, long lx, long l, GEN p)
   {
     pari_sp av = avma;
     GEN c = ZMrow_ZC_mul_i(x, y, lx, i);
-    gel(z,i) = gerepileuptoint(av, modii(c,p));
+    gel(z,i) = gc_INT(av, modii(c,p));
   }
   return z;
 }
@@ -850,7 +850,7 @@ FpV_dotproduct(GEN x, GEN y, GEN p)
   if (lx == 1) return gen_0;
   av = avma; c = mulii(gel(x,1),gel(y,1));
   for (i=2; i<lx; i++) c = addii(c, mulii(gel(x,i),gel(y,i)));
-  return gerepileuptoint(av, modii(c,p));
+  return gc_INT(av, modii(c,p));
 }
 GEN
 FpV_dotsquare(GEN x, GEN p)
@@ -861,7 +861,7 @@ FpV_dotsquare(GEN x, GEN p)
   if (lx == 1) return gen_0;
   av = avma; c = sqri(gel(x,1));
   for (i=2; i<lx; i++) c = addii(c, sqri(gel(x,i)));
-  return gerepileuptoint(av, modii(c,p));
+  return gc_INT(av, modii(c,p));
 }
 
 INLINE ulong
@@ -997,7 +997,7 @@ FpM_FpC_mul_FpX(GEN x, GEN y, GEN p, long v)
     if (signe(p1))
     {
       if (i != l-1) stackdummy((pari_sp)(z + l+1), (pari_sp)(z + i+2));
-      gel(z,i+1) = gerepileuptoint(av, p1);
+      gel(z,i+1) = gc_INT(av, p1);
       break;
     }
     set_avma(av);
@@ -1009,7 +1009,7 @@ FpM_FpC_mul_FpX(GEN x, GEN y, GEN p, long v)
   {
     pari_sp av = avma;
     GEN p1 = ZMrow_ZC_mul_i(x,y,lx,i);
-    gel(z,i+1) = gerepileuptoint(av, modii(p1,p));
+    gel(z,i+1) = gc_INT(av, modii(p1,p));
   }
   return z;
 }
@@ -1474,7 +1474,7 @@ FpV_FpMs_mul(GEN B, GEN M, GEN p)
         default: z = addii(z, mulis(b, E[j])); break;
       }
     }
-    gel(V,i) = gerepileuptoint(av, p? Fp_red(z, p): z);
+    gel(V,i) = gc_INT(av, p? Fp_red(z, p): z);
   }
   return V;
 }
@@ -1662,7 +1662,7 @@ FpMs_structelim_back(GEN M, GEN V, GEN prow, GEN p)
             if (j!=cj) s = Fp_add(s, mulis(gel(R,F[j]), E[j]), p);
           /* s /= -E[cj] mod p */
           s = E[cj] < 0? Fp_divu(s, -E[cj], p): Fp_divu(Fp_neg(s,p), E[cj], p);
-          gel(R,F[cj]) = gerepileuptoint(av, s);
+          gel(R,F[cj]) = gc_INT(av, s);
           f++;
         }
         W[i]=0;

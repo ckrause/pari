@@ -233,7 +233,7 @@ rootsof1_Fp(GEN n, GEN p)
   GEN L = odd_prime_divisors(n); /* 2 implicit in pgener_Fp_local */
   GEN z = pgener_Fp_local(p, L);
   z = Fp_pow(z, diviiexact(subiu(p,1), n), p); /* prim. n-th root of 1 */
-  return gerepileuptoint(av, z);
+  return gc_INT(av, z);
 }
 
 GEN
@@ -243,7 +243,7 @@ rootsof1u_Fp(ulong n, GEN p)
   GEN z, L = u_odd_prime_divisors(n); /* 2 implicit in pgener_Fp_local */
   z = pgener_Fp_local(p, Flv_to_ZV(L));
   z = Fp_pow(z, diviuexact(subiu(p,1), n), p); /* prim. n-th root of 1 */
-  return gerepileuptoint(av, z);
+  return gc_INT(av, z);
 }
 
 ulong
@@ -349,7 +349,7 @@ istotient(GEN n, GEN *px)
   {
     if (!px) set_avma(av);
     else
-      *px = gerepileuptoint(av, *px);
+      *px = gc_INT(av, *px);
     return 1;
   }
   return gc_long(av,0);
@@ -1277,7 +1277,7 @@ Fp_sqrt_i(GEN a, GEN y, GEN p)
   /* smallest square root */
   av2 = avma; q = subii(p, a);
   if (cmpii(a, q) > 0) a = q; else set_avma(av2);
-  return gerepileuptoint(av, a);
+  return gc_INT(av, a);
 }
 GEN
 Fp_sqrt(GEN a, GEN p) { return Fp_sqrt_i(a, NULL, p); }
@@ -1295,7 +1295,7 @@ lcmii(GEN x, GEN y)
   av = avma; a = gcdii(x,y);
   if (absequalii(a,y)) { set_avma(av); return absi(x); }
   if (!equali1(a)) y = diviiexact(y,a);
-  b = mulii(x,y); setabssign(b); return gerepileuptoint(av, b);
+  b = mulii(x,y); setabssign(b); return gc_INT(av, b);
 }
 
 /* given x in assume 0 < x < N; return u in (Z/NZ)^* such that u x = gcd(x,N) (mod N);
@@ -1483,7 +1483,7 @@ Z_chinese(GEN a, GEN b, GEN A, GEN B)
 {
   pari_sp av = avma;
   GEN C, U; Z_chinese_pre(A, B, &C, &U, NULL);
-  return gerepileuptoint(av, Z_chinese_post(a,b, C, U, NULL));
+  return gc_INT(av, Z_chinese_post(a,b, C, U, NULL));
 }
 GEN
 Z_chinese_all(GEN a, GEN b, GEN A, GEN B, GEN *pC)
@@ -1499,7 +1499,7 @@ Z_chinese_coprime(GEN a, GEN b, GEN A, GEN B, GEN C)
 {
   pari_sp av = avma;
   GEN U = mulii(Fp_inv(A,B), A);
-  return gerepileuptoint(av, Z_chinese_post(a,b,C,U, NULL));
+  return gc_INT(av, Z_chinese_post(a,b,C,U, NULL));
 }
 ulong
 u_chinese_coprime(ulong a, ulong b, ulong A, ulong B, ulong C)
@@ -1514,7 +1514,7 @@ chinese1_coprime_Z_aux(GEN x, GEN y)
   GEN B = gel(y,1), b = gel(y, 2), C = mulii(A,B);
   pari_sp av = avma;
   GEN U = mulii(Fp_inv(A,B), A);
-  gel(z,2) = gerepileuptoint(av, Z_chinese_post(a,b,C,U, NULL));
+  gel(z,2) = gc_INT(av, Z_chinese_post(a,b,C,U, NULL));
   gel(z,1) = C; return z;
 }
 GEN
@@ -1624,7 +1624,7 @@ ZV_chinese_tree(GEN A, GEN P, GEN T, GEN R)
       pari_sp av = avma;
       GEN a = mului(A[k], gel(R,k)), b = mului(A[k+1], gel(R,k+1));
       GEN tj = modii(addii(mului(P[k],b), mului(P[k+1],a)), gel(M,j));
-      gel(t, j) = gerepileuptoint(av, tj);
+      gel(t, j) = gc_INT(av, tj);
     }
     if (k==n) gel(t, j) = modii(mului(A[k], gel(R,k)), gel(M, j));
   } else
@@ -1634,7 +1634,7 @@ ZV_chinese_tree(GEN A, GEN P, GEN T, GEN R)
       pari_sp av = avma;
       GEN a = mulii(gel(A,k), gel(R,k)), b = mulii(gel(A,k+1), gel(R,k+1));
       GEN tj = modii(addii(mulii(gel(P,k),b), mulii(gel(P,k+1),a)), gel(M,j));
-      gel(t, j) = gerepileuptoint(av, tj);
+      gel(t, j) = gc_INT(av, tj);
     }
     if (k==n) gel(t, j) = modii(mulii(gel(A,k), gel(R,k)), gel(M, j));
   }
@@ -1648,7 +1648,7 @@ ZV_chinese_tree(GEN A, GEN P, GEN T, GEN R)
     for (j=1, k=1; k<n; j++, k+=2)
     {
       pari_sp av = avma;
-      gel(t, j) = gerepileuptoint(av, modii(addii(mulii(gel(u, k), gel(v, k+1)),
+      gel(t, j) = gc_INT(av, modii(addii(mulii(gel(u, k), gel(v, k+1)),
             mulii(gel(u, k+1), gel(v, k))), gel(M, j)));
     }
     if (k==n) gel(t, j) = gel(v, k);
@@ -1669,7 +1669,7 @@ ncV_polint_center_tree(GEN vA, GEN P, GEN T, GEN R, GEN m2)
     long j;
     for (j=1; j < n; j++) A[j] = mael(vA,j,i);
     c = Fp_center(ZV_chinese_tree(A, P, T, R), mod, m2);
-    gel(V,i) = gerepileuptoint(av, c);
+    gel(V,i) = gc_INT(av, c);
   }
   return V;
 }
@@ -1693,7 +1693,7 @@ nxV_polint_center_tree(GEN vA, GEN P, GEN T, GEN R, GEN m2)
     else
       for (j=1; j < n; j++) gel(A,j) = i < w[j] ? gmael(vA,j,i): gen_0;
     c = Fp_center(ZV_chinese_tree(A, P, T, R), mod, m2);
-    gel(V,i) = gerepileuptoint(av, c);
+    gel(V,i) = gc_INT(av, c);
   }
   return ZX_renormalize(V, l);
 }
@@ -2283,11 +2283,11 @@ Fp_rem_mBarrett(GEN a, GEN B, long s, GEN N)
   GEN q = shifti(mulii(shifti(A, t-3*s), P), -t); /* A/N - 4 < q <= A/N */
   GEN r = subii(A, mulii(q, N));
   GEN sr= subii(r,N);     /* 0 <= r < 4*N */
-  if (signe(sr)<0) return gerepileuptoint(av, r);
+  if (signe(sr)<0) return gc_INT(av, r);
   r=sr; sr = subii(r,N);  /* 0 <= r < 3*N */
-  if (signe(sr)<0) return gerepileuptoint(av, r);
+  if (signe(sr)<0) return gc_INT(av, r);
   r=sr; sr = subii(r,N);  /* 0 <= r < 2*N */
-  return gerepileuptoint(av, signe(sr)>=0 ? sr:r);
+  return gc_INT(av, signe(sr)>=0 ? sr:r);
 }
 
 /* Montgomery reduction */
@@ -2441,7 +2441,7 @@ Fp_powu(GEN A, ulong k, GEN N)
     A = red_montgomery(A, N, ((struct montred *) E)->inv);
     if (cmpii(A, N) >= 0) A = subii(A,N);
   }
-  return gerepileuptoint(av, A);
+  return gc_INT(av, A);
 }
 
 GEN
@@ -2488,7 +2488,7 @@ Fp_pow(GEN A, GEN K, GEN N)
     y = modii(A,N);
     if (!signe(y)) { set_avma(av); return gen_0; }
   }
-  if (lgefint(K) == 3) return gerepileuptoint(av, Fp_powu(y, K[2], N));
+  if (lgefint(K) == 3) return gc_INT(av, Fp_powu(y, K[2], N));
 
   base_is_2 = 0;
   sy = abscmpii(y, shifti(N,-1)) > 0;
@@ -2512,7 +2512,7 @@ Fp_pow(GEN A, GEN K, GEN N)
     if (cmpii(y,N) >= 0) y = subii(y,N);
   }
   if (sA) y = subii(N, y);
-  return gerepileuptoint(av,y);
+  return gc_INT(av,y);
 }
 
 static GEN
@@ -2658,7 +2658,7 @@ znorder(GEN x, GEN o)
         o = lcmii(o, Zp_order(remii(a,pe), p, e, pe));
       }
     }
-    return gerepileuptoint(av, o);
+    return gc_INT(av, o);
   }
   return Fp_order(a, o, b);
 }
@@ -2933,7 +2933,7 @@ Fp_log_find_ind(GEN a, GEN K, long prmax, GEN C, GEN p, GEN m)
       Ao = addii(Ao, mulis(Ki, E[i]));
     }
     if (i==l) return Fp_divu(Ao, AV, m);
-    aa = gerepileuptoint(av, aa);
+    aa = gc_INT(av, aa);
   }
 }
 
@@ -3010,7 +3010,7 @@ Fp_log_index(GEN a, GEN b, GEN m, GEN p)
   d = gcdii(Ao,Bo);
   l = Fp_div(diviiexact(Ao, d) ,diviiexact(Bo, d), m);
   if (!equalii(a,Fp_pow(b,l,p))) pari_err_BUG("Fp_log_index");
-  return gerepileuptoint(av, l);
+  return gc_INT(av, l);
 }
 
 static int
@@ -3037,7 +3037,7 @@ Fp_easylog(void *E, GEN a, GEN g, GEN ord)
     t = shifti(ord,-1); /* only possible solution */
     av2 = avma;
     if (!equalii(Fp_pow(g, t, p), a)) { set_avma(av); return cgetg(1, t_VEC); }
-    set_avma(av2); return gerepileuptoint(av, t);
+    set_avma(av2); return gc_INT(av, t);
   }
   if (typ(ord)==t_INT && BPSW_psp(p) && Fp_log_use_index(expi(ord),expi(p)))
     return Fp_log_index(a, g, ord, p);
@@ -3231,7 +3231,7 @@ znlog(GEN h, GEN g, GEN o)
   E = vec_to_vecsmall(gel(fa,2));
   x = znlog_rec(h, g, N, P, E, get_PHI(P,E));
   if (!x) { set_avma(av); return cgetg(1,t_VEC); }
-  return gerepileuptoint(av, x);
+  return gc_INT(av, x);
 }
 
 GEN
@@ -3285,7 +3285,7 @@ mulu_interval_step(ulong a, ulong b, ulong step)
     if (n == 1) return utoipos(a);
     x = muluu(a,a+step); if (n == 2) return x;
     for (k=a+2*step; k<=b; k+=step) x = mului(k,x);
-    return gerepileuptoint(av, x);
+    return gc_INT(av, x);
   }
   /* step | b-a */
   lx = 1; x = cgetg(2 + n/2, t_VEC);
@@ -3297,7 +3297,7 @@ mulu_interval_step(ulong a, ulong b, ulong step)
   }
   if (l == k) gel(x,lx++) = utoipos(k);
   setlg(x, lx);
-  return gerepileuptoint(av, ZV_prod(x));
+  return gc_INT(av, ZV_prod(x));
 }
 /* return a * (a+1) * ... * b. Assume a <= b  [ note: factoring out powers of 2
  * first is slower ... ] */
@@ -3317,7 +3317,7 @@ mulu_interval(ulong a, ulong b)
     x = muluu(a,a+1); if (n == 2) return x;
     for (k=a+2; k<b; k++) x = mului(k,x);
     /* avoid k <= b: broken if b = ULONG_MAX */
-    return gerepileuptoint(av, mului(b,x));
+    return gc_INT(av, mului(b,x));
   }
   lx = 1; x = cgetg(2 + n/2, t_VEC);
   N = b + a;
@@ -3328,7 +3328,7 @@ mulu_interval(ulong a, ulong b)
   }
   if (l == k) gel(x,lx++) = utoipos(k);
   setlg(x, lx);
-  return gerepileuptoint(av, ZV_prod(x));
+  return gc_INT(av, ZV_prod(x));
 }
 GEN
 muls_interval(long a, long b)
@@ -3342,7 +3342,7 @@ muls_interval(long a, long b)
   {
     x = stoi(a);
     for (k=a+1; k<=b; k++) x = mulsi(k,x);
-    return gerepileuptoint(av, x);
+    return gc_INT(av, x);
   }
   lx = 1; x = cgetg(2 + n/2, t_VEC);
   N = b + a;
@@ -3353,7 +3353,7 @@ muls_interval(long a, long b)
   }
   if (l == k) gel(x,lx++) = stoi(k);
   setlg(x, lx);
-  return gerepileuptoint(av, ZV_prod(x));
+  return gc_INT(av, ZV_prod(x));
 }
 
 GEN
@@ -3370,7 +3370,7 @@ mpprimorial(long n)
     case 11: case 12: return utoipos(2310);
     default: pari_err_DOMAIN("primorial", "argument","<",gen_0,stoi(n));
   }
-  return gerepileuptoint(av, zv_prod_Z(primes_upto_zv(n)));
+  return gc_INT(av, zv_prod_Z(primes_upto_zv(n)));
 }
 
 GEN
@@ -3407,7 +3407,7 @@ mpfact(long n)
   }
   a = gel(v,--k); while (--k) a = mulii(a, gel(v,k));
   a = shifti(a, factorial_lval(n, 2));
-  return gerepileuptoint(av, a);
+  return gc_INT(av, a);
 }
 
 ulong
@@ -3447,7 +3447,7 @@ factorial_Fp(long n, GEN p)
     for (i=l; i<=m; i+=2)
       a = Fp_mulu(a, i, p);
     v = Fp_mul(v, k == 1? a: Fp_powu(a, k, p), p);
-    v = gerepileuptoint(av, v);
+    v = gc_INT(av, v);
   }
   return v;
 }
@@ -3478,7 +3478,7 @@ fibo(long n)
   lucas((ulong)(labs(n)-1), &a, &b);
   a = diviuexact(addii(shifti(a,1),b), 5);
   if (n < 0 && !odd(n)) setsigne(a, -1);
-  return gerepileuptoint(av, a);
+  return gc_INT(av, a);
 }
 
 /*******************************************************************/

@@ -2863,7 +2863,7 @@ RgM_true_Hadamard(GEN a)
   a = RgM_gtofp(a, LOWDEFAULTPREC);
   B = gnorml2(gel(a,1));
   for (i = 2; i <= n; i++) B = gmul(B, gnorml2(gel(a,i)));
-  return gerepileuptoint(av, ceil_safe(sqrtr(B)));
+  return gc_INT(av, ceil_safe(sqrtr(B)));
 }
 
 GEN
@@ -3376,7 +3376,7 @@ ZM_detmult(GEN A)
       for (j=1; j<=m; j++)
         if (c[j]) vi = addii(vi, mulii(gcoeff(B,j,i),gcoeff(A,j,k)));
       if (!t && signe(vi)) t = i;
-      gel(v,i) = gerepileuptoint(av2, vi);
+      gel(v,i) = gc_INT(av2, vi);
     }
     if (!t) continue;
     /* at this point c[t] = 0 */
@@ -3392,7 +3392,7 @@ ZM_detmult(GEN A)
         for ( ; k<=n; k++)
           det = gcdii(det, ZV_dotproduct(v, gel(A,k)));
       }
-      return gerepileuptoint(av, det);
+      return gc_INT(av, det);
     }
 
     piv = gel(v,t);
@@ -3408,7 +3408,7 @@ ZM_detmult(GEN A)
           pari_sp av2 = avma;
           GEN z = addii(mulii(gcoeff(B,j,i), piv), mulii(gcoeff(B,j,t), mvi));
           if (rg > 1) z = diviiexact(z, pivprec);
-          gcoeff(B,j,i) = gerepileuptoint(av2, z);
+          gcoeff(B,j,i) = gc_INT(av2, z);
         }
     }
     c[t] = k;
@@ -4534,7 +4534,7 @@ ZabM_true_Hadamard(GEN a)
   B = gen_1;
   for (i = 1; i <= n; i++)
     B = gmul(B, gnorml2(RgC_gtofp(vecnorml1(gel(a,i)),DEFAULTPREC)));
-  return gerepileuptoint(av, ceil_safe(sqrtr_abs(B)));
+  return gc_INT(av, ceil_safe(sqrtr_abs(B)));
 }
 
 GEN
@@ -5047,7 +5047,7 @@ ZM_det2(GEN M)
   pari_sp av = avma;
   GEN a = gcoeff(M,1,1), b = gcoeff(M,1,2);
   GEN c = gcoeff(M,2,1), d = gcoeff(M,2,2);
-  return gerepileuptoint(av, subii(mulii(a,d), mulii(b, c)));
+  return gc_INT(av, subii(mulii(a,d), mulii(b, c)));
 }
 /* M a 3x3 ZM, return det(M) */
 static GEN
@@ -5068,7 +5068,7 @@ ZM_det3(GEN M)
     t = mulii(subii(mulii(c,d), mulii(a,f)), h);
     D = addii(D, t);
   }
-  return gerepileuptoint(av, D);
+  return gc_INT(av, D);
 }
 
 static GEN
@@ -5311,7 +5311,7 @@ RgM_Hadamard(GEN a)
   for (i = 1; i <= n/2; i++)
     B = gmul(B, parallelogramarea(gel(a,2*i-1), gel(a,2*i)));
   if (odd(n)) B = gmul(B, gnorml2(gel(a, n)));
-  return gerepileuptoint(av, ceil_safe(B));
+  return gc_INT(av, ceil_safe(B));
 }
 
 /* If B=NULL, assume B=A' */
@@ -5400,7 +5400,7 @@ ZM_det(GEN M)
               ZV_chinese, NULL);
   /* H = det(M) modulo mod, (mod,D) = 1; |det(M) / D| <= h */
   H = Fp_center(H, mod, shifti(mod,-1));
-  return gerepileuptoint(av, H);
+  return gc_INT(av, H);
 }
 
 static GEN

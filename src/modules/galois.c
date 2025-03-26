@@ -874,7 +874,7 @@ check_isin(buildroot *BR, resolv *R, GROUP tau, GROUP ss)
           if (j > nbracint)
           {
             nbracint = j; multi[j] = 1; numi[j] = nocos;
-            racint[j] = gerepileuptoint(av2,roint); av2 = avma;
+            racint[j] = gc_INT(av2,roint); av2 = avma;
           }
           numj[nbrac] = nocos; norac[nbrac] = j;
         }
@@ -903,7 +903,7 @@ check_isin(buildroot *BR, resolv *R, GROUP tau, GROUP ss)
               if (j > nbracint)
               {
                 nbracint = j; multi[j] = 1; numi[j] = nocos;
-                racint[j] = gerepileuptoint(av2,roint); av2=avma;
+                racint[j] = gc_INT(av2,roint); av2=avma;
               }
               numj[nbrac] = nocos; norac[nbrac] = j;
             }

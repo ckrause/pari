@@ -738,7 +738,7 @@ ellorder_nf(GEN E, GEN P, GEN B)
     R = mod2(k)? elladd(E, P,Q): Q;
     if (!gequal(Q, ellneg(E,R))) k = gen_0;
   }
-  return gerepileuptoint(av, k);
+  return gc_INT(av, k);
 }
 
 GEN
@@ -775,7 +775,7 @@ ellorder(GEN E, GEN P, GEN o)
     r = FpE_order(Pp, o, gel(e,1), p);
   }
   if (E != E0) obj_free(E);
-  return gerepileuptoint(av, r);
+  return gc_INT(av, r);
 }
 
 GEN

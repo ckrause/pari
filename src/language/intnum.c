@@ -2565,7 +2565,7 @@ sumnumlagrange1init(GEN c1, long flag, long prec)
     GEN t = mulii(gel(W, n+1), gel(T,n));
     if (!odd(n)) togglesign_safe(&t);
     if (flag) t = addii(gel(V, n+1), t);
-    gel(V, n) = gerepileuptoint(av, t);
+    gel(V, n) = gc_INT(av, t);
   }
   V = gdiv(RgV_gtofp(V, prec2), mpfact(N));
   return gc_GEN(av, mkvec4(gen_1, stoi(prec2), gen_1, V));

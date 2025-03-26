@@ -823,7 +823,7 @@ pols_from_efj(pari_sp av, GEN EFJ, GEN p, long flag)
   GEN L = cgetg_copy(EFJ, &l);
   if (l == 1) { set_avma(av); return flag == 2? gen_0: cgetg(1, t_VEC); }
   for (i = 1; i < l; i++) gel(L,i) = GetRamifiedPol(p, gel(EFJ,i), flag);
-  if (flag == 2) return gerepileuptoint(av, ZV_sum(L));
+  if (flag == 2) return gc_INT(av, ZV_sum(L));
   return gc_GEN(av, shallowconcat1(L));
 }
 

@@ -615,7 +615,7 @@ idealHNF_val(GEN A, GEN P, long Nval, long Zval)
         /* a = (x.t_0)_i; p | a ? */
         a = dvmdii(a,p,&r); if (signe(r)) return v;
         if (lgefint(a) > lgefint(pk)) a = remii(a, pk);
-        gel(y,i) = gerepileuptoint(av2, a);
+        gel(y,i) = gc_INT(av2, a);
       }
       gel(B,j) = y; y = x;
       if (gc_needed(av,3))
@@ -1579,7 +1579,7 @@ ZM_famat_limit(GEN fa, GEN limit)
   }
   if (k<i)
   {
-    gel(G, k) = gerepileuptoint(av, r);
+    gel(G, k) = gc_INT(av, r);
     gel(E, k) = gen_1;
   }
   return mkmat2(G,E);
@@ -1986,7 +1986,7 @@ idealnorm(GEN nf, GEN x)
   nf = checknf(nf); av = avma;
   x = nfnorm(nf, x);
   tx = typ(x);
-  if (tx == t_INT) return gerepileuptoint(av, absi(x));
+  if (tx == t_INT) return gc_INT(av, absi(x));
   if (tx != t_FRAC) pari_err_TYPE("idealnorm",x);
   return gerepileupto(av, Q_abs(x));
 }

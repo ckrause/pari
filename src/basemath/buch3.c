@@ -554,7 +554,7 @@ bnrclassno(GEN bnf,GEN ideal)
   if (lg(cycbid) == 1) { set_avma(av); return icopy(h); }
   D = ideallog_units(bnf, bid); /* (Z_K/f)^* / units ~ Z^n / D */
   D = ZM_hnfmodid(D,cycbid);
-  return gerepileuptoint(av, mulii(h, ZM_det_triangular(D)));
+  return gc_INT(av, mulii(h, ZM_det_triangular(D)));
 }
 GEN
 bnrclassno0(GEN A, GEN B, GEN C)
@@ -579,7 +579,7 @@ bnrclassno0(GEN A, GEN B, GEN C)
 
   H = bnr_subgroup_check(A, H, &h);
   if (!H) { set_avma(av); return icopy(h); }
-  return gerepileuptoint(av, h);
+  return gc_INT(av, h);
 }
 
 /* ZMV_ZCV_mul for two matrices U = [Ux,Uy], it may have more components
@@ -724,7 +724,7 @@ zimmertbound(GEN D, long N, long R2)
     };
     w = mulrr(dbltor(exp(-c[N-2][R2])), gsqrt(absi_shallow(D),DEFAULTPREC));
   }
-  return gerepileuptoint(av, ceil_safe(w));
+  return gc_INT(av, ceil_safe(w));
 }
 
 /* return \gamma_n^n if known, an upper bound otherwise */
@@ -1076,7 +1076,7 @@ bound_unit_index(GEN bnf, GEN units)
   pari_sp av = avma;
   GEN x = lowerboundforregulator(bnf, units);
   if (!x) { set_avma(av); x = regulatorbound(bnf); }
-  return gerepileuptoint(av, ground(gdiv(bnf_get_reg(bnf), x)));
+  return gc_INT(av, ground(gdiv(bnf_get_reg(bnf), x)));
 }
 
 /* Compute a square matrix of rank #beta attached to a family

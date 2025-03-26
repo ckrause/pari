@@ -273,7 +273,7 @@ galoisborne(GEN T, GEN dn, struct galois_borne *gb, long d)
   if (DEBUGLEVEL >= 4)
     err_printf("GaloisConj: val1=%ld val2=%ld\n", gb->valsol, gb->valabs);
   set_avma(av2);
-  gb->bornesol = gerepileuptoint(ltop, shifti(borneroots,1));
+  gb->bornesol = gc_INT(ltop, shifti(borneroots,1));
   if (DEBUGLEVEL >= 9)
     err_printf("GaloisConj: Bound %Ps\n",borneroots);
   gb->ladicsol = powiu(gb->l, gb->valsol);
@@ -889,7 +889,7 @@ sympol_eval_newtonsum(long e, GEN O, GEN mod)
     pari_sp av = avma;
     GEN s = gen_0;
     for(j=1; j<g; j++) s = addii(s, Fp_powu(gmael(O,i,j), e, mod));
-    gel(PL,i) = gerepileuptoint(av, remii(s,mod));
+    gel(PL,i) = gc_INT(av, remii(s,mod));
   }
   return PL;
 }

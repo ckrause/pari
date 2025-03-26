@@ -149,7 +149,7 @@ quaddisc(GEN x)
       return (Mod4(x) > 1)? shifti(x, 2): icopy(x);
     }
   }
-  return gerepileuptoint(av, fa_quaddisc(F));
+  return gc_INT(av, fa_quaddisc(F));
 }
 
 
@@ -347,7 +347,7 @@ quadunit_mod(GEN D, GEN N)
   GEN q, u, v, d = sqrti(D);
   pari_sp av = avma;
   long s;
-  q = gerepileuptoint(av, quadunit_q(D, d, &s));
+  q = gc_INT(av, quadunit_q(D, d, &s));
   if (mpodd(N) && equali1(gcdii(q, N)))
   {
     quadunit_uvmod(D, d, N, &u, &v);
@@ -419,7 +419,7 @@ quadunitindex(GEN D, GEN N)
     case -4: return utoipos(2);
     default: return gen_1;
   }
-  return gerepileuptoint(av, quadunitindex_i(D, N, F? F: Z_factor(N)));
+  return gc_INT(av, quadunitindex_i(D, N, F? F: Z_factor(N)));
 }
 
 /* fundamental unit is u + vx mod quadpoly(D); always called with D
@@ -601,7 +601,7 @@ qfi_Shanks(GEN a, GEN g, long n)
 
   T = gen_Shanks_init(g, rt_n, NULL, &qfi_group);
   X = gen_Shanks(T, a, c, NULL, &qfi_group);
-  return X? gerepileuptoint(av, X): gc_NULL(av);
+  return X? gc_INT(av, X): gc_NULL(av);
 }
 
 GEN
@@ -966,7 +966,7 @@ classno(GEN x)
   d1 = mulii(d1,q);
 
 END:
-  return gerepileuptoint(av, shifti(mulii(d1,Hf), r2));
+  return gc_INT(av, shifti(mulii(d1,Hf), r2));
 }
 
 /* use Euler products */
@@ -1030,7 +1030,7 @@ classno2(GEN x)
       S = (k>0)? addrr(S,p5): subrr(S,p5);
     }
   }
-  return gerepileuptoint(av, mulii(Hf, roundr(S)));
+  return gc_INT(av, mulii(Hf, roundr(S)));
 }
 
 /* 1 + q + ... + q^v, v > 0 */
@@ -1252,7 +1252,7 @@ Zn_quad_roots(GEN N, GEN B, GEN C)
     }
     u = ZV_chinese_tree(A,Q,T,R); /* u mod N' st u^2 = B^2-4C modulo 4N */
     if (B) u = subii(u,B);
-    gel(v,j) = gerepileuptoint(av2, modii(shifti(u,-1), Np));
+    gel(v,j) = gc_INT(av2, modii(shifti(u,-1), Np));
   }
   return gerepileupto(av, w);
 }

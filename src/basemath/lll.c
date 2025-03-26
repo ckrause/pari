@@ -1679,7 +1679,7 @@ affii_or_copy_gc(pari_sp av, GEN x, GEN *y)
     set_avma(av);
   }
   else
-    *y = gerepileuptoint(av, x);
+    *y = gc_INT(av, x);
 }
 
 /* *x -= u*y */
@@ -2088,7 +2088,7 @@ Babai(pari_sp av, long kappa, GEN *pG, GEN *pB, GEN *pU, GEN mu, GEN r, GEN s,
             btop = avma;
             ztmp = subii(gmael(G,j,j), shifti(gmael(G,kappa,j), 1));
             ztmp = addii(gmael(G,kappa,kappa), ztmp);
-            gmael(G,kappa,kappa) = gerepileuptoint(btop, ztmp);
+            gmael(G,kappa,kappa) = gc_INT(btop, ztmp);
             for (i=1; i<=j; i++)
               gmael(G,kappa,i) = subii(gmael(G,kappa,i), gmael(G,j,i));
             for (i=j+1; i<kappa; i++)
@@ -2106,7 +2106,7 @@ Babai(pari_sp av, long kappa, GEN *pG, GEN *pB, GEN *pU, GEN mu, GEN r, GEN s,
             btop = avma;
             ztmp = addii(gmael(G,j,j), shifti(gmael(G,kappa,j), 1));
             ztmp = addii(gmael(G,kappa,kappa), ztmp);
-            gmael(G,kappa,kappa) = gerepileuptoint(btop, ztmp);
+            gmael(G,kappa,kappa) = gc_INT(btop, ztmp);
             for (i=1; i<=j; i++)
               gmael(G,kappa,i) = addii(gmael(G,kappa,i), gmael(G,j,i));
             for (i=j+1; i<kappa; i++)
@@ -2133,7 +2133,7 @@ Babai(pari_sp av, long kappa, GEN *pG, GEN *pB, GEN *pU, GEN mu, GEN r, GEN s,
             btop = avma;
             ztmp = submuliu2n(mulii(gmael(G,j,j), sqru(xx)), gmael(G,kappa,j), xx, 1);
             ztmp = addii(gmael(G,kappa,kappa), ztmp);
-            gmael(G,kappa,kappa) = gerepileuptoint(btop, ztmp);
+            gmael(G,kappa,kappa) = gc_INT(btop, ztmp);
             for (i=1; i<=j; i++)
               gmael(G,kappa,i) = submuliu_inplace(gmael(G,kappa,i), gmael(G,j,i), xx);
             for (i=j+1; i<kappa; i++)
@@ -2154,7 +2154,7 @@ Babai(pari_sp av, long kappa, GEN *pG, GEN *pB, GEN *pU, GEN mu, GEN r, GEN s,
             btop = avma;
             ztmp = addmuliu2n(mulii(gmael(G,j,j), sqru(xx)), gmael(G,kappa,j), xx, 1);
             ztmp = addii(gmael(G,kappa,kappa), ztmp);
-            gmael(G,kappa,kappa) = gerepileuptoint(btop, ztmp);
+            gmael(G,kappa,kappa) = gc_INT(btop, ztmp);
             for (i=1; i<=j; i++)
               gmael(G,kappa,i) = addmuliu_inplace(gmael(G,kappa,i), gmael(G,j,i), xx);
             for (i=j+1; i<kappa; i++)
@@ -2183,7 +2183,7 @@ Babai(pari_sp av, long kappa, GEN *pG, GEN *pB, GEN *pU, GEN mu, GEN r, GEN s,
           ztmp = submulshift(mulshift(gmael(G,j,j), sqri(X), 2*e),
               gmael(G,kappa,j), X, e+1);
           ztmp = addii(gmael(G,kappa,kappa), ztmp);
-          gmael(G,kappa,kappa) = gerepileuptoint(btop, ztmp);
+          gmael(G,kappa,kappa) = gc_INT(btop, ztmp);
           for (i=1; i<=j; i++)
             gmael(G,kappa,i) = submulshift(gmael(G,kappa,i), gmael(G,j,i), X, e);
           for (   ; i<kappa; i++)

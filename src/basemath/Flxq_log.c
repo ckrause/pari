@@ -248,7 +248,7 @@ smoothness_vec(ulong p, long r, long n)
       }
       for (i = 0; i <= l; ++i)
         s = addii(s, mulii(gel(V, j-k*i), binomial(addis(Ik,i-1), i)));
-      gel(W, j) = gerepileuptoint(av2, s);
+      gel(W, j) = gc_INT(av2, s);
     }
     V = W;
     gel(R, k) = gel(V, n);
@@ -586,7 +586,7 @@ Flxq_log_from_rel(GEN W, GEN rel, long r, GEN T, ulong p, ulong pi, GEN m)
     }
     o = Fp_add(o, mulis(R, E[i]), m);
   }
-  return gerepileuptoint(av, o);
+  return gc_INT(av, o);
 }
 
 static GEN
@@ -647,7 +647,7 @@ Flxq_log_Coppersmith_d(GEN W, GEN g, long r, GEN T, ulong p, ulong pi, GEN mo)
         affii(l, gel(W, idx));
         if (DEBUGLEVEL>1) err_printf("Found %lu\n", idx);
       }
-      return gerepileuptoint(av, l);
+      return gc_INT(av, l);
     }
   }
   set_avma(av);

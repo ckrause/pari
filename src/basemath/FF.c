@@ -1106,7 +1106,7 @@ FF_order(GEN x, GEN o)
     if (!o) o = factor_pn_1(p,degpol(T));
     r = Flxq_order(gel(x,2), o, T, pp);
   }
-  if (!o) r = gerepileuptoint(av,r);
+  if (!o) r = gc_INT(av,r);
   return r;
 }
 
@@ -1287,7 +1287,7 @@ FF_ellcard_SEA(GEN E, long smallfact)
     a6 = Flx_to_ZX(gel(e,2));
     card = Fq_ellcard_SEA(a4, a6, powuu(pp,degpol(T)), Flx_to_ZX(T), p, smallfact);
   }
-  return gerepileuptoint(av, card);
+  return gc_INT(av, card);
 }
 
 /* return G, set m */

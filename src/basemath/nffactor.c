@@ -507,7 +507,7 @@ nf_bestlift_to_pol(GEN elt, GEN bound, nflift_t *L)
       u = mulii(L->topowden, gel(v,1));
     else
       u = icopy(gel(v,1));
-    u = gerepileuptoint(av, u);
+    u = gc_INT(av, u);
   }
   else
   {

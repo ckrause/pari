@@ -1590,7 +1590,7 @@ separation(GEN cnt)
     if (!signe(r)) { best_i = i; break; }
     if (abscmpii(r, best_r) < 0) { best_i = i; best_r = r; }
     if (gc_needed(btop, 1))
-      best_r = gerepileuptoint(btop, best_r);
+      best_r = gc_INT(btop, best_r);
   }
   return best_i;
 }
@@ -1639,7 +1639,7 @@ possible_traces(GEN compile, GEN mask, GEN *P, int larger)
     t = muluu(lfinal, lg(gel(c,2))-1);
     lfinal = itou(t);
   }
-  Pfinal = gerepileuptoint(av, Pfinal);
+  Pfinal = gc_INT(av, Pfinal);
   if (larger)
     lP = lgefint(shifti(Pfinal,1));
   else
@@ -1672,7 +1672,7 @@ cost(long mask, GEN cost_vec)
   for (i = 1; i < lg(cost_vec); i++)
     if (mask&(1L<<(i-1)))
       c = mulis(c, cost_vec[i]);
-  return gerepileuptoint(ltop, c);
+  return gc_INT(ltop, c);
 }
 
 static GEN
@@ -1684,7 +1684,7 @@ value(long mask, GEN atkin, long k)
   for (i = 1; i <= k; i++)
     if (mask&(1L<<(i-1)))
       c = mulii(c, gmael(atkin, i, 1));
-  return gerepileuptoint(ltop, c);
+  return gc_INT(ltop, c);
 }
 
 static void
@@ -2027,7 +2027,7 @@ Fq_ellcard_SEA(GEN a4, GEN a6, GEN q, GEN T, GEN p, long smallfact)
     if (typ(trace_mod)==t_INT)
     {
       delete_var(); delete_var();
-      return gerepileuptoint(ltop, trace_mod);
+      return gc_INT(ltop, trace_mod);
     }
     nbtrace = lg(trace_mod) - 1;
     ellkt = (long)upowuu(ell, kt);
@@ -2065,7 +2065,7 @@ Fq_ellcard_SEA(GEN a4, GEN a6, GEN q, GEN T, GEN p, long smallfact)
       if (!nb_atkin)
       {
         delete_var(); delete_var();
-        return gerepileuptoint(ltop, subii(addiu(q, 1), TR));
+        return gc_INT(ltop, subii(addiu(q, 1), TR));
       }
       bound_tr = mulrr(bound_bsgs, dbltor(bound_gr));
       bound_gr *= growth_factor;
@@ -2093,7 +2093,7 @@ Fq_ellcard_SEA(GEN a4, GEN a6, GEN q, GEN T, GEN p, long smallfact)
           delete_var();
           grp = get_FqE_group(&E,a4,a6,T,p);
           res = match_and_sort(cat, TR_mod, TR, q, E, grp);
-          return gerepileuptoint(ltop, res);
+          return gc_INT(ltop, res);
         }
       }
     }

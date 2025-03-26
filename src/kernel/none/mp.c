@@ -1583,7 +1583,7 @@ sqrispec_fft(GEN a, long na)
     affii(Zf_shift(gel(FFT,i), (ord>>1)-k, M), gel(FFT,i));
     set_avma(av);
   }
-  return gerepileuptoint(ltop, muliifft_unspliti(FFT,bs,2+len));
+  return gc_INT(ltop, muliifft_unspliti(FFT,bs,2+len));
 }
 
 static GEN
@@ -1618,7 +1618,7 @@ muliispec_fft(GEN a, GEN b, long na, long nb)
     affii(Zf_shift(gel(FFT,i),(ord>>1)-k,M), gel(FFT,i));
     set_avma(av);
   }
-  return gerepileuptoint(ltop, muliifft_unspliti(FFT,bs,2+len));
+  return gc_INT(ltop, muliifft_unspliti(FFT,bs,2+len));
 }
 
 /********************************************************************/
@@ -1705,7 +1705,7 @@ muliispec(GEN a, GEN b, long na, long nb)
     c = muliispec(a,b,na,nb);
     c0 = muliispec(a0,b,n0a,nb);
   }
-  return gerepileuptoint(av, addshiftw(c,c0, n0));
+  return gc_INT(av, addshiftw(c,c0, n0));
 }
 GEN
 muluui(ulong x, ulong y, GEN z)
@@ -1793,7 +1793,7 @@ sqrispec(GEN a, long na)
   }
   else
     c = addshiftw(c,gen_0,n0<<1);
-  return gerepileuptoint(av, c);
+  return gc_INT(av, c);
 }
 
 /********************************************************************/
@@ -2053,7 +2053,7 @@ sqrtremi(GEN N, GEN *r)
   else
     S = sqrtispec(n, l2, &R);
 
-  if (!r) { set_avma((pari_sp)S); return gerepileuptoint(av, S); }
+  if (!r) { set_avma((pari_sp)S); return gc_INT(av, S); }
   *r = R; return gc_all(av, 2, &S, r);
 }
 

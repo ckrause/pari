@@ -1619,7 +1619,7 @@ make_Tr(nfmaxord_t *S)
       d = gel(den,j);
       if (d) t = diviiexact(t, d);
     }
-    gel(c,j) = gerepileuptoint(av, t);
+    gel(c,j) = gc_INT(av, t);
   }
   for (i=2; i<=n; i++)
   {
@@ -1635,7 +1635,7 @@ make_Tr(nfmaxord_t *S)
         d = mul_denom(gel(den,i),gel(den,j));
         if (d) t = diviiexact(t, d);
       }
-      gel(c,j) = gerepileuptoint(av, t); /* Tr (W[i]W[j]) */
+      gel(c,j) = gc_INT(av, t); /* Tr (W[i]W[j]) */
     }
   }
   return M;
@@ -1783,7 +1783,7 @@ get_nfindex(GEN bas)
     mat = rowslice(mat, i,n);
     D = mulii(D, diviiexact(powiu(d, n-i+1), absi_shallow(ZM_det(mat))));
   }
-  return gerepileuptoint(av, D);
+  return gc_INT(av, D);
 }
 /* make sure all components of S are initialized */
 static void

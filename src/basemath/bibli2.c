@@ -45,7 +45,7 @@ polchebyshev1(long n, long v) /* Assume 4*n < LONG_MAX */
   {
     av = avma;
     a = diviuuexact(muluui(l, l-1, a), 4*k, n-k);
-    togglesign(a); a = gerepileuptoint(av, a);
+    togglesign(a); a = gc_INT(av, a);
     gel(r--,0) = a;
     gel(r--,0) = gen_0;
   }
@@ -108,7 +108,7 @@ polchebyshev2(long n, long v)
   {
     av = avma;
     a = diviuuexact(muluui(n-2*m+2, n-2*m+1, a), 4*m, n-m+1);
-    togglesign(a); a = gerepileuptoint(av, a);
+    togglesign(a); a = gc_INT(av, a);
     gel(r--,0) = a;
     gel(r--,0) = gen_0;
   }
@@ -195,7 +195,7 @@ polhermite(long n, long v)
     av = avma;
     a = diviuexact(muluui(n-2*m+2, n-2*m+1, a), 4*m);
     togglesign(a);
-    gel(r--,0) = a = gerepileuptoint(av, a);
+    gel(r--,0) = a = gc_INT(av, a);
     gel(r--,0) = gen_0;
   }
   q[1] = evalsigne(1) | evalvarn(v);
@@ -273,7 +273,7 @@ pollegendre(long n, long v)
   { /* l = n-2*k+2 */
     av = avma;
     a = diviuuexact(muluui(l, l-1, a), 2*k, n+l-1);
-    togglesign(a); a = gerepileuptoint(av, a);
+    togglesign(a); a = gc_INT(av, a);
     gel(r--,0) = a;
     gel(r--,0) = gen_0;
   }
@@ -301,7 +301,7 @@ pollegendre_reduced(long n, long v)
     av = avma;
     a = diviuuexact(muluui(l, l-1, a), 2*k, n+l-1);
     togglesign(a);
-    gel(r--,0) = a = gerepileuptoint(av, a);
+    gel(r--,0) = a = gc_INT(av, a);
   }
   q[1] = evalsigne(1) | evalvarn(v);
   return q;
@@ -948,7 +948,7 @@ binomialuu(ulong n, ulong k)
   if (k < 1000 || ((double)k/ n) * log((double)n) < 0.5)
   { /* k "small" */
     z = diviiexact(mulu_interval(n-k+1, n), mulu_interval(2UL, k));
-    return gerepileuptoint(av, z);
+    return gc_INT(av, z);
   }
   sn = usqrt(n);
   /* use Lucas's formula, k <= n/2 */
@@ -984,7 +984,7 @@ binomialuu(ulong n, ulong k)
     e += (k == nk)? e: hammingl(nk);
     e -= hammingl(n); if (e) z = shifti(z, e);
   }
-  return gerepileuptoint(av, z);
+  return gc_INT(av, z);
 }
 
 GEN
@@ -1031,7 +1031,7 @@ binomial(GEN n, long k)
         z = binomial(n, k);
       }
       if (odd(k)) togglesign_safe(&z);
-      return gerepileuptoint(av, z);
+      return gc_INT(av, z);
     }
     /* n >= 0 and huge, k != 0 */
     if (k < 0) return gen_0;
@@ -1040,7 +1040,7 @@ binomial(GEN n, long k)
     y = cgetg(k+1,t_VEC); gel(y,1) = n;
     for (i = 2; i <= k; i++) gel(y,i) = subiu(n,i-1);
     y = diviiexact(ZV_prod(y), mpfact(k));
-    return gerepileuptoint(av, y);
+    return gc_INT(av, y);
   }
   if (is_noncalc_t(tn)) pari_err_TYPE("binomial",n);
   if (k <= 1)
@@ -1085,7 +1085,7 @@ vecbinomial(long n)
   for (k=2; k <= d; k++)
   {
     pari_sp av = avma;
-    gel(C,k) = gerepileuptoint(av, diviuexact(mului(n-k+1, gel(C,k-1)), k));
+    gel(C,k) = gc_INT(av, diviuexact(mului(n-k+1, gel(C,k-1)), k));
   }
   for (   ; k <= n; k++) gel(C,k) = gel(C,n-k);
   return C - 1;
@@ -1129,7 +1129,7 @@ stirling2(ulong n, ulong m)
     c = mulii(bmk, powuu(k,n));
     s = odd(k)? subii(s, c): addii(s, c);
   }
-  return gerepileuptoint(av, diviiexact(s, mpfact(m)));
+  return gc_INT(av, diviiexact(s, mpfact(m)));
 }
 
 /* Stirling number of the first kind. Up to the sign, the number of
@@ -1154,11 +1154,11 @@ stirling1(ulong n, ulong m)
     c = mulii(t, stirling2(n-m+k, k));
     s = odd(k)? subii(s, c): addii(s, c);
     if ((k & 0x1f) == 0) {
-      t = gerepileuptoint(ltop, t);
-      s = gerepileuptoint(avma, s);
+      t = gc_INT(ltop, t);
+      s = gc_INT(avma, s);
     }
   }
-  return gerepileuptoint(ltop, s);
+  return gc_INT(ltop, s);
 }
 
 GEN
