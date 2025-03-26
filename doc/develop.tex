@@ -1056,7 +1056,7 @@ recording all results. Results are stored in the right order
 by making good use of the \kbd{taskid} label, although we have no control
 over \emph{when} each result is returned. We finally free all ressources
 attached to the \kbd{mt} structure. If needed, we could have collected all
-garbage on the PARI stack using \kbd{gerepilecopy} on the \kbd{out} array and
+garbage on the PARI stack using \kbd{gc\_GEN} on the \kbd{out} array and
 gone on working instead of quitting.
 
 Note the argument passing convention for \kbd{Cworker}: the task consists of a
