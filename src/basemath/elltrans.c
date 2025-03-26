@@ -2085,6 +2085,7 @@ static GEN
 redmod2Z(GEN z)
 {
   GEN k = ground(gmul2n(real_i(z), -1));
+  if (typ(k) != t_INT) pari_err_TYPE("theta", z);
   if (signe(k)) z = gsub(z, shifti(k, 1));
   return z;
 }

@@ -29,3 +29,6 @@ exponent(U[1]^4+U[4]^4-U[2]^4-U[3]^4)
 ellweierstrass(1,I/2)
 ellweierstrass(0,I/3+1)
 theta(10^30,I,0)
+\\ ERRORS, keep at end of file
+\\ #2616
+theta(2+x,3+2*I,[0,0])
