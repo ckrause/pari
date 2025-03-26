@@ -1292,11 +1292,6 @@ the \kbd{n} elements which follow \kbd{n} in the argument list (of type
 \kbd{avma} and \kbd{ltop}. Analogous to (but faster than) \kbd{gerepileall}
 otherwise.
 
-\fun{GEN}{gerepilecopy}{pari_sp av, GEN x} cleans up the stack  from
-\kbd{av} on, preserving the object \kbd{x}. Special case of \kbd{gerepileall}
-(case $\kbd{n} = 1$), except that the routine returns the preserved \kbd{GEN}
-instead of updating its address through a pointer.
-
 \fun{void}{gerepilemany}{pari_sp av, GEN* g[], int n} alternative interface
 to \kbd{gerepileall}. The preserved \kbd{GEN}s are the elements of the array
 \kbd{g} of length $n$: \kbd{g[0]}, \kbd{g[1]}, \dots,
@@ -1332,7 +1327,7 @@ and its two components. This is marginally more efficient than the standard
 @eprog\noindent
 
 \fun{GEN}{gerepileupto}{pari_sp av, GEN q} analogous to (but faster than)
-\kbd{gerepilecopy}. Assumes that \kbd{q} is connected and that its root was
+\kbd{gc\_GEN}. Assumes that \kbd{q} is connected and that its root was
 created before any component. If \kbd{q} is not on the stack, this is
 equivalent to \kbd{set\_avma(av)}; in particular, sentinels which are not even
 proper \kbd{GEN}s such as \kbd{q = NULL} are allowed.
@@ -1369,7 +1364,7 @@ Compared to the orthodox
 @eprog\noindent
 or even more wasteful
 \bprog
-  z = gerepilecopy(av0, z);
+  z = gc_GEN(av0, z);
 @eprog\noindent
 we temporarily lose $(\kbd{av} - \kbd{ltop})$ words but save a costly
 \kbd{gerepile}. In principle, a garbage collection higher up the call

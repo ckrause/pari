@@ -462,7 +462,7 @@ updated. For this to work, \kbd{q} must have been created \emph{before} all
 its components, otherwise they would belong to the garbage zone! Unless
 mentioned otherwise, documented PARI functions guarantee this.
 
-\fun{GEN}{gerepilecopy}{pari_sp ltop, GEN x}. Functionally equivalent to,
+\fun{GEN}{gc_GEN}{pari_sp ltop, GEN x}. Functionally equivalent to,
 but more efficient than
 \bprog
   gerepileupto(ltop, gcopy(x))
@@ -486,7 +486,7 @@ It cleans up the most recent part of the
 stack (between \kbd{ltop} and \kbd{avma}), updating all the \kbd{GEN}s added
 to the argument list. A copy is done just before the cleaning to preserve
 them, so they do not need to be connected before the call. With
-\kbd{gerepilecopy}, this is the most robust of the \kbd{gerepile} functions
+\kbd{gc\_GEN}, this is the most robust of the \kbd{gerepile} functions
 (the less prone to user error), hence the slowest.
 
 \fun{void}{gerepileallsp}{pari_sp ltop, pari_sp lbot, int n, ...}.
@@ -707,7 +707,7 @@ running time, which is quite acceptable!
 
 Second, it is of course harder on the programmer, and quite error-prone
 if you do not stick to a consistent PARI programming style. If all seems
-lost, just use \tet{gerepilecopy} (or \tet{gerepileall}) to fix up the stack
+lost, just use \tet{gc_GEN} (or \tet{gerepileall}) to fix up the stack
 for you. You can always optimize later when you have sorted out exactly which
 routines are crucial and what objects need to be preserved and their usual
 sizes.
