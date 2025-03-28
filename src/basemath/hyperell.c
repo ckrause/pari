@@ -1693,9 +1693,9 @@ ellfromeqncharpoly(GEN P, GEN Q, GEN p)
   F = gsub(gadd(ZX_sqr(y), gmul(y, Q)), P);
   E = ellinit(ellfromeqn(F), p, DEFAULTPREC);
   delete_var();
-  t = ellap(E, p);
+  t = ellcharpoly(E, p);
   obj_free(E);
-  return mkpoln(3, gen_1, negi(t), p);
+  return t;
 }
 
 static GEN
