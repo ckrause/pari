@@ -46,6 +46,7 @@ HC  15- New semantics for theta, now computes all four 1-variable theta
     17- [libpari] ZC_modhnf, ZM_modhnf, zv_canon_inplace
 BA  18- polclass: support for Atkin modular function of level 3
 BA  19- [libpari] FpXQX_is_squarefree
+BA  20- [libpari] FqV_to_FFV
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b)
