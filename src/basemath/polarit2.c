@@ -1839,7 +1839,7 @@ ggcd(GEN x, GEN y)
     case t_POL:
       switch(ty)
       {
-        GEN cz, cx, cy, n;
+        GEN cz, cx, cy;
         case t_POL: return RgX_gcd(x,y);
         case t_SER:
           z = ggcd(content(x), content(y));
@@ -1847,9 +1847,8 @@ ggcd(GEN x, GEN y)
         case t_RFRAC:
           av = avma;
           x = primitive_part(x, &cx);
-          y = primitive_part(y, &cy); n = gel(y,1);
-          if (typ(n) == t_POL && varn(n) == vx) x = ggcd(n, x);
-          z = gred_rfrac_simple(x, gel(y,2));
+          y = primitive_part(y, &cy);
+          z = gred_rfrac_simple(ggcd(gel(y,1), x), gel(y,2));
           if (cx) cz = cy? ggcd(cx, cy): cx; else cz = cy? cy: NULL;
           if (cz) z = gmul(z, cz);
           return gerepileupto(av, z);
