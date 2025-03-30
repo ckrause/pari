@@ -97,6 +97,9 @@ V=factorback(primes([2^63,2^63+1000]))
 gcd((x+1+V)*(x^3+3*x+1),(x+1)*(x^3+x+1))
 gcd((x+1)*(x^3+3*x+1),(x+1)*(x^3+x+1)+V)
 
+gcd(x/2, 1/(2*x))
+gcd(x/y, 1/(y*x))
+
 chkgcdext(a,b,p)=
 {
   my(P=random(Mod(1,p)*x^a),Q=random(Mod(1,p)*x^b));
