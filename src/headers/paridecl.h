@@ -1249,6 +1249,8 @@ ulong   quadratic_prec_mask(long n);
 
 GEN     QX_factor(GEN x);
 GEN     ZX_factor(GEN x);
+GEN     ZX_gcd(GEN A, GEN B);
+GEN     ZX_gcd_all(GEN A, GEN B, GEN *Anew);
 long    ZX_is_irred(GEN x);
 GEN     ZX_squff(GEN f, GEN *ex);
 GEN     polcyclofactors(GEN f);
@@ -5401,8 +5403,6 @@ GEN     ZM_init_CRT(GEN Hp, ulong p);
 GEN     ZX_ZXY_resultant(GEN a, GEN b);
 GEN     ZX_ZXY_rnfequation(GEN A, GEN B, long *lambda);
 GEN     ZX_disc(GEN x);
-GEN     ZX_gcd(GEN A, GEN B);
-GEN     ZX_gcd_all(GEN A, GEN B, GEN *Anew);
 int     ZX_incremental_CRT(GEN *ptH, GEN Hp, GEN *q, ulong p);
 GEN     ZX_init_CRT(GEN Hp, ulong p, long v);
 int     ZX_is_squarefree(GEN x);
