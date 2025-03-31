@@ -10474,6 +10474,16 @@ of $P$ and $Q$. Not memory clean.
 applied to the Kronecker forms $P(X,X^{2\*n-1})$
 of $P$. Not memory clean.
 
+\subsec{\kbd{ZXk/QXk}}
+\kbd{ZXk} are multivariate polynomials with \typ{INT} coefficients.
+\kbd{QXk} are multivariate polynomials with \typ{FRAC} or \typ{INT} coefficients.
+
+\fun{GEN}{ZXk_gcd}{GEN x,GEN y} returns a gcd of the \kbd{ZXk} $x$ and $y$.
+
+\fun{int}{Rg_is_QXk}{GEN z} return $1$ if \kbd{z} is a \kbd{QXk}, $0$ otherwise.
+
+\fun{GEN}{QXk_gcd}{GEN x,GEN y} returns a gcd of the \kbd{QXk} $x$ and $y$.
+
 \subsec{\kbd{QX}}
 
 \fun{void}{RgX_check_QX}{GEN x, const char *s} Assuming \kbd{x} is a \typ{POL}

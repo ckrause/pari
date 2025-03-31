@@ -1248,11 +1248,14 @@ ulong   quadratic_prec_mask(long n);
 /* QX_factor.c */
 
 GEN     QX_factor(GEN x);
+GEN     QXk_gcd(GEN A, GEN B);
+int     Rg_is_QXk(GEN z);
 GEN     ZX_factor(GEN x);
 GEN     ZX_gcd(GEN A, GEN B);
 GEN     ZX_gcd_all(GEN A, GEN B, GEN *Anew);
 long    ZX_is_irred(GEN x);
 GEN     ZX_squff(GEN f, GEN *ex);
+GEN     ZXk_gcd(GEN A, GEN B);
 GEN     polcyclofactors(GEN f);
 long    poliscyclo(GEN f);
 long    poliscycloprod(GEN f);

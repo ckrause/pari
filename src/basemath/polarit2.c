@@ -3655,6 +3655,7 @@ RgX_gcd_fast(GEN x, GEN y)
     case RgX_type_code(t_POLMOD, t_FRAC):
                    return RgX_is_ZX(pol) && ZX_is_monic(pol) ?
                                             RgX_gcd_QXQX(x,y,pol): NULL;
+    case t_POL:    return Rg_is_QXk(x) && Rg_is_QXk(y) ? QXk_gcd(x,y): NULL;
     default:       return NULL;
   }
 }
