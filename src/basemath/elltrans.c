@@ -2379,8 +2379,7 @@ ellweierstrass(GEN z, GEN tau, long prec)
   GEN e = gmul(a, mfE2eval(tau, prec2));
   GEN e1e2e3, g2g3 = wg2g3(T0, a, &e1e2e3);
   GEN R = mkvec4(mkvec2(gen_m1, tau), g2g3, e1e2e3, weta1eta2(tau, e, prec));
-  z = redmodZ(z);
-  if (!gequal0(z))
+  if (!gequal0(redmodZ(z)))
   {
     GEN T = thetaall_i(z, tau, prec);
     R = shallowconcat(R, mkvec4(wsigma(z, T, T0, e, prec),
