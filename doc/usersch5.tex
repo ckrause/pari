@@ -1260,6 +1260,9 @@ before \kbd{av}.
 \fun{GEN}{gc_utoipos}{pari_sp av, long x} reset \kbd{avma} to \kbd{av} and return
 \kbd{utoipos(x)}.
 
+\fun{void}{retgc_const}{pari_sp av, GEN x} (macro) reset the stack to $av$
+before evaluating $x$ and returning it.
+
 \fun{GEN}{gc_all}{pari_sp av, int n, ...}. Assumes that $1 \leq n \leq
 10$; This is similar to \kbd{gerepileall}, expecting $n$ further \kbd{GEN*}
 arguments: the stack is cleaned and the corresponding \kbd{GEN} are

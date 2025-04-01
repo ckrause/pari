@@ -559,7 +559,7 @@ zncoppersmith(GEN P, GEN N, GEN X, GEN B)
   }
   if (signe(X) < 0) pari_err_DOMAIN("zncoppersmith", "X", "<", gen_0, X);
   P = FpX_red(P, N); d = degpol(P);
-  if (d == 0) { set_avma(av); return cgetg(1, t_VEC); }
+  if (d == 0) retgc_const(av, cgetg(1, t_VEC));
   if (d < 0) pari_err_ROOTS0("zncoppersmith");
   if (B && typ(B) != t_INT) B = gceil(B);
   if (abscmpiu(X, X_SMALL) <= 0)
@@ -730,7 +730,7 @@ lindep_bit(GEN x, long bit)
 {
   pari_sp av = avma;
   GEN v, M = lindepfull_bit(x,bit);
-  if (!M) { set_avma(av); return cgetg(1, t_COL); }
+  if (!M) retgc_const(av, cgetg(1, t_COL));
   v = gel(M,1); setlg(v, lg(M));
   return gc_GEN(av, v);
 }
@@ -1447,7 +1447,7 @@ minim0_dolll(GEN a, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
   switch(flag)
   {
     case min_FIRST:
-      set_avma(av); return cgetg(1,t_VEC);
+      retgc_const(av, cgetg(1, t_VEC));
     case min_VECSMALL:
     case min_VECSMALL2:
       set_avma((pari_sp)L); return L;
@@ -1609,7 +1609,7 @@ cvp0_dolll(GEN a, GEN target, GEN BORNE, GEN STOCKMAX, long flag, long dolll)
   switch(flag)
   {
     case min_FIRST:
-      set_avma(av); return cgetg(1,t_VEC);
+      retgc_const(av, cgetg(1, t_VEC));
   }
   r = (maxnorm >= 0) ? dbltor(maxnorm): dbltor(sBORNE);
   k = minss(s,maxrank);

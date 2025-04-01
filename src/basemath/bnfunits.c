@@ -42,7 +42,7 @@ bnfisunit(GEN bnf, GEN x)
       gel(v,RU) = utoi((s > 0)? 0: n>>1);
       return v;
     }
-    if (!isint1(Q_denom(x))) { set_avma(av); return cgetg(1,t_COL); }
+    if (!isint1(Q_denom(x))) retgc_const(av, cgetg(1, t_COL));
   }
 
   r1 = nf_get_r1(nf);
@@ -59,9 +59,9 @@ bnfisunit(GEN bnf, GEN x)
       GEN logN = RgV_sum(rx); /* log(Nx), should be ~ 0 */
       if (gexpo(logN) > -20)
       { /* precision problem ? */
-        if (typ(logN) != t_REAL) { set_avma(av); return cgetg(1,t_COL); } /*no*/
+        if (typ(logN) != t_REAL) retgc_const(av, cgetg(1, t_COL)); /*no*/
         if (i == 1 && typ(x) != t_MAT &&
-            !is_pm1(nfnorm(nf, x))) { set_avma(av); return cgetg(1, t_COL); }
+            !is_pm1(nfnorm(nf, x))) retgc_const(av, cgetg(1, t_COL));
       }
       else
       {
@@ -359,7 +359,7 @@ bnfisunit0(GEN bnf, GEN x, GEN U)
   if (!U) return bnfisunit(bnf, x);
   if (!checkU(U)) pari_err_TYPE("bnfisunit",U);
   z = bnfissunit_i(bnf, x, U);
-  if (!z) { set_avma(av); return cgetg(1,t_COL); }
+  if (!z) retgc_const(av, cgetg(1, t_COL));
   return gc_GEN(av, shallowconcat(gel(z,2), gel(z,1)));
 }
 
@@ -382,6 +382,6 @@ bnfissunit(GEN bnf, GEN bnfS, GEN x)
   if (!checkbnfS_i(bnfS)) pari_err_TYPE("bnfissunit",bnfS);
   U = mkvec4(gel(bnfS,1), gel(bnfS,6), gmael(bnfS,2,1), gmael(bnfS,2,2));
   z = bnfissunit_i(bnf, x, U);
-  if (!z) { set_avma(av); return cgetg(1,t_COL); }
+  if (!z) retgc_const(av, cgetg(1, t_COL));
   return gc_GEN(av, shallowconcat(gel(z,1), gel(z,2)));
 }

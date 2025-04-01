@@ -1471,7 +1471,7 @@ nfsubfieldsmax(GEN nf, long fl)
   long n, i, ero;
 
   subfields_cleanup(&nf, &pol, &n, &fa);
-  if (n==1) { set_avma(av); return cgetg(1,t_VEC); }
+  if (n==1) retgc_const(av, cgetg(1, t_VEC));
   if (uisprime(n))
     return gc_GEN(av, fl==1 ? mkvec(pol_x(varn(pol)))
       : mkvec(mkvec2(pol_x(varn(pol)),gen_0)));

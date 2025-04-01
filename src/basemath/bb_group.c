@@ -538,7 +538,7 @@ gen_Shanks_log(GEN x, GEN g, GEN q, void *E, const struct bb_group *grp)
       p1 = gerepileupto(av1, p1);
     }
   }
-  set_avma(av); return cgetg(1, t_VEC); /* no solution */
+  retgc_const(av, cgetg(1, t_VEC)); /* no solution */
 }
 
 /*Generic discrete logarithme in a group of prime order p*/
@@ -644,10 +644,10 @@ gen_PH_log(GEN a, GEN g, GEN ord, void *E, const struct bb_group *grp)
       GEN b = grp->pow(E,a0, gel(qj,e-j));
       /* cheap early abort: wrong local order */
       if (j == 0 && !grp->equal1(grp->pow(E,b,q))) {
-        set_avma(av); return cgetg(1, t_VEC);
+        retgc_const(av, cgetg(1, t_VEC));
       }
       b = gen_plog(b, gq, q, E, grp);
-      if (typ(b) != t_INT) { set_avma(av); return cgetg(1, t_VEC); }
+      if (typ(b) != t_INT) retgc_const(av, cgetg(1, t_VEC));
       nq = addii(nq, mulii(b, gel(qj,j)));
       if (j == e) break;
 

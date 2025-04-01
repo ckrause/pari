@@ -598,7 +598,7 @@ F2m_F2c_gauss(GEN a, GEN b)
   pari_sp av = avma;
   GEN z = F2m_gauss(a, mkmat(b));
   if (!z) return gc_NULL(av);
-  if (lg(z) == 1) { set_avma(av); return cgetg(1,t_VECSMALL); }
+  if (lg(z) == 1) retgc_const(av, cgetg(1, t_VECSMALL));
   return gerepileuptoleaf(av, gel(z,1));
 }
 

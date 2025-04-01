@@ -1475,7 +1475,7 @@ polcyclofactors(GEN f)
     f = BD(ZX_radical(f));
     if (f) return gc_GEN(av, f);
   }
-  set_avma(av); return cgetg(1,t_VEC);
+  retgc_const(av, cgetg(1, t_VEC));
 }
 
 /* list of all squarefree odd x such that phi(x) = n, P^-(x) > m. Unsorted */

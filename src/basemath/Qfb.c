@@ -2095,5 +2095,5 @@ qfbcornacchia(GEN d, GEN p)
   if (typ(p) != t_INT || cmpiu(p, 2) < 0) pari_err_TYPE("qfbcornacchia", p);
   if (mod4(p)? cornacchia(d, p, &x, &y): cornacchia2(d, shifti(p, -2), &x, &y))
     return gc_GEN(av, mkvec2(x, y));
-  set_avma(av); return cgetg(1, t_VEC);
+  retgc_const(av, cgetg(1, t_VEC));
 }

@@ -1991,7 +1991,7 @@ F2xqM_gauss(GEN a, GEN b, GEN T)
   pari_sp av = avma;
   long n = lg(a)-1;
   GEN u;
-  if (!n || lg(b)==1) { set_avma(av); return cgetg(1, t_MAT); }
+  if (!n || lg(b)==1) retgc_const(av, cgetg(1, t_MAT));
   u = F2xqM_gauss_gen(a, b, T);
   if (!u) return gc_NULL(av);
   return gc_GEN(av, u);
@@ -2010,7 +2010,7 @@ FlxqM_gauss(GEN a, GEN b, GEN T, ulong p)
   pari_sp av = avma;
   long n = lg(a)-1;
   GEN u;
-  if (!n || lg(b)==1) { set_avma(av); return cgetg(1, t_MAT); }
+  if (!n || lg(b)==1) retgc_const(av, cgetg(1, t_MAT));
   u = FlxqM_gauss_i(a, b, T, p);
   if (!u) return gc_NULL(av);
   return gc_GEN(av, u);
@@ -2111,7 +2111,7 @@ F2xqM_inv(GEN a, GEN T)
 {
   pari_sp av = avma;
   GEN u;
-  if (lg(a) == 1) { set_avma(av); return cgetg(1, t_MAT); }
+  if (lg(a) == 1) retgc_const(av, cgetg(1, t_MAT));
   u = F2xqM_gauss_gen(a, matid_F2xqM(nbrows(a),T), T);
   if (!u) return gc_NULL(av);
   return gc_GEN(av, u);
@@ -2122,7 +2122,7 @@ FlxqM_inv(GEN a, GEN T, ulong p)
 {
   pari_sp av = avma;
   GEN u;
-  if (lg(a) == 1) { set_avma(av); return cgetg(1, t_MAT); }
+  if (lg(a) == 1) retgc_const(av, cgetg(1, t_MAT));
   u = FlxqM_gauss_i(a, matid_FlxqM(nbrows(a),T,p), T,p);
   if (!u) return gc_NULL(av);
   return gc_GEN(av, u);
@@ -3791,7 +3791,7 @@ ker_aux(GEN x, pivot_fun fun, GEN data)
   long i,j,k,r,n;
 
   x = gauss_pivot_ker(x,&d,&r, fun, data);
-  if (!r) { set_avma(av); return cgetg(1,t_MAT); }
+  if (!r) retgc_const(av, cgetg(1, t_MAT));
   n = lg(x)-1; y=cgetg(r+1,t_MAT);
   for (j=k=1; j<=r; j++,k++)
   {

@@ -1106,7 +1106,7 @@ gcharalgebraic(GEN gc, GEN type)
   GEN b;
   check_gchar_group(gc);
   b = type? gchar_algebraicoftype(gc, type): gchar_algebraic_basis(gc);
-  if (!b) { set_avma(av); return cgetg(1, t_VEC); }
+  if (!b) retgc_const(av, cgetg(1, t_VEC));
   return gc_GEN(av, b);
 }
 

@@ -664,7 +664,7 @@ rnfidealdown(GEN rnf,GEN x)
         GEN z, proj = obj_check(rnf,rnf_MAPS), ZK = gel(proj,1);
         long i, lz, l;
         x = idealhnf_shallow(NF,x);
-        if (lg(x) == 1) { set_avma(av); return cgetg(1,t_MAT); }
+        if (lg(x) == 1) retgc_const(av, cgetg(1, t_MAT));
         z = ZM_lll(shallowconcat(ZK,x), 0.99, LLL_KER);
         lz = lg(z); l = lg(ZK);
         for (i = 1; i < lz; i++) setlg(gel(z,i), l);
@@ -675,7 +675,7 @@ rnfidealdown(GEN rnf,GEN x)
     }
   }
   x = rnfidealhnf(rnf,x); I = gel(x,2);
-  if (lg(I) == 1) { set_avma(av); return cgetg(1,t_MAT); }
+  if (lg(I) == 1) retgc_const(av, cgetg(1, t_MAT));
   return gc_GEN(av, gel(I,1));
 }
 
@@ -1751,7 +1751,7 @@ nfdetint(GEN nf, GEN x)
       gerepileall(av1,6, &det1,&piv,&pivprec,&pass,&v,&idprod);
     }
   }
-  if (!cm) { set_avma(av); return cgetg(1,t_MAT); }
+  if (!cm) retgc_const(av, cgetg(1, t_MAT));
   return gerepileupto(av, idealmul(nf,idprod,det1));
 }
 

@@ -207,7 +207,7 @@ digits_i(GEN x, GEN B)
 {
   pari_sp av = avma;
   B = check_basis(B);
-  if (!signe(x))       {set_avma(av); return cgetg(1,t_VEC); }
+  if (!signe(x))       retgc_const(av, cgetg(1, t_VEC));
   if (signe(B) > 0) return gc_GEN(av, digits_pos(x, B));
   return gc_GEN(av, digits_neg(x, negi(B)));
 }

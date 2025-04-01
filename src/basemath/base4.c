@@ -2495,7 +2495,7 @@ idealdivexact(GEN nf, GEN x0, GEN y0)
   x = idealhnf_shallow(nf, x0);
   y = idealhnf_shallow(nf, y0);
   if (lg(y) == 1) pari_err_INV("idealdivexact", y0);
-  if (lg(x) == 1) { set_avma(av); return cgetg(1, t_MAT); } /* numerator is zero */
+  if (lg(x) == 1) retgc_const(av, cgetg(1, t_MAT)); /* numerator is zero */
   y = Q_primitive_part(y, &cy);
   if (cy) x = RgM_Rg_div(x,cy);
   xZ = gcoeff(x,1,1); if (typ(xZ) != t_INT) err_divexact(x,y);
@@ -2539,7 +2539,7 @@ idealintersect(GEN nf, GEN x, GEN y)
   nf = checknf(nf);
   x = idealhnf_shallow(nf,x);
   y = idealhnf_shallow(nf,y);
-  if (lg(x) == 1 || lg(y) == 1) { set_avma(av); return cgetg(1,t_MAT); }
+  if (lg(x) == 1 || lg(y) == 1) retgc_const(av, cgetg(1, t_MAT));
   x = Q_remove_denom(x, &dx);
   y = Q_remove_denom(y, &dy);
   if (dx) y = ZM_Z_mul(y, dx);

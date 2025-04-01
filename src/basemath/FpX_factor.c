@@ -1092,7 +1092,7 @@ FpX_roots_mult(GEN T, long n, GEN p)
   pari_sp av = avma;
   GEN V = FpX_factor_squarefree(T, p), W;
   long l = lg(V), i;
-  if (l <= n) { set_avma(av); return cgetg(1,t_COL); }
+  if (l <= n) retgc_const(av, cgetg(1, t_COL));
   W = cgetg(l-n+1,t_VEC);
   for (i = n; i < l; i++)
     gel(W,i-n+1) = FpX_roots(gel(V,i), p);
@@ -1514,7 +1514,7 @@ Flx_roots(GEN f, ulong p)
   switch(lg(f))
   {
     case 2: pari_err_ROOTS0("Flx_roots");
-    case 3: set_avma(av); return cgetg(1, t_VECSMALL);
+    case 3: retgc_const(av, cgetg(1, t_VECSMALL));
   }
   if (p == 2) return Flx_root_mod_2(f);
   pi = SMALL_ULONG(p)? 0: get_Fl_red(p);

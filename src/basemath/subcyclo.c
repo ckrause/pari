@@ -886,7 +886,7 @@ polsubcyclo(long n, long d, long v)
   if (d<=0) pari_err_DOMAIN("polsubcyclo","d","<=",gen_0,stoi(d));
   if (n<=0) pari_err_DOMAIN("polsubcyclo","n","<=",gen_0,stoi(n));
   Z = znstar(stoi(n));
-  if (!dvdis(gel(Z,1), d)) { set_avma(ltop); return cgetg(1, t_VEC); }
+  if (!dvdis(gel(Z,1), d)) retgc_const(ltop, cgetg(1, t_VEC));
   if (lg(gel(Z,2)) == 2)
   { /* faster but Z must be cyclic */
     set_avma(ltop);

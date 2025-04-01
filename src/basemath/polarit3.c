@@ -3384,7 +3384,7 @@ ffmap(GEN m, GEN x)
   checkmap(m, "ffmap");
   y = ffmap_i(m, x);
   if (y) return y;
-  set_avma(ltop); return cgetg(1,t_VEC);
+  retgc_const(ltop, cgetg(1, t_VEC));
 }
 
 static GEN

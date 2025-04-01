@@ -2756,7 +2756,7 @@ lfunconductor(GEN data, GEN maxcond, long flag, long bitprec)
   r = ldata_get_residue(ldata);
   if (typ(M) == t_VEC) /* select in list */
   {
-    if (lg(M) == 1) { set_avma(av); return cgetg(1,t_VEC); }
+    if (lg(M) == 1) retgc_const(av, cgetg(1, t_VEC));
     eval = NULL; tdom = dbltor(0.7);
   }
   else if (!r) { eval = wrap1; tdom = uutoQ(10,11); }
@@ -2797,7 +2797,7 @@ lfunconductor(GEN data, GEN maxcond, long flag, long bitprec)
       if (e < beste) { beste = e; besti = i; }
       else if (e == beste) beste = besti = 0; /* tie: forget */
     }
-    if (!besti) { set_avma(av); return cgetg(1,t_VEC); }
+    if (!besti) retgc_const(av, cgetg(1, t_VEC));
     return gc_GEN(av, mkvec2(gel(M,besti), stoi(beste)));
   }
   v = solvestep((void*)&S, eval, ghalf, M, gen_2, 14, prec);

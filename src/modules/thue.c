@@ -1265,7 +1265,7 @@ thue(GEN tnf, GEN rhs, GEN ne)
   /* solve P(x,y) = rhs <=> POL(L x, y) = C rhs, with POL monic in Z[X] */
   POL = gel(tnf,1);
   C = gel(POL,2); rhs = gmul(C, rhs);
-  if (typ(rhs) != t_INT) { set_avma(av); return cgetg(1, t_VEC); }
+  if (typ(rhs) != t_INT) retgc_const(av, cgetg(1, t_VEC));
   if (!signe(rhs))
   {
     GEN v = gel(tnf,2);
@@ -1284,7 +1284,7 @@ thue(GEN tnf, GEN rhs, GEN ne)
       GEN F = absZ_factor(rhs);
       ne = get_ne(tnf_get_bnf(tnf), rhs, F, tnf_get_Ind(tnf));
     }
-    if (lg(ne) == 1) { set_avma(av); return cgetg(1, t_VEC); }
+    if (lg(ne) == 1) retgc_const(av, cgetg(1, t_VEC));
     S = LargeSols(POL, tnf, rhs, ne);
   }
   else if (typ(gel(tnf,3)) == t_REAL)
@@ -1301,7 +1301,7 @@ thue(GEN tnf, GEN rhs, GEN ne)
     }
     if (ne)
     {
-      if (lg(ne) == 1) { set_avma(av); return cgetg(1,t_VEC); }
+      if (lg(ne) == 1) retgc_const(av, cgetg(1, t_VEC));
       if (degpol(POL) == 2) /* quadratic imaginary */
       {
         GEN u = NULL;
@@ -1342,7 +1342,7 @@ thue(GEN tnf, GEN rhs, GEN ne)
   {
     GEN bnf, ne1 = NULL, ne2 = NULL;
     long e = itos( gel(tnf,3) );
-    if (!Z_ispowerall(rhs, e, &rhs)) { set_avma(av); return cgetg(1, t_VEC); }
+    if (!Z_ispowerall(rhs, e, &rhs)) retgc_const(av, cgetg(1, t_VEC));
     tnf = gel(tnf,2);
     bnf = tnf_get_bnf(tnf);
     ne = get_neabs(bnf, rhs, lg(tnf)==8?tnf_get_Ind(tnf): gen_1);

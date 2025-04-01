@@ -833,7 +833,7 @@ hyperellordinate(GEN W, GEN x)
   {
     GEN d = poleval(W,x), y;
     if (gequal0(d)) { return gc_GEN(av, mkvec(d)); }
-    if (!issquareall(d, &y)) { set_avma(av); return cgetg(1,t_VEC); }
+    if (!issquareall(d, &y)) retgc_const(av, cgetg(1, t_VEC));
     return gc_GEN(av, mkvec2(y, gneg(y)));
   }
   else
@@ -843,7 +843,7 @@ hyperellordinate(GEN W, GEN x)
     b = poleval(gel(W,2), x); c = poleval(gel(W,1), x);
     d = gadd(gsqr(b), gmul2n(c, 2));
     if (gequal0(d)) { return gc_GEN(av, mkvec(gmul2n(gneg(b),-1))); }
-    if (!issquareall(d, &rd)) { set_avma(av); return cgetg(1,t_VEC); }
+    if (!issquareall(d, &rd)) retgc_const(av, cgetg(1, t_VEC));
     y = gmul2n(gsub(rd, b), -1);
     return gc_GEN(av, mkvec2(y, gsub(y,rd)));
   }

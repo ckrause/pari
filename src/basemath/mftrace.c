@@ -6679,7 +6679,7 @@ mfdihedralnew(long N, GEN CHI, GEN SP)
 {
   pari_sp av = avma;
   GEN S = mfdihedralnew_i(N, CHI, SP);
-  if (!S) { set_avma(av); return cgetg(1, t_VEC); }
+  if (!S) retgc_const(av, cgetg(1, t_VEC));
   return vecpermute(gel(S,1), gel(S,2));
 }
 
@@ -7853,7 +7853,7 @@ mfatkineigenvalues(GEN mf, long Q, long prec)
   mf = checkMF(mf); N = MF_get_N(mf);
   vF = MF_get_newforms(mf); l = lg(vF);
   /* N.B. k is integral */
-  if (l == 1) { set_avma(av); return cgetg(1, t_VEC); }
+  if (l == 1) retgc_const(av, cgetg(1, t_VEC));
   L = cgetg(l, t_VEC);
   if (Q == 1)
   {

@@ -360,7 +360,7 @@ extract0(GEN x, GEN l1, GEN l2)
     {
       if (!extract_selector_ok(lgcols(x), l1))
         pari_err_TYPE("vecextract [incorrect mask]", l1);
-      set_avma(av); return cgetg(1, t_MAT);
+      retgc_const(av, cgetg(1, t_MAT));
     }
     y = shallowextract(shallowtrans(y), l1);
     av2 = avma;

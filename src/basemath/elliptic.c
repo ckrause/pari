@@ -892,7 +892,7 @@ ellinit(GEN x, GEN D, long prec)
 {
   pari_sp av = avma;
   GEN y = ellinit_i(x, D, prec);
-  if (!y) { set_avma(av); return cgetg(1,t_VEC); }
+  if (!y) retgc_const(av, cgetg(1, t_VEC));
   return gc_GEN(av,y);
 }
 
@@ -2166,32 +2166,32 @@ ellordinate_i(GEN E, GEN x, long prec)
     case t_ELL_Fp: /* imply p!=2 */
       p = ellff_get_p(E);
       D = gel(D,2);
-      if (kronecker(D, p) < 0) { set_avma(av); return cgetg(1,t_VEC); }
+      if (kronecker(D, p) < 0) retgc_const(av, cgetg(1, t_VEC));
       d = Fp_sqrt(D, p);
       break;
     case t_ELL_Fq:
       if (absequaliu(ellff_get_p(E),2))
       {
         GEN F = FFX_roots(mkpoln(3, gen_1, b, a), D);
-        if (lg(F) == 1) { set_avma(av); return cgetg(1,t_VEC); }
+        if (lg(F) == 1) retgc_const(av, cgetg(1, t_VEC));
         return gerepileupto(av, F);
       }
-      if (!FF_issquareall(D,&d)) { set_avma(av); return cgetg(1,t_VEC); }
+      if (!FF_issquareall(D,&d)) retgc_const(av, cgetg(1, t_VEC));
       break;
     case t_ELL_Q:
       if (typ(x) == t_COMPLEX) { d = gsqrt(D, prec); break; }
-      if (!issquareall(D,&d)) { set_avma(av); return cgetg(1,t_VEC); }
+      if (!issquareall(D,&d)) retgc_const(av, cgetg(1, t_VEC));
       break;
 
     case t_ELL_NF:
-      if (!nfissquare(nf, D, &d)) { set_avma(av); return cgetg(1,t_VEC); }
+      if (!nfissquare(nf, D, &d)) retgc_const(av, cgetg(1, t_VEC));
       d = nftoalg(nf, d);
       break;
 
     case t_ELL_Qp:
       p = ellQp_get_p(E);
       D = cvtop(D, p, ellQp_get_prec(E));
-      if (!issquare(D)) { set_avma(av); return cgetg(1,t_VEC); }
+      if (!issquare(D)) retgc_const(av, cgetg(1, t_VEC));
       d = Qp_sqrt(D);
       break;
 

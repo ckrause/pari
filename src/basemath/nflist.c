@@ -2541,7 +2541,7 @@ nflist_C5_worker(GEN N, GEN T)
 {
   pari_sp av = avma;
   GEN v = polsubcycloC5_i(N, T);
-  if (!v) { set_avma(av); return cgetg(1, t_VEC); }
+  if (!v) retgc_const(av, cgetg(1, t_VEC));
   return gc_GEN(av, v);
 }
 
@@ -4634,7 +4634,7 @@ nflist_C9_worker(GEN T, GEN X, GEN Xinf)
     t = bnrcfC9(bnf, P, utoipos(f));
     if (lg(t) > 1) gel(v, c++) = t;
   }
-  if (c == 1) { set_avma(av); return cgetg(1, t_VEC); }
+  if (c == 1) retgc_const(av, cgetg(1, t_VEC));
   setlg(v,c); return gc_GEN(av, myshallowconcat1(v));
 }
 
@@ -4973,7 +4973,7 @@ nflist_C32D4_worker(GEN P, GEN X, GEN Xinf, GEN gs)
   GEN bd = bigdisc(P), RES = cgetg(1, t_VEC), L, bnf, nf, aut;
   long s = itos(gs), lim, j;
 
-  if (absi_cmp(bd, X) > 0) { set_avma(av); return cgetg(1, t_VEC); }
+  if (absi_cmp(bd, X) > 0) retgc_const(av, cgetg(1, t_VEC));
   bnf = bnfY(P); nf = bnf_get_nf(bnf); aut = cycfindaut(nf);
   lim = itos(divii(X, absi_shallow(bd)));
   L = ideallistsquare(bnf, lim);
@@ -5718,6 +5718,6 @@ polsubcyclofast(GEN n, long ell, long s, long fli)
 {
   pari_sp av = avma;
   GEN v = polsubcyclofast_i(n, ell, s, fli);
-  if (!v) { set_avma(av); return cgetg(1, t_VEC); }
+  if (!v) retgc_const(av, cgetg(1, t_VEC));
   return gc_GEN(av, v);
 }

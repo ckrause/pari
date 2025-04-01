@@ -527,7 +527,7 @@ chargalois(GEN G, GEN ORD)
           ORD = leafcopy(ORD);
           vecsmall_sort(ORD);
         }
-        if (l == 1) { set_avma(av); return cgetg(1, t_VEC); }
+        if (l == 1) retgc_const(av, cgetg(1, t_VEC));
         maxord = minss(maxord, ORD[l-1]);
         break;
       case t_INT:

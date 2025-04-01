@@ -148,7 +148,7 @@ ellcondlist(long f)
     GEN v = gel(V,i);
     return vecslice(v,2, lg(v)-1);
   }
-  set_avma(av); return cgetg(1,t_VEC);
+  retgc_const(av, cgetg(1, t_VEC));
 }
 
 static GEN

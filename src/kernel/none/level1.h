@@ -132,6 +132,9 @@ INLINE GEN
 gc_NULL(pari_sp av) { set_avma(av); return NULL; }
 INLINE GEN
 gc_const(pari_sp av, GEN x) { set_avma(av); return x; }
+#define retgc_const(av, x) \
+  do { set_avma(av); return x; } while(0)
+
 INLINE GEN
 gc_stoi(pari_sp av, long x) { set_avma(av); return stoi(x); }
 INLINE GEN

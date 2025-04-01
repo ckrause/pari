@@ -1818,7 +1818,7 @@ rnfnormgroup(GEN bnr, GEN polrel)
 {
   pari_sp av = avma;
   GEN G = rnfnormgroup_i(bnr, polrel);
-  if (!G) { set_avma(av); return cgetg(1,t_MAT); }
+  if (!G) retgc_const(av, cgetg(1, t_MAT));
   return gerepileupto(av, G);
 }
 

@@ -2593,7 +2593,7 @@ realroots(GEN P, GEN ab, long prec)
   }
   if (v && (!ab || (gsigne(gel(ab,1)) <= 0 && gsigne(gel(ab,2)) >= 0)))
     gel(sol, i++) = const_col(v, real_0(prec));
-  setlg(sol, i); if (i == 1) { set_avma(av); return cgetg(1,t_COL); }
+  setlg(sol, i); if (i == 1) retgc_const(av, cgetg(1, t_COL));
   return gerepileupto(av, sort(shallowconcat1(sol)));
 }
 GEN

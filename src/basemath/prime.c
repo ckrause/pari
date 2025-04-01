@@ -1275,7 +1275,7 @@ primes_interval(GEN a, GEN b)
   }
   if (signe(a) < 0) a = gen_2;
   d = subii(b, a);
-  if (signe(d) < 0 || signe(b) <= 0) { set_avma(av); return cgetg(1, t_VEC); }
+  if (signe(d) < 0 || signe(b) <= 0) retgc_const(av, cgetg(1, t_VEC));
   if (lgefint(b) == 3)
   {
     set_avma(av);

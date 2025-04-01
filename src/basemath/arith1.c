@@ -3033,10 +3033,10 @@ Fp_easylog(void *E, GEN a, GEN g, GEN ord)
     pari_sp av2;
     GEN t;
     ord = get_arith_Z(ord);
-    if (mpodd(ord)) { set_avma(av); return cgetg(1, t_VEC); } /* no solution */
+    if (mpodd(ord)) retgc_const(av, cgetg(1, t_VEC)); /* no solution */
     t = shifti(ord,-1); /* only possible solution */
     av2 = avma;
-    if (!equalii(Fp_pow(g, t, p), a)) { set_avma(av); return cgetg(1, t_VEC); }
+    if (!equalii(Fp_pow(g, t, p), a)) retgc_const(av, cgetg(1, t_VEC));
     set_avma(av2); return gc_INT(av, t);
   }
   if (typ(ord)==t_INT && BPSW_psp(p) && Fp_log_use_index(expi(ord),expi(p)))
@@ -3210,7 +3210,7 @@ znlog(GEN h, GEN g, GEN o)
         long k = gvaluation(h, p);
         if (k % v) return cgetg(1,t_VEC);
         k /= v;
-        if (!gequal(h, gpowgs(g,k))) { set_avma(av); return cgetg(1,t_VEC); }
+        if (!gequal(h, gpowgs(g,k))) retgc_const(av, cgetg(1, t_VEC));
         return gc_stoi(av, k);
       }
       N = padic_pd(g);
@@ -3230,7 +3230,7 @@ znlog(GEN h, GEN g, GEN o)
   P = gel(fa,1);
   E = vec_to_vecsmall(gel(fa,2));
   x = znlog_rec(h, g, N, P, E, get_PHI(P,E));
-  if (!x) { set_avma(av); return cgetg(1,t_VEC); }
+  if (!x) retgc_const(av, cgetg(1, t_VEC));
   return gc_INT(av, x);
 }
 
@@ -3970,7 +3970,7 @@ bestappr_ser(GEN x, long B)
   return t;
 }
 static GEN
-gc_empty(pari_sp av) { set_avma(av); return cgetg(1, t_VEC); }
+gc_empty(pari_sp av) { retgc_const(av, cgetg(1, t_VEC)); }
 static GEN
 _gc_upto(pari_sp av, GEN x) { return x? gerepileupto(av, x): NULL; }
 
