@@ -48,6 +48,7 @@ BA  18- polclass: support for Atkin modular function of level 3
 BA  19- [libpari] FpXQX_is_squarefree
 BA  20- [libpari] FqV_to_FFV
 BA  21- [libpari] Rg_is_QXk, ZXk_gcd, QXk_gcd, ZXk_divexact, ZXk_divides
+BA  22- [libpari] FpXk_gcd, FpXk_red, Rg_is_FpXk, Rg_to_FpXk
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b)

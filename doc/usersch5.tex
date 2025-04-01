@@ -5654,6 +5654,21 @@ $\kbd{FpXQ\_powers}(\kbd{x}, n, \kbd{T}, \kbd{p})$.
 \kbd{FpXY}, \kbd{T} being a \kbd{FpX} and \kbd{S} being a \kbd{FpY},
 return $x^n \pmod{S,T,p}$.
 
+\subsec{\kbd{FpXk}}
+An \kbd{FpXk} is a multivariate polynomial with \typ{INT} coefficients,
+considered over $\Z/p\Z$.
+
+\fun{GEN}{FpXk_red}{GEN z, GEN p}, \kbd{z} a \kbd{ZXk}, returns \kbd{lift(z *
+Mod(1,p))}, normalized.
+
+\fun{GEN}{FpXk_gcd}{GEN x,GEN y, GEN p} returns a gcd of the \kbd{FpXk} $x$ and $y$.
+
+\fun{int}{Rg_is_FpXk}{GEN z, GEN *p} checks if $z$ can be mapped to a \kbd{FpXk}
+by applying \kbd{Rg\_is\_Fp} recursively.
+
+\fun{GEN}{Rg_to_FpXk}{GEN z, GEN p} converts $z$ to a \kbd{FpXk}
+by applying \kbd{Rg\_to\_Fp} recursively.
+
 \subsec{\kbd{FpXQX}, \kbd{FqX}}
 Contrary to what the name implies, an \kbd{FpXQX} is a \typ{POL} whose
 coefficients are \kbd{Fq}s. So the only difference between \kbd{FqX} and
