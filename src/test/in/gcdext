@@ -44,6 +44,7 @@ gcd(t,x)
 gcd(t,1/y)
 gcd(t,1/x)
 gcd(t,1/(x+1))
+t='t;
 gcd(Pol(0), y)
 gcd(x+O(x^5), x^2+O(x^3))
 gcd(x+O(x^5), 1/x^2)
@@ -99,6 +100,11 @@ gcd((x+1)*(x^3+3*x+1),(x+1)*(x^3+x+1)+V)
 
 gcd(x/2, 1/(2*x))
 gcd(x/y, 1/(y*x))
+
+p = (7*t*y*x^2*z^2 - 3*t + t*x*y*z + 11*(x + 1 + t)*y^2 + 5*z + t + 1)^3 *(3*t*x - 7*t*y + 2*z - 3*t + 1)^4;
+q = (7*t*y*x^2*z^2 - 3*t + t*x*y*z + 11*(x + 1 + t)*y^2 + 5*z + t + 1)^4 *(3*t*x - 7*t*y + 2*z + 3*t - 1)^3;
+g = (7*t*y*x^2*z^2 - 3*t + t*x*y*z + 11*(x + 1 + t)*y^2 + 5*z + t + 1)^3;
+if (gcd(p,q)!=g, error("multivariate gcd"));
 
 chkgcdext(a,b,p)=
 {
