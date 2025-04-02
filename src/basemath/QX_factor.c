@@ -1360,6 +1360,84 @@ ZXk_divexact(GEN A, GEN B)
 }
 
 static GEN
+ZXk_divides_i(pari_sp av, GEN x, GEN y)
+{
+  long dx = degpol(x), dy = degpol(y), dz, i, j;
+  GEN z, y_lead = gel(y,dy+2);
+  if (dx < dy)
+    return gen_0;
+  dz = dx-dy;
+  z = cgetg(dz+3,t_POL); z[1] = x[1];
+  gel(z,dz+2) = ZXk_divides(gel(x,dx+2), y_lead);
+  if (!gel(z,dz+2)) return gc_NULL(av);
+  for (i=dx-1; i>=dy; i--)
+  {
+    pari_sp btop = avma;
+    GEN p1 = gel(x,2+i), c;
+    for (j=i-dy+1; j<=i && j<=dz; j++)
+      p1 = gsub(p1, gmul(gel(z,2+j), gel(y,2+i-j)));
+    c = ZXk_divides(p1, y_lead);
+    if (!c) return gc_NULL(av);
+    gel(z,2+i-dy) = gerepileupto(btop, c);
+  }
+  if (gequal(gmul(z,y),x)) return gerepileupto(av,z);
+  return gc_NULL(av);
+}
+
+static GEN
+ZXkX_ZXk_divides(GEN x, GEN B)
+{
+  pari_sp av = avma;
+  long i, l;
+  GEN y = cgetg_copy(x, &l); y[1] = x[1];
+  if (l == 2) return y;
+  for (i=2; i<l; i++)
+  {
+    GEN c = ZXk_divides(gel(x,i), B);
+    if (!c) return gc_NULL(av);
+    gel(y, i) = c;
+  }
+  return ZX_renormalize(y, l);
+}
+
+static GEN
+dividesii(GEN A, GEN B)
+{
+  GEN r, q  = dvmdii(A, B, &r);
+  return signe(r) ? NULL: q;
+}
+
+GEN
+ZXk_divides(GEN A, GEN B)
+{
+  pari_sp av = avma;
+  if (!signe(A)) return gen_0;
+  if (typ(A)==t_INT && typ(B)==t_INT)
+    return dividesii(A, B);
+  B = simplify_shallow(B);
+  if (typ(A)==t_INT)
+  {
+    if (typ(B)!=t_INT) return NULL;
+    return gerepileupto(av, dividesii(A, B));
+  }
+  else if (typ(B)==t_INT)
+    return ZXkX_ZXk_divides(A, B);
+  else
+  {
+    long c = varncmp(varn(A),varn(B));
+    if (c < 0)
+    {
+      GEN z = ZXkX_ZXk_divides(A, B);
+      return z ? gerepileupto(av, z): z;
+    }
+    else if (c>0)
+      return gc_NULL(av);
+    else
+      return ZXk_divides_i(av, A, B);
+  }
+}
+
+static GEN
 ZXk_gcd_i(GEN A, GEN B)
 {
   pari_sp av;
@@ -1381,8 +1459,8 @@ ZXk_gcd_i(GEN A, GEN B)
   {
     GEN N = int2n(e), G = ZXk_gcd_i(poleval(A,N), poleval(B,N));
     GEN g = Q_primpart(rec(G, e, N, v));
-    if (!signe(RgX_pseudorem(A, g)) &&
-        !signe(RgX_pseudorem(B, g))) return gmul(c,g);
+    if (ZXk_divides(A,g) &&  ZXk_divides(B,g))
+      return gmul(c,g);
   }
 }
 GEN
