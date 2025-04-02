@@ -1255,6 +1255,7 @@ GEN     ZX_gcd(GEN A, GEN B);
 GEN     ZX_gcd_all(GEN A, GEN B, GEN *Anew);
 long    ZX_is_irred(GEN x);
 GEN     ZX_squff(GEN f, GEN *ex);
+GEN     ZXk_divexact(GEN A, GEN B);
 GEN     ZXk_gcd(GEN A, GEN B);
 GEN     polcyclofactors(GEN f);
 long    poliscyclo(GEN f);
