@@ -1281,26 +1281,26 @@ ZXk_center2n(GEN z, long n, GEN N)
   }
 }
 
+static GEN ZXk_gcd_i(GEN A, GEN B);
 static GEN
 ZXk_content(GEN x)
 {
-  pari_sp av = avma;
   long i, l = lg(x);
   GEN c = gen_0;
-  if (typ(x)==t_INT) return icopy(x);
+  if (typ(x)==t_INT) return x;
   for (i = 2; i < l; i++)
   {
-    c = ZXk_gcd(c, gel(x,i));
-    if (gequal1(c)) return gc_const(av, gen_1);
+    c = ZXk_gcd_i(c, gel(x,i));
+    if (gequal1(c)) return gen_1;
   }
-  return gc_GEN(av, simplify_shallow(c));
+  return simplify_shallow(c);
 }
 
 static GEN
 rec(GEN g, long e, GEN N, long v)
 {
   pari_sp av = avma;
-  long i, d = (expi(gsupnorm(g,0))+2*e-1)/e;
+  long i, d = (gexpo(g)+2*e-1)/e;
   GEN s = cgetg(d+3,t_POL);
   s[1] = evalvarn(v);
   for (i = 0; i <= d; i++)
@@ -1356,44 +1356,42 @@ ZXk_divexact(GEN A, GEN B)
   }
 }
 
-GEN
-ZXk_gcd(GEN A, GEN B)
+static GEN
+ZXk_gcd_i(GEN A, GEN B)
 {
-  pari_sp av = avma;
+  pari_sp av;
   long e, v, vc;
   GEN c, cA, cB;
   if (signe(A)==0) return gcopy(B);
   if (signe(B)==0) return gcopy(A);
-  if (typ(A) == t_INT)
-    return gcdii(A,typ(B)==t_INT ? B: Q_content(B));
-  if (typ(B) == t_INT)
-    return gcdii(Q_content(A), B);
-  v = varn(A);
-  vc = varncmp(v, varn(B));
-  if (vc < 0) return ZXk_gcd(ZXk_content(A), B);
-  if (vc > 0) return ZXk_gcd(A, ZXk_content(B));
-  if (gvar2(A) < 0 && gvar2(B) < 0)
-     return ZX_gcd(A,B);
+  if (typ(A) == t_INT) return gcdii(A, typ(B)==t_INT ? B: Q_content(B));
+  if (typ(B) == t_INT) return gcdii(Q_content(A), B);
+  v = varn(A); vc = varncmp(v, varn(B));
+  if (vc < 0) return ZXk_gcd_i(ZXk_content(A), B);
+  if (vc > 0) return ZXk_gcd_i(A, ZXk_content(B));
+  if (RgX_is_ZX(A) && RgX_is_ZX(B)) return ZX_gcd(A,B);
   cA = ZXk_content(A); A = ZXkX_ZXk_divexact(A, cA);
   cB = ZXk_content(B); B = ZXkX_ZXk_divexact(B, cB);
-  c = ZXk_gcd(cA, cB);
-  e = expi(gmin_shallow(gsupnorm(A,0),gsupnorm(B,0)))+2;
-  for ( ; ; e++)
+  c = ZXk_gcd_i(cA, cB); av = avma;
+  e = minss(gexpo(A), gexpo(B)) + 2;
+  for ( ; ; e++, set_avma(av))
   {
-    GEN N = int2n(e);
-    GEN G = ZXk_gcd(poleval(A,N), poleval(B,N));
+    GEN N = int2n(e), G = ZXk_gcd_i(poleval(A,N), poleval(B,N));
     GEN g = Q_primpart(rec(G, e, N, v));
-    if (!signe(RgX_pseudorem(A,g)) && !signe(RgX_pseudorem(B,g)))
-      return gc_GEN(av, gmul(c,g));
+    if (!signe(RgX_pseudorem(A, g)) &&
+        !signe(RgX_pseudorem(B, g))) return gmul(c,g);
   }
 }
+GEN
+ZXk_gcd(GEN A, GEN B)
+{ pari_sp av = avma; return gerepileupto(av, ZXk_gcd_i(A, B)); }
 
 GEN
-QXk_gcd(GEN A0, GEN B0)
+QXk_gcd(GEN A, GEN B)
 {
   GEN a, b, D;
   pari_sp av = avma, av2;
-  D = ZXk_gcd(Q_primitive_part(A0, &a), Q_primitive_part(B0, &b));
+  D = ZXk_gcd_i(Q_primitive_part(A, &a), Q_primitive_part(B, &b));
   av2 = avma; a = _gcd(a,b);
   if (isint1(a)) set_avma(av2); else D = gmul(D, a);
   return gerepileupto(av, D);
