@@ -1319,6 +1319,27 @@ static GEN
 ZXkX_ZXk_divexact(GEN x, GEN B)
 { pari_APPLY_ZX(ZXk_divexact(gel(x,i), B)); }
 
+static GEN
+ZXk_divexact_i(GEN x, GEN y)
+{
+  long dx = degpol(x), dy = degpol(y), dz, i, j;
+  GEN z, y_lead = gel(y,dy+2);
+  if (dx < dy)
+    return gen_0;
+  dz = dx-dy;
+  z = cgetg(dz+3,t_POL); z[1] = x[1];
+  gel(z,dz+2) = ZXk_divexact(gel(x,dx+2), y_lead);
+  for (i=dx-1; i>=dy; i--)
+  {
+    pari_sp btop = avma;
+    GEN p1=gel(x,2+i);
+    for (j=i-dy+1; j<=i && j<=dz; j++)
+      p1 = gsub(p1, gmul(gel(z,2+j), gel(y,2+i-j)));
+    gel(z,2+i-dy) = gerepileupto(btop, ZXk_divexact(p1, y_lead));
+  }
+  return z;
+}
+
 GEN
 ZXk_divexact(GEN A, GEN B)
 {
@@ -1335,25 +1356,7 @@ ZXk_divexact(GEN A, GEN B)
   else if (typ(B)==t_INT || varn(A)!=varn(B))
     return ZXkX_ZXk_divexact(A, B);
   else
-  {
-    GEN lB = leading_coeff(B);
-    long j, dB = degpol(B), dQ = degpol(A)-dB;
-    GEN Q = cgetg(dQ+3, t_POL);
-    Q[1] = A[1];
-    for (j = dQ+2; j > 1; j--)
-      if (j+dB<lg(A))
-      {
-        GEN c = ZXk_divexact(gel(A,j+dB), lB);
-        gel(Q, j) = c;
-        if (j > 2)
-          A = RgX_addmulXn_shallow(gmul(gneg(c), B), A, j-2);
-        if (!signe(A)) break;
-      } else
-        gel(Q, j) = gen_0;
-    for (j-- ; j > 1; j--)
-      gel(Q, j) = gen_0;
-    return gc_GEN(av, simplify_shallow(ZXk_renormalize(Q, dQ+3)));
-  }
+    return ZXk_divexact_i(A, B);
 }
 
 static GEN
