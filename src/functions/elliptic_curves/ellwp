@@ -29,7 +29,7 @@ Doc: Computes the value at $z$ of the Weierstrass $\wp$ function attached to
  Optional \fl\ means 0 (default): compute only $\wp(z)$, 1: compute
  $[\wp(z),\wp'(z)]$.
 
- For instance, the Dickson elliptic functions \var{sm} and \var{sn} can be
+ For instance, the Dickson elliptic functions \var{sm} and \var{cm} can be
  implemented as follows
  \bprog
   smcm(z) =
