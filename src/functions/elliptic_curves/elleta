@@ -7,7 +7,7 @@ Help: elleta(w): w=[w1,w2], returns the vector [eta1,eta2] of quasi-periods
 Doc: returns the quasi-periods $[\eta_{1},\eta_{2}]$
  attached to the lattice basis $\var{w} = [\omega_{1}, \omega_{2}]$.
  Alternatively, \var{w} can be an elliptic curve $E$ as output by
- \kbd{ellinit}, in which case, the quasi periods attached to the period
+ \kbd{ellinit}, in which case, the quasi-periods attached to the period
  lattice basis \kbd{$E$.omega} (namely, \kbd{$E$.eta}) are returned.
  \bprog
  ? elleta([1, I])

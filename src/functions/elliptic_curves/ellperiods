@@ -19,8 +19,8 @@ Doc: Let $w$ describe a complex period lattice ($w = [w_{1},w_{2}]$
  $[W_{1},W_{2}]$, satisfying $\eta_{2} W_{1} - \eta_{1} W_{2} = 2 i \pi$.
 
  The output of this function is meant to be used as the first argument
- given to ellwp, ellzeta, ellsigma or elleisnum. Quasi-periods are
- needed by ellzeta and ellsigma only.
+ given to \tet{ellwp}, \tet{ellzeta}, \tet{ellsigma} or \tet{elleisnum}.
+ Quasi-periods are needed by \tet{ellzeta} and \tet{ellsigma} only.
 
  \bprog
  ? L = ellperiods([1,I],1);

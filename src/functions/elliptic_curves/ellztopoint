@@ -12,7 +12,7 @@ Doc:
 
  \item If $E$ is defined over a $p$-adic field and has multiplicative
  reduction, then $z$ is understood as an element on the
- Tate curve $\bar{Q}_{p}^{*} / q^{\Z}$.
+ Tate curve $\bar{\Q}_{p}^{*} / q^{\Z}$.
  \bprog
  ? E = ellinit([0,-1,1,0,0], O(11^5));
  ? [u2,u,q] = E.tate; type(u)

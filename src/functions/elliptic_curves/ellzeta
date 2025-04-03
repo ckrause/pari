@@ -2,7 +2,7 @@ Function: ellzeta
 Section: elliptic_curves
 C-Name: ellzeta
 Prototype: GDGp
-Help: ellzeta(w,{z='x}): computes the value at z of the Weierstrass Zeta
+Help: ellzeta(w,{z='x}): computes the value at z of the Weierstrass zeta
  function attached to the lattice w, as given by ellperiods(,1).
 Doc: Computes the value at $z$ of the Weierstrass $\zeta$ function attached to
  the lattice $w$ as given by \tet{ellperiods}$(,1)$: including quasi-periods
