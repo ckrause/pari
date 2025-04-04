@@ -1655,7 +1655,7 @@ derivnum(void *E, GEN (*eval)(void *, GEN, long), GEN x, long prec)
   long b0 = prec2nbits(p? p: prec), b = (long)ceil(b0 * 1.5 + maxss(0,ex));
   GEN eps, u, v, y;
   pari_sp av = avma;
-  newprec = nbits2prec(b + BITS_IN_LONG);
+  newprec = nbits2prec(b + EXTRAPREC64);
   switch(typ(x))
   {
     case t_REAL:
