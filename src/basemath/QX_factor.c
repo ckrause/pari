@@ -1283,17 +1283,153 @@ ZXk_center2n(GEN z, long n, GEN N)
 
 static GEN ZXk_gcd_i(GEN A, GEN B);
 static GEN
-ZXk_content(GEN x)
+ZXk_content_shallow(GEN x)
 {
   long i, l = lg(x);
-  GEN c = gen_0;
+  GEN c;
   if (typ(x)==t_INT) return x;
-  for (i = 2; i < l; i++)
+  if (!signe(x)) return gen_0;
+  c = gel(x, 2);
+  if (gequal1(c)) return gen_1;
+  for (i = 3; i < l; i++)
   {
-    c = ZXk_gcd_i(c, gel(x,i));
+    c = simplify_shallow(ZXk_gcd_i(c, gel(x,i)));
     if (gequal1(c)) return gen_1;
   }
-  return simplify_shallow(c);
+  return c;
+}
+
+static GEN ZXk_divexact_s(GEN A, GEN B);
+
+static GEN
+ZXkX_ZXk_divexact_s(GEN x, GEN B)
+{ pari_APPLY_ZX(ZXk_divexact_s(gel(x,i), B)); }
+
+static GEN
+ZXkX_ZXk_divexact(GEN A, GEN B)
+{
+  pari_sp av = avma;
+  return gerepileupto(av, ZXkX_ZXk_divexact_s(A, simplify_shallow(B)));
+}
+
+static GEN
+ZXk_divexact_i(GEN x, GEN y)
+{
+  long dx = degpol(x), dy = degpol(y), dz, i, j;
+  GEN z, y_lead = gel(y,dy+2);
+  if (dx < dy)
+    return gen_0;
+  dz = dx-dy;
+  z = cgetg(dz+3,t_POL); z[1] = x[1];
+  gel(z,dz+2) = ZXk_divexact_s(gel(x,dx+2), y_lead);
+  for (i=dx-1; i>=dy; i--)
+  {
+    pari_sp btop = avma;
+    GEN p1=gel(x,2+i);
+    for (j=i-dy+1; j<=i && j<=dz; j++)
+      p1 = gsub(p1, gmul(gel(z,2+j), gel(y,2+i-j)));
+    gel(z,2+i-dy) = gerepileupto(btop, ZXk_divexact_s(p1, y_lead));
+  }
+  return z;
+}
+
+static GEN
+ZXk_divexact_s(GEN A, GEN B)
+{
+  if (!signe(A)) return gen_0;
+  if (typ(A)==t_INT && typ(B)==t_INT)
+    return diviiexact(A, B);
+  else if (typ(B)==t_INT || varn(A)!=varn(B))
+    return ZXkX_ZXk_divexact_s(A, B);
+  else
+    return ZXk_divexact_i(A, B);
+}
+
+GEN
+ZXk_divexact(GEN A, GEN B)
+{
+  pari_sp av = avma;
+  return gerepileupto(av, ZXk_divexact_s(A, simplify_shallow(B)));
+}
+
+static GEN ZXk_divides_s(GEN A, GEN B);
+
+static GEN
+ZXkX_ZXk_divides_s(GEN x, GEN B)
+{
+  pari_sp av = avma;
+  long i, l;
+  GEN y = cgetg_copy(x, &l); y[1] = x[1];
+  if (l == 2) return y;
+  for (i=2; i<l; i++)
+  {
+    GEN c = ZXk_divides_s(gel(x,i), B);
+    if (!c) return gc_NULL(av);
+    gel(y, i) = c;
+  }
+  return ZXk_renormalize(y, l);
+}
+
+static GEN
+ZXk_divides_i(GEN x, GEN y)
+{
+  pari_sp av = avma, av2;
+  long dx = degpol(x), dy = degpol(y), dz, i, j, c;
+  GEN z, y_lead = gel(y,dy+2);
+  if (dx < dy)
+    return gen_0;
+  dz = dx-dy;
+  z = cgetg(dz+3,t_POL); z[1] = x[1];
+  gel(z,dz+2) = ZXk_divides(gel(x,dx+2), y_lead);
+  if (!gel(z,dz+2)) return gc_NULL(av);
+  for (i=dx-1; i>=dy; i--)
+  {
+    pari_sp btop = avma;
+    GEN p1 = gel(x,2+i), c;
+    for (j=i-dy+1; j<=i && j<=dz; j++)
+      p1 = gsub(p1, gmul(gel(z,2+j), gel(y,2+i-j)));
+    c = ZXk_divides_s(p1, y_lead);
+    if (!c) return gc_NULL(av);
+    gel(z,2+i-dy) = gerepileupto(btop, c);
+  }
+  av2 = avma;
+  c = gc_bool(av2, gequal(gmul(z,y),x));
+  return c ? z: gc_NULL(av);
+}
+
+static GEN
+dividesii(GEN A, GEN B)
+{
+  GEN r, q  = dvmdii(A, B, &r);
+  return signe(r) ? NULL: q;
+}
+
+static GEN
+ZXk_divides_s(GEN A, GEN B)
+{
+  if (!signe(A)) return gen_0;
+  if (typ(B)==t_INT)
+    return typ(A)==t_INT ? dividesii(A, B)
+                         : ZXkX_ZXk_divides_s(A, B);
+  else if (typ(A)==t_INT) return NULL;
+  else
+  {
+    long c = varncmp(varn(A),varn(B));
+    if (c < 0)
+      return ZXkX_ZXk_divides_s(A, B);
+    else if (c>0)
+      return NULL;
+    else
+      return ZXk_divides_i(A, B);
+  }
+}
+
+GEN
+ZXk_divides(GEN A, GEN B)
+{
+  pari_sp av = avma;
+  GEN z = ZXk_divides_s(A, simplify_shallow(B));
+  return z ? gerepileupto(av, z): z;
 }
 
 static GEN
@@ -1316,128 +1452,6 @@ rec(GEN g, long e, GEN N, long v)
 }
 
 static GEN
-ZXkX_ZXk_divexact(GEN x, GEN B)
-{ pari_APPLY_ZX(ZXk_divexact(gel(x,i), B)); }
-
-static GEN
-ZXk_divexact_i(GEN x, GEN y)
-{
-  long dx = degpol(x), dy = degpol(y), dz, i, j;
-  GEN z, y_lead = gel(y,dy+2);
-  if (dx < dy)
-    return gen_0;
-  dz = dx-dy;
-  z = cgetg(dz+3,t_POL); z[1] = x[1];
-  gel(z,dz+2) = ZXk_divexact(gel(x,dx+2), y_lead);
-  for (i=dx-1; i>=dy; i--)
-  {
-    pari_sp btop = avma;
-    GEN p1=gel(x,2+i);
-    for (j=i-dy+1; j<=i && j<=dz; j++)
-      p1 = gsub(p1, gmul(gel(z,2+j), gel(y,2+i-j)));
-    gel(z,2+i-dy) = gerepileupto(btop, ZXk_divexact(p1, y_lead));
-  }
-  return z;
-}
-
-GEN
-ZXk_divexact(GEN A, GEN B)
-{
-  pari_sp av = avma;
-  if (!signe(A)) return gen_0;
-  if (typ(A)==t_INT && typ(B)==t_INT)
-    return diviiexact(A, B);
-  B = simplify_shallow(B);
-  if (typ(A)==t_INT)
-  {
-    if (typ(B)!=t_INT) pari_err_BUG("ZXk_divexact");
-    return gerepileupto(av, diviiexact(A, B));
-  }
-  else if (typ(B)==t_INT || varn(A)!=varn(B))
-    return ZXkX_ZXk_divexact(A, B);
-  else
-    return ZXk_divexact_i(A, B);
-}
-
-static GEN
-ZXk_divides_i(pari_sp av, GEN x, GEN y)
-{
-  long dx = degpol(x), dy = degpol(y), dz, i, j;
-  GEN z, y_lead = gel(y,dy+2);
-  if (dx < dy)
-    return gen_0;
-  dz = dx-dy;
-  z = cgetg(dz+3,t_POL); z[1] = x[1];
-  gel(z,dz+2) = ZXk_divides(gel(x,dx+2), y_lead);
-  if (!gel(z,dz+2)) return gc_NULL(av);
-  for (i=dx-1; i>=dy; i--)
-  {
-    pari_sp btop = avma;
-    GEN p1 = gel(x,2+i), c;
-    for (j=i-dy+1; j<=i && j<=dz; j++)
-      p1 = gsub(p1, gmul(gel(z,2+j), gel(y,2+i-j)));
-    c = ZXk_divides(p1, y_lead);
-    if (!c) return gc_NULL(av);
-    gel(z,2+i-dy) = gerepileupto(btop, c);
-  }
-  if (gequal(gmul(z,y),x)) return gerepileupto(av,z);
-  return gc_NULL(av);
-}
-
-static GEN
-ZXkX_ZXk_divides(GEN x, GEN B)
-{
-  pari_sp av = avma;
-  long i, l;
-  GEN y = cgetg_copy(x, &l); y[1] = x[1];
-  if (l == 2) return y;
-  for (i=2; i<l; i++)
-  {
-    GEN c = ZXk_divides(gel(x,i), B);
-    if (!c) return gc_NULL(av);
-    gel(y, i) = c;
-  }
-  return ZX_renormalize(y, l);
-}
-
-static GEN
-dividesii(GEN A, GEN B)
-{
-  GEN r, q  = dvmdii(A, B, &r);
-  return signe(r) ? NULL: q;
-}
-
-GEN
-ZXk_divides(GEN A, GEN B)
-{
-  pari_sp av = avma;
-  if (!signe(A)) return gen_0;
-  if (typ(A)==t_INT && typ(B)==t_INT)
-    return dividesii(A, B);
-  B = simplify_shallow(B);
-  if (typ(A)==t_INT)
-  {
-    if (typ(B)!=t_INT) return NULL;
-    return gerepileupto(av, dividesii(A, B));
-  }
-  else if (typ(B)==t_INT)
-    return ZXkX_ZXk_divides(A, B);
-  else
-  {
-    long c = varncmp(varn(A),varn(B));
-    if (c < 0)
-    {
-      GEN z = ZXkX_ZXk_divides(A, B);
-      return z ? gerepileupto(av, z): z;
-    }
-    else if (c>0)
-      return gc_NULL(av);
-    else
-      return ZXk_divides_i(av, A, B);
-  }
-}
-
-static GEN
 ZXk_gcd_i(GEN A, GEN B)
 {
   pari_sp av;
@@ -1448,13 +1462,13 @@ ZXk_gcd_i(GEN A, GEN B)
   if (typ(A) == t_INT) return gcdii(A, typ(B)==t_INT ? B: Q_content(B));
   if (typ(B) == t_INT) return gcdii(Q_content(A), B);
   v = varn(A); vc = varncmp(v, varn(B));
-  if (vc < 0) return ZXk_gcd_i(ZXk_content(A), B);
-  if (vc > 0) return ZXk_gcd_i(A, ZXk_content(B));
+  if (vc < 0) return ZXk_gcd_i(ZXk_content_shallow(A), B);
+  if (vc > 0) return ZXk_gcd_i(A, ZXk_content_shallow(B));
   if (RgX_is_ZX(A) && RgX_is_ZX(B)) return ZX_gcd(A,B);
-  cA = ZXk_content(A); A = ZXkX_ZXk_divexact(A, cA);
-  cB = ZXk_content(B); B = ZXkX_ZXk_divexact(B, cB);
+  cA = ZXk_content_shallow(A); if (!gequal1(cA)) A = ZXkX_ZXk_divexact(A, cA);
+  cB = ZXk_content_shallow(B); if (!gequal1(cB)) B = ZXkX_ZXk_divexact(B, cB);
   c = ZXk_gcd_i(cA, cB); av = avma;
-  e = minss(gexpo(A), gexpo(B)) + 2;
+  e = maxss(3, minss(gexpo(A), gexpo(B)) + 2);
   for ( ; ; e++, set_avma(av))
   {
     GEN N = int2n(e), G = ZXk_gcd_i(poleval(A,N), poleval(B,N));
