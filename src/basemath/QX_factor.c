@@ -1449,7 +1449,6 @@ rec(GEN g, long e, GEN N, long v)
     if (!signe(g)) break;
   }
   s = RgX_renormalize_lg(s,i+3);
-  if (i>d) pari_err_BUG("rec");
   return gc_GEN(av, s);
 }
 
