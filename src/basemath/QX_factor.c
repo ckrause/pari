@@ -857,6 +857,8 @@ ZX_DDF(GEN x)
 {
   GEN L;
   long m;
+  if (DEBUGLEVEL>2)
+   err_printf("ZX_DDF: factoring pol of deg %ld, %ld bits\n",degpol(x),gexpo(x));
   x = ZX_deflate_max(x, &m);
   L = ZX_DDF_max(x,0);
   if (m > 1)
