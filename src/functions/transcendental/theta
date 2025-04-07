@@ -9,14 +9,14 @@ Help: theta(a,b,{flag}): Jacobi theta-functions. If flag is omitted, let (q,z) =
  theta_{0,1} = theta_4, theta_{1,0} = theta_2, or theta_{1,1} = -theta_1.
  If flag=0, return all four theta_{i,j} for 0<=i,j<=1.
 Doc: Jacobi theta-functions. The meaning of the complex
- numbers $(a,b)$ depend on whether \fl\ is present or omitted.
+ numbers $(a,b)$ depends on whether \fl\ is present or omitted.
 
  If flag is omitted, we compute the Jacobi sine theta function.
  Let $(q, z) = (a, b)$. We assume that $|q| < 1$, and return
  $$\theta(q,z) = 2q^{1/4} \sum_{n\geq 0} (-1)^{n} q^{n(n+1)}
    \sin((2n+1)z)\;.$$
 
- \noindent Otherwise, we let $(z, \tau) = (a,b)$ and return
+ \noindent Otherwise, we let $(z, \tau) = (a,b)$ and return the
  one variable Riemann-Jacobi theta functions.
  We assume $\Im \tau > 0$, set $u = \exp(2\pi iz)$ and $q = \exp(2\pi i\tau)$
  and define
@@ -49,5 +49,5 @@ Doc: Jacobi theta-functions. The meaning of the complex
  \noindent Finally, $\fl = 0$ returns the vector
  $$[\theta_{0,0}(z,\tau), \theta_{0,1}(z,\tau), \theta_{1,0}(z,\tau),
  \theta_{1,1}(z,\tau)]\;.$$
- The Nullwerte at $z = 0$ are also directly available
+ The Thetanullwerte at $z = 0$ are also directly available
  through \kbd{thetanull}.
