@@ -54,11 +54,6 @@ library. This unfortunately makes the dynamically linked \kbd{gp-dyn} binary
 about $25\%$ slower; since \kbd{gp-sta} is only $5\%$ slower, you definitely
 want to use the latter binary.
 
-You may want to also pass the flag \kbd{--time=ftime} to \kbd{Configure}
-so that \kbd{gettime} and the GP timer report real time instead of cumulated
-CPU time. An alternative is to use \kbd{getwalltime} in your GP scripts
-instead of \kbd{gettime}.
-
 You can test whether parallel GP support is working with
 
 \bprog
@@ -138,6 +133,40 @@ of memory threads will require: a too small stack size will result in a
 stack overflow, aborting the computation, and a too large value is
 very wasteful (since the extra reserved but unneeded memory is multiplied by
 the number of threads).
+
+\subsec{Timing parallel GP scripts}
+
+There are different notions of timers for parallel programs.
+The PARI timers behavior depends on the mutithread interface:
+
+\item POSIX threads: \kbd{getabstime} returns the total CPU time used
+by all threads, and \kbd{getwalltime} returns the real time elapsed.
+The GP timer will reports both.
+
+Using $8$ POSIX threads:
+
+\bprog
+? polmodular(101);
+? ##
+  ***   last result: cpu time 5,785 ms, real time 878 ms.
+@eprog
+
+The CPU time is larger than the real time because threads CPU time is counted.
+
+\item MPI: \kbd{getabstime} returns the CPU time use by the main thread,
+and \kbd{getwalltime} returns the real time elapsed.
+The GP timer will reports both.
+
+Using $8$ MPI threads:
+
+\bprog
+? polmodular(101);
+? ##
+  ***   last result: cpu time 916 ms, real time 939 ms.
+@eprog
+
+The CPU time is less than the real time because the main thread waits for
+the secondary threads to complete.
 
 \subsec{GP functions}
 
