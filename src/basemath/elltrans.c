@@ -2285,11 +2285,11 @@ thetanull(GEN tau, GEN flag, long prec)
 /**                     Jacobi sn, cn, dn                          **/
 /********************************************************************/
 
-/* Basic Jacobi elliptic functions in terms of thetas */
-GEN
-elljacobi(GEN z, GEN k, long prec)
+/* Basic Jacobi elliptic functions */
+
+static GEN
+elljacobi_cx(GEN z, GEN k, long prec)
 {
-  pari_sp av = avma;
   GEN K = ellK(k, prec), Kp = ellK(gsqrt(gsubsg(1, gsqr(k)), prec), prec);
   GEN zet = gdiv(gmul2n(z, -1), K), tau = mulcxI(gdiv(Kp, K));
   GEN T = thetaall_i(zet, tau, prec), T0 = thetanull_i(tau, prec);
@@ -2299,7 +2299,87 @@ elljacobi(GEN z, GEN k, long prec)
   SN = gdiv(gmul(z3, t1), z2t4);
   CN = gdiv(gmul(z4, t2), z2t4);
   DN = gdiv(gmul(z4, t3), gmul(z3, t4));
-  return gc_GEN(av, mkvec3(SN, CN, DN));
+  return mkvec3(SN, CN, DN);
+}
+
+static GEN
+elljacobi_pol(long N, GEN k)
+{
+  GEN S = cgetg(N, t_VEC);
+  GEN C = cgetg(N + 1, t_VEC);
+  GEN D = cgetg(N + 1, t_VEC);
+  GEN SS, SC, SD, q, k2 = gsqr(k), B;
+  long n, j;
+  gel(S, 1) = gen_1;
+  gel(C, 1) = gen_1;
+  gel(D, 1) = gen_1;
+  B = mkvec2(gen_1,gen_1); /* B = vecbinomial(2*n-1); */
+  for (n = 1; n < N; n++)
+  {
+    GEN TD = gen_0, TC = gen_0, TS = gen_0;
+    for (j = 0; j < n; j++)
+    {
+      GEN Si  = gmul(gel(B,1+2*j+1), gel(S, j+1));
+      TC = gadd(TC, gmul(Si, gel(D, n-j)));
+      TD = gadd(TD, gmul(Si, gel(C, n-j)));
+    }
+    gel(C, n+1) = TC;
+    gel(D, n+1) = gmul(TD, k2);
+    if (n==N-1) break;
+    for (j = 0; j <= n; j++)
+      TS = gadd(TS, gmul(j==0 || j== n ? gen_1 : addii(gel(B,2*j), gel(B,2*j+1)),
+                    gmul(gel(C, j+1), gel(D, n+1-j))));
+    gel(S, n+1) = TS;
+    B = gadd(vec_prepend(B,gen_0), vec_append(B,gen_0)); /* B = vecbinomial(2*n); */
+    B = gadd(vec_prepend(B,gen_0), vec_append(B,gen_0)); /* B = vecbinomial(2*n+1); */
+}
+  SS = cgetg(2*N, t_SER);   SS[1] = evalsigne(1) | _evalvalser(1);
+  SC = cgetg(2*N+2, t_SER); SC[1] = evalsigne(1) | _evalvalser(0);
+  SD = cgetg(2*N+2, t_SER); SD[1] = evalsigne(1) | _evalvalser(0);
+  q = gen_1;
+  for (j = 1; j < N; j++)
+  {
+    gel(SS,2*j) = gmul(q, gel(S, j));
+    gel(SS,2*j+1) = gen_0;
+    q = gdiv(q, mulss(2*j+1,-2*j));
+  }
+  q = gen_1;
+  for (j = 1; j <= N; j++)
+  {
+    gel(SC, 2*j) = gmul(q, gel(C, j));
+    gel(SC, 2*j+1) = gen_0;
+    gel(SD, 2*j) = gmul(q, gel(D, j));
+    gel(SD, 2*j+1) = gen_0;
+    q = gdiv(q, mulss(-2*j,2*j-1));
+  }
+  return mkvec3(SS, SC, SD);
+}
+
+GEN
+elljacobi(GEN z, GEN k, long prec)
+{
+  pari_sp av = avma;
+  GEN R;
+  long tz;
+  if (!z) z = pol_x(0);
+  tz = typ(z);
+  switch (tz)
+  {
+    case t_QUAD: z = gtofp(z, prec); /* fall through */
+    case t_INT: case t_REAL: case t_FRAC: case t_COMPLEX:
+      R = elljacobi_cx(z, k, prec); break;
+    case t_POL: case t_RFRAC:
+      if (!gequal0(gsubst(z, gvar(z), gen_0)))
+        pari_err(e_IMPL, "elljacobi(t_SER) away from 0");
+      R = gsubst(elljacobi_pol((precdl + 3) >> 1, k), 0, z); break;
+    case t_SER:
+      if (valser(z) <= 0)
+        pari_err(e_IMPL, "elljacobi(t_SER) away from 0");
+      R = gsubst(elljacobi_pol(lg(z) - 1, k), 0, z); break;
+    default: pari_err_TYPE("elljacobi", z);
+      return NULL; /* LCOV_EXCL_LINE */
+  }
+  return gc_GEN(av, R);
 }
 
 /********************************************************************/
