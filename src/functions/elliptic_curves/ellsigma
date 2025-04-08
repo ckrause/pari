@@ -22,3 +22,6 @@ Doc: Computes the value at $z$ of the Weierstrass $\sigma$ function attached to
  @eprog
 
  If $\fl=1$, computes an arbitrary determination of $\log(\sigma(z))$.
+Variant: Also available is
+ \fun{GEN}{ellsigma_cx}{GEN w, GEN z, long flag, long prec} where $w=[\omega_1,\omega_2]$
+ and $z$ is a complex number.
