@@ -2172,8 +2172,8 @@ return the smallest (prime) nonresidue.
 \fun{ulong}{pgener_Fl}{ulong p} returns the smallest \idx{primitive root}
 modulo \kbd{p}, assuming \kbd{p} is prime.
 
-\fun{ulong}{pgener_Zl}{ulong p} returns the smallest primitive root modulo
-$p^k$, $k > 1$, assuming $p$ is an odd prime.
+\fun{ulong}{pgener_Zl}{ulong p} returns the smallest positive integer which is
+a primitive root modulo $p^k$ for all $k \ge 1$, assuming $p$ is an odd prime.
 
 \fun{ulong}{pgener_Fl_local}{ulong p, GEN L}, see \kbd{gener\_Fp\_local},
 \kbd{L} is an \kbd{Flv}.
