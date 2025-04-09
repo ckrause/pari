@@ -802,13 +802,15 @@ ellzeta(GEN w, GEN z, long prec0)
   return gc_GEN(av, gprec_wtrunc(y, T.prec0));
 }
 
+static GEN thetanull11(GEN tau, long prec);
+
 /* if flag=0, return ellsigma, otherwise return log(ellsigma) */
 GEN
 ellsigma(GEN w, GEN z, long flag, long prec0)
 {
   long toadd, prec, n;
   pari_sp av = avma, av1;
-  GEN u, urn, urninv, z0, pi, pi2, q, q8, qn2, qn, y, y1, uinv, et, etnew;
+  GEN u, urn, urninv, z0, pi, q, q8, qn2, qn, y, y1, uinv, et, etnew;
   ellred_t T;
 
   if (flag < 0 || flag > 1) pari_err_FLAG("ellsigma");
@@ -839,7 +841,6 @@ ellsigma(GEN w, GEN z, long flag, long prec0)
     pari_err_DOMAIN("log(ellsigma)", "argument","=",gen_0,z);
   }
   prec = T.prec;
-  pi2 = Pi2n(1,prec);
   pi  = mppi(prec);
 
   urninv = uinv = NULL;
@@ -874,7 +875,7 @@ ellsigma(GEN w, GEN z, long flag, long prec0)
       gerepileall(av1,urninv? 5: 4, &y,&qn,&qn2,&urn,&urninv);
     }
   }
-  y = gmul(y, gdiv(q8, gmul(pi2, gpowgs(trueeta(T.Tau,prec),3))));
+  y = gmul(y, gdiv(q8, thetanull11(T.Tau,prec)));
   y = gmul(y, T.abs_u_is_1? gmul2n(T.W2,1): mulcxmI(T.W2));
 
   et = _elleta(&T);
