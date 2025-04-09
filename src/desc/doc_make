@@ -97,6 +97,7 @@ for (@SECTIONS)
       $v =~ s/\\var\{(\d+)\}/{$1}/g;
       $v =~ s/_/\\_/g; # don't merge with first subst: \var{} rule kills it
       $v =~ s/~/\\til{}/g;
+      $v =~ s/'/\\kbd{'}/g;
 
       $v = "\$($v)\$";
     }
