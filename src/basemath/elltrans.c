@@ -1845,20 +1845,33 @@ vecthetanullk_tau(GEN tau, long k, long prec)
   return gerepileupto(av, gmul(gmul2n(q4,1), y));
 }
 
-/* Return E_k(tau). Slow if tau is not in standard fundamental domain */
+static GEN
+gmul3(GEN a, GEN b, GEN c) { return gmul(gmul(a, b), c); }
+static GEN
+gmul4(GEN a, GEN b, GEN c, GEN d) { return gmul(gmul(a, b), gmul(c,d)); }
+
+static GEN thetanull_i(GEN tau, long prec);
+
+static int
+isqreal(GEN tau)
+{
+  GEN R = gmul2n(real_i(tau), 1);
+  return gequal0(gfrac(R));
+}
+
+/* Return E_k(tau). */
 GEN
 cxEk(GEN tau, long k, long prec)
 {
-  pari_sp av;
-  GEN q, y, qn;
-  long n, b, l = precision(tau);
+  pari_sp av = avma;
+  GEN y;
+  GEN T0, z2, z3, z4, R4 = NULL, R6 = NULL, V;
+  int fl;
+  long b, l = precision(tau), m;
 
+  if (odd(k) || k <= 0) pari_err_DOMAIN("cxEk", "k", "<=", gen_0, stoi(k));
   if (l) prec = l;
   b = prec2nbits(prec);
-  /* sum n^(k-1) x^n <= x(1 + (k!-1)x) / (1-x)^k (cf Eulerian polynomials)
-   * S = \sum_{n > 0} n^(k-1) |q^n/(1-q^n)| <= x(1+(k!-1)x) / (1-x)^(k+1),
-   * where x = |q| = exp(-2Pi Im(tau)) < 1. Neglegt 2/zeta(1-k) * S if
-   * (2Pi)^k/(k-1)! x < 2^(-b-1) and k! x < 1. Use log2((2Pi)^k/(k-1)!) < 10 */
   if (gcmpgs(imag_i(tau), (M_LN2 / (2*M_PI)) * (b+1+10)) > 0)
     return real_1(prec);
   if (k == 2)
@@ -1866,21 +1879,42 @@ cxEk(GEN tau, long k, long prec)
     y = vecthetanullk_loop(qq(tau,prec), 2, prec);
     return gdiv(gel(y,2), gel(y,1));
   }
-  q = cxtoreal(expIPiC(gneg(gmul2n(tau,1)), prec));
-  av = avma; y = gen_0; qn = q;
-  for(n = 1;; n++)
-  { /* compute y := sum_{n>0} n^(k-1) / (q^n-1) */
-    GEN t = gdiv(powuu(n,k-1), gsubgs(qn,1));
-    if (gequal0(t) || gexpo(t) <= - prec2nbits(prec) - 5) break;
-    y = gadd(y, t);
-    qn = gmul(q,qn);
-    if (gc_needed(av,2))
-    {
-      if(DEBUGMEM>1) pari_warn(warnmem,"elleisnum");
-      gerepileall(av, 2, &y,&qn);
-    }
+  T0 = thetanull_i(tau, prec); z3 = gpowgs(gel(T0, 1), 4);
+  z4 = gpowgs(gel(T0, 2), 4); z2 = gpowgs(gel(T0, 3), 4);
+  fl = isqreal(tau);
+  if (k != 6)
+  {
+    R4 = gmul2n(gadd(gadd(gsqr(z2), gsqr(z3)), gsqr(z4)), -1);
+    if (fl) R4 = real_i(R4);
   }
-  return gadd(gen_1, gmul(y, gdiv(gen_2, szeta(1-k, prec))));
+  if (k != 4 && k != 8)
+  {
+    R6 = gmul2n(gmul3(gadd(z3, z4), gadd(z2, z3), gsub(z4, z2)), -1);
+    if (fl) R6 = real_i(R6);
+  }
+  switch (k)
+  {
+    case 4: return gc_GEN(av, R4);
+    case 6: return gc_GEN(av, R6);
+    case 8: return gerepileupto(av, gsqr(R4));
+    case 10: return gerepileupto(av, gmul(R4, R6));
+    case 14: return gerepileupto(av, gmul(gsqr(R4), R6));
+  }
+  V = cgetg(k/2 + 2, t_VEC);
+  gel(V, 2) = R4; gel(V, 3) = R6;
+  for (m = 4; m <= k/2; m++)
+  {
+    GEN S = gen_0;
+    long j;
+    for (j = 2; j <= m - 2; j++)
+    {
+      GEN tmp = gmul4(bernfrac(2*j), bernfrac(2*(m-j)), gel(V,j), gel(V, m-j));
+      tmp = gmul(gmulsg(3*(2*j-1)*(2*m-2*j-1), tmp), binomialuu(2*m, 2*j));
+      S = gadd(S, gdiv(tmp,gmulsg((m-3)*(4*m*m-1),bernfrac(2*m))));
+    }
+    gel(V, m) = gneg(S);
+  }
+  return gc_GEN(av, gel(V, k/2));
 }
 
 /********************************************************************/
@@ -1983,11 +2017,6 @@ clearimall(GEN z, GEN tau, GEN VS)
   }
   return VS;
 }
-
-static GEN
-gmul3(GEN a, GEN b, GEN c) { return gmul(gmul(a, b), c); }
-static GEN
-gmul4(GEN a, GEN b, GEN c, GEN d) { return gmul(gmul(a, b), gmul(c,d)); }
 
 /* Implementation of all 4 theta functions */
 
