@@ -875,6 +875,7 @@ GEN
 ZX_digits(GEN x, GEN T)
 {
   long d = degpol(T), n = (lgpol(x)+d-1)/d;
+  if (signe(x)==0) return(cgetg(1, t_VEC));
   return gen_digits(x, T, n, NULL, &ZX_ring, _ZX_divrem);
 }
 
