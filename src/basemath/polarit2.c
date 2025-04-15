@@ -3657,17 +3657,18 @@ RgX_gcd_fast(GEN x, GEN y)
     case t_FFELT:  return FFX_gcd(x, y, pol);
     case t_INTMOD: return RgX_gcd_FpX(x, y, p);
     case RgX_type_code(t_POLMOD, t_INTMOD):
-                   return RgX_gcd_FpXQX(x, y, pol, p);
+      return RgX_gcd_FpXQX(x, y, pol, p);
     case RgX_type_code(t_POLMOD, t_INT):
-                   return ZX_is_monic(pol)? RgX_gcd_ZXQX(x,y,pol): NULL;
+      return ZX_is_monic(pol)? RgX_gcd_ZXQX(x,y,pol): NULL;
     case RgX_type_code(t_POLMOD, t_FRAC):
-                   return RgX_is_ZX(pol) && ZX_is_monic(pol) ?
-                                            RgX_gcd_QXQX(x,y,pol): NULL;
+      return RgX_is_ZX(pol) && ZX_is_monic(pol) ? RgX_gcd_QXQX(x,y,pol): NULL;
     case t_POL:
-      p = NULL; if (Rg_is_FpXk(x,&p) && Rg_is_FpXk(y,&p))
-                   return p ? RgX_gcd_FpXk(x,y,p): ZXk_gcd(x,y);
-                   return Rg_is_QXk(x) && Rg_is_QXk(y) ? QXk_gcd(x,y): NULL;
-    default:       return NULL;
+      p = NULL; /* FIXME: should be part of RgX_type2 (composed type) */
+      if (Rg_is_FpXk(x,&p) && Rg_is_FpXk(y,&p))
+        return p ? RgX_gcd_FpXk(x,y,p): ZXk_gcd(x,y);
+      else
+        return Rg_is_QXk(x) && Rg_is_QXk(y) ? QXk_gcd(x,y): NULL;
+    default: return NULL;
   }
 }
 
