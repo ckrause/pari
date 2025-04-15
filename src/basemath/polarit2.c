@@ -451,7 +451,7 @@ settype(GEN c, long *t, GEN *p, GEN *pol, long *pa, GEN *ff, long *t2, long *var
         if (polbis) assign_or_fail(polbis,pol);
       }
       break;
-    case t_RFRAC: t[10] = 1;
+    case t_RFRAC: t[11] = 1;
       if (!settype(gel(c,1),t,p,pol,pa,ff,t2,var)) return 0;
       c = gel(c,2); /* fall through */
     case t_POL: t[10] = 1;
@@ -475,13 +475,34 @@ settype(GEN c, long *t, GEN *p, GEN *pol, long *pa, GEN *ff, long *t2, long *var
  * t[7] : t_PADIC
  * t[8] : t_QUAD of rationals (t_INT/t_FRAC)
  * t[9]:  Unused
- * t[10]: t_POL (recursive factorisation) */
+ * t[10]: t_POL (multivariate polynomials)
+ * t[11]: t_RFRAC (recursive factorisation)  */
 /* if t2 != 0: t_POLMOD/t_QUAD/t_COMPLEX of modular (t_INTMOD/t_PADIC,
  * given by t) */
+
+static long
+choosesubtype(long *t, long t2)
+{
+  if (t2 || t[11]) return 0;
+  if (t[2] && (t[3]||t[7]||t[5])) return 0;
+  if (t[8]) return t_QUAD;
+  if (t[7]) return t_PADIC;
+  if (t[5]) return t_FFELT;
+  if (t[3]) return t_INTMOD;
+  if (t[2]) return t_REAL;
+  if (t[1]) return t_FRAC;
+  return t_INT;
+}
+
 static long
 choosetype(long *t, long t2, GEN ff, GEN *pol, long var)
 {
-  if (t[10] && (!*pol || var!=varn(*pol))) return t_POL;
+  if (t[10] && (!*pol || var!=varn(*pol)))
+  {
+    long ts = choosesubtype(t, t2);
+    if (ts==t_FFELT) *pol=ff;
+    return ts == 0 ? t_POL: RgX_type_code(t_POL,ts);
+  }
   if (t2) /* polmod/quad/complex of intmod/padic */
   {
     if (t[2] && (t[3]||t[7])) return 0;
@@ -501,7 +522,12 @@ choosetype(long *t, long t2, GEN ff, GEN *pol, long var)
     if (t[3]||t[7]||t[9]) return 0;
     return t_REAL;
   }
-  if (t[10]) return t_POL;
+  if (t[10])
+  {
+    long ts = choosesubtype(t, t2);
+    if (ts==t_FFELT) *pol=ff;
+    return ts == 0 ? t_POL: RgX_type_code(t_POL,ts);
+  }
   if (t[8]) return RgX_type_code(t_QUAD,t_INT);
   if (t[3]) return t_INTMOD;
   if (t[7]) return t_PADIC;
@@ -539,7 +565,7 @@ RgM_settype(GEN x, long *t, GEN *p, GEN *pol, long *pa, GEN *ff, long *t2, long 
 long
 Rg_type(GEN x, GEN *p, GEN *pol, long *pa)
 {
-  long t[] = {0,0,0,0,0,0,0,0,0,0,0};
+  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
   long t2 = 0, var = NO_VARIABLE;
   GEN ff = NULL;
   *p = *pol = NULL; *pa = LONG_MAX;
@@ -566,7 +592,7 @@ Rg_type(GEN x, GEN *p, GEN *pol, long *pa)
 long
 RgX_type(GEN x, GEN *p, GEN *pol, long *pa)
 {
-  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0};
+  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
   long t2 = 0, var = NO_VARIABLE;
   GEN ff = NULL;
   *p = *pol = NULL; *pa = LONG_MAX;
@@ -577,7 +603,7 @@ RgX_type(GEN x, GEN *p, GEN *pol, long *pa)
 long
 RgX_Rg_type(GEN x, GEN y, GEN *p, GEN *pol, long *pa)
 {
-  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0};
+  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
   long t2 = 0, var = NO_VARIABLE;
   GEN ff = NULL;
   *p = *pol = NULL; *pa = LONG_MAX;
@@ -589,7 +615,7 @@ RgX_Rg_type(GEN x, GEN y, GEN *p, GEN *pol, long *pa)
 long
 RgX_type2(GEN x, GEN y, GEN *p, GEN *pol, long *pa)
 {
-  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0};
+  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
   long t2 = 0, var = NO_VARIABLE;
   GEN ff = NULL;
   *p = *pol = NULL; *pa = LONG_MAX;
@@ -601,7 +627,7 @@ RgX_type2(GEN x, GEN y, GEN *p, GEN *pol, long *pa)
 long
 RgX_type3(GEN x, GEN y, GEN z, GEN *p, GEN *pol, long *pa)
 {
-  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0};
+  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
   long t2 = 0, var = NO_VARIABLE;
   GEN ff = NULL;
   *p = *pol = NULL; *pa = LONG_MAX;
@@ -614,7 +640,7 @@ RgX_type3(GEN x, GEN y, GEN z, GEN *p, GEN *pol, long *pa)
 long
 RgM_type(GEN x, GEN *p, GEN *pol, long *pa)
 {
-  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0};
+  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
   long t2 = 0, var = NO_VARIABLE;
   GEN ff = NULL;
   *p = *pol = NULL; *pa = LONG_MAX;
@@ -625,7 +651,7 @@ RgM_type(GEN x, GEN *p, GEN *pol, long *pa)
 long
 RgV_type(GEN x, GEN *p, GEN *pol, long *pa)
 {
-  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0};
+  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
   long t2 = 0, var = NO_VARIABLE;
   GEN ff = NULL;
   *p = *pol = NULL; *pa = LONG_MAX;
@@ -636,7 +662,7 @@ RgV_type(GEN x, GEN *p, GEN *pol, long *pa)
 long
 RgV_type2(GEN x, GEN y, GEN *p, GEN *pol, long *pa)
 {
-  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0};
+  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
   long t2 = 0, var = NO_VARIABLE;
   GEN ff = NULL;
   *p = *pol = NULL; *pa = LONG_MAX;
@@ -648,7 +674,7 @@ RgV_type2(GEN x, GEN y, GEN *p, GEN *pol, long *pa)
 long
 RgM_RgC_type(GEN x, GEN y, GEN *p, GEN *pol, long *pa)
 {
-  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0};
+  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
   long t2 = 0, var = NO_VARIABLE;
   GEN ff = NULL;
   *p = *pol = NULL; *pa = LONG_MAX;
@@ -660,7 +686,7 @@ RgM_RgC_type(GEN x, GEN y, GEN *p, GEN *pol, long *pa)
 long
 RgM_type2(GEN x, GEN y, GEN *p, GEN *pol, long *pa)
 {
-  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0};
+  long t[] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
   long t2 = 0, var = NO_VARIABLE;
   GEN ff = NULL;
   *p = *pol = NULL; *pa = LONG_MAX;
@@ -996,6 +1022,7 @@ RgX_factor(GEN x, GEN dom)
 {
   GEN  p, T;
   long pa, tx = dom ? RgX_Rg_type(x,dom,&p,&T,&pa): RgX_type(x,&p,&T,&pa);
+  if (tx>>RgX_type_shift==t_POL) tx = t_POL;
   switch(tx)
   {
     case 0: pari_err_IMPL("factor for general polynomials");
@@ -3657,18 +3684,19 @@ RgX_gcd_fast(GEN x, GEN y)
     case t_FFELT:  return FFX_gcd(x, y, pol);
     case t_INTMOD: return RgX_gcd_FpX(x, y, p);
     case RgX_type_code(t_POLMOD, t_INTMOD):
-      return RgX_gcd_FpXQX(x, y, pol, p);
+                   return RgX_gcd_FpXQX(x, y, pol, p);
     case RgX_type_code(t_POLMOD, t_INT):
-      return ZX_is_monic(pol)? RgX_gcd_ZXQX(x,y,pol): NULL;
+                   return ZX_is_monic(pol)? RgX_gcd_ZXQX(x,y,pol): NULL;
     case RgX_type_code(t_POLMOD, t_FRAC):
-      return RgX_is_ZX(pol) && ZX_is_monic(pol) ? RgX_gcd_QXQX(x,y,pol): NULL;
-    case t_POL:
-      p = NULL; /* FIXME: should be part of RgX_type2 (composed type) */
-      if (Rg_is_FpXk(x,&p) && Rg_is_FpXk(y,&p))
-        return p ? RgX_gcd_FpXk(x,y,p): ZXk_gcd(x,y);
-      else
-        return Rg_is_QXk(x) && Rg_is_QXk(y) ? QXk_gcd(x,y): NULL;
-    default: return NULL;
+                   return RgX_is_ZX(pol) && ZX_is_monic(pol) ?
+                                            RgX_gcd_QXQX(x,y,pol): NULL;
+    case  RgX_type_code(t_POL, t_INT):
+                   return ZXk_gcd(x,y);
+    case  RgX_type_code(t_POL, t_FRAC):
+                   return QXk_gcd(x,y);
+    case  RgX_type_code(t_POL, t_INTMOD):
+                   return RgX_gcd_FpXk(x,y,p);
+    default:       return NULL;
   }
 }
 
