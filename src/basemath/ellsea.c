@@ -344,8 +344,12 @@ Flxq_elldivpol34(long n, GEN a4, GEN a6, GEN S, GEN T, ulong p)
       pari_err_BUG("Flxq_elldivpol34");
       return NULL;/*LCOV_EXCL_LINE*/
   }
-  setvarn(res, get_FlxqX_var(S));
-  return FlxqX_rem(res, S, T, p);
+  if(S)
+  {
+    setvarn(res, get_FlxqX_var(S));
+    res = FlxqX_rem(res, S, T, p);
+  }
+  return res;
 }
 
 static GEN
@@ -437,11 +441,13 @@ Flxq_elldivpolmod_init(struct divpolmod_red *d, GEN a4, GEN a6, long n, GEN h, G
   void *E;
   const struct bb_algebra *ff;
   GEN RHS, D3 = NULL, D4 = NULL;
-  long v = get_FlxqX_var(h), vT = get_Flx_var(T);
+  long v = h ? get_FlxqX_var(h) : -1, vT = get_Flx_var(T);
   D3 = n>=0 ? Flxq_elldivpol34(3, a4, a6, h, T, p): NULL;
   D4 = n>=1 ? Flxq_elldivpol34(4, a4, a6, h, T, p): NULL;
-  RHS = FlxX_Fl_mul(FlxqX_rem(Flxq_rhs(a4, a6, v, vT), h, T, p), 4, p);
-  ff = get_FlxqXQ_algebra(&E, h, T, p);
+  RHS = Flxq_rhs(a4, a6, v, vT);
+  if (h) RHS = FlxqX_rem(RHS, h, T, p);
+  RHS = FlxX_Fl_mul(RHS, 4, p);
+  ff = h ? get_FlxqXQ_algebra(&E, h, T, p) : get_FlxqX_algebra(&E, T, p, 0);
   divpolmod_init(d, D3, D4, RHS, n, E, ff);
 }
 
@@ -469,7 +475,7 @@ Fq_elldivpolmod(GEN a4, GEN a6, long n, GEN h, GEN T, GEN p)
   {
     ulong pp = p[2];
     GEN a4p = ZX_to_Flx(a4,pp), a6p = ZX_to_Flx(a6,pp);
-    GEN hp = ZXX_to_FlxX(h, pp, get_FpX_var(T)), Tp = ZXT_to_FlxT(T , pp);
+    GEN hp = h ? ZXX_to_FlxX(h, pp, get_FpX_var(T)) : NULL, Tp = ZXT_to_FlxT(T , pp);
     res = Flxq_elldivpolmod(a4p, a6p, n, hp, Tp, pp);
     return gerepileupto(ltop, FlxX_to_ZXX(res));
   }
