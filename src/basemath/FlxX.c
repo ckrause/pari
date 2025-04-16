@@ -796,22 +796,26 @@ GEN
 FlxqX_normalize(GEN z, GEN T, ulong p)
 { return FlxqX_normalize_pre(z, T, p, SMALL_ULONG(p)? 0: get_Fl_red(p)); }
 
-struct _FlxqX {ulong p, pi; GEN T;};
+struct _FlxqXQ {
+  GEN T, S;
+  ulong p, pi;
+};
+
 static GEN _FlxqX_mul(void *data,GEN a,GEN b)
 {
-  struct _FlxqX *d=(struct _FlxqX*)data;
+  struct _FlxqXQ *d=(struct _FlxqXQ*)data;
   return FlxqX_mul_pre(a,b,d->T,d->p,d->pi);
 }
 static GEN _FlxqX_sqr(void *data,GEN a)
 {
-  struct _FlxqX *d=(struct _FlxqX*)data;
+  struct _FlxqXQ *d=(struct _FlxqXQ*)data;
   return FlxqX_sqr_pre(a,d->T,d->p,d->pi);
 }
 
 GEN
 FlxqX_powu_pre(GEN V, ulong n, GEN T, ulong p, ulong pi)
 {
-  struct _FlxqX d; d.p = p; d.pi = pi; d.T = T;
+  struct _FlxqXQ d; d.p = p; d.pi = pi; d.T = T;
   return gen_powu(V, n, (void*)&d, &_FlxqX_sqr, &_FlxqX_mul);
 }
 GEN
@@ -1843,7 +1847,7 @@ FlxqX_composedsum(GEN P, GEN Q, GEN T, ulong p)
 GEN
 FlxqXV_prod(GEN V, GEN T, ulong p)
 {
-  struct _FlxqX d; d.p=p; d.T=T; d.pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
+  struct _FlxqXQ d; d.p=p; d.T=T; d.pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
   return gen_product(V, (void*)&d, &_FlxqX_mul);
 }
 
@@ -1914,17 +1918,13 @@ GEN
 FlxqXQ_div(GEN x, GEN y, GEN S, GEN T, ulong p)
 { return FlxqXQ_div_pre(x, y, S, T, p, SMALL_ULONG(p)? 0: get_Fl_red(p)); }
 
-struct _FlxqXQ {
-  GEN T, S;
-  ulong p, pi;
-};
 static GEN
-_FlxqXQ_add(void *data, GEN x, GEN y) {
+_FlxqX_add(void *data, GEN x, GEN y) {
   struct _FlxqXQ *d = (struct _FlxqXQ*) data;
   return FlxX_add(x,y, d->p);
 }
 static GEN
-_FlxqXQ_sub(void *data, GEN x, GEN y) {
+_FlxqX_sub(void *data, GEN x, GEN y) {
   struct _FlxqXQ *d = (struct _FlxqXQ*) data;
   return FlxX_sub(x,y, d->p);
 }
@@ -1963,8 +1963,8 @@ _FlxqXQ_zero(void *data) {
   return pol_0(get_FlxqX_var(d->S));
 }
 
-static struct bb_algebra FlxqXQ_algebra = { _FlxqXQ_red, _FlxqXQ_add,
-       _FlxqXQ_sub, _FlxqXQ_mul, _FlxqXQ_sqr, _FlxqXQ_one, _FlxqXQ_zero };
+static struct bb_algebra FlxqXQ_algebra = { _FlxqXQ_red, _FlxqX_add,
+       _FlxqX_sub, _FlxqXQ_mul, _FlxqXQ_sqr, _FlxqXQ_one, _FlxqXQ_zero };
 
 const struct bb_algebra *
 get_FlxqXQ_algebra(void **E, GEN S, GEN T, ulong p)
@@ -1977,6 +1977,22 @@ get_FlxqXQ_algebra(void **E, GEN S, GEN T, ulong p)
   e->p = p;
   e->pi= pi; *E = (void*)e;
   return &FlxqXQ_algebra;
+}
+
+static struct bb_algebra FlxqX_algebra = { _FlxqXQ_red, _FlxqX_add,
+       _FlxqX_sub, _FlxqX_mul, _FlxqX_sqr, _FlxqXQ_one, _FlxqXQ_zero };
+
+const struct bb_algebra *
+get_FlxqX_algebra(void **E, GEN T, ulong p, long v)
+{
+  ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
+  GEN z = new_chunk(sizeof(struct _FlxqXQ));
+  struct _FlxqXQ *e = (struct _FlxqXQ *) z;
+  e->T = Flx_get_red(T, p);
+  e->S = pol_x(v);
+  e->p = p;
+  e->pi= pi; *E = (void*)e;
+  return &FlxqX_algebra;
 }
 
 /* x over Fq, return lift(x^n) mod S */

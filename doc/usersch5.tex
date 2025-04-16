@@ -11603,6 +11603,9 @@ return the algebra of polynomials over $\F_p[X]/(T(X))$ in variable $v$.
 \fun{const struct bb_algebra *}{get_FlxqXQ_algebra}{void **E, GEN S, GEN T, ulong p}
 return the algebra $\F_p[X,Y]/(S(X,Y),T(X))$ (for \kbd{ulong} $p$).
 
+\fun{const struct bb_algebra *}{get_FlxqX_algebra}{void **E, GEN T, ulong p, long v}
+return the algebra of polynomials over $\F_p[X]/(T(X))$ in variable $v$.
+
 \fun{const struct bb_algebra *}{get_FpXQXQ_algebra}{void **E, GEN S, GEN T, GEN p}
 return the algebra $\F_p[X,Y]/(S(X,Y),T(X))$.
 
