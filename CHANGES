@@ -52,7 +52,7 @@ BA  22- [libpari] FpXk_gcd, FpXk_red, Rg_is_FpXk, Rg_to_FpXk
 BA  23- [libpari] get_FlxqX_algebra
 
   Changed
-     1- subst: use fast RgX_affine function to compute P(a*x+b)
+     1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate
      2- removed elleisnum optional flag. If you really want elliptic
         invariants, use E4/12 and -E6/216.
 AP   3- strtime: use days in addition to hours, minutes, ms.

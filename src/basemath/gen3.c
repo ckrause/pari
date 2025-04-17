@@ -4412,7 +4412,7 @@ qf_ZM_apply(GEN q, GEN M)
 GEN
 poleval(GEN x, GEN y)
 {
-  long i, j, imin, tx = typ(x);
+  long i, j, imin, M = 1, tx = typ(x);
   pari_sp av0 = avma, av;
   GEN t, t2, r, s;
 
@@ -4420,10 +4420,22 @@ poleval(GEN x, GEN y)
   switch(tx)
   {
     case t_POL:
-      if (typ(y) == t_POL && varn(x) == varn(y) && degpol(y) == 1)
+      if (typ(y) == t_POL && varn(x) == varn(y))
       {
-        if (isint1(gel(y,3))) return RgX_translate(x, gel(y,2));
-        return gc_GEN(av0, RgX_affine(x, gel(y,3), gel(y,2)));
+        y = RgX_deflate_max(y, &M);
+        if (degpol(y) == 1)
+        {
+          GEN a = gel(y,3), b = gel(y,2); /* y = a t + b */
+          if (isint1(a))
+          {
+            y = RgX_translate(x, b);
+            if (M == 1) return y;
+          }
+          else
+            y = RgX_affine(x, a, b);
+          if (M != 1) y = RgX_inflate(y, M);
+          return gc_GEN(av0, y);
+        }
       }
 
       i = lg(x)-1; imin = 2; break;
@@ -4454,7 +4466,9 @@ poleval(GEN x, GEN y)
         if (j==imin)
         {
           if (i!=j) y = gpowgs(y, i-j+1);
-          return gerepileupto(av0, gmul(t,y));
+          y = gmul(t, y);
+          if (M == 1) return gerepileupto(av0, y);
+          return gc_GEN(av0, RgX_inflate(y, M));
         }
       r = (i==j)? y: gpowgs(y, i-j+1);
       t = gadd(gmul(t,r), gel(x,j));
@@ -4464,7 +4478,8 @@ poleval(GEN x, GEN y)
         t = gerepileupto(av0, t);
       }
     }
-    return gerepileupto(av0, t);
+    if (M == 1) return gerepileupto(av0, t);
+    return gc_GEN(av0, RgX_inflate(t, M));
   }
 
   t2 = gel(x,i); i--; r = gtrace(y); s = gneg_i(gnorm(y));
