@@ -1263,8 +1263,7 @@ before \kbd{av}.
 \fun{void}{retgc_const}{pari_sp av, GEN x} (macro) reset the stack to $av$
 before evaluating $x$ and returning it.
 
-\fun{GEN}{gc_all}{pari_sp av, int n, ...}. Assumes that $1 \leq n \leq
-10$; This is similar to \kbd{gerepileall}, expecting $n$ further \kbd{GEN*}
+\fun{GEN}{gc_all}{pari_sp av, int n, ...}. Assumes that $1 \leq n$. This is similar to \kbd{gerepileall}, expecting $n$ further \kbd{GEN*}
 arguments: the stack is cleaned and the corresponding \kbd{GEN} are
 copied to the stack starting from \kbd{av} (in this order: the first argument
 comes first), and the first such \kbd{GEN} is returned. To be used in the
@@ -1285,11 +1284,6 @@ on the stack.
 
 \fun{GEN}{gerepile}{pari_sp p, pari_sp q, GEN x} general garbage collector
 for the stack.
-
-\fun{void}{gerepileall}{pari_sp av, int n, ...} cleans up the stack from
-\kbd{av} on (i.e from \kbd{avma} to \kbd{av}), preserving the \kbd{n} objects
-which follow in the argument list (of type \kbd{GEN*}). For instance,
-\kbd{gerepileall(av, 2, \&x, \&y)} preserves \kbd{x} and \kbd{y}.
 
 \fun{void}{gerepileallsp}{pari_sp av, pari_sp ltop, int n, ...}
 cleans up the stack between \kbd{av} and \kbd{ltop}, updating

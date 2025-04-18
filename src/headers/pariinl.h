@@ -1350,12 +1350,23 @@ INLINE GEN
 gc_all(pari_sp av, int n, ...)
 {
   int i;
-  GEN *v[10];
   va_list a; va_start(a, n);
-  for (i=0; i<n; i++) { v[i] = va_arg(a,GEN*); *v[i] = (GEN)copy_bin(*v[i]); }
-  set_avma(av);
-  for (i=0; i<n; i++) *v[i] = bin_copy((GENbin*)*v[i]);
-  return *v[0];
+  if (n < 10)
+  {
+    GEN *v[10];
+    for (i=0; i<n; i++) { v[i] = va_arg(a,GEN*); *v[i] = (GEN)copy_bin(*v[i]); }
+    set_avma(av);
+    for (i=0; i<n; i++) *v[i] = bin_copy((GENbin*)*v[i]);
+    va_end(a); return *v[0];
+  }
+  else
+  {
+    GEN z, **v = (GEN**)pari_malloc(n*sizeof(GEN*));
+    for (i=0; i<n; i++) { v[i] = va_arg(a,GEN*); *v[i] = (GEN)copy_bin(*v[i]); }
+    set_avma(av);
+    for (i=0; i<n; i++) *v[i] = bin_copy((GENbin*)*v[i]);
+    z = *v[0]; pari_free(v); va_end(a); return z;
+  }
 }
 
 INLINE void
