@@ -307,7 +307,7 @@ nftorsbound(GEN E, ulong psylow)
       /* division by 2 is cheap when it fails, no need to have a sharp bound */
       if (psylow==0 && Z_ispow2(B1)) return mkvec2(B1,B2);
     }
-    if ((g & 15) == 0) gerepileall(av, 2, &B1, &B2);
+    if ((g & 15) == 0) (void)gc_all(av, 2, &B1, &B2);
   }
   if (abscmpiu(B2, 2) > 0)
   { /* if E(K) has full n-torsion then K contains the n-th roots of 1 */

@@ -729,7 +729,7 @@ SmallSols(GEN S, GEN x3, GEN poly, GEN rhs)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"SmallSols");
-      gerepileall(av, 2, &S, &rhs2);
+      (void)gc_all(av, 2, &S, &rhs2);
       P = cgetg(l, t_POL); P[1] = poly[1];
     }
   }

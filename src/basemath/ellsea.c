@@ -1434,7 +1434,7 @@ find_trace_Elkies_power(GEN a4, GEN a6, ulong ell, long *pt_k, struct meqn *MEQN
     if (gc_needed(btop, 1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"find_trace_Elkies_power");
-      gerepileall(btop, 6, &Eba4, &Eba6, &Eca4, &Eca6, &kpoly, &Ib);
+      (void)gc_all(btop, 6, &Eba4, &Eba6, &Eca4, &Eca6, &kpoly, &Ib);
     }
     if (DEBUGLEVEL>1) err_printf(" [%ld ms]", timer_delay(ti));
   }
@@ -2104,7 +2104,7 @@ Fq_ellcard_SEA(GEN a4, GEN a6, GEN q, GEN T, GEN p, long smallfact)
       }
     }
     if (gc_needed(btop, 1))
-      gerepileall(btop,5, &TR,&TR_mod, &compile_atkin, &max_traces, &prod_atkin);
+      (void)gc_all(btop,5, &TR,&TR_mod, &compile_atkin, &max_traces, &prod_atkin);
   }
   return NULL;/*LCOV_EXCL_LINE*/
 }

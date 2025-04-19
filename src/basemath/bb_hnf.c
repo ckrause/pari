@@ -613,7 +613,7 @@ gen_howell_i(GEN A, long remove_zerocols, long permute_zerocols, long early_abor
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"gen_howell[1]. i=%ld",i);
-      gerepileall(av1,ops?2:1,&H,ops);
+      (void)gc_all(av1,ops?2:1,&H,ops);
     }
   }
 
@@ -720,7 +720,7 @@ gen_howell_i(GEN A, long remove_zerocols, long permute_zerocols, long early_abor
       if (gc_needed(av,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"gen_howell[2]. i=%ld",i);
-        gerepileall(av1,ops?3:2,&H,&piv,ops);
+        (void)gc_all(av1,ops?3:2,&H,&piv,ops);
       }
     }
   }
@@ -801,7 +801,7 @@ gen_matimage(GEN A, GEN* U, void *data, const struct bb_hermite *R)
       if (!(i%pergc) && gc_needed(av,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"gen_matimage. i=%ld",i);
-        gerepileall(av1,1,U);
+        (void)gc_all(av1,1,U);
       }
     }
     if (r<n2) *U = vecslice(*U, n2-r+1, n2);
@@ -861,7 +861,7 @@ gen_kernel_from_howell(GEN H, GEN ops, long n, void *data, const struct bb_hermi
     for (o=lg(ops)-1; o>0; o--)
       gen_leftapply(gel(K,i), gel(ops,o), data, R);
     gen_redcol(gel(K,i), nbz+r, data, R);
-    gerepileall(av, 1, &gel(K,i));
+    (void)gc_all(av, 1, &gel(K,i));
   }
   /* deduce kernel of original matrix */
   K = rowpermute(K, cyclic_perm(n2,extra));
@@ -882,7 +882,7 @@ gen_kernel(GEN A, GEN* im, void *data, const struct bb_hermite *R)
   long n = lg(A)-1;
   GEN H, ops, K;
   H = gen_howell_i(A, 2, 1, 0, 0, &ops, data, R);
-  gerepileall(av,2,&H,&ops);
+  (void)gc_all(av,2,&H,&ops);
   K = gen_kernel_from_howell(H, ops, n, data, R);
   if (im) *im = H;
   return K;
@@ -910,7 +910,7 @@ gen_inv(GEN A, void* data, const struct bb_hermite *R)
     for (o=lg(ops)-1; o>0; o--)
       gen_leftapply(gel(U,j), gel(ops,o), data, R);
     gen_redcol(gel(U,j), n2, data, R);
-    gerepileall(av, 1, &gel(U,j));
+    (void)gc_all(av, 1, &gel(U,j));
   }
   if (n2>n) U = rowslice(U, n2-n+1, n2);
   return U;
@@ -1183,7 +1183,7 @@ gaussmoduloall(GEN M, GEN D, GEN Y, GEN *pU)
   if (!pU) x = gerepileupto(av, x);
   else
   {
-    gerepileall(av, 2, &x, &u1);
+    (void)gc_all(av, 2, &x, &u1);
     *pU = u1;
   }
   return x;

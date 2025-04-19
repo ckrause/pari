@@ -1237,7 +1237,7 @@ PB_RETRY:
     for (k1=k; k1; k1--)
     {
       one_iter(&x, &P, x1, n, delta);
-      if ((k1 & 0x1f) == 0) gerepileall(av, 2, &x, &P);
+      if ((k1 & 0x1f) == 0) (void)gc_all(av, 2, &x, &P);
     }
     if (DEBUGLEVEL >= 4 && (l>>7) > msg_mask)
       err_printf("Rho: time = %6ld ms,\t%3ld rounds, back to normal mode\n",

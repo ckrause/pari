@@ -103,7 +103,7 @@ invmod(GEN a, GEN b, GEN *res)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"invmod");
-      gerepileall(av1, 4, &d,&d1,&v,&v1);
+      (void)gc_all(av1, 4, &d,&d1,&v,&v1);
     }
   } /* end while */
 

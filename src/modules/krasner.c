@@ -203,7 +203,7 @@ get_topx(KRASNER_t *data, GEN eis)
     /* compute conjugate polynomials using the Frobenius */
     p1 = FqX_FpXQ_eval(p1, data->frob, data->T, data->pr);
     p2 = FqX_mul(p2, p1, data->T, data->pr);
-    if (gc_needed(av,2)) gerepileall(av, 2, &p1,&p2);
+    if (gc_needed(av,2)) (void)gc_all(av, 2, &p1,&p2);
   }
   return simplify_shallow(p2); /* ZX */
 }

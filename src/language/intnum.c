@@ -88,7 +88,7 @@ qrom3(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long bit)
     for (sum = gen_0, j1 = 1; j1 <= it; j1++, x = addrr(x,del))
     {
       sum = gadd(sum, eval(E, x));
-      if ((j1 & 0x1ff) == 0) gerepileall(av2, 2, &sum,&x);
+      if ((j1 & 0x1ff) == 0) (void)gc_all(av2, 2, &sum,&x);
     }
     sum = gmul(sum,del);
     gel(s,j) = gerepileupto(av, gmul2n(gadd(gel(s,j-1), sum), -1));
@@ -129,7 +129,7 @@ qrom2(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long bit)
     {
       sum = gadd(sum, eval(E, x)); x = addrr(x,ddel);
       sum = gadd(sum, eval(E, x)); x = addrr(x,del);
-      if ((j1 & 0x1ff) == 0) gerepileall(av2, 2, &sum,&x);
+      if ((j1 & 0x1ff) == 0) (void)gc_all(av2, 2, &sum,&x);
     }
     sum = gmul(sum,del); p1 = gdivgu(gel(s,j-1),3);
     gel(s,j) = gerepileupto(av, gadd(p1,sum));
@@ -1497,7 +1497,7 @@ QD(GEN M, long lim)
     if (gc_needed(av, 3))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"contfracinit, %ld/%ld",j,lim2);
-      gerepileall(av, 3, &e, &c, &q);
+      (void)gc_all(av, 3, &e, &c, &q);
     }
   }
   if (odd(lim)) gel(c, lim+1) = gneg(gel(q, 1));
@@ -1656,7 +1656,7 @@ Pade(GEN M, GEN *pP, GEN *pQ)
     if (gc_needed(av, 3))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"Pade, %ld/%ld",i,n-1);
-      gerepileall(av, 3, &P, &Q, &v);
+      (void)gc_all(av, 3, &P, &Q, &v);
     }
   }
   /* S -> 1+S */
@@ -2803,7 +2803,7 @@ sumnumsidi(void *E, GEN (*f)(void*, GEN, long), GEN a, double mu, long prec)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"sumnumsidi");
-      gerepileall(av, 6, &W, &Wkeep, &S, &t, &M, &N);
+      (void)gc_all(av, 6, &W, &Wkeep, &S, &t, &M, &N);
     }
     Wp = W;
   }

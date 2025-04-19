@@ -267,7 +267,7 @@ quadunit_uvmod(GEN D, GEN d, GEN N, GEN *pu, GEN *pv)
     if (gc_needed(av, 2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"quadunit_uvmod");
-      gerepileall(av, 7, &p, &u1,&u2,&v1,&v2, &q,&q1);
+      (void)gc_all(av, 7, &p, &u1,&u2,&v1,&v2, &q,&q1);
     }
   }
   *pu = modii(u, N);
@@ -336,7 +336,7 @@ quadunit_q(GEN D, GEN d, long *pN)
     if (gc_needed(av, 2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"quadunitnorm");
-      gerepileall(av, 3, &p, &q, &q1);
+      (void)gc_all(av, 3, &p, &q, &q1);
     }
   }
 }
@@ -464,7 +464,7 @@ quadunit_uv(GEN D, GEN *pu, GEN *pv)
     if (gc_needed(av, 2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"quadunit (%ld)", i);
-      gerepileall(av, 4, &p, &f, &q,&q1);
+      (void)gc_all(av, 4, &p, &f, &q,&q1);
     }
   }
   u = diviiexact(addmulii(a, D, b), q);
@@ -550,7 +550,7 @@ quadregulator(GEN x, long prec)
     if (gc_needed(av2,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"quadregulator");
-      gerepileall(av2,3, &R,&u,&v);
+      (void)gc_all(av2,3, &R,&u,&v);
     }
   }
   R = divri(R, v); e = 2*e - 1;

@@ -294,7 +294,7 @@ qfbredsl2_imag_basecase(GEN q, GEN *U)
     REDBU(a,&b,&c, u1,&u2);
     if (gc_needed(av, 1)) {
       if (DEBUGMEM>1) pari_warn(warnmem, "qfbredsl2");
-      gerepileall(av, 5, &a,&b,&c, &u1,&u2);
+      (void)gc_all(av, 5, &a,&b,&c, &u1,&u2);
     }
   }
   if (cmp == 0 && signe(b) < 0)
@@ -544,7 +544,7 @@ qfr3_red(GEN x, struct qfr_data *S)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"qfr3_red");
-      gerepileall(av, 3, &a, &b, &c);
+      (void)gc_all(av, 3, &a, &b, &c);
     }
   }
   return mkvec3(a, b, c);
@@ -648,7 +648,7 @@ qfbredsl2_real_basecase(GEN V, GEN rd)
     if (gc_needed(av, 1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"qfbredsl2");
-      gerepileall(av, 7, &a,&b,&c,&u1,&u2,&v1,&v2);
+      (void)gc_all(av, 7, &a,&b,&c,&u1,&u2,&v1,&v2);
     }
   }
   return gc_GEN(av, mkvec2(mkqfb(a,b,c,d), mkmat22(u1,v1,u2,v2)));
@@ -727,7 +727,7 @@ pqfbred_iter_1(GEN Q, ulong m, GEN U)
     if (gc_needed(av, 1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"pqfbred_iter_1, lc = %ld", expi(gel(Q,3)));
-      gerepileall(av, 3, &Q, &gel(U,1), &gel(U,2));
+      (void)gc_all(av, 3, &Q, &gel(U,1), &gel(U,2));
     }
   }
   return Q;
@@ -964,7 +964,7 @@ qfbred_imag_basecase_av(pari_sp av, GEN q)
     if (gc_needed(av, 2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"qfbred_imag, lc = %ld", lc);
-      gerepileall(av, 3, &a,&b,&c);
+      (void)gc_all(av, 3, &a,&b,&c);
     }
   }
   if (cmp == 0 && signe(b) < 0) b = negi(b);
@@ -1896,7 +1896,7 @@ qfrsolve_normform(GEN N, GEN Ps, GEN rd)
     if (qfb_equal(gel(M,1), gel(N,1))) return gc_NULL(av);
     Q = rhorealsl2(Q, rd);
     if (qfb_equal(gel(P,1), gel(Q,1))) return gc_NULL(av);
-    if (gc_needed(btop, 1)) gerepileall(btop, 2, &M, &Q);
+    if (gc_needed(btop, 1)) (void)gc_all(btop, 2, &M, &Q);
   }
 }
 

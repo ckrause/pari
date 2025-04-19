@@ -655,7 +655,7 @@ ArtinNumber(GEN bnr, GEN LCHI, long prec)
     if (gc_needed(av2, 1))
     {
       if (DEBUGMEM > 1) pari_warn(warnmem,"ArtinNumber");
-      gerepileall(av2, 2, &s, &vB);
+      (void)gc_all(av2, 2, &s, &vB);
     }
   }
 
@@ -1245,7 +1245,7 @@ InitPrimesQuad(GEN bnr, ulong N0, LISTray *R)
     N[2] = i;
     gel(R->rayZ,i) = v[i]? isprincipalray(bnr, N): gen_0;
   }
-  gerepileall(av, 7, &(R->L0), &(R->L2), &(R->rayZ),
+  (void)gc_all(av, 7, &(R->L0), &(R->L2), &(R->rayZ),
               &(R->L1), &(R->L1ray), &(R->L11), &(R->L11ray));
 }
 
@@ -1856,7 +1856,7 @@ QuadGetST(GEN bnr, GEN *pS, GEN *pT, GEN CR, long prec)
         {
           s = gadd(s, gmul(an, gel(vf0,n)));
           t = gadd(t, gmul(an, gel(vf1,n)));
-          if (++c == 256) { gerepileall(av2,2, &s,&t); c = 0; }
+          if (++c == 256) { (void)gc_all(av2,2, &s,&t); c = 0; }
         }
       gaffect(gmul(cf0, s), gel(S,u));
       gaffect(gmul(cf1, conj_i(t)), gel(T,u));
@@ -2106,7 +2106,7 @@ GetST0(GEN bnr, GEN *pS, GEN *pT, GEN CR, long prec)
           get_cS_cT(&cScT, n);
           s = gadd(s, gmul(an, gel(cScT.cS,n)));
           t = gadd(t, gmul(an, gel(cScT.cT,n)));
-          if (++c == 256) { gerepileall(av2,2, &s,&t); c = 0; }
+          if (++c == 256) { (void)gc_all(av2,2, &s,&t); c = 0; }
         }
       gaffect(s,         gel(S,u));
       gaffect(conj_i(t), gel(T,u));

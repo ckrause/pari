@@ -945,7 +945,7 @@ ZC_nfvalrem(GEN x, GEN pr, GEN *newx)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZC_nfvalrem, v >= %ld", v);
-      gerepileall(av, 2, &x, &y);
+      (void)gc_all(av, 2, &x, &y);
     }
   }
 }
@@ -1005,7 +1005,7 @@ famat_nfvalrem(GEN nf, GEN x, GEN pr, GEN *py)
   {
     y = mkmat2(y, gel(x,2));
     if (simplify) y = famat_remove_trivial(y);
-    gerepileall(av, 2, &V, &y); *py = y;
+    (void)gc_all(av, 2, &V, &y); *py = y;
   }
   return V;
 }

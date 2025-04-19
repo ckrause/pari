@@ -309,62 +309,62 @@ ZM_mul_sw(GEN A, GEN B, long m, long n, long p)
   S1 = subtract_slices(m2, n1, A, m1, m2, 0, n1, A, 0, m2, 0, n1);
   M2 = ZM_mul_i(S1, T2, m2 + 1, n1 + 1, p2 + 1);
   if (gc_needed(av, 1))
-    gerepileall(av, 2, &T2, &M2);  /* destroy S1 */
+    (void)gc_all(av, 2, &T2, &M2);  /* destroy S1 */
   T3 = subtract_slices(n1, p1, T2, 0, n1, 0, p2, B, 0, n1, 0, p1);
   if (gc_needed(av, 1))
-    gerepileall(av, 2, &M2, &T3);  /* destroy T2 */
+    (void)gc_all(av, 2, &M2, &T3);  /* destroy T2 */
   S2 = add_slices(m2, n1, A, m1, m2, 0, n1, A, m1, m2, n1, n2);
   T1 = subtract_slices(n1, p1, B, 0, n1, p1, p2, B, 0, n1, 0, p2);
   M3 = ZM_mul_i(S2, T1, m2 + 1, n1 + 1, p2 + 1);
   if (gc_needed(av, 1))
-    gerepileall(av, 4, &M2, &T3, &S2, &M3);  /* destroy T1 */
+    (void)gc_all(av, 4, &M2, &T3, &S2, &M3);  /* destroy T1 */
   S3 = subtract_slices(m1, n1, S2, 0, m2, 0, n1, A, 0, m1, 0, n1);
   if (gc_needed(av, 1))
-    gerepileall(av, 4, &M2, &T3, &M3, &S3);  /* destroy S2 */
+    (void)gc_all(av, 4, &M2, &T3, &M3, &S3);  /* destroy S2 */
   A11 = matslice(A, 1, m1, 1, n1);
   B11 = matslice(B, 1, n1, 1, p1);
   M1 = ZM_mul_i(A11, B11, m1 + 1, n1 + 1, p1 + 1);
   if (gc_needed(av, 1))
-    gerepileall(av, 5, &M2, &T3, &M3, &S3, &M1);  /* destroy A11, B11 */
+    (void)gc_all(av, 5, &M2, &T3, &M3, &S3, &M1);  /* destroy A11, B11 */
   A12 = matslice(A, 1, m1, n1 + 1, n);
   B21 = matslice(B, n1 + 1, n, 1, p1);
   M4 = ZM_mul_i(A12, B21, m1 + 1, n2 + 1, p1 + 1);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &T3, &M3, &S3, &M1, &M4);  /* destroy A12, B21 */
+    (void)gc_all(av, 6, &M2, &T3, &M3, &S3, &M1, &M4);  /* destroy A12, B21 */
   C11 = add_slices(m1, p1, M1, 0, m1, 0, p1, M4, 0, m1, 0, p1);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &T3, &M3, &S3, &M1, &C11);  /* destroy M4 */
+    (void)gc_all(av, 6, &M2, &T3, &M3, &S3, &M1, &C11);  /* destroy M4 */
   M5 = ZM_mul_i(S3, T3, m1 + 1, n1 + 1, p1 + 1);
   S4 = subtract_slices(m1, n2, A, 0, m1, n1, n2, S3, 0, m1, 0, n2);
   if (gc_needed(av, 1))
-    gerepileall(av, 7, &M2, &T3, &M3, &M1, &C11, &M5, &S4);  /* destroy S3 */
+    (void)gc_all(av, 7, &M2, &T3, &M3, &M1, &C11, &M5, &S4);  /* destroy S3 */
   T4 = add_slices(n2, p1, B, n1, n2, 0, p1, T3, 0, n2, 0, p1);
   if (gc_needed(av, 1))
-    gerepileall(av, 7, &M2, &M3, &M1, &C11, &M5, &S4, &T4);  /* destroy T3 */
+    (void)gc_all(av, 7, &M2, &M3, &M1, &C11, &M5, &S4, &T4);  /* destroy T3 */
   V1 = subtract_slices(m1, p1, M1, 0, m1, 0, p1, M5, 0, m1, 0, p1);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &M3, &S4, &T4, &C11, &V1);  /* destroy M1, M5 */
+    (void)gc_all(av, 6, &M2, &M3, &S4, &T4, &C11, &V1);  /* destroy M1, M5 */
   B22 = matslice(B, n1 + 1, n, p1 + 1, p);
   M6 = ZM_mul_i(S4, B22, m1 + 1, n2 + 1, p2 + 1);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &M3, &T4, &C11, &V1, &M6);  /* destroy S4, B22 */
+    (void)gc_all(av, 6, &M2, &M3, &T4, &C11, &V1, &M6);  /* destroy S4, B22 */
   A22 = matslice(A, m1 + 1, m, n1 + 1, n);
   M7 = ZM_mul_i(A22, T4, m2 + 1, n2 + 1, p1 + 1);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &M3, &C11, &V1, &M6, &M7);  /* destroy A22, T4 */
+    (void)gc_all(av, 6, &M2, &M3, &C11, &V1, &M6, &M7);  /* destroy A22, T4 */
   V3 = add_slices(m1, p2, V1, 0, m1, 0, p2, M3, 0, m2, 0, p2);
   C12 = add_slices(m1, p2, V3, 0, m1, 0, p2, M6, 0, m1, 0, p2);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &M3, &C11, &V1, &M7, &C12);  /* destroy V3, M6 */
+    (void)gc_all(av, 6, &M2, &M3, &C11, &V1, &M7, &C12);  /* destroy V3, M6 */
   V2 = add_slices(m2, p1, V1, 0, m2, 0, p1, M2, 0, m2, 0, p2);
   if (gc_needed(av, 1))
-    gerepileall(av, 5, &M3, &C11, &M7, &C12, &V2);  /* destroy V1, M2 */
+    (void)gc_all(av, 5, &M3, &C11, &M7, &C12, &V2);  /* destroy V1, M2 */
   C21 = add_slices(m2, p1, V2, 0, m2, 0, p1, M7, 0, m2, 0, p1);
   if (gc_needed(av, 1))
-    gerepileall(av, 5, &M3, &C11, &C12, &V2, &C21);  /* destroy M7 */
+    (void)gc_all(av, 5, &M3, &C11, &C12, &V2, &C21);  /* destroy M7 */
   C22 = add_slices(m2, p2, V2, 0, m2, 0, p2, M3, 0, m2, 0, p2);
   if (gc_needed(av, 1))
-    gerepileall(av, 4, &C11, &C12, &C21, &C22);  /* destroy V2, M3 */
+    (void)gc_all(av, 4, &C11, &C12, &C21, &C22);  /* destroy V2, M3 */
   C = shallowconcat(vconcat(C11, C21), vconcat(C12, C22));
   return gc_GEN(av, C);
 }
@@ -1205,7 +1205,7 @@ ZC_hnfdivrem_i(GEN x, GEN y, GEN *Q, GEN (*div)(GEN,GEN))
   }
   if (avma == av) return ZC_copy(x);
   if (!Q) return gerepileupto(av, x);
-  gerepileall(av, 2, &x, Q); return x;
+  (void)gc_all(av, 2, &x, Q); return x;
 }
 GEN
 ZC_hnfdivrem(GEN x, GEN y, GEN *Q)

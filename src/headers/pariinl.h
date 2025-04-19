@@ -1319,32 +1319,6 @@ gerepilemany(pari_sp av, GEN* gptr[], int n)
   for (i=0; i<n; i++) *gptr[i] = bin_copy((GENbin*)*gptr[i]);
 }
 
-INLINE void
-gerepileall(pari_sp av, int n, ...)
-{
-  int i;
-  va_list a; va_start(a, n);
-  if (n < 10)
-  {
-    GEN *gptr[10];
-    for (i=0; i<n; i++)
-    { gptr[i] = va_arg(a,GEN*); *gptr[i] = (GEN)copy_bin(*gptr[i]); }
-    set_avma(av);
-    for (--i; i>=0; i--) *gptr[i] = bin_copy((GENbin*)*gptr[i]);
-
-  }
-  else
-  {
-    GEN **gptr = (GEN**)  pari_malloc(n*sizeof(GEN*));
-    for (i=0; i<n; i++)
-    { gptr[i] = va_arg(a,GEN*); *gptr[i] = (GEN)copy_bin(*gptr[i]); }
-    set_avma(av);
-    for (--i; i>=0; i--) *gptr[i] = bin_copy((GENbin*)*gptr[i]);
-    pari_free(gptr);
-  }
-  va_end(a);
-}
-
 /* assume 1 <= n < 10 */
 INLINE GEN
 gc_all(pari_sp av, int n, ...)

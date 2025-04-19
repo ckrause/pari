@@ -380,7 +380,7 @@ kbessel1(GEN nu, GEN gx, long prec)
       GEN ak = divri(addri(nu2, sqru(k2)), mulss(n2<<2, -k));
       s = addsr(1, mulrr(ak,s));
       t = addsr(k2,mulrr(ak,t));
-      if (gc_needed(av2,3)) gerepileall(av2, 2, &s,&t);
+      if (gc_needed(av2,3)) (void)gc_all(av2, 2, &s,&t);
     }
     shiftr_inplace(t, -1);
     q = utor(n2, l);
@@ -406,13 +406,13 @@ kbessel1(GEN nu, GEN gx, long prec)
         e = addrr(e, mulrr(d,u));
         f = addrr(f, p1 = mulrr(d,v));
         if (expo(p1) - expo(f) <= 1-prec2nbits(realprec(p1))) break;
-        if (gc_needed(av3,3)) gerepileall(av3,5,&u,&v,&d,&e,&f);
+        if (gc_needed(av3,3)) (void)gc_all(av3,5,&u,&v,&d,&e,&f);
       }
       u = e;
       v = f;
       q = mulrr(q, addrs(c,1));
       if (expo(r) - expo(subrr(q,r)) >= bit) break;
-      gerepileall(av2, 3, &u,&v,&q);
+      (void)gc_all(av2, 3, &u,&v,&q);
     }
     u = mulrr(u, gpow(divru(x,n),nu,prec));
   }
@@ -746,7 +746,7 @@ eint1r_asymp(GEN x, GEN expx, long prec)
       oldeq = eq;
     }
     q = mulrr(q, mulru(z, j)); S = addrr(S, q);
-    if (gc_needed(av2, 1)) gerepileall(av2, 2, &S, &q);
+    if (gc_needed(av2, 1)) (void)gc_all(av2, 2, &S, &q);
   }
   if (DEBUGLEVEL > 2) err_printf("eint1: using asymp\n");
   S = expx? divrr(S, expx): mulrr(S, mpexp(negr(x)));
@@ -774,7 +774,7 @@ eint1_asymp(GEN x, GEN expx, long prec)
       oldeq = eq;
     }
     q = gmul(q, gmulgu(z, j)); S = gadd(S, q);
-    if (gc_needed(av2, 1)) gerepileall(av2, 2, &S, &q);
+    if (gc_needed(av2, 1)) (void)gc_all(av2, 2, &S, &q);
   }
   if (DEBUGLEVEL > 2) err_printf("eint1: using asymp\n");
   S = expx? gdiv(S, expx): gmul(S, gexp(gneg_i(x), prec));
@@ -802,7 +802,7 @@ eint1p(GEN x, GEN expx)
     H = addrr(H, divru(run,i)); /* H = sum_{k<=i} 1/k */
     z = divru(mulrr(x,z), i);   /* z = x^(i-1)/i! */
     t = mulrr(z, H); S = addrr(S, t);
-    if ((i & 0x1ff) == 0) gerepileall(av, 4, &z,&t,&S,&H);
+    if ((i & 0x1ff) == 0) (void)gc_all(av, 4, &z,&t,&S,&H);
   }
   return subrr(mulrr(x, divrr(S,expx? expx: mpexp(x))),
                addrr(mplog(x), mpeuler(prec)));
@@ -1006,7 +1006,7 @@ incgamc_i(GEN s, GEN x, long *ptexd, long prec)
     if (gc_needed(av2,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"incgamc");
-      gerepileall(av2, 2, &S, &t);
+      (void)gc_all(av2, 2, &S, &t);
     }
   }
   y = expmx_xs(s, x, NULL, prec);
@@ -1043,7 +1043,7 @@ incgam_asymp(GEN s, GEN x, long prec)
     }
     q = gmul(q, gmul(gsubgs(s,j), invx));
     S = gadd(S, q);
-    if (gc_needed(av2, 1)) gerepileall(av2, 2, &S, &q);
+    if (gc_needed(av2, 1)) (void)gc_all(av2, 2, &S, &q);
   }
   if (DEBUGLEVEL > 2) err_printf("incgam: using asymp\n");
   cox = expmx_xs(gsubgs(s,1), x, NULL, prec);
@@ -1069,7 +1069,7 @@ incgam_asymp_partial(GEN s, GEN x, GEN gasx, long n, long prec)
   {
     q = gmul(q, gmul(gsubgs(s, j), invx));
     S = gadd(S, q);
-    if (gc_needed(av, 2)) gerepileall(av, 2, &S, &q);
+    if (gc_needed(av, 2)) (void)gc_all(av, 2, &S, &q);
   }
   sprod = gmul(gmul(q, gpowgs(x, n-1)), gsubgs(s, n));
   return gadd(gmul(cox, S), gmul(sprod, gasx));
@@ -1300,7 +1300,7 @@ cxeint1(GEN x, long prec)
     H = addrr(H, divru(run, n)); /* H = sum_{k<=n} 1/k */
     z = gdivgu(gmul(x,z), n);   /* z = x^(n-1)/n! */
     q = gmul(z, H); S = gadd(S, q);
-    if ((n & 0x1ff) == 0) gerepileall(av2, 4, &z, &q, &S, &H);
+    if ((n & 0x1ff) == 0) (void)gc_all(av2, 4, &z, &q, &S, &H);
   }
   S = gmul(gmul(x, S), gexp(gneg_i(x), prec));
   return gerepileupto(av, gsub(S, gadd(glog(x, prec), mpeuler(prec))));
@@ -1454,7 +1454,7 @@ cxerfc_r1(GEN x, long prec)
     res = gdiv(Uk, denom);
     for (k = 1; k < npoints; k++)
     {
-      if ((k & 255) == 0) gerepileall(av2,4,&denom,&Uk,&Vk,&res);
+      if ((k & 255) == 0) (void)gc_all(av2,4,&denom,&Uk,&Vk,&res);
       denom = gaddsg(2*k+1,denom);
       Uk = mpmul(Uk,Vk);
       Vk = mulur(u,Vk); shiftr_inplace(Vk, -v);
@@ -1638,7 +1638,7 @@ veczetas(long a, long b, long N, long prec)
     if (gc_needed(av,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"zetaBorwein, k = %ld", k);
-      gerepileall(av, 3, &c,&d,&z);
+      (void)gc_all(av, 3, &c,&d,&z);
     }
   }
   /* k = 1 */
@@ -1680,7 +1680,7 @@ veczeta(GEN a, GEN b, long N, long prec)
     if (gc_needed(av,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"veczeta, k = %ld", k);
-      gerepileall(av, 3, &c,&d,&z);
+      (void)gc_all(av, 3, &c,&d,&z);
     }
   }
   L = mplog2(prec);
@@ -1729,7 +1729,7 @@ zetaBorwein(long s, long prec)
     if (gc_needed(av,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"zetaBorwein, k = %ld", k);
-      gerepileall(av, 3, &c,&d,&z);
+      (void)gc_all(av, 3, &c,&d,&z);
     }
   }
   return rdivii(shifti(z, s-1), subii(shifti(d,s-1), d), prec);
@@ -1873,7 +1873,7 @@ czeta(GEN s0, long prec)
       if (gc_needed(av2,3))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"czeta i = %ld", i);
-        gerepileall(av2,3, &tes,&s5,&s4);
+        (void)gc_all(av2,3, &tes,&s5,&s4);
       }
     }
     u = gmul(gmul(tes,invn2), gmul2n(s2, -1));
@@ -2017,7 +2017,7 @@ cxpolylog(long m, GEN x, long prec)
     s = gsub(s, t);
     if (gexpo(t)  < li) return s;
     /* large values ? */
-    if ((k & 0x1ff) == 0) gerepileall(av, 2, &s, &q);
+    if ((k & 0x1ff) == 0) (void)gc_all(av, 2, &s, &q);
   }
   if (DEBUGLEVEL>2) timer_printf(&T, "polylog: small k <= %ld", k);
   Z = gneg(gsqr(gdiv(z, Pi2n(1,prec))));
@@ -2035,7 +2035,7 @@ cxpolylog(long m, GEN x, long prec)
                       mulu_interval(2*k+2, 2*k+1+m)));
     S = gadd(S, t); if (gexpo(t)  < li) break;
     q = gmul(q, Z);
-    if ((k & 0x1ff) == 0) gerepileall(av, 2, &S, &q);
+    if ((k & 0x1ff) == 0) (void)gc_all(av, 2, &S, &q);
   }
   if (DEBUGLEVEL>2) timer_printf(&T, "polylog: large k <= %ld", k);
   return gadd(s, gmul2n(S,1));
@@ -2078,7 +2078,7 @@ polylog(long m, GEN x, long prec)
     if (gc_needed(av1,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"polylog");
-      gerepileall(av1,2, &y, &Xn);
+      (void)gc_all(av1,2, &y, &Xn);
     }
   }
   if (e < 0) { set_avma(av); return affc_fixlg(y, res); }

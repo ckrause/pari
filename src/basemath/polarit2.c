@@ -1477,7 +1477,7 @@ Qi_gcd(GEN x, GEN y)
     x = y; y = z;
     if (gc_needed(btop,1)) {
       if(DEBUGMEM>1) pari_warn(warnmem,"Qi_gcd");
-      gerepileall(btop,2, &x,&y);
+      (void)gc_all(btop,2, &x,&y);
     }
   }
   x = Qi_normal(x);
@@ -1977,7 +1977,7 @@ RgX_gcd_simple(GEN x, GEN y)
     x = y; y = r;
     if (gc_needed(av,1)) {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgX_gcd_simple");
-      gerepileall(av,2, &x,&y);
+      (void)gc_all(av,2, &x,&y);
     }
   }
 }
@@ -2000,7 +2000,7 @@ RgX_extgcd_simple(GEN a, GEN b, GEN *pu, GEN *pv)
   u = gsub(d, gmul(b,v));
   u = RgX_div(u,a);
 
-  gerepileall(av, 3, &u,&v,&d);
+  (void)gc_all(av, 3, &u,&v,&d);
   *pu = u;
   *pv = v; return d;
 }
@@ -2693,7 +2693,7 @@ subresext_i(GEN x, GEN y, GEN *U, GEN *V)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"subresext, dr = %ld", degpol(v));
-      gerepileall(av2,6, &u,&v,&g,&h,&uze,&um1);
+      (void)gc_all(av2,6, &u,&v,&g,&h,&uze,&um1);
     }
   }
   /* uze an RgX */
@@ -2829,7 +2829,7 @@ RgX_extgcd(GEN x, GEN y, GEN *U, GEN *V)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgX_extgcd, dr = %ld",degpol(v));
-      gerepileall(av2,6,&u,&v,&g,&h,&uze,&um1);
+      (void)gc_all(av2,6,&u,&v,&g,&h,&uze,&um1);
     }
   }
   if (uze != gen_0) {
@@ -2884,7 +2884,7 @@ RgX_halfgcd_all_i(GEN a, GEN b, GEN *pa, GEN *pb)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"halfgcd (d = %ld)",degpol(b));
-      gerepileall(av,6, &a,&b,&u1,&v1,&u,&v);
+      (void)gc_all(av,6, &a,&b,&u1,&v1,&u,&v);
     }
   }
   if (pa) *pa = a;
@@ -2991,7 +2991,7 @@ RgXQ_ratlift(GEN x, GEN T, long amax, long bmax, GEN *P, GEN *Q)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgXQ_ratlift, dr = %ld", degpol(v));
-      gerepileall(av2,6,&u,&v,&g,&h,&uze,&um1);
+      (void)gc_all(av2,6,&u,&v,&g,&h,&uze,&um1);
     }
   }
   if (uze == gen_0)
@@ -3114,7 +3114,7 @@ nextSousResultant(GEN P, GEN Q, GEN Z, GEN s)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"nextSousResultant j = %ld/%ld",j,p);
-      gerepileall(av,A?2:1,&H,&A);
+      (void)gc_all(av,A?2:1,&H,&A);
     }
   }
   if (q+2 < lP) lP = reductum_lg(P, q+3);
@@ -3204,7 +3204,7 @@ RgX_resultant_all(GEN P, GEN Q, GEN *sol)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"resultant_all, degpol Q = %ld",degpol(Q));
-      gerepileall(av2,2,&P,&Q);
+      (void)gc_all(av2,2,&P,&Q);
     }
     s = leading_coeff(P);
   }
@@ -3762,7 +3762,7 @@ RgX_gcd(GEN x, GEN y)
       if (gc_needed(av1,1))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"RgX_gcd, dr = %ld", degpol(r));
-        gerepileall(av1,4, &u,&v,&g,&h);
+        (void)gc_all(av1,4, &u,&v,&g,&h);
       }
     }
     x = RgX_Rg_mul(primpart(v), d);

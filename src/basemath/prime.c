@@ -225,7 +225,7 @@ LucasMod(GEN n, ulong P, GEN N)
       if (gc_needed(av,1))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"LucasMod");
-        gerepileall(av, 2, &v,&v1);
+        (void)gc_all(av, 2, &v,&v1);
       }
     }
     if (--i == 0) return v;

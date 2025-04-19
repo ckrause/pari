@@ -688,9 +688,9 @@ FpX_halfres_basecase(GEN a, GEN b, GEN p, GEN *pa, GEN *pb, struct FpX_res *res)
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FpX_halfgcd (d = %ld)",degpol(b));
       if (res)
-        gerepileall(av, 8, &a,&b,&u1,&v1,&u,&v,&res->res,&res->lc);
+        (void)gc_all(av, 8, &a,&b,&u1,&v1,&u,&v,&res->res,&res->lc);
       else
-        gerepileall(av, 6, &a,&b,&u1,&v1,&u,&v);
+        (void)gc_all(av, 6, &a,&b,&u1,&v1,&u,&v);
     }
   }
   M = mkmat22(u,v,u1,v1); *pa = a; *pb = b;
@@ -831,7 +831,7 @@ FpX_gcd_basecase(GEN a, GEN b, GEN p)
     if (gc_needed(av0,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FpX_gcd (d = %ld)",degpol(b));
-      gerepileall(av0,2, &a,&b);
+      (void)gc_all(av0,2, &a,&b);
     }
     av = avma; c = FpX_rem(a,b,p); a=b; b=c;
   }
@@ -864,7 +864,7 @@ FpX_gcd(GEN x, GEN y, GEN p)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FpX_gcd (y = %ld)",degpol(y));
-      gerepileall(av,2,&x,&y);
+      (void)gc_all(av,2,&x,&y);
     }
   }
   return gerepileupto(av, FpX_gcd_basecase(x,y,p));
@@ -888,7 +888,7 @@ FpX_gcd_check(GEN x, GEN y, GEN p)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FpX_gcd_check (d = %ld)",degpol(b));
-      gerepileall(av,2,&a,&b);
+      (void)gc_all(av,2,&a,&b);
     }
   }
   return gc_NULL(av);
@@ -917,7 +917,7 @@ FpX_extgcd_basecase(GEN a, GEN b, GEN p, GEN *ptu, GEN *ptv)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FpX_extgcd (d = %ld)",degpol(a));
-      gerepileall(av,4,&a,&b,&v,&v1);
+      (void)gc_all(av,4,&a,&b,&v,&v1);
     }
   }
   if (ptu) *ptu = FpX_div(FpX_sub(a,FpX_mul(B,v,p),p),A,p);
@@ -1034,7 +1034,7 @@ FpX_resultant_basecase(GEN a, GEN b, GEN p)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FpX_resultant (da = %ld)",da);
-      gerepileall(av,3, &a,&b,&res);
+      (void)gc_all(av,3, &a,&b,&res);
     }
     da = db; /* = degpol(a) */
     db = dc; /* = degpol(b) */
@@ -1079,7 +1079,7 @@ FpX_resultant(GEN x, GEN y, GEN p)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FpX_res (y = %ld)",degpol(y));
-      gerepileall(av,3,&x,&y,&res);
+      (void)gc_all(av,3,&x,&y,&res);
     }
   }
   return gc_INT(av, Fp_mul(res, FpX_resultant_basecase(x, y, p), p));
@@ -1164,7 +1164,7 @@ FpX_extresultant(GEN x, GEN y, GEN p, GEN *ptU, GEN *ptV)
     M = FpX_halfres(x, y, p, &x, &y, &res);
     if (!signe(res)) return gc_const(av, gen_0);
     R = FpXM_mul2(M, R, p);
-    gerepileall(av,4,&x,&y,&R,&res);
+    (void)gc_all(av,4,&x,&y,&R,&res);
   }
   res1 = FpX_extresultant_basecase(x,y,p,&u,&v);
   if (!signe(res1)) return gc_const(av, gen_0);
@@ -1991,7 +1991,7 @@ gc_chinese(pari_sp av, GEN T, GEN a, GEN *pt_mod)
   else
   {
     GEN mod = gmael(T, lg(T)-1, 1);
-    gerepileall(av, 2, &a, &mod);
+    (void)gc_all(av, 2, &a, &mod);
     *pt_mod = mod;
     return a;
   }
@@ -2724,7 +2724,7 @@ FpXQ_sqrtl_spec(GEN z, GEN n, GEN T, GEN p, GEN *zetan)
     if (!beta) return gc_NULL(av);
     if(zetan) *zetan = scalarpol(zeta, varn(z));
     w = FpX_Fp_mul(FpXQ_inv(FpXQ_mul(b, c, T, p), T, p), beta, p);
-    gerepileall(av, zetan? 2: 1, &w, zetan);
+    (void)gc_all(av, zetan? 2: 1, &w, zetan);
     return w;
   }
   g = FpXQ_minpoly(x, T, p);
@@ -2736,7 +2736,7 @@ FpXQ_sqrtl_spec(GEN z, GEN n, GEN T, GEN p, GEN *zetan)
   if(zetan) *zetan = FpX_FpXQ_eval(zeta, x, T, p);
   beta = FpX_FpXQ_eval(beta, x, T, p);
   w = FpXQ_mul(FpXQ_inv(FpXQ_mul(b, c, T, p), T, p), beta, T, p);
-  gerepileall(av, zetan? 2: 1, &w, zetan);
+  (void)gc_all(av, zetan? 2: 1, &w, zetan);
   return w;
 }
 
@@ -2787,7 +2787,7 @@ FpXQ_sqrtn_spec(GEN a, GEN n, GEN T, GEN p, GEN q, GEN *zetan)
       if (gc_needed(ltop,1))
       { /* n can have lots of prime factors*/
         if(DEBUGMEM>1) pari_warn(warnmem,"FpXQ_sqrtn_spec");
-        gerepileall(av1, zetan? 2: 1, &a, &z);
+        (void)gc_all(av1, zetan? 2: 1, &a, &z);
       }
     }
   }
@@ -2797,7 +2797,7 @@ FpXQ_sqrtn_spec(GEN a, GEN n, GEN T, GEN p, GEN q, GEN *zetan)
   if (zetan)
   {
     *zetan = z;
-    gerepileall(ltop,2,&a,zetan);
+    (void)gc_all(ltop,2,&a,zetan);
   }
   else /* is_1 is 0: a was modified above -> gerepileupto valid */
     a = gerepileupto(ltop, a);
@@ -3187,7 +3187,7 @@ gener_FpXQ(GEN T, GEN p, GEN *po)
   if (!po) g = gc_GEN(av, g);
   else {
     *po = mkvec2(q_1, o);
-    gerepileall(av, 2, &g, po);
+    (void)gc_all(av, 2, &g, po);
   }
   return g;
 }
@@ -3335,7 +3335,7 @@ FpXn_expint(GEN h, long e, GEN p)
     if (gc_needed(av2,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FpXn_exp, e = %ld", n);
-      gerepileall(av2, 2, &f, &g);
+      (void)gc_all(av2, 2, &f, &g);
     }
   }
   return gerepileupto(av, f);

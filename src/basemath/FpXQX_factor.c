@@ -274,7 +274,7 @@ Flx_ffintersect_pre(GEN P, GEN Q, long n, ulong l, ulong li, GEN *SP, GEN *SQ, G
   }
   *SP = Flx_add(A,Ap,l);
   *SQ = Flx_add(B,Bp,l);
-  gerepileall(ltop,2,SP,SQ);
+  (void)gc_all(ltop,2,SP,SQ);
 }
 void
 Flx_ffintersect(GEN P, GEN Q, long n, ulong p, GEN *SP, GEN *SQ, GEN MA, GEN MB)
@@ -313,7 +313,7 @@ FpX_ffintersect(GEN P, GEN Q, long n, GEN l, GEN *SP, GEN *SQ, GEN MA, GEN MB)
     GEN MBp = MB ? ZM_to_Flm(MB, pp): NULL;
     Flx_ffintersect(Pp, Qp, n, pp, SP, SQ, MAp, MBp);
     *SP = Flx_to_ZX(*SP); *SQ = Flx_to_ZX(*SQ);
-    gerepileall(ltop,2,SP,SQ);
+    (void)gc_all(ltop,2,SP,SQ);
     return;
   }
   vp = get_FpX_var(P); np = get_FpX_degree(P);
@@ -410,7 +410,7 @@ FpX_ffintersect(GEN P, GEN Q, long n, GEN l, GEN *SP, GEN *SQ, GEN MA, GEN MB)
   }
   *SP = FpX_add(A,Ap,l);
   *SQ = FpX_add(B,Bp,l);
-  gerepileall(ltop,2,SP,SQ);
+  (void)gc_all(ltop,2,SP,SQ);
 }
 /* Let l be a prime number, P, Q in Z[X]; both are irreducible modulo l and
  * degree(P) divides degree(Q).  Output a monomorphism between F_l[X]/(P) and

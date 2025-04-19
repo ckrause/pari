@@ -2308,7 +2308,7 @@ polmodular0_powerup_ZM(long L, long inv, GEN *db)
     set_avma(av1);
 
     (void) ZM_incremental_CRT(&pol, phi_modp, &P, p);
-    if (gc_needed(av, 2)) gerepileall(av, 2, &pol, &P);
+    if (gc_needed(av, 2)) (void)gc_all(av, 2, &pol, &P);
   }
   killblock((GEN)Ds[0].primes); return gerepileupto(ltop, pol);
 }

@@ -233,7 +233,7 @@ msfarey(GEN F, void *E, long (*in)(void *, GEN), GEN *pCM)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"msfarey, #L = %ld", lg(L)-1);
-      gerepileall(av2, 4, &C, &M, &L, &B); L3 = cgetg(1, t_VEC);
+      (void)gc_all(av2, 4, &C, &M, &L, &B); L3 = cgetg(1, t_VEC);
     }
     av3 = avma;
     g = ZM_mul(gel(C,m), gel(gam,a));
@@ -289,7 +289,7 @@ mscosets(GEN G, void *E, long (*in)(void *, GEN))
       if (gc_needed(av,2))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"mscosets, #L = %ld", lg(L)-1);
-        gerepileall(av, 2, &M, &L);
+        (void)gc_all(av, 2, &M, &L);
       }
     }
   return gc_GEN(av, mkvec2(L, M));

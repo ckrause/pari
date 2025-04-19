@@ -5493,7 +5493,7 @@ mf1dimmod(GEN E1, GEN E, GEN chip, long ordchi, long dih, GEN TMP)
       if (lg(z)-1 == dih) return dih;
       C = C? Flm_mul(C, z, q): z;
       F = Flm_mul(F, z, q);
-      gerepileall(av, 2, &F,&C);
+      (void)gc_all(av, 2, &F,&C);
     }
     A = F;
   }
@@ -5660,7 +5660,7 @@ mf1basis(long N, GEN CHI, GEN TMP, GEN vSP, GEN *pS, long *pdih)
       if (gc_needed(av, 1))
       {
         if (DEBUGMEM > 1) pari_warn(warnmem,"mf1basis i = %ld", i);
-        gerepileall(av, 2, &A, &C);
+        (void)gc_all(av, 2, &A, &C);
       }
     }
     if (DEBUGLEVEL) timer_printf(&tt, "mf1basis: intersection [total]");
@@ -12915,7 +12915,7 @@ moreorders(long N, GEN CHI, GEN F, GEN *pP, GEN *pO, ulong *bound)
   }
   setlg(P, i); *pP = shallowconcat(*pP, P);
   setlg(O, i); *pO = shallowconcat(*pO, O);
-  gerepileall(av, 2, pP, pO);
+  (void)gc_all(av, 2, pP, pO);
 }
 
 static GEN

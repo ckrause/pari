@@ -1195,7 +1195,7 @@ PRECPB:
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"rnflllgram");
-      gerepileall(av, H?10:9, &nf,&mth,&h,&MPOL,&B,&MC,&MCS,&mu,&I,&H);
+      (void)gc_all(av, H?10:9, &nf,&mth,&h,&MPOL,&B,&MC,&MCS,&mu,&I,&H);
     }
   }
   while (k < lx);
@@ -1512,7 +1512,7 @@ nfhnf0(GEN nf, GEN x, long flag)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"nfhnf, i = %ld", i);
-      gerepileall(av,U?4:3, &A,&I,&J,&U);
+      (void)gc_all(av,U?4:3, &A,&I,&J,&U);
     }
   }
   n -= def;
@@ -1662,7 +1662,7 @@ nfsnf0(GEN nf, GEN x, long flag)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"nfsnf");
-      gerepileall(av,U?6:4, &A,&I,&J,&z,&U,&V);
+      (void)gc_all(av,U?6:4, &A,&I,&J,&z,&U,&V);
     }
     if (c) i++; /* iterate on row/column i */
   }
@@ -1692,7 +1692,7 @@ nfdetint(GEN nf, GEN x)
   piv = pivprec = gen_1;
 
   av1 = avma;
-  det1 = idprod = gen_0; /* dummy for gerepileall */
+  det1 = idprod = gen_0; /* dummy for (void)gc_all */
   pass = cgetg(m1,t_MAT);
   v = cgetg(m1,t_COL);
   for (j=1; j<=m; j++)
@@ -1748,7 +1748,7 @@ nfdetint(GEN nf, GEN x)
     if (gc_needed(av1,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"nfdetint");
-      gerepileall(av1,6, &det1,&piv,&pivprec,&pass,&v,&idprod);
+      (void)gc_all(av1,6, &det1,&piv,&pivprec,&pass,&v,&idprod);
     }
   }
   if (!cm) retgc_const(av, cgetg(1, t_MAT));
@@ -1854,7 +1854,7 @@ nfhnfmod(GEN nf, GEN x, GEN D)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"[1]: nfhnfmod, i = %ld", i);
-      gerepileall(av,dA? 4: 3, &A,&I,&D,&dA);
+      (void)gc_all(av,dA? 4: 3, &A,&I,&D,&dA);
     }
   }
   def--; d0 = D;
@@ -1887,7 +1887,7 @@ nfhnfmod(GEN nf, GEN x, GEN D)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"[2]: nfhnfmod, i = %ld", i);
-      gerepileall(av,dA? 4: 3, &A,&I,&J,&dA);
+      (void)gc_all(av,dA? 4: 3, &A,&I,&J,&dA);
     }
   }
   idV_simplify(I);

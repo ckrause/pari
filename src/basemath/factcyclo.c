@@ -495,7 +495,7 @@ ZpX_roots_all(GEN T, GEN p, long f, long *ptrs)
   {
     ps = ps1; ps1 = mulii(ps1, p); /* p^s, p^(s+1) */
     v = ZpX_roots_nonsep(T, v, p, ps, ps1);
-    if (gc_needed(av, 1)) gerepileall(av, 3, &v, &ps, &ps1);
+    if (gc_needed(av, 1)) (void)gc_all(av, 3, &v, &ps, &ps1);
   }
   *ptrs = s; return v;
 }

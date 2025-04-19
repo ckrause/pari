@@ -1928,7 +1928,7 @@ polclass_psum(
       ulong stab = Z_incremental_CRT(&psum_sqr, ps2, &P, p);
       /* stabcnt = stab * (stabcnt + 1) */
       if (stab) ++stabcnt; else stabcnt = 0;
-      if (gc_needed(av, 2)) gerepileall(btop, 2, &psum_sqr, &P);
+      if (gc_needed(av, 2)) (void)gc_all(btop, 2, &psum_sqr, &P);
     }
     if (stabcnt == 0 && nprimes >= MIN_STAB_CNT)
       pari_err_BUG("polclass_psum");

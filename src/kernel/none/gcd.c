@@ -136,7 +136,7 @@ gcdii(GEN x, GEN y)
       swap(x,y);
       y = remii(y,x);
     }
-    if (gc_needed(av, 1)) gerepileall(av,2,&x,&y);
+    if (gc_needed(av, 1)) (void)gc_all(av,2,&x,&y);
   }
   return gc_INT(av, gcdii_basecase(x,y));
 }

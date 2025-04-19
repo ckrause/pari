@@ -845,7 +845,7 @@ compute_polrel(struct rnfkummer *kum, GEN be)
     z = downtoK(T, z);
     C_z = mul_content(mul_content(C_z, C_Rk), mell);
     z = gmul(z, C_z); /* C_z ~ 1 */
-    gerepileall(av, C_Rk? 3: 2, &z, &prim_Rk, &C_Rk);
+    (void)gc_all(av, C_Rk? 3: 2, &z, &prim_Rk, &C_Rk);
     if (DEBUGLEVEL>1) err_printf("%ld(%ld) ", k, timer_delay(&ti));
     gel(S,k+1) = z; /* - Newton sum */
   }

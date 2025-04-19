@@ -1818,7 +1818,7 @@ makeD4(GEN N, GEN field, long s)
     if (gc_needed(av2, 2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"makeD4");
-      gerepileall(av2, 3, &v0,&v1,&v2);
+      (void)gc_all(av2, 3, &v0,&v1,&v2);
     }
   }
   if      (s == 0) v = myshallowconcat1(v0);
@@ -1863,7 +1863,7 @@ nflist_D4_worker(GEN D, GEN X, GEN Xinf, GEN listarch)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"makeD4vec, cond = %ld/%ld",cond,l-1);
-      gerepileall(av2, 3, &v0,&v1,&v2);
+      (void)gc_all(av2, 3, &v0,&v1,&v2);
     }
   }
   setlg(v0,c0); v0 = myshallowconcat1(v0);

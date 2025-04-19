@@ -621,7 +621,7 @@ idealHNF_val(GEN A, GEN P, long Nval, long Zval)
       if (gc_needed(av,3))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"idealval");
-        gerepileall(av,3, &y,&B,&pk);
+        (void)gc_all(av,3, &y,&B,&pk);
       }
     }
   }

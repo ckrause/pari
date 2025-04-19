@@ -143,7 +143,7 @@ hnffinal(GEN matgen,GEN perm,GEN* ptdep,GEN* ptB,GEN* ptC)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"hnffinal, i = %ld",i);
-      gerepileall(av, 2, &Cnew, &B);
+      (void)gc_all(av, 2, &Cnew, &B);
     }
   }
   p1 = cgetg(lnz+1,t_VEC); p2 = perm + nlze;
@@ -395,7 +395,7 @@ hnfspec_i(GEN mat0, GEN perm, GEN* ptdep, GEN* ptB, GEN* ptC, long k0)
     if (gc_needed(av,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"hnfspec[2]");
-      gerepileall(av, T? 2: 1, &vmax, &T);
+      (void)gc_all(av, T? 2: 1, &vmax, &T);
     }
   }
 
@@ -440,11 +440,11 @@ END2: /* clean up mat: remove everything to the right of the 1s on diagonal */
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"hnfspec[3], i = %ld", i);
       for (h=1; h<co; h++) setlg(matb[h], i0+1); /* bottom can be forgotten */
-      gerepileall(av, T? 2: 1, &matb, &T);
+      (void)gc_all(av, T? 2: 1, &matb, &T);
     }
   }
   for (j=1; j<co; j++) setlg(matb[j], lig-k0+1); /* bottom can be forgotten */
-  gerepileall(av, T? 2: 1, &matb, &T);
+  (void)gc_all(av, T? 2: 1, &matb, &T);
   if (DEBUGLEVEL>5) err_printf("    matb cleaned up (using Id block)\n");
 
   nlze = lk0 - k0;  /* # of 0 rows */
@@ -520,7 +520,7 @@ END2: /* clean up mat: remove everything to the right of the 1s on diagonal */
     }
   }
   if (T) C = typ(C)==t_MAT? RgM_ZM_mul(C,T): RgV_RgM_mul(C,T);
-  gerepileall(av, 4, &matbnew, &B, &dep, &C);
+  (void)gc_all(av, 4, &matbnew, &B, &dep, &C);
   *ptdep = dep;
   *ptB = B;
   H = hnffinal(matbnew, perm, ptdep, ptB, &C);
@@ -535,7 +535,7 @@ END2: /* clean up mat: remove everything to the right of the 1s on diagonal */
     for (a = l;;)
     {
       GEN MAT, emb;
-      gerepileall(av, 4, &H,&C,ptB,ptdep);
+      (void)gc_all(av, 4, &H,&C,ptB,ptdep);
       MAT = cgetg(l + 1, t_MAT);
       emb = cgetg(l + 1, typ(C));
       for (j = 1 ; j <= l; j++)
@@ -1318,7 +1318,7 @@ ZM_hnfmodall_i(GEN x, GEN D, long flag)
       if (gc_needed(av,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"ZM_hnfmod[2]. i=%ld", i);
-        gerepileall(av, 2, &x, &D2);
+        (void)gc_all(av, 2, &x, &D2);
       }
     }
     D = D2;
@@ -1359,7 +1359,7 @@ ZM_hnfmodall_i(GEN x, GEN D, long flag)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"ZM_hnfmod[3]. i=%ld", i);
-      gerepileall(av, 2, &x, &D);
+      (void)gc_all(av, 2, &x, &D);
     }
   }
   return x;
@@ -1696,7 +1696,7 @@ affii2_or_copy_gc(pari_sp av, GEN x, GEN *y, GEN x1, GEN *y1)
     *y1 = cgeti(2*lg(x1));
     affii(x,*y);
     affii(x1,*y1);
-    gerepileall(av,2,y,y1);
+    (void)gc_all(av,2,y,y1);
   }
 }
 static void
@@ -1804,7 +1804,7 @@ ZM_hnflll(GEN A, GEN *ptB, int remove)
     {
       GEN b = D-1;
       if (DEBUGMEM>1) pari_warn(warnmem,"hnflll, kmax = %ld / %ld",kmax,n-1);
-      gerepileall(av, B? 4: 3, &A, &lambda, &b, &B);
+      (void)gc_all(av, B? 4: 3, &A, &lambda, &b, &B);
       if (gc_needed(av,1)) paristack_resize(0); /* avoid desperation GC */
       D = b+1;
     }
@@ -1819,7 +1819,7 @@ ZM_hnflll(GEN A, GEN *ptB, int remove)
       if (!ZV_equal0(gel(A,i))) break;
     remove_0cols(i-1, &A, &B, remove);
   }
-  gerepileall(av, B? 2: 1, &A, &B);
+  (void)gc_all(av, B? 2: 1, &A, &B);
   if (B) *ptB = B;
   return A;
 }
@@ -1997,7 +1997,7 @@ ZM_hnfperm(GEN A, GEN *ptU, GEN *ptperm)
     if (gc_needed(av1,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"hnfperm, k=%ld",k);
-      gerepileall(av1, U? 2: 1, &A, &U);
+      (void)gc_all(av1, U? 2: 1, &A, &U);
     }
   }
   if (r < m)
@@ -2024,14 +2024,14 @@ ZM_hnfperm(GEN A, GEN *ptU, GEN *ptperm)
         u[t++] = U[j];
     *ptU = u;
     if (ptperm) *ptperm = perm;
-    gerepileall(av, ptperm? 3: 2, &p, ptU, ptperm);
+    (void)gc_all(av, ptperm? 3: 2, &p, ptU, ptperm);
   }
   else
   {
     for (k=r,j=1; j<=n; j++)
       if (l[j]) gel(p,k--) = vecpermute(gel(A,j), perm);
     if (ptperm) *ptperm = perm;
-    gerepileall(av, ptperm? 2: 1, &p, ptperm);
+    (void)gc_all(av, ptperm? 2: 1, &p, ptperm);
   }
   return p;
 }
@@ -2103,7 +2103,7 @@ ZM_hnfall_i(GEN A, GEN *ptB, long remove)
       {
         if (DEBUGMEM>1)
           pari_warn(warnmem,"ZM_hnfall[1], li = %ld, j = %ld", li, j);
-        gerepileall(av, B? 2: 1, &A, &B);
+        (void)gc_all(av, B? 2: 1, &A, &B);
       }
       if (signe( gcoeff(A,li,j) )) break;
       h[j] = li-1;
@@ -2125,7 +2125,7 @@ ZM_hnfall_i(GEN A, GEN *ptB, long remove)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"ZM_hnfall[2], li = %ld", li);
-      gerepileall(av, B? 2: 1, &A, &B);
+      (void)gc_all(av, B? 2: 1, &A, &B);
     }
   }
 
@@ -2143,7 +2143,7 @@ ZM_hnfall_i(GEN A, GEN *ptB, long remove)
     if (gc_needed(av,1) && (j & 0x7f) == 0)
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"ZM_hnfall[3], j = %ld", j);
-      gerepileall(av, B? 2: 1, &A, &B);
+      (void)gc_all(av, B? 2: 1, &A, &B);
     }
   }
   if (DEBUGLEVEL>5) err_printf("\n");
@@ -2328,20 +2328,14 @@ trivsmith(long all)
 
 static void
 snf_pile1(pari_sp av, GEN *x, GEN *U)
-{
-  GEN *gptr[2];
-  int c = 1; gptr[0]=x;
-  if (*U) gptr[c++] = U;
-  gerepilemany(av,gptr,c);
-}
+{ (void)gc_all(av, *U? 2: 1, x, U); }
 static void
 snf_pile(pari_sp av, GEN *x, GEN *U, GEN *V)
 {
-  GEN *gptr[3];
-  int c = 1; gptr[0]=x;
-  if (*U) gptr[c++] = U;
-  if (*V) gptr[c++] = V;
-  gerepilemany(av,gptr,c);
+  int c = 1;
+  if (*U) c++;
+  if (*V) c++;
+  (void)gc_all(av, c, x, U, V);
 }
 
 static GEN
@@ -2767,12 +2761,12 @@ RgM_hnfall(GEN A, GEN *pB, long remove)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"ghnfall");
-      gerepileall(av, B? 2: 1, &A, &B);
+      (void)gc_all(av, B? 2: 1, &A, &B);
     }
   }
   /* rank A = n - def */
   if (remove) remove_0cols(def, &A, &B, remove);
-  gerepileall(av, B? 2: 1, &A, &B);
+  (void)gc_all(av, B? 2: 1, &A, &B);
   if (B) *pB = B;
   return A;
 }
@@ -2839,7 +2833,7 @@ RgXM_snf(GEN x,long all)
       if (gc_needed(av,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"gsmithall");
-        gerepileall(av, all? 3: 1, &x, &U, &V);
+        (void)gc_all(av, all? 3: 1, &x, &U, &V);
       }
     }
   }

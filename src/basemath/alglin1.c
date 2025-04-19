@@ -280,7 +280,7 @@ gen_det(GEN a, void *E, const struct bb_field *ff)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"det. col = %ld",i);
-      gerepileall(av,2, &a,&x);
+      (void)gc_all(av,2, &a,&x);
     }
   }
   if (s < 0) x = ff->neg(E,x);
@@ -353,7 +353,7 @@ gen_Gauss(GEN a, GEN b, void *E, const struct bb_field *ff)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"gen_Gauss. i=%ld",i);
-      gerepileall(av,2, &a,&b);
+      (void)gc_all(av,2, &a,&b);
     }
   }
 
@@ -515,62 +515,62 @@ gen_matmul_sw(GEN A, GEN B, long m, long n, long p,
   S1 = subtract_slices(m2, n1, A, m1, m2, 0, n1, A, 0, m2, 0, n1, E, ff);
   M2 = gen_matmul_i(S1, T2, m2 + 1, n1 + 1, p2 + 1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 2, &T2, &M2);  /* destroy S1 */
+    (void)gc_all(av, 2, &T2, &M2);  /* destroy S1 */
   T3 = subtract_slices(n1, p1, T2, 0, n1, 0, p2, B, 0, n1, 0, p1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 2, &M2, &T3);  /* destroy T2 */
+    (void)gc_all(av, 2, &M2, &T3);  /* destroy T2 */
   S2 = add_slices(m2, n1, A, m1, m2, 0, n1, A, m1, m2, n1, n2, E, ff);
   T1 = subtract_slices(n1, p1, B, 0, n1, p1, p2, B, 0, n1, 0, p2, E, ff);
   M3 = gen_matmul_i(S2, T1, m2 + 1, n1 + 1, p2 + 1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 4, &M2, &T3, &S2, &M3);  /* destroy T1 */
+    (void)gc_all(av, 4, &M2, &T3, &S2, &M3);  /* destroy T1 */
   S3 = subtract_slices(m1, n1, S2, 0, m2, 0, n1, A, 0, m1, 0, n1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 4, &M2, &T3, &M3, &S3);  /* destroy S2 */
+    (void)gc_all(av, 4, &M2, &T3, &M3, &S3);  /* destroy S2 */
   A11 = matslice(A, 1, m1, 1, n1);
   B11 = matslice(B, 1, n1, 1, p1);
   M1 = gen_matmul_i(A11, B11, m1 + 1, n1 + 1, p1 + 1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 5, &M2, &T3, &M3, &S3, &M1);  /* destroy A11, B11 */
+    (void)gc_all(av, 5, &M2, &T3, &M3, &S3, &M1);  /* destroy A11, B11 */
   A12 = matslice(A, 1, m1, n1 + 1, n);
   B21 = matslice(B, n1 + 1, n, 1, p1);
   M4 = gen_matmul_i(A12, B21, m1 + 1, n2 + 1, p1 + 1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &T3, &M3, &S3, &M1, &M4);  /* destroy A12, B21 */
+    (void)gc_all(av, 6, &M2, &T3, &M3, &S3, &M1, &M4);  /* destroy A12, B21 */
   C11 = add_slices(m1, p1, M1, 0, m1, 0, p1, M4, 0, m1, 0, p1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &T3, &M3, &S3, &M1, &C11);  /* destroy M4 */
+    (void)gc_all(av, 6, &M2, &T3, &M3, &S3, &M1, &C11);  /* destroy M4 */
   M5 = gen_matmul_i(S3, T3, m1 + 1, n1 + 1, p1 + 1, E, ff);
   S4 = subtract_slices(m1, n2, A, 0, m1, n1, n2, S3, 0, m1, 0, n2, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 7, &M2, &T3, &M3, &M1, &C11, &M5, &S4);  /* destroy S3 */
+    (void)gc_all(av, 7, &M2, &T3, &M3, &M1, &C11, &M5, &S4);  /* destroy S3 */
   T4 = add_slices(n2, p1, B, n1, n2, 0, p1, T3, 0, n2, 0, p1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 7, &M2, &M3, &M1, &C11, &M5, &S4, &T4);  /* destroy T3 */
+    (void)gc_all(av, 7, &M2, &M3, &M1, &C11, &M5, &S4, &T4);  /* destroy T3 */
   V1 = subtract_slices(m1, p1, M1, 0, m1, 0, p1, M5, 0, m1, 0, p1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &M3, &S4, &T4, &C11, &V1);  /* destroy M1, M5 */
+    (void)gc_all(av, 6, &M2, &M3, &S4, &T4, &C11, &V1);  /* destroy M1, M5 */
   B22 = matslice(B, n1 + 1, n, p1 + 1, p);
   M6 = gen_matmul_i(S4, B22, m1 + 1, n2 + 1, p2 + 1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &M3, &T4, &C11, &V1, &M6);  /* destroy S4, B22 */
+    (void)gc_all(av, 6, &M2, &M3, &T4, &C11, &V1, &M6);  /* destroy S4, B22 */
   A22 = matslice(A, m1 + 1, m, n1 + 1, n);
   M7 = gen_matmul_i(A22, T4, m2 + 1, n2 + 1, p1 + 1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &M3, &C11, &V1, &M6, &M7);  /* destroy A22, T4 */
+    (void)gc_all(av, 6, &M2, &M3, &C11, &V1, &M6, &M7);  /* destroy A22, T4 */
   V3 = add_slices(m1, p2, V1, 0, m1, 0, p2, M3, 0, m2, 0, p2, E, ff);
   C12 = add_slices(m1, p2, V3, 0, m1, 0, p2, M6, 0, m1, 0, p2, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 6, &M2, &M3, &C11, &V1, &M7, &C12);  /* destroy V3, M6 */
+    (void)gc_all(av, 6, &M2, &M3, &C11, &V1, &M7, &C12);  /* destroy V3, M6 */
   V2 = add_slices(m2, p1, V1, 0, m2, 0, p1, M2, 0, m2, 0, p2, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 5, &M3, &C11, &M7, &C12, &V2);  /* destroy V1, M2 */
+    (void)gc_all(av, 5, &M3, &C11, &M7, &C12, &V2);  /* destroy V1, M2 */
   C21 = add_slices(m2, p1, V2, 0, m2, 0, p1, M7, 0, m2, 0, p1, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 5, &M3, &C11, &C12, &V2, &C21);  /* destroy M7 */
+    (void)gc_all(av, 5, &M3, &C11, &C12, &V2, &C21);  /* destroy M7 */
   C22 = add_slices(m2, p2, V2, 0, m2, 0, p2, M3, 0, m2, 0, p2, E, ff);
   if (gc_needed(av, 1))
-    gerepileall(av, 4, &C11, &C12, &C21, &C22);  /* destroy V2, M3 */
+    (void)gc_all(av, 4, &C11, &C12, &C21, &C22);  /* destroy V2, M3 */
   C = mkmat2(mkcol2(C11, C21), mkcol2(C12, C22));
   return gerepileupto(av, matconcat(C));
 }
@@ -865,7 +865,7 @@ gen_rsolve_upper(GEN U, GEN B, void *E, const struct bb_field *ff,
   B2 = rowslice(B, n1 + 1, n);
   X2 = gen_rsolve_upper(U22, B2, E, ff, mul);
   B1 = gen_matsub(B1, mul(E, U12, X2), E, ff);
-  if (gc_needed(av, 1)) gerepileall(av, 3, &B1, &U11, &X2);
+  if (gc_needed(av, 1)) (void)gc_all(av, 3, &B1, &U11, &X2);
   X1 = gen_rsolve_upper(U11, B1, E, ff, mul);
   X = vconcat(X1, X2);
   if (gc_needed(av, 1)) X = gc_GEN(av, X);
@@ -906,7 +906,7 @@ gen_lsolve_upper(GEN U, GEN B, void *E, const struct bb_field *ff,
   B2 = vecslice(B, n1 + 1, n);
   X1 = gen_lsolve_upper(U11, B1, E, ff, mul);
   B2 = gen_matsub(B2, mul(E, X1, U12), E, ff);
-  if (gc_needed(av, 1)) gerepileall(av, 3, &B2, &U22, &X1);
+  if (gc_needed(av, 1)) (void)gc_all(av, 3, &B2, &U22, &X1);
   X2 = gen_lsolve_upper(U22, B2, E, ff, mul);
   X = shallowconcat(X1, X2);
   if (gc_needed(av, 1)) X = gc_GEN(av, X);
@@ -943,7 +943,7 @@ gen_rsolve_lower_unit(GEN L, GEN A, void *E, const struct bb_field *ff,
   X1 = gen_rsolve_lower_unit(L11, A1, E, ff, mul);
   A2 = rowslice(A, m1 + 1, n);
   A2 = gen_matsub(A2, mul(E, L21, X1), E, ff);
-  if (gc_needed(av, 1)) gerepileall(av, 2, &A2, &X1);
+  if (gc_needed(av, 1)) (void)gc_all(av, 2, &A2, &X1);
   L22 = matslice(L, m1+1,n, m1+1,m);
   X2 = gen_rsolve_lower_unit(L22, A2, E, ff, mul);
   X = vconcat(X1, X2);
@@ -983,7 +983,7 @@ gen_lsolve_lower_unit(GEN L, GEN A, void *E, const struct bb_field *ff,
   A1 = vecslice(A, 1, m1);
   A1 = gen_matsub(A1, mul(E, X2, L21), E, ff);
   L11 = rowslice(L1, 1, m1);
-  if (gc_needed(av, 1)) gerepileall(av, 3, &A1, &L11, &X2);
+  if (gc_needed(av, 1)) (void)gc_all(av, 3, &A1, &L11, &X2);
   X1 = gen_lsolve_lower_unit(L11, A1, E, ff, mul);
   X = shallowconcat(X1, X2);
   if (gc_needed(av, 1)) X = gc_GEN(av, X);
@@ -1074,7 +1074,7 @@ gen_CUP(GEN A, GEN *R, GEN *C, GEN *U, GEN *P, void *E, const struct bb_field *f
     T22 = vecslicepermute(A2, P1, r1 + 1, n);
     C21 = gen_lsolve_upper(U11, T21, E, ff, mul);
     if (gc_needed(av, 1))
-      gerepileall(av, 7, &R1, &C1, &P1, &U11, &U12, &T22, &C21);
+      (void)gc_all(av, 7, &R1, &C1, &P1, &U11, &U12, &T22, &C21);
     B2 = gen_matsub(T22, mul(E, C21, U12), E, ff);
     r2 = gen_CUP(B2, &R2, &C2, &U2, &P2, E, ff, mul);
     r = r1 + r2;
@@ -1090,7 +1090,7 @@ gen_CUP(GEN A, GEN *R, GEN *C, GEN *U, GEN *P, void *E, const struct bb_field *f
     for (i = 1; i <= r1; i++) (*P)[i] = P1[i];
     for (     ; i <= n; i++)  (*P)[i] = P1[P2[i - r1] + r1];
   }
-  if (gc_needed(av, 1)) gerepileall(av, 4, R, C, U, P);
+  if (gc_needed(av, 1)) (void)gc_all(av, 4, R, C, U, P);
   return r;
 }
 
@@ -1142,7 +1142,7 @@ gen_echelon(GEN A, GEN *R, GEN *C, void *E, const struct bb_field *ff,
         (*R)[j] = R2[j2++];
       }
   }
-  if (gc_needed(av, 1)) gerepileall(av, 2, R, C);
+  if (gc_needed(av, 1)) (void)gc_all(av, 2, R, C);
   return r;
 }
 
@@ -2616,7 +2616,7 @@ RgM_solve_basecase(GEN a, GEN b, pivot_fun pivot, GEN data)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"gauss. i=%ld",i);
-      gerepileall(av,2, &a,&b);
+      (void)gc_all(av,2, &a,&b);
     }
   }
 
@@ -2953,7 +2953,7 @@ ZM_inv_ratlift(GEN M, GEN *pden)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"ZM_inv_ratlift");
-      gerepileall(av2, 2, &H, &q);
+      (void)gc_all(av2, 2, &H, &q);
     }
   }
   if (!*pden) *pden = gen_1;
@@ -3219,7 +3219,7 @@ ZM_ker_i(GEN A)
     GEN H, Hr;
     gen_inccrt_i("ZM_ker", worker, NULL, (k+1)>>1, 0,
                  &S, &HD, &mod, ZM_ker_chinese, NULL);
-    gerepileall(av, 2, &HD, &mod);
+    (void)gc_all(av, 2, &HD, &mod);
     H = gel(HD, 1); if (lg(H) == 1) return H;
     if (DEBUGLEVEL >= 4) timer_start(&ti);
     Hr = FpM_ratlift_parallel(H, mod, NULL);
@@ -3305,7 +3305,7 @@ ZM_gauss_i(GEN A, GEN B)
     pari_timer ti;
     gen_inccrt_i("ZM_gauss", worker, NULL, (k+1)>>1 , m,
                  &S, &H, &mod, nmV_chinese_center, FpM_center);
-    gerepileall(av, 2, &H, &mod);
+    (void)gc_all(av, 2, &H, &mod);
     if (DEBUGLEVEL >= 4) timer_start(&ti);
     Hr = FpM_ratlift_parallel(H, mod, NULL);
     if (DEBUGLEVEL >= 4) timer_printf(&ti,"ZM_gauss: ratlift (%ld)",!!Hr);
@@ -3415,7 +3415,7 @@ ZM_detmult(GEN A)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"detint. k=%ld",k);
-      gerepileall(av1, 2, &piv,&B); v = zerovec(m);
+      (void)gc_all(av1, 2, &piv,&B); v = zerovec(m);
     }
   }
   return gc_const(av, gen_0);
@@ -3474,7 +3474,7 @@ RgM_deplin_i(GEN x0)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"deplin k = %ld/%ld",k,nc);
-      gerepileall(av2, 2, &x, &d);
+      (void)gc_all(av2, 2, &x, &d);
       ck = gel(x,k);
     }
     gel(d,k) = gel(ck,i);
@@ -4606,7 +4606,7 @@ ZabM_inv_ratlift(GEN M, GEN P, long n, GEN *pden)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"ZabM_inv");
-      gerepileall(av2, 2, &H, &q);
+      (void)gc_all(av2, 2, &H, &q);
     }
   }
   return gc_all(av, 2, &H, pden);
@@ -4690,7 +4690,7 @@ ZabM_ker(GEN M, GEN P, long n)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"ZabM_ker");
-      gerepileall(av, 3, &H, &D, &q);
+      (void)gc_all(av, 3, &H, &D, &q);
     }
   }
   return gc_GEN(av, H);
@@ -5103,7 +5103,7 @@ det_simple_gauss(GEN a, pivot_fun pivot, GEN data)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"det. col = %ld",i);
-      gerepileall(av,2, &a,&x);
+      (void)gc_all(av,2, &a,&x);
     }
   }
   if (s < 0) x = gneg_i(x);
@@ -5163,7 +5163,7 @@ det_bareiss(GEN a)
       if (gc_needed(av,2))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"det. col = %ld",i);
-        gerepileall(av,2, &a,&pprec);
+        (void)gc_all(av,2, &a,&pprec);
         ci = gel(a,i);
         p = gcoeff(a,i,i);
       }

@@ -4582,7 +4582,7 @@ mssiegel(struct siegel *S)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"mspolygon, n = %ld",S->n);
-      gerepileall(av, 2, &S->V, &S->Ast);
+      (void)gc_all(av, 2, &S->V, &S->Ast);
     }
   }
   if (DEBUGLEVEL>1) err_printf("expo = %.2f\n", ZMV_size(S->V));

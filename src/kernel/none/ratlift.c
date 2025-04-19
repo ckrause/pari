@@ -80,7 +80,7 @@ Fp_ratlift_hgcd(GEN n, GEN m, GEN amax, GEN bmax, GEN *pa, GEN *pb)
     {
       if (signe(b)<0)  { a = negi(a); b = negi(b); }
       *pa =a; *pb = b;
-      gerepileall(av, 2, pb, pa); return 1;
+      (void)gc_all(av, 2, pb, pa); return 1;
     }
     q = dvmdii(x, a, &r); x = a; a = r;
     u = subii(y, mulii(b, q));
@@ -235,7 +235,7 @@ Fp_ratlift(GEN x, GEN m, GEN amax, GEN bmax, GEN *a, GEN *b)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ratlift");
-      gerepileall(av1, 4, &d, &d1, &v, &v1);
+      (void)gc_all(av1, 4, &d, &d1, &v, &v1);
     }
   } /* end while */
 

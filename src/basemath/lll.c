@@ -331,7 +331,7 @@ ZM_flatter(GEN M, long flag)
     if (!inplace)
     {
       T = T? ZM_mul(T, U): U;
-      if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
+      if (gc_needed(av, 1)) (void)gc_all(av, 2, &M, &T);
     }
     else
       if (gc_needed(av, 1)) M = gc_GEN(av, M);
@@ -366,7 +366,7 @@ ZM_flatter_rank(GEN M, long rank, long flag)
     if (DEBUGLEVEL>=3) timer_printf(&ti,"FLATTERRANK step %ld: %ld",i,sm);
     T = T? ZM_mul(T, S): S;
     M = ZM_mul(M, S);
-    if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
+    if (gc_needed(av, 1)) (void)gc_all(av, 2, &M, &T);
   }
   if (!inplace)
   {
@@ -423,7 +423,7 @@ ZM_flattergram(GEN M, long flag)
     M = qf_ZM_apply(M, S);
     s = t;
     if (DEBUGLEVEL >= 3) dbg_flattergram(&ti, n, i, s);
-    if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
+    if (gc_needed(av, 1)) (void)gc_all(av, 2, &M, &T);
   }
   if (DEBUGLEVEL >= 3) dbg_flattergram(&ti, n, i, s);
   if (!T && ZM_isidentity(T)) return gc_NULL(av);
@@ -448,7 +448,7 @@ ZM_flattergram_rank(GEN M, long rank, long flag)
     if (!S) break;
     T = T? ZM_mul(T, S): S;
     M = qf_ZM_apply(M, S);
-    if (gc_needed(av, 1)) gerepileall(av, 2, &M, &T);
+    if (gc_needed(av, 1)) (void)gc_all(av, 2, &M, &T);
   }
   if (!T || ZM_isidentity(T)) return gc_NULL(av);
   return gc_GEN(av, T);
@@ -615,7 +615,7 @@ addmulzu2n(GEN *x, GEN y, ulong u, long e)
   set_avma(av); return addzi(x, y);
 }
 
-/* n < 10; gerepileall supporting &NULL arguments. Maybe rename and export ? */
+/* n < 10; (void)gc_all supporting &NULL arguments. Maybe rename and export ? */
 INLINE void
 gc_lll(pari_sp av, int n, ...)
 {
@@ -2654,7 +2654,7 @@ lllgramallgen(GEN x, long flag)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"lllgramallgen");
-      gerepileall(av,3,&B,&L,&h);
+      (void)gc_all(av,3,&B,&L,&h);
     }
   }
   k=1; while (k<lx && !fl[k]) k++;

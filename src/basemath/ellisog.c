@@ -305,7 +305,7 @@ isogeny_from_kernel_point(GEN E, GEN P, int only_image, long vx, long vy)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"isogeny_from_kernel_point");
-      gerepileall(av, isog? 4: 3, &Q, &t, &w, &isog);
+      (void)gc_all(av, isog? 4: 3, &Q, &t, &w, &isog);
     }
   }
 

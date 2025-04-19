@@ -684,8 +684,8 @@ sumprimeloop(forprime_t *pT, GEN s, long N, GEN data, GEN S, GEN W, GEN WB,
     precp = p;
     if ((p & 0x1ff) == 1)
     {
-      if (!logp) gerepileall(av, SB? 2: 1, &S, &SB);
-      else gerepileall(av, SB? 3: 2, &S, &logp, &SB);
+      if (!logp) (void)gc_all(av, SB? 2: 1, &S, &SB);
+      else (void)gc_all(av, SB? 3: 2, &S, &logp, &SB);
     }
   }
   return v2pack(S, SB);
@@ -804,7 +804,7 @@ dirpowerssumfun_i(ulong N, GEN s, void *E, GEN (*f)(void *, ulong, long),
   {
     if (mksqfloop(N, x1, R, RB, &S, &SB))
       return both? mkvec2(S, conj_i(SB? SB: S)): S;
-    gerepileall(av, SB? 2: 1, &S, &SB);
+    (void)gc_all(av, SB? 2: 1, &S, &SB);
   }
 }
 GEN

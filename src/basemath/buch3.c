@@ -2504,7 +2504,7 @@ discrayabslistarch(GEN bnf, GEN arch, ulong bound)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"[1]: discrayabslistarch");
-      gerepileall(av, flbou? 2: 1, &Z, &Ray);
+      (void)gc_all(av, flbou? 2: 1, &Z, &Ray);
     }
   }
   if (!flbou) /* occurs iff bound = 1,2,4 */

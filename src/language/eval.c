@@ -1787,7 +1787,7 @@ parsum_slice_worker(GEN a, GEN b, GEN m, GEN worker)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"parsum_slice");
-      gerepileall(av,2,&a,&s);
+      (void)gc_all(av,2,&a,&s);
     }
   }
   return gerepileupto(av,s);

@@ -1029,7 +1029,7 @@ polrootsmodpn(GEN pol, GEN p)
     /* roots with higher precision = ro + r*p^(e+1) */
     if (l > 2) v = shallowconcat(v, vecslice(r, 2, l-1));
     gel(v, i) = gel(r, 1);
-    if (gc_needed(av2, 1)) gerepileall(av2, 1, &v);
+    if (gc_needed(av2, 1)) (void)gc_all(av2, 1, &v);
   }
   if (lg(v) == 1) { set_avma(av); retmkvec(zerovec(2)); }
   return gc_GEN(av, v);

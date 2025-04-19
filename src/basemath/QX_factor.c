@@ -639,7 +639,7 @@ AGAIN:
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"LLL_cmbf");
-      gerepileall(av, 5, &CM_L, &TT, &Tra, &famod, &pa);
+      (void)gc_all(av, 5, &CM_L, &TT, &Tra, &famod, &pa);
     }
   }
   if (DEBUGLEVEL>2)
@@ -813,7 +813,7 @@ DDF_roots(GEN A)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"DDF_roots, m = %ld", m);
-      gerepileall(av, lc? 3:2, &z, &lcpol, &lc);
+      (void)gc_all(av, lc? 3:2, &z, &lcpol, &lc);
     }
   }
   if (DEBUGLEVEL>2) timer_printf(&T, "Recombination");
@@ -1170,7 +1170,7 @@ ZX_gcd_all(GEN A, GEN B, GEN *Anew)
   for (k = 1; ;k *= 2)
   {
     gen_inccrt_i("ZX_gcd", worker, g, (k+1)>>1, 0, &S, &H, &mod, ZX_gcd_chinese, NULL);
-    gerepileall(av, 2, &H, &mod);
+    (void)gc_all(av, 2, &H, &mod);
     Hp = ZX_to_Flx(H, pp);
     if (lgpol(Flx_rem(Ap, Hp, pp)) || lgpol(Flx_rem(Bp, Hp, pp))) continue;
     if (!ZX_divides(Bg, H)) continue;

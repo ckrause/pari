@@ -420,7 +420,7 @@ gen_Pollard_log(GEN x, GEN g, GEN q, void *E, const struct bb_group *grp)
       if (gc_needed(av,2))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"gen_Pollard_log");
-        gerepileall(av, 2, &A, &B);
+        (void)gc_all(av, 2, &A, &B);
       }
       i++;
     } while (!grp->equal(gel(A,1), gel(B,1)));
@@ -890,7 +890,7 @@ gen_Shanks_sqrtl(GEN a, GEN l, long e, GEN r, GEN y, GEN m,void *E,
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"gen_Shanks_sqrtl");
-      gerepileall(av,4, &y,&v,&w,&m);
+      (void)gc_all(av,4, &y,&v,&w,&m);
     }
   }
   return gc_GEN(av, v);
@@ -943,7 +943,7 @@ gen_Shanks_sqrtn(GEN a, GEN n, GEN q, GEN *zetan, void *E, const struct bb_group
       if (gc_needed(ltop,1))
       { /* n can have lots of prime factors*/
         if(DEBUGMEM>1) pari_warn(warnmem,"gen_Shanks_sqrtn");
-        gerepileall(av1, zetan? 2: 1, &a, &z);
+        (void)gc_all(av1, zetan? 2: 1, &a, &z);
       }
     }
   }
@@ -952,7 +952,7 @@ gen_Shanks_sqrtn(GEN a, GEN n, GEN q, GEN *zetan, void *E, const struct bb_group
   if (zetan)
   {
     *zetan = z;
-    gerepileall(ltop,2,&a,zetan);
+    (void)gc_all(ltop,2,&a,zetan);
   }
   else /* is_1 is 0: a was modified above -> gerepileupto valid */
     a = gerepileupto(ltop, a);
@@ -1042,7 +1042,7 @@ gen_ellgroup(GEN N, GEN d, GEN *pm, void *E, const struct bb_group *grp,
         uel(E0, j) = 0; /* done with this prime l */
       }
     }
-    gerepileall(av2, 2, &g1, &g2);
+    (void)gc_all(av2, 2, &g1, &g2);
   }
 }
 

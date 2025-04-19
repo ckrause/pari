@@ -237,7 +237,7 @@ polhermite_eval0(long n, GEN x, long flag)
   for (i=1; i<n; i++)
   { /* u = H_i(x), v = H_{i-1}(x), compute t = H_{i+1}(x) */
     GEN t;
-    if ((i & 0xff) == 0) gerepileall(av2,2,&u, &v);
+    if ((i & 0xff) == 0) (void)gc_all(av2,2,&u, &v);
     t = gsub(gmul(x2, u), gmulsg(2*i,v));
     v = u; u = t;
   }
@@ -337,7 +337,7 @@ pollegendre_eval0(long n, GEN x, long flag)
   for (i=1; i<n; i++)
   { /* u = P_i(x), v = P_{i-1}(x), compute t = P_{i+1}(x) */
     GEN t;
-    if ((i & 0xff) == 0) gerepileall(av,2,&u, &v);
+    if ((i & 0xff) == 0) (void)gc_all(av,2,&u, &v);
     t = gdivgu(gsub(gmul(gmulsg(2*i+1,x), u), gmulsg(i,v)), i+1);
     v = u; u = t;
   }
@@ -408,7 +408,7 @@ pollaguerre_eval0(long n, GEN a, GEN x, long flag)
   for (i=1; i<n; i++)
   { /* u = P_i(x), v = P_{i-1}(x), compute t = P_{i+1}(x) */
     GEN t;
-    if ((i & 0xff) == 0) gerepileall(av,2,&u, &v);
+    if ((i & 0xff) == 0) (void)gc_all(av,2,&u, &v);
     t = gdivgu(gsub(gmul(gsub(gaddsg(2*i+1,a),x), u), gmul(gaddsg(i,a),v)), i+1);
     v = u; u = t;
   }
@@ -1118,7 +1118,7 @@ stirling2(ulong n, ulong m)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"stirling2");
-      gerepileall(av, 2, &s, &bmk);
+      (void)gc_all(av, 2, &s, &bmk);
     }
   }
   /* k = m/2 */
@@ -1333,7 +1333,7 @@ polintspec(GEN X, GEN Y, GEN x, long n, long *pe)
     if (gc_needed(av2,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"polint, %ld/%ld",m,n-1);
-      gerepileall(av2, 4, &y, &c, &d, &dy);
+      (void)gc_all(av2, 4, &y, &c, &d, &dy);
     }
   }
   if (pe && inC(dy)) *pe = gexpo(dy);

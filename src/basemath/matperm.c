@@ -63,7 +63,7 @@ matpermanent(GEN M)
       p = gsub(p, RgV_prod(in));
     else
       p = gadd(p, RgV_prod(in));
-    if (gc_needed(av, 1)) gerepileall(av, 2, &in, &p);
+    if (gc_needed(av, 1)) (void)gc_all(av, 2, &in, &p);
   }
   if (n&1) p = gneg(p);
   return gerepileupto(av, p);
@@ -109,7 +109,7 @@ ZM_permanent(GEN M)
     c = ZV_prod(in);
     if (hammingl(gray)&1) togglesign_safe(&c);
     p = addii(p, c);
-    if (gc_needed(av, 1)) gerepileall(av, 2, &in, &p);
+    if (gc_needed(av, 1)) (void)gc_all(av, 2, &in, &p);
   }
   if (n&1) togglesign_safe(&p);
   return gc_GEN(av, p);

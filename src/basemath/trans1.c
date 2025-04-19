@@ -1497,7 +1497,7 @@ Zn_sqrt(GEN d, GEN fn)
     b = Z_chinese_coprime(b, bp, m, mp, pr);
     m = pr;
     if (gc_needed(btop, 1))
-      gerepileall(btop, 2, &b, &m);
+      (void)gc_all(btop, 2, &b, &m);
   }
   return gerepileupto(ltop, b);
 }
@@ -3719,7 +3719,7 @@ gsincos(GEN x, GEN *s, GEN *c, long prec)
 
     case t_QUAD:
       av = avma; gsincos(quadtofp(x, prec), s, c, prec);
-      gerepileall(av, 2, s, c); return;
+      (void)gc_all(av, 2, s, c); return;
 
     default:
       av = avma; if (!(y = toser_i(x))) break;

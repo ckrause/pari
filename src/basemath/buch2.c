@@ -2764,7 +2764,7 @@ automorphism_matrices(GEN nf, GEN *cycp)
     gel(mats, id) = Mi = M = nfgaloismatrix(nf, aut);
     for (i = 2; i < lg(cyc); i++) gel(mats, cyc[i]) = Mi = ZM_mul(Mi, M);
   }
-  gerepileall(av, 2, &mats, &cyclic);
+  (void)gc_all(av, 2, &mats, &cyclic);
   if (cycp) *cycp = cyclic;
   return mats;
 }
@@ -4035,7 +4035,7 @@ START:
           if (DEBUGLEVEL)
             timer_printf(&T, "hnfadd (%ld + %ld)", l-1, lg(dep)-1);
         }
-        gerepileall(av2, 5, &W,&C,&B,&dep,&embs);
+        (void)gc_all(av2, 5, &W,&C,&B,&dep,&embs);
         cache.chk = cache.last;
       }
       else if (!W)

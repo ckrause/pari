@@ -2287,7 +2287,7 @@ lfunthetaspec(GEN linit, long bitprec, GEN *pv, GEN *pv2)
   }
   *pv = v;
   *pv2 = v2;
-  gerepileall(av, 2, pv,pv2);
+  (void)gc_all(av, 2, pv,pv2);
 }
 
 static GEN
@@ -2531,7 +2531,7 @@ lfunzeros_i(struct lhardyz_t *S, GEN *pw, long *ct, GEN T1, GEN T2, long d,
       if (T == T2) { setlg(w, *ct); *pw = w; return; }
     }
     z = zbrent(S, lfunhardyzeros, T0, T, prec); /* T <= T2 */
-    gerepileall(av, 2, &T, &z);
+    (void)gc_all(av, 2, &T, &z);
     if (*ct > W) { W *= 2; w = vec_lengthen(w, W); }
     if (typ(z) == t_REAL) z  = rtor(z, precinit);
     gel(w, (*ct)++) = z;

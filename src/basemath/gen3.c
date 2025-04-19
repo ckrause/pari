@@ -1616,7 +1616,7 @@ gsubst(GEN x, long v, GEN y)
             if (gc_needed(av,1))
             {
               if(DEBUGMEM>1) pari_warn(warnmem,"gsubst");
-              gerepileall(av,2, &z,&t);
+              (void)gc_all(av,2, &z,&t);
             }
           }
           if (!ex) return gc_GEN(av,z);
@@ -1804,7 +1804,7 @@ serreverse(GEN x)
       GEN dummy = cgetg(1,t_VEC);
       if(DEBUGMEM>1) pari_warn(warnmem,"serreverse");
       for(k=i+1; k<lx; k++) gel(u,k) = gel(y,k) = dummy;
-      gerepileall(av,2, &u,&y);
+      (void)gc_all(av,2, &u,&y);
     }
   }
   if (a) y = ser_unscale(y, ginv(a));
@@ -4491,7 +4491,7 @@ poleval(GEN x, GEN y)
     if (gc_needed(av0,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"poleval: i = %ld",i);
-      gerepileall(av, 2, &t, &t2);
+      (void)gc_all(av, 2, &t, &t2);
     }
   }
   return gerepileupto(av0, gadd(t2, gmul(y, t)));

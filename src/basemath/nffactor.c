@@ -226,7 +226,7 @@ nfgcd_all(GEN P, GEN Q, GEN T, GEN den, GEN *Pnew)
     if (gc_needed(btop, 1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"nfgcd");
-      gerepileall(btop, 2, &M, &mod);
+      (void)gc_all(btop, 2, &M, &mod);
     }
     /* I suspect it must be better to take amax > bmax*/
     bo = sqrti(shifti(mod, -1));
@@ -1390,7 +1390,7 @@ bestlift_init(long a, GEN nf, GEN C, nflift_t *L)
     GSmin = max_radius(PRK, B);
     if (gcmp(GSmin, C) >= 0) break;
   }
-  gerepileall(av2, 2, &PRK, &GSmin);
+  (void)gc_all(av2, 2, &PRK, &GSmin);
   iPRK = ZM_inv(PRK, NULL);
   if (DEBUGLEVEL>2)
     err_printf("for this exponent, GSmin = %Ps\nTime reduction: %ld\n",
@@ -1568,7 +1568,7 @@ AGAIN:
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"nf_LLL_cmbf");
-      gerepileall(av, L->Tpk? 9: 8,
+      (void)gc_all(av, L->Tpk? 9: 8,
                       &CM_L,&TT,&Tra,&famod,&L->GSmin,&L->pk,&L->prk,&L->iprk,
                       &L->Tpk);
     }

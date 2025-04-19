@@ -2249,7 +2249,7 @@ RgXQX_pseudodivrem(GEN x, GEN y, GEN T, GEN *ptr)
       GEN X = x-2;
       if(DEBUGMEM>1) pari_warn(warnmem,"RgX_pseudodivrem dx=%ld >= %ld",dx,dy);
       X[0] = evaltyp(t_POL)|_evallg(dx+3); X[1] = z[1]; /* hack */
-      gerepileall(av2,2, &X, &z); x = X+2;
+      (void)gc_all(av2,2, &X, &z); x = X+2;
     }
   }
   while (dx >= 0 && gequal0(gel(x,0))) { x++; dx--; }
@@ -2643,7 +2643,7 @@ RgXn_expint(GEN h, long e)
     if (gc_needed(av2,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"RgXn_expint, e = %ld", n);
-      gerepileall(av2, 2, &f, &g);
+      (void)gc_all(av2, 2, &f, &g);
     }
   }
   return gerepileupto(av, f);
@@ -2698,7 +2698,7 @@ RgXn_reverse(GEN f, long e)
     if (gc_needed(av2,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgXn_reverse, e = %ld", n);
-      gerepileall(av2, 2, &a, &W);
+      (void)gc_all(av2, 2, &a, &W);
     }
   }
   return gerepileupto(av, a);
@@ -2729,7 +2729,7 @@ RgXn_sqrt(GEN h, long e)
     if (gc_needed(av2,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgXn_sqrt, e = %ld", n);
-      gerepileall(av2, 2, &f, &df);
+      (void)gc_all(av2, 2, &f, &df);
     }
   }
 }

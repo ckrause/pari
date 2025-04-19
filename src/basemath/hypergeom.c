@@ -190,7 +190,7 @@ hyperu_i(GEN a, GEN b, GEN x, long prec)
       t = gprec_wtrunc(gadd(gmul(p1,t), gaddgs(a,k)), l);
       if (!k) break;
       T = gsubgs(gsub(T, S), 2*k-1);
-      if (gc_needed(av2,3)) gerepileall(av2, 3, &s,&t,&T);
+      if (gc_needed(av2,3)) (void)gc_all(av2, 3, &s,&t,&T);
     }
     q = utor(n, l);
     zf = gpow(utoi(n), gneg_i(a), l);
@@ -215,13 +215,13 @@ hyperu_i(GEN a, GEN b, GEN x, long prec)
         f = gadd(f, p1 = gmul(d,v));
         if (gequal0(p1) || gexpo(p1) - gexpo(f) <= 1-prec2nbits(precision(p1)))
           break;
-        if (gc_needed(av3,3)) gerepileall(av3,5,&u,&v,&d,&e,&f);
+        if (gc_needed(av3,3)) (void)gc_all(av3,5,&u,&v,&d,&e,&f);
       }
       u = e;
       v = f;
       q = mulrr(q, addrs(c,1));
       if (expo(x) - expo(subrr(q,x)) >= bit) break;
-      gerepileall(av2, 3, &u,&v,&q);
+      (void)gc_all(av2, 3, &u,&v,&q);
     }
   }
   else
@@ -460,7 +460,7 @@ Ftaylor(GEN N, GEN D, GEN z, long prec)
     S = gadd(S, C); j++;
     if (j > mi)
     { if (tol > bitmin) ct = 0; else if (++ct >= lN+lD-2) break; }
-    if (gc_needed(av, 1)) gerepileall(av, 2, &S, &C);
+    if (gc_needed(av, 1)) (void)gc_all(av, 2, &S, &C);
   }
   return S;
 }
@@ -569,7 +569,7 @@ F21finitetaylor(long m, GEN b, GEN c, GEN z, long prec)
     if (j > mi && !gequal0(S))
     { if (gexpo(p) - gexpo(S) > bitmin) ct = 0; else if (++ct == 3) break; }
     S = odd(j)? gsub(S, p): gadd(S, p);
-    if (gc_needed(av, 1)) gerepileall(av, 2, &S, &P);
+    if (gc_needed(av, 1)) (void)gc_all(av, 2, &S, &P);
   }
   return S;
 }
@@ -776,7 +776,7 @@ F21taylorlim(GEN N, long m, GEN z, GEN Z, long ind, long prec)
     else
       S = (si == 1)? gadd(S, C): gsub(S, C);
     if (++j > mi) { if (tol > bitmin) ct = 0; else if (++ct == 3) break; }
-    if (gc_needed(av, 1)) gerepileall(av, 3, &S, &C, &P);
+    if (gc_needed(av, 1)) (void)gc_all(av, 3, &S, &C, &P);
   }
   return gdiv(S, mpfact(m));
 }
@@ -1095,7 +1095,7 @@ Qp_hypergeom(GEN N, GEN D, GEN z)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"hypergeom, i = %ld / %ld", i,l);
-      gerepileall(av, 2, &R, &S);
+      (void)gc_all(av, 2, &R, &S);
     }
   }
   return S;
@@ -1168,7 +1168,7 @@ serhypergeom(GEN N, GEN D, GEN y, long prec)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"hypergeom, i = %ld / %ld", i,l-1);
-      gerepileall(av, 4, &S, &R, &Ni, &Di);
+      (void)gc_all(av, 4, &S, &R, &Ni, &Di);
     }
   }
   return S;

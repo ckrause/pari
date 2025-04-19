@@ -1015,7 +1015,7 @@ gen_inccrt(const char *str, GEN worker, GEN dB, long n, long mmin,
 {
   pari_sp av = avma;
   gen_inccrt_i(str, worker, dB, n, mmin, S, pH, pmod, crt, center);
-  gerepileall(av, 2, pH, pmod);
+  (void)gc_all(av, 2, pH, pmod);
 }
 
 GEN
@@ -1238,7 +1238,7 @@ Flx_resultant_set_dglist(GEN a, GEN b, GEN dglist, ulong p)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"Flx_resultant_all");
-      gerepileall(av, 2, &a,&b);
+      (void)gc_all(av, 2, &a,&b);
     }
     db = dc; /* = degpol(b) */
   }
@@ -1303,7 +1303,7 @@ Flx_resultant_all(GEN a, GEN b, long *C0, long *C1, GEN dglist, ulong p)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"Flx_resultant_all");
-      gerepileall(av, 2, &a,&b);
+      (void)gc_all(av, 2, &a,&b);
     }
   }
   if (da > 1) return 0; /* Failure */
@@ -1555,7 +1555,7 @@ ZX_discbound(GEN A)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZX_discbound i = %ld",i);
-      gerepileall(av, 2, &a, &b);
+      (void)gc_all(av, 2, &a, &b);
     }
   }
   loga = dbllog2(a);
@@ -1689,7 +1689,7 @@ FlxX_resultant(GEN u, GEN v, ulong p, long sx)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"FlxX_resultant, dr = %ld",dr);
-      gerepileall(av2,4, &u, &v, &g, &h);
+      (void)gc_all(av2,4, &u, &v, &g, &h);
     }
   }
   z = gel(v,2);
@@ -1974,7 +1974,7 @@ INIT:
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"ZX_ZXY_rnfequation");
-      gerepileall(av2, 4, &H, &q, &H0, &H1);
+      (void)gc_all(av2, 4, &H, &q, &H0, &H1);
     }
   }
 END:
@@ -2526,7 +2526,7 @@ QXQ_inv(GEN A, GEN B)
     GEN res, b, N, den;
     gen_inccrt_i("QXQ_inv", worker, NULL, (k+1)>>1, 0, &S, &H, &mod,
                  nxV_chinese_center, FpX_center);
-    gerepileall(av2, 2, &H, &mod);
+    (void)gc_all(av2, 2, &H, &mod);
     b = sqrti(shifti(mod,-1));
     if (DEBUGLEVEL>5) timer_start(&ti);
     U = FpX_ratlift(H, mod, b, b, NULL);
@@ -2631,7 +2631,7 @@ QXQ_div(GEN A, GEN B, GEN C)
     GEN res, b, N, den;
     gen_inccrt_i("QXQ_div", worker, NULL, (k+1)>>1, 0, &S, &H, &mod,
                  nxV_chinese_center, FpX_center);
-    gerepileall(av2, 2, &H, &mod);
+    (void)gc_all(av2, 2, &H, &mod);
     b = sqrti(shifti(mod,-1));
     if (DEBUGLEVEL>5) timer_start(&ti);
     U = FpX_ratlift(H, mod, b, b, NULL);

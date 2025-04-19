@@ -872,7 +872,7 @@ ellsigma(GEN w, GEN z, long flag, long prec0)
     if (gc_needed(av1,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ellsigma");
-      gerepileall(av1,urninv? 5: 4, &y,&qn,&qn2,&urn,&urninv);
+      (void)gc_all(av1,urninv? 5: 4, &y,&qn,&qn2,&urn,&urninv);
     }
   }
   y = gmul(y, gdiv(q8, thetanull11(T.Tau,prec)));
@@ -1123,7 +1123,7 @@ RgXn_eta(GEN q, long v, long lim)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"eta, n = %ld", n);
-      gerepileall(av, 3, &y, &qn, &ps);
+      (void)gc_all(av, 3, &y, &qn, &ps);
     }
   }
   return y;
@@ -1186,7 +1186,7 @@ inteta(GEN q)
       if (gc_needed(av,3))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"eta");
-        gerepileall(av, 3, &y, &qn, &ps);
+        (void)gc_all(av, 3, &y, &qn, &ps);
       }
     }
   }
@@ -1206,7 +1206,7 @@ inteta(GEN q)
       if (gc_needed(av,3))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"eta");
-        gerepileall(av, 3, &y, &qn, &ps);
+        (void)gc_all(av, 3, &y, &qn, &ps);
       }
     }
   }
@@ -1808,7 +1808,7 @@ vecthetanullk_loop(GEN q2, long k, long prec)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"vecthetanullk_loop, n = %ld",n);
-      gerepileall(av, 3, &qn, &ps, &y);
+      (void)gc_all(av, 3, &qn, &ps, &y);
     }
   }
 }

@@ -1426,7 +1426,7 @@ gadw(GEN x, long p)
     t = gmul(t, gaddgs(x, k-1));
     c = leafcopy(gel(u,1)); setvalp(c, valp(c) + k); /* c = u[1] * p^k */
     s = gadd(s, gmul(c, t));
-    if ((k&0xFL)==0) gerepileall(ltop, 3, &u,&s,&t);
+    if ((k&0xFL)==0) (void)gc_all(ltop, 3, &u,&s,&t);
   }
   return gneg(s);
 }
@@ -2144,7 +2144,7 @@ serpsiz0(GEN z0, long L, long v, long prec)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"serpsiz0, n = %ld", n);
-      gerepileall(av, 7, &A,&A1,&A2, &B,&B1,&B2, &Q);
+      (void)gc_all(av, 7, &A,&A1,&A2, &B,&B1,&B2, &Q);
     }
   }
   Q = gmul(Q, gmul2n(gsubsg(1, ginv(tr(pol_x(v),z0, L))), 1));

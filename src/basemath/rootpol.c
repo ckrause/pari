@@ -839,7 +839,7 @@ parameters(GEN p, long *LMAX, double *mu, double *gamma,
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"parameters");
-      gerepileall(av2,2, &g,&RU);
+      (void)gc_all(av2,2, &g,&RU);
     }
   }
   *gamma = mydbllog2r(divru(g,NN));
@@ -919,7 +919,7 @@ dft(GEN p, long k, long NN, long Lmax, long bit, GEN F, GEN H, long polreal)
       }
     }
     prim2 = gmul(prim2,prim);
-    gerepileall(ltop,3, &W,&U,&prim2);
+    (void)gc_all(ltop,3, &W,&U,&prim2);
   }
 
   for (i=1; i<=k; i++)
@@ -951,7 +951,7 @@ refine_H(GEN F, GEN G, GEN HH, long bit, long Sbit)
     if (gc_needed(ltop,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"refine_H");
-      gerepileall(ltop,2, &D,&H);
+      (void)gc_all(ltop,2, &D,&H);
     }
     bit1 = -error + Sbit;
     aux = RgX_mul(mygprec(H,bit1), mygprec(D,bit1));
@@ -988,7 +988,7 @@ refine_F(GEN p, GEN *F, GEN *G, GEN H, long bit, double gamma)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"refine_F");
-      gerepileall(av,4, &FF,&GG,&r,&HH);
+      (void)gc_all(av,4, &FF,&GG,&r,&HH);
     }
 
     bit1 = -error + Sbit2;
@@ -1100,7 +1100,7 @@ conformal_basecase(GEN p, GEN a)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"conformal_pol (%ld/%ld)",n-i, n);
-      gerepileall(av,2, &r,&z);
+      (void)gc_all(av,2, &r,&z);
     }
   }
 }
@@ -1219,7 +1219,7 @@ conformal_mapping(double *radii, GEN ctr, GEN p, long k, long bit,
   bit2 += (long)(n * fabs(lrho)/M_LN2 + 1.);
   R = mygprec(dblexp(-lrho), bit2);
   q = scalepol(q,R,bit2);
-  gerepileall(av,2, &q,&R);
+  (void)gc_all(av,2, &q,&R);
 
   optimize_split(q,k,delta,bit2,&FF,&GG,param,param2);
   bit2 += n; R = invr(R);
@@ -1235,7 +1235,7 @@ conformal_mapping(double *radii, GEN ctr, GEN p, long k, long bit,
   GG = RgX_Rg_mul(GG, powru(a,n-k));
 
   *F = mygprec(FF,bit+n);
-  *G = mygprec(GG,bit+n); gerepileall(ltop,2, F,G);
+  *G = mygprec(GG,bit+n); (void)gc_all(ltop,2, F,G);
 }
 
 /* split p, this time without scaling. returns in F and G two polynomials
@@ -2336,7 +2336,7 @@ usp(GEN Q0, long flag, long bitprec)
     }
     if (gc_needed(av, 2))
     {
-      gerepileall(av, 6, &Q0, &Q, &c, &Lc, &Lk, &sol);
+      (void)gc_all(av, 6, &Q0, &Q, &c, &Lc, &Lk, &sol);
       if (DEBUGMEM > 1) pari_warn(warnmem, "ZX_Uspensky", avma);
     }
   }

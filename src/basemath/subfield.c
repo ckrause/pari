@@ -418,7 +418,7 @@ embedding(GEN g, GEN DATA, primedata *S, GEN den, GEN listdelta)
       if (DEBUGLEVEL) err_printf("coeff too big for embedding\n");
       return NULL;
     }
-    gerepileall(av, 5, &w1,&h0,&w1_Q,&q,&p);
+    (void)gc_all(av, 5, &w1,&h0,&w1_Q,&q,&p);
     q2 = sqri(q);
     wpow = FpXQ_powers(w1, rt, T, q2);
     /* h0 := h0 * (2 - h0 g'(w1)) mod (T,q)

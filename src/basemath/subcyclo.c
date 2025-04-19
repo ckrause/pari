@@ -987,7 +987,7 @@ factor_Aurifeuille_aux(GEN A, long Astar, long n, GEN P,
           s = Fp_mul(gel(powers, j-lastj), s, le); /* z^j */
           lastj = j;
           f = Fp_mul(f, subii((j & 3) == 1? a: b, s), le);
-          if (++k == 0x1ff) { gerepileall(av, 2, &s, &f); k = 0; }
+          if (++k == 0x1ff) { (void)gc_all(av, 2, &s, &f); k = 0; }
         }
     }
     else
@@ -1012,7 +1012,7 @@ factor_Aurifeuille_aux(GEN A, long Astar, long n, GEN P,
           s = Fp_mul(gel(powers, j-lastj), s, le); /* z^j */
           lastj = j;
           f = Fp_mul(f, subii(t, s), le);
-          if (++k == 0x1ff) { gerepileall(av, 2, &s, &f); k = 0; }
+          if (++k == 0x1ff) { (void)gc_all(av, 2, &s, &f); k = 0; }
         }
     }
   }
@@ -1057,7 +1057,7 @@ factor_Aurifeuille_aux(GEN A, long Astar, long n, GEN P,
         s = Fp_mul(gel(powers, j-lastj), s, le);
         lastj = j;
         f = Fp_mul(f, subii(kross(j,Astar)==1? a: b, s), le);
-        if (++k == 0x1ff) { gerepileall(av, 2, &s, &f); k = 0; }
+        if (++k == 0x1ff) { (void)gc_all(av, 2, &s, &f); k = 0; }
       }
   }
   return f;

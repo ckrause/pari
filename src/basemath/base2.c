@@ -375,7 +375,7 @@ get_maxord(nfmaxord_t *S, GEN T0, long flag)
             p = gcdii(gel(x,1), gel(x,2));
             u = diviiexact(gel(x,1),p);
             if (DEBUGLEVEL) pari_warn(warner,"impossible inverse: %Ps", x);
-            gerepileall(av, 2, &p, &u);
+            (void)gc_all(av, 2, &p, &u);
 
             u = get_coprimes(p, u); l = lg(u);
             /* no small factors, but often a prime power */
@@ -493,7 +493,7 @@ nfmaxord(nfmaxord_t *S, GEN T0, long flag)
       for (  ; j<=2*n-k; j++) gel(M,j) = ZC_Z_mul(gel(b,j+k-n), da);
       da = mulii(da,db);
       a = ZM_hnfmodall_i(M, da, hnf_MODID|hnf_CENTER);
-      gerepileall(av, 2, &a, &da);
+      (void)gc_all(av, 2, &a, &da);
       centered = 1;
     }
   }
@@ -1185,13 +1185,13 @@ Decomp(decomp_t *S, long flag)
   }
   else if (flag)
   {
-    gerepileall(av, 2, &f1, &f2);
+    (void)gc_all(av, 2, &f1, &f2);
     return shallowconcat(ZpX_monic_factor_squarefree(f1, p, flag),
                          ZpX_monic_factor_squarefree(f2, p, flag));
   } else {
     GEN D, d1, d2, B1, B2, M;
     long n, n1, n2, i;
-    gerepileall(av, 4, &f1, &f2, &e, &de);
+    (void)gc_all(av, 4, &f1, &f2, &e, &de);
     D = de;
     B1 = get_partial_order_as_pols(p,f1); n1 = lg(B1)-1;
     B2 = get_partial_order_as_pols(p,f2); n2 = lg(B2)-1; n = n1+n2;
@@ -1307,7 +1307,7 @@ newtonsums(GEN p, GEN a, GEN da, long vda, GEN chi, long c, GEN pp, GEN ns)
     if (gc_needed(av, 1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem, "newtonsums");
-      gerepileall(av, dpa?4:3, &pa, &va, &pp, &dpa);
+      (void)gc_all(av, dpa?4:3, &pa, &va, &pp, &dpa);
     }
   }
   for (; j <= c; j++) gel(va,j) = gen_0;
@@ -1741,7 +1741,7 @@ loop(decomp_t *S, long Ea)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM > 1) pari_warn(warnmem, "nilord");
-      gerepileall(av, S->invnu? 6: 4, &beta, &(S->precns), &(S->ns), &(S->nsf), &(S->invnu), &(S->Dinvnu));
+      (void)gc_all(av, S->invnu? 6: 4, &beta, &(S->precns), &(S->ns), &(S->nsf), &(S->invnu), &(S->Dinvnu));
     }
   }
 }
@@ -3347,7 +3347,7 @@ rnfmaxord(GEN nf, GEN pol, GEN pr, long vdisc)
   sep = itos(gel(p1,3));
   W = gmael(p1,2,1);
   I = gmael(p1,2,2);
-  gerepileall(av1, 2, &W, &I);
+  (void)gc_all(av1, 2, &W, &I);
 
   mpi = zk_multable(nf, pr_get_gen(pr));
   n = degpol(pol); nn = n*n;
@@ -3442,7 +3442,7 @@ rnfmaxord(GEN nf, GEN pol, GEN pr, long vdisc)
     if (gc_needed(av1,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"rnfmaxord");
-      gerepileall(av1,2, &W,&I);
+      (void)gc_all(av1,2, &W,&I);
     }
   }
   return gc_GEN(av, mkvec2(W, I));
@@ -3915,7 +3915,7 @@ rnfsteinitz(GEN nf, GEN M)
       nfidealdet1(nf,a,b, &x,&y,&z,&t);
       x = RgC_add(nfC_nf_mul(nf, c1, x), nfC_nf_mul(nf, c2, y));
       y = RgC_add(nfC_nf_mul(nf, c1, z), nfC_nf_mul(nf, c2, t));
-      gerepileall(av2, 2, &x,&y);
+      (void)gc_all(av2, 2, &x,&y);
       gel(A,i) = x;
       gel(A,i+1) = y;
       gel(I,i+1) = Q_primitive_part(idealmul(nf,a,b), &c);

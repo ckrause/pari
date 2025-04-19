@@ -178,7 +178,7 @@ bezout_lehmer(GEN a, GEN b, GEN *pu, GEN *pv)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"bezout");
-      gerepileall(av1,6, &d,&d1,&u,&u1,&v,&v1);
+      (void)gc_all(av1,6, &d,&d1,&u,&u1,&v,&v1);
     }
   } /* end while */
 
@@ -229,7 +229,7 @@ bezout_halfgcd(GEN x, GEN y, GEN *ptu, GEN *ptv)
       R = mulq(R, q);
     }
     if (gc_needed(av, 1))
-      gerepileall(av,3,&x,&y,&R);
+      (void)gc_all(av,3,&x,&y,&R);
   }
   y = bezout_lehmer(x,y,&u,&v);
   R = ZM_inv2(R);

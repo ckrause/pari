@@ -416,7 +416,7 @@ this is checked within \kbd{gerepile}. But beware as well that the addresses
 of the objects in the translated zone change after a call to \kbd{gerepile},
 so you must not access any pointer which previously pointed into the zone
 below \kbd{ltop}. If you need to recover more than one object, use the
-\kbd{gerepileall} function below.
+\kbd{gc\_all} function below.
 
 \misctitle{Remark}
 As a consequence of the preceding explanation, if a PARI object is to be
@@ -471,26 +471,27 @@ satisfy any property before the garbage collection: it may be disconnected,
 components created before the root, and so on. Of course, this is about
 twice slower than either \tet{gerepileupto} or \tet{gerepile}, because
 \kbd{x} has to be copied to a clean stack zone first. This function is a
-special case of \tet{gerepileall} below, where $n=1$.
+special case of \tet{gc_all} below, where $n=1$.
 
-\fun{void}{gerepileall}{pari_sp ltop, int n, ...}.
+\fun{GEN}{gc_all}{pari_sp ltop, int n, ...}.
 To cope with complicated cases where many objects have to be preserved. The
 routine expects $n$ further arguments, which are the \emph{addresses} of
 the \kbd{GEN}s you want to preserve:
 \bprog
   pari_sp ltop = avma;
   ...; y = ...; ... x = ...; ...;
-  gerepileall(ltop, 2, &x, &y);
+  gc_all(ltop, 2, &x, &y);
 @eprog\noindent
 It cleans up the most recent part of the
 stack (between \kbd{ltop} and \kbd{avma}), updating all the \kbd{GEN}s added
 to the argument list. A copy is done just before the cleaning to preserve
 them, so they do not need to be connected before the call. With
 \kbd{gc\_GEN}, this is the most robust of the \kbd{gerepile} functions
-(the less prone to user error), hence the slowest.
+(the less prone to user error), hence the slowest. For convenience,
+this function also returns the new value of $x$.
 
 \fun{void}{gerepileallsp}{pari_sp ltop, pari_sp lbot, int n, ...}.
-More efficient, but trickier than \kbd{gerepileall}. Cleans the stack between
+More efficient, but trickier than \kbd{gc\_all}. Cleans the stack between
 \kbd{lbot} and \kbd{ltop} and updates the \kbd{GEN}s pointed at by the
 elements of \kbd{gptr} without any further copying. This is subject to the
 same restrictions as \kbd{gerepile}, the only difference being that more than
@@ -647,9 +648,9 @@ vector. Hint: start with a \kbd{cgetg} of the result, and use \kbd{gerepile}
 whenever a coefficient of the result vector is computed. You can look at the
 answer in \kbd{src/basemath/RgV.c:RgM\_RgC\_mul()}.
 
-\subsubsec{gerepileall}
+\subsubsec{gc\_all}
 
-Let us now see why we may need the \kbd{gerepileall} variants. Although it
+Let us now see why we may need the \kbd{gc\_all} variants. Although it
 is not an infrequent occurrence, we do not give a specific example but a
 general one: suppose that we want to do a computation (usually inside a
 larger function) producing more than one PARI object as a result, say two for
@@ -660,10 +661,10 @@ then connected garbage from lbot to ltop. If we write
   z1 = gerepile(ltop, lbot, z1);
 @eprog\noindent
 then the stack is cleaned, the pointers fixed up, but we have lost the
-address of \kbd{z2}. This is where we need the \idx{gerepileall}
+address of \kbd{z2}. This is where we need the \idx{gc_all}
 function:
 \bprog
-  gerepileall(ltop, 2, &z1, &z2)
+   gc_all(ltop, 2, &z1, &z2)
 @eprog
 \noindent copies \kbd{z1} and \kbd{z2} to new locations, cleans the stack
 from \kbd{ltop} to the old \kbd{avma}, and updates the pointers \kbd{z1} and
@@ -683,7 +684,7 @@ whose size requirements we cannot (or do not bother to) control in advance:
     garbage(); x = anything();
     garbage(); y = anything(); garbage();
     if (gc_needed(av,1)) /*@Ccom memory is running low (half spent since entry) */
-      gerepileall(av, 2, &x, &y);
+      gc_all(av, 2, &x, &y);
   }
 @eprog
 \noindent Here we assume that only \kbd{x} and \kbd{y} are needed from one
@@ -707,7 +708,7 @@ running time, which is quite acceptable!
 
 Second, it is of course harder on the programmer, and quite error-prone
 if you do not stick to a consistent PARI programming style. If all seems
-lost, just use \tet{gc_GEN} (or \tet{gerepileall}) to fix up the stack
+lost, just use \tet{gc_GEN} or \tet{gc_all} to fix up the stack
 for you. You can always optimize later when you have sorted out exactly which
 routines are crucial and what objects need to be preserved and their usual
 sizes.
@@ -2435,7 +2436,7 @@ of linear. Here is a better version of that loop:
     vx = subii(ux, mulii(q, vx));
     ux = v; a = b; b = r;
     if (gc_needed(av,1))
-      gerepileall(av, 4, &a, &b, &ux, &vx);
+      (void)gc_all(av, 4, &a, &b, &ux, &vx);
   }
 @eprog
 \newpage

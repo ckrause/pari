@@ -1029,7 +1029,7 @@ block_lanczos(GEN B, ulong nbrow)
     vt_a_v1 = vt_a_v0;
     vt_a2_v1 = vt_a2_v0;
     mask1 = mask0;
-    gerepileall(av2, 9, &x, &s0, &v0, &v1, &v2,
+    (void)gc_all(av2, 9, &x, &s0, &v0, &v1, &v2,
                         &winv1, &winv2, &vt_a_v1, &vt_a2_v1);
   }
   if (DEBUGLEVEL >= 5)

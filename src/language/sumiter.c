@@ -844,7 +844,7 @@ suminf(void *E, GEN (*eval)(void *, GEN), GEN a, long bit)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"suminf");
-      gerepileall(av,2, &x, &_1);
+      (void)gc_all(av,2, &x, &_1);
     }
   }
   return gerepileupto(av0, gsub(x, _1));
@@ -1264,7 +1264,7 @@ sumalt(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
     if (gc_needed(av,4))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"sumalt, k = %ld/%ld", k,N-1);
-      gerepileall(av2, 3, &az,&c,&s);
+      (void)gc_all(av2, 3, &az,&c,&s);
     }
   }
   return gerepileupto(av, gdiv(s,d));
@@ -1606,13 +1606,13 @@ solvestep(void *E, GEN (*f)(void *,GEN), GEN a, GEN b, GEN step, long flag, long
       if (gc_needed(av2,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"solvestep");
-        gerepileall(av2, 4, &a ,&fa, &v, &step);
+        (void)gc_all(av2, 4, &a ,&fa, &v, &step);
       }
     }
     if ((!(flag&2) || lg(v) > 1) && (!(flag&8) || ct))
       return gc_GEN(av, v);
     step = (flag&4)? sqrtnr(step,4): gmul2n(step, -2);
-    gerepileall(av2, 2, &fa, &step);
+    (void)gc_all(av2, 2, &fa, &step);
   }
   pari_err_IMPL("solvestep recovery [too many iterations]");
   return NULL;/*LCOV_EXCL_LINE*/

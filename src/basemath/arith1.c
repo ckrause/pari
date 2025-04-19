@@ -430,7 +430,7 @@ kronecker(GEN x, GEN y)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"kronecker");
-      gerepileall(av, 2, &x, &y);
+      (void)gc_all(av, 2, &x, &y);
     }
   }
   xu = itou(x);
@@ -1251,7 +1251,7 @@ Fp_sqrt_ii(GEN a, GEN y, GEN p)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"Fp_sqrt");
-      gerepileall(av,3, &y,&w,&v);
+      (void)gc_all(av,3, &y,&w,&v);
     }
   }
   return v;
@@ -1993,7 +1993,7 @@ gc_chinese(pari_sp av, GEN T, GEN a, GEN *pt_mod)
   else
   {
     GEN mod = gmael(T, lg(T)-1, 1);
-    gerepileall(av, 2, &a, &mod);
+    (void)gc_all(av, 2, &a, &mod);
     *pt_mod = mod;
     return a;
   }
@@ -3534,7 +3534,7 @@ Qsfcont(GEN a, GEN b, GEN y, ulong k)
         }
         break;
       }
-      if ((i & 0xff) == 0) gerepileall(av, 2, &b, &c);
+      if ((i & 0xff) == 0) (void)gc_all(av, 2, &b, &c);
       a = b; b = c;
     }
   } else {

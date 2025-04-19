@@ -209,7 +209,7 @@ vecF2_lk(GEN E, GEN K, GEN rbnd, GEN Q, GEN sleh, long prec)
       {
         long k = aB+b;
         if (k <= Kl && a[k]) s = addrr(s, mulsr(a[k], gel(z, b+1)));
-        if (gc_needed(av2, 1)) gerepileall(av2, 2, &s, &Sl);
+        if (gc_needed(av2, 1)) (void)gc_all(av2, 2, &s, &Sl);
       }
       Sl = addrr(mulrr(Sl, zB), s);
     }
@@ -537,7 +537,7 @@ heegner_psi(GEN E, GEN N, GEN points, long bitprec)
     rbnd[l] = itou(sqrtint(gel(bnd,l)))+1;
     gel(Q, l) = expIxy(pi2, gel(points, l), prec);
   }
-  gerepileall(av2, 2, &bnd, &Q);
+  (void)gc_all(av2, 2, &bnd, &Q);
   bndmax = gel(bnd,vecindexmax(bnd));
   gen_BG_init(&bg, E, N, bndmax);
   if (bitprec >= 1900)

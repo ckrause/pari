@@ -345,7 +345,7 @@ lllintpartialall(GEN m, long flag)
 
       /* Occasionally (including final pass) do garbage collection.  */
       if ((npass2 & 0xff) == 0 || !progress)
-        gerepileall(av2, 4, &dot11,&dot12,&dot22,&tm);
+        (void)gc_all(av2, 4, &dot11,&dot12,&dot22,&tm);
     } /* while npass2 < 2 || progress */
 
     {
@@ -397,7 +397,7 @@ lllintpartialall(GEN m, long flag)
     if (tm1) err_printf("tm1 = %Ps",tm1);
     err_printf("mid = %Ps",mid); /* = m * tm1 */
   }
-  gerepileall(av, tm1? 2: 1, &mid, &tm1);
+  (void)gc_all(av, tm1? 2: 1, &mid, &tm1);
   {
    /* For each pair of column vectors v and w in mid * tm2,
     * try to replace (v, w) by (v, v - q*w) for some q.
@@ -443,7 +443,7 @@ lllintpartialall(GEN m, long flag)
         if (gc_needed(av3,2))
         {
           if(DEBUGMEM>1) pari_warn(warnmem,"lllintpartialall");
-          gerepileall(av3, 2, &dot,&tm2);
+          (void)gc_all(av3, 2, &dot,&tm2);
         }
       } /* for i */
       if (!reductions) break;
@@ -2005,7 +2005,7 @@ smallvectors(GEN q, GEN BORNE, long maxnum, FP_chk_fun *CHECK)
           GEN dummy = cgetg(1, t_STR);
           for (i=s+1; i<=stockmax; i++) gel(norms,i) = dummy;
         }
-        gerepileall(av,7,&x,&y,&z,&normax1,&borne1,&borne2,&norms);
+        (void)gc_all(av,7,&x,&y,&z,&normax1,&borne1,&borne2,&norms);
       }
     }
     while (k > 1);

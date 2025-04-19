@@ -80,7 +80,7 @@ Zp_divlift(GEN b, GEN a, GEN x, GEN p, long n)
     if (gc_needed(av, 1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"gen_Zp_Newton");
-      gerepileall(av, 2, &x, &q);
+      (void)gc_all(av, 2, &x, &q);
     }
   }
   return gerepileupto(ltop, x);
@@ -877,7 +877,7 @@ ZpXQX_liftroot_vald(GEN f, GEN a, long v, GEN T, GEN p, long e)
     if (gc_needed(av2,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZpXQX_liftroot, e = %ld", e);
-      gerepileall(av2, 3, &a, &W, &q);
+      (void)gc_all(av2, 3, &a, &W, &q);
     }
   }
 }
@@ -1046,7 +1046,7 @@ gen_ZpM_Newton(GEN x, GEN p, long n, void *E,
     if (gc_needed(av, 1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"gen_ZpM_Newton");
-      gerepileall(av, 2, &x, &q);
+      (void)gc_all(av, 2, &x, &q);
     }
   }
   return gerepileupto(ltop, x);
@@ -1106,7 +1106,7 @@ gen_ZpX_Newton(GEN x, GEN p, long n, void *E,
     if (gc_needed(av, 1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"gen_ZpX_Newton");
-      gerepileall(av, 2, &x, &q);
+      (void)gc_all(av, 2, &x, &q);
     }
   }
   return gerepileupto(ltop, x);
@@ -1303,7 +1303,7 @@ ZpX_ZpXQ_liftroot_ea(GEN P, GEN S, GEN T, GEN p, long n, void *E,
     if (gc_needed(av, 1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZpX_ZpXQ_liftroot");
-      gerepileall(av, 8, &S, &W, &Q, &Tq2, &Tq, &Pq, &q, &q2);
+      (void)gc_all(av, 8, &S, &W, &Q, &Tq2, &Tq, &Pq, &q, &q2);
     }
   }
 }
@@ -1380,7 +1380,7 @@ ZpXQX_ZpXQXQ_liftroot(GEN P, GEN S, GEN U, GEN T, GEN p, long n)
     if (gc_needed(av, 1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZpXQX_ZpXQXQ_liftroot");
-      gerepileall(av, 10, &S, &W, &Q, &Uq2, &Uq, &Tq2, &Tq, &Pq, &q, &q2);
+      (void)gc_all(av, 10, &S, &W, &Q, &Uq2, &Uq, &Tq2, &Tq, &Pq, &q, &q2);
     }
   }
 }

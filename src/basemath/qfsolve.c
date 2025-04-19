@@ -380,7 +380,7 @@ update_fm(GEN f, GEN a, long i)
     for (k = 1; k < v; k++)
     {
       u = QM_mul(gel(f, k+1), u);
-      gel(f,k+1) = gen_0; /* for gerepileall */
+      gel(f,k+1) = gen_0; /* for (void)gc_all */
     }
     gel(f,v+1) = u;
   }
@@ -468,7 +468,7 @@ qfminimize_fact(GEN G, GEN P, GEN E, GEN d, long loc)
         if (gc_needed(av, 1))
         {
           if (DEBUGMEM >= 2) pari_warn(warnmem,"qfminimize");
-          gerepileall(av, 2, &G, &FU);
+          (void)gc_all(av, 2, &G, &FU);
         }
       }
       if (idx)

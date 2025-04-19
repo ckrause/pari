@@ -285,7 +285,7 @@ HGCD_basecase(GEN y, GEN x)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ratlift");
-      gerepileall(av, 6, &d, &d1, &u, &u1, &v, &v1);
+      (void)gc_all(av, 6, &d, &d1, &u, &u1, &v, &v1);
     }
   }
   while (expi(d1) >= m)

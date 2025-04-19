@@ -716,7 +716,7 @@ Fq_path_extends_to_floor(GEN j_prev, GEN j, GEN T, GEN p, GEN Phi2, long max_len
       gel(j_prev,i) = gel(j, i); gel(j,i) = j_next;
     }
     if (gc_needed(ltop, 2))
-      gerepileall(ltop, 2, &j, &j_prev);
+      (void)gc_all(ltop, 2, &j, &j_prev);
   }
   return gc_long(ltop, 0);
 }
@@ -745,7 +745,7 @@ Fp_path_extends_to_floor(GEN j_prev, GEN j, GEN p, GEN Phi2, long max_len, GEN *
       gel(j_prev,i) = gel(j, i); gel(j,i) = j_next;
     }
     if (gc_needed(ltop, 2))
-      gerepileall(ltop, 2, &j, &j_prev);
+      (void)gc_all(ltop, 2, &j, &j_prev);
   }
   return gc_long(ltop, 0);
 }

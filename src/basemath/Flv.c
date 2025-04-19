@@ -82,7 +82,7 @@ Flm_rsolve_upper_pre(GEN U, GEN B, ulong p, ulong pi)
   U12 = rowslice(U2, 1, n1);
   B1 = rowslice(B, 1, n1);
   B1 = Flm_sub(B1, Flm_mul_pre(U12, X2, p, pi), p);
-  if (gc_needed(av, 1)) gerepileall(av, 2, &B1, &X2);
+  if (gc_needed(av, 1)) (void)gc_all(av, 2, &B1, &X2);
   U11 = matslice(U, 1,n1, 1,n1);
   X1 = Flm_rsolve_upper_pre(U11, B1, p, pi);
   X = vconcat(X1, X2);
@@ -125,7 +125,7 @@ Flm_lsolve_upper_pre(GEN U, GEN B, ulong p, ulong pi)
   B2 = vecslice(B, n1 + 1, n);
   X1 = Flm_lsolve_upper_pre(U11, B1, p, pi);
   B2 = Flm_sub(B2, Flm_mul_pre(X1, U12, p, pi), p);
-  if (gc_needed(av, 1)) gerepileall(av, 3, &B2, &U22, &X1);
+  if (gc_needed(av, 1)) (void)gc_all(av, 3, &B2, &U22, &X1);
   X2 = Flm_lsolve_upper_pre(U22, B2, p, pi);
   X = shallowconcat(X1, X2);
   if (gc_needed(av, 1)) X = gc_GEN(av, X);
@@ -162,7 +162,7 @@ Flm_rsolve_lower_unit_pre(GEN L, GEN A, ulong p, ulong pi)
   X1 = Flm_rsolve_lower_unit_pre(L11, A1, p, pi);
   A2 = rowslice(A, m1 + 1, n);
   A2 = Flm_sub(A2, Flm_mul_pre(L21, X1, p, pi), p);
-  if (gc_needed(av, 1)) gerepileall(av, 2, &A2, &X1);
+  if (gc_needed(av, 1)) (void)gc_all(av, 2, &A2, &X1);
   L22 = matslice(L, m1+1,n, m1+1,m);
   X2 = Flm_rsolve_lower_unit_pre(L22, A2, p, pi);
   X = vconcat(X1, X2);
@@ -200,7 +200,7 @@ Flm_lsolve_lower_unit_pre(GEN L, GEN A, ulong p, ulong pi)
   A1 = vecslice(A, 1, m1);
   A1 = Flm_sub(A1, Flm_mul_pre(X2, L21, p, pi), p);
   L11 = rowslice(L1, 1, m1);
-  if (gc_needed(av, 1)) gerepileall(av, 3, &A1, &L11, &X2);
+  if (gc_needed(av, 1)) (void)gc_all(av, 3, &A1, &L11, &X2);
   X1 = Flm_lsolve_lower_unit_pre(L11, A1, p, pi);
   X = shallowconcat(X1, X2);
   if (gc_needed(av, 1)) X = gc_GEN(av, X);
@@ -282,7 +282,7 @@ Flm_CUP_pre(GEN A, GEN *R, GEN *C, GEN *U, GEN *P, ulong p, ulong pi)
     T22 = vecslicepermute(A2, P1, r1 + 1, n);
     C21 = Flm_lsolve_upper_pre(U11, T21, p, pi);
     if (gc_needed(av, 1))
-      gerepileall(av, 7, &R1, &C1, &P1, &U11, &U12, &T22, &C21);
+      (void)gc_all(av, 7, &R1, &C1, &P1, &U11, &U12, &T22, &C21);
     B2 = Flm_sub(T22, Flm_mul_pre(C21, U12, p, pi), p);
     r2 = Flm_CUP_pre(B2, &R2, &C2, &U2, &P2, p, pi);
     r = r1 + r2;
@@ -297,7 +297,7 @@ Flm_CUP_pre(GEN A, GEN *R, GEN *C, GEN *U, GEN *P, ulong p, ulong pi)
     for (i = 1; i <= r1; i++) (*P)[i] = P1[i];
     for (; i <= n; i++)       (*P)[i] = P1[P2[i - r1] + r1];
   }
-  if (gc_needed(av, 1)) gerepileall(av, 4, R, C, U, P);
+  if (gc_needed(av, 1)) (void)gc_all(av, 4, R, C, U, P);
   return r;
 }
 
@@ -364,7 +364,7 @@ Flm_echelon_pre(GEN A, GEN *R, GEN *C, ulong p, ulong pi)
         (*R)[j] = R2[j2++];
       }
   }
-  if (gc_needed(av, 1)) gerepileall(av, 2, R, C);
+  if (gc_needed(av, 1)) (void)gc_all(av, 2, R, C);
   return r;
 }
 

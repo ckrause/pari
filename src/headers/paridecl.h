@@ -6592,7 +6592,6 @@ INLINE void   gdiventz(GEN x, GEN y, GEN z);
 INLINE GEN    gdivsg(long s, GEN y);
 INLINE void   gdivz(GEN x, GEN y, GEN z);
 INLINE GEN    gen_I(void);
-INLINE void   gerepileall(pari_sp av, int n, ...);
 INLINE void   gerepilecoeffs(pari_sp av, GEN x, int n);
 INLINE void   gerepilemany(pari_sp av, GEN* g[], int n);
 INLINE int    gequalgs(GEN y, long s);

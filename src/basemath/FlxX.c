@@ -1314,9 +1314,9 @@ FlxqX_halfres_basecase(GEN a, GEN b, GEN T, ulong p, ulong pi, GEN *pa, GEN *pb,
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FlxqX_halfgcd (d = %ld)",degpol(b));
       if (res)
-        gerepileall(av, 8, &a,&b,&u1,&v1,&u,&v,&res->res,&res->lc);
+        (void)gc_all(av, 8, &a,&b,&u1,&v1,&u,&v,&res->res,&res->lc);
       else
-        gerepileall(av, 6, &a,&b,&u1,&v1,&u,&v);
+        (void)gc_all(av, 6, &a,&b,&u1,&v1,&u,&v);
     }
   }
   M = mkmat22(u,v,u1,v1); *pa = a; *pb = b;
@@ -1457,7 +1457,7 @@ FlxqX_gcd_basecase(GEN a, GEN b, GEN T, ulong p, ulong pi)
     if (gc_needed(av0,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FlxqX_gcd (d = %ld)",degpol(b));
-      gerepileall(av0,2, &a,&b);
+      (void)gc_all(av0,2, &a,&b);
     }
     av = avma; c = FlxqX_rem_pre(a, b, T, p, pi); a=b; b=c;
   }
@@ -1482,7 +1482,7 @@ FlxqX_gcd_pre(GEN x, GEN y, GEN T, ulong p, ulong pi)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FlxqX_gcd (y = %ld)",degpol(y));
-      gerepileall(av,2,&x,&y);
+      (void)gc_all(av,2,&x,&y);
     }
   }
   return gerepileupto(av, FlxqX_gcd_basecase(x, y, T, p, pi));
@@ -1508,7 +1508,7 @@ FlxqX_extgcd_basecase(GEN a, GEN b, GEN T, ulong p,ulong pi, GEN *ptu, GEN *ptv)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FlxqX_extgcd (d = %ld)",degpol(d));
-      gerepileall(av,5, &d,&d1,&u,&v,&v1);
+      (void)gc_all(av,5, &d,&d1,&u,&v,&v1);
     }
   }
   if (ptu)
@@ -1623,7 +1623,7 @@ FlxqX_safegcd(GEN P, GEN Q, GEN T, ulong p)
     if (gc_needed(av, 1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FlxqX_safegcd");
-      gerepileall(av, 2, &P,&Q);
+      (void)gc_all(av, 2, &P,&Q);
     }
     swap(P, Q);
   }
@@ -1667,7 +1667,7 @@ FlxqX_saferesultant(GEN a, GEN b, GEN T, ulong p)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FlxqX_resultant (da = %ld)",da);
-      gerepileall(av,3, &a,&b,&res);
+      (void)gc_all(av,3, &a,&b,&res);
     }
     da = db; /* = degpol(a) */
     db = dc; /* = degpol(b) */
@@ -1726,7 +1726,7 @@ FlxqX_resultant_basecase(GEN a, GEN b, GEN T, ulong p, ulong pi)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FlxqX_resultant (da = %ld)",da);
-      gerepileall(av,3, &a,&b,&res);
+      (void)gc_all(av,3, &a,&b,&res);
     }
     da = db; /* = degpol(a) */
     db = dc; /* = degpol(b) */
@@ -1767,7 +1767,7 @@ FlxqX_resultant_pre(GEN x, GEN y, GEN T, ulong p, ulong pi)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FlxqX_resultant (y = %ld)",degpol(y));
-      gerepileall(av,3,&x,&y,&res);
+      (void)gc_all(av,3,&x,&y,&res);
     }
   }
   res = Flxq_mul_pre(res, FlxqX_resultant_basecase(x, y, T, p, pi), T, p, pi);
@@ -2541,7 +2541,7 @@ FlxqXn_expint_pre(GEN h, long e, GEN T, ulong p, ulong pi)
     if (gc_needed(av2,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"FlxqXn_exp, e = %ld", n);
-      gerepileall(av2, 2, &f, &g);
+      (void)gc_all(av2, 2, &f, &g);
     }
   }
   return gerepileupto(av, f);

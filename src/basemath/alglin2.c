@@ -519,7 +519,7 @@ static void
 gerepilemat2_inplace(pari_sp av, GEN M, GEN P)
 {
   GEN M2 = M, P2 = P;
-  gerepileall(av, P ? 2: 1, &M2, &P2);
+  (void)gc_all(av, P ? 2: 1, &M2, &P2);
   RgM_replace(M, M2);
   if (P) RgM_replace(P, P2);
 }
@@ -633,7 +633,7 @@ RgM_Frobenius(GEN M, long flag, GEN *pt_P, GEN *pt_v)
   }
   fixlg(v, nb+1);
   if (pt_v) *pt_v = v;
-  gerepileall(pt_v ? ltop: av, P? 2: 1, &M, &P);
+  (void)gc_all(pt_v ? ltop: av, P? 2: 1, &M, &P);
   if (pt_P) *pt_P = P;
   return M;
 }
@@ -884,7 +884,7 @@ RgM_hess(GEN x0, long prec)
       if (gc_needed(av,2))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"hess, m = %ld", m);
-        gerepileall(av,2, &x, &t);
+        (void)gc_all(av,2, &x, &t);
       }
     }
   }
@@ -988,7 +988,7 @@ FpM_hess(GEN x, GEN p)
       if (gc_needed(av,2))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"hess, m = %ld", m);
-        gerepileall(av,2, &x, &t);
+        (void)gc_all(av,2, &x, &t);
       }
     }
   }
@@ -1175,7 +1175,7 @@ carberkowitz(GEN x, long v)
     if (gc_needed(av0,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"carberkowitz");
-      gerepileall(av, 2, &C, &V);
+      (void)gc_all(av, 2, &C, &V);
     }
     for (i = 1; i <= r+1; i++)
     {
@@ -2029,7 +2029,7 @@ QM_ImQ_all(GEN x, GEN *U, long remove, long hnf)
     *U = RgM_Rg_div(RgM_mul(*U,V),D);
     if (remove < 2) *U = shallowconcat(K,*U);
     if (!remove) x = shallowconcat(zeromatcopy(m-1,lg(K)-1), x);
-    gerepileall(av, 2, &x, U);
+    (void)gc_all(av, 2, &x, U);
   }
   else x = gc_GEN(av,x);
   return x;

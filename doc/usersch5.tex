@@ -1263,7 +1263,8 @@ before \kbd{av}.
 \fun{void}{retgc_const}{pari_sp av, GEN x} (macro) reset the stack to $av$
 before evaluating $x$ and returning it.
 
-\fun{GEN}{gc_all}{pari_sp av, int n, ...}. Assumes that $1 \leq n$. This is similar to \kbd{gerepileall}, expecting $n$ further \kbd{GEN*}
+\fun{GEN}{gc_all}{pari_sp av, int n, ...}. Assumes that $1 \leq n$. This
+functions expacts $n$ further \kbd{GEN*}
 arguments: the stack is cleaned and the corresponding \kbd{GEN} are
 copied to the stack starting from \kbd{av} (in this order: the first argument
 comes first), and the first such \kbd{GEN} is returned. To be used in the
@@ -1292,12 +1293,6 @@ the \kbd{n} elements which follow \kbd{n} in the argument list (of type
 \kbd{av} and \kbd{ltop}, and assumes that no garbage is present between
 \kbd{avma} and \kbd{ltop}. Analogous to (but faster than) \kbd{gerepileall}
 otherwise.
-
-\fun{void}{gerepilemany}{pari_sp av, GEN* g[], int n} alternative interface
-to \kbd{gerepileall}. The preserved \kbd{GEN}s are the elements of the array
-\kbd{g} of length $n$: \kbd{g[0]}, \kbd{g[1]}, \dots,
-\kbd{g[$n$-1]}. Obsolete: no more efficient than \kbd{gerepileall},
-error-prone, and clumsy (need to declare an extra \kbd{GEN *g}).
 
 \fun{void}{gerepilemanysp}{pari_sp av, pari_sp ltop, GEN* g[], int n}
 alternative interface to \kbd{gerepileallsp}. Obsolete.

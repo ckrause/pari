@@ -821,7 +821,7 @@ CYCLE:
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"real_relations");
-      gerepileall(av1, form1? 2: 1, &form, &form1);
+      (void)gc_all(av1, form1? 2: 1, &form, &form1);
     }
     if (rho < 0) rho = 0; /* first time in */
     else
@@ -1193,7 +1193,7 @@ START:
       W = hnfadd_i(W,BQ.vperm,&dep,&B,&C, mat,extraC);
     if (DEBUGLEVEL>2) timer_printf(&T, "hnfadd");
     need = BQ.KC - (lg(W)-1) - (lg(B)-1);
-    gerepileall(av2, 4, &W,&C,&B,&dep);
+    (void)gc_all(av2, 4, &W,&C,&B,&dep);
     missing_primes = vecslice(BQ.vperm,1,need);
     if (need)
     {
