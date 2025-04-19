@@ -77,7 +77,7 @@ lift_to_frac(GEN t, GEN N, GEN amax, GEN bmax, GEN den, GEN tden)
     set_avma(av);
   }
   if (!Fp_ratlift(t, N, amax,bmax, &a,&b)) return NULL;
-  if (is_pm1(b)) { cgiv(b); return a; }
+  if (is_pm1(b)) return a;
   if ((den && !dvdii(den,b)) || !is_pm1(gcdii(a,b))) return NULL;
   return mkfrac(a, b);
 }
