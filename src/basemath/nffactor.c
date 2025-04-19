@@ -59,27 +59,25 @@ typedef struct
 /*******************************************************************/
 /*              RATIONAL RECONSTRUCTION (use ratlift)              */
 /*******************************************************************/
-/* NOT stack clean */
 static GEN
 lift_to_frac(GEN t, GEN N, GEN amax, GEN bmax, GEN den, GEN tden)
 {
+  pari_sp av = avma;
   GEN a, b;
   if (signe(t) < 0) /* in case t is a centerlift */
   {
-    if (abscmpii(t, amax) < 0) return t;
+    if (abscmpii(t, amax) < 0) return icopy(t);
     t = addii(t, N);
   }
   if (tden)
   {
-    pari_sp av = avma;
     a = Fp_center_i(Fp_mul(t, tden, N), N, shifti(N,-1));
     if (abscmpii(a, amax) < 0) return gerepileupto(av, Qdivii(a, tden));
-    set_avma(av);
   }
-  if (!Fp_ratlift(t, N, amax,bmax, &a,&b)) return NULL;
-  if (is_pm1(b)) return a;
-  if ((den && !dvdii(den,b)) || !is_pm1(gcdii(a,b))) return NULL;
-  return mkfrac(a, b);
+  if (!Fp_ratlift(t, N, amax,bmax, &a,&b)) return gc_NULL(av);
+  if (is_pm1(b)) return gc_GEN(av, a);
+  if ((den && !dvdii(den,b)) || !is_pm1(gcdii(a,b))) return gc_NULL(av);
+  return gc_GEN(av, mkfrac(a, b));
 }
 
 /* Compute rational lifting for all the components of P modulo N. Assume

@@ -7910,9 +7910,6 @@ exists). Return \kbd{NULL} if the reconstruction fails, and the rational
 matrix otherwise. If \kbd{denom} is not \kbd{NULL} check further that all
 denominators divide \kbd{denom}.
 
-The function is not stack clean if one of the coefficients of $M$ is negative
-(centered residues), but still suitable for \kbd{gerepileupto}.
-
 \fun{GEN}{FpX_ratlift}{GEN P, GEN m, GEN amax, GEN bmax, GEN denom} as
 \kbd{FpM\_ratlift}, where $P$ is an \kbd{FpX}.
 
