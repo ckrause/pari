@@ -59,12 +59,16 @@ typedef struct
 /*******************************************************************/
 /*              RATIONAL RECONSTRUCTION (use ratlift)              */
 /*******************************************************************/
-/* NOT stack clean. a, b stay on the stack */
+/* NOT stack clean */
 static GEN
 lift_to_frac(GEN t, GEN N, GEN amax, GEN bmax, GEN den, GEN tden)
 {
   GEN a, b;
-  if (signe(t) < 0) t = addii(t, N); /* in case t is a centerlift */
+  if (signe(t) < 0) /* in case t is a centerlift */
+  {
+    if (abscmpii(t, amax) < 0) return t;
+    t = addii(t, N);
+  }
   if (tden)
   {
     pari_sp av = avma;
