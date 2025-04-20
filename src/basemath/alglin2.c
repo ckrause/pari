@@ -511,12 +511,11 @@ RgM_replace(GEN M, GEN M2)
 {
   long n = lg(M)-1, m = nbrows(M), i, j;
   for(i=1; i<=n; i++)
-    for(j=1; j<=m; j++)
-      gcoeff(M, i, j) = gcoeff(M2, i, j);
+    for(j=1; j<=m; j++) gcoeff(M, i, j) = gcoeff(M2, i, j);
 }
 
 static void
-gerepilemat2_inplace(pari_sp av, GEN M, GEN P)
+gc_mat2(pari_sp av, GEN M, GEN P)
 {
   GEN M2 = M, P2 = P;
   (void)gc_all(av, P ? 2: 1, &M2, &P2);
@@ -551,7 +550,7 @@ weakfrobenius_step1(GEN M, GEN P, long j0)
     {
       if (DEBUGMEM > 1)
         pari_warn(warnmem,"RgM_minpoly stage 1: j0=%ld, j=%ld", j0, j);
-      gerepilemat2_inplace(av, M, P);
+      gc_mat2(av, M, P);
     }
   }
   return n;
@@ -571,7 +570,7 @@ weakfrobenius_step2(GEN M, GEN P, long j)
     {
       if (DEBUGMEM > 1)
         pari_warn(warnmem,"RgM_minpoly stage 2: j=%ld, i=%ld", j, i);
-      gerepilemat2_inplace(av, M, P);
+      gc_mat2(av, M, P);
     }
   }
 }
@@ -628,7 +627,7 @@ RgM_Frobenius(GEN M, long flag, GEN *pt_P, GEN *pt_v)
     {
       if (DEBUGMEM > 1)
         pari_warn(warnmem,"weakfrobenius j0=%ld",j0);
-      gerepilemat2_inplace(av2, M, P);
+      gc_mat2(av2, M, P);
     }
   }
   fixlg(v, nb+1);
