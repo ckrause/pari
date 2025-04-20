@@ -43,7 +43,7 @@ eltreltoabs(GEN eq, GEN x)
     if (typ(c) == t_POL) c = RgX_RgXQ_eval(c, a, Pabs);
     s = RgX_rem(gadd(c, gmul(b,s)), Pabs);
   }
-  return gerepileupto(av, s);
+  return gc_upto(av, s);
 }
 GEN
 rnfeltreltoabs(GEN rnf,GEN x)
@@ -519,7 +519,7 @@ rnfprincipaltohnf(GEN rnf,GEN x)
   GEN bas = rnf_get_zk(rnf), nf = rnf_get_nf(rnf);
   x = rnfbasistoalg(rnf,x);
   x = gmul(x, gmodulo(gel(bas,1), rnf_get_pol(rnf)));
-  return gerepileupto(av, nfhnf(nf, mkvec2(rnfV_to_nfM(rnf,x), gel(bas,2))));
+  return gc_upto(av, nfhnf(nf, mkvec2(rnfV_to_nfM(rnf,x), gel(bas,2))));
 }
 
 /* pseudo-basis for the 0 ideal */
@@ -570,7 +570,7 @@ rnfidealnormrel(GEN rnf, GEN id)
   GEN nf, z = gel(rnfidealhnf(rnf,id), 2);
   if (lg(z) == 1) return cgetg(1, t_MAT);
   nf = rnf_get_nf(rnf); z = idealprod(nf, z);
-  return gerepileupto(av, idealmul(nf,z, rnf_get_index(rnf)));
+  return gc_upto(av, idealmul(nf,z, rnf_get_index(rnf)));
 }
 
 GEN
@@ -580,7 +580,7 @@ rnfidealnormabs(GEN rnf, GEN id)
   GEN nf, z = gel(rnfidealhnf(rnf,id), 2);
   if (lg(z) == 1) return gen_0;
   nf = rnf_get_nf(rnf); z = prodidnorm(nf, z);
-  return gerepileupto(av, gmul(z, gel(rnf,9)));
+  return gc_upto(av, gmul(z, gel(rnf,9)));
 }
 
 static GEN
@@ -612,7 +612,7 @@ rnfidealreltoabs0(GEN rnf, GEN x, long flag)
   NF = obj_check(rnf,rnf_NFABS);
   l = lg(x); settyp(x, t_MAT);
   for (i=1; i<l; i++) gel(x,i) = algtobasis(NF, gel(x,i));
-  return gerepileupto(av, idealhnf(NF,x));
+  return gc_upto(av, idealhnf(NF,x));
 }
 
 GEN
@@ -644,7 +644,7 @@ rnfidealabstorel(GEN rnf, GEN x)
     gel(A,j) = t;
     gel(I,j) = gen_1;
   }
-  return gerepileupto(av, nfhnf(rnf_get_nf(rnf), mkvec2(A,I)));
+  return gc_upto(av, nfhnf(rnf_get_nf(rnf), mkvec2(A,I)));
 }
 
 GEN
@@ -670,7 +670,7 @@ rnfidealdown(GEN rnf,GEN x)
         for (i = 1; i < lz; i++) setlg(gel(z,i), l);
         z = ZM_hnfmodid(z, gcoeff(x,1,1));
         if (d) z = gdiv(z,d);
-        return gerepileupto(av, z);
+        return gc_upto(av, z);
       }
     }
   }
@@ -732,7 +732,7 @@ rnfidealup0(GEN rnf,GEN x, long flag)
   if (typ(gel(x2,2)) == t_COL) gel(x2,2) = ZM_ZC_mul(gel(proj,1),gel(x2,2));
   x2 = idealhnf_two(NF, x2);
   if (d) x2 = gdiv(x2,d);
-  return gerepileupto(av, x2);
+  return gc_upto(av, x2);
 }
 
 /* x a relative HNF => vector of 2 generators (relative polmods) */
@@ -772,7 +772,7 @@ rnfidealmul(GEN rnf,GEN x,GEN y)
   p1 = gmul(gel(y,1), gel(x,1));
   p2 = rnfV_to_nfM(rnf, gmul(gel(y,2), x1));
   z = mkvec2(shallowconcat(p1, p2), shallowconcat(x2, x2));
-  return gerepileupto(av, nfhnf(nf,z));
+  return gc_upto(av, nfhnf(nf,z));
 }
 
 /* prK wrt NF ~ Q[x]/(polabs) */
@@ -823,7 +823,7 @@ rnfidealfactor(GEN rnf, GEN x)
   checkrnf(rnf);
   rnfcomplete(rnf);
   NF = obj_check(rnf,rnf_NFABS);
-  return gerepileupto(av, idealfactor(NF, rnfidealreltoabs0(rnf, x, 1)));
+  return gc_upto(av, idealfactor(NF, rnfidealreltoabs0(rnf, x, 1)));
 }
 
 GEN
@@ -1000,7 +1000,7 @@ findmin(GEN nf, GEN x, GEN muf)
   if (e >= 0) return NULL; /* precision problem */
   m = ZM_ZC_mul(x, m);
   if (cx) m = ZC_Q_mul(m, cx);
-  return gerepileupto(av, m);
+  return gc_upto(av, m);
 }
 
 static int
@@ -1133,7 +1133,7 @@ rnflllgram(GEN nf, GEN pol, GEN order,long prec)
   I = leafcopy(I);
   H = NULL;
   MPOL = matbasistoalg(nf, M);
-  MCS = matid(lx-1); /* dummy for gerepile */
+  MCS = matid(lx-1); /* dummy for gc_GEN_unsafe */
 PRECNF:
   if (count == MAX_COUNT)
   {
@@ -1278,7 +1278,7 @@ nfreduce(GEN nf, GEN x, GEN I)
   if (idealtyp(&I, NULL) != id_MAT || lg(I)==1) pari_err_TYPE("nfreduce",I);
   if (typ(x) != t_COL) x = scalarcol( gmod(x, gcoeff(I,1,1)), lg(I)-1 );
   else x = reducemodinvertible(x, I);
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 /* Given an element x and an ideal in HNF, gives an a in ideal such that
  * x-a is small. No checks */
@@ -1293,7 +1293,7 @@ element_close(GEN nf, GEN x, GEN ideal)
     x = closemodinvertible(x, ideal);
   else
     x = gmul(y, gdivround(x,y));
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 
 /* A + v B */
@@ -1752,7 +1752,7 @@ nfdetint(GEN nf, GEN x)
     }
   }
   if (!cm) retgc_const(av, cgetg(1, t_MAT));
-  return gerepileupto(av, idealmul(nf,idprod,det1));
+  return gc_upto(av, idealmul(nf,idprod,det1));
 }
 
 /* reduce in place components of x[1..lim] mod D (destroy x). D in HNF */

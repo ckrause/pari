@@ -76,7 +76,7 @@ forparii(GEN a, GEN b, GEN code)
       if (gc_needed(av,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"forparii");
-        a = gerepileupto(av,a);
+        a = gc_upto(av,a);
       }
       set_lex(-1,a);
     }
@@ -99,7 +99,7 @@ forpari(GEN a, GEN b, GEN code)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"forpari");
-      a = gerepileupto(av,a);
+      a = gc_upto(av,a);
     }
     set_lex(-1, a);
   }
@@ -431,7 +431,7 @@ forstep(GEN a, GEN b, GEN s, GEN code)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"forstep");
-      a = gerepileupto(av,a);
+      a = gc_upto(av,a);
     }
     set_lex(-1,a);
   }
@@ -799,11 +799,11 @@ somme(GEN a, GEN b, GEN code, GEN x)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"sum");
-      x = gerepileupto(av,x);
+      x = gc_upto(av,x);
     }
     set_lex(-1,a);
   }
-  pop_lex(1); return gerepileupto(av0,x);
+  pop_lex(1); return gc_upto(av0,x);
 }
 
 static GEN
@@ -847,7 +847,7 @@ suminf(void *E, GEN (*eval)(void *, GEN), GEN a, long bit)
       (void)gc_all(av,2, &x, &_1);
     }
   }
-  return gerepileupto(av0, gsub(x, _1));
+  return gc_upto(av0, gsub(x, _1));
 }
 GEN
 suminf0(GEN a, GEN code, long bit)
@@ -866,7 +866,7 @@ sumdivexpr(GEN num, GEN code)
     set_lex(-1,gel(t,i));
     y = gadd(y, closure_evalnobrk(code));
   }
-  pop_lex(1); return gerepileupto(av,y);
+  pop_lex(1); return gc_upto(av,y);
 }
 
 GEN
@@ -891,7 +891,7 @@ sumdivmultexpr(void *D, GEN (*fun)(void*, GEN), GEN num)
     }
     y = gmul(y, z);
   }
-  return gerepileupto(av,y);
+  return gc_upto(av,y);
 }
 
 GEN
@@ -926,11 +926,11 @@ produit(GEN a, GEN b, GEN code, GEN x)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"prod");
-      x = gerepileupto(av,x);
+      x = gc_upto(av,x);
     }
     set_lex(-1,a);
   }
-  pop_lex(1); return gerepileupto(av0,x);
+  pop_lex(1); return gc_upto(av0,x);
 }
 
 GEN
@@ -953,7 +953,7 @@ prodinf(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"prodinf");
-      x = gerepileupto(av,x);
+      x = gc_upto(av,x);
     }
   }
   return gc_GEN(av0,x);
@@ -978,7 +978,7 @@ prodinf1(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"prodinf1");
-      x = gerepileupto(av,x);
+      x = gc_upto(av,x);
     }
   }
   return gc_GEN(av0,x);
@@ -1232,7 +1232,7 @@ polzag(long n, long m)
   GEN g = polzag1(n,m);
   if (lg(g) == 2) return g;
   g = ZX_z_unscale(polzag1(n,m), -1);
-  return gerepileupto(av, RgX_Rg_div(g,gel(g,2)));
+  return gc_upto(av, RgX_Rg_div(g,gel(g,2)));
 }
 
 /*0.39322 > 1/log_2(3+sqrt(8))*/
@@ -1267,7 +1267,7 @@ sumalt(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
       (void)gc_all(av2, 3, &az,&c,&s);
     }
   }
-  return gerepileupto(av, gdiv(s,d));
+  return gc_upto(av, gdiv(s,d));
 }
 
 GEN
@@ -1293,10 +1293,10 @@ sumalt2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
     if (gc_needed(av,4))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"sumalt2, k = %ld/%ld", k,N-1);
-      s = gerepileupto(av2, s);
+      s = gc_upto(av2, s);
     }
   }
-  return gerepileupto(av, gdiv(s,dn));
+  return gc_upto(av, gdiv(s,dn));
 }
 
 GEN
@@ -1335,10 +1335,10 @@ binsum(GEN S, ulong k, void *E, GEN (*f)(void *, GEN), GEN a,
     else {
       shiftr_inplace(u, e);
       t = addrr(t,u); if (expo(u) < G) break;
-      if ((e & 0x1ff) == 0) t = gerepileuptoleaf(av, t);
+      if ((e & 0x1ff) == 0) t = gc_uptoleaf(av, t);
     }
   }
-  gel(S, k << l) = t = gerepileuptoleaf(av, t);
+  gel(S, k << l) = t = gc_uptoleaf(av, t);
   /* g(j) = 2g(2j) + f(a+j) for all j > 0 */
   for(i = l-1; i >= 0; i--)
   { /* t ~ g(2 * k*2^i) with error ~ 2^(G-i-1) */
@@ -1346,7 +1346,7 @@ binsum(GEN S, ulong k, void *E, GEN (*f)(void *, GEN), GEN a,
     av = avma; u = gtofp(f(E, a? addiu(a, k << i): utoipos(k << i)), prec);
     if (typ(u) != t_REAL) pari_err_TYPE("sumpos",u);
     t = addrr(gtofp(u,prec), mpshift(t,1)); /* ~ g(k*2^i) */
-    gel(S, k << i) = t = gerepileuptoleaf(av, t);
+    gel(S, k << i) = t = gc_uptoleaf(av, t);
   }
 }
 /* For k > 0, let g(k) := \sum_{e >= 0} 2^e f(a + k*2^e).
@@ -1386,7 +1386,7 @@ sumpos(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
     if (k == N-1) break;
     az = diviuuexact(muluui((N-k)<<1,N+k,az), k+1, (k<<1)+1);
   }
-  return gerepileupto(av, gdiv(s,d));
+  return gc_upto(av, gdiv(s,d));
 }
 
 GEN
@@ -1409,7 +1409,7 @@ sumpos2(void *E, GEN (*eval)(void *, GEN), GEN a, long prec)
     GEN t = mulri(gel(S,k+1), gel(pol,k+2));
     s = odd(k)? mpsub(s,t): mpadd(s,t);
   }
-  return gerepileupto(av, gdiv(s,dn));
+  return gc_upto(av, gdiv(s,dn));
 }
 
 GEN
@@ -1486,7 +1486,7 @@ zbrent(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long prec)
   if (typ(a) != t_REAL || realprec(a) < prec) a = gtofp(a, prec);
   if (typ(b) != t_REAL || realprec(b) < prec) b = gtofp(b, prec);
   sig = cmprr(b, a);
-  if (!sig) return gerepileupto(av, a);
+  if (!sig) return gc_upto(av, a);
   if (sig < 0) { c = a; swap(a, b); } else c = b;
   fa = eval(E, a);
   fb = eval(E, b);
@@ -1551,7 +1551,7 @@ SOLVE:
     fb = eval(E, b);
   }
   if (iter > itmax) pari_err_IMPL("solve recovery [too many iterations]");
-  return gerepileuptoleaf(av, rcopy(b));
+  return gc_uptoleaf(av, rcopy(b));
 }
 
 GEN
@@ -1599,7 +1599,7 @@ solvestep(void *E, GEN (*f)(void *,GEN), GEN a, GEN b, GEN step, long flag, long
         long e;
         (void)grndtoi(z, &e);
         if (e <= -bit) ct = 1;
-        if ((flag&1) && ((!(flag&8)) || ct)) return gerepileupto(av, z);
+        if ((flag&1) && ((!(flag&8)) || ct)) return gc_upto(av, z);
         v = shallowconcat(v, z);
       }
       a = c; fa = fc; sa = sc;
@@ -1706,7 +1706,7 @@ FD(long M, long N2, GEN *pd, GEN *pa)
     U = RgX_shift_shallow(U,1); /* w(X) / (X^2-a[i]^2) mod X^(M+1) */
     S = ZX_sub(RgX_shift_shallow(U,1),
                ZX_Z_mul(U, gel(a,2*i+1)));
-    S = gerepileupto(av, S);
+    S = gc_upto(av, S);
     gel(F,2*i)   = S;
     gel(F,2*i+1) = ZX_z_unscale(S, -1);
   }
@@ -1913,7 +1913,7 @@ derivfun(void *E, GEN (*eval)(void *, GEN, long), GEN x, long prec)
     return NULL; /*LCOV_EXCL_LINE*/
   }
   vx = varn(x);
-  return gerepileupto(av, gdiv(deriv(eval(E, x, prec),vx), xp));
+  return gc_upto(av, gdiv(deriv(eval(E, x, prec),vx), xp));
 }
 
 GEN
@@ -1935,7 +1935,7 @@ laurentseries(void *E, GEN (*f)(void*,GEN x, long), long M, long v, long prec)
     vr = valser(s);
     if (M < vr) { set_avma(av); return zeroser(v, M); }
     dr = lg(s) + vr - 3 - M;
-    if (dr >= 0) return gerepileupto(av, s);
+    if (dr >= 0) return gc_upto(av, s);
     set_avma(av); d -= dr;
   }
 }
@@ -2098,7 +2098,7 @@ proddiff(GEN u, long i)
     for (j = 2; j < l; j++)
       if (j != i) p = gmul(p, gsub(gel(u,i), gel(u,j)));
   }
-  return gerepileupto(av, p);
+  return gc_upto(av, p);
 }
 static GEN
 vecpows(GEN x, long N) { pari_APPLY_same(gpowgs(gel(x,i), N)); }

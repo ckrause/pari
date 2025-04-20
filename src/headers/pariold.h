@@ -13,6 +13,9 @@ with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 /* For compatibility with older PARI versions */
+#define gerepileupto gc_upto
+#define gerepileuptoleaf gc_uptoleaf
+#define gerepile gc_GEN_unsafe
 #define gerepileallsp gc_all_unsafe
 #define gerepilecopy gc_GEN
 #define gerepileuptoint gc_INT
@@ -423,11 +426,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define lnegr   (long)negr
 #define lnorml2 (long)gnorml2
 #define lnorm   (long)gnorm
-#define lpile   (long)gerepile
+#define lpile   (long)gc_GEN_unsafe
 #define lpilecopy (long)gc_GEN
-#define lpileupto (long)gerepileupto
+#define lpileupto (long)gc_upto
 #define lpileuptoint (long)gc_INT
-#define lpileuptoleaf (long)gerepileuptoleaf
+#define lpileuptoleaf (long)gc_uptoleaf
 #define lpoleval (long)poleval
 #define lpowgs  (long)gpowgs
 #define lprec   (long)gprec

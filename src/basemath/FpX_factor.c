@@ -142,7 +142,7 @@ FpX_roots(GEN f, GEN p)
   }
   else
     y = FpX_roots_i(f, p);
-  return gerepileupto(av, y);
+  return gc_upto(av, y);
 }
 
 /* assume x reduced mod p > 2, monic. */
@@ -887,7 +887,7 @@ FpX_ddf_Shoup(GEN T, GEN XP, GEN p)
     pari_sp av = avma;
     GEN gj = gel(g,j), e = FpX_sub(gj, gel(b,1), p);
     for (i = 2; i <= l; i++) e = FpXQ_mul(e, FpX_sub(gj, gel(b,i), p), T, p);
-    gel(h,j) = gerepileupto(av, e);
+    gel(h,j) = gc_upto(av, e);
   }
   if (DEBUGLEVEL>=7) timer_printf(&ti,"FpX_ddf_Shoup: diff");
   Tr = get_FpX_mod(T);
@@ -1096,7 +1096,7 @@ FpX_roots_mult(GEN T, long n, GEN p)
   W = cgetg(l-n+1,t_VEC);
   for (i = n; i < l; i++)
     gel(W,i-n+1) = FpX_roots(gel(V,i), p);
-  return gerepileupto(av, sort(shallowconcat1(W)));
+  return gc_upto(av, sort(shallowconcat1(W)));
 }
 
 long
@@ -1111,7 +1111,7 @@ FpX_ispower(GEN f, ulong k, GEN p, GEN *pt_r)
     ulong pp = p[2];
     GEN fp = ZX_to_Flx(f, pp);
     if (!Flx_ispower(fp, k, pp, pt_r)) return gc_long(av,0);
-    if (pt_r) *pt_r = gerepileupto(av, Flx_to_ZX(*pt_r)); else set_avma(av);
+    if (pt_r) *pt_r = gc_upto(av, Flx_to_ZX(*pt_r)); else set_avma(av);
     return 1;
   }
   lc = Fp_sqrtn(leading_coeff(f), stoi(k), p, NULL);
@@ -1128,7 +1128,7 @@ FpX_ispower(GEN f, ulong k, GEN p, GEN *pt_r)
       s = FpX_mul(s, gel(F,i), p);
       r = FpX_mul(r, s, p);
     }
-    *pt_r = gerepileupto(av, r);
+    *pt_r = gc_upto(av, r);
   } else av = avma;
   return 1;
 }
@@ -1281,7 +1281,7 @@ prime_fact(GEN x) { retmkmat2(mkcolcopy(x), mkcol(gen_1)); }
 GEN
 trivial_fact(void) { retmkmat2(cgetg(1,t_COL), cgetg(1,t_COL)); }
 
-/* not gerepile safe */
+/* not gc_GEN_unsafe safe */
 static GEN
 FpX_factor_2(GEN f, GEN p, long d)
 {
@@ -1518,7 +1518,7 @@ Flx_roots(GEN f, ulong p)
   }
   if (p == 2) return Flx_root_mod_2(f);
   pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
-  return gerepileuptoleaf(av, Flx_roots_pre(f, p, pi));
+  return gc_uptoleaf(av, Flx_roots_pre(f, p, pi));
 }
 
 /* assume x reduced mod p, monic. */
@@ -1590,7 +1590,7 @@ F2x_Berlekamp_ker(GEN u)
   if(DEBUGLEVEL>=9) timer_printf(&T,"Berlekamp matrix");
   Q = F2m_ker_sp(Q,0);
   if(DEBUGLEVEL>=9) timer_printf(&T,"kernel");
-  return gerepileupto(ltop,Q);
+  return gc_upto(ltop,Q);
 }
 #define set_irred(i) { if ((i)>ir) swap(t[i],t[ir]); ir++;}
 static long
@@ -1757,7 +1757,7 @@ F2x_ddf_simple(GEN T, GEN XP)
       gel(f, j) = u;
       Tr = F2x_div(Tr, u);
       av2 = avma;
-    } else z = gerepileuptoleaf(av2, z);
+    } else z = gc_uptoleaf(av2, z);
     if (!F2x_degree(Tr)) break;
     z = F2xq_sqr(z, Tr);
   }
@@ -1784,7 +1784,7 @@ F2xq_frobtrace(GEN a, long d, GEN T)
   {
     x = F2x_add(a, F2xq_sqr(x,T));
     if (gc_needed(av, 2))
-      x = gerepileuptoleaf(av, x);
+      x = gc_uptoleaf(av, x);
   }
   return x;
 }
@@ -2013,7 +2013,7 @@ Flx_ispower(GEN f, ulong k, ulong p, GEN *pt_r)
       s = Flx_mul_pre(s, gel(F,i), p, pi);
       r = Flx_mul_pre(r, s, p, pi);
     }
-    *pt_r = gerepileuptoleaf(av, r);
+    *pt_r = gc_uptoleaf(av, r);
   } else set_avma(av);
   return 1;
 }
@@ -2066,7 +2066,7 @@ Flx_ddf_Shoup(GEN T, GEN XP, ulong p, ulong pi)
     GEN e = Flx_sub(gj, gel(b, 1), p);
     for (i = 2; i <= l; i++)
       e = Flxq_mul_pre(e, Flx_sub(gj, gel(b, i), p), T, p, pi);
-    gel(h, j) = gerepileupto(av, e);
+    gel(h, j) = gc_upto(av, e);
   }
   if (DEBUGLEVEL>=7) timer_printf(&ti,"Flx_ddf_Shoup: diff");
   Tr = get_Flx_mod(T);

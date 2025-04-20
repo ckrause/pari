@@ -72,8 +72,8 @@ ZiX_sqr(GEN P)
   pari_sp av = avma;
   GEN Pr2, Pi2, Qr, Qi;
   GEN Pr = real_i(P), Pi = imag_i(P);
-  if (signe(Pi)==0) return gerepileupto(av, ZX_sqr(Pr));
-  if (signe(Pr)==0) return gerepileupto(av, ZX_neg(ZX_sqr(Pi)));
+  if (signe(Pi)==0) return gc_upto(av, ZX_sqr(Pr));
+  if (signe(Pr)==0) return gc_upto(av, ZX_neg(ZX_sqr(Pi)));
   Pr2 = ZX_sqr(Pr); Pi2 = ZX_sqr(Pi);
   Qr = ZX_sub(Pr2, Pi2);
   if (degpol(Pr)==degpol(Pi))
@@ -95,7 +95,7 @@ graeffe(GEN p)
   /* p = p0(x^2) + x p1(x^2) */
   s0 = ZiX_sqr(p0);
   s1 = ZiX_sqr(p1);
-  return gerepileupto(av, RgX_sub(s0, RgX_shift_shallow(s1,1)));
+  return gc_upto(av, RgX_sub(s0, RgX_shift_shallow(s1,1)));
 }
 
 GEN
@@ -110,7 +110,7 @@ ZX_graeffe(GEN p)
   /* p = p0(x^2) + x p1(x^2) */
   s0 = ZX_sqr(p0);
   s1 = ZX_sqr(p1);
-  return gerepileupto(av, ZX_sub(s0, RgX_shift_shallow(s1,1)));
+  return gc_upto(av, ZX_sub(s0, RgX_shift_shallow(s1,1)));
 }
 GEN
 polgraeffe(GEN p)
@@ -126,7 +126,7 @@ polgraeffe(GEN p)
   /* p = p0(x^2) + x p1(x^2) */
   s0 = RgX_sqr(p0);
   s1 = RgX_sqr(p1);
-  return gerepileupto(av, RgX_sub(s0, RgX_shift_shallow(s1,1)));
+  return gc_upto(av, RgX_sub(s0, RgX_shift_shallow(s1,1)));
 }
 
 /********************************************************************/
@@ -441,7 +441,7 @@ logmax_modulus(GEN p, double tau)
                      (double)(nn-k)*log2(1./eps) + 3*log2((double)nn)) + 1;
     homothetie_gauss(q, e, bit-(long)floor(dbllog2(gel(q,2+nn))+0.5));
     nn -= RgX_valrem(q, &q);
-    q = gerepileupto(av, graeffe(q));
+    q = gc_upto(av, graeffe(q));
     tau2 *= 1.5; if (tau2 > 0.9) tau2 = 0.5;
     eps = -1/log(tau2); /* > 0 */
     e = findpower(q);
@@ -480,7 +480,7 @@ polrootsbound_i(GEN P, double TAU)
   }
   d = logmax_modulus(P, TAU) + TAU;
   /* not dblexp: result differs on ARM emulator */
-  return gerepileuptoleaf(av, mpexp(dbltor(d)));
+  return gc_uptoleaf(av, mpexp(dbltor(d)));
 }
 GEN
 polrootsbound(GEN P, GEN tau)
@@ -522,7 +522,7 @@ logmodulus(GEN p, long k, double tau)
     kk -= RgX_valrem(q, &q);
     nn = degpol(q);
 
-    q = gerepileupto(av, graeffe(q));
+    q = gc_upto(av, graeffe(q));
     e = newton_polygon(q,kk);
     r += e / exp2((double)i);
     q = RgX_gtofp_bit(q, bit);
@@ -559,7 +559,7 @@ logpre_modulus(GEN p, long k, double tau, double lrmin, double lrmax)
   for (i=0; i<imax; i++)
   {
     q = eval_rel_pol(q,bit);
-    q = gerepileupto(av, graeffe(q));
+    q = gc_upto(av, graeffe(q));
     aux = 2*aux + 2*tau2;
     tau2 *= 1.5;
     bit = (long)(n*(2. + aux / M_LN2 - log2(1-exp(-tau2))));
@@ -605,7 +605,7 @@ dual_modulus(GEN p, double lrho, double tau, long l)
     nn = degpol(q); delta_k += v;
     if (!nn) return delta_k;
 
-    q = gerepileupto(av, graeffe(q));
+    q = gc_upto(av, graeffe(q));
     tau2 *= 7./4.;
     bit = 6*nn - 5*ll + (long)(nn*(-log2(tau2) + tau2 * 8./7.));
   }
@@ -1095,7 +1095,7 @@ conformal_basecase(GEN p, GEN a)
   {
     r = RgX_addmulXn_shallow(r, gmul(ma,r), 1); /* r *= (X - a) */
     r = gadd(r, gmul(z, gel(p,2+i)));
-    if (i == 0) return gerepileupto(av, r);
+    if (i == 0) return gc_upto(av, r);
     z = RgX_addmulXn_shallow(gmul(z,ca), gneg(z), 1); /* z *= conj(a)X - 1 */
     if (gc_needed(av,2))
     {
@@ -1123,7 +1123,7 @@ conformal_pol(GEN p, GEN a)
   /* S = (X - a)^d, T = (conj(a) X - 1)^d */
   nR = n - degpol(R) - d; /* >= 0 */
   if (nR) T = RgX_mul(T, gpowgs(deg1pol_shallow(gconj(a), gen_m1, v), nR));
-  return gerepileupto(av, RgX_add(RgX_mul(Q, S), RgX_mul(R, T)));
+  return gc_upto(av, RgX_add(RgX_mul(Q, S), RgX_mul(R, T)));
 }
 
 static const double UNDEF = -100000.;
@@ -1597,7 +1597,7 @@ split_complete(GEN p, long bit, GEN roots_pol)
   split_0(p,bit,&F,&G);
   m1 = split_complete(F,bit,roots_pol);
   m2 = split_complete(G,bit,roots_pol);
-  return gerepileupto(ltop, gmul(m1,m2));
+  return gc_upto(ltop, gmul(m1,m2));
 }
 
 static GEN
@@ -2193,7 +2193,7 @@ polsolve(GEN P, long bitprec)
       break;
   }
   rc = rb; av = avma;
-  for(;; rc = gerepileuptoleaf(av, rc))
+  for(;; rc = gc_uptoleaf(av, rc))
   {
     long exponew;
     GEN Ppc, dist, rcold = rc;
@@ -2301,7 +2301,7 @@ usp(GEN Q0, long flag, long bitprec)
         s = addir(c, divrr(s, addsr(1, s)));
         shiftr_inplace(s, -k);
         if (realprec(s) != prec) s = rtor(s, prec);
-        s = gerepileupto(av2, s);
+        s = gc_upto(av2, s);
       }
       else set_avma(av2);
       gel(sol, ++nbr) = s;
@@ -2510,7 +2510,7 @@ ZX_Uspensky(GEN P, GEN ab, long flag, long bitprec)
     sol = sort(sol);
   else
     sol = gen_sort(sol, (void *)_intervalcmp, cmp_nodata);
-  return gerepileupto(av, sol);
+  return gc_upto(av, sol);
 }
 
 /* x a scalar */
@@ -2594,7 +2594,7 @@ realroots(GEN P, GEN ab, long prec)
   if (v && (!ab || (gsigne(gel(ab,1)) <= 0 && gsigne(gel(ab,2)) >= 0)))
     gel(sol, i++) = const_col(v, real_0(prec));
   setlg(sol, i); if (i == 1) retgc_const(av, cgetg(1, t_COL));
-  return gerepileupto(av, sort(shallowconcat1(sol)));
+  return gc_upto(av, sort(shallowconcat1(sol)));
 }
 GEN
 ZX_realroots_irred(GEN P, long prec)
@@ -2622,7 +2622,7 @@ ZX_realroots_irred(GEN P, long prec)
     }
   }
   if (sol2) sol = shallowconcat(sol, sol2);
-  return gerepileupto(av, sort(sol));
+  return gc_upto(av, sort(sol));
 }
 
 static long

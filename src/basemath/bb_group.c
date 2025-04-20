@@ -447,10 +447,10 @@ gen_Shanks_init(GEN g, long n, void *E, const struct bb_group *grp)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"gen_Shanks_log, baby = %ld", i);
-      p1 = gerepileupto(av, p1);
+      p1 = gc_upto(av, p1);
     }
   }
-  G = gerepileupto(av, grp->pow(E,p1,gen_m1)); /* g^-n */
+  G = gc_upto(av, grp->pow(E,p1,gen_m1)); /* g^-n */
   perm = vecsmall_indexsort(table);
   table = vecsmallpermute(table,perm);
   return mkvec4(table,perm,g,G);
@@ -482,7 +482,7 @@ gen_Shanks(GEN T, GEN x, ulong N, void *E, const struct bb_group *grp)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"gen_Shanks_log, k = %lu", k);
-      p1 = gerepileupto(av, p1);
+      p1 = gc_upto(av, p1);
     }
   }
   return NULL;
@@ -510,10 +510,10 @@ gen_Shanks_log(GEN x, GEN g, GEN q, void *E, const struct bb_group *grp)
     if (gc_needed(av1,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"gen_Shanks_log, baby = %ld", i);
-      p1 = gerepileupto(av1, p1);
+      p1 = gc_upto(av1, p1);
     }
   }
-  p1 = giant = gerepileupto(av1, grp->mul(E,x,grp->pow(E, p1, gen_m1)));
+  p1 = giant = gc_upto(av1, grp->mul(E,x,grp->pow(E, p1, gen_m1)));
   perm = vecsmall_indexsort(table);
   table = vecsmallpermute(table,perm);
   av1 = avma;
@@ -535,7 +535,7 @@ gen_Shanks_log(GEN x, GEN g, GEN q, void *E, const struct bb_group *grp)
     if (gc_needed(av1,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"gen_Shanks_log, k = %ld", k);
-      p1 = gerepileupto(av1, p1);
+      p1 = gc_upto(av1, p1);
     }
   }
   retgc_const(av, cgetg(1, t_VEC)); /* no solution */
@@ -845,10 +845,10 @@ gen_gener(GEN o, void *E, const struct bb_group *grp)
     if (gc_needed(av,2))
     { /* n can have lots of prime factors*/
       if(DEBUGMEM>1) pari_warn(warnmem,"gen_gener");
-      z = gerepileupto(av, z);
+      z = gc_upto(av, z);
     }
   }
-  return gerepileupto(ltop, z);
+  return gc_upto(ltop, z);
 }
 
 /* solve x^l = a , l prime in G of order q.
@@ -954,8 +954,8 @@ gen_Shanks_sqrtn(GEN a, GEN n, GEN q, GEN *zetan, void *E, const struct bb_group
     *zetan = z;
     (void)gc_all(ltop,2,&a,zetan);
   }
-  else /* is_1 is 0: a was modified above -> gerepileupto valid */
-    a = gerepileupto(ltop, a);
+  else /* is_1 is 0: a was modified above -> gc_upto valid */
+    a = gc_upto(ltop, a);
   return a;
 }
 

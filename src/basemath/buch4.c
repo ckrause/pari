@@ -238,5 +238,5 @@ bnfisnorm(GEN bnf, GEN x, long flag)
   GEN T = rnfisnorminit(pol_x(fetch_var()), bnf, flag == 0? 1: 2);
   GEN r = rnfisnorm(T, x, flag == 1? 0: flag);
   (void)delete_var();
-  return gerepileupto(av,r);
+  return gc_upto(av,r);
 }

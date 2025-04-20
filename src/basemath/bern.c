@@ -215,7 +215,7 @@ bernfrac(long n)
   if (!bernzone) constbern(0);
   if (bernzone && k < lg(bernzone)) return gel(bernzone, k);
   av = avma;
-  return gerepileupto(av, bernfrac_i(n, NULL));
+  return gc_upto(av, bernfrac_i(n, NULL));
 }
 GEN
 bernvec(long n)
@@ -248,7 +248,7 @@ bernpol(long k, long v)
 {
   pari_sp av = avma;
   if (k < 0) pari_err_DOMAIN("bernpol", "index", "<", gen_0, stoi(k));
-  return gerepileupto(av, bernpol_i(k, v));
+  return gc_upto(av, bernpol_i(k, v));
 }
 GEN
 bernpol_eval(long k, GEN x)
@@ -260,7 +260,7 @@ bernpol_eval(long k, GEN x)
   if (k < 0) pari_err_DOMAIN("bernpol", "index", "<", gen_0, stoi(k));
   B = poleval(bernpol_i(k, fetch_var_higher()), x);
   delete_var();
-  return gerepileupto(av, B);
+  return gc_upto(av, B);
 }
 
 /* x := pol_x(v); return 1^e + ... + x^e = x^e + (B_{e+1}(x) - B_{e+1})/(e+1) */
@@ -284,7 +284,7 @@ sumformal(GEN T, long v)
   T = simplify_shallow(T);
   t = typ(T);
   if (is_scalar_t(t))
-    return gerepileupto(av, monomialcopy(T, 1, v < 0? 0: v));
+    return gc_upto(av, monomialcopy(T, 1, v < 0? 0: v));
   if (t != t_POL) pari_err_TYPE("sumformal [not a t_POL]", T);
   if (v < 0) v = varn(T);
   av2 = avma;
@@ -298,10 +298,10 @@ sumformal(GEN T, long v)
     if (gc_needed(av2,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"sumformal, i = %ld/%ld", i,d);
-      R = gerepileupto(av2, R);
+      R = gc_upto(av2, R);
     }
   }
-  return gerepileupto(av, R);
+  return gc_upto(av, R);
 }
 
 /* 1/zeta(n) using Euler product. Assume n > 0. */
@@ -337,7 +337,7 @@ inv_szeta_euler(long n, long prec)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"inv_szeta_euler, p = %lu/%lu", p,lim);
-      z = gerepileuptoleaf(av2, z);
+      z = gc_uptoleaf(av2, z);
     }
   }
   affrr(z, res); set_avma(av); return res;
@@ -361,7 +361,7 @@ bernreal(long n, long prec)
   p = bernprec(n); av = avma;
   B = bernreal_using_zeta(n, minss(p, prec));
   if (p < prec) B = fractor(bernfrac_i(n, B), prec);
-  return gerepileuptoleaf(av, B);
+  return gc_uptoleaf(av, B);
 }
 
 GEN
@@ -372,7 +372,7 @@ eulerpol(long k, long v)
   if (k < 0) pari_err_DOMAIN("eulerpol", "index", "<", gen_0, stoi(k));
   k++; B = bernpol_i(k, v);
   E = RgX_Rg_mul(RgX_sub(B, RgX_rescale(B, gen_2)), uutoQ(2,k));
-  return gerepileupto(av, E);
+  return gc_upto(av, E);
 }
 
 /*******************************************************************/
@@ -398,7 +398,7 @@ GEN
 harmonic(ulong n)
 {
   pari_sp av = avma;
-  return n? gerepileupto(av, hrec(1, n+1)): gen_0;
+  return n? gc_upto(av, hrec(1, n+1)): gen_0;
 }
 
 /* 1/a^k + ... + 1/(b-1)^k; a < b */
@@ -434,7 +434,7 @@ harmonic0(ulong n, GEN k)
   r = itou(k);
   if (!r) return utoipos(n);
   if (r == 1) return harmonic(n);
-  return gerepileupto(av, hreck(1, n+1, r));
+  return gc_upto(av, hreck(1, n+1, r));
 }
 
 
@@ -583,7 +583,7 @@ inv_lfun4(long n, long prec)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"inv_lfun4, p = %lu/%lu", p,lim);
-      z = gerepileuptoleaf(av2, z);
+      z = gc_uptoleaf(av2, z);
     }
   }
   affrr(z, res); set_avma(av); return res;
@@ -615,7 +615,7 @@ eulerfrac(long n)
   if (!eulerzone) constreuler(0);
   if (eulerzone && k < lg(eulerzone)) return gel(eulerzone, k);
   av = avma; E = eulerreal_using_lfun4(n, eulerprec(n));
-  return gerepileuptoleaf(av, roundr(E));
+  return gc_uptoleaf(av, roundr(E));
 }
 GEN
 eulervec(long n)
@@ -646,5 +646,5 @@ eulerreal(long n, long prec)
   p = eulerprec(n);
   B = eulerreal_using_lfun4(n, minss(p, prec));
   if (p < prec) B = itor(roundr(B), prec);
-  return gerepileuptoleaf(av, B);
+  return gc_uptoleaf(av, B);
 }

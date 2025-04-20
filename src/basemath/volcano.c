@@ -247,7 +247,7 @@ get_nbrs(GEN phi, long L, ulong J, const ulong *xJ, ulong p, ulong pi)
   pari_sp av = avma;
   GEN f = Flm_Fl_polmodular_evalx(phi, L, J, p, pi);
   if (xJ) f = Flx_remove_root(f, *xJ, p);
-  return gerepileupto(av, Flx_roots_pre(f, p, pi));
+  return gc_upto(av, Flx_roots_pre(f, p, pi));
 }
 
 /* Return a path of length n along the surface of an L-volcano of height h
@@ -275,7 +275,7 @@ surface_path(
   T = cgetg(h+2, t_VEC); bv = avma;
   v = get_nbrs(phi, L, J, nJ, p, pi);
   /* Insert known neighbour first */
-  if (nJ) v = gerepileupto(bv, vecsmall_prepend(v, *nJ));
+  if (nJ) v = gc_upto(bv, vecsmall_prepend(v, *nJ));
   gel(T,1) = v; k = lg(v)-1;
 
   switch (k) {
@@ -346,7 +346,7 @@ surface_path(
       if (!m) {
         /* We hit the floor: save the neighbours of W[w-1] and dump the rest */
         GEN nbrs = gel(T, ((w-1) % h) + 1);
-        gel(T, ((w-1) % h) + 1) = gerepileupto(bv, nbrs);
+        gel(T, ((w-1) % h) + 1) = gc_upto(bv, nbrs);
         break;
       }
       if (m != L) pari_err_BUG("surface_path");

@@ -101,7 +101,7 @@ polPn(GEN W, GEN xpm, long p, long D, long R, long n)
   }
   v = Flv_to_Flx(v, evalvarn(0));
   v = zlx_translate1(v, p, N);
-  return gerepileupto(av, Flx_to_ZX(v));
+  return gc_upto(av, Flx_to_ZX(v));
 }
 /* return lambda, assuming mu = 0 [else infinite loop] */
 static long

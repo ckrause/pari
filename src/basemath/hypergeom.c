@@ -267,7 +267,7 @@ fF31(void *E, GEN t)
   pari_sp av = avma;
   GEN a1 = gel(E,1), b = gel(E,2), c = gel(E,3), d = gel(E,4), z = gel(E,5);
   long prec = precision(t);
-  return gerepileupto(av, gmul(gmul(gexp(gneg(t), prec), gpow(t, a1, prec)),
+  return gc_upto(av, gmul(gmul(gexp(gneg(t), prec), gpow(t, a1, prec)),
                                F21(b, c, d, gmul(t, z), prec)));
 }
 /* F31(a,b,c;d,z) = \int_0^oo\exp(-t)t^{a-1}F_{21}(b,c;d,tz) / gamma(a) */
@@ -296,7 +296,7 @@ fF32(void *E, GEN x)
   T = F21(a, b, d, gmul(x, z), prec);
   if (!gequal0(c1)) T = gmul(T, gpow(x,c1,prec));
   if (!gequal0(ec)) T = gmul(T, gpow(gsubsg(1,x),ec,prec));
-  return gerepileupto(av,T);
+  return gc_upto(av,T);
 }
 
 static GEN
@@ -738,7 +738,7 @@ F21taylor(GEN a, GEN b, GEN c, GEN z, long prec)
 {
   pari_sp av = avma;
   GEN r = gdiv(Ftaylor(mkvec2(a,b), mkvec(c), z, prec), ggamma(c, prec));
-  return gerepileupto(av, r);
+  return gc_upto(av, r);
 }
 
 static GEN
@@ -1190,5 +1190,5 @@ hypergeom(GEN N, GEN D, GEN y, long prec)
   if (is_scalar_t(typ(y)))
     return gc_GEN(av, hypergeom_i(N, D, y, prec));
   if (!(z = toser_i(y))) pari_err_TYPE("hypergeom", y);
-  return gerepileupto(av, serhypergeom(N, D, z, prec));
+  return gc_upto(av, serhypergeom(N, D, z, prec));
 }

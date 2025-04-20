@@ -53,7 +53,7 @@ gen_RgXQ_eval_powers(GEN P, GEN V, long a, long n, void *E, const struct bb_alge
     GEN t = cmul(E,P,a+i,gel(V,i+1));
     if (t) {
       z = ff->add(E, z, t);
-      if (gc_needed(av,2)) z = gerepileupto(av, z);
+      if (gc_needed(av,2)) z = gc_upto(av, z);
     }
   }
   return ff->red(E,z);
@@ -73,7 +73,7 @@ gen_bkeval_powers(GEN P, long d, GEN V, void *E, const struct bb_algebra *ff,
   GEN z, u;
 
   if (d < 0) return ff->zero(E);
-  if (d < l) return gerepileupto(av, gen_RgXQ_eval_powers(P,V,0,d,E,ff,cmul));
+  if (d < l) return gc_upto(av, gen_RgXQ_eval_powers(P,V,0,d,E,ff,cmul));
   if (l<2) pari_err_DOMAIN("gen_RgX_bkeval_powers", "#powers", "<",gen_2,V);
   if (DEBUGLEVEL>=8)
   {
@@ -88,11 +88,11 @@ gen_bkeval_powers(GEN P, long d, GEN V, void *E, const struct bb_algebra *ff,
     u = gen_RgXQ_eval_powers(P,V,d+1,l-2,E,ff,cmul);
     z = ff->add(E,u, ff->mul(E,z,gel(V,l)));
     if (gc_needed(av,2))
-      z = gerepileupto(av, z);
+      z = gc_upto(av, z);
   }
   u = gen_RgXQ_eval_powers(P,V,0,d,E,ff,cmul);
   z = ff->add(E,u, ff->mul(E,z,gel(V,d+2)));
-  return gerepileupto(av, ff->red(E,z));
+  return gc_upto(av, ff->red(E,z));
 }
 
 GEN
@@ -106,7 +106,7 @@ gen_bkeval(GEN Q, long d, GEN x, int use_sqr, void *E, const struct bb_algebra *
   rtd = (long) sqrt((double)d);
   V = gen_powers(x,rtd,use_sqr,E,ff->sqr,ff->mul,ff->one);
   z = gen_bkeval_powers(Q, d, V, E, ff, cmul);
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 static GEN
@@ -174,10 +174,10 @@ RgX_homogenous_evalpow(GEN P, GEN A, GEN B)
     if (gc_needed(btop,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgX_homogenous_eval(%ld)",i);
-      s = gerepileupto(btop, s);
+      s = gc_upto(btop, s);
     }
   }
-  return gerepileupto(av, s);
+  return gc_upto(av, s);
 }
 
 GEN
@@ -196,10 +196,10 @@ QXQX_homogenous_evalpow(GEN P, GEN A, GEN B, GEN T)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"QXQX_homogenous_eval(%ld)",i);
-      s = gerepileupto(av, s);
+      s = gc_upto(av, s);
     }
   }
-  return gerepileupto(av, s);
+  return gc_upto(av, s);
 }
 
 const struct bb_algebra *
@@ -596,7 +596,7 @@ RgX_translate_FpX(GEN P, GEN c, GEN p)
 #endif
     r = FpX_translate(RgX_to_FpX(P, p), Rg_to_Fp(c, p), p);
   if (signe(r)==0) { set_avma(av); return zero_FpX_mod(p, varn(P)); }
-  return gerepileupto(av, FpX_to_mod(r, p));
+  return gc_upto(av, FpX_to_mod(r, p));
 }
 
 static GEN
@@ -627,7 +627,7 @@ RgX_translate_i(GEN P, GEN c)
     GEN Q = RgX_translate_i(RgX_shift_shallow(P, -d), c);
     GEN R = RgX_translate_i(RgXn_red_shallow(P, d), c);
     GEN S = gpowgs(deg1pol_shallow(gen_1, c, varn(P)), d);
-    return gerepileupto(av, RgX_add(RgX_mul(Q, S), R));
+    return gc_upto(av, RgX_add(RgX_mul(Q, S), R));
   }
 }
 
@@ -661,7 +661,7 @@ RgXQX_translate(GEN P, GEN c, GEN T)
     for (k=n-i; k<n; k++)
     {
       pari_sp av2 = avma;
-      gel(R,k) = gerepileupto(av2,
+      gel(R,k) = gc_upto(av2,
                    RgX_rem(gadd(gel(R,k), gmul(c, gel(R,k+1))), T));
     }
     if (gc_needed(av,2))
@@ -1013,7 +1013,7 @@ RgX_mulXn(GEN x, long d)
   if (v >= d) return RgX_shift(x, -d);
   av = avma;
   z = gred_rfrac_simple(RgX_shift_shallow(x, -v), pol_xn(d - v, varn(x)));
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 long
@@ -1323,13 +1323,13 @@ RgX_addspec(GEN x, GEN y, long nx, long ny)
 
 /* Return the vector of coefficients of x, where we replace rational 0s by NULL
  * [ to speed up basic operation s += x[i]*y[j] ]. We create a proper
- * t_VECSMALL, to hold this, which can be left on stack: gerepile
+ * t_VECSMALL, to hold this, which can be left on stack: gc_GEN_unsafe
  * will not crash on it. The returned vector itself is not a proper GEN,
  * we access the coefficients as x[i], i = 0..deg(x) */
 static GEN
 RgXspec_kill0(GEN x, long lx)
 {
-  GEN z = cgetg(lx+1, t_VECSMALL) + 1; /* inhibit gerepile-wise */
+  GEN z = cgetg(lx+1, t_VECSMALL) + 1; /* inhibit gc_GEN_unsafe-wise */
   long i;
   for (i=0; i <lx; i++)
   {
@@ -1352,7 +1352,7 @@ RgX_mulspec_basecase_limb(GEN x, GEN y, long a, long b)
       GEN t = gmul(gel(y,i), gel(x,-i));
       s = s? gadd(s, t): t;
     }
-  return s? gerepileupto(av, s): gen_0;
+  return s? gc_upto(av, s): gen_0;
 }
 
 /* assume nx >= ny > 0, return x * y * t^v */
@@ -1482,7 +1482,7 @@ RgXn_mul2(GEN f, GEN g, long n)
   if (2*degpol(h)+2 == n) h = normalizepol_lg(h, lg(h)-1);
   h = RgX_inflate(h,2);
   h = RgX_addmulXn(RgX_addmulXn_shallow(h,m,1), l,1);
-  return gerepileupto(av, h);
+  return gc_upto(av, h);
 }
 /* (f*g) \/ x^n */
 static GEN
@@ -1552,7 +1552,7 @@ RgX_mulspec(GEN a, GEN b, long na, long nb)
     c0 = RgX_mulspec(a0,b,na,nb);
   }
   c0 = RgX_addmulXn(c0,c,n0);
-  return RgX_shift_inplace(gerepileupto(av,c0), v);
+  return RgX_shift_inplace(gc_upto(av,c0), v);
 }
 
 INLINE GEN
@@ -1579,7 +1579,7 @@ RgX_sqrspec_basecase_limb(GEN x, long a, long i)
       s = s? gadd(s, t): t;
     }
   }
-  return s? gerepileupto(av,s): gen_0;
+  return s? gc_upto(av,s): gen_0;
 }
 static GEN
 RgX_sqrspec_basecase(GEN x, long nx, long v)
@@ -1637,7 +1637,7 @@ RgXn_sqr2(GEN f, long n)
   if (2*degpol(h)+2 == n) h = normalizepol_lg(h, lg(h)-1);
   h = RgX_inflate(h,2);
   h = RgX_addmulXn(RgX_addmulXn_shallow(h,m,1), l,1);
-  return gerepileupto(av, h);
+  return gc_upto(av, h);
 }
 GEN
 RgX_sqrspec(GEN a, long na)
@@ -1658,7 +1658,7 @@ RgX_sqrspec(GEN a, long na)
   c1 = gmul2n(RgX_mulspec(a0,a, na,n0a), 1);
   c0 = RgX_addmulXn_shallow(c0,c1, n0);
   c0 = RgX_addmulXn(c0,c,n0);
-  return RgX_shift_inplace(gerepileupto(av,c0), v);
+  return RgX_shift_inplace(gc_upto(av,c0), v);
 }
 
 /* (X^a + A)(X^b + B) - X^(a+b), where deg A < a, deg B < b */
@@ -1816,7 +1816,7 @@ RgX_divrem_i(GEN x, GEN y, GEN *pr)
     if (!z) return gc_NULL(av);
     z = FpX_to_mod(z, p);
     if (!pr || pr == ONLY_REM || pr == ONLY_DIVIDES)
-      return gerepileupto(av, z);
+      return gc_upto(av, z);
     *pr = FpX_to_mod(*pr, p);
     return gc_all(av, 2, &z, pr);
   }
@@ -1907,10 +1907,10 @@ RgX_divrem_i(GEN x, GEN y, GEN *pr)
 
     if (isrationalzero(p1)) { set_avma(av1); p1 = gen_0; }
     else
-      p1 = avma==av1? gcopy(p1): gerepileupto(av1,p1);
+      p1 = avma==av1? gcopy(p1): gc_upto(av1,p1);
     gel(z,i-dy) = p1;
   }
-  if (!pr) return gerepileupto(av,z-2);
+  if (!pr) return gc_upto(av,z-2);
 
   rem = (GEN)avma; av1 = (pari_sp)new_chunk(dx+3);
   for (sx=0; ; i--)
@@ -1927,11 +1927,11 @@ RgX_divrem_i(GEN x, GEN y, GEN *pr)
   if (pr == ONLY_DIVIDES)
   {
     if (sx) return gc_NULL(av);
-    set_avma((pari_sp)rem); return gerepileupto(av,z-2);
+    set_avma((pari_sp)rem); return gc_upto(av,z-2);
   }
   lr=i+3; rem -= lr;
   if (avma==av1) { set_avma((pari_sp)rem); p1 = gcopy(p1); }
-  else p1 = gerepileupto((pari_sp)rem,p1);
+  else p1 = gc_upto((pari_sp)rem,p1);
   rem[0] = evaltyp(t_POL) | _evallg(lr);
   rem[1] = z[-1];
   rem += 2;
@@ -1941,11 +1941,11 @@ RgX_divrem_i(GEN x, GEN y, GEN *pr)
     av1=avma; p1 = gel(x,i);
     for (j=0; j<=i && j<=dz; j++) p1 = gsub(p1, gmul(gel(z,j),gel(y,i-j)));
     if (mod && avma==av1) p1 = gmul(p1,mod);
-    gel(rem,i) = avma==av1? gcopy(p1):gerepileupto(av1,p1);
+    gel(rem,i) = avma==av1? gcopy(p1):gc_upto(av1,p1);
   }
   rem -= 2;
   if (!sx) (void)normalizepol_lg(rem, lr);
-  if (pr == ONLY_REM) return gerepileupto(av,rem);
+  if (pr == ONLY_REM) return gc_upto(av,rem);
   z -= 2; *pr = rem; return gc_all_unsafe(av,avy,2,&z,pr);
 }
 
@@ -1989,7 +1989,7 @@ RgXQX_divrem(GEN x, GEN y, GEN T, GEN *pr)
     }
     if (gequal1(lead)) return RgX_copy(x);
     av0 = avma; x = gmul(x, ginvmod(lead,T)); tetpil = avma;
-    return gerepile(av0,tetpil,RgXQX_red(x,T));
+    return gc_GEN_unsafe(av0,tetpil,RgXQX_red(x,T));
   }
   av0 = avma; dz = dx-dy;
   lead = gequal1(lead)? NULL: gclone(ginvmod(lead,T));
@@ -1998,13 +1998,13 @@ RgXQX_divrem(GEN x, GEN y, GEN T, GEN *pr)
   x += 2; y += 2; z += 2;
 
   p1 = gel(x,dx); av = avma;
-  gel(z,dz) = lead? gerepileupto(av, grem(gmul(p1,lead), T)): gcopy(p1);
+  gel(z,dz) = lead? gc_upto(av, grem(gmul(p1,lead), T)): gcopy(p1);
   for (i=dx-1; i>=dy; i--)
   {
     av=avma; p1=gel(x,i);
     for (j=i-dy+1; j<=i && j<=dz; j++) p1 = gsub(p1, gmul(gel(z,j),gel(y,i-j)));
     if (lead) p1 = gmul(grem(p1, T), lead);
-    tetpil=avma; gel(z,i-dy) = gerepile(av,tetpil, grem(p1, T));
+    tetpil=avma; gel(z,i-dy) = gc_GEN_unsafe(av,tetpil, grem(p1, T));
   }
   if (!pr) { guncloneNULL(lead); return z-2; }
 
@@ -2026,19 +2026,19 @@ RgXQX_divrem(GEN x, GEN y, GEN T, GEN *pr)
   lr=i+3; rem -= lr;
   rem[0] = evaltyp(t_POL) | _evallg(lr);
   rem[1] = z[-1];
-  p1 = gerepile((pari_sp)rem,tetpil,p1);
+  p1 = gc_GEN_unsafe((pari_sp)rem,tetpil,p1);
   rem += 2; gel(rem,i) = p1;
   for (i--; i>=0; i--)
   {
     av=avma; p1 = gel(x,i);
     for (j=0; j<=i && j<=dz; j++)
       p1 = gsub(p1, gmul(gel(z,j),gel(y,i-j)));
-    tetpil=avma; gel(rem,i) = gerepile(av,tetpil, grem(p1, T));
+    tetpil=avma; gel(rem,i) = gc_GEN_unsafe(av,tetpil, grem(p1, T));
   }
   rem -= 2;
   guncloneNULL(lead);
   if (!sx) (void)normalizepol_lg(rem, lr);
-  if (pr == ONLY_REM) return gerepileupto(av0,rem);
+  if (pr == ONLY_REM) return gc_upto(av0,rem);
   *pr = rem; return z-2;
 }
 
@@ -2173,7 +2173,7 @@ RgXQX_pseudorem(GEN x, GEN y, GEN T)
       GEN c = gmul(gel(x,i), t);
       gel(x,i) = rem(c,T);
     }
-    if (!T) return gerepileupto(av, x);
+    if (!T) return gc_upto(av, x);
   }
   return gc_GEN(av, x);
 }
@@ -2200,7 +2200,7 @@ RgXQX_pseudodivrem(GEN x, GEN y, GEN T, GEN *ptr)
     x = RgX_renormalize_lg(leafcopy(x), lg(x)-1);
     y = RgX_renormalize_lg(leafcopy(y), lg(y)-1);
     r = RgX_sub(RgX_Rg_mul(x, y_lead), RgX_Rg_mul(y, x_lead));
-    *ptr = gerepileupto(av, r); return scalarpol(x_lead, vx);
+    *ptr = gc_upto(av, r); return scalarpol(x_lead, vx);
   }
   (void)new_chunk(2);
   x = RgX_recip_i(x)+2;
@@ -2488,7 +2488,7 @@ RgXn_div_gen(GEN g, GEN f, long e)
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgXn_inv, e = %ld", n);
-      W = gerepileupto(av, W);
+      W = gc_upto(av, W);
     }
   }
   return W;
@@ -2588,7 +2588,7 @@ GEN
 RgXn_div(GEN g, GEN f, long e)
 {
   pari_sp av = avma;
-  return gerepileupto(av, RgXn_div_i(g, f, e));
+  return gc_upto(av, RgXn_div_i(g, f, e));
 }
 
 GEN
@@ -2603,7 +2603,7 @@ GEN
 RgXn_inv(GEN f, long e)
 {
   pari_sp av = avma;
-  return gerepileupto(av, RgXn_inv_i(f, e));
+  return gc_upto(av, RgXn_inv_i(f, e));
 }
 
 /* intformal(x^n*S) / x^(n+1) */
@@ -2642,7 +2642,7 @@ RgXn_expint(GEN h, long e)
       (void)gc_all(av2, 2, &f, &g);
     }
   }
-  return gerepileupto(av, f);
+  return gc_upto(av, f);
 }
 
 GEN
@@ -2697,7 +2697,7 @@ RgXn_reverse(GEN f, long e)
       (void)gc_all(av2, 2, &a, &W);
     }
   }
-  return gerepileupto(av, a);
+  return gc_upto(av, a);
 }
 
 GEN
@@ -2719,7 +2719,7 @@ RgXn_sqrt(GEN h, long e)
     m = n-n2;
     g = RgX_sub(RgXn_sqrhigh(f, n2, n), RgX_shift_shallow(RgXn_red_shallow(h, n),-n2));
     f = RgX_sub(f, RgX_shift_shallow(RgXn_mul(gmul2n(df, -1), g, m), n2));
-    if (mask==1) return gerepileupto(av, f);
+    if (mask==1) return gc_upto(av, f);
     g = RgXn_mul(df, RgXn_mulhigh(df, f, n2, n), m);
     df = RgX_sub(df, RgX_shift_shallow(g, n2));
     if (gc_needed(av2,2))
@@ -2862,7 +2862,7 @@ RgXQ_norm(GEN x, GEN T)
   av = avma; y = resultant(T, x);
   L = leading_coeff(T);
   if (gequal1(L) || !signe(x)) return y;
-  return gerepileupto(av, gdiv(y, gpowgs(L, dx)));
+  return gc_upto(av, gdiv(y, gpowgs(L, dx)));
 }
 
 GEN
@@ -2875,7 +2875,7 @@ RgXQ_trace(GEN x, GEN T)
   dT = RgX_deriv(T); n = degpol(dT);
   z = RgXQ_mul(x, dT, T);
   if (degpol(z)<n) return gc_const(av, gen_0);
-  return gerepileupto(av, gdiv(gel(z,2+n), gel(T,3+n)));
+  return gc_upto(av, gdiv(gel(z,2+n), gel(T,3+n)));
 }
 
 GEN
@@ -2991,7 +2991,7 @@ RgX_mul_FpX(GEN x, GEN y, GEN p)
   else
     r = FpX_mul(RgX_to_FpX(x, p), RgX_to_FpX(y, p), p);
   if (signe(r)==0) { set_avma(av); return zero_FpX_mod(p, varn(x)); }
-  return gerepileupto(av, FpX_to_mod(r, p));
+  return gc_upto(av, FpX_to_mod(r, p));
 }
 
 static GEN
@@ -3016,7 +3016,7 @@ RgX_mul_FpXQX(GEN x, GEN y, GEN pol, GEN p)
   ky = RgXX_to_Kronecker(RgX_to_FpXQX(y, T, p), dT);
   r = FpX_mul(kx, ky, p);
   if (signe(r)==0) { set_avma(av); return zero_FpXQX_mod(pol, p, varn(x)); }
-  return gerepileupto(av, Kronecker_to_mod(FpX_to_mod(r, p), pol));
+  return gc_upto(av, Kronecker_to_mod(FpX_to_mod(r, p), pol));
 }
 
 static GEN
@@ -3030,7 +3030,7 @@ RgX_mul_QXQX(GEN x, GEN y, GEN T)
   long dT = degpol(T);
   GEN r = QX_mul(RgXX_to_Kronecker(RgX_liftred(x, T), dT),
                  RgXX_to_Kronecker(RgX_liftred(y, T), dT));
-  return gerepileupto(av, Kronecker_to_mod(r, T));
+  return gc_upto(av, Kronecker_to_mod(r, T));
 }
 
 static GEN
@@ -3046,7 +3046,7 @@ RgX_sqr_FpX(GEN x, GEN p)
   else
     r = FpX_sqr(RgX_to_FpX(x, p), p);
   if (signe(r)==0) { set_avma(av); return zero_FpX_mod(p, varn(x)); }
-  return gerepileupto(av, FpX_to_mod(r, p));
+  return gc_upto(av, FpX_to_mod(r, p));
 }
 
 static GEN
@@ -3060,7 +3060,7 @@ RgX_sqr_FpXQX(GEN x, GEN pol, GEN p)
   kx = RgXX_to_Kronecker(RgX_to_FpXQX(x, T, p), dT);
   r = FpX_sqr(kx, p);
   if (signe(r)==0) { set_avma(av); return zero_FpXQX_mod(pol, p, varn(x)); }
-  return gerepileupto(av, Kronecker_to_mod(FpX_to_mod(r, p), pol));
+  return gc_upto(av, Kronecker_to_mod(FpX_to_mod(r, p), pol));
 }
 
 static GEN
@@ -3069,7 +3069,7 @@ RgX_sqr_QXQX(GEN x, GEN T)
   pari_sp av = avma;
   long dT = degpol(T);
   GEN r = QX_sqr(RgXX_to_Kronecker(RgX_liftred(x, T), dT));
-  return gerepileupto(av, Kronecker_to_mod(r, T));
+  return gc_upto(av, Kronecker_to_mod(r, T));
 }
 
 static GEN
@@ -3086,7 +3086,7 @@ RgX_rem_FpX(GEN x, GEN y, GEN p)
   else
     r = FpX_rem(RgX_to_FpX(x, p), RgX_to_FpX(y, p), p);
   if (signe(r)==0) { set_avma(av); return zero_FpX_mod(p, varn(x)); }
-  return gerepileupto(av, FpX_to_mod(r, p));
+  return gc_upto(av, FpX_to_mod(r, p));
 }
 
 static GEN
@@ -3114,7 +3114,7 @@ RgX_rem_FpXQX(GEN x, GEN y, GEN pol, GEN p)
   else
     r = FpXQX_rem(RgX_to_FpXQX(x, T, p), RgX_to_FpXQX(y, T, p), T, p);
   if (signe(r)==0) { set_avma(av); return zero_FpXQX_mod(pol, p, varn(x)); }
-  return gerepileupto(av, FpXQX_to_mod(r, T, p));
+  return gc_upto(av, FpXQX_to_mod(r, T, p));
 }
 
 static GEN

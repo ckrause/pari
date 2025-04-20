@@ -321,7 +321,7 @@ smooth_best(long p, long n, long *pt_r, long *pt_nb)
   }
   *pt_r=bestr;
   *pt_nb=bestFB;
-  return bestc ? gerepileupto(av, gceil(bestc)): NULL;
+  return bestc ? gc_upto(av, gceil(bestc)): NULL;
 }
 
 static GEN
@@ -456,7 +456,7 @@ Flxq_log_index_cubic(GEN a0, GEN b0, GEN m, GEN T0, ulong p)
   if (DEBUGLEVEL) timer_printf(&ti,"smooth generator");
   e = Fp_div(Ao, Bo, m);
   if (!Flx_equal(Flxq_pow_pre(b0, e, T0, p, pi), a0)) pari_err_BUG("Flxq_log");
-  return gerepileupto(av, e);
+  return gc_upto(av, e);
 }
 
 INLINE GEN Flx_frob(GEN u, ulong p) { return Flx_inflate(u, p); }
@@ -732,7 +732,7 @@ Flxq_log_index_Coppersmith(GEN a0, GEN b0, GEN m, GEN T0, ulong p)
   if (DEBUGLEVEL) timer_printf(&ti,"smooth generator");
   e = Fp_div(Ao, Bo, m);
   if (!Flx_equal(Flxq_pow_pre(b0,e,T0,p,pi), a0)) pari_err_BUG("Flxq_log");
-  return gerepileupto(av, e);
+  return gc_upto(av, e);
 }
 
 GEN

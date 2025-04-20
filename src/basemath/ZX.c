@@ -424,7 +424,7 @@ Z_XpN_powu(GEN u, long n, long v)
   C[1] = evalsigne(1)| evalvarn(v);
   for (k=1; k <= n+1; k++)
     gel(C,k+1) = mulii(gel(V,n+2-k), gel(B,k));
-  return gerepileupto(av, C);
+  return gc_upto(av, C);
 }
 
 GEN
@@ -442,7 +442,7 @@ ZX_translate(GEN P, GEN c)
     GEN Q = ZX_translate(RgX_shift_shallow(P, -d), c);
     GEN R = ZX_translate(RgXn_red_shallow(P, d), c);
     GEN S = Z_XpN_powu(c, d, varn(P));
-    return gerepileupto(av, ZX_add(ZX_mul(Q, S), R));
+    return gc_upto(av, ZX_add(ZX_mul(Q, S), R));
   }
 }
 
@@ -706,7 +706,7 @@ ZX_sqrspec(GEN x, long nx)
     z = ZX_sqrspec_basecase(x, nx, 2*vx);
   else
     z = ZX_sqrspec_sqri(x, nx, ex, 2*vx);
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 GEN
@@ -753,7 +753,7 @@ ZX_mulspec(GEN x, GEN y, long nx, long ny)
   av = avma;
   ex = ZX_expispec(x, nx);
   ey = ZX_expispec(y, ny);
-  return gerepileupto(av,  ZX_mulspec_mulii(x,y,nx,ny,ex,ey,v));
+  return gc_upto(av,  ZX_mulspec_mulii(x,y,nx,ny,ex,ey,v));
 }
 GEN
 ZX_mul(GEN x, GEN y)
@@ -816,7 +816,7 @@ ZX_rem(GEN x, GEN y)
   }
   rem -= 2;
   if (!sx) (void)ZX_renormalize(rem, lr);
-  return gerepileupto(av0,rem);
+  return gc_upto(av0,rem);
 }
 
 /* return x(1) */
@@ -920,7 +920,7 @@ ZXV_dotproduct(GEN x, GEN y)
     GEN t = ZX_mul(gel(x,i), gel(y,i));
     if (signe(t)) c = ZX_add(c, t);
   }
-  return gerepileupto(av, c);
+  return gc_upto(av, c);
 }
 
 GEN
@@ -1018,7 +1018,7 @@ Z_mod2BIL_ZXQ(GEN x, long bs, GEN T)
   long v = varn(T), d = 2*(degpol(T)-1);
   GEN z = Z_mod2BIL_ZX(x, bs, d, 0);
   setvarn(z, v);
-  return gerepileupto(av, ZX_rem(z, T));
+  return gc_upto(av, ZX_rem(z, T));
 }
 
 static GEN
@@ -1055,7 +1055,7 @@ ZXQM_mul(GEN x, GEN y, GEN T)
     z = ZM_mul(ZXM_eval2BIL(x,N), ZXM_eval2BIL(y,N));
     z = ZM_mod2BIL_ZXQM(z, N, T);
   }
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 GEN
@@ -1074,7 +1074,7 @@ ZXQM_sqr(GEN x, GEN T)
     z = ZM_sqr(ZXM_eval2BIL(x,N));
     z = ZM_mod2BIL_ZXQM(z, N, T);
   }
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 GEN
@@ -1107,7 +1107,7 @@ Z_mod2BIL_Fq(GEN x, long bs, GEN T, GEN p)
   long v = get_FpX_var(T), d = 2*(get_FpX_degree(T)-1);
   GEN z = Z_mod2BIL_ZX(x, bs, d, 0);
   setvarn(z, v);
-  return gerepileupto(av, FpX_rem(z, T, p));
+  return gc_upto(av, FpX_rem(z, T, p));
 }
 
 static GEN
@@ -1136,7 +1136,7 @@ FqM_mul_Kronecker(GEN x, GEN y, GEN T, GEN p)
   long e = ex + ey + expu(d) + expu(n) + 4;
   long N = divsBIL(e)+1;
   GEN  z = ZM_mul(ZXM_eval2BIL(x,N), ZXM_eval2BIL(y,N));
-  return gerepileupto(av, ZM_mod2BIL_FqM(z, N, T, p));
+  return gc_upto(av, ZM_mod2BIL_FqM(z, N, T, p));
 }
 
 /*******************************************************************/
@@ -1393,7 +1393,7 @@ QX_ZX_rem(GEN x, GEN y)
   GEN d, nx = Q_primitive_part(x, &d);
   GEN r = ZX_rem(nx, y);
   if (d) r = ZX_Q_mul(r, d);
-  return gerepileupto(av, r);
+  return gc_upto(av, r);
 }
 
 GEN

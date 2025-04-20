@@ -244,7 +244,7 @@ sizered(GEN T1, GEN T3, GEN R1, GEN R2)
 {
   pari_sp ltop = avma;
   long e;
-  return gerepileupto(ltop, ZM_mul(ZM_neg(T1), grndtoi(gmul(ZM_inv(T1,NULL),
+  return gc_upto(ltop, ZM_mul(ZM_neg(T1), grndtoi(gmul(ZM_inv(T1,NULL),
          RgM_mul(RgM_mul(RgM_inv_upper(R1), R2), T3)), &e)));
 }
 
@@ -382,7 +382,7 @@ flattergram_i(GEN M, long flag)
   pari_sp av = avma;
   GEN T, R = RgM_Cholesky_dynprec(M);
   T = lllfp(R, 0.99, LLL_IM|LLL_UPPER|LLL_NOCERTIFY | (flag&LLL_KEEP_FIRST));
-  return gerepileupto(av, T);
+  return gc_upto(av, T);
 }
 
 static void

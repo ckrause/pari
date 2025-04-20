@@ -328,7 +328,7 @@ islucaspsp(GEN N)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"islucaspsp");
-      z = gerepileupto(av, z);
+      z = gc_upto(av, z);
     }
   }
   return 0;
@@ -1196,7 +1196,7 @@ gprimepi_upper_bound(GEN x)
   x = itor(x, LOWDEFAULTPREC);
   L = 1 / rtodbl(logr_abs(x));
   x = mulrr(x, dbltor(L * (1 + L + 2.51*L*L)));
-  return gerepileuptoleaf(av, x);
+  return gc_uptoleaf(av, x);
 }
 GEN
 gprimepi_lower_bound(GEN x)
@@ -1213,7 +1213,7 @@ gprimepi_lower_bound(GEN x)
   x = itor(x, LOWDEFAULTPREC);
   L = 1 / rtodbl(logr_abs(x));
   x = mulrr(x, dbltor(L * (1 + L)));
-  return gerepileuptoleaf(av, x);
+  return gc_uptoleaf(av, x);
 }
 
 GEN
@@ -1296,7 +1296,7 @@ primes_interval(GEN a, GEN b)
   forprime_init(&S, a, b);
   y = cgetg(n+1, t_VEC); i = 1;
   while ((p = forprime_next(&S))) gel(y, i++) = icopy(p);
-  setlg(y, i); return gerepileupto(av, y);
+  setlg(y, i); return gc_upto(av, y);
 }
 
 /* simpler case a <= b <= maxprimelim() */

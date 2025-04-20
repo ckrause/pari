@@ -418,7 +418,7 @@ ZM_mul_slice(GEN A, GEN B, GEN P, GEN *mod)
     ulong p = uel(P,1);
     GEN a = ZM_to_Flm(A, p);
     GEN b = ZM_to_Flm(B, p);
-    GEN Hp = gerepileupto(av, Flm_to_ZM(Flm_mul(a, b, p)));
+    GEN Hp = gc_upto(av, Flm_to_ZM(Flm_mul(a, b, p)));
     *mod = utoi(p); return Hp;
   }
   T = ZV_producttree(P);
@@ -452,7 +452,7 @@ ZM_mul_fast(GEN A, GEN B, long lA, long lB, long sA, long sB)
   worker = snm_closure(is_entry("_ZM_mul_worker"), mkvec2(A,B));
   H = gen_crt("ZM_mul", worker, &S, NULL, h, 0, NULL,
               nmV_chinese_center, FpM_center);
-  return gerepileupto(av, H);
+  return gc_upto(av, H);
 }
 
 /* s = min(log_BIL |x|, log_BIL |y|), use Strassen-Winograd when
@@ -509,7 +509,7 @@ ZM_sqr_slice(GEN A, GEN P, GEN *mod)
   {
     ulong p = uel(P,1);
     GEN a = ZM_to_Flm(A, p);
-    GEN Hp = gerepileupto(av, Flm_to_ZM(Flm_sqr(a, p)));
+    GEN Hp = gc_upto(av, Flm_to_ZM(Flm_sqr(a, p)));
     *mod = utoi(p); return Hp;
   }
   T = ZV_producttree(P);
@@ -542,7 +542,7 @@ ZM_sqr_fast(GEN A, long l, long s)
   worker = snm_closure(is_entry("_ZM_sqr_worker"), mkvec(A));
   H = gen_crt("ZM_sqr", worker, &S, NULL, h, 0, NULL,
               nmV_chinese_center, FpM_center);
-  return gerepileupto(av, H);
+  return gc_upto(av, H);
 }
 
 GEN
@@ -1204,7 +1204,7 @@ ZC_hnfdivrem_i(GEN x, GEN y, GEN *Q, GEN (*div)(GEN,GEN))
     if (Q) gel(*Q, i) = q;
   }
   if (avma == av) return ZC_copy(x);
-  if (!Q) return gerepileupto(av, x);
+  if (!Q) return gc_upto(av, x);
   (void)gc_all(av, 2, &x, Q); return x;
 }
 GEN

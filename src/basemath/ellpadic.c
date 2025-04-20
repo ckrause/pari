@@ -361,7 +361,7 @@ ellformalw(GEN e, long n, long v)
     num = gadd(gmul(a6,w3), gadd(gmul(U,w2), gadd(gmul(V,w), W)));
     den = gadd(gmul(a63,w2), gadd(gmul(w,U2), V));
 
-    w = gerepileupto(av2, gsub(w, gdiv(num, den)));
+    w = gc_upto(av2, gsub(w, gdiv(num, den)));
     nold = nnew;
   }
   return gc_GEN(av, w);
@@ -414,14 +414,14 @@ ellformallog(GEN e, long n, long v)
   pari_sp av = avma;
   GEN w = ellformalw(e, n, v), wi = ser_inv(w), x;
   GEN w1 = ellformaldifferential_i(e, w, wi, &x);
-  return gerepileupto(av, integser(w1));
+  return gc_upto(av, integser(w1));
 }
 /* z to t */
 GEN
 ellformalexp(GEN e, long n, long v)
 {
   pari_sp av = avma;
-  return gerepileupto(av, serreverse(ellformallog(e,n,v)));
+  return gc_upto(av, serreverse(ellformallog(e,n,v)));
 }
 /* [log_p (sigma(t) / t), log_E t], as power series, d (log_E t) := w1 dt;
  * As a fonction of z: odd, = e.b2/12 * z + O(z^3).
@@ -763,7 +763,7 @@ ellpadiclog(GEN E, GEN p, long n, GEN P)
   if (vt <= 0)
     pari_err_DOMAIN("ellpadiclog","P","not in the kernel of reduction at",p,P);
   L = ser2rfrac_i(ellformallog(E, log_prec(p, n, vt) + 1, 0));
-  return gerepileupto(av, poleval(L, cvtop(t, p, n)));
+  return gc_upto(av, poleval(L, cvtop(t, p, n)));
 }
 
 /* E/Qp has multiplicative reduction, Tate curve */
@@ -834,7 +834,7 @@ ellpadics2(GEN E, GEN p, long n)
     ap = Fp_center_i(ap, q, shifti(q,-1));
   }
   l = mspadic_unit_eigenvalue(ap, 2, p, n);
-  return gerepileupto(av, gdiv(b, gsub(l, a))); /* slope of eigenvector */
+  return gc_upto(av, gdiv(b, gsub(l, a))); /* slope of eigenvector */
 }
 
 /* symbol and modular symbol space attached to E to later compute
@@ -885,7 +885,7 @@ ellpadicL(GEN E, GEN p, long n, GEN s, long r, GEN D)
   if (n <= 0) pari_err_DOMAIN("ellpadicL","precision","<=",gen_0,stoi(n));
   W = ellpadicL_symbol(E, p, s, D);
   v = ellpadicL_init(W, n);
-  return gerepileupto(av, ellpadic_i(v, r));
+  return gc_upto(av, ellpadic_i(v, r));
 }
 
 static long

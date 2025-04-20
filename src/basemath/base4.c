@@ -200,7 +200,7 @@ idealhnf_shallow(GEN nf, GEN x)
       B = deg1pol_shallow(ginv(f),
                           gsub(gdiv(u, shifti(f,1)), gdiv(B,gen_2)),
                           varn(T));
-      return gerepileupto(av, idealhnf_two(nf, mkvec2(A,B)));
+      return gc_upto(av, idealhnf_two(nf, mkvec2(A,B)));
     }
     default: return idealhnf_principal(nf, x); /* PRINCIPAL */
   }
@@ -211,7 +211,7 @@ idealhnf(GEN nf, GEN x)
 {
   pari_sp av = avma;
   GEN y = idealhnf_shallow(nf, x);
-  return (avma == av)? gcopy(y): gerepileupto(av, y);
+  return (avma == av)? gcopy(y): gc_upto(av, y);
 }
 
 static GEN
@@ -248,7 +248,7 @@ nfweilheight(GEN nf, GEN v, long prec)
   pari_sp av = avma;
   nf = checknf(nf);
   if (!is_vec_t(typ(v)) || lg(v) < 2) pari_err_TYPE("nfweilheight",v);
-  return gerepileupto(av, nfweilheight_i(nf, v, prec));
+  return gc_upto(av, nfweilheight_i(nf, v, prec));
 }
 
 /* GP functions */
@@ -362,7 +362,7 @@ idealhnf0(GEN nf, GEN a, GEN b)
     x = (tb==t_COL)? hnf_QC_QC(nf, a,b): hnf_Q_QC(nf, b,a);
   else
     x = (tb==t_COL)? hnf_Q_QC(nf, a,b): hnf_Q_Q(nf, a,b);
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 
 /*******************************************************************/
@@ -919,7 +919,7 @@ idealispower(GEN nf, GEN A, long n, GEN *pB)
   if (gequal0(gel(v,1))) { set_avma(av); if (pB) *pB = cgetg(1,t_MAT); return 1; }
   if (!idealsqrtn_int(nf, gel(v,1), n, pB? &N: NULL)) return 0;
   if (!idealsqrtn_int(nf, gel(v,2), n, pB? &D: NULL)) return 0;
-  if (pB) *pB = gerepileupto(av, idealdiv(nf,N,D)); else set_avma(av);
+  if (pB) *pB = gc_upto(av, idealdiv(nf,N,D)); else set_avma(av);
   return 1;
 }
 
@@ -1029,11 +1029,11 @@ idealadd(GEN nf, GEN x, GEN y)
   {
     long N = lg(x)-1;
     if (!dz) { set_avma(av); return matid(N); }
-    return gerepileupto(av, scalarmat(ginv(dz), N));
+    return gc_upto(av, scalarmat(ginv(dz), N));
   }
   z = ZM_hnfmodid(shallowconcat(x,y), a);
   if (dz) z = RgM_Rg_div(z,dz);
-  return gerepileupto(av,z);
+  return gc_upto(av,z);
 }
 
 static GEN
@@ -1079,7 +1079,7 @@ idealaddtoone(GEN nf, GEN x, GEN y)
   GEN z = cgetg(3,t_VEC), a;
   pari_sp av = avma;
   nf = checknf(nf);
-  a = gerepileupto(av, idealaddtoone_i(nf,x,y));
+  a = gc_upto(av, idealaddtoone_i(nf,x,y));
   gel(z,1) = a;
   gel(z,2) = typ(a) == t_COL? Z_ZC_sub(gen_1,a): subui(1,a);
   return z;
@@ -1894,7 +1894,7 @@ idealmul(GEN nf, GEN x, GEN y)
   if (tx>ty) { swap(ax,ay); swap(x,y); lswap(tx,ty); }
   f = (ax||ay); res = f? cgetg(3,t_VEC): NULL; /*product is an extended ideal*/
   av = avma;
-  z = gerepileupto(av, idealmul_aux(checknf(nf), x,y, tx,ty));
+  z = gc_upto(av, idealmul_aux(checknf(nf), x,y, tx,ty));
   if (!f) return z;
   if (ax && ay)
     ax = ext_mul(nf, ax, ay);
@@ -1964,7 +1964,7 @@ idealsqr(GEN nf, GEN x)
   long tx = idealtyp(&x,&ax);
   res = ax? cgetg(3,t_VEC): NULL; /*product is an extended ideal*/
   av = avma;
-  z = gerepileupto(av, idealsqr_aux(checknf(nf), x, tx));
+  z = gc_upto(av, idealsqr_aux(checknf(nf), x, tx));
   if (!ax) return z;
   gel(res,1) = z;
   gel(res,2) = ext_sqr(nf, ax); return res;
@@ -1988,7 +1988,7 @@ idealnorm(GEN nf, GEN x)
   tx = typ(x);
   if (tx == t_INT) return gc_INT(av, absi(x));
   if (tx != t_FRAC) pari_err_TYPE("idealnorm",x);
-  return gerepileupto(av, Q_abs(x));
+  return gc_upto(av, Q_abs(x));
 }
 
 /* x \cap Z */
@@ -2169,7 +2169,7 @@ idealinv(GEN nf, GEN x)
     case id_PRIME:
       x = pr_inv(x); break;
   }
-  x = gerepileupto(av,x); if (!ax) return x;
+  x = gc_upto(av,x); if (!ax) return x;
   gel(res,1) = x;
   gel(res,2) = ext_inv(nf, ax); return res;
 }
@@ -2371,7 +2371,7 @@ idealpow(GEN nf, GEN x, GEN n)
   tx = idealtyp(&x,&ax);
   res = ax? cgetg(3,t_VEC): NULL;
   av = avma;
-  x = gerepileupto(av, idealpow_aux(checknf(nf), x, tx, n));
+  x = gc_upto(av, idealpow_aux(checknf(nf), x, tx, n));
   if (!ax) return x;
   gel(res,1) = x;
   gel(res,2) = ext_pow(nf, ax, n);
@@ -2411,14 +2411,14 @@ idealpowred(GEN nf, GEN x, GEN n)
   av2 = avma;
   if (s < 0) y = idealinv(nf,y);
   if (s < 0 || is_pm1(n)) y = idealred(nf,y);
-  return avma == av2? gc_GEN(av,y): gerepileupto(av,y);
+  return avma == av2? gc_GEN(av,y): gc_upto(av,y);
 }
 
 GEN
 idealmulred(GEN nf, GEN x, GEN y)
 {
   pari_sp av = avma;
-  return gerepileupto(av, _idealmulred(nf,x,y));
+  return gc_upto(av, _idealmulred(nf,x,y));
 }
 
 long
@@ -2459,7 +2459,7 @@ idealdiv(GEN nf, GEN x, GEN y)
 {
   pari_sp av = avma, tetpil;
   GEN z = idealinv(nf,y);
-  tetpil = avma; return gerepile(av,tetpil, idealmul(nf,x,z));
+  tetpil = avma; return gc_GEN_unsafe(av,tetpil, idealmul(nf,x,z));
 }
 
 /* This routine computes the quotient x/y of two ideals in the number field nf.
@@ -2519,14 +2519,14 @@ idealdivexact(GEN nf, GEN x0, GEN y0)
   { /* Replace x/y  by  x+(Nx/Nz) / y+(Ny/Nz) */
     x = ZM_hnfmodid(x, q);
     /* y reduced to unit ideal ? */
-    if (Nz == Ny) return gerepileupto(av, x);
+    if (Nz == Ny) return gc_upto(av, x);
 
     yZ = gcoeff(y,1,1); q = gcdii(diviiexact(Ny,Nz), yZ);
     y = ZM_hnfmodid(y, q);
   }
   yZ = gcoeff(y,1,1);
   y = idealHNF_mul(nf,x, idealHNF_inv_Z(nf,y));
-  return gerepileupto(av, ZM_Z_divexact(y, yZ));
+  return gc_upto(av, ZM_Z_divexact(y, yZ));
 }
 
 GEN
@@ -2552,7 +2552,7 @@ idealintersect(GEN nf, GEN x, GEN y)
   for (i=1; i<lz; i++) setlg(z[i], lx);
   z = ZM_hnfmodid(ZM_mul(x,z), lcmii(xZ, yZ));
   if (dx) z = RgM_Rg_div(z,dx);
-  return gerepileupto(av,z);
+  return gc_upto(av,z);
 }
 
 /*******************************************************************/
@@ -2693,7 +2693,7 @@ idealred0(GEN nf, GEN I, GEN vdir)
   yi = ZM_gauss(my, col_ei(N,1)); /* y^-1 */
   dyi = Q_denom(yi); /* generates (y) \cap Z */
   I = hnfmodid(I, dyi);
-  if (!aI) return gerepileupto(av, I);
+  if (!aI) return gc_upto(av, I);
   if (typ(aI) == t_MAT)
   {
     GEN nyi = Q_muli_to_int(yi, dyi);
@@ -2764,7 +2764,7 @@ idealred_elt(GEN nf, GEN I)
 {
   pari_sp av = avma;
   GEN u = idealpseudomin(I, nf_get_roundG(nf));
-  return gerepileupto(av, u);
+  return gc_upto(av, u);
 }
 
 GEN
@@ -2782,7 +2782,7 @@ idealmin(GEN nf, GEN x, GEN vdir)
   x = Q_remove_denom(x, &dx);
   y = idealpseudomin(x, nf_get_Gtwist(nf,vdir));
   if (dx) y = RgC_Rg_div(y, dx);
-  return gerepileupto(av, y);
+  return gc_upto(av, y);
 }
 
 /*******************************************************************/
@@ -3152,13 +3152,13 @@ idealapprfact_i(GEN nf, GEN x, int nored)
 GEN
 idealapprfact(GEN nf, GEN x) {
   pari_sp av = avma;
-  return gerepileupto(av, idealapprfact_i(nf, x, 0));
+  return gc_upto(av, idealapprfact_i(nf, x, 0));
 }
 GEN
 idealappr(GEN nf, GEN x) {
   pari_sp av = avma;
   if (!is_nf_extfactor(x)) x = idealfactor(nf, x);
-  return gerepileupto(av, idealapprfact_i(nf, x, 0));
+  return gc_upto(av, idealapprfact_i(nf, x, 0));
 }
 
 /* OBSOLETE */
@@ -3222,7 +3222,7 @@ idealtwoelt2(GEN nf, GEN x, GEN a)
     b = centermodii(b, aZ, shifti(aZ,-1));
   }
   b = cx? gmul(b,cx): gcopy(b);
-  return gerepileupto(av, b);
+  return gc_upto(av, b);
 }
 
 /* Given 2 integral ideals x and y in nf, returns a beta in nf such that
@@ -3241,7 +3241,7 @@ GEN
 idealcoprime(GEN nf, GEN x, GEN y)
 {
   pari_sp av = avma;
-  return gerepileupto(av, idealcoprimefact(nf, x, idealfactor(nf,y)));
+  return gc_upto(av, idealcoprimefact(nf, x, idealfactor(nf,y)));
 }
 
 GEN
@@ -3254,7 +3254,7 @@ nfmulmodpr(GEN nf, GEN x, GEN y, GEN modpr)
   x = nf_to_Fq(nf,x,modpr);
   y = nf_to_Fq(nf,y,modpr);
   z = Fq_mul(x,y,T,p);
-  return gerepileupto(av, algtobasis(nf, Fq_to_nf(z,modpr)));
+  return gc_upto(av, algtobasis(nf, Fq_to_nf(z,modpr)));
 }
 
 GEN
@@ -3262,7 +3262,7 @@ nfdivmodpr(GEN nf, GEN x, GEN y, GEN modpr)
 {
   pari_sp av = avma;
   nf = checknf(nf);
-  return gerepileupto(av, nfreducemodpr(nf, nfdiv(nf,x,y), modpr));
+  return gc_upto(av, nfreducemodpr(nf, nfdiv(nf,x,y), modpr));
 }
 
 GEN
@@ -3274,7 +3274,7 @@ nfpowmodpr(GEN nf, GEN x, GEN k, GEN modpr)
   nf = checknf(nf); modpr = nf_to_Fq_init(nf,&pr,&T,&p);
   z = nf_to_Fq(nf,x,modpr);
   z = Fq_pow(z,k,T,p);
-  return gerepileupto(av, algtobasis(nf, Fq_to_nf(z,modpr)));
+  return gc_upto(av, algtobasis(nf, Fq_to_nf(z,modpr)));
 }
 
 GEN

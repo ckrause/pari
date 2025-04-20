@@ -141,7 +141,7 @@ qfb_inv(GEN x) {
   gel(z,2) = negi(gel(z,2));
   return z;
 }
-/* valid for t_QFB, gerepile-safe */
+/* valid for t_QFB, gc_GEN_unsafe-safe */
 static GEN
 qfbinv(GEN x)
 { retmkqfb(icopy(gel(x,1)),negi(gel(x,2)),icopy(gel(x,3)), icopy(gel(x,4))); }
@@ -908,7 +908,7 @@ qfbredsl2(GEN q, GEN isD)
   av = avma;
   if (!isD) isD = sqrti(qfb_disc(q));
   else if (typ(isD) != t_INT) pari_err_TYPE("qfbredsl2",isD);
-  return gerepileupto(av, qfbredsl2_real(q, isD));
+  return gc_upto(av, qfbredsl2_real(q, isD));
 }
 
 static GEN
@@ -1152,7 +1152,7 @@ qfbcomp(GEN x, GEN y)
     if (typ(x) == t_VEC || typ(y) == t_VEC)
       pari_err_IMPL("Shanks's distance in general composition");
     if (!z) pari_err_OP("*",x,y);
-    return gerepileupto(av, qfbred(z));
+    return gc_upto(av, qfbred(z));
   }
   return qfb_is_qfi(qx)? qficomp0(x,y,0): qfrcomp0(x,y,0);
 }
@@ -1889,9 +1889,9 @@ qfrsolve_normform(GEN N, GEN Ps, GEN rd)
   for(;;)
   {
     if (qfb_equal(gel(M,1), gel(P,1)))
-      return gerepileupto(av, SL2_div_mul_e1(gel(M,2),gel(P,2)));
+      return gc_upto(av, SL2_div_mul_e1(gel(M,2),gel(P,2)));
     if (qfb_equal(gel(N,1), gel(Q,1)))
-      return gerepileupto(av, SL2_div_mul_e1(gel(N,2),gel(Q,2)));
+      return gc_upto(av, SL2_div_mul_e1(gel(N,2),gel(Q,2)));
     M = rhorealsl2(M, rd);
     if (qfb_equal(gel(M,1), gel(N,1))) return gc_NULL(av);
     Q = rhorealsl2(Q, rd);
@@ -1910,7 +1910,7 @@ qfrsolvep(GEN Q, GEN p)
   rd = sqrti(d);
   N = qfbredsl2_real(Q, rd);
   x = qfrsolve_normform(N, primeform(d, p), rd);
-  return x? gerepileupto(av, x): gc_const(av, gen_0);
+  return x? gc_upto(av, x): gc_const(av, gen_0);
 }
 
 static GEN

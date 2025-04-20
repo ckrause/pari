@@ -76,7 +76,7 @@ FpXXQ_sqr(GEN x, GEN T, GEN p)
   long n = degpol(T);
   GEN z = FpX_red(ZXX_sqr_Kronecker(x, n), p);
   z = Kronecker_to_ZXX(z, n, varn(T));
-  return gerepileupto(av, FpXXQ_red(z, T, p));
+  return gc_upto(av, FpXXQ_red(z, T, p));
 }
 
 static GEN
@@ -86,7 +86,7 @@ FpXXQ_mul(GEN x, GEN y, GEN T, GEN p)
   long n = degpol(T);
   GEN z = FpX_red(ZXX_mul_Kronecker(x, y, n), p);
   z = Kronecker_to_ZXX(z, n, varn(T));
-  return gerepileupto(av, FpXXQ_red(z, T, p));
+  return gc_upto(av, FpXXQ_red(z, T, p));
 }
 
 static GEN
@@ -114,10 +114,10 @@ ZpXXQ_invsqrt(GEN S, GEN T, ulong p, long e)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZpXXQ_invsqrt, e = %ld", n);
-      a = gerepileupto(av2, a);
+      a = gc_upto(av2, a);
     }
   }
-  return gerepileupto(av, a);
+  return gc_upto(av, a);
 }
 
 static GEN
@@ -171,11 +171,11 @@ ZpXXQ_frob(GEN S, GEN U, GEN V, long k, GEN T, ulong p, long e)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZpXXQ_frob, step 1, i = %ld", i);
-      M = gerepileupto(av2, M);
+      M = gc_upto(av2, M);
     }
   }
   if (degpol(M)<dT-1)
-    return gerepileupto(av, M);
+    return gc_upto(av, M);
   R = RgX_shift_shallow(M,dT-degpol(M)-2);
   av2 = avma;
   for(i = degpol(M)-dT+2; i>=1; i--)
@@ -190,14 +190,14 @@ ZpXXQ_frob(GEN S, GEN U, GEN V, long k, GEN T, ulong p, long e)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZpXXQ_frob, step 2, i = %ld", i);
-      R = gerepileupto(av2, R);
+      R = gc_upto(av2, R);
     }
   }
   if (degpol(R)==dT-1)
   {
     GEN c = frac_to_Fp(leading_coeff(R), leading_coeff(Tp), q);
     R = FpX_sub(R, FpX_Fp_mul(Tp, c, q), q);
-    return gerepileupto(av, R);
+    return gc_upto(av, R);
   } else
     return gc_GEN(av, R);
 }
@@ -318,7 +318,7 @@ ZlX_hyperellpadicfrobenius(GEN H, ulong p, long n)
     if (DEBUGLEVEL>1) timer_printf(&ti,"frob");
     gel(F, i) = gc_GEN(av2, RgX_to_RgC(M, d-1));
   }
-  return gerepileupto(av, F);
+  return gc_upto(av, F);
 }
 
 GEN
@@ -327,7 +327,7 @@ hyperellpadicfrobenius(GEN H, ulong p, long n)
   pari_sp av = avma;
   GEN M = ZlX_hyperellpadicfrobenius(H, p, n);
   GEN q = zeropadic_shallow(utoipos(p),n);
-  return gerepileupto(av, ZM_to_padic(M, q));
+  return gc_upto(av, ZM_to_padic(M, q));
 }
 
 INLINE GEN
@@ -362,7 +362,7 @@ ZpXQXXQ_sqr(GEN x, GEN S, GEN T, GEN q, GEN p, long e)
   long n = degpol(S);
   kx = RgXX_to_Kronecker(x, n);
   z = Kronecker_to_ZXX(FpXQX_sqr(kx, T, q), n, varn(S));
-  return gerepileupto(av, ZpXQXXQ_red(z, S, T, q, p, e));
+  return gc_upto(av, ZpXQXXQ_red(z, S, T, q, p, e));
 }
 
 static GEN
@@ -374,7 +374,7 @@ ZpXQXXQ_mul(GEN x, GEN y, GEN S, GEN T, GEN q, GEN p, long e)
   kx = RgXX_to_Kronecker(x, n);
   ky = RgXX_to_Kronecker(y, n);
   z = Kronecker_to_ZXX(FpXQX_mul(ky, kx, T, q), n, varn(S));
-  return gerepileupto(av, ZpXQXXQ_red(z, S, T, q, p, e));
+  return gc_upto(av, ZpXQXXQ_red(z, S, T, q, p, e));
 }
 
 static GEN
@@ -421,17 +421,17 @@ ZpXQXXQ_invsqrt(GEN F, GEN S, GEN T, ulong p, long e)
     q = powuu(p,n); q2 = powuu(p,n2);
     av3 = avma;
     f = RgX_sub(ZpXQXXQ_mul(F, ZpXQXXQ_sqr(a, S, T, q, pp, n), S, T, q, pp, n), pol_1(v));
-    fq = gerepileupto(av3, RgX_Rg_divexact(f, q2));
+    fq = gc_upto(av3, RgX_Rg_divexact(f, q2));
     q22 = shifti(addiu(q2,1),-1);
     afq = FpXXX_Fp_mul(ZpXQXXQ_mul(a, fq, S, T, q2, pp, n2), q22, q2);
     a = RgX_sub(a, RgX_Rg_mul(afq, q2));
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZpXQXXQ_invsqrt, e = %ld", n);
-      a = gerepileupto(av2, a);
+      a = gc_upto(av2, a);
     }
   }
-  return gerepileupto(av, a);
+  return gc_upto(av, a);
 }
 
 static GEN
@@ -463,11 +463,11 @@ ZpXQXXQ_frob(GEN F, GEN U, GEN V, long k, GEN S, GEN T, ulong p, long e)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZpXQXXQ_frob, step 1, i = %ld", i);
-      M = gerepileupto(av2, M);
+      M = gc_upto(av2, M);
     }
   }
   if (degpol(M)<dS-1)
-    return gerepileupto(av, M);
+    return gc_upto(av, M);
   R = RgX_shift_shallow(M,dS-degpol(M)-2);
   av2 = avma;
   for(i = degpol(M)-dS+2; i>=1; i--)
@@ -482,14 +482,14 @@ ZpXQXXQ_frob(GEN F, GEN U, GEN V, long k, GEN S, GEN T, ulong p, long e)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZpXXQ_frob, step 2, i = %ld", i);
-      R = gerepileupto(av2, R);
+      R = gc_upto(av2, R);
     }
   }
   if (degpol(R)==dS-1)
   {
     GEN c = frac_to_Fq(to_ZX(leading_coeff(R),v), to_ZX(leading_coeff(Sp),v), T, q, pp, e);
     R = FpXX_sub(R, FpXQX_FpXQ_mul(Sp, c, T, q), q);
-    return gerepileupto(av, R);
+    return gc_upto(av, R);
   } else
     return gc_GEN(av, R);
 }
@@ -590,9 +590,9 @@ ZlXQX_hyperellpadicfrobenius(GEN H, GEN T, ulong p, long n)
     if (DEBUGLEVEL>1) timer_printf(&ti,"red");
     M = ZpXQXXQ_frob(D, U, V, (k - 1)>>1, Q, T, p, N1);
     if (DEBUGLEVEL>1) timer_printf(&ti,"frob");
-    gel(F, i) = gerepileupto(av2, ZXX_to_FpXC(M, d-1, q, varn(T)));
+    gel(F, i) = gc_upto(av2, ZXX_to_FpXC(M, d-1, q, varn(T)));
   }
-  return gerepileupto(av, F);
+  return gc_upto(av, F);
 }
 
 GEN
@@ -603,7 +603,7 @@ nfhyperellpadicfrobenius(GEN H, GEN T, ulong p, long n)
   GEN M = ZlXQX_hyperellpadicfrobenius(lift_shallow(H),T,p,n);
   GEN MM = ZpXQM_prodFrobenius(M, T, pp, n);
   GEN m = gmul(ZXM_to_padic(MM, q), gmodulo(gen_1, T));
-  return gerepileupto(av, m);
+  return gc_upto(av, m);
 }
 
 GEN
@@ -762,7 +762,7 @@ hyperellcharpoly(GEN PQ)
         if (dP==6 && dQ<3 && F2x_coeff(P2,5)==F2x_coeff(Q2,2))
           is_sing(PQ, 2); /* The curve is singular at infinity */
         R = zx_to_ZX(F2x_genus2charpoly_naive(P2, Q2));
-        return gerepileupto(av, R);
+        return gc_upto(av, R);
       }
     }
     H = RgX_to_FpX(H, pp);
@@ -773,7 +773,7 @@ hyperellcharpoly(GEN PQ)
       GEN Hp = ZX_to_Flx(H, p);
       if (!Flx_is_squarefree(Hp, p)) is_sing(H, p);
       R = zx_to_ZX(Flx_genus2charpoly_naive(Hp, p));
-      return gerepileupto(av, R);
+      return gc_upto(av, R);
     }
     n = hyperell_Weil_bound(pp, (d-1)>>1, pp);
     eps = odd(d)? 0: Fp_issquare(leading_coeff(H), pp);
@@ -804,7 +804,7 @@ hyperellcharpoly(GEN PQ)
     R = FpX_div_by_X_x(R, eps? b: negi(b), pn, NULL);
     R = FpX_center_i(R, pn, shifti(pn,-1));
   }
-  return gerepileupto(av, charpoly_funceq(R, q));
+  return gc_upto(av, charpoly_funceq(R, q));
 }
 
 int
@@ -859,7 +859,7 @@ hyperelldisc(GEN PQ)
   d = degpol(H); g = ((d+1)>>1)-1;
   D = gmul2n(RgX_disc(H),-4*(g+1));
   if (odd(d)) D = gmul(D, gsqr(leading_coeff(H)));
-  return gerepileupto(av, D);
+  return gc_upto(av, D);
 }
 
 static long
@@ -1828,7 +1828,7 @@ genus2_eulerfact(GEN P, GEN p, long ra, long rt)
   }
   E =  gmul(genus2_eulerfact_semistable(gel(W,1),p),
             genus2_eulerfact_semistable(gel(W,2),p));
-  return gerepileupto(av, E);
+  return gc_upto(av, E);
 }
 
 /*   p = 2  */
@@ -1847,7 +1847,7 @@ F2x_genus2_find_trans(GEN P, GEN Q, GEN F)
   }
   C = F2x_to_F2v(F2x_rem(P, F), d);
   V = F2m_F2c_invimage(M, C);
-  return gerepileuptoleaf(av, F2v_to_F2x(V, v));
+  return gc_uptoleaf(av, F2v_to_F2x(V, v));
 }
 
 static GEN
@@ -1968,7 +1968,7 @@ genus2_eulerfact2(GEN F, GEN PQ)
   if (lg(W) < 3) return genus2_eulerfact2_semistable(PQ);
   E = gmul(genus2_eulerfact2_semistable(gel(W,1)),
            genus2_eulerfact2_semistable(gel(W,2)));
-  return gerepileupto(av, E);
+  return gc_upto(av, E);
 }
 
 GEN
@@ -1982,5 +1982,5 @@ genus2charpoly(GEN G, GEN p)
     F = genus2_eulerfact2(P, PQ);
   else
     F = genus2_eulerfact(P,p, r[1],r[2]);
-  return gerepileupto(av, F);
+  return gc_upto(av, F);
 }

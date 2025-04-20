@@ -405,7 +405,7 @@ Fle_sub(GEN P, GEN Q, ulong a4, ulong p)
 {
   pari_sp av = avma;
   ulong slope;
-  return gerepileupto(av, Fle_add_slope(P, Fle_neg(Q, p), a4, p, &slope));
+  return gc_upto(av, Fle_add_slope(P, Fle_neg(Q, p), a4, p, &slope));
 }
 
 struct _Fle { ulong a4, a6, p; };
@@ -447,7 +447,7 @@ _Fle_mul(void *E, GEN P, GEN n)
   if (is_pm1(n)) return s > 0? zv_copy(P): P;
   Q = (lgefint(n)==3) ? Fle_mulu(P, uel(n,2), e->a4, e->p):
                         gen_pow(P, n, (void*)e, &_Fle_dbl, &_Fle_add);
-  return s > 0? Q: gerepileuptoleaf(av, Q);
+  return s > 0? Q: gc_uptoleaf(av, Q);
 }
 
 GEN

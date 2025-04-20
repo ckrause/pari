@@ -512,7 +512,7 @@ FpM_mul(GEN x, GEN y, GEN p)
     }
   } else
     z = FpM_red(ZM_mul(x, y), p);
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 static GEN
@@ -800,7 +800,7 @@ FpM_powu(GEN x, ulong n, GEN p)
       z = F2m_to_ZM(F2m_powu(ZM_to_F2m(x),n));
     else
       z = Flm_to_ZM(Flm_powu(ZM_to_Flm(x, pp), n, pp));
-    return gerepileupto(av, z);
+    return gc_upto(av, z);
   }
   return gen_powu(x, n, (void*)p, &_FpM_sqr, &_FpM_mul);
 }
@@ -1380,7 +1380,7 @@ gen_FpM_Wiedemann(void *E, GEN (*f)(void*, GEN), GEN B, GEN p)
       if (gc_needed(av,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"Wiedemann: first loop, %ld",i);
-        W = gerepileupto(av, W);
+        W = gc_upto(av, W);
       }
     }
     b = FpX_renormalize(b, m+2);
@@ -1507,7 +1507,7 @@ ZlM_gauss(GEN a, GEN b, ulong p, long e, GEN C)
     xi = Flm_mul(C, ZM_to_Flm(b, p), p);
     xb = ZM_add(xb, nm_Z_mul(xi, pi));
   }
-  return gerepileupto(av, xb);
+  return gc_upto(av, xb);
 }
 
 struct wrapper_modp_s {
@@ -1558,10 +1558,10 @@ gen_ZpM_Dixon_Wiedemann(void *E, GEN (*f)(void*, GEN), GEN B, GEN p, long e)
     }
     xi = gen_FpM_Wiedemann((void*)&W, wrap_relcomb_modp, FpC_red(B, p), p);
     if (!xi) return NULL;
-    if (typ(xi) == t_VEC) return gerepileupto(av, xi);
+    if (typ(xi) == t_VEC) return gc_upto(av, xi);
     xb = ZC_add(xb, ZC_Z_mul(xi, pi));
   }
-  return gerepileupto(av, xb);
+  return gc_upto(av, xb);
 }
 
 static GEN
@@ -1606,7 +1606,7 @@ ZpMs_ZpCs_solve(GEN M, GEN A, long nbrow, GEN p, long e)
   }
   for (i = 1; i <= lR; ++i)
     if (signe(gel(Rp, i)))
-      return gerepileuptoleaf(av, mkvecsmall(pcol[i]));
+      return gc_uptoleaf(av, mkvecsmall(pcol[i]));
   return NULL; /* LCOV_EXCL_LINE */
 }
 

@@ -1105,5 +1105,5 @@ qfparam(GEN G, GEN sol, long fl)
                mkcol3(sqri(b),mulii(b,d),sqri(d)));
     sol = ZM_mul(sol,U);
   }
-  return gerepileupto(av, sol);
+  return gc_upto(av, sol);
 }

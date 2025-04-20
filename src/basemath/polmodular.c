@@ -253,7 +253,7 @@ red_primeform(long D, long p)
   GEN P;
   if (!prime_to_conductor(D, p)) return NULL;
   P = primeform_u(stoi(D), p); /* primitive since p \nmid conductor */
-  return gerepileupto(av, qfbred_i(P));
+  return gc_upto(av, qfbred_i(P));
 }
 
 /* Computes product of primeforms over primes appearing in the prime
@@ -274,7 +274,7 @@ qfb_nform(long D, long n)
     if (i == 1) { N = Q; j = 1; } else j = 0;
     for (; j < e; ++j) N = qfbcomp_i(Q, N);
   }
-  return gerepileupto(av, N);
+  return gc_upto(av, N);
 }
 
 INLINE int
@@ -1091,7 +1091,7 @@ Flm_Fl_polmodular_evalx(GEN phi, long L, ulong j, ulong p, ulong pi)
     case 2: return Flm_Fl_phi2_evalx(phi, j, p, pi);
     case 3: return Flm_Fl_phi3_evalx(phi, j, p, pi);
     case 5: return Flm_Fl_phi5_evalx(phi, j, p, pi);
-    default: { /* not GC clean, but gerepileupto-safe */
+    default: { /* not GC clean, but gc_upto-safe */
       GEN j_powers = Fl_powers_pre(j, L + 1, p, pi);
       return Flm_Flc_mul_pre_Flx(phi, j_powers, p, pi, 0);
     }
@@ -1146,7 +1146,7 @@ Fle_quotient_from_kernel_generator(
 
     t = Fl_add(t, tQ, p);
     w = Fl_add(w, uQ, p);
-    Q = gerepileupto(av, Fle_add(pt, Q, a4, p));
+    Q = gc_upto(av, Fle_add(pt, Q, a4, p));
   } while (uel(Q, 1) != xQ);
 
   set_avma(av);
@@ -1380,7 +1380,7 @@ INLINE GEN
 enum_volcano_surface(norm_eqn_t ne, ulong j0, GEN fdb, GEN G)
 {
   pari_sp av = avma;
-  return gerepileupto(av, enum_roots(j0, ne, fdb, G, NULL));
+  return gc_upto(av, enum_roots(j0, ne, fdb, G, NULL));
 }
 
 INLINE GEN
@@ -1397,7 +1397,7 @@ enum_volcano_floor(long L, norm_eqn_t ne, ulong j0_pr, GEN fdb, GEN G)
   eqn->D = DR;
   eqn->u = R_cond;
   eqn->v = w;
-  return gerepileupto(av, enum_roots(j0_pr, eqn, fdb, G, NULL));
+  return gc_upto(av, enum_roots(j0_pr, eqn, fdb, G, NULL));
 }
 
 INLINE void
@@ -1735,7 +1735,7 @@ polmodular_worker(GEN tp, ulong L, GEN hilb, GEN factu, GEN vne, GEN vinfo,
                               G_surface, G_floor, (const disc_info*)vinfo);
   if (!isintzero(j_powers))
     Tp = eval_modpoly_modp(Tp, j_powers, ne->p, ne->pi, derivs);
-  return gerepileupto(av, Tp);
+  return gc_upto(av, Tp);
 }
 
 static GEN
@@ -1859,7 +1859,7 @@ polmodular0_ZM(long L, long inv, GEN J, GEN Q, int compute_derivs, GEN *db)
   }
   modpoly = nmV_chinese_center(modpoly, plist, NULL);
   if (J) modpoly = FpM_red(modpoly, Q);
-  return gerepileupto(ltop, modpoly);
+  return gc_upto(ltop, modpoly);
 }
 
 GEN
@@ -1963,7 +1963,7 @@ polmodular(long L, long inv, GEN x, long v, long compute_derivs)
 
   if (v < 0) v = 1;
   res = Fp_polmodular_evalx(L, inv, J, P, v, compute_derivs);
-  return gerepileupto(av, gmul(res, one));
+  return gc_upto(av, gmul(res, one));
 }
 
 /* SECTION: Modular polynomials of level <= MAX_INTERNAL_MODPOLY_LEVEL. */
@@ -2022,7 +2022,7 @@ phi3_ZV(void)
   GEN phi3 = cgetg(11, t_VEC);
   pari_sp av = avma;
   gel(phi3, 1) = gen_0;
-  gel(phi3, 2) = gerepileupto(av, shifti(uu32toi(100, 2503270400UL), 32));
+  gel(phi3, 2) = gc_upto(av, shifti(uu32toi(100, 2503270400UL), 32));
   gel(phi3, 3) = uu32toi(179476562, 2147483648UL);
   setsigne(gel(phi3, 3), -1);
   gel(phi3, 4) = uu32toi(105468, 3221225472UL);
@@ -2310,7 +2310,7 @@ polmodular0_powerup_ZM(long L, long inv, GEN *db)
     (void) ZM_incremental_CRT(&pol, phi_modp, &P, p);
     if (gc_needed(av, 2)) (void)gc_all(av, 2, &pol, &P);
   }
-  killblock((GEN)Ds[0].primes); return gerepileupto(ltop, pol);
+  killblock((GEN)Ds[0].primes); return gc_upto(ltop, pol);
 }
 
 /* Returns the modular polynomial with the smallest level for the given

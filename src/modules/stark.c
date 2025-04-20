@@ -262,7 +262,7 @@ ComputeKernel(GEN bnrm, GEN bnrn, GEN dtQ)
   pari_sp av = avma;
   GEN S = bnrsurjection(bnrm, bnrn);
   GEN P = ZM_mul(gel(dtQ,3), gel(S,1));
-  return gerepileupto(av, abmap_kernel(mkvec3(P, gel(S,2), gel(dtQ,2))));
+  return gc_upto(av, abmap_kernel(mkvec3(P, gel(S,2), gel(dtQ,2))));
 }
 
 static long
@@ -1741,7 +1741,7 @@ mpvecpowdiv(GEN A, long n)
   GEN w = cgetg(n+1, t_VEC);
   gel(w,1) = rcopy(gel(v,2));
   for (i=2; i<=n; i++) gel(w,i) = divru(gel(v,i+1), i);
-  return gerepileupto(av, w);
+  return gc_upto(av, w);
 }
 
 static void GetST0(GEN bnr, GEN *pS, GEN *pT, GEN CR, long prec);
@@ -1989,7 +1989,7 @@ zeta_get_limx(long r1, long r2, long bit)
 
   A0 = logr_abs( gmul2n(c0, bit) ); p2 = divrr(A0, c1);
   p1 = divrr(mulur(N*(r+1), logr_abs(p2)), addsr(2*(r+1), gmul2n(A0,2)));
-  return gerepileuptoleaf(av, divrr(addrs(p1, 1), powruhalf(p2, N)));
+  return gc_uptoleaf(av, divrr(addrs(p1, 1), powruhalf(p2, N)));
 }
 /* N_0 = floor( C_K / limx ). Large */
 static long
@@ -2253,7 +2253,7 @@ LABDOUB:
       for (j = 1; j <= n; j++)
         if ( (an = EvalCoeff(p2, matan[j], d)) )
           p1 = gadd(p1, gdivgu(an, j));
-      gel(L1,i) = gerepileupto(av2, p1);
+      gel(L1,i) = gc_upto(av2, p1);
       FreeMat(matan, n);
     }
     p1 = gmul2n(powruhalf(mppi(newprec), N-2), 1);
@@ -2391,10 +2391,10 @@ bnrstark(GEN bnr, GEN subgrp, long prec)
   /* find a suitable extension N */
   dtQ = InitQuotient(subgrp);
   data  = FindModulus(bnr, dtQ, &newprec);
-  if (!data) return gerepileupto(av, bnrstark_cyclic(bnr, dtQ, prec));
+  if (!data) return gc_upto(av, bnrstark_cyclic(bnr, dtQ, prec));
   if (DEBUGLEVEL>1 && newprec > prec)
     err_printf("new precision: %ld\n", newprec);
-  return gerepileupto(av, AllStark(data, 0, newprec));
+  return gc_upto(av, AllStark(data, 0, newprec));
 }
 
 GEN
@@ -2425,7 +2425,7 @@ bnrstarkunit(GEN bnr, GEN subgrp)
   CR   = InitChar(bnr, AllChars(bnr, QD, 1), 0, DEFAULTPREC);
   data = mkvec4(bnr, D, subgroup_classes(Cm), CR);
   CplxModulus(data, &newprec);
-  return gerepileupto(av, AllStark(data, 2, newprec));
+  return gc_upto(av, AllStark(data, 2, newprec));
 }
 
 /* For each character of Cl(bnr)/subgp, compute L(1, chi) (or equivalently
@@ -2839,7 +2839,7 @@ gpq(GEN form, struct gpq_data *T)
   w = Z_chinese(T->u, stoi(-b), T->pq2, utoipos(a << 1));
   z = double_eta_quotient(utoipos(a), w, T->D, T->p, T->q, T->pq, T->sqd);
   if (real && typ(z) == t_COMPLEX) z = gcopy(gel(z, 1));
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 /* returns an equation for the Hilbert class field of Q(sqrt(D)), D < 0
@@ -2930,7 +2930,7 @@ quadhilbert(GEN D, long prec)
   pari_sp av = avma;
   GEN d = D;
   quadray_init(&d, NULL, 0);
-  return gerepileupto(av, signe(d)>0? quadhilbertreal(D,prec)
+  return gc_upto(av, signe(d)>0? quadhilbertreal(D,prec)
                                     : quadhilbertimag(d));
 }
 
@@ -3205,7 +3205,7 @@ findquad(GEN a, GEN x, GEN p)
   if (!is_scalar_t(tv)) pari_err_TYPE("findquad", v);
   x = deg1pol(u, v, varn(a));
   if (typ(x) == t_POL) x = gmodulo(x,p);
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 static GEN
 findquad_pol(GEN p, GEN a, GEN x)
@@ -3331,5 +3331,5 @@ quadray(GEN D, GEN f, long prec)
     y = treatspecialsigma(bnr);
     if (!y) y = computeP2(bnr, prec);
   }
-  return gerepileupto(av, y);
+  return gc_upto(av, y);
 }

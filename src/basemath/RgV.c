@@ -77,7 +77,7 @@ RgMrow_zc_mul_i(GEN x, GEN y, long c, long i)
       default: s = gadd(s, gmulgs(gcoeff(x,i,j), t)); break;
     }
   }
-  return s? gerepileupto(av, s): gc_const(av, gen_0);
+  return s? gc_upto(av, s): gc_const(av, gen_0);
 }
 GEN
 RgMrow_zc_mul(GEN x, GEN y, long i) { return RgMrow_zc_mul_i(x,y,lg(y),i); }
@@ -113,7 +113,7 @@ RgMrow_ZC_mul_i(GEN x, GEN y, long i, long l)
   long j;
   for (j=2; j<l; j++)
     if (signe(gel(y,j))) t = gadd(t, gmul(gcoeff(x,i,j), gel(y,j)));
-  return gerepileupto(av,t);
+  return gc_upto(av,t);
 }
 
 /* compatible t_MAT * t_COL, lx = lg(x) = lg(y) > 1, l = lgcols(x) */
@@ -138,7 +138,7 @@ RgM_ZM_mul(GEN x, GEN y)
   GEN worker;
   if (lg(x) == 1) return cgetg(lg(y), t_MAT);
   worker = snm_closure(is_entry("_RgM_ZM_mul_worker"),mkvec(x));
-  return gerepileupto(av, gen_parapply(worker, y));
+  return gc_upto(av, gen_parapply(worker, y));
 }
 
 static GEN
@@ -148,7 +148,7 @@ RgV_zc_mul_i(GEN x, GEN y, long l)
   GEN z = gen_0;
   pari_sp av = avma;
   for (i = 1; i < l; i++) z = gadd(z, gmulgs(gel(x,i), y[i]));
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 GEN
 RgV_zc_mul(GEN x, GEN y) { return RgV_zc_mul_i(x, y, lg(x)); }
@@ -177,10 +177,10 @@ RgV_dotsquare(GEN x)
     if (gc_needed(av,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgV_dotsquare, i = %ld",i);
-      z = gerepileupto(av, z);
+      z = gc_upto(av, z);
     }
   }
-  return gerepileupto(av,z);
+  return gc_upto(av,z);
 }
 
 /* scalar product x.y, lx = lg(x) = lg(y) */
@@ -198,10 +198,10 @@ RgV_dotproduct_i(GEN x, GEN y, long lx)
     if (gc_needed(av,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgV_dotproduct, i = %ld",i);
-      z = gerepileupto(av, z);
+      z = gc_upto(av, z);
     }
   }
-  return gerepileupto(av,z);
+  return gc_upto(av,z);
 }
 GEN
 RgV_dotproduct(GEN x,GEN y)
@@ -254,7 +254,7 @@ RgM_sumcol(GEN A)
     pari_sp av = avma;
     GEN s = gcoeff(A,i,1);
     for (j = 2; j < l; j++) s = gadd(s, gcoeff(A,i,j));
-    gel(v, i) = gerepileupto(av, s);
+    gel(v, i) = gc_upto(av, s);
   }
   return v;
 }
@@ -500,7 +500,7 @@ RgMrow_RgC_mul_i(GEN x, GEN y, long i, long l)
     GEN c = gcoeff(x,i,j);
     if (!isintzero(c)) t = gadd(t, gmul(c, gel(y,j)));
   }
-  return gerepileupto(av,t);
+  return gc_upto(av,t);
 }
 GEN
 RgMrow_RgC_mul(GEN x, GEN y, long i)
@@ -519,7 +519,7 @@ RgM_RgC_mul_FpM(GEN x, GEN y, GEN p)
   }
   else
     r = FpM_FpC_mul(RgM_to_FpM(x, p), RgC_to_FpC(y, p), p);
-  return gerepileupto(av, FpC_to_mod(r, p));
+  return gc_upto(av, FpC_to_mod(r, p));
 }
 
 static GEN
@@ -529,7 +529,7 @@ RgM_RgC_mul_FqM(GEN x, GEN y, GEN pol, GEN p)
   GEN b, T = RgX_to_FpX(pol, p);
   if (signe(T) == 0) pari_err_OP("*", x, y);
   b = FqM_FqC_mul(RgM_to_FqM(x, T, p), RgC_to_FqC(y, T, p), T, p);
-  return gerepileupto(av, FqC_to_mod(b, T, p));
+  return gc_upto(av, FqC_to_mod(b, T, p));
 }
 
 static GEN
@@ -599,7 +599,7 @@ RgM_mul_FpM_i(GEN x, GEN y, GEN p)
 }
 static GEN
 RgM_mul_FpM(GEN x, GEN y, GEN p)
-{ pari_sp av = avma; return gerepileupto(av, RgM_mul_FpM_i(x, y, p)); }
+{ pari_sp av = avma; return gc_upto(av, RgM_mul_FpM_i(x, y, p)); }
 
 static GEN
 RgM_mul_FqM(GEN x, GEN y, GEN pol, GEN p)
@@ -608,7 +608,7 @@ RgM_mul_FqM(GEN x, GEN y, GEN pol, GEN p)
   GEN b, T = RgX_to_FpX(pol, p);
   if (signe(T) == 0) pari_err_OP("*", x, y);
   b = FqM_mul(RgM_to_FqM(x, T, p), RgM_to_FqM(y, T, p), T, p);
-  return gerepileupto(av, FqM_to_mod(b, T, p));
+  return gc_upto(av, FqM_to_mod(b, T, p));
 }
 
 static GEN
@@ -1050,7 +1050,7 @@ RgM_det_triangular(GEN mat)
   if (l<3) return l<2? gen_1: gcopy(gcoeff(mat,1,1));
   av = avma; s = gcoeff(mat,1,1);
   for (i=2; i<l; i++) s = gmul(s,gcoeff(mat,i,i));
-  return av==avma? gcopy(s): gerepileupto(av,s);
+  return av==avma? gcopy(s): gc_upto(av,s);
 }
 
 GEN

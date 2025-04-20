@@ -52,7 +52,7 @@ trans_fix_arg(long *prec, GEN *s0, GEN *sig, GEN *tau, pari_sp *av, GEN *res)
 /**                          ARCTANGENT                            **/
 /**                                                                **/
 /********************************************************************/
-/* atan(b/a), real a and b, suitable for gerepileupto */
+/* atan(b/a), real a and b, suitable for gc_upto */
 static GEN
 atan2_agm(GEN a, GEN b, long prec)
 { return gel(logagmcx(mkcomplex(a, b), prec), 2); }
@@ -72,7 +72,7 @@ mpatan(GEN x)
     return y;
   }
   if (l > AGM_ATAN_LIMIT)
-  { av = avma; return gerepileuptoleaf(av, atan2_agm(gen_1, x, l)); }
+  { av = avma; return gc_uptoleaf(av, atan2_agm(gen_1, x, l)); }
 
   e = expo(x); inv = (e >= 0); /* = (|x| > 1 ) */
   if (e > 0) lp += nbits2extraprec(e);
@@ -152,7 +152,7 @@ gatan(GEN x, long prec)
       /* lg(y) > 2 */
       a = integser(gdiv(derivser(y), gaddsg(1,gsqr(y))));
       if (!valser(y)) a = gadd(a, gatan(gel(y,2),prec));
-      return gerepileupto(av, a);
+      return gc_upto(av, a);
   }
   return trans_eval("atan",gatan,x,prec);
 }
@@ -170,7 +170,7 @@ mpasin(GEN x) {
     z = atan2_agm(a, x, realprec(x));
   else
     z = mpatan(divrr(x, a));
-  return gerepileuptoleaf(av, z);
+  return gc_uptoleaf(av, z);
 }
 
 static GEN mpacosh(GEN x);
@@ -210,12 +210,12 @@ gasin(GEN x, long prec)
       {
         GEN t = Pi2n(-1,prec);
         if (gsigne(gel(y,2)) < 0) setsigne(t, -1);
-        return gerepileupto(av, scalarser(t, varn(y), valser(p1)>>1));
+        return gc_upto(av, scalarser(t, varn(y), valser(p1)>>1));
       }
       p1 = gdiv(derivser(y), gsqrt(p1,prec));
       a = integser(p1);
       if (!valser(y)) a = gadd(a, gasin(gel(y,2),prec));
-      return gerepileupto(av, a);
+      return gc_upto(av, a);
   }
   return trans_eval("asin",gasin,x,prec);
 }
@@ -240,7 +240,7 @@ mpacos(GEN x)
     z = mpatan(divrr(a, x));
     if (signe(x) < 0) z = addrr(mppi(realprec(z)), z);
   }
-  return gerepileuptoleaf(av, z);
+  return gc_uptoleaf(av, z);
 }
 
 GEN
@@ -278,11 +278,11 @@ gacos(GEN x, long prec)
         if (gequal0(p1)) { set_avma(av); return zeroser(varn(y), valser(p1)>>1); }
         p1 = integser(gdiv(gneg(derivser(y)), gsqrt(p1,prec)));
         /*y(t) = 1+O(t)*/
-        if (gequal1(gel(y,2)) && !valser(y)) return gerepileupto(av, p1);
+        if (gequal1(gel(y,2)) && !valser(y)) return gc_upto(av, p1);
       }
       else p1 = y;
       a = (lg(y)==2 || valser(y))? Pi2n(-1, prec): gacos(gel(y,2),prec);
-      return gerepileupto(av, gadd(a,p1));
+      return gc_upto(av, gadd(a,p1));
   }
   return trans_eval("acos",gacos,x,prec);
 }
@@ -338,7 +338,7 @@ cxarg(GEN x, GEN y, long prec)
 {
   pari_sp av = avma;
   x = rfix(x,prec);
-  y = rfix(y,prec); return gerepileuptoleaf(av, mparg(x,y));
+  y = rfix(y,prec); return gc_uptoleaf(av, mparg(x,y));
 }
 
 GEN
@@ -374,7 +374,7 @@ mpcosh(GEN x)
   if (!signe(x)) return mpcosh0(expo(x));
   av = avma;
   z = mpexp(x); z = addrr(z, invr(z)); shiftr_inplace(z, -1);
-  return gerepileuptoleaf(av, z);
+  return gc_uptoleaf(av, z);
 }
 
 GEN
@@ -392,14 +392,14 @@ gcosh(GEN x, long prec)
       /* fall through */
     case t_PADIC:
       av = avma; p1 = gexp(x,prec); p1 = gadd(p1, ginv(p1));
-      return gerepileupto(av, gmul2n(p1,-1));
+      return gc_upto(av, gmul2n(p1,-1));
     default:
       av = avma; if (!(y = toser_i(x))) break;
       if (gequal0(y) && valser(y) == 0) return gc_GEN(av, y);
       v = valser(y);
       if (v > 0) y = sertoser(y, lg(y) - 2 + v);
       p1 = gexp(y,prec); p1 = gadd(p1, ginv(p1));
-      return gerepileupto(av, gmul2n(p1,-1));
+      return gc_upto(av, gmul2n(p1,-1));
   }
   return trans_eval("cosh",gcosh,x,prec);
 }
@@ -483,12 +483,12 @@ gsinh(GEN x, long prec)
       /* fall through */
     case t_PADIC:
       av = avma; p1 = gexp(x,prec); p1 = gsub(p1, ginv(p1));
-      return gerepileupto(av, gmul2n(p1,-1));
+      return gc_upto(av, gmul2n(p1,-1));
     default:
       av = avma; if (!(y = toser_i(x))) break;
       if (gequal0(y) && valser(y) == 0) return gc_GEN(av, y);
       p1 = gexp(y, prec); p1 = gsub(p1, ginv(p1));
-      return gerepileupto(av, gmul2n(p1,-1));
+      return gc_upto(av, gmul2n(p1,-1));
   }
   return trans_eval("sinh",gsinh,x,prec);
 }
@@ -514,7 +514,7 @@ mptanh(GEN x)
     GEN t;
     if (e < 0) x = rtor(x, lx + nbits2extraprec(-e));
     t = exp1r_abs(gmul2n(x,1)); /* exp(|2x|) - 1 */
-    y = gerepileuptoleaf(av, divrr(t, addsr(2,t)));
+    y = gc_uptoleaf(av, divrr(t, addsr(2,t)));
   }
   if (s < 0) togglesign(y); /* tanh is odd */
   return y;
@@ -536,13 +536,13 @@ gtanh(GEN x, long prec)
       av = avma;
       t = gexp(gmul2n(x,1),prec);
       t = gdivsg(-2, gaddgs(t,1));
-      return gerepileupto(av, gaddsg(1,t));
+      return gc_upto(av, gaddsg(1,t));
     default:
       av = avma; if (!(y = toser_i(x))) break;
       if (gequal0(y)) return gc_GEN(av, y);
       t = gexp(gmul2n(y, 1),prec);
       t = gdivsg(-2, gaddgs(t,1));
-      return gerepileupto(av, gaddsg(1,t));
+      return gc_upto(av, gaddsg(1,t));
   }
   return trans_eval("tanh",gtanh,x,prec);
 }
@@ -564,7 +564,7 @@ mpcotanh(GEN x)
     GEN t;
     if (e < 0) x = rtor(x, lx + nbits2extraprec(-e));
     t = exp1r_abs(gmul2n(x,1)); /* exp(|2x|) - 1 */
-    y = gerepileuptoleaf(av, divrr(addsr(2,t), t));
+    y = gc_uptoleaf(av, divrr(addsr(2,t), t));
   }
   if (s < 0) togglesign(y); /* cotanh is odd */
   return y;
@@ -585,12 +585,12 @@ gcotanh(GEN x, long prec)
     case t_PADIC:
       av = avma;
       t = gexpm1(gmul2n(x,1),prec);
-      return gerepileupto(av, gaddsg(1, gdivsg(2,t)));
+      return gc_upto(av, gaddsg(1, gdivsg(2,t)));
     default:
       av = avma; if (!(y = toser_i(x))) break;
       if (gequal0(y)) return gc_GEN(av, y);
       t = gexpm1(gmul2n(y,1),prec);
-      return gerepileupto(av, gaddsg(1, gdivsg(2,t)));
+      return gc_upto(av, gaddsg(1, gdivsg(2,t)));
   }
   return trans_eval("cotanh",gcotanh,x,prec);
 }
@@ -640,7 +640,7 @@ gasinh(GEN x, long prec)
         y = gneg(glog(b,prec));
       else
         y = glog(a,prec);
-      return gerepileupto(av, y); /* log (x + sqrt(1+x^2)) */
+      return gc_upto(av, y); /* log (x + sqrt(1+x^2)) */
     }
     default:
       av = avma; if (!(y = toser_i(x))) break;
@@ -651,12 +651,12 @@ gasinh(GEN x, long prec)
       {
         GEN t = PiI2n(-1,prec);
         if ( gsigne(imag_i(gel(y,2))) < 0 ) setsigne(gel(t,2), -1);
-        return gerepileupto(av, scalarser(t, varn(y), valser(p1)>>1));
+        return gc_upto(av, scalarser(t, varn(y), valser(p1)>>1));
       }
       p1 = gdiv(derivser(y), gsqrt(p1,prec));
       a = integser(p1);
       if (!valser(y)) a = gadd(a, gasinh(gel(y,2),prec));
-      return gerepileupto(av, a);
+      return gc_upto(av, a);
   }
   return trans_eval("asinh",gasinh,x,prec);
 }
@@ -718,7 +718,7 @@ gacosh(GEN x, long prec)
         y = glog(a,prec);
       /* y = \pm log(x + sqrt(x^2-1)) */
       if (gsigne(real_i(y)) < 0) y = gneg(y);
-      return gerepileupto(av, y);
+      return gc_upto(av, y);
     }
     default: {
       GEN a, d;
@@ -729,7 +729,7 @@ gacosh(GEN x, long prec)
       if (gequal0(y))
       {
         if (!v) return gc_GEN(av, y);
-        return gerepileupto(av, gadd(y, PiI2n(-1, prec)));
+        return gc_upto(av, gadd(y, PiI2n(-1, prec)));
       }
       d = gsubgs(gsqr(y),1);
       if (gequal0(d)) { set_avma(av); return zeroser(varn(y), valser(d)>>1); }
@@ -739,10 +739,10 @@ gacosh(GEN x, long prec)
         d = PiI2n(-1, prec); /* I Pi/2 */
       else
       {
-        d = gel(y,2); if (gequal1(d)) return gerepileupto(av,a);
+        d = gel(y,2); if (gequal1(d)) return gc_upto(av,a);
         d = gacosh(d, prec);
       }
-      return gerepileupto(av, gadd(d,a));
+      return gc_upto(av, gadd(d,a));
     }
   }
   return trans_eval("acosh",gacosh,x,prec);
@@ -768,7 +768,7 @@ mpatanh(GEN x)
   }
   z = invr(z); shiftr_inplace(z, 1); /* 2/(1-|x|) */
   z = logr_abs( addrs(z,-1) ); if (s < 0) togglesign(z);
-  shiftr_inplace(z, -1); return gerepileuptoleaf(av, z);
+  shiftr_inplace(z, -1); return gc_uptoleaf(av, z);
 }
 
 static long
@@ -853,7 +853,7 @@ gatanh(GEN x, long prec)
       }
       else
         a = atanhui(1, x, prec);
-      gel(z,1) = gerepileuptoleaf(av, a);
+      gel(z,1) = gc_uptoleaf(av, a);
       gel(z,2) = Pi2n(-1, prec);
       togglesign(sx > 0? gel(z,2): gel(z,1));
       return z;
@@ -870,7 +870,7 @@ gatanh(GEN x, long prec)
         set_avma(av); if (e < - prec2nbits(prec)) break;
         z = cgetg(3, t_COMPLEX); av = avma;
         a = ly == 3? atanhuu(u, y[2], prec): atanhui(u, y, prec);
-        gel(z,1) = gerepileuptoleaf(av, a);
+        gel(z,1) = gc_uptoleaf(av, a);
         gel(z,2) = Pi2n(-1, prec);
         togglesign(signe(y) > 0? gel(z,2): gel(z,1));
       }
@@ -879,7 +879,7 @@ gatanh(GEN x, long prec)
         av = avma; e = expi((signe(y) < 0)? addii(y, z): subii(y, z));
         set_avma(av); if (e < - prec2nbits(prec)) break;
         a = lz == 3? atanhuu(y[2], z[2], prec): atanhui(y[2], z, prec);
-        z = gerepileuptoleaf(av, a);
+        z = gc_uptoleaf(av, a);
         if (signe(y) < 0) togglesign(z);
       }
       return z;
@@ -898,7 +898,7 @@ gatanh(GEN x, long prec)
       if (!signe(z)) err_atanh(x, gen_m1);
       z = logr_abs(z);
       shiftr_inplace(z, -1); /* (1/2)log((1+x)/(x-1)) */
-      gel(y,1) = gerepileuptoleaf(av, z);
+      gel(y,1) = gc_uptoleaf(av, z);
       gel(y,2) = Pi2n(-1, realprec(x));
       if (sx > 0) togglesign(gel(y,2));
       return y;
@@ -906,7 +906,7 @@ gatanh(GEN x, long prec)
     case t_COMPLEX: /* 2/(1-z) - 1 = (1+z) / (1-z) */
       if (ismpzero(gel(x,2))) return gatanh(gel(x,1), prec);
       av = avma; z = glog( gaddgs(gdivsg(2,gsubsg(1,x)),-1), prec );
-      return gerepileupto(av, gmul2n(z,-1));
+      return gc_upto(av, gmul2n(z,-1));
 
     default:
       av = avma; if (!(y = toser_i(x))) break;
@@ -914,7 +914,7 @@ gatanh(GEN x, long prec)
       z = gdiv(derivser(y), gsubsg(1,gsqr(y)));
       a = integser(z);
       if (!valser(y)) a = gadd(a, gatanh(gel(y,2),prec));
-      return gerepileupto(av, a);
+      return gc_upto(av, a);
   }
   return trans_eval("atanh",gatanh,x,prec);
 }
@@ -1048,7 +1048,7 @@ lngamma_sum(GEN a, long N)
     if (gc_needed(av,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"gamma: i = %ld", i);
-      S = gerepileupto(av, S);
+      S = gc_upto(av, S);
     }
   }
   return S;
@@ -1066,7 +1066,7 @@ psi_sum(GEN a, long N)
     if (gc_needed(av,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"psi: i = %ld", i);
-      S = gerepileupto(av, S);
+      S = gc_upto(av, S);
     }
   }
   return gmul(a,S);
@@ -1218,7 +1218,7 @@ cxgamma(GEN s0, int dolog, long prec)
         if (gc_needed(av2,3))
         {
           if(DEBUGMEM>1) pari_warn(warnmem,"gamma");
-          y = gerepileuptoleaf(av2, y);
+          y = gc_uptoleaf(av2, y);
         }
       }
     } else {
@@ -1228,7 +1228,7 @@ cxgamma(GEN s0, int dolog, long prec)
         if (gc_needed(av2,3))
         {
           if(DEBUGMEM>1) pari_warn(warnmem,"gamma");
-          y = gerepileuptoleaf(av2, y);
+          y = gc_uptoleaf(av2, y);
         }
       }
     }
@@ -1243,7 +1243,7 @@ cxgamma(GEN s0, int dolog, long prec)
       if (gc_needed(av2,3))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"gamma");
-        y = gerepileupto(av3, y);
+        y = gc_upto(av3, y);
       }
     }
     if (!odd(N)) y = gmul(y, gaddsg(N - 1, s));
@@ -1380,7 +1380,7 @@ ggammah(GEN x, long prec)
     }
     case t_REAL: case t_COMPLEX: case t_PADIC: case t_SER: {
       pari_sp av = avma;
-      return gerepileupto(av, ggamma(gadd(x,ghalf), prec));
+      return gc_upto(av, ggamma(gadd(x,ghalf), prec));
     }
   }
   return trans_eval("gammah",ggammah,x,prec);
@@ -1457,7 +1457,7 @@ Qp_gamma_Dwork(GEN x, long p)
   }
   else
     p1 = gneg(gadw(gdivgu(x, p), p));
-  return gerepileupto(ltop, p1);
+  return gc_upto(ltop, p1);
 }
 
 /* Compute Qp_gamma using the definition. This is a O(x*M(log(pe))) algorithm.
@@ -1472,9 +1472,9 @@ Qp_gamma_Morita(long n, GEN p, long e)
     if (!pp || i%pp)
     {
       p2 = gmulgu(p2, i);
-      if ((i&0xFL) == 0xFL) p2 = gerepileupto(av, p2);
+      if ((i&0xFL) == 0xFL) p2 = gc_upto(av, p2);
     }
-  return gerepileupto(av, p2);
+  return gc_upto(av, p2);
 }
 
 /* x\in\N: Gamma(-x)=(-1)^(1+x+x\p)*Gamma(1+x) */
@@ -1788,7 +1788,7 @@ ggamma(GEN x, long prec)
         z = fractor(z, prec+EXTRAPREC64);
         y = divrr(pi, mulrr(mpsin(gmul(pi, r)), cxgamma(z, 0, prec)));
         if (mpodd(q)) togglesign(y);
-        return gerepileupto(av, y);
+        return gc_upto(av, y);
       }
       if (cmpii(shifti(a,1), b) < 0)
       { /* 0 < x < 1/2 gamma would use funeq: adding 1 is cheaper. */
@@ -1799,7 +1799,7 @@ ggamma(GEN x, long prec)
         }
         else
           y = cxgamma(fractor(mkfrac(addii(a,b), b), prec), 0, prec);
-        return gerepileupto(av, gdiv(y, x));
+        return gc_upto(av, gdiv(y, x));
       }
       if (expi(c) - expi(b) < -3)
       { /* x = 1 + c/b is close to 1 */
@@ -1809,13 +1809,13 @@ ggamma(GEN x, long prec)
       }
       else
         y = cxgamma(fractor(x, prec), 0, prec);
-      return gerepileupto(av, y);
+      return gc_upto(av, y);
     }
 
     case t_PADIC: return Qp_gamma(x);
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      return gerepileupto(av, sergamma(y, prec));
+      return gc_upto(av, sergamma(y, prec));
   }
   return trans_eval("gamma",ggamma,x,prec);
 }
@@ -1914,7 +1914,7 @@ glngamma(GEN x, long prec)
                          strtoGENstr("nonpositive integer"), x);
       n = itou_or_0(x);
       if (!n || n > lngamma_n(prec)) return cxgamma(x, 1, prec);
-      return gerepileuptoleaf(av, logr_abs( mpfactr_small(n-1, prec) ));
+      return gc_uptoleaf(av, logr_abs( mpfactr_small(n-1, prec) ));
     }
     case t_FRAC:
     {
@@ -1930,7 +1930,7 @@ glngamma(GEN x, long prec)
         z = fractor(z, prec+EXTRAPREC64);
         y = subrr(logr_abs(divrr(pi, mpsin(gmul(pi,r)))), cxgamma(z, 1, prec));
         y = gadd(y, mkcomplex(gen_0, mulri(pi, gfloor(x))));
-        return gerepileupto(av, y);
+        return gc_upto(av, y);
       }
       if (cmpii(shifti(a,1), b) < 0)
       { /* 0 < x < 1/2 gamma would use funeq: adding 1 is cheaper. */
@@ -1941,7 +1941,7 @@ glngamma(GEN x, long prec)
         }
         else
           y = cxgamma(fractor(mkfrac(addii(a,b), b), prec), 1, prec);
-        return gerepileupto(av, gsub(y, glog(x, prec)));
+        return gc_upto(av, gsub(y, glog(x, prec)));
       }
       if (e > 3)
       {
@@ -1955,7 +1955,7 @@ glngamma(GEN x, long prec)
         x = fractor(x, e > 1? prec+EXTRAPREC64: prec);
         y = cxgamma(x, 1, prec);
       }
-      return gerepileupto(av, y);
+      return gc_upto(av, y);
     }
 
     case t_REAL: case t_COMPLEX:
@@ -1969,9 +1969,9 @@ glngamma(GEN x, long prec)
       /* no constant term if y0 = 1 or 2 */
       if (!isint(y0,&y0) || signe(y0) <= 0 || abscmpiu(y0,2) > 2)
         t = gadd(t, glngamma(y0,prec));
-      return gerepileupto(av, t);
+      return gc_upto(av, t);
 
-    case t_PADIC: return gerepileupto(av, Qp_lngamma(x));
+    case t_PADIC: return gc_upto(av, Qp_lngamma(x));
   }
   return trans_eval("lngamma",glngamma,x,prec);
 }
@@ -2016,7 +2016,7 @@ cxpsi(GEN s0, long der, long prec)
     av = avma;
     res = zetahurwitz(stoi(der + 1), s0, 0, prec2nbits(prec));
     if(!odd(der)) res = gneg(res);
-    return gerepileupto(av, gmul(mpfact(der), res));
+    return gc_upto(av, gmul(mpfact(der), res));
   }
   if (DEBUGLEVEL>2) timer_start(&T);
   s = trans_fix_arg(&prec,&s0,&sig,&tau,&av,&res);
@@ -2053,7 +2053,7 @@ cxpsi(GEN s0, long der, long prec)
   {
     GEN tmp = gaddsg(k*(k + 1), gadd(gmulsg(2*k + 1, s), sq));
     sum = gadd(sum, gdiv(gaddsg(2*k + 1, s2), tmp));
-    if ((k & 1023) == 0) sum = gerepileupto(av2, sum);
+    if ((k & 1023) == 0) sum = gc_upto(av2, sum);
   }
   if (odd(nn)) sum = gadd(sum, gdiv(unr, gaddsg(nn - 1, s)));
   z = gsub(glog(gaddgs(s, nn), prec), sum);
@@ -2258,7 +2258,7 @@ Qp_psi(GEN x, long der)
   z = gmul(mpfact(der), Qp_zetahurwitz(cvtop(stoi(der + 1), p, e + sdivsi(e,p1)), x, -der));
   if (!odd(der)) z = gneg(z);
   if (!der) z = gadd(mkfrac(p1,p), z);
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 GEN
@@ -2273,12 +2273,12 @@ gpsi(GEN x, long prec)
       if (signe(x) <= 0) err_psi(x);
       if (lgefint(x) > 3 || (n = itou(x)) > psi_n(prec2nbits(prec))) break;
       av = avma; y = mpeuler(prec);
-      return gerepileuptoleaf(av, n == 1? negr(y): gsub(harmonic(n-1), y));
+      return gc_uptoleaf(av, n == 1? negr(y): gsub(harmonic(n-1), y));
     case t_REAL: case t_COMPLEX: return cxpsi(x,0,prec);
     case t_PADIC: return Qp_psi(x, 0);
     default:
       av = avma; if (!(y = toser_i(x))) break;
-      return gerepileupto(av, serpsi(y,prec));
+      return gc_upto(av, serpsi(y,prec));
   }
   return trans_eval("psi",gpsi,x,prec);
 }
@@ -2308,7 +2308,7 @@ gpsi_der(GEN x, long der, long prec)
         y = gsub(y, harmonic0(n - 1, stoi(der + 1)));
         if (!odd(der)) y = gneg(y);
         y = gmul(mpfact(der), y);
-        return gerepileuptoleaf(av, y);
+        return gc_uptoleaf(av, y);
       }
     case t_REAL: case t_COMPLEX: return cxpsi(x, der, prec);
     case t_PADIC: return Qp_psi(x, der);
@@ -2321,7 +2321,7 @@ gpsi_der(GEN x, long der, long prec)
         if(!odd(der)) y = gneg(y);
         y = gmul(mpfact(der), y);
       }
-      return gerepileupto(av, y);
+      return gc_upto(av, y);
   }
   return trans_evalgen("psi",(void*)der,_gpsi_der,x,prec);
 }

@@ -223,7 +223,7 @@ rfractoser(GEN x, long v, long prec)
   pari_sp av;
   if (s < 0) err_ser_priority(x,v);
   if (s > 0) return scalarser(x, v, prec);
-  av = avma; return gerepileupto(av, rfrac_to_ser(x, prec+2));
+  av = avma; return gc_upto(av, rfrac_to_ser(x, prec+2));
 }
 GEN
 toser_i(GEN x)
@@ -279,7 +279,7 @@ gtoser_prec(GEN x, long v, long prec)
                 return gc_GEN(av, sertoser(x, prec));
     case t_QFB:
       x = RgV_to_ser_i(mkvec3(gel(x,1),gel(x,2),gel(x,3)), v, prec+2, 1);
-      return gerepileupto(av, x);
+      return gc_upto(av, x);
     case t_VECSMALL: x = zv_to_ZV(x);/*fall through*/
     case t_VEC: case t_COL:
       if (varncmp(gvar(x), v) <= 0) pari_err_PRIORITY("Ser", x, "<=", v);

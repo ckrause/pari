@@ -42,7 +42,7 @@ gcdii(GEN a, GEN b)
     if (!u) return absi(b);
     return igcduu((ulong)b[2], u);
   }
-  /* larger than gcd: "set_avma(av)" gerepile (erasing t) is valid */
+  /* larger than gcd: "set_avma(av)" gc_GEN_unsafe (erasing t) is valid */
   av = avma; (void)new_chunk(lgefint(b)+1); /* HACK */
   t = remii(a,b);
   if (!signe(t)) { set_avma(av); return absi(b); }
@@ -60,7 +60,7 @@ gcdii(GEN a, GEN b)
  {
   /* general case */
   /*This serve two purposes: 1) mpn_gcd destroy its input and need an extra
-   * limb 2) this allows us to use icopy instead of gerepile later.  NOTE: we
+   * limb 2) this allows us to use icopy instead of gc_GEN_unsafe later.  NOTE: we
    * must put u before d else the final icopy could fail.
    */
   GEN res= cgeti(lgefint(a)+1);

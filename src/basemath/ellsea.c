@@ -461,7 +461,7 @@ Flxq_elldivpolmod(GEN a4, GEN a6, long n, GEN h, GEN T, ulong p)
   Flxq_elldivpolmod_init(&d, a4, a6, n, h, T, p);
   res = gcopy(divpol(d.t,d.r2,n,d.E,d.ff));
   divpol_free(d.t);
-  return gerepileupto(ltop, res);
+  return gc_upto(ltop, res);
 }
 
 /*Computes the n-division polynomial modulo the polynomial h \in Fq[x] */
@@ -477,12 +477,12 @@ Fq_elldivpolmod(GEN a4, GEN a6, long n, GEN h, GEN T, GEN p)
     GEN a4p = ZX_to_Flx(a4,pp), a6p = ZX_to_Flx(a6,pp);
     GEN hp = h ? ZXX_to_FlxX(h, pp, get_FpX_var(T)) : NULL, Tp = ZXT_to_FlxT(T , pp);
     res = Flxq_elldivpolmod(a4p, a6p, n, hp, Tp, pp);
-    return gerepileupto(ltop, FlxX_to_ZXX(res));
+    return gc_upto(ltop, FlxX_to_ZXX(res));
   }
   Fq_elldivpolmod_init(&d, a4, a6, n, h, T, p);
   res = gcopy(divpol(d.t,d.r2,n,d.E,d.ff));
   divpol_free(d.t);
-  return gerepileupto(ltop, res);
+  return gc_upto(ltop, res);
 }
 
 GEN
@@ -676,7 +676,7 @@ Zq_Weierstrass(GEN a4, GEN a6, GEN b4, GEN b6, long m, GEN T, GEN p, GEN pp, lon
     GdS2 = FqX_mul(G, FqX_sqr(dS, T, p), T, p);
     iGdS2 = FqX_invlift1(iGdS2, GdS2, N2, N, T, p);
   }
-  return gerepileupto(av, S);
+  return gc_upto(av, S);
 }
 
 static GEN
@@ -724,7 +724,7 @@ Fq_ellj(GEN a4, GEN a6, GEN T, GEN p)
   GEN a43 = Fq_mulu(Fq_powu(a4, 3, T, p), 4, T, p);
   GEN j   = Fq_div(Fq_mulu(a43, 1728, T, p),
                    Fq_add(a43, Fq_mulu(Fq_sqr(a6, T, p), 27, T, p), T, p), T, p);
-  return gerepileupto(ltop, j);
+  return gc_upto(ltop, j);
 }
 
 static GEN
@@ -734,7 +734,7 @@ Zq_ellj(GEN a4, GEN a6, GEN T, GEN p, GEN pp, long e)
   GEN a43 = Fq_mulu(Fq_powu(a4, 3, T, p), 4, T, p);
   GEN j   = Zq_div(Fq_mulu(a43, 1728, T, p),
                    Fq_add(a43, Fq_mulu(Fq_sqr(a6, T, p), 27, T, p), T, p), T, p, pp, e);
-  return gerepileupto(ltop, j);
+  return gc_upto(ltop, j);
 }
 /****************************************************************************/
 /*                              EIGENVALUE                                  */
@@ -884,7 +884,7 @@ compute_u(GEN gprime, GEN Dxxg, GEN DxJg, GEN DJJg, GEN j, GEN pJ, GEN px, ulong
   GEN f = Fq_sub(Fq_div(E6ovE4,utoi(3), T, p),
                  Zq_div(E42, Fq_mulu(E6,2,T, p), T, p, pp, e), T, p);
   GEN g = Fq_sub(Fq_sub(b,a,T,p), d, T, p);
-  return gerepileupto(ltop, Fq_add(Zq_div(g,px,T,p,pp,e), Fq_mulu(f,q,T,p), T, p));
+  return gc_upto(ltop, Fq_add(Zq_div(g,px,T,p,pp,e), Fq_mulu(f,q,T,p), T, p));
 }
 
 static void
@@ -1476,7 +1476,7 @@ find_trace_Atkin(ulong ell, long r, GEN q)
       if (i==l) val_pos[++nval] = teta;
     }
   }
-  return gerepileupto(ltop, vecsmall_shorten(val_pos, nval));
+  return gc_upto(ltop, vecsmall_shorten(val_pos, nval));
 }
 
 /*Returns the possible traces when there is only one root */
@@ -1564,7 +1564,7 @@ find_trace(GEN a4, GEN a6, GEN j, ulong ell, GEN q, GEN T, GEN p, long *ptr_kt,
     if (n > 1) err_printf("\n");
   }
   *ptr_kt = kt;
-  return gerepileupto(ltop, tr);
+  return gc_upto(ltop, tr);
 }
 
 /* A partition of compile_atkin in baby and giant is represented as the binary
@@ -1902,7 +1902,7 @@ MATCH_RESTART:
     if (gc_needed(av1,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"match_and_sort, baby = %ld", i);
-      point = gerepileupto(av1, point);
+      point = gc_upto(av1, point);
     }
   }
   set_avma(av1);
@@ -1948,7 +1948,7 @@ MATCH_RESTART:
     if (gc_needed(av1,3))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"match_and_sort, giant = %ld", i);
-      point = gerepileupto(av1, point);
+      point = gc_upto(av1, point);
     }
   }
   setlg(card, nbcard+1);

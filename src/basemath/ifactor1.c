@@ -1137,7 +1137,7 @@ one_iter(GEN *x, GEN *P, GEN x1, GEN n, long delta)
  * class (NULL for unknown or zero for known composite),  matching the
  * internal representation used by the ifac_*() routines below. Repeated
  * factors may arise; the caller will sort the factors anyway. Result
- * is not gerepile-able (contains NULL) */
+ * is not gc_GEN_unsafe-able (contains NULL) */
 static GEN
 pollardbrent_i(GEN n, long size, long c0, long retries)
 {
@@ -2318,7 +2318,7 @@ ifac_defrag(GEN *partial, GEN *where)
 
 /* Move to a larger main vector, updating *where if it points into it, and
  * *partial in any case. Can be used as a specialized gcopy before
- * a gerepileupto() (pass 0 as the new length). Normally, one would pass
+ * a gc_upto() (pass 0 as the new length). Normally, one would pass
  * new_lg=1 to let this function guess the new size.  To be used sparingly.
  * Complex version of ifac_defrag(), combined with reallocation.  If new_lg
  * is 0, use the old length, so this acts just like gcopy except that the
@@ -2355,7 +2355,7 @@ ifac_realloc(GEN *partial, GEN *where, long new_lg)
    * than children, connected), except the one factor that may still be living
    * in a clone where n originally was; exponents are similarly copied if they
    * aren't global constants; class-of-factor fields are global constants so we
-   * need only copy them as pointers. Caller may then do a gerepileupto() */
+   * need only copy them as pointers. Caller may then do a gc_upto() */
   scan_new = newpart + new_lg - 3; /* LAST(newpart) */
   scan_old = *partial + old_lg - 3; /* LAST(*partial) */
   for (; scan_old > *partial + 2; scan_old -= 3)
@@ -2962,7 +2962,7 @@ ifac_decomp(GEN n, long hint)
       }
       ifac_realloc(&part, &here, 0);
       offset = here - part;
-      part = gerepileupto((pari_sp)workspc, part);
+      part = gc_upto((pari_sp)workspc, part);
       here = part + offset;
     }
     nb++;
@@ -2990,7 +2990,7 @@ ifac_GC(pari_sp av, GEN *part)
   GEN here = NULL;
   if(DEBUGMEM>1) pari_warn(warnmem,"ifac_xxx");
   ifac_realloc(part, &here, 0);
-  *part = gerepileupto(av, *part);
+  *part = gc_upto(av, *part);
 }
 
 /* destroys n */
@@ -4105,7 +4105,7 @@ Zn_ispower(GEN a, GEN q, GEN K, GEN *pt)
   }
 END:
   if (!pt) return gc_long(av, 1);
-  *pt = gerepileupto(av, chinese1_coprime_Z(L)); return 1;
+  *pt = gc_upto(av, chinese1_coprime_Z(L)); return 1;
 }
 
 

@@ -209,7 +209,7 @@ ellisogenyapply(GEN phi, GEN P)
   img = cgetg(3, t_VEC);
   gel(img, 1) = gdiv(img_f, img_h2);
   gel(img, 2) = gdiv(img_g, img_h3);
-  return gerepileupto(ltop, img);
+  return gc_upto(ltop, img);
 }
 
 /* isog = [f, g, h] = [x, y, 1] = identity */
@@ -239,14 +239,14 @@ update_isogeny_polys(GEN isog, GEN E, GEN Q, GEN tQ, GEN uQ, long vx, long vy)
   av = avma;
   tmp1 = gmul(uQ, gadd(deg1pol_shallow(gen_2, gen_0, vy),
                        deg1pol_shallow(a1, a3, vx)));
-  tmp1 = gerepileupto(av, tmp1);
+  tmp1 = gc_upto(av, tmp1);
   av = avma;
   tmp2 = gmul(tQ, gadd(gmul(a1, rt),
                        deg1pol_shallow(gen_1, gneg(yQ), vy)));
-  tmp2 = gerepileupto(av, tmp2);
+  tmp2 = gc_upto(av, tmp2);
   av = avma;
   tmp3 = gsub(gmul(a1, uQ), gmul(gQx, gQy));
-  tmp3 = gerepileupto(av, tmp3);
+  tmp3 = gc_upto(av, tmp3);
 
   if (!isog) isog = isog_identity(vx,vy);
   f = gel(isog, 1);
@@ -256,13 +256,13 @@ update_isogeny_polys(GEN isog, GEN E, GEN Q, GEN tQ, GEN uQ, long vx, long vy)
   res = cgetg(4, t_VEC);
   av = avma;
   tmp4 = gdiv(gadd(gmul(tQ, rt), uQ), rt_sqr);
-  gel(res, 1) = gerepileupto(av, gadd(f, tmp4));
+  gel(res, 1) = gc_upto(av, gadd(f, tmp4));
   av = avma;
   tmp4 = gadd(tmp1, gmul(rt, gadd(tmp2, tmp3)));
-  gel(res, 2) = gerepileupto(av, gsub(g, gdiv(tmp4, gmul(rt, rt_sqr))));
+  gel(res, 2) = gc_upto(av, gsub(g, gdiv(tmp4, gmul(rt, rt_sqr))));
   av = avma;
-  gel(res, 3) = gerepileupto(av, gmul(h, rt));
-  return gerepileupto(ltop, res);
+  gel(res, 3) = gc_upto(av, gmul(h, rt));
+  return gc_upto(ltop, res);
 }
 
 /* Given a point P on E, return the curve E/<P> and, if only_image is zero,
@@ -1733,9 +1733,9 @@ ellmaninconstant(GEN E)
     if (equali1(gmael(vS,i,1) ) && equali1(gmael(vS,i,2)))
       break;
   if (is_ell)
-    return gerepileupto(av, path_to_manin(A, i, 1));
+    return gc_upto(av, path_to_manin(A, i, 1));
   M = cgetg(lvS, t_VEC);
   for (k = 1; k < lvS; k++)
     gel(M,k) = path_to_manin(A, i, k);
-  return gerepileupto(av, M);
+  return gc_upto(av, M);
 }

@@ -180,7 +180,7 @@ vtilde(GEN K, GEN x, GEN T, GEN deg, GEN ell, long prec)
   if (typ(x) != t_MAT) return gdiv(vtilde_i(K,x,T,ell,prec), deg);
   G = gel(x,1);
   E = gel(x,2); av = avma; v = vecvtilde_i(K,G,T,ell,prec);
-  return gerepileupto(av, gdiv(RgV_dotproduct(E, v), deg));
+  return gc_upto(av, gdiv(RgV_dotproduct(E, v), deg));
 }
 
 /* v[i] = deg S[i] mod p^prec */
@@ -499,5 +499,5 @@ bnflogdegree(GEN nf, GEN A, GEN ell)
     }
     if (s) NA0 = gmul(NA0, gpowgs(ell1(ell), s));
   }
-  return gerepileupto(av, NA0);
+  return gc_upto(av, NA0);
 }

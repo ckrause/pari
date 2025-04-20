@@ -83,7 +83,7 @@ Zp_divlift(GEN b, GEN a, GEN x, GEN p, long n)
       (void)gc_all(av, 2, &x, &q);
     }
   }
-  return gerepileupto(ltop, x);
+  return gc_upto(ltop, x);
 }
 
 GEN
@@ -101,7 +101,7 @@ Zp_inv(GEN a, GEN p, long e)
     ai = utoi(Fl_inv(umodiu(a,pp), pp));
   } else
     ai = Fp_inv(modii(a, p), p);
-  return gerepileupto(av, Zp_invlift(a, ai, p, e));
+  return gc_upto(av, Zp_invlift(a, ai, p, e));
 }
 
 GEN
@@ -115,7 +115,7 @@ Zp_div(GEN b, GEN a, GEN p, long e)
     ai = utoi(Fl_inv(umodiu(a,pp), pp));
   } else
     ai = Fp_inv(modii(a, p), p);
-  return gerepileupto(av, Zp_divlift(b, a, ai, p, e));
+  return gc_upto(av, Zp_divlift(b, a, ai, p, e));
 }
 
 static GEN
@@ -748,7 +748,7 @@ ZpX_liftroots_full(GEN f, GEN S, GEN q, GEN p, long e)
 {
   pari_sp av = avma;
   GEN y = ZpX_liftfact(f, deg1_from_roots(S, varn(f)), q, p, e);
-  return gerepileupto(av, FqV_roots_from_deg1(y, NULL, q));
+  return gc_upto(av, FqV_roots_from_deg1(y, NULL, q));
 }
 
 GEN
@@ -765,7 +765,7 @@ ZpX_roots(GEN F, GEN p, long e)
     F = gel(ZpX_liftfact(F, mkvec2(g, h), q, p, e), 1);
   }
   S = FpX_roots(g, p);
-  return gerepileupto(av, ZpX_liftroots_full(F, S, q, p, e));
+  return gc_upto(av, ZpX_liftroots_full(F, S, q, p, e));
 }
 
 static GEN
@@ -773,7 +773,7 @@ ZpXQX_liftroots_full(GEN f, GEN S, GEN T, GEN q, GEN p, long e)
 {
   pari_sp av = avma;
   GEN y = ZpXQX_liftfact(f, deg1_from_roots(S, varn(f)), T, q, p, e);
-  return gerepileupto(av, FqV_roots_from_deg1(y, T, q));
+  return gc_upto(av, FqV_roots_from_deg1(y, T, q));
 }
 
 GEN
@@ -790,7 +790,7 @@ ZpXQX_roots(GEN F, GEN T, GEN p, long e)
     F = gel(ZpXQX_liftfact(F, mkvec2(g, h), T, q, p, e), 1);
   }
   S = FpXQX_roots(g, T, p);
-  return gerepileupto(av, ZpXQX_liftroots_full(F, S, T, q, p, e));
+  return gc_upto(av, ZpXQX_liftroots_full(F, S, T, q, p, e));
 }
 
 GEN
@@ -869,7 +869,7 @@ ZpXQX_liftroot_vald(GEN f, GEN a, long v, GEN T, GEN p, long e)
     fa = FqX_eval(fr, a, Tq, qv);
     fa = typ(fa)==t_INT? diviiexact(fa,q2v): ZX_Z_divexact(fa, q2v);
     a = Fq_sub(a, Fq_mul(Fq_mul(W,fa,Tq2,q2v),q2, Tq,qv), Tq, qv);
-    if (mask == 1) return gerepileupto(av, a);
+    if (mask == 1) return gc_upto(av, a);
     dfr = FpXQX_red(df, Tq, q);
     u = Fq_sub(Fq_mul(W,FqX_eval(dfr,a,Tq,q),Tq,q),gen_1,Tq,q);
     u = typ(u)==t_INT? diviiexact(u,q2): ZX_Z_divexact(u,q2);
@@ -915,7 +915,7 @@ ZpXQ_log_to_ath(GEN x, long k, GEN T, GEN p, long e, GEN pe)
     bn = ZX_Z_divexact(ZX_Z_sub(x, gen_1),powiu(p,k));
     bdi= ZpXQ_invlift(bd, scalarpol(Fp_inv(gen_2,p),vT), T, p, e);
   }
-  return gerepileupto(av, FpXQ_mul(bn, bdi, T, pe));
+  return gc_upto(av, FpXQ_mul(bn, bdi, T, pe));
 }
 
 /* Assume p odd, a = 1 [p], return log(a) */
@@ -957,7 +957,7 @@ ZpXQ_log(GEN a, GEN T, GEN p, long N)
   s = FpX_FpXQ_eval(pol, FpXQ_sqr(b, T, pe), T,  pe);
   if( DEBUGLEVEL>=3) timer_printf(&ti,"FpX_FpXQ_eval");
   s = ZX_shifti(FpXQ_mul(b, s, T, pe), 1);
-  return gerepileupto(av, is2? s: FpX_red(s, pe));
+  return gc_upto(av, is2? s: FpX_red(s, pe));
 }
 
 /***********************************************************************/
@@ -986,7 +986,7 @@ gen_ZpM_Dixon(GEN F, GEN V, GEN q, GEN p, long N, void *E,
   bil = lin(E, F, VN2, q);
   V2 = ZM_Z_divexact(ZM_sub(V, bil), q2);
   VM = gen_ZpM_Dixon(F, V2, qM, p, M, E, lin, invl);
-  return gerepileupto(av, FpM_red(ZM_add(VN2, ZM_Z_mul(VM, q2)), q));
+  return gc_upto(av, FpM_red(ZM_add(VN2, ZM_Z_mul(VM, q2)), q));
 }
 
 GEN
@@ -1009,7 +1009,7 @@ gen_ZpX_Dixon(GEN F, GEN V, GEN q, GEN p, long N, void *E,
   bil = lin(E, F, VN2, q);
   V2 = ZX_Z_divexact(ZX_sub(V, bil), q2);
   VM = gen_ZpX_Dixon(F, V2, qM, p, M, E, lin, invl);
-  return gerepileupto(av, FpX_red(ZX_add(VN2, ZX_Z_mul(VM, q2)), q));
+  return gc_upto(av, FpX_red(ZX_add(VN2, ZX_Z_mul(VM, q2)), q));
 }
 
 GEN
@@ -1049,7 +1049,7 @@ gen_ZpM_Newton(GEN x, GEN p, long n, void *E,
       (void)gc_all(av, 2, &x, &q);
     }
   }
-  return gerepileupto(ltop, x);
+  return gc_upto(ltop, x);
 }
 
 static GEN
@@ -1109,7 +1109,7 @@ gen_ZpX_Newton(GEN x, GEN p, long n, void *E,
       (void)gc_all(av, 2, &x, &q);
     }
   }
-  return gerepileupto(ltop, x);
+  return gc_upto(ltop, x);
 }
 
 struct _ZpXQ_inv
@@ -1154,7 +1154,7 @@ ZpXQ_inv(GEN a, GEN T, GEN p, long e)
     ai = Flx_to_ZX(Flxq_inv(ZX_to_Flx(a,pp), ZXT_to_FlxT(T, pp), pp));
   } else
     ai = FpXQ_inv(FpX_red(a,p), FpXT_red(T,p),p);
-  return gerepileupto(av, ZpXQ_invlift(a, ai, T, p, e));
+  return gc_upto(av, ZpXQ_invlift(a, ai, T, p, e));
 }
 
 GEN
@@ -1175,7 +1175,7 @@ ZpXQX_divrem(GEN x, GEN Sp, GEN T, GEN q, GEN p, long e, GEN *pr)
   S2 = FqX_Fq_mul_to_monic(S, bi, T, q);
   Q = FpXQX_divrem(x, S2, T, q, pr);
   if (pr==ONLY_DIVIDES && !Q) { set_avma(av); return NULL; }
-  if (pr==ONLY_REM || pr==ONLY_DIVIDES) return gerepileupto(av, Q);
+  if (pr==ONLY_REM || pr==ONLY_DIVIDES) return gc_upto(av, Q);
   Q = FpXQX_FpXQ_mul(Q, bi, T, q);
   return gc_all(av, 2, &Q, pr);
 }
@@ -1196,7 +1196,7 @@ ZpXQX_digits(GEN x, GEN B, GEN T, GEN q, GEN p, long e)
   W = cgetg(lV+1, t_VEC);
   for(i=1; i<=lV; i++)
     gel(W, i) = FpXQX_FpXQ_mul(gel(V,i), gel(P, i), T, q);
-  return gerepileupto(av, W);
+  return gc_upto(av, W);
 }
 
 struct _ZpXQ_sqrtn
@@ -1247,8 +1247,8 @@ ZpXQ_sqrt(GEN a, GEN T, GEN p, long e)
   pari_sp av = avma;
   GEN z = FpXQ_sqrt(FpX_red(a, p), T, p);
   if (!z) return NULL;
-  if (e <= 1) return gerepileupto(av, z);
-  return gerepileupto(av, ZpXQ_sqrtnlift(a, gen_2, z, T, p, e));
+  if (e <= 1) return gc_upto(av, z);
+  return gc_upto(av, ZpXQ_sqrtnlift(a, gen_2, z, T, p, e));
 }
 
 GEN
@@ -1282,11 +1282,11 @@ ZpX_ZpXQ_liftroot_ea(GEN P, GEN S, GEN T, GEN p, long n, void *E,
     if (DEBUGLEVEL > 3)
       timer_printf(&ti,"ZpX_ZpXQ_liftroot: reaching prec %ld",N);
     if (mask==1)
-      return gerepileupto(ltop, Sq);
+      return gc_upto(ltop, Sq);
     if (early)
     {
       GEN Se = early(E, Sq, q);
-      if (Se) return gerepileupto(ltop, Se);
+      if (Se) return gc_upto(ltop, Se);
     }
     qq = sqri(q); N <<= 1;
     if (mask&1UL) { qq = diviiexact(qq, p); N--; }
@@ -1363,7 +1363,7 @@ ZpXQX_ZpXQXQ_liftroot(GEN P, GEN S, GEN U, GEN T, GEN p, long n)
     if (DEBUGLEVEL > 3)
       timer_printf(&ti,"ZpXQX_ZpXQXQ_liftroot: reaching prec %ld",N);
     if (mask==1)
-      return gerepileupto(ltop, Sq);
+      return gc_upto(ltop, Sq);
     qq = sqri(q); N <<= 1;
     if (mask&1UL) { qq = diviiexact(qq, p); N--; }
     mask >>= 1;
@@ -1528,6 +1528,6 @@ polteichmuller(GEN P, ulong p, long n)
   if (q && !equaliu(q,p)) pari_err_MODULUS("polteichmuller",q,utoi(p));
   if (n <= 0)
     pari_err_DOMAIN("polteichmuller", "precision", "<=",gen_0,stoi(n));
-  return gerepileupto(av, p==2 ? F2x_Teichmuller(RgX_to_F2x(P), n)
+  return gc_upto(av, p==2 ? F2x_Teichmuller(RgX_to_F2x(P), n)
                                : Flx_Teichmuller(RgX_to_Flx(P, p), p, n));
 }

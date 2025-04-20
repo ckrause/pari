@@ -1464,7 +1464,7 @@ split(GEN *D, long *e)
   *e = 0; return 0; /* known composite */
 }
 
-/* return a GEN structure containing NULL but safe for gerepileupto */
+/* return a GEN structure containing NULL but safe for gc_upto */
 static GEN
 mpqs_solve_linear_system(mpqs_handle_t *h, hashtable *frel)
 {
@@ -1724,7 +1724,7 @@ mpqs(GEN N)
                      timer_delay(&T));
           err_printf("MPQS: found factor = %Ps\n", fact);
         }
-        return gerepileupto(av, fact);
+        return gc_upto(av, fact);
       }
     }
     if (DEBUGLEVEL >= 4 && frel.nb > dbg_target)
@@ -1756,7 +1756,7 @@ mpqs(GEN N)
             err_printf("\t%Ps%s\n", gel(fact,3*j-2), (j < nf)? ",": "");
         }
       }
-      return gerepileupto(av, fact);
+      return gc_upto(av, fact);
     }
     if (DEBUGLEVEL >= 4)
     {

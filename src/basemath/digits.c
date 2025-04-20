@@ -224,7 +224,7 @@ digits(GEN x, GEN B)
   x = digits_i(padic_u(x), padic_p(x));
   vecreverse_inplace(x);
   if (!v) return x;
-  return gerepileupto(av, concat(zerovec(v), x));
+  return gc_upto(av, concat(zerovec(v), x));
 }
 
 static GEN

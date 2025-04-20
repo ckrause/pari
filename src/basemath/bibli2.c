@@ -78,7 +78,7 @@ polchebyshev1_eval(long n, GEN x)
   polchebyshev1_eval_aux((n+1)>>1, x, &t1, &t2);
   if (n != 1) t2 = gsub(gmul(gmul2n(t1,1), t2), x);
   for (i = 1; i <= v; i++) t2 = gadd(gmul2n(gsqr(t2), 1), gen_m1);
-  return gerepileupto(av, t2);
+  return gc_upto(av, t2);
 }
 
 /* Chebychev  polynomial of the second kind U(n,x): the coefficient in front of
@@ -145,7 +145,7 @@ polchebyshev2_eval(long n, GEN x)
   if (odd(n)) u2 = gmul(gmul2n(u2,1), gadd(gmul(x,u2), mu1));
   else        u2 = gmul(gadd(u2,u1), gadd(u2,mu1));
   if (neg) u2 = gneg(u2);
-  return gerepileupto(av, u2);
+  return gc_upto(av, u2);
 }
 
 GEN
@@ -242,7 +242,7 @@ polhermite_eval0(long n, GEN x, long flag)
     v = u; u = t;
   }
   if (flag) return gc_GEN(av, mkvec2(v, u));
-  return gerepileupto(av, u);
+  return gc_upto(av, u);
 }
 GEN
 polhermite_eval(long n, GEN x) { return polhermite_eval0(n, x, 0); }
@@ -278,7 +278,7 @@ pollegendre(long n, long v)
     gel(r--,0) = gen_0;
   }
   q[1] = evalsigne(1) | evalvarn(v);
-  return gerepileupto(av, gmul2n(q,-n));
+  return gc_upto(av, gmul2n(q,-n));
 }
 /* q such that Ln * 2^n = q(x^2) [n even] or x q(x^2) [n odd] */
 GEN
@@ -342,7 +342,7 @@ pollegendre_eval0(long n, GEN x, long flag)
     v = u; u = t;
   }
   if (flag) return gc_GEN(av, mkvec2(v, u));
-  return gerepileupto(av, u);
+  return gc_upto(av, u);
 }
 GEN
 pollegendre_eval(long n, GEN x) { return pollegendre_eval0(n, x, 0); }
@@ -413,7 +413,7 @@ pollaguerre_eval0(long n, GEN a, GEN x, long flag)
     v = u; u = t;
   }
   if (flag) return gc_GEN(av, mkvec2(v, u));
-  return gerepileupto(av, u);
+  return gc_upto(av, u);
 }
 GEN
 pollaguerre_eval(long n, GEN x, GEN a) { return pollaguerre_eval0(n, x, a, 0); }
@@ -454,7 +454,7 @@ polcyclo(long n, long v)
   }
   /* s = squarefree part of n */
   q = n / s;
-  if (q == 1) return gerepileupto(av, T);
+  if (q == 1) return gc_upto(av, T);
   return gc_GEN(av, RgX_inflate(T,q));
 }
 
@@ -474,7 +474,7 @@ polcyclo_eval(long n, GEN x)
   if (tx == t_INT && !signe(x)) return gen_1;
   while ((n & 3) == 0) { n >>= 1; x = gsqr(x); } /* Phi_4n(x) = Phi_2n(x^2) */
   /* n not divisible by 4 */
-  if (n == 2) return gerepileupto(av, gaddgs(x,1));
+  if (n == 2) return gc_upto(av, gaddgs(x,1));
   if (!odd(n)) { n >>= 1; x = gneg(x); } /* Phi_2n(x) = Phi_n(-x) for n>1 odd */
   /* n odd > 2.  s largest squarefree divisor of n */
   P = gel(factoru(n), 1); s = zv_prod(P);
@@ -492,14 +492,14 @@ polcyclo_eval(long n, GEN x)
   } else {
     if (gequal1(x))
     { /* n is prime, return n; multiply by x to keep the type */
-      if (l == 1) return gerepileupto(av, gmulgu(x,n));
+      if (l == 1) return gc_upto(av, gmulgu(x,n));
       return gc_GEN(av, x); /* else 1 */
     }
-    if (gequalm1(x)) return gerepileupto(av, gneg(x)); /* -1 */
+    if (gequalm1(x)) return gc_upto(av, gneg(x)); /* -1 */
   }
   /* Heuristic: evaluation will probably not improve things */
   if (tx == t_POL || tx == t_MAT || lg(x) > n)
-    return gerepileupto(av, poleval(polcyclo(n,0), x));
+    return gc_upto(av, poleval(polcyclo(n,0), x));
 
   xd = cgetg((1L<<l) + 1, t_VEC); /* the x^d, where d | n */
   md = cgetg((1L<<l) + 1, t_VECSMALL); /* the mu(d), where d | n */
@@ -555,7 +555,7 @@ polcyclo_eval(long n, GEN x)
 
     /* x is a root of unity.  If bitmask_q = 0, then x was a primitive n-th
      * root of 1 and the result is zero. Return X - 1 to preserve type. */
-    if (!bitmask_q) return gerepileupto(av, gsubgs(X, 1));
+    if (!bitmask_q) return gc_upto(av, gsubgs(X, 1));
     /* x is a primitive d-th root of unity, where d|n and d<n: we
      * must multiply ypos by if(isprime(n/d), n/d, 1) */
     ypos = gmul(ypos, X); /* multiply by X = 1 to preserve type */
@@ -567,7 +567,7 @@ polcyclo_eval(long n, GEN x)
       ypos = gmulgu(ypos, P[i]);
     }
   }
-  return gerepileupto(av, ypos);
+  return gc_upto(av, ypos);
 }
 /********************************************************************/
 /**                                                                **/
@@ -1052,12 +1052,12 @@ binomial(GEN n, long k)
   prec = precision(n);
   if (prec && k > 200 + 0.8*prec2nbits(prec)) {
     GEN A = mpfactr(k, prec), B = ggamma(gsubgs(n,k-1), prec);
-    return gerepileupto(av, gdiv(ggamma(gaddgs(n,1), prec), gmul(A,B)));
+    return gc_upto(av, gdiv(ggamma(gaddgs(n,1), prec), gmul(A,B)));
   }
 
   y = cgetg(k+1,t_VEC);
   for (i=1; i<=k; i++) gel(y,i) = gsubgs(n,i-1);
-  return gerepileupto(av, gdiv(RgV_prod(y), mpfact(k)));
+  return gc_upto(av, gdiv(RgV_prod(y), mpfact(k)));
 }
 
 GEN
@@ -1209,7 +1209,7 @@ vandermondeinverseinit(GEN L)
     long k = 1;
     for (j = 1; j < l; j++)
       if (i != j) gel(W, k++) = gsub(gel(L,i), gel(L,j));
-    gel(V,i) = gerepileupto(av, RgV_prod(W));
+    gel(V,i) = gc_upto(av, RgV_prod(W));
   }
   return V;
 }
@@ -1266,11 +1266,11 @@ RgV_polint(GEN X, GEN Y, long v)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"RgV_polint i = %ld/%ld", i, l-1);
-      P = gerepileupto(av, P);
+      P = gc_upto(av, P);
     }
   }
   if (!P) { set_avma(av); return zeropol(v); }
-  return gerepileupto(av0, P);
+  return gc_upto(av0, P);
 }
 static int
 inC(GEN x)
@@ -1337,7 +1337,7 @@ polintspec(GEN X, GEN Y, GEN x, long n, long *pe)
     }
   }
   if (pe && inC(dy)) *pe = gexpo(dy);
-  return gerepileupto(av, y);
+  return gc_upto(av, y);
 }
 
 GEN
@@ -1372,7 +1372,7 @@ polint_i(GEN X, GEN Y, GEN t, long *pe)
     P = RgV_polint(X, Y, v0);
     P = gsubst(P, v0, t? t: pol_x(0));
     (void)delete_var();
-    return gerepileupto(av, P);
+    return gc_upto(av, P);
   }
   /* numerical interpolation */
   if (lx == 1) return Rg_get_0(t);
@@ -1409,7 +1409,7 @@ RgXQ_reverse(GEN a, GEN T)
 
   if (n <= 1) {
     if (n <= 0) return gcopy(a);
-    return gerepileupto(av, gneg(gdiv(gel(T,2), gel(T,3))));
+    return gc_upto(av, gneg(gdiv(gel(T,2), gel(T,3))));
   }
   if (typ(a) != t_POL || !signe(a)) err_reverse(a,T);
   y = RgXV_to_RgM(RgXQ_powers(a,n-1,T), n);
@@ -1426,7 +1426,7 @@ QXQ_reverse(GEN a, GEN T)
 
   if (n <= 1) {
     if (n <= 0) return gcopy(a);
-    return gerepileupto(av, gneg(gdiv(gel(T,2), gel(T,3))));
+    return gc_upto(av, gneg(gdiv(gel(T,2), gel(T,3))));
   }
   if (typ(a) != t_POL || !signe(a)) err_reverse(a,T);
   if (gequalX(a)) return gcopy(a);
@@ -1783,7 +1783,7 @@ vecsort0(GEN x, GEN k, long flag)
     for (i = 1; i < lx; i++) gel(v,i) = closure_callgen1(k, gel(x,i));
     y = vecsort0(v, NULL, flag | cmp_IND);
     y = flag&cmp_IND? y: sort_extract(x, y, tx, lg(y));
-    return gerepileupto(av, y);
+    return gc_upto(av, y);
   }
   if (flag&cmp_UNIQ)
     x = flag&cmp_IND? gen_indexsort_uniq(x, E, CMP): gen_sort_uniq(x, E, CMP);
@@ -2321,5 +2321,5 @@ setbinop(GEN f, GEN x, GEN y)
       for (j = 1; j < ly; j++)
         gel(z, k++) = closure_callgen2(f, gel(x,i),gel(y,j));
   }
-  return gerepileupto(av, gtoset(z));
+  return gc_upto(av, gtoset(z));
 }

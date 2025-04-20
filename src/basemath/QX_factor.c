@@ -161,7 +161,7 @@ factor_bound(GEN S)
     err_printf("Mignotte bound: %Ps\n",a);
     err_printf("Beauzamy bound: %Ps\n",b);
   }
-  return gerepileupto(av, ceil_safe(gmin_shallow(a, b)));
+  return gc_upto(av, ceil_safe(gmin_shallow(a, b)));
 }
 
 /* Naive recombination of modular factors: combine up to maxK modular
@@ -973,13 +973,13 @@ GEN
 ZX_factor(GEN x)
 {
   pari_sp av = avma;
-  return gerepileupto(av, ZX_factor_i(x));
+  return gc_upto(av, ZX_factor_i(x));
 }
 GEN
 QX_factor(GEN x)
 {
   pari_sp av = avma;
-  return gerepileupto(av, ZX_factor_i(Q_primpart(x)));
+  return gc_upto(av, ZX_factor_i(Q_primpart(x)));
 }
 
 long
@@ -1010,7 +1010,7 @@ nfrootsQ(GEN x)
   val = ZX_valrem(x, &x);
   z = DDF_roots( ZX_radical(x) );
   if (val) z = vec_append(z, gen_0);
-  return gerepileupto(av, sort(z));
+  return gc_upto(av, sort(z));
 }
 
 /************************************************************************
@@ -1086,7 +1086,7 @@ ZX_gcd_slice(GEN A, GEN B, GEN g, GEN P, GEN *mod)
     ulong p = uel(P,1), gp = g ? umodiu(g, p): 0;
     GEN a = ZX_to_Flx(A, p), b = ZX_to_Flx(B, p);
     GEN Hp = ZX_gcd_Flx(a, b, gp, p);
-    H = gerepileupto(av, Flx_to_ZX(Hp));
+    H = gc_upto(av, Flx_to_ZX(Hp));
     *mod = utoi(p);
     return H;
   }
@@ -1231,7 +1231,7 @@ QX_gcd(GEN A0, GEN B0)
   D = ZX_gcd(Q_primitive_part(A0, &a), Q_primitive_part(B0, &b));
   av2 = avma; a = _gcd(a,b);
   if (isint1(a)) set_avma(av2); else D = ZX_Q_mul(D, a);
-  return gerepileupto(av, D);
+  return gc_upto(av, D);
 }
 
 /***************************************************************************
@@ -1311,7 +1311,7 @@ static GEN
 ZXkX_ZXk_divexact(GEN A, GEN B)
 {
   pari_sp av = avma;
-  return gerepileupto(av, ZXkX_ZXk_divexact_s(A, simplify_shallow(B)));
+  return gc_upto(av, ZXkX_ZXk_divexact_s(A, simplify_shallow(B)));
 }
 
 static GEN
@@ -1330,7 +1330,7 @@ ZXk_divexact_i(GEN x, GEN y)
     GEN p1=gel(x,2+i);
     for (j=i-dy+1; j<=i && j<=dz; j++)
       p1 = gsub(p1, gmul(gel(z,2+j), gel(y,2+i-j)));
-    gel(z,2+i-dy) = gerepileupto(btop, ZXk_divexact_s(p1, y_lead));
+    gel(z,2+i-dy) = gc_upto(btop, ZXk_divexact_s(p1, y_lead));
   }
   return z;
 }
@@ -1351,7 +1351,7 @@ GEN
 ZXk_divexact(GEN A, GEN B)
 {
   pari_sp av = avma;
-  return gerepileupto(av, ZXk_divexact_s(A, simplify_shallow(B)));
+  return gc_upto(av, ZXk_divexact_s(A, simplify_shallow(B)));
 }
 
 static GEN ZXk_divides_s(GEN A, GEN B);
@@ -1392,7 +1392,7 @@ ZXk_divides_i(GEN x, GEN y)
       p1 = gsub(p1, gmul(gel(z,2+j), gel(y,2+i-j)));
     c = ZXk_divides_s(p1, y_lead);
     if (!c) return gc_NULL(av);
-    gel(z,2+i-dy) = gerepileupto(btop, c);
+    gel(z,2+i-dy) = gc_upto(btop, c);
   }
   av2 = avma;
   c = gc_bool(av2, gequal(gmul(z,y),x));
@@ -1431,7 +1431,7 @@ ZXk_divides(GEN A, GEN B)
 {
   pari_sp av = avma;
   GEN z = ZXk_divides_s(A, simplify_shallow(B));
-  return z ? gerepileupto(av, z): z;
+  return z ? gc_upto(av, z): z;
 }
 
 static GEN
@@ -1480,7 +1480,7 @@ ZXk_gcd_i(GEN A, GEN B)
 }
 GEN
 ZXk_gcd(GEN A, GEN B)
-{ pari_sp av = avma; return gerepileupto(av, ZXk_gcd_i(A, B)); }
+{ pari_sp av = avma; return gc_upto(av, ZXk_gcd_i(A, B)); }
 
 GEN
 QXk_gcd(GEN A, GEN B)
@@ -1490,7 +1490,7 @@ QXk_gcd(GEN A, GEN B)
   D = ZXk_gcd_i(Q_primitive_part(A, &a), Q_primitive_part(B, &b));
   av2 = avma; a = _gcd(a,b);
   if (isint1(a)) set_avma(av2); else D = gmul(D, a);
-  return gerepileupto(av, D);
+  return gc_upto(av, D);
 }
 
 /*****************************************************************************

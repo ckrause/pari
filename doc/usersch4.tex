@@ -310,7 +310,7 @@ means \emph{pari stack pointer}.
 
 The stack is oriented upside-down: the more recent an object, the closer to
 \kbd{bot}. Accordingly, initially \kbd{avma} = \kbd{top}, and \kbd{avma} gets
-\emph{decremented} as new objects are created. As its name indicates,
+decremented as new objects are created. As its name indicates,
 \kbd{avma} always points just \emph{after} the first free address on the
 stack, and \kbd{(GEN)avma} is always (a pointer to) the latest created object.
 When \kbd{avma} reaches \kbd{bot}, the stack overflows, aborting all
@@ -319,7 +319,7 @@ need to clean up the stack from time to time, when intermediate objects are
 not needed anymore. This is called ``\emph{garbage collecting}.''
 
 We are now going to describe briefly how this is done. We will see many
-concrete examples in the next subsection.
+concrete examples in the next subsections.
 
 \noindent\item
 First, PARI routines do their own garbage collecting, which means that
@@ -342,10 +342,10 @@ the value of \kbd{avma} just \emph{before} the first garbage is created,
 and restore it upon exit:
 
 \bprog
-pari_sp av = avma; /*@Ccom record initial avma */
+  pari_sp av = avma; /*@Ccom record initial avma */
 
-garbage ...
-set_avma(av); /*@Ccom restore it */
+  garbage ...
+  set_avma(av); /*@Ccom restore it */
 @eprog
 \noindent All objects created in the \kbd{garbage} zone will eventually
 be overwritten: they should no longer be accessed after \kbd{avma} has been
@@ -364,13 +364,66 @@ function call), you can use the function\sidx{destruction}%
 equivalent to the above where the initial \kbd{av} is computed from \kbd{z}.
 
 \noindent\item
-Unfortunately life is not so simple, and sometimes you will want
-to give back accumulated garbage \emph{during} a computation without losing
-recent data. We shall start with the lowest level function to get a feel for
-the underlying mechanisms, we shall describe simpler variants later:
+If on the contrary, you want to keep the latest computed object $z$ and destroy
+everything else since the reference point, use
 
-\fun{GEN}{gerepile}{pari_sp ltop, pari_sp lbot, GEN q}. This function cleans
-up the stack between \kbd{ltop} and \kbd{lbot}, where $\kbd{lbot} <
+\bprog
+  pari_sp av = avma; /*@Ccom record initial avma */
+  ... garbage ...
+  oldz = fun();
+  newz = gc_upto(av, oldz); /*@Ccom destroy garbage but keep z safe */
+@eprog
+Of course, this can be written directly as
+\bprog
+  z = gc_upto(av, fun());
+@eprog\noindent This form is actually preferred since it guarantees garbage
+collection occurs at the right time, just after \kbd{fun()} returns its
+result. Note that the \kbd{gc\_upto} call moves \kbd{oldz} and in fact
+\emph{destroys} it. One should never refer to it again, but use the updated
+\kbd{newz} instead.
+
+\noindent\item
+When an arbitrary \kbd{GEN} must be recovered from the middle of a
+computation, even if it was constructed incrementally, then you can use
+the most robust (hence slowest) garbage collection function: \tet{gc_GEN}.
+\bprog
+  pari_sp av = avma; /*@Ccom record initial avma */
+  ... garbage ...
+  oldz = fun();
+  ... garbage ...
+  newz = gc_GEN(av, oldz); /*@Ccom destroy garbage but keep z safe */
+@eprog\noindent This function even allows $z$ to contain shallow data
+(pointers to other parts of the stack), which is forbidden for high-level
+PARI functions. This is at most twice slower than \kbd{gc\_upto}. Again
+\kbd{oldz} should not be accessed anymore.
+
+\noindent\item
+Finally, when more that one result needs to be saved, you can use the
+following idiom:
+\bprog
+  pari_sp av = avma; /*@Ccom record initial avma */
+  ... garbage ...
+  z1 = fun();
+  ... garbage ...
+  z2 = fun();
+  ... garbage ...
+  gc_all(av, 2, &z1, &z2); /*@Ccom destroy garbage, keep z1 and z2 safe */
+@eprog\noindent As usual, \kbd{gc\_all} changes \kbd{z1} and \kbd{z2}:
+the old values should no longer be accessed. This is a variadic function,
+which essentially performs as many simultaneous \kbd{gc\_GEN} as needed: if
+$n$ objects need to be updated, use
+\bprog
+  gc_all(av, n, &z1, ..., &zn);
+@eprog\noindent
+
+\subsec{Gory technical details}
+
+You may skip this section on first reading. We will now describe
+the underlying mechanisms in terms of low level functions. The most
+fundamental (and fastest) one is
+
+\fun{GEN}{gc_GEN_unsafe}{pari_sp ltop, pari_sp lbot, GEN q}. This function
+cleans up the stack between \kbd{ltop} and \kbd{lbot}, where $\kbd{lbot} <
 \kbd{ltop}$, and returns the updated object \kbd{q}. This means:
 
 1) we translate (copy) all the objects in the interval
@@ -401,8 +454,8 @@ such component is a pointer to an object whose address is either
 
 --- larger than or equal to \kbd{ltop}, in which case it does not change, or
 
---- between \kbd{lbot} and \kbd{ltop} in which case \kbd{gerepile}
-raises an error (``significant pointers lost in gerepile'').
+--- between \kbd{lbot} and \kbd{ltop} in which case the function
+raises an error: ``significant pointers lost in gc''.
 
 3) \key{avma} is updated (we add $\kbd{ltop} - \kbd{lbot}$ to the old value).
 
@@ -412,18 +465,18 @@ in~2). If not, the original address is still valid, and is returned!
 
 As stated above, no component of the remaining objects (in particular
 \kbd{q}) should belong to the erased segment [\kbd{lbot}, \kbd{ltop}[, and
-this is checked within \kbd{gerepile}. But beware as well that the addresses
-of the objects in the translated zone change after a call to \kbd{gerepile},
+this is checked in the function. But beware as well that the addresses
+of the objects in the translated zone have now changed,
 so you must not access any pointer which previously pointed into the zone
 below \kbd{ltop}. If you need to recover more than one object, use the
 \kbd{gc\_all} function below.
 
 \misctitle{Remark}
 As a consequence of the preceding explanation, if a PARI object is to be
-relocated by \hbox{gerepile} then, apart from universal objects, the chunks
+relocated by \tet{gc_GEN_unsafe} then, apart from universal objects, the chunks
 of memory used by its components should be in consecutive memory locations.
 All \kbd{GEN}s created by documented PARI functions are guaranteed to satisfy
-this. This is because the \kbd{gerepile} function knows only about \emph{two
+this. This is because that function knows only about \emph{two
 connected zones}: the garbage that is erased (between \kbd{lbot} and
 \kbd{ltop}) and the significant pointers that are copied and updated. If
 there is garbage interspersed with your objects, disaster occurs when we try
@@ -435,41 +488,62 @@ you allow objects to become disconnected.
 \noindent In practice this is achieved by the following programming idiom:
 \bprog
   ltop = avma; garbage(); lbot = avma; q = anything();
-  return gerepile(ltop, lbot, q); /*@Ccom returns the updated q */
+  return gc_GEN_unsafe(ltop, lbot, q); /*@Ccom returns the updated q */
 @eprog\noindent or directly
 \bprog
   ltop = avma; garbage(); lbot = avma;
-  return gerepile(ltop, lbot, anything());
+  return gc_GEN_unsafe(ltop, lbot, anything());
 @eprog\noindent
 Beware that
 \bprog
   ltop = avma; garbage();
-  return gerepile(ltop, avma, anything())
+  return gc_GEN_unsafe(ltop, avma, anything())
 @eprog
 
-\noindent might work, but should be frowned upon. We cannot predict whether
+\noindent is incorrect. We cannot predict whether
 \kbd{avma} is evaluated after or before the call to \kbd{anything()}: it
-depends on the compiler. If we are out of luck, it is \emph{after} the
-call, so the result belongs to the garbage zone and the \kbd{gerepile}
-statement becomes equivalent to \kbd{set\_avma(ltop)}. Thus we return a
-pointer to random garbage.
+depends on the compiler. If we are out of luck, it is evaluated
+\emph{after} the call and the result belongs to the garbage zone.
+Thus we return a pointer to random garbage.
 
-\subsec{Variants}
-
-\fun{GEN}{gerepileupto}{pari_sp ltop, GEN q}. Cleans the stack between
-\kbd{ltop} and the \emph{connected} object \kbd{q} and returns \kbd{q}
-updated. For this to work, \kbd{q} must have been created \emph{before} all
-its components, otherwise they would belong to the garbage zone! Unless
-mentioned otherwise, documented PARI functions guarantee this.
-
-\fun{GEN}{gc_GEN}{pari_sp ltop, GEN x}. Functionally equivalent to,
-but more efficient than
+\misctitle{Remark on assignments} When the tree structure
+and the size of the PARI objects which will appear in a computation are under
+control, one may allocate sufficiently large objects at the beginning, use
+assignment statements, then simply restore \kbd{avma}. Coming back to the
+above example, note that \emph{if} we know that x and y are of type real
+fitting into \kbd{DEFAULTPREC} words, we can program without using
+\kbd{gc\_GEN\_unsafe} at all:
 \bprog
-  gerepileupto(ltop, gcopy(x))
+  z = cgetr(DEFAULTPREC); ltop = avma;
+  gaffect(gadd(gsqr(x), gsqr(y)), z);
+  set_avma(ltop);
+@eprog\noindent This is often \emph{slower} than garbage collection, and
+certainly more cumbersome to use. As a rule, assignment statements using
+\kbd{gaffect} and variants should be avoided.
+
+\subsec{The basic 3 garbage collecting functions}
+
+Let us recap: although all is implemented in terms of the
+\kbd{gc\_GEN\_unsafe} low level function, you don't want to use it directly.
+You mostly want to use one of the following three functions to collect
+garbage while keeping some results safe.
+
+\fun{GEN}{gc_upto}{pari_sp ltop, GEN q}. This applies when \kbd{q} is the last
+object on the stack, returned by a high level PARI function. It cleans the
+stack between \kbd{ltop} and the object \kbd{q} and returns \kbd{q} updated.
+Low level PARI functions (such as shallow functions) may not satisfy this:
+this will be mentioned in their documentation. The technical condition is as
+follows: \kbd{q} must be connected and have been created \emph{before} all
+its components, otherwise they would belong to the garbage zone!
+
+\fun{GEN}{gc_GEN}{pari_sp ltop, GEN x}. Works in all cases. Functionally
+equivalent to, but more efficient than
+\bprog
+  gc_upto(ltop, gcopy(x))
 @eprog\noindent In this case, the \kbd{GEN} parameter \kbd{x} need not
 satisfy any property before the garbage collection: it may be disconnected,
 components created before the root, and so on. Of course, this is about
-twice slower than either \tet{gerepileupto} or \tet{gerepile}, because
+twice slower than either \tet{gc_upto} or \tet{gc_GEN_unsafe}, because
 \kbd{x} has to be copied to a clean stack zone first. This function is a
 special case of \tet{gc_all} below, where $n=1$.
 
@@ -486,20 +560,11 @@ It cleans up the most recent part of the
 stack (between \kbd{ltop} and \kbd{avma}), updating all the \kbd{GEN}s added
 to the argument list. A copy is done just before the cleaning to preserve
 them, so they do not need to be connected before the call. With
-\kbd{gc\_GEN}, this is the most robust of the \kbd{gerepile} functions
+\kbd{gc\_GEN}, this is the most robust of the garbage collecting functions
 (the less prone to user error), hence the slowest. For convenience,
 this function also returns the new value of $x$.
 
-\fun{void}{gc_all_unsafe}{pari_sp ltop, pari_sp lbot, int n, ...}.
-More efficient, but trickier than \kbd{gc\_all}. Cleans the stack between
-\kbd{lbot} and \kbd{ltop} and updates the \kbd{GEN}s pointed at by the
-elements of \kbd{gptr} without any further copying. This is subject to the
-same restrictions as \kbd{gerepile}, the only difference being that more than
-one address gets updated.
-
-\subsec{Examples}
-
-\subsubsec{gerepile}
+\subsec{A first detailed example}
 
 Let \kbd{x} and \kbd{y} be two preexisting PARI objects and suppose that we
 want to compute $\kbd{x}^2 + \kbd{y}^2$. This is done using the following
@@ -509,118 +574,108 @@ program:
   GEN y2 = gsqr(y), z = gadd(x2,y2);
 @eprog\noindent
 The \kbd{GEN} \kbd{z} indeed points at the desired quantity. However,
-consider the stack: it contains as unnecessary garbage \kbd{x2} and \kbd{y2}.
-More precisely it contains (in this order) \kbd{z}, \kbd{y2}, \kbd{x2}.
-(Recall that, since the stack grows downward from the top, the most recent
-object comes first.)
+the stack contains as unnecessary garbage \kbd{x2} and \kbd{y2}.
+More precisely it contains (in this order) \kbd{x2}, \kbd{y2}, \kbd{z}.
 
 It is not possible to get rid of \kbd{x2}, \kbd{y2} before \kbd{z} is
 computed, since they are used in the final operation. We cannot record
 \kbd{avma} before \kbd{x2} is computed and restore it later, since this would
 destroy \kbd{z} as well. It is not possible either to use the function
-\kbd{cgiv} since \kbd{x2} and \kbd{y2} are not at the bottom of the stack and
-we do not want to give back~\kbd{z}.
+\kbd{cgiv} since \kbd{x2} and \kbd{y2} are not the latest computed objects
+and we do not want to give back~\kbd{z}.
 
-But using \kbd{gerepile}, we can give back the memory locations corresponding
-to \kbd{x2}, \kbd{y2}, and move the object \kbd{z} upwards so that no
-space is lost. Specifically:
+Using \tet{gc_GEN_unsafe}, we can give back the memory locations
+corresponding to \kbd{x2}, \kbd{y2}, and move the object \kbd{z} upwards so
+that no space is lost. Specifically:
 \bprog
   pari_sp ltop = avma;  /*@Ccom remember the current top of the stack */
   GEN x2 = gsqr(x);
   GEN y2 = gsqr(y);
   pari_sp lbot = avma;  /*@Ccom the bottom of the garbage pile */
   GEN z = gadd(x2, y2); /*@Ccom z is now the last object on the stack */
-  z = gerepile(ltop, lbot, z);
+  z = gc_GEN_unsafe(ltop, lbot, z);
 @eprog
 \noindent Of course, the last two instructions could also have been
 written more simply:
 \bprog
-  z = gerepile(ltop, lbot, gadd(x2,y2));
-@eprog\noindent In fact \kbd{gerepileupto} is even simpler to use, because
-the result of \kbd{gadd} is the last object on the stack and \kbd{gadd}
-is guaranteed to return an object suitable for \kbd{gerepileupto}:
+  z = gc_GEN_unsafe(ltop, lbot, gadd(x2,y2));
+@eprog\noindent Finally, the best solution is to use \kbd{gc\_upto}, because
+the result of \kbd{gadd} is the last object on the stack (and \kbd{gadd}
+is not a shallow function):
 \bprog
   ltop = avma;
-  z = gerepileupto(ltop, gadd(gsqr(x), gsqr(y)));
-@eprog\noindent
+  z = gc_upto(ltop, gadd(gsqr(x), gsqr(y)));
+@eprog\noindent Another possibility is to use
+\bprog
+  ltop = avma;
+  z = gc_GEN(ltop, gadd(gsqr(x), gsqr(y)));
+@eprog\noindent which would work in all cases, even if \kbd{gadd} were
+shallow: garbage collection would be at most twice slower, and certainly
+negligible compared to the squaring times.
+
 Make sure you understand exactly what has happened before you go on!
 
-\misctitle{Remark on assignments and gerepile} When the tree structure and
-the size of the PARI objects which will appear in a computation are under
-control, one may allocate sufficiently large objects at the beginning,
-use assignment statements, then simply restore \kbd{avma}. Coming back to the
-above example, note that \emph{if} we know that x and y are of type real
-fitting into \kbd{DEFAULTPREC} words, we can program without using
-\kbd{gerepile} at all:
-\bprog
-  z = cgetr(DEFAULTPREC); ltop = avma;
-  gaffect(gadd(gsqr(x), gsqr(y)), z);
-  set_avma(ltop);
-@eprog\noindent This is often \emph{slower} than a craftily used
-\kbd{gerepile} though, and certainly more cumbersome to use. As a rule,
-assignment statements should generally be avoided.
-
-\misctitle{Variations on a theme} it is often necessary to do several
-\kbd{gerepile}s during a computation. However, the fewer the better. The only
-condition for \kbd{gerepile} to work is that the garbage be connected. If the
-computation can be arranged so that there is a minimal number of connected
-pieces of garbage, then it should be done that way.
+\subsec{More examples: variations on a theme} it is often necessary to do
+several garbage collections during a computation. However, the fewer the
+better. The only condition for \tet{gc_GEN_unsafe} to work is that the
+garbage be connected. If the computation can be arranged so that there is a
+minimal number of connected pieces of garbage, then it should be done that
+way.
 
 For example suppose we want to write a function of two \kbd{GEN} variables
 \kbd{x} and \kbd{y} which creates the vector $\kbd{[x}^2+\kbd{y},
 \kbd{y}^2+\kbd{x]}$. Without garbage collecting, one would write:
 %
 \bprog
-  p1 = gsqr(x); p2 = gadd(p1, y);
-  p3 = gsqr(y); p4 = gadd(p3, x);
-  z = mkvec2(p2, p4);  /* not suitable for gerepileupto! */
+  x2 = gsqr(x); a = gadd(x2, y);
+  y2 = gsqr(y); b = gadd(y2, x);
+  z = mkvec2(a, b);  /* shallow: not suitable for gc_upto! */
 @eprog\noindent
-This leaves a dirty stack containing (in this order) \kbd{z}, \kbd{p4},
-\kbd{p3}, \kbd{p2}, \kbd{p1}. The garbage here consists of \kbd{p1} and
-\kbd{p3}, which are separated by \kbd{p2}. But if we compute \kbd{p3}
-\emph{before} \kbd{p2} then the garbage becomes connected, and we get the
-following program with garbage collecting:
+This leaves a dirty stack containing \kbd{x2}, \kbd{a},
+\kbd{y2}, \kbd{b} and \kbd{z}. The garbage here consists of \kbd{x2} and
+\kbd{y2}, which are separated by \kbd{a}, which we need to keep. But if we
+compute \kbd{y2} \emph{before} \kbd{a} then the garbage becomes connected,
+and we get the following program with garbage collecting:
 %
 \bprog
-  ltop = avma; p1 = gsqr(x); p3 = gsqr(y);
-  lbot = avma; z = cgetg(3, t_VEC);
-  gel(z, 1) = gadd(p1,y);
-  gel(z, 2) = gadd(p3,x); z = gerepile(ltop,lbot,z);
-@eprog\noindent Finishing by \kbd{z = gerepileupto(ltop, z)} would be ok as
-well. Beware that
-\bprog
-  ltop = avma; p1 = gadd(gsqr(x), y); p3 = gadd(gsqr(y), x);
+  ltop = avma; x2 = gsqr(x); y2 = gsqr(y);
   z = cgetg(3, t_VEC);
-  gel(z, 1) = p1;
-  gel(z, 2) = p3; z = gerepileupto(ltop,z); /*@Ccom WRONG */
-@eprog\noindent
-is a disaster since \kbd{p1} and \kbd{p3} are created before
-\kbd{z}, so the call to \kbd{gerepileupto} overwrites them, leaving
-\kbd{gel(z, 1)} and \kbd{gel(z, 2)} pointing at random data! The following
-does work:
+  gel(z, 1) = gadd(x2,y);
+  gel(z, 2) = gadd(y2,x); z = gc_upto(ltop,lbot,z);
+@eprog\noindent Beware that
 \bprog
-  ltop = avma; p1 = gsqr(x); p3 = gsqr(y);
-  lbot = avma; z = mkvec2(gadd(p1,y), gadd(p3,x));
-  z = gerepile(ltop,lbot,z);
-@eprog\noindent but is very subtly wrong in the sense that
-\kbd{z = gerepileupto(ltop, z)} would \emph{not} work. The reason being
+  ltop = avma; a = gadd(gsqr(x), y); b = gadd(gsqr(y), x);
+  z = cgetg(3, t_VEC);
+  gel(z, 1) = a;
+  gel(z, 2) = b; z = gc_upto(ltop,z); /*@Ccom WRONG */
+@eprog\noindent
+is a disaster since \kbd{a} and \kbd{b} are created before
+\kbd{z}, so the call to \kbd{gc\_upto} overwrites them, leaving
+\kbd{gel(z, 1)} and \kbd{gel(z, 2)} pointing at random data! The following
+almost works:
+\bprog
+  ltop = avma; x2 = gsqr(x); y2 = gsqr(y);
+  lbot = avma; z = mkvec2(gadd(x2,y), gadd(y2,x));
+  z = gc_GEN_unsafe(ltop,lbot,z);
+@eprog\noindent but is subtly wrong in the sense that
+\kbd{z = gc\_upto(ltop, z)} would \emph{not} work. The reason being
 that \kbd{mkvec2} creates the root \kbd{z} of the vector \emph{after}
 its arguments have been evaluated, creating the components of \kbd{z}
-too early; \kbd{gerepile} does not care, but the created \kbd{z} is a time
-bomb which will explode on any later \kbd{gerepileupto}.
+too early; \tet{gc_GEN_unsafe} does not care, but the created \kbd{z} is a time
+bomb which will explode on any later \kbd{gc\_upto}.
 On the other hand
 \bprog
   ltop = avma; z = cgetg(3, t_VEC);
   gel(z, 1) = gadd(gsqr(x), y);
-  gel(z, 2) = gadd(gsqr(y), x); z = gerepileupto(ltop,z); /*@Ccom INEFFICIENT */
+  gel(z, 2) = gadd(gsqr(y), x); z = gc_upto(ltop,z); /*@Ccom inefficient */
 @eprog\noindent
 leaves the results of \kbd{gsqr(x)} and \kbd{gsqr(y)} on the stack (and
-lets \kbd{gerepileupto} update them for naught). Finally, the most elegant
+lets \kbd{gc\_upto} update them for naught). Finally, the most elegant
 and efficient version (with respect to time and memory use) is as follows
 \bprog
   z = cgetg(3, t_VEC);
-  ltop = avma; gel(z, 1) = gerepileupto(ltop, gadd(gsqr(x), y));
-  ltop = avma; gel(z, 2) = gerepileupto(ltop, gadd(gsqr(y), x));
+  ltop = avma; gel(z, 1) = gc_upto(ltop, gadd(gsqr(x), y));
+  ltop = avma; gel(z, 2) = gc_upto(ltop, gadd(gsqr(y), x));
 @eprog\noindent
 which avoids updating the container \kbd{z} and cleans up its components
 individually, as soon as they are computed.
@@ -628,93 +683,65 @@ individually, as soon as they are computed.
 \misctitle{One last example} Let us compute the product of two complex
 numbers $x$ and $y$, using the $3M$ method which requires 3 multiplications
 instead of the obvious 4. Let $z = x*y$, and set $x = x_r + i*x_i$ and
-similarly for $y$ and $z$. We compute $p_1 = x_r*y_r$, $p_2=x_i*y_i$,
-$p_3=(x_r+x_i)*(y_r+y_i)$, and then we have $z_r=p_1-p_2$,
-$z_i=p_3-(p_1+p_2)$. The program is as follows:
+similarly for $y$ and $z$. We compute $a = x_r*y_r$, $b=x_i*y_i$,
+$c=(x_r+x_i)*(y_r+y_i)$, and then we have $z_r=a-b$,
+$z_i=c-(a+b)$. The program is as follows:
 %
 \bprog
 ltop = avma;
-p1 = gmul(gel(x,1), gel(y,1));
-p2 = gmul(gel(x,2), gel(y,2));
-p3 = gmul(gadd(gel(x,1), gel(x,2)), gadd(gel(y,1), gel(y,2)));
-p4 = gadd(p1,p2);
-lbot = avma; z = cgetg(3, t_COMPLEX);
-gel(z, 1) = gsub(p1,p2);
-gel(z, 2) = gsub(p3,p4); z = gerepile(ltop,lbot,z);
+a = gmul(gel(x,1), gel(y,1));
+b = gmul(gel(x,2), gel(y,2));
+c = gmul(gadd(gel(x,1), gel(x,2)), gadd(gel(y,1), gel(y,2)));
+d = gadd(a,b); z = cgetg(3, t_COMPLEX);
+gel(z, 1) = gsub(a,b);
+gel(z, 2) = gsub(c,d); z = gc_upto(ltop,lbot,z);
 @eprog
 
-\misctitle{Exercise} Write a function which multiplies a matrix by a column
-vector. Hint: start with a \kbd{cgetg} of the result, and use \kbd{gerepile}
-whenever a coefficient of the result vector is computed. You can look at the
-answer in \kbd{src/basemath/RgV.c:RgM\_RgC\_mul()}.
+\subsec{Random garbage collection}
 
-\subsubsec{gc\_all}
-
-Let us now see why we may need the \kbd{gc\_all} variants. Although it
-is not an infrequent occurrence, we do not give a specific example but a
-general one: suppose that we want to do a computation (usually inside a
-larger function) producing more than one PARI object as a result, say two for
-instance. Then even if we set up the work properly, before cleaning up we
-have a stack which has the desired results \kbd{z1}, \kbd{z2} (say), and
-then connected garbage from lbot to ltop. If we write
-\bprog
-  z1 = gerepile(ltop, lbot, z1);
-@eprog\noindent
-then the stack is cleaned, the pointers fixed up, but we have lost the
-address of \kbd{z2}. This is where we need the \idx{gc_all}
-function:
-\bprog
-   gc_all(ltop, 2, &z1, &z2)
-@eprog
-\noindent copies \kbd{z1} and \kbd{z2} to new locations, cleans the stack
-from \kbd{ltop} to the old \kbd{avma}, and updates the pointers \kbd{z1} and
-\kbd{z2}. Here we do not assume anything about the stack: the garbage can be
-disconnected and \kbd{z1}, \kbd{z2} need not be at the bottom of the stack.
-If all of these assumptions are in fact satisfied, then we can call
-\kbd{gc\_all\_unsafe} instead, which is usually faster since we do not need
-the initial copy (on the other hand, it is less cache friendly).
-
-A most important usage is ``random'' garbage collection during loops
-whose size requirements we cannot (or do not bother to) control in advance:
+The most important usage of \kbd{gc\_all} is to make sure loops don't
+fill up the stack:
 \bprog
   pari_sp av = avma;
   GEN x, y;
   while (...)
   {
     garbage(); x = anything();
-    garbage(); y = anything(); garbage();
-    if (gc_needed(av,1)) /*@Ccom memory is running low (half spent since entry) */
-      gc_all(av, 2, &x, &y);
+    garbage(); y = anything();
+    garbage(); gc_all(av, 2, &x, &y);
   }
 @eprog
 \noindent Here we assume that only \kbd{x} and \kbd{y} are needed from one
-iteration to the next. As it would be costly to call gerepile once for each
-iteration, we only do it when it seems to have become necessary.
+iteration to the next. As it can be costly to call \kbd{gc\_all} once for
+each iteration, we may do this only when it is necessary:
+\bprog
+    /*@Ccom memory is running low (half spent since entry) */
+    if (gc_needed(av,1)) gc_all(av, 2, &x, &y);
+@eprog
 
 More precisely, the macro \tet{stack_lim}\kbd{(av,$n$)} denotes an address
 where $2^{n-1} / (2^{n-1}+1)$ of the remaining stack space since reference
-point \kbd{av} is exhausted ($1/2$ for $n=1$, $2/3$ for $n=2$). The test
+point \kbd{av} is exhausted ($1/2$ for $n=1$, $2/3$ for $n=2$, etc.). The test
 \tet{gc_needed}\kbd{(av,$n$)} becomes true whenever \kbd{avma} drops below
 that address.
 
-\subsec{Comments}
+\subsec{Final comments}
 
-First, \kbd{gerepile} has turned out to be a flexible and fast garbage
-collector for number-theoretic computations, which compares favorably with
-more sophisticated methods used in other systems. Our benchmarks indicate
-that the price paid for using \kbd{gerepile} and \kbd{gerepile}-related
-copies, when properly used, is usually less than 1\% of the total
-running time, which is quite acceptable!
+PARI's manual garbage collection may seem cumbersome at first. But it is
+flexible and very fast, and compares favorably with methods used in other
+systems. Our benchmarks indicate that the price paid during garbage
+collections, when properly used, is usually less than 1\%
+of the total running time, which is quite acceptable!
 
-Second, it is of course harder on the programmer, and quite error-prone
-if you do not stick to a consistent PARI programming style. If all seems
-lost, just use \tet{gc_GEN} or \tet{gc_all} to fix up the stack
-for you. You can always optimize later when you have sorted out exactly which
-routines are crucial and what objects need to be preserved and their usual
-sizes.
+It is of course harder on the programmer, and error-prone if you do not stick
+to a consistent PARI programming style. At first, just use \tet{gc_GEN} or
+\tet{gc_all} to fix up the stack for you. You can always optimize later when
+you have sorted out exactly which routines are crucial and what objects need
+to be preserved and their usual sizes. In any case, all garbage collections
+routines run in almost linear complexity in the size of the recovered data.
 
 \smallskip If you followed us this far, congratulations, and rejoice: the
-rest is much easier.
+rest will be easier.
 
 \section{Creation of PARI objects, assignments, conversions}
 
@@ -832,13 +859,13 @@ returns the \typ{VEC} whose $n$ coefficients (\kbd{GEN}) follow.
 returns the \typ{COL} whose $n$ coefficients (\kbd{GEN}) follow.
 
 \misctitle{Warning} Contrary to the policy of general PARI functions, the
-latter three functions do \emph{not} copy their arguments, nor do they produce
-an object a priori suitable for \tet{gerepileupto}. For instance
+latter three functions are shallow: they do \emph{not} copy their arguments.
+For instance
 \bprog
-  /*@Ccom gerepile-safe: components are universal objects */
+  /*@Ccom stack-clean: components are universal objects */
   z = mkvecn(3, gen_1, gen_0, gen_2);
 
-  /*@Ccom not OK for gerepileupto: stoi(3) creates component before root */
+  /*@Ccom not OK for gc\_upto: stoi(3) creates component before root */
   z = mkvecn(3, stoi(3), gen_0, gen_2);
 
   /*@Ccom NO! First vector component \kbd{x} is destroyed */
@@ -874,7 +901,7 @@ are just moving a pointer around. However, physically modifying either
 one, which is usually not desirable. \label{se:assign}
 
 \misctitle{Very important note} Using the functions described in this
-paragraph is inefficient and often awkward: one of the \tet{gerepile}
+paragraph is inefficient and often awkward: one of the garbage collection
 functions (see~\secref{se:garbage}) should be preferred. See the paragraph
 end for one exception to this rule.
 
@@ -921,7 +948,7 @@ of type \typ{INT}) using
 \misctitle{Note} Due to the requirements mentioned above, it is usually
 a bad idea to use \tet{gaffect} statements. There is one exception: for simple
 objects (e.g.~leaves) whose size is controlled, they can be easier to use than
-\kbd{gerepile}, and about as efficient.
+garbage collection, and about as efficient.
 
 \misctitle{Coercion} It is often useful to coerce an inexact object to a
 given precision. For instance at the beginning of a routine where precision
@@ -949,7 +976,7 @@ Sometimes, on the contrary, a quick copy of the skeleton of \kbd{x} is
 enough, leaving pointers to the original data in \kbd{x} for the sake of
 speed instead of making a full recursive copy. Use
 \fun{GEN}{shallowcopy}{GEN x} for this. Note that the result is not suitable
-for \tet{gerepileupto} !
+for \tet{gc_upto} !
 
 Make sure at this point that you understand the difference between \kbd{y =
 x}, \kbd{y = gcopy(x)}, \kbd{y = shallowcopy(x)} and \kbd{gaffect(x,y)}.
@@ -957,7 +984,7 @@ x}, \kbd{y = gcopy(x)}, \kbd{y = shallowcopy(x)} and \kbd{gaffect(x,y)}.
 \subsec{Clones}\sidx{clone}\label{se:clone}
 Sometimes, it is more efficient to create a \emph{persistent} copy of a PARI
 object. This is not created on the stack but on the heap, hence unaffected by
-\tet{gerepile} and friends. The function which does this is called
+garbage collection functions. The function which does this is called
 \teb{gclone}. Its syntax is:
 
 \fun{GEN}{gclone}{GEN x}
@@ -1314,11 +1341,12 @@ being the constant term and so on.
 
 For a \typ{POL} of nonzero sign, \tet{degpol}, \tet{leading_coeff},
 \tet{constant_coeff}, return its degree, and a pointer to the leading,
-resp. constant, coefficient with respect to the main variable. Note that no
-copy is made on the PARI stack so the returned value is not safe for a basic
-\kbd{gerepile} call. Applied to any other type than \typ{POL}, the result is
-unspecified. Those three functions are still defined when the sign is $0$,
-see \secref{se:accessors} and \secref{se:polynomials}.
+resp. constant, coefficient with respect to the main variable. Note that this
+is a \emph{shallow} construction: no copy is made on the PARI stack so the
+returned value is not safe for a basic \kbd{gc\_upto} call. Applied to any
+other type than \typ{POL}, the result is unspecified. Those three functions
+are still defined when the sign is $0$, see \secref{se:accessors} and
+\secref{se:polynomials}.
 
 \fun{long}{degree}{GEN x} returns the degree of \kbd{x} with respect to its
 main variable even when \kbd{x} is not a polynomial (a rational function for
@@ -1600,8 +1628,8 @@ For that, you need a user variable.
 
 All objects created by \kbd{fetch\_var} are on the heap and not on the stack,
 thus they are not subject to standard garbage collecting (they are not
-destroyed by a \kbd{gerepile} or \kbd{set\_avma(ltop)} statement).
-When you do not need a variable number anymore, you can delete it using
+destroyed by garbage collection). When you do not need a variable number
+anymore, you can delete it using
 
 \fun{long}{delete_var}{}
 
@@ -2160,9 +2188,9 @@ thus:
   }
   set_avma(av); /* delete all */
 @eprog\noindent Of course, the final \kbd{set\_avma(av)} could be replaced
-by a \kbd{gerepile} call. Beware that swapping the
-\kbd{av2 = avma} and \tet{forprime_init} call would be incorrect: the
-first \kbd{set\_avma(av2)} would delete the \tet{forprime_t} structure!
+by a \kbd{gc\_upto} call. Beware that swapping the \kbd{av2 = avma} and
+\tet{forprime_init} call would be incorrect: the first \kbd{set\_avma(av2)}
+would delete the \tet{forprime_t} structure!
 
 \subsec{Parallel iterators}
 

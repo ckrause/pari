@@ -189,7 +189,7 @@ update_fm(GEN f, GEN a, long i)
   update_f(u, a); if (lgefint(gcoeff(u,1,1)) < LIM) return i;
   v = vals(i+1); gel(f,1) = gen_0;
   for (k = 1; k < v; k++) { u = ZM2_mul(gel(f,k+1), u); gel(f,k+1) = gen_0; }
-  if (v != 1) u = gerepileupto(av, u);
+  if (v != 1) u = gc_upto(av, u);
   gel(f,v+1) = u; return i+1;
 }
 /* \prod f[j]; if first only return column 1 */
@@ -558,7 +558,7 @@ quadregulator(GEN x, long prec)
   if (!((e + expo(R)) & ~EXPOBITS)) { setexpo(R, e + expo(R)); e = 0; }
   R = logr_abs(R);
   if (e) R = addrr(R, mulsr(e, mplog2(prec)));
-  return gerepileuptoleaf(av, R);
+  return gc_uptoleaf(av, R);
 }
 
 /*************************************************************************/
@@ -1254,5 +1254,5 @@ Zn_quad_roots(GEN N, GEN B, GEN C)
     if (B) u = subii(u,B);
     gel(v,j) = gc_INT(av2, modii(shifti(u,-1), Np));
   }
-  return gerepileupto(av, w);
+  return gc_upto(av, w);
 }

@@ -198,7 +198,7 @@ strjoin(GEN v, GEN p)
   if (l == 2)
   {
     char *s = GENtostr_unquoted(gel(v,1));
-    return gerepileuptoleaf(av, strtoGENstr(s));
+    return gc_uptoleaf(av, strtoGENstr(s));
   }
   if (!p) p = strtoGENstr("");
   w = cgetg(2*l - 2, t_VEC);
@@ -208,7 +208,7 @@ strjoin(GEN v, GEN p)
     gel(w, 2*i-2) = p;
     gel(w, 2*i-1) = gel(v, i);
   }
-  return gerepileuptoleaf(av, shallowconcat1(w));
+  return gc_uptoleaf(av, shallowconcat1(w));
 }
 
 GEN

@@ -73,13 +73,13 @@ INLINE long
 varnmax(long x, long y)
 { return (varpriority[x] >= varpriority[y])? x: y; }
 
-/* Inhibit some area gerepile-wise: declare it to be a non recursive
- * type, of length l. Thus gerepile won't inspect the zone, just copy it.
+/* Inhibit some area gc_GEN_unsafe-wise: declare it to be a non recursive
+ * type, of length l. Thus gc_GEN_unsafe won't inspect the zone, just copy it.
  * For the following situation:
  *   z = cgetg(t,a); av = avma; garbage(); ltop = avma;
  *   for (i=1; i<HUGE; i++) gel(z,i) = blah();
  *   stackdummy(av,ltop);
- * loses (av-ltop) words but save a costly gerepile. */
+ * loses (av-ltop) words but save a costly gc_GEN_unsafe. */
 INLINE void
 stackdummy(pari_sp av, pari_sp ltop) {
   long l = ((GEN)av) - ((GEN)ltop);

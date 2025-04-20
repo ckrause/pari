@@ -627,7 +627,7 @@ bnrisprincipalmod(GEN bnr, GEN x, GEN MOD, long flag)
     ex = ZM2_ZC2_mul(bnr_get_U(bnr), e, ideallogmod(nf, b, bid, MOD));
   }
   ex = ZV_ZV_mod(ex, cycray);
-  if (!(flag & (nf_GEN|nf_GENMAT))) return gerepileupto(av, ex);
+  if (!(flag & (nf_GEN|nf_GENMAT))) return gc_upto(av, ex);
 
   /* compute generator */
   E = ZC_neg(ex);
@@ -676,7 +676,7 @@ minkowski_bound(GEN D, long N, long r2, long prec)
   GEN c = divri(mpfactr(N,prec), powuu(N,N));
   if (r2) c = mulrr(c, powru(divur(4,mppi(prec)), r2));
   c = mulrr(c, gsqrt(absi_shallow(D),prec));
-  return gerepileuptoleaf(av, c);
+  return gc_uptoleaf(av, c);
 }
 
 /* N = [K:Q] > 1, D = disc(K) */
@@ -749,7 +749,7 @@ Hermite_bound(long n, long prec)
   av = avma;
   h  = powru(divur(2,mppi(prec)), n);
   h1 = sqrr(ggamma(uutoQ(n+4,2),prec));
-  return gerepileuptoleaf(av, mulrr(h,h1));
+  return gc_uptoleaf(av, mulrr(h,h1));
 }
 
 /* 1 if L (= nf != Q) primitive for sure, 0 if MAYBE imprimitive (may have a
@@ -1482,7 +1482,7 @@ bnrmap(GEN A, GEN B)
       if (lg(B) != lg(c) || !RgV_is_ZV(B))
         pari_err_TYPE("bnrmap [not a discrete log]", B);
       B = ZV_ZV_mod(ZM_ZC_mul(M, B), C);
-      return gerepileupto(av, B);
+      return gc_upto(av, B);
   }
   return gc_GEN(av, B);
 }
@@ -1819,7 +1819,7 @@ rnfnormgroup(GEN bnr, GEN polrel)
   pari_sp av = avma;
   GEN G = rnfnormgroup_i(bnr, polrel);
   if (!G) retgc_const(av, cgetg(1, t_MAT));
-  return gerepileupto(av, G);
+  return gc_upto(av, G);
 }
 
 GEN
@@ -2351,7 +2351,7 @@ bnrclassno_all(GEN B, ulong h, GEN sgnU)
       rowselect_p(m, mm, rowsel, nc+1);
       H[k+1] = hdet(h, mm);
     }
-    H = gerepileuptoleaf(av, H);
+    H = gc_uptoleaf(av, H);
     gel(L,j) = mkvec2(gel(b,1), H);
   }
   return L;
@@ -2385,7 +2385,7 @@ decodemodule(GEN nf, GEN fa)
            : idealpow(nf, pr,e);
   }
   if (!id) { set_avma(av); return matid(n); }
-  return gerepileupto(av,id);
+  return gc_upto(av,id);
 }
 
 /* List of ray class fields. Do all from scratch, bound < 2^30. No subgroups.
@@ -2721,7 +2721,7 @@ bnrgaloismatrix(GEN bnr, GEN aut)
       }
       v = cgetg(l, t_VEC);
       for(i = 1; i < l; i++) gel(v,i) = bnrautmatrix(bnr, gel(aut,i));
-      return gerepileupto(av, v);
+      return gc_upto(av, v);
     }
     default:
       pari_err_TYPE("bnrgaloismatrix", aut);
@@ -2740,7 +2740,7 @@ bnrgaloisapply(GEN bnr, GEN mat, GEN x)
     pari_err_TYPE("bnrgaloisapply",mat);
   if (typ(x)!=t_MAT || !RgM_is_ZM(x))
     pari_err_TYPE("bnrgaloisapply",x);
-  return gerepileupto(av, ZM_hnfmodid(ZM_mul(mat, x), cyc));
+  return gc_upto(av, ZM_hnfmodid(ZM_mul(mat, x), cyc));
 }
 
 static GEN
@@ -2753,7 +2753,7 @@ check_bnrgal(GEN bnr, GEN M)
   {
     pari_sp av = avma;
     GEN V = galoispermtopol(M, gal_get_gen(M));
-    return gerepileupto(av, bnrgaloismatrix(bnr, V));
+    return gc_upto(av, bnrgaloismatrix(bnr, V));
   }
   else if (!is_vec_t(typ(M)))
     pari_err_TYPE("bnrisgalois",M);

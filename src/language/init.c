@@ -2539,7 +2539,7 @@ dec_gerepile(pari_sp *x, pari_sp av0, pari_sp av, pari_sp tetpil, size_t dec)
   if (*x < av && *x >= av0)
   { /* update address if in stack */
     if (*x < tetpil) *x += dec;
-    else pari_err_BUG("gerepile, significant pointers lost");
+    else pari_err_BUG("gc_GEN_unsafe, significant pointers lost");
   }
 }
 
@@ -2553,7 +2553,7 @@ gc_all_unsafe(pari_sp av, pari_sp tetpil, int n, ...)
   va_list a;
   if (n <= 0) return NULL;
   va_start(a, n);
-  pz = va_arg(a,GEN*); (void)gerepile(av,tetpil,NULL);
+  pz = va_arg(a,GEN*); (void)gc_GEN_unsafe(av,tetpil,NULL);
   dec_gerepile((pari_sp*)pz, av0,av,tetpil,dec);
   for (i=1; i<n; i++) dec_gerepile((pari_sp*)va_arg(a,GEN*), av0,av,tetpil,dec);
   va_end(a); return *pz;
@@ -2567,7 +2567,7 @@ gerepilecoeffssp(pari_sp av, pari_sp tetpil, GEN g, int n)
   const pari_sp av0 = avma;
   const size_t dec = av-tetpil;
   int i;
-  (void)gerepile(av,tetpil,NULL);
+  (void)gc_GEN_unsafe(av,tetpil,NULL);
   for (i=0; i<n; i++,g++) dec_gerepile((pari_sp*)g, av0, av, tetpil, dec);
 }
 
@@ -2642,14 +2642,14 @@ dbg_gerepileupto(GEN q)
 }
 
 GEN
-gerepile(pari_sp av, pari_sp tetpil, GEN q)
+gc_GEN_unsafe(pari_sp av, pari_sp tetpil, GEN q)
 {
   const size_t dec = av - tetpil;
   const pari_sp av0 = avma;
   GEN x, a;
 
   if (dec == 0) return q;
-  if ((long)dec < 0) pari_err(e_MISC,"lbot>ltop in gerepile");
+  if ((long)dec < 0) pari_err(e_MISC,"lbot>ltop in gc");
 
   /* dec_gerepile(&q, av0, av, tetpil, dec), saving 1 comparison */
   if (q >= (GEN)av0 && q < (GEN)tetpil)

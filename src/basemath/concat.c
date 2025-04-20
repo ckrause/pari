@@ -469,7 +469,7 @@ gconcat(GEN x, GEN y)
   if (tx==t_STR  || ty==t_STR)
   {
     pari_sp av = avma;
-    return gerepileuptoleaf(av, strconcat(x,y));
+    return gc_uptoleaf(av, strconcat(x,y));
   }
   if (tx==t_LIST || ty==t_LIST) return listconcat(x,y);
   lx=lg(x); ly=lg(y);

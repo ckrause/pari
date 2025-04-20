@@ -666,7 +666,7 @@ WildlyRamifiedCase(KRASNER_t *data)
     FreeFieldData(f);
   }
   FreeRootTable(data->roottable);
-  return gerepileupto(av, rep);
+  return gc_upto(av, rep);
 }
 
 /* return the minimal polynomial T of a generator of K^ur and the expression (mod pr)
@@ -769,7 +769,7 @@ GetRamifiedPol(GEN p, GEN efj, long flag)
       gel(pols, i) = ZX_copy(gel(T,1));
     }
   }
-  return gerepileupto(av, pols);
+  return gc_upto(av, pols);
 }
 
 static GEN

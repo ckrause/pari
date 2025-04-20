@@ -412,7 +412,7 @@ gammafactproduct(GEN F, GEN s, long *ext, long prec)
     z = gmul(z, gpowgs(gamma_R(gadd(s,gel(Rw, i)), ext, prec), Re[i]));
   for (i = 1; i < lC; i++)
     z = gmul(z, gpowgs(gamma_C(gadd(s,gel(Cw, i)), ext, prec), Ce[i]));
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 static int
@@ -850,7 +850,7 @@ static GEN
 theta2(GEN an2, long N, GEN t, GEN al, long prec)
 {
   pari_sp av = avma;
-  return gerepileupto(av, theta2_i(an2, N, t, al, prec));
+  return gc_upto(av, theta2_i(an2, N, t, al, prec));
 }
 
 /* d=1, 2 sum_{n <= N} a_n (n t)^al q^(n^2), q = exp(-pi t^2),
@@ -868,7 +868,7 @@ theta1(GEN an2, long N, GEN t, GEN al, long prec)
     if (c)
     {
       S = gadd(S, c);
-      if (gc_needed(av, 3)) S = gerepileupto(av, S);
+      if (gc_needed(av, 3)) S = gc_upto(av, S);
     }
   }
   return mulT(t, al, S, prec);
@@ -924,11 +924,11 @@ lfuntheta(GEN data, GEN t, long m, long bitprec)
       nt = gmul(gel(vroots,n), t);
       if (m) an = gmul(an, powuu(n, m));
       S = gadd(S, gmul(an, gammamellininvrt(K, nt, bitprec)));
-      if ((n & 0x1ff) == 0) S = gerepileupto(av, S);
+      if ((n & 0x1ff) == 0) S = gc_upto(av, S);
     }
     if (m) S = gmul(S, gpowgs(isqN, m));
   }
-  return gerepileupto(ltop, S);
+  return gc_upto(ltop, S);
 }
 
 /*******************************************************************/
@@ -1094,7 +1094,7 @@ an_msum(GEN an, long N, GEN vKm)
       GEN c = mul_an(an, n, gel(vKm,n));
       if (c) s = gadd(s, c);
     }
-  return gerepileupto(av, s);
+  return gc_upto(av, s);
 }
 
 GEN
@@ -1142,7 +1142,7 @@ lfuninit_worker(long r, GEN K, GEN L, GEN peh2d, GEN vroots, GEN dr, GEN di,
       if (!p) continue; /* a_{n 2^v} = 0 for all v in range */
       av = avma;
       t2d = mpmul(gel(vroots,n), gel(peh2d,m+1));/*(n exp(mh)/sqrt(N))^(2/d)*/
-      kmn = gerepileupto(av, gammamellininvrt(K, t2d, p));
+      kmn = gc_upto(av, gammamellininvrt(K, t2d, p));
       for (qq=q,mm=m,nn=n; mm >= 0; nn<<=1,mm-=m0,qq--)
         if (nn <= L[mm+1]) gmael(vK, qq+1, nn) = kmn;
     }
@@ -1153,7 +1153,7 @@ lfuninit_worker(long r, GEN K, GEN L, GEN peh2d, GEN vroots, GEN dr, GEN di,
     gel(A, q+1) = an_msum(an, N, gel(vK,q+1));
     if (bn) gel(B, q+1) = an_msum(bn, N, gel(vK,q+1));
   }
-  return gerepileupto(av0, AB);
+  return gc_upto(av0, AB);
 }
 /* return A = [\theta(exp(mh)), m=0..M], theta(t) = sum a(n) K(n/sqrt(N) t),
  * h = log(2)/m0. If bn != NULL, return the pair [A, B] */
@@ -1440,12 +1440,12 @@ lfuncost0(GEN L, GEN dom, long der, long bitprec)
       C = cgetg(l, t_VEC);
       for (i = 1; i < l; ++i)
         gel(C, i) = zv_to_ZV( lfuncost(gel(F,i), dom, der, bitprec) );
-      return gerepileupto(av, C);
+      return gc_upto(av, C);
     }
   }
   if (!dom) pari_err_TYPE("lfuncost [missing s domain]", L);
   C = lfuncost(L,dom,der,bitprec);
-  return gerepileupto(av, zv_to_ZV(C));
+  return gc_upto(av, zv_to_ZV(C));
 }
 
 static int
@@ -1810,7 +1810,7 @@ lfunlambda(GEN lmisc, GEN s, long bitprec)
         se = gmul2n(gaddgs(s, e), -1);
         r = gmul(gpow(Q, se, prec), ggamma(se, prec));
         if (e && !equali1(q)) r = gdiv(r, gsqrt(q, prec));
-        return gerepileupto(av, gmul(r, z));
+        return gc_upto(av, gmul(r, z));
       }
     }
     if (is_linit(lmisc)) linit = lmisc; else lmisc = ldata;
@@ -2111,7 +2111,7 @@ lfunhardy(GEN lmisc, GEN t, long bitprec)
     h = real_i(h);
   if (isbig) h = greal(gexp(gadd(h, a), prec));
   else h = gmul(h, gexp(a, prec));
-  return gerepileupto(ltop, h);
+  return gc_upto(ltop, h);
 }
 
 /* L = log(t); return  \sum_{i = 0}^{v-1}  R[-i-1] L^i/i! */
@@ -2271,7 +2271,7 @@ lfunthetaspec(GEN linit, long bitprec, GEN *pv, GEN *pv2)
     av2 = avma;
     tn = gmul(t, gel(vroots,n));
     Kn = gammamellininvrt(K, tn, bitprec);
-    v = gerepileupto(av2, gadd(v, gmul(a,Kn)));
+    v = gc_upto(av2, gadd(v, gmul(a,Kn)));
   }
   /* v += \sum_{n <= L, n even} a_n K(nt), v2 = \sum_{n <= L/2} a_n K(2n t) */
   for (v2 = gen_0, n = 1; n <= L/2; n++)
@@ -2281,7 +2281,7 @@ lfunthetaspec(GEN linit, long bitprec, GEN *pv, GEN *pv2)
     if (!a && !a2) continue;
     av2 = avma;
     t2n = gmul(t, gel(vroots,2*n));
-    K2n = gerepileupto(av2, gammamellininvrt(K, t2n, bitprec));
+    K2n = gc_upto(av2, gammamellininvrt(K, t2n, bitprec));
     if (a) v2 = gadd(v2, gmul(a, K2n));
     if (a2) v = gadd(v,  gmul(a2,K2n));
   }
@@ -2553,7 +2553,7 @@ lfunzeros(GEN ldata, GEN lim, long divz, long bitprec)
     long l = lg(M);
     w = cgetg(l, t_VEC);
     for (i = 1; i < l; i++) gel(w,i) = lfunzeros(gel(M,i), lim, divz, bitprec);
-    return gerepileupto(ltop, vecsort0(shallowconcat1(w), NULL, 0));
+    return gc_upto(ltop, vecsort0(shallowconcat1(w), NULL, 0));
   }
   if (typ(lim) == t_VEC)
   {
@@ -2889,5 +2889,5 @@ znchargauss(GEN G, GEN chi, GEN a, long bitprec)
     GEN ord = zncharorder(GF, chi), z = rootsof1_cx(ord, prec);
     tau = gmul(tau, znchareval(GF, chi, u, mkvec2(z,ord)));
   }
-  return gerepileupto(av, gmul(tau, S));
+  return gc_upto(av, gmul(tau, S));
 }

@@ -1209,7 +1209,7 @@ Fp_sqrt_ii(GEN a, GEN y, GEN p)
   {
     GEN res = Fp_sqrts(as, p);
     if (!res) return gc_NULL(av);
-    if (signe(res)) return gerepileupto(av, res);
+    if (signe(res)) return gc_upto(av, res);
   }
   if (e == 2)
   { /* Atkin's formula */
@@ -1405,7 +1405,7 @@ chinese(GEN x, GEN y)
       z = cgetg(3, t_POLMOD);
       gel(z,1) = RgX_mul(t, B);
       gel(z,2) = gmod(e, gel(z,1));
-      return gerepileupto(av, z);
+      return gc_upto(av, z);
     }
     case t_INTMOD:
     {
@@ -1813,7 +1813,7 @@ GEN
 Z_nv_mod(GEN A, GEN P)
 {
   pari_sp av = avma;
-  return gerepileuptoleaf(av, Z_ZV_mod_tree(A, P, ZV_producttree(P)));
+  return gc_uptoleaf(av, Z_ZV_mod_tree(A, P, ZV_producttree(P)));
 }
 /* B a ZX, T = ZV_producttree(P) */
 GEN
@@ -1989,7 +1989,7 @@ static GEN
 gc_chinese(pari_sp av, GEN T, GEN a, GEN *pt_mod)
 {
   if (!pt_mod)
-    return gerepileupto(av, a);
+    return gc_upto(av, a);
   else
   {
     GEN mod = gmael(T, lg(T)-1, 1);
@@ -2027,7 +2027,7 @@ nxV_chinese_center_tree(GEN A, GEN P, GEN T, GEN R)
   pari_sp av = avma;
   GEN m2 = shifti(gmael(T, lg(T)-1, 1), -1);
   GEN a = nxV_polint_center_tree(A, P, T, R, m2);
-  return gerepileupto(av, a);
+  return gc_upto(av, a);
 }
 
 GEN
@@ -2058,7 +2058,7 @@ ncV_chinese_center_tree(GEN A, GEN P, GEN T, GEN R)
   pari_sp av = avma;
   GEN m2 = shifti(gmael(T, lg(T)-1, 1), -1);
   GEN a = ncV_polint_center_tree(A, P, T, R, m2);
-  return gerepileupto(av, a);
+  return gc_upto(av, a);
 }
 
 GEN
@@ -2067,7 +2067,7 @@ nmV_chinese_center_tree(GEN A, GEN P, GEN T, GEN R)
   pari_sp av = avma;
   GEN m2 = shifti(gmael(T, lg(T)-1, 1), -1);
   GEN a = nmV_polint_center_tree(A, P, T, R, m2);
-  return gerepileupto(av, a);
+  return gc_upto(av, a);
 }
 
 GEN
@@ -2076,7 +2076,7 @@ nmV_chinese_center_tree_seq(GEN A, GEN P, GEN T, GEN R)
   pari_sp av = avma;
   GEN m2 = shifti(gmael(T, lg(T)-1, 1), -1);
   GEN a = nmV_polint_center_tree_seq(A, P, T, R, m2);
-  return gerepileupto(av, a);
+  return gc_upto(av, a);
 }
 
 GEN
@@ -2096,7 +2096,7 @@ nxCV_chinese_center_tree(GEN A, GEN P, GEN T, GEN R)
   pari_sp av = avma;
   GEN m2 = shifti(gmael(T, lg(T)-1, 1), -1);
   GEN a = nxCV_polint_center_tree(A, P, T, R, m2);
-  return gerepileupto(av, a);
+  return gc_upto(av, a);
 }
 
 GEN
@@ -2116,7 +2116,7 @@ nxMV_chinese_center_tree_seq(GEN A, GEN P, GEN T, GEN R)
   pari_sp av = avma;
   GEN m2 = shifti(gmael(T, lg(T)-1, 1), -1);
   GEN a = nxMV_polint_center_tree_seq(A, P, T, R, m2);
-  return gerepileupto(av, a);
+  return gc_upto(av, a);
 }
 
 GEN
@@ -2677,7 +2677,7 @@ Fp_log_halfgcd(ulong bnd, GEN C, GEN g, GEN p)
     GEN M = cgetg(3, t_MAT);
     gel(M,1) = vecsmall_concat(gel(F, 1),gel(G, 1));
     gel(M,2) = vecsmall_concat(gel(F, 2),zv_neg_inplace(gel(G, 2)));
-    return gerepileupto(av, M);
+    return gc_upto(av, M);
   }
   return gc_NULL(av);
 }
@@ -2713,7 +2713,7 @@ addifsmooth1(struct Fp_log_rel *r, GEN z, long u, long e)
   GEN F = cgetg(3, t_MAT);
   gel(F,1) = vecsmall_append(gel(z,1), off+rt(u));
   gel(F,2) = vecsmall_append(gel(z,2), e);
-  gel(r->rel,++r->nbrel) = gerepileupto(av, F);
+  gel(r->rel,++r->nbrel) = gc_upto(av, F);
 }
 
 /* add u^-1 v^-1 */
@@ -2726,7 +2726,7 @@ addifsmooth2(struct Fp_log_rel *r, GEN z, long u, long v)
   GEN F = cgetg(3, t_MAT);
   gel(F,1) = vecsmall_concat(gel(z,1), P);
   gel(F,2) = vecsmall_concat(gel(z,2), E);
-  gel(r->rel,++r->nbrel) = gerepileupto(av, F);
+  gel(r->rel,++r->nbrel) = gc_upto(av, F);
 }
 
 /* Let p=C^2+c
@@ -2904,7 +2904,7 @@ check_kernel(long nbg, long N, long prmax, GEN C, GEN M, GEN p, GEN m)
         f++;
     }
     if (DEBUGLEVEL) timer_printf(&ti,"found %ld/%ld logs", f, nbg);
-    if(f > (nbg>>1)) return gerepileupto(av, K);
+    if(f > (nbg>>1)) return gc_upto(av, K);
     for(i=1; i<=nbcol; i++)
     {
       long a = 1+random_Fl(lM);
@@ -3225,7 +3225,7 @@ znlog(GEN h, GEN g, GEN o)
   }
   if (equali1(N)) { set_avma(av); return gen_0; }
   h = Rg_to_Fp(h, N);
-  if (o) return gerepileupto(av, Fp_log(h, g, o, N));
+  if (o) return gc_upto(av, Fp_log(h, g, o, N));
   fa = Z_factor(N);
   P = gel(fa,1);
   E = vec_to_vecsmall(gel(fa,2));
@@ -3599,7 +3599,7 @@ gboundcf(GEN x, long k)
 
       case t_FRAC:
         av = avma;
-        return gerepileupto(av, Qsfcont(gel(x,1),gel(x,2), NULL, k));
+        return gc_upto(av, Qsfcont(gel(x,1),gel(x,2), NULL, k));
     }
     pari_err_TYPE("gboundcf",x);
   }
@@ -3609,7 +3609,7 @@ gboundcf(GEN x, long k)
     case t_POL: return mkveccopy(x);
     case t_SER:
       av = avma;
-      return gerepileupto(av, gboundcf(ser2rfrac_i(x), k));
+      return gc_upto(av, gboundcf(ser2rfrac_i(x), k));
     case t_RFRAC:
       av = avma;
       return gc_GEN(av, sersfcont(gel(x,1), gel(x,2), k));
@@ -3828,7 +3828,7 @@ bestappr_frac(GEN x, GEN k)
     if (typ(x) == t_INT) { p1 = p0; q1 = q0; break; } /* x = 0 */
 
   }
-  return gerepileupto(av, gdiv(p1,q1));
+  return gc_upto(av, gdiv(p1,q1));
 }
 /* k > 0 t_INT, x != 0 a t_REAL, returns the convergent a/b
  * of the continued fraction of x with b <= k maximal */
@@ -3908,7 +3908,7 @@ bestappr_Q(GEN x, GEN k)
       y = cgetg(3, t_COMPLEX);
       gel(y,2) = bestappr(gel(x,2), k);
       gel(y,1) = bestappr(gel(x,1), k);
-      if (gequal0(gel(y,2))) return gerepileupto(av, gel(y,1));
+      if (gequal0(gel(y,2))) return gc_upto(av, gel(y,1));
       return y;
     }
     case t_SER:
@@ -3972,7 +3972,7 @@ bestappr_ser(GEN x, long B)
 static GEN
 gc_empty(pari_sp av) { retgc_const(av, cgetg(1, t_VEC)); }
 static GEN
-_gc_upto(pari_sp av, GEN x) { return x? gerepileupto(av, x): NULL; }
+_gc_upto(pari_sp av, GEN x) { return x? gc_upto(av, x): NULL; }
 
 static GEN bestappr_RgX(GEN x, long B);
 /* B >= 0 or < 0 [omit condition on B].
@@ -4049,7 +4049,7 @@ serPade(GEN S, long p, long q)
   if (q < 0) pari_err_DOMAIN("bestapprPade", "q", "<", gen_0, stoi(q));
   if (v == LONG_MAX) return gc_empty(av);
   S = gadd(S, zeroser(va, p + q + 1 + v));
-  return gerepileupto(av, bestapprPade(S, q));
+  return gc_upto(av, bestapprPade(S, q));
 }
 
 GEN

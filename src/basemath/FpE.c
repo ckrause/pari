@@ -196,7 +196,7 @@ FpE_changepoint(GEN P, GEN ch, GEN p)
   {
     ulong pp = p[2];
     z = Fle_changepoint(ZV_to_Flv(P, pp), ZV_to_Flv(ch, pp), pp);
-    return gerepileupto(av, Flv_to_ZV(z));
+    return gc_upto(av, Flv_to_ZV(z));
   }
   u = gel(ch,1); r = gel(ch,2); s = gel(ch,3); t = gel(ch,4);
   v = Fp_inv(u, p); v2 = Fp_sqr(v,p); v3 = Fp_mul(v,v2,p);
@@ -204,7 +204,7 @@ FpE_changepoint(GEN P, GEN ch, GEN p)
   z = cgetg(3,t_VEC);
   gel(z,1) = Fp_mul(v2, c, p);
   gel(z,2) = Fp_mul(v3, Fp_sub(gel(P,2), Fp_add(Fp_mul(s,c, p),t, p),p),p);
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 GEN
@@ -272,7 +272,7 @@ FpE_dbl(GEN P, GEN a4, GEN p)
 {
   pari_sp av = avma;
   GEN slope;
-  return gerepileupto(av, FpE_dbl_slope(P,a4,p,&slope));
+  return gc_upto(av, FpE_dbl_slope(P,a4,p,&slope));
 }
 
 static GEN
@@ -302,7 +302,7 @@ FpE_add(GEN P, GEN Q, GEN a4, GEN p)
 {
   pari_sp av = avma;
   GEN slope;
-  return gerepileupto(av, FpE_add_slope(P,Q,a4,p,&slope));
+  return gc_upto(av, FpE_add_slope(P,Q,a4,p,&slope));
 }
 
 static GEN
@@ -324,7 +324,7 @@ FpE_sub(GEN P, GEN Q, GEN a4, GEN p)
 {
   pari_sp av = avma;
   GEN slope;
-  return gerepileupto(av, FpE_add_slope(P, FpE_neg_i(Q, p), a4, p, &slope));
+  return gc_upto(av, FpE_add_slope(P, FpE_neg_i(Q, p), a4, p, &slope));
 }
 
 static GEN
@@ -353,7 +353,7 @@ _FpE_mul(void *E, GEN P, GEN n)
   if (is_pm1(n)) return s>0? gcopy(P): P;
   if (equalis(n,2)) return _FpE_dbl(E, P);
   Q = gen_pow_i(FpE_to_FpJ(P), n, e, &_FpJ_dbl, &_FpJ_add);
-  return gerepileupto(av, FpJ_to_FpE(Q, e->p));
+  return gc_upto(av, FpJ_to_FpE(Q, e->p));
 }
 
 GEN
@@ -1516,7 +1516,7 @@ FpXQE_changepoint(GEN x, GEN ch, GEN T, GEN p)
   z = cgetg(3,t_VEC);
   gel(z,1) = FpXQ_mul(v2, p1, T, p);
   gel(z,2) = FpXQ_mul(v3, FpX_sub(gel(x,2), FpX_add(FpXQ_mul(s,p1, T, p),t, p), p), T, p);
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 GEN
@@ -1583,7 +1583,7 @@ FpXQE_dbl(GEN P, GEN a4, GEN T, GEN p)
 {
   pari_sp av = avma;
   GEN slope;
-  return gerepileupto(av, FpXQE_dbl_slope(P,a4,T,p,&slope));
+  return gc_upto(av, FpXQE_dbl_slope(P,a4,T,p,&slope));
 }
 
 static GEN
@@ -1613,7 +1613,7 @@ FpXQE_add(GEN P, GEN Q, GEN a4, GEN T, GEN p)
 {
   pari_sp av = avma;
   GEN slope;
-  return gerepileupto(av, FpXQE_add_slope(P,Q,a4,T,p,&slope));
+  return gc_upto(av, FpXQE_add_slope(P,Q,a4,T,p,&slope));
 }
 
 static GEN
@@ -1636,7 +1636,7 @@ FpXQE_sub(GEN P, GEN Q, GEN a4, GEN T, GEN p)
 {
   pari_sp av = avma;
   GEN slope;
-  return gerepileupto(av, FpXQE_add_slope(P, FpXQE_neg_i(Q, p), a4, T, p, &slope));
+  return gc_upto(av, FpXQE_add_slope(P, FpXQE_neg_i(Q, p), a4, T, p, &slope));
 }
 
 struct _FpXQE { GEN a4,a6,T,p; };
@@ -1877,7 +1877,7 @@ FpXQE_Miller(GEN Q, GEN P, GEN m, GEN a4, GEN T, GEN p)
   v = gen_pow_i(mkvec3(g1,g1,Q), m, (void*)&d,
                 FpXQE_Miller_dbl, FpXQE_Miller_add);
   N = gel(v,1); D = gel(v,2);
-  return gerepileupto(av, FpXQ_div(N, D, T, p));
+  return gc_upto(av, FpXQ_div(N, D, T, p));
 }
 
 GEN
@@ -1891,7 +1891,7 @@ FpXQE_weilpairing(GEN P, GEN Q, GEN m, GEN a4, GEN T, GEN p)
   D = FpXQE_Miller(Q, P, m, a4, T, p);
   w = FpXQ_div(N, D, T, p);
   if (mpodd(m)) w = FpX_neg(w, p);
-  return gerepileupto(av, w);
+  return gc_upto(av, w);
 }
 
 GEN
@@ -1918,7 +1918,7 @@ FpXQ_ellj(GEN a4, GEN a6, GEN T, GEN p)
     GEN a62 = FpXQ_sqr(a6,T,p);
     GEN num = FpX_mulu(a43,6912,p);
     GEN den = FpX_add(FpX_mulu(a43,4,p),FpX_mulu(a62,27,p),p);
-    return gerepileuptoleaf(av, FpXQ_div(num, den, T, p));
+    return gc_uptoleaf(av, FpXQ_div(num, den, T, p));
   }
 }
 

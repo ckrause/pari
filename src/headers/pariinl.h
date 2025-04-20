@@ -1245,7 +1245,7 @@ leafcopy_avma(GEN x, pari_sp av)
   return y;
 }
 INLINE GEN
-gerepileuptoleaf(pari_sp av, GEN x)
+gc_uptoleaf(pari_sp av, GEN x)
 {
   long lx;
   GEN q;
@@ -1265,7 +1265,7 @@ gc_INT(pari_sp av, GEN x)
   return (GEN)avma;
 }
 INLINE GEN
-gerepileupto(pari_sp av, GEN x)
+gc_upto(pari_sp av, GEN x)
 {
   if (!isonstack(x) || (GEN)av<=x) return gc_const(av,x);
   switch(typ(x))
@@ -1273,14 +1273,14 @@ gerepileupto(pari_sp av, GEN x)
     case t_INT: return gc_INT(av, x);
     case t_REAL:
     case t_STR:
-    case t_VECSMALL: return gerepileuptoleaf(av,x);
+    case t_VECSMALL: return gc_uptoleaf(av,x);
     default:
       /* NB: x+i --> ((long)x) + i*sizeof(long) */
-      return gerepile(av, (pari_sp) (x+lg(x)), x);
+      return gc_GEN_unsafe(av, (pari_sp) (x+lg(x)), x);
   }
 }
 
-/* gerepileupto(av, gcopy(x)) */
+/* gc_upto(av, gcopy(x)) */
 INLINE GEN
 gc_GEN(pari_sp av, GEN x)
 {
@@ -1527,19 +1527,19 @@ INLINE GEN
 RgX_fpnorml2(GEN x, long prec)
 {
   pari_sp av = avma;
-  return gerepileupto(av, gnorml2(RgX_gtofp(x, prec)));
+  return gc_upto(av, gnorml2(RgX_gtofp(x, prec)));
 }
 INLINE GEN
 RgC_fpnorml2(GEN x, long prec)
 {
   pari_sp av = avma;
-  return gerepileupto(av, gnorml2(RgC_gtofp(x, prec)));
+  return gc_upto(av, gnorml2(RgC_gtofp(x, prec)));
 }
 INLINE GEN
 RgM_fpnorml2(GEN x, long prec)
 {
   pari_sp av = avma;
-  return gerepileupto(av, gnorml2(RgM_gtofp(x, prec)));
+  return gc_upto(av, gnorml2(RgM_gtofp(x, prec)));
 }
 
 /* y a t_REAL */

@@ -511,7 +511,7 @@ FF_Z_add(GEN x, GEN y)
   case t_FF_FpXQ:
     {
       pari_sp av=avma;
-      r=gerepileupto(av,FpX_Fp_add(gel(x,2),modii(y,p),p));
+      r=gc_upto(av,FpX_Fp_add(gel(x,2),modii(y,p),p));
       break;
     }
   case t_FF_F2xq:
@@ -533,7 +533,7 @@ FF_Q_add(GEN x, GEN y)
   case t_FF_FpXQ:
     {
       pari_sp av=avma;
-      r=gerepileupto(av,FpX_Fp_add(gel(x,2),Rg_to_Fp(y,p),p));
+      r=gc_upto(av,FpX_Fp_add(gel(x,2),Rg_to_Fp(y,p),p));
       break;
     }
   case t_FF_F2xq:
@@ -624,7 +624,7 @@ FF_Frobenius(GEN x, long e)
     r=Flx_Frobenius(T,pp);
     if (n>1) r=Flxq_autpow(r,n,T,pp);
   }
-  r = gerepileupto(av, r);
+  r = gc_upto(av, r);
   return _mkFF(x,z,r);
 }
 
@@ -690,7 +690,7 @@ FF_mul(GEN x, GEN y)
   default:
     r=Flxq_mul(gel(x,2),gel(y,2),T,pp);
   }
-  return _mkFF(x,z,gerepileupto(av, r));
+  return _mkFF(x,z,gc_upto(av, r));
 }
 
 GEN
@@ -742,7 +742,7 @@ FF_sqr(GEN x)
   case t_FF_FpXQ:
     {
       pari_sp av=avma;
-      r=gerepileupto(av,FpXQ_sqr(gel(x,2),T,p));
+      r=gc_upto(av,FpXQ_sqr(gel(x,2),T,p));
       break;
     }
   case t_FF_F2xq:
@@ -793,7 +793,7 @@ FF_inv(GEN x)
   switch(x[1])
   {
   case t_FF_FpXQ:
-    r=gerepileupto(av,FpXQ_inv(gel(x,2),T,p));
+    r=gc_upto(av,FpXQ_inv(gel(x,2),T,p));
     break;
   case t_FF_F2xq:
     r=F2xq_inv(gel(x,2),T);
@@ -814,13 +814,13 @@ FF_div(GEN x, GEN y)
   switch(x[1])
   {
   case t_FF_FpXQ:
-    r=gerepileupto(av,FpXQ_div(gel(x,2),gel(y,2),T,p));
+    r=gc_upto(av,FpXQ_div(gel(x,2),gel(y,2),T,p));
     break;
   case t_FF_F2xq:
-    r=gerepileupto(av,F2xq_div(gel(x,2),gel(y,2),T));
+    r=gc_upto(av,F2xq_div(gel(x,2),gel(y,2),T));
     break;
   default:
-    r=gerepileupto(av,Flxq_div(gel(x,2),gel(y,2),T,pp));
+    r=gc_upto(av,Flxq_div(gel(x,2),gel(y,2),T,pp));
   }
   return _mkFF(x,z,r);
 }
@@ -834,14 +834,14 @@ Z_FF_div(GEN n, GEN x)
   switch(x[1])
   {
   case t_FF_FpXQ:
-    r = gerepileupto(av,FpX_Fp_mul(FpXQ_inv(A,T,p),modii(n,p),p));
+    r = gc_upto(av,FpX_Fp_mul(FpXQ_inv(A,T,p),modii(n,p),p));
     break;
   case t_FF_F2xq:
     r = F2xq_inv(A,T); /*Check for division by 0*/
     if(!mpodd(n)) { set_avma(av); r = zero_Flx(A[1]); }
     break;
   default:
-    r = gerepileupto(av, Flx_Fl_mul(Flxq_inv(A,T,pp),umodiu(n,pp),pp));
+    r = gc_upto(av, Flx_Fl_mul(Flxq_inv(A,T,pp),umodiu(n,pp),pp));
   }
   return _mkFF(x,z,r);
 }
@@ -1032,12 +1032,12 @@ FF_charpoly(GEN x)
   switch(x[1])
   {
   case t_FF_FpXQ:
-    return gerepileupto(av,FpXQ_charpoly(gel(x,2), T, p));
+    return gc_upto(av,FpXQ_charpoly(gel(x,2), T, p));
   case t_FF_F2xq:
-    return gerepileupto(av,Flx_to_ZX(Flxq_charpoly(F2x_to_Flx(gel(x,2)),
+    return gc_upto(av,Flx_to_ZX(Flxq_charpoly(F2x_to_Flx(gel(x,2)),
                                                    F2x_to_Flx(T), 2UL)));
   default:
-    return gerepileupto(av,Flx_to_ZX(Flxq_charpoly(gel(x,2), T, pp)));
+    return gc_upto(av,Flx_to_ZX(Flxq_charpoly(gel(x,2), T, pp)));
   }
 }
 
@@ -1051,12 +1051,12 @@ FF_minpoly(GEN x)
   switch(x[1])
   {
   case t_FF_FpXQ:
-    return gerepileupto(av,FpXQ_minpoly(gel(x,2), T, p));
+    return gc_upto(av,FpXQ_minpoly(gel(x,2), T, p));
   case t_FF_F2xq:
-    return gerepileupto(av,Flx_to_ZX(Flxq_minpoly(F2x_to_Flx(gel(x,2)),
+    return gc_upto(av,Flx_to_ZX(Flxq_minpoly(F2x_to_Flx(gel(x,2)),
                                                   F2x_to_Flx(T), 2UL)));
   default:
-    return gerepileupto(av,Flx_to_ZX(Flxq_minpoly(gel(x,2), T, pp)));
+    return gc_upto(av,Flx_to_ZX(Flxq_minpoly(gel(x,2), T, pp)));
   }
 }
 
@@ -1082,7 +1082,7 @@ FF_log(GEN x, GEN g, GEN ord)
     if (!ord) ord = factor_pn_1(p,degpol(T));
     r = Flxq_log(gel(x,2), gel(g,2), ord, T, pp);
   }
-  return gerepileupto(av, r);
+  return gc_upto(av, r);
 }
 
 GEN
@@ -1514,7 +1514,7 @@ FF_ellorder(GEN E, GEN P, GEN o)
     Pp = FlxqE_changepointinv(RgE_to_FlxqE(P,T,pp), gel(e,3), T, pp);
     r = FlxqE_order(Pp, o, gel(e,1), T, pp);
   }
-  return gerepileupto(av, r);
+  return gc_upto(av, r);
 }
 
 GEN
@@ -1543,7 +1543,7 @@ FF_elllog(GEN E, GEN P, GEN Q, GEN o)
     Qp = FlxqE_changepointinv(RgE_to_FlxqE(Q,T,pp), gel(e,3), T, pp);
     r = FlxqE_log(Pp, Qp, o, gel(e,1), T, pp);
   }
-  return gerepileupto(av, r);
+  return gc_upto(av, r);
 }
 
 GEN
@@ -1572,7 +1572,7 @@ FF_ellweilpairing(GEN E, GEN P, GEN Q, GEN m)
     Qp = FlxqE_changepointinv(RgE_to_FlxqE(Q,T,pp), gel(e,3), T, pp);
     r = FlxqE_weilpairing(Pp, Qp, m, gel(e,1), T, pp);
   }
-  r = gerepileupto(av, r);
+  r = gc_upto(av, r);
   return _mkFF(fg,z,r);
 }
 
@@ -1602,7 +1602,7 @@ FF_elltatepairing(GEN E, GEN P, GEN Q, GEN m)
     Qp = FlxqE_changepointinv(RgE_to_FlxqE(Q,T,pp), gel(e,3), T, pp);
     r = FlxqE_tatepairing(Pp, Qp, m, gel(e,1), T, pp);
   }
-  r = gerepileupto(av, r);
+  r = gc_upto(av, r);
   return _mkFF(fg,z,r);
 }
 
@@ -1785,7 +1785,7 @@ FFX_resultant(GEN Pf, GEN Qf, GEN ff)
   default:
     r = FlxqX_resultant(P, Q, T, pp);
   }
-  return gerepileupto(av, _mkFF(ff,z,r));
+  return gc_upto(av, _mkFF(ff,z,r));
 }
 
 GEN
@@ -1807,7 +1807,7 @@ FFX_disc(GEN Pf, GEN ff)
   default:
     r = FlxqX_disc(P, T, pp);
   }
-  return gerepileupto(av, _mkFF(ff,z,r));
+  return gc_upto(av, _mkFF(ff,z,r));
 }
 
 static GEN
@@ -2419,7 +2419,7 @@ FFM_indexrank(GEN M, GEN ff)
   case t_FF_F2xq: R = F2xqM_indexrank(M,T); break;
   default: R = FlxqM_indexrank(M,T,pp); break;
   }
-  return gerepileupto(av, R);
+  return gc_upto(av, R);
 }
 
 long

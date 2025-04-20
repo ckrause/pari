@@ -555,7 +555,7 @@ gen_howell_i(GEN A, long remove_zerocols, long permute_zerocols, long early_abor
   if(ops)
   {
     maxop = m*n + (m*(m+1))/2 + 1;
-    *ops = zerovec(maxop); /* filled with placeholders so gerepile can handle it */
+    *ops = zerovec(maxop); /* filled with placeholders so gc_GEN_unsafe can handle it */
   }
 
   /* put in triangular form */
@@ -1180,7 +1180,7 @@ gaussmoduloall(GEN M, GEN D, GEN Y, GEN *pU)
   u1 = ZM_lll(u1, 0.75, LLL_INPLACE);
   Y = ZM_ZC_mul(u2,Y);
   x = ZC_reducemodmatrix(Y, u1);
-  if (!pU) x = gerepileupto(av, x);
+  if (!pU) x = gc_upto(av, x);
   else
   {
     (void)gc_all(av, 2, &x, &u1);

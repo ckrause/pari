@@ -219,7 +219,7 @@ sqrtint(GEN a)
       if (signe(b) < 0) pari_err_DOMAIN("sqrtint", "argument", "<", gen_0,a);
       a = sqrti(b);
     }
-    return gerepileuptoleaf(av, a);
+    return gc_uptoleaf(av, a);
   }
   switch (signe(a))
   {
@@ -237,7 +237,7 @@ sqrtint0(GEN a, GEN *r)
   {
     GEN b = sqrtint(a);
     pari_sp av = avma;
-    *r = gerepileupto(av, gsub(a, sqri(b))); return b;
+    *r = gc_upto(av, gsub(a, sqri(b))); return b;
   }
   switch (signe(a))
   {
@@ -432,7 +432,7 @@ rfracispower(GEN x, GEN K, GEN *pt)
   if (!pt) return gc_long(av, 1);
   x = gdiv(n, d);
   if (v) x = gmul(x, monomial(gen_1, v / itos(K), vx));
-  *pt = gerepileupto(av, x); return 1;
+  *pt = gc_upto(av, x); return 1;
 }
 long
 issquareall(GEN x, GEN *pt)
@@ -595,7 +595,7 @@ polispower(GEN x, GEN K, GEN *pt)
     }
     x = RgX_to_FqX(x,T,p);
     if (!FqX_ispower(x, k, T,p, pt)) return gc_long(av,0);
-    if (pt) *pt = gerepileupto(av, FqX_to_mod(*pt, T, p));
+    if (pt) *pt = gc_upto(av, FqX_to_mod(*pt, T, p));
     return 1;
   }
   v = RgX_valrem(x, &x);
@@ -789,7 +789,7 @@ gisanypower(GEN x, GEN *pty)
       if (signe(a) < 0) b = negi(b);
       k = Z_isanypower(b, pty? &b: NULL);
       if (!k || !pty) return gc_long(av,k);
-      *pty = gerepileupto(av, ginv(b));
+      *pty = gc_upto(av, ginv(b));
       return k;
     }
     fa = factoru(k);

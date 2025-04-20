@@ -759,7 +759,7 @@ hgmCall(GEN hgm, ulong p, long f, long dfp, GEN V)
       pari_sp av = avma;
       c = hgmC(VPOLGA, GPV, TEICH, p, f, PFM1, m, dfp);
       setvalp(c, e); if (odd(L ^ l0)) c = gneg(c);
-      c = gerepileupto(av, padic_to_Q(c));
+      c = gc_upto(av, padic_to_Q(c));
     }
     gel(v, V? i: i+1) = c;
   }
@@ -1246,7 +1246,7 @@ hgmQ(GEN hgm, long p, long f, GEN vp, long r, GEN ZP)
   long q = vp[f+1], m0 = hgmmulti(B, q, 0), m1 = hgmmulti(B, q, r);
   GEN c = powis(utoipos(q), hgm_get_TT(hgm) + m0 - m1);
   if (odd(m0)) c = negi(c);
-  return gerepileupto(av, padic_to_Q(gmul(c, hgmG(hgm, p, f, vp, r, ZP))));
+  return gc_upto(av, padic_to_Q(gmul(c, hgmG(hgm, p, f, vp, r, ZP))));
 }
 
 static GEN
@@ -1259,7 +1259,7 @@ hgmU(GEN hgm, long p, long f, GEN t, long dfp)
   Q[1] = evalsigne(1)|evalvarn(0);
   for (i = 2; i <= q; i++) gel(Q, i) = hgmQ(hgm, p, f, vp, i-2, ZP);
   t = p == 2? gen_1: gmul(hgm_get_MVALUE(hgm), t);
-  return gerepileupto(av, hgmH(Q, p, f, dfp, t));
+  return gc_upto(av, hgmH(Q, p, f, dfp, t));
 }
 
 /***************************************************************/
@@ -1569,7 +1569,7 @@ hgmmodif(GEN an, GEN PPol)
       an = dirdiv(an, v);
     }
   }
-  return gerepileupto(av, an);
+  return gc_upto(av, an);
 }
 
 /***************************************************************/
@@ -2125,7 +2125,7 @@ hgmmoments(GEN H, GEN t, GEN M, long nb)
     if ((i & 0xf) == 0) S = gc_GEN(av2, S);
   }
   if (tm != t_VEC && tm != t_COL && tm != t_VECSMALL) S = gel(S, 1);
-  return gerepileupto(av, gdivgu(S, ct));
+  return gc_upto(av, gdivgu(S, ct));
 }
 
 /* Heuristic guess: is there a pole ? */

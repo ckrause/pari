@@ -87,7 +87,7 @@ vecgroup_idxlist(GEN L, long order)
   GEN V = cgetg(l, t_VECSMALL);
   for (i = j = 1; i < l; i++)
     if (group_order(gel(L,i)) == order) V[j++] = group_ident(gel(L,i),NULL);
-  setlg(V, j); return gerepileuptoleaf(av, vecsmall_uniq(V));
+  setlg(V, j); return gc_uptoleaf(av, vecsmall_uniq(V));
 }
 
 /* Group identification code.

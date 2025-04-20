@@ -153,7 +153,7 @@ sigsum(long k, long d, long a, long b, long D, long N, GEN vs, GEN vP)
             : usumdivk_0_all(k,d);
     v = RgV_mul(v, P);
     if (!s) keep0 = gclone(v); else S = gadd(S, v);
-    if (gc_needed(av, 1)) S = gerepileupto(av, S);
+    if (gc_needed(av, 1)) S = gc_upto(av, S);
   }
   S = gmul2n(S, 1);
   if (keep0) { S = gadd(S, keep0); gunclone(keep0); }
@@ -268,7 +268,7 @@ Hcol(GEN k, long r, GEN vD, long d, long N2)
     pari_sp av = avma;
     GEN c = Lfeq(odd(r)? -vD[i]: vD[i], r); /* fundamental */
     if (N2 != 1 && vD[i] % N2) c = gmul2n(c, 1);
-    gel(v, i) = gerepileupto(av, c);
+    gel(v, i) = gc_upto(av, c);
   }
   return v;
 }
@@ -309,7 +309,7 @@ modulareven(long D, long r, long N0)
   for (i = 1; i < l; i++)
   {
     pari_sp av = avma;
-    gel(M,i) = gerepileupto(av, S(r, d, vD[i], vs, vP));
+    gel(M,i) = gc_upto(av, S(r, d, vD[i], vs, vP));
   }
   M = shallowtrans(M);
   if (r == 2*d)
@@ -435,7 +435,7 @@ sigsumtwist(long k, long dim, long a, long b, long Da, long N, GEN vs, GEN vP)
     P = gsubst(vPD, 0, utoi(s*s));
     v = RgV_multwist(v, P, k, dim, d, v2, D4);
     if (!s) keep0 = gclone(v); else S = gadd(S, v);
-    if (gc_needed(av, 1)) S = gerepileupto(av, S);
+    if (gc_needed(av, 1)) S = gc_upto(av, S);
   }
   S = gmul2n(S, 1);
   if (keep0) { S = gadd(S, keep0); gunclone(keep0); }
@@ -515,7 +515,7 @@ modularodd(long D, long r, long N0)
   for (i = 1; i < l; i++)
   {
     pari_sp av = avma;
-    gel(M,i) = gerepileupto(av, S(r, dim, vD4[i], N, vs, vP));
+    gel(M,i) = gc_upto(av, S(r, dim, vD4[i], N, vs, vP));
   }
   M = shallowtrans(M);
   R = Hcol(k, r, vD, kro? 1: 4, odd(N)? N: N >>1);
@@ -563,7 +563,7 @@ Linv(long D, long k, ulong den)
     bitnew = (long)(bit - k * log2(p));
     Q = divrr(P, rpowuu(p, k, nbits2prec(maxss(64, bitnew))));
     P = s == 1? subrr(P, Q): addrr(P, Q);
-    if (gc_needed(av,1)) P = gerepileuptoleaf(av, P);
+    if (gc_needed(av,1)) P = gc_uptoleaf(av, P);
   }
   return P;
 }
@@ -658,4 +658,4 @@ lfunquadneg_i(long D, long k)
 /* need k <= 0 and D fundamental */
 GEN
 lfunquadneg(long D, long k)
-{ pari_sp av = avma; return gerepileupto(av, lfunquadneg_i(D, k)); }
+{ pari_sp av = avma; return gc_upto(av, lfunquadneg_i(D, k)); }

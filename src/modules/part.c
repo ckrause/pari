@@ -87,7 +87,7 @@ estim(GEN n)
   p1 = mpexp( mulrr(pi, sqrtr(p1)) ); /* exp(Pi * sqrt(2N/3)) */
   p1 = divri (shiftr(p1,-2), n);
   p1 = divrr(p1, sqrtr( utor(3,DEFAULTPREC) ));
-  return gerepileupto(av, mplog(p1));
+  return gc_upto(av, mplog(p1));
 }
 
 /* c = sqrt(2/3)*Pi*sqrt(n-1/24);  d = 1 / ((2*b)^(3/2) * Pi); */

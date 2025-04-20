@@ -86,12 +86,12 @@ Qp_zeta_i(GEN s, long D)
     }
   z = gdivgs(gmul2n(z, 1), m);
   if (D != 1) z = gmul(z, Qp_exp(gmul(gsubsg(1, s), Qp_log(cvstop2(m, s)))));
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 GEN
 Qp_zeta(GEN s) { return Qp_zeta_i(s, 1); }
 
-/* s a t_PADIC; gerepileupto-safe. Could be exported */
+/* s a t_PADIC; gc_upto-safe. Could be exported */
 static GEN
 Qp_zetahurwitz_ii(GEN s, GEN x, long k)
 {
@@ -131,7 +131,7 @@ Qp_zetahurwitz_i(GEN s, GEN x, long k)
     long e = pprec(x);
     e += sdivsi(e, subis(p, 1));
     s = gadd(s, zeropadic_shallow(p, e));
-    return gerepileupto(av, Qp_zetahurwitz_ii(s, x, k));
+    return gc_upto(av, Qp_zetahurwitz_ii(s, x, k));
   }
   return Qp_zetahurwitz_ii(s, x, k);
 }
@@ -140,7 +140,7 @@ GEN
 Qp_zetahurwitz(GEN s, GEN x, long k)
 {
   pari_sp av = avma;
-  return gerepileupto(av, Qp_zetahurwitz_i(s, x, k));
+  return gc_upto(av, Qp_zetahurwitz_i(s, x, k));
 }
 
 static void
@@ -191,7 +191,7 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
   pari_timer T;
 
   if (typ(s) == t_PADIC || typ(x) == t_PADIC)
-    return gerepileupto(av, Qp_zetahurwitz_i(s, x, der));
+    return gc_upto(av, Qp_zetahurwitz_i(s, x, der));
   if (der < 0) pari_err_DOMAIN("zetahurwitz", "der", "<", gen_0, stoi(der));
   if (der)
   {
@@ -208,7 +208,7 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
       z = zetahurwitz(s, x, 0, bitprec + der * log2(der));
       z = gmul(mpfact(der), polcoef_i(z, der, -1));
     }
-    return gerepileupto(av,z);
+    return gc_upto(av,z);
   }
   switch(typ(x))
   {
@@ -319,7 +319,7 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
     for (m = N - 2; m >= 0; m--)
     {
       S1 = gadd(S1, gpow(gaddsg(m,x), a, prec));
-      if ((m & 0xff) == 0) S1 = gerepileupto(av2, S1);
+      if ((m & 0xff) == 0) S1 = gc_upto(av2, S1);
     }
   if (DEBUGLEVEL>2) timer_printf(&T,"sum from 0 to N - 1");
   constbern(k >> 1);
@@ -344,7 +344,7 @@ zetahurwitz(GEN s, GEN x, long der, long bitprec)
   if (DEBUGLEVEL>2) timer_printf(&T,"Bernoulli sum");
   S2 = gmul(S3, gadd(gdiv(Nx, gaddsg(1, a)), S2));
   S1 = gprec_wtrunc(gsub(S1, S2), prec0);
-  if (sch) return gerepileupto(av, gsubst(S1, 0, sch));
+  if (sch) return gc_upto(av, gsubst(S1, 0, sch));
   return gc_GEN(av, S1);
 }
 
@@ -426,7 +426,7 @@ parintnum(GEN f, GEN a, GEN tab)
   {
     S = gadd(S, gadd(gmul(gel(tabwp, i), gel(VP, i)),
                      gmul(gel(tabwm, i), gel(VM, i))));
-    if ((i & 0x7f) == 1) S = gerepileupto(av, S);
+    if ((i & 0x7f) == 1) S = gc_upto(av, S);
     S = gprec_wensure(S, prec);
   }
   if (fla) S = gmul(S, a);
@@ -590,7 +590,7 @@ lerchphi(GEN z, GEN s, GEN a, long prec)
   if (!iscplx(z)) pari_err_TYPE("lerchphi", z);
   if (!iscplx(s)) pari_err_TYPE("lerchphi", s);
   if (!iscplx(a)) pari_err_TYPE("lerchphi", a);
-  return gerepileupto(av, _lerchphi(z, s, a, prec));
+  return gc_upto(av, _lerchphi(z, s, a, prec));
 }
 
 GEN
@@ -602,5 +602,5 @@ lerchzeta(GEN s, GEN a, GEN lam, long prec)
   if (!iscplx(s)) pari_err_TYPE("lerchzeta", s);
   if (!iscplx(a)) pari_err_TYPE("lerchzeta", a);
   if (hurwitz_cutoff(s, prec)) return lerchzetalarge(s, a, lam, prec);
-  return gerepileupto(av, _lerchphi(z, s, a, prec));
+  return gc_upto(av, _lerchphi(z, s, a, prec));
 }

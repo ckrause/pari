@@ -68,7 +68,7 @@ zm_divmod(GEN A, GEN B, ulong p)
   pari_sp av = avma;
   GEN Ap = zm_to_Flm(A,p), Bp = zm_to_Flm(B,p);
   GEN C = Flm_center(Flm_mul(Flm_inv(Ap, p), Bp, p), p, p>>1);
-  return gerepileupto(av, C);
+  return gc_upto(av, C);
 }
 
 static GEN
@@ -401,7 +401,7 @@ orbit(GEN pt, long ipt, long npt, GEN H, GEN V)
       /* image is a new point in the orbit */
       if (flag[im] == 0) { orb[++no] = im; flag[im] = 1; }
     }
-  setlg(orb,no+1); return gerepileuptoleaf(av, orb);
+  setlg(orb,no+1); return gc_uptoleaf(av, orb);
 }
 
 /* return the length of the orbit of pt under the first nG matrices in G */
@@ -481,7 +481,7 @@ stabil(GEN x1, GEN x2, GEN per, GEN G, GEN V, ulong p)
   /* XG is the composite mapping of the matrix corresponding to x1 and G */
   XG = matgen(x, per, V);
   X2 = matgen(x2, per, V);
-  return gerepileupto(av, zm_divmod(X2,XG,p));
+  return gc_upto(av, zm_divmod(X2,XG,p));
 }
 
 /* computes the orbit of fp.e[I] under the generators in G->g[I]...G->g[n-1]
@@ -1438,7 +1438,7 @@ qfisominit0(GEN x, GEN flags, GEN minvec)
   pari_sp av = avma;
   GEN F = qf_to_zmV(x);
   if (!F) pari_err_TYPE("qfisom",x);
-  return gerepileupto(av, qfisominit(F, flags, minvec));
+  return gc_upto(av, qfisominit(F, flags, minvec));
 }
 
 GEN
@@ -1484,7 +1484,7 @@ qfisom0(GEN x, GEN y, GEN flags, GEN G)
   FF = qf_to_zmV(y);
   if (!FF) pari_err_TYPE("qfisom",y);
   if (G) G = check_qfauto(G);
-  return gerepileupto(av, qfisom(F, FF, flags, G));
+  return gc_upto(av, qfisom(F, FF, flags, G));
 }
 
 static GEN

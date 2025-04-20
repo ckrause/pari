@@ -671,7 +671,7 @@ closure_return(GEN C)
   pari_sp av = avma;
   closure_eval(C);
   if (br_status) { set_avma(av); return get_and_reset_break(); }
-  return gerepileupto(av, gel(st,--sp));
+  return gc_upto(av, gel(st,--sp));
 }
 
 /* for the break_loop debugger. Not memory clean */
@@ -1053,7 +1053,7 @@ closure_eval(GEN C)
       }
     case OCstackgen:
       {
-        GEN z = gerepileupto(st[sp-2],gel(st,sp-1));
+        GEN z = gc_upto(st[sp-2],gel(st,sp-1));
         gmael(st,sp-3,operand) = copyupto(z,gel(st,sp-2));
         st[sp-2] = avma;
         sp--;
@@ -1142,7 +1142,7 @@ closure_eval(GEN C)
         {
           if (DEBUGMEM>=2)
             pari_warn(warnmem,"eval: recovering %ld bytes", av - av2);
-          x = gerepileupto(av, x);
+          x = gc_upto(av, x);
         }
       } else set_avma(av);
       gel(st,sp-1) = x;
@@ -1617,7 +1617,7 @@ closure_evalgen(GEN C)
   pari_sp ltop=avma;
   closure_eval(C);
   if (br_status) return gc_NULL(ltop);
-  return gerepileupto(ltop,gel(st,--sp));
+  return gc_upto(ltop,gel(st,--sp));
 }
 
 long
@@ -1697,7 +1697,7 @@ closure_evalnobrk(GEN C)
   pari_sp ltop=avma;
   closure_eval(C);
   if (br_status) pari_err(e_MISC, "break not allowed here");
-  return gerepileupto(ltop,gel(st,--sp));
+  return gc_upto(ltop,gel(st,--sp));
 }
 
 void
@@ -1738,7 +1738,7 @@ pareval(GEN C)
     if (typ(gel(C,i))!=t_CLOSURE)
       pari_err_TYPE("pareval",gel(C,i));
   worker = snm_closure(is_entry("_pareval_worker"), NULL);
-  return gerepileupto(av, gen_parapply(worker, C));
+  return gc_upto(av, gen_parapply(worker, C));
 }
 
 GEN
@@ -1774,7 +1774,7 @@ parvector(long n, GEN code)
   return V;
 }
 
-/* suitable for gerepileupto */
+/* suitable for gc_upto */
 GEN
 parsum_slice_worker(GEN a, GEN b, GEN m, GEN worker)
 {
@@ -1790,7 +1790,7 @@ parsum_slice_worker(GEN a, GEN b, GEN m, GEN worker)
       (void)gc_all(av,2,&a,&s);
     }
   }
-  return gerepileupto(av,s);
+  return gc_upto(av,s);
 }
 
 GEN
@@ -1823,12 +1823,12 @@ parsum(GEN a, GEN b, GEN code)
       if (gc_needed(av2,1))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"parsum");
-        s = gerepileupto(av2,s);
+        s = gc_upto(av2,s);
       }
     }
     a = incloop(a); gel(v,1) = a;
   }
-  mt_queue_end(&pt); return gerepileupto(av, s);
+  mt_queue_end(&pt); return gc_upto(av, s);
 }
 
 void
@@ -2010,7 +2010,7 @@ parforstep(GEN a, GEN b, GEN s, GEN code, void *E, long call(void*, GEN, GEN))
         s = gel(v,i);
       }
       gel(a,1) = gadd(gel(a,1),s);
-      if (!stop) gel(a,1) = gerepileupto(av2, gel(a,1));
+      if (!stop) gel(a,1) = gc_upto(av2, gel(a,1));
     }
   }
   mt_queue_end(&pt);
@@ -2787,7 +2787,7 @@ closure_disassemble(GEN C)
       pari_printf("avma\n",operand);
       break;
     case OCgerepile:
-      pari_printf("gerepile\n",operand);
+      pari_printf("gc_GEN_unsafe\n",operand);
       break;
     case OCcowvardyn:
       {

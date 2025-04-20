@@ -336,7 +336,7 @@ tschirnhaus(GEN x)
   while (degpol(RgX_gcd(u,RgX_deriv(u)))); /* while u not separable */
   if (DEBUGLEVEL>1)
     err_printf("Tschirnhaus transform. New pol: %Ps",u);
-  set_avma(av2); return gerepileupto(av,u);
+  set_avma(av2); return gc_upto(av,u);
 }
 
 /* Assume pol in Z[X], monic of degree n. Find L in Z such that
@@ -535,7 +535,7 @@ nfpoleval(GEN nf, GEN pol, GEN s)
   res = nf_to_scalar_or_basis(nf, gel(pol,i));
   for (i-- ; i>=2; i--)
     res = nfadd(nf, nfmul(nf, s, res), gel(pol,i));
-  return gerepileupto(av, res);
+  return gc_upto(av, res);
 }
 
 static GEN
@@ -550,7 +550,7 @@ QX_table_nfpoleval(GEN nf, GEN pol, GEN m)
   for (i-- ; i>=2; i--)
     res = ZC_Z_add(ZM_ZC_mul(m, res), gel(pol,i));
   if (den) res = RgC_Rg_div(res, den);
-  return gerepileupto(av, res);
+  return gc_upto(av, res);
 }
 
 GEN
@@ -567,7 +567,7 @@ FpX_FpC_nfpoleval(GEN nf, GEN pol, GEN a, GEN p)
     res = FpM_FpC_mul(Ma, res, p);
     gel(res,1) = Fp_add(gel(res,1), gel(pol,i), p);
   }
-  return gerepileupto(av, res);
+  return gc_upto(av, res);
 }
 
 /* compute s(x), not stack clean */
@@ -644,10 +644,10 @@ elt_galoisapply(GEN nf, GEN aut, GEN x)
     case t_POLMOD: x = gel(x,2); /* fall through */
     case t_POL: {
       GEN y = basistoalg(nf, ZC_galoisapply(nf, aut, x));
-      return gerepileupto(av,y);
+      return gc_upto(av,y);
     }
     case t_COL:
-      return gerepileupto(av, ZC_galoisapply(nf, aut, x));
+      return gc_upto(av, ZC_galoisapply(nf, aut, x));
     case t_MAT:
       switch(lg(x)) {
         case 1: return cgetg(1, t_MAT);
@@ -686,7 +686,7 @@ galoisapply(GEN nf, GEN aut, GEN x)
     case t_POL:
       aut = algtobasis(nf, aut);
       y = basistoalg(nf, ZC_galoisapply(nf, aut, x));
-      return gerepileupto(av,y);
+      return gc_upto(av,y);
 
     case t_VEC:
       aut = algtobasis(nf, aut);
@@ -698,19 +698,19 @@ galoisapply(GEN nf, GEN aut, GEN x)
         case 3: y = cgetg(3,t_VEC);
           gel(y,1) = galoisapply(nf, aut, gel(x,1));
           gel(y,2) = elt_galoisapply(nf, aut, gel(x,2));
-          return gerepileupto(av, y);
+          return gc_upto(av, y);
       }
       break;
 
     case t_COL:
       aut = algtobasis(nf, aut);
-      return gerepileupto(av, ZC_galoisapply(nf, aut, x));
+      return gc_upto(av, ZC_galoisapply(nf, aut, x));
 
     case t_MAT: /* ideal */
       lx = lg(x); if (lx==1) return cgetg(1,t_MAT);
       if (nbrows(x) != nf_get_degree(nf)) break;
       y = RgM_mul(nfgaloismatrix(nf,aut), x);
-      return gerepileupto(av, idealhnf_shallow(nf,y));
+      return gc_upto(av, idealhnf_shallow(nf,y));
   }
   pari_err_TYPE("galoisapply",x);
   return NULL; /* LCOV_EXCL_LINE */
@@ -733,7 +733,7 @@ nfgaloismatrixapply(GEN nf, GEN M, GEN x)
     case t_POLMOD: x = gel(x,2); /* fall through */
     case t_POL:
       x = algtobasis(nf, x);
-      return gerepileupto(av, basistoalg(nf, RgM_RgC_mul(M, x)));
+      return gc_upto(av, basistoalg(nf, RgM_RgC_mul(M, x)));
 
     case t_VEC:
       switch(lg(x))
@@ -744,7 +744,7 @@ nfgaloismatrixapply(GEN nf, GEN M, GEN x)
         case 3: y = cgetg(3,t_VEC);
           gel(y,1) = nfgaloismatrixapply(nf, M, gel(x,1));
           gel(y,2) = elt_galoismatrixapply(nf, M, gel(x,2));
-          return gerepileupto(av, y);
+          return gc_upto(av, y);
       }
       break;
 
@@ -753,7 +753,7 @@ nfgaloismatrixapply(GEN nf, GEN M, GEN x)
     case t_MAT: /* ideal */
       lx = lg(x); if (lx==1) return cgetg(1,t_MAT);
       if (nbrows(x) != nf_get_degree(nf)) break;
-      return gerepileupto(av, idealhnf_shallow(nf,RgM_mul(M, x)));
+      return gc_upto(av, idealhnf_shallow(nf,RgM_mul(M, x)));
   }
   pari_err_TYPE("galoisapply",x);
   return NULL; /* LCOV_EXCL_LINE */
@@ -780,7 +780,7 @@ nfgaloismatrix(GEN nf, GEN s)
   {
     GEN t = gel(H,2); /* D * s(w_2) */
     t = ZC_Z_add(ZC_Z_mul(s, gel(t,2)), gel(t,1));
-    gel(M,2) = gerepileupto(av2, gdiv(t, D));
+    gel(M,2) = gc_upto(av2, gdiv(t, D));
     return M;
   }
   m = zk_multable(nf, s);
@@ -788,7 +788,7 @@ nfgaloismatrix(GEN nf, GEN s)
   for (k = 3; k <= n; k++) gel(M,k) = ZM_ZC_mul(m, gel(M,k-1));
   M = ZM_mul(M, H);
   if (!equali1(D)) M = ZM_Z_divexact(M, D);
-  return gerepileupto(av, M);
+  return gc_upto(av, M);
 }
 
 static GEN
@@ -829,7 +829,7 @@ nfgaloispermtobasis(GEN nf, GEN gal)
     pari_sp av = avma;
     GEN g = gel(grp, i);
     GEN vec = poltobasis(nf, galoispermtopol(gal, g));
-    gel(aut, g[1]) = gerepileupto(av, vec);
+    gel(aut, g[1]) = gc_upto(av, vec);
   }
   return aut;
 }
@@ -849,7 +849,7 @@ idealfrobenius_aut(GEN nf, GEN gal, GEN pr, GEN aut)
   f = pr_get_f(pr); n = nf_get_degree(nf);
   if (f==1) { set_avma(av); return identity_perm(n); }
   g = idealquasifrob(nf, gal, gal_get_group(gal), pr, NULL, &S, aut);
-  if (f==2) return gerepileuptoleaf(av, g);
+  if (f==2) return gc_uptoleaf(av, g);
   modpr = zk_to_Fq_init(nf,&pr,&T,&p);
   a = pol_x(nf_get_varn(nf));
   b = nf_to_Fq(nf, zk_galoisapplymod(nf, modpr_genFq(modpr), S, p), modpr);
@@ -859,7 +859,7 @@ idealfrobenius_aut(GEN nf, GEN gal, GEN pr, GEN aut)
     if (ZX_equal(a, b)) break;
   }
   g = perm_powu(g, Fl_inv(s, f));
-  return gerepileupto(av, g);
+  return gc_upto(av, g);
 }
 
 GEN
@@ -893,7 +893,7 @@ idealramfrobenius_aut(GEN nf, GEN gal, GEN pr, GEN ram, GEN aut)
   for (s=0; !ZX_equal(a, b); s++)
     a = Fq_pow(a, p, T, p);
   g = perm_powu(g, Fl_inv(s, f));
-  return gerepileupto(av, g);
+  return gc_upto(av, g);
 }
 
 GEN
@@ -1033,7 +1033,7 @@ idealramgroupswild(GEN nf, GEN gal, GEN aut, GEN pr)
     }
     set_avma(av2);
   }
-  return gerepileuptoleaf(av, idx);
+  return gc_uptoleaf(av, idx);
 }
 
 GEN
@@ -1594,7 +1594,7 @@ nf_multable(nfmaxord_t *S, GEN invbas)
         GEN d = mul_denom(gel(den,i), gel(den,j));
         if (d) z = ZC_Z_divexact(z, d);
       }
-      gel(mul,j+(i-1)*n) = gel(mul,i+(j-1)*n) = gerepileupto(av,z);
+      gel(mul,j+(i-1)*n) = gel(mul,i+(j-1)*n) = gc_upto(av,z);
     }
   return mul;
 }
@@ -1907,7 +1907,7 @@ get_red_G(nfmaxord_t *S, GEN *pro)
     {
       if (lg(u)-1 == n) break;
       /* singular ==> loss of accuracy */
-      if (u0) u0 = gerepileupto(av, RgM_mul(u0,u));
+      if (u0) u0 = gc_upto(av, RgM_mul(u0,u));
       else    u0 = gc_GEN(av, u);
     }
     prec = precdbl(prec) + nbits2extraprec(gexpo(u0));
@@ -1935,7 +1935,7 @@ set_LLL_basis(nfmaxord_t *S, GEN *pro, long flag, double DELTA)
   if (S->r1 == N) {
     pari_sp av = avma;
     GEN u = ZM_lll(make_Tr(S), DELTA, LLL_GRAM|LLL_KEEP_FIRST|LLL_IM);
-    B = gerepileupto(av, RgV_RgM_mul(B, u));
+    B = gc_upto(av, RgV_RgM_mul(B, u));
   }
   else
     B = RgV_RgM_mul(B, get_red_G(S, pro));
@@ -2259,7 +2259,7 @@ embednorm_T2(GEN x, long r1)
   GEN p = RgV_sumpart(x, r1);
   GEN q = RgV_sumpart2(x,r1+1, lg(x)-1);
   if (q != gen_0) p = gadd(p, gmul2n(q,1));
-  return avma == av? gcopy(p): gerepileupto(av, p);
+  return avma == av? gcopy(p): gc_upto(av, p);
 }
 
 /* simplified version of gnorm for scalar, noncomplex inputs, without GC */
@@ -2301,7 +2301,7 @@ embed_T2(GEN x, long r1)
     t = t? gadd(t, c): c;
   }
   if (t) { t = gmul2n(t,1); s = s? gadd(s,t): t; }
-  return gerepileupto(av, s);
+  return gc_upto(av, s);
 }
 /* return N(x) */
 GEN
@@ -2322,7 +2322,7 @@ embed_norm(GEN x, long r1)
     t = t? gmul(t, c): c;
   }
   if (t) s = s? gmul(s,t): t;
-  return gerepileupto(av, s);
+  return gc_upto(av, s);
 }
 
 typedef struct {
@@ -2412,7 +2412,7 @@ chk_gen(void *data, GEN x)
   h = ZX_gcd(g, ZX_deriv(g));
   if (degpol(h)) return gc_NULL(av);
   if (DEBUGLEVEL>3) err_printf("  generator: %Ps\n",g);
-  set_avma(av1); return gerepileupto(av, g);
+  set_avma(av1); return gc_upto(av, g);
 }
 
 static long
@@ -2682,7 +2682,7 @@ polredord(GEN x)
     for (i=2; i <= n; i++)
       if (Q_denom(gel(v,i)) == gen_1) gel(v,i) = pol_xn(i-1, vx);
   }
-  return gerepileupto(av, polred(mkvec2(x, v)));
+  return gc_upto(av, polred(mkvec2(x, v)));
 }
 
 /* DEPRECATED: backward compatibility */
@@ -2770,7 +2770,7 @@ chk_gen_init(FP_chk_fun *chk, GEN R, GEN U)
       GEN B = embed_T2(gel(M,i), r1);
       if (!firstprim) firstprim = i; /* index of first primitive element */
       if (DEBUGLEVEL>2) err_printf("chk_gen_init: generator %Ps\n",P);
-      if (gcmp(B,bound) < 0) bound = gerepileuptoleaf(av2, B);
+      if (gcmp(B,bound) < 0) bound = gc_uptoleaf(av2, B);
     }
     else
     {
@@ -2859,7 +2859,7 @@ chk_gen_init(FP_chk_fun *chk, GEN R, GEN U)
   if (DEBUGLEVEL>2) err_printf("chk_gen_init: skipfirst = %ld\n",skipfirst);
 
   /* should be DEF + gexpo( max_k C^n_k (bound/k)^(k/2) ) */
-  bound = gerepileuptoleaf(av, bound);
+  bound = gc_uptoleaf(av, bound);
   prec = chk_gen_prec(N, (gexpo(bound)*N)/2);
   if (DEBUGLEVEL)
     err_printf("chk_gen_init: new prec = %ld (initially %ld)\n", prec, d->prec);

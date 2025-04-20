@@ -602,7 +602,7 @@ GEN
 Flm_intersect(GEN x, GEN y, ulong p)
 {
   pari_sp av = avma;
-  return gerepileupto(av, Flm_image(Flm_intersect_i(x, y, p), p));
+  return gc_upto(av, Flm_image(Flm_intersect_i(x, y, p), p));
 }
 
 static GEN
@@ -621,7 +621,7 @@ Flm_ker_echelon(GEN x, ulong p, long pivots) {
   K = Flm_transpose(K);
   if (pivots)
     return gc_GEN(av, mkvec2(K, R));
-  return gerepileupto(av, K);
+  return gc_upto(av, K);
 }
 
 static GEN
@@ -639,7 +639,7 @@ Flm_deplin_echelon(GEN x, ulong p) {
   s = Flm_row(Flm_lsolve_lower_unit_pre(C1, C2, p, pi), 1);
   v = vecsmallpermute(vecsmall_concat(Flv_neg(s, p), vecsmall_ei(n - r, 1)),
                  perm_inv(vecsmall_concat(R, Rc)));
-  return gerepileuptoleaf(av, v);
+  return gc_uptoleaf(av, v);
 }
 
 static GEN
@@ -1058,7 +1058,7 @@ Flm_gauss_sp(GEN a, GEN b, ulong *detp, ulong p) {
   else
     x = Flm_gauss_sp_i(a, b, detp, p);
   if (!x) return gc_NULL(av);
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 
 GEN
@@ -1073,7 +1073,7 @@ Flm_gauss(GEN a, GEN b, ulong p) {
     x = Flm_gauss_sp(a, b, NULL, p);
   }
   if (!x) return gc_NULL(av);
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 
 static GEN
@@ -1091,7 +1091,7 @@ Flm_inv_i(GEN a, ulong *detp, ulong p, long inplace) {
     x = Flm_gauss_sp(a, b, detp, p);
   }
   if (!x) return gc_NULL(av);
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 
 GEN
@@ -1110,7 +1110,7 @@ Flm_Flc_gauss(GEN a, GEN b, ulong p) {
   GEN z = Flm_gauss(a, mkmat(b), p);
   if (!z) return gc_NULL(av);
   if (lg(z) == 1) retgc_const(av, cgetg(1, t_VECSMALL));
-  return gerepileuptoleaf(av, gel(z,1));
+  return gc_uptoleaf(av, gel(z,1));
 }
 
 GEN
@@ -1127,7 +1127,7 @@ Flm_adjoint(GEN A, ulong p)
   if (r == n)
   {
     GEN X = Flm_gauss_from_CUP(matid_Flm(m), R, C, U, P, p, pi, &D);
-    return gerepileupto(av, Flm_Fl_mul_pre(X, D, p, pi));
+    return gc_upto(av, Flm_Fl_mul_pre(X, D, p, pi));
   }
   if (r < n-1) return zero_Flm(n, m);
   for (q = n, i = 1; i < n; i++)
@@ -1167,7 +1167,7 @@ Flm_invimage_CUP(GEN A, GEN B, ulong p) {
   Y = vconcat(Flm_rsolve_upper_pre(vecslice(U, 1, r), Z, p, pi),
               zero_Flm(lg(A) - 1 - r, lg(B) - 1));
   X = rowpermute(Y, perm_inv(P));
-  return gerepileupto(av, X);
+  return gc_upto(av, X);
 }
 
 GEN
@@ -1206,7 +1206,7 @@ Flm_invimage(GEN A, GEN B, ulong p)
   pari_sp av = avma;
   GEN X = Flm_invimage_i(A,B,p);
   if (!X) return gc_NULL(av);
-  return gerepileupto(av, X);
+  return gc_upto(av, X);
 }
 
 GEN
@@ -1229,5 +1229,5 @@ Flm_Flc_invimage(GEN A, GEN y, ulong p)
 
   setlg(x,l); t = Fl_inv(Fl_neg(t,p),p);
   if (t!=1) x = Flv_Fl_mul(x, t, p);
-  return gerepileuptoleaf(av, x);
+  return gc_uptoleaf(av, x);
 }

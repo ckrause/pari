@@ -39,7 +39,7 @@ znstar_partial_coset_func(long n, GEN H, void (*func)(void *data,long c)
   if (!d) { (*func)(data,c); return; }
 
   cache = const_vecsmall(d,c);
-  (*func)(data,c);  /* AFTER cache: may contain gerepileupto statement */
+  (*func)(data,c);  /* AFTER cache: may contain gc_upto statement */
   gen = gel(H,1);
   ord = gel(H,2);
   card = ord[1]; for (i = 2; i <= d; i++) card *= ord[i];
@@ -149,7 +149,7 @@ znstar_reduce_modulus(GEN H, long n)
   long i;
   for(i=1; i < lg(gen); i++)
     gen[i] = mael(H,1,i)%n;
-  return gerepileupto(ltop, znstar_generate(n,gen));
+  return gc_upto(ltop, znstar_generate(n,gen));
 }
 
 /* Compute conductor of H, bits = H[3] */
@@ -308,7 +308,7 @@ znsubgroupgenerators(GEN H, long flag)
     z = vecsmall_append(z, g); enlarge_H(H1, g, o);
     F2v_negimply_inplace(H2, H1);  /* H2 <- H2 - H1 */
   }
-  return gerepileupto(av, zv_to_ZV(z));
+  return gc_upto(av, zv_to_ZV(z));
 }
 
 /*************************************************************************/
@@ -368,7 +368,7 @@ znstar_hnf_elts(GEN Z, GEN H)
   pari_sp ltop = avma;
   GEN G = znstar_hnf(Z,H);
   long n = itos(gel(Z,1));
-  return gerepileupto(ltop, znstar_elts(n,G));
+  return gc_upto(ltop, znstar_elts(n,G));
 }
 
 /*************************************************************************/
@@ -438,10 +438,10 @@ polsubcyclo_cyclic(long n, long d, long m ,long z, long g, GEN powz, GEN le)
     for (k=0; k<m; k++, ex = Fl_mul(ex,g,n))
     {
       s = gadd(s, polsubcyclo_powz(powz,ex));
-      if ((k&0xff)==0) s = gerepileupto(av,s);
+      if ((k&0xff)==0) s = gc_upto(av,s);
     }
     if (le) s = modii(s, le);
-    gel(V,i) = gerepileupto(av, s);
+    gel(V,i) = gc_upto(av, s);
   }
   if (DEBUGLEVEL >= 6) timer_printf(&ti, "polsubcyclo_cyclic");
   return V;
@@ -503,7 +503,7 @@ _subcyclo_orbits(struct _subcyclo_orbits_s *data, long k)
   if (!data->count) data->ltop = avma;
   *s = gadd(*s, polsubcyclo_powz(powz,k));
   data->count++;
-  if ((data->count & 0xffUL) == 0) *s = gerepileupto(data->ltop, *s);
+  if ((data->count & 0xffUL) == 0) *s = gc_upto(data->ltop, *s);
 }
 
 /* Newton sums mod le. if le==NULL, works with complex instead */
@@ -837,9 +837,9 @@ galoissubcyclo(GEN N, GEN sg, long flag, long v)
         err_printf("galoissubcyclo: switching to unramified prime %lu\n",l);
     }
     aut  = znstar_quotient(n, phi_n, H, L2, l);
-    return gerepileupto(ltop, galoisinitfromaut(T, aut, l));
+    return gc_upto(ltop, galoisinitfromaut(T, aut, l));
   }
-  return gerepileupto(ltop, gscycloconductor(T,n,flag));
+  return gc_upto(ltop, gscycloconductor(T,n,flag));
 }
 
 /* Z = znstar(n) cyclic. n = 1,2,4,p^a or 2p^a,
@@ -874,7 +874,7 @@ polsubcyclo_g(long n, long d, GEN Z, long v)
   if (DEBUGLEVEL >= 6) timer_start(&ti);
   T = FpV_roots_to_pol(L,le,v);
   if (DEBUGLEVEL >= 6) timer_printf(&ti, "roots_to_pol");
-  return gerepileupto(ltop, FpX_center(T,le,shifti(le,-1)));
+  return gc_upto(ltop, FpX_center(T,le,shifti(le,-1)));
 }
 
 GEN
@@ -894,13 +894,13 @@ polsubcyclo(long n, long d, long v)
   }
   L = subgrouplist(gel(Z,2), mkvec(stoi(d)));
   if (lg(L) == 2)
-    return gerepileupto(ltop, galoissubcyclo(Z, gel(L,1), 0, v));
+    return gc_upto(ltop, galoissubcyclo(Z, gel(L,1), 0, v));
   else
   {
     GEN V = cgetg(lg(L),t_VEC);
     long i;
     for (i=1; i< lg(V); i++) gel(V,i) = galoissubcyclo(Z, gel(L,i), 0, v);
-    return gerepileupto(ltop, V);
+    return gc_upto(ltop, V);
   }
 }
 

@@ -68,7 +68,7 @@ gassoc_proto(GEN (*f)(GEN,GEN), GEN x, GEN y)
       case t_COL: break;
       default: pari_err_TYPE("association",x);
     }
-    return gerepileupto(av, gen_product(x, (void *)f, _domul));
+    return gc_upto(av, gen_product(x, (void *)f, _domul));
 
   }
   return f(x,y);
@@ -2090,19 +2090,19 @@ gabs(GEN x, long prec)
       {
         case t_INT:
           if (!Z_issquareall(N, &y)) break;
-          return gerepileupto(av, y);
+          return gc_upto(av, y);
         case t_FRAC: {
           GEN a,b;
           if (!Z_issquareall(gel(N,1), &a)) break;
           if (!Z_issquareall(gel(N,2), &b)) break;
-          return gerepileupto(av, gdiv(a,b));
+          return gc_upto(av, gdiv(a,b));
         }
       }
-      return gerepileupto(av, gsqrt(N,prec));
+      return gc_upto(av, gsqrt(N,prec));
 
     case t_QUAD:
       av = avma;
-      return gerepileuptoleaf(av, gabs(quadtofp(x, prec), prec));
+      return gc_uptoleaf(av, gabs(quadtofp(x, prec), prec));
 
     case t_POL:
       lx = lg(x); if (lx<=2) return RgX_copy(x);
@@ -2512,7 +2512,7 @@ quadtofp(GEN x, long prec)
       if (b) shiftr_inplace(z, -1);
     }
   }
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 static GEN
@@ -2532,7 +2532,7 @@ qtop(GEN x, GEN p, long d)
   z = gadd(u, gmul(v, z));
   if (typ(z) != t_PADIC) /* t_INTMOD for t_QUAD of t_INTMODs... */
     z = cvtop(z, p, d);
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 static GEN
 ctop(GEN x, GEN p, long d)
@@ -2546,7 +2546,7 @@ ctop(GEN x, GEN p, long d)
   z = gadd(u, gmul(v, z));
   if (typ(z) != t_PADIC) /* t_INTMOD for t_COMPLEX of t_INTMODs... */
     z = cvtop(z, p, d);
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 /* cvtop2(stoi(s), y) */

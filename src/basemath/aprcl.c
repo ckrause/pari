@@ -251,7 +251,7 @@ _powpolmodsimple(GEN C, Red *R, GEN jac)
   R->red = &modZ;
   for (j=1; j<ph; j++) gel(w,j) = _powpolmod(C, modZ(gel(w,j), R), R, &sqrmodZ);
   w = centermod_i( ZM_ZC_mul(cache_matinv(C), w), R->N, R->N2);
-  w = gerepileupto(av, w);
+  w = gc_upto(av, w);
   return RgV_to_RgX(w, 0);
 }
 
@@ -770,7 +770,7 @@ autvec_TH(long pk, GEN z, GEN v, GEN C)
     long y = v[i];
     if (y) s = ZXQ_mul(s, ZXQ_powu(aut(pk,z, y), y, C), C);
   }
-  return gerepileupto(av,s);
+  return gc_upto(av,s);
 }
 
 static GEN
@@ -785,7 +785,7 @@ autvec_AL(long pk, GEN z, GEN v, Red *R)
     long y = (r*v[i]) / pk;
     if (y) s = RgXQ_mul(s, ZXQ_powu(aut(pk,z, v[i]), y, R->C), R->C);
   }
-  return gerepileupto(av,s);
+  return gc_upto(av,s);
 }
 
 /* 0 <= i < pk, such that x^i = z mod polcyclo(pk),  -1 if no such i exist */
@@ -972,7 +972,7 @@ step6(GEN N, ulong t, GEN et)
     if (gc_needed(btop, 2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"APRCL: i = %ld",i);
-      r = gerepileupto(btop, r);
+      r = gc_upto(btop, r);
     }
   }
   mt_queue_end(&pt);
@@ -1006,7 +1006,7 @@ aprcl_step4_worker(ulong q, GEN pC, GEN N, GEN v)
     if (fl == 1) flags[k++] = p;
   }
   setlg(flags, k);
-  return gerepileuptoleaf(av1, flags); /* OK so far */
+  return gc_uptoleaf(av1, flags); /* OK so far */
 }
 
 /* return 1 if prime, else 0 */
@@ -1203,5 +1203,5 @@ divisorslenstra(GEN N, GEN r, GEN s)
       c = modii(subii(c0, mulii(q,c1)), s); c0 = c1; c1 = c;
     }
   }
-  return gerepileupto(av, ZV_sort(hash_keys_GEN(H)));
+  return gc_upto(av, ZV_sort(hash_keys_GEN(H)));
 }

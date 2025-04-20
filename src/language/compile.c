@@ -451,7 +451,7 @@ localvars_read_str(const char *x, GEN pack)
   code = compile_str(x);
   s_lvar.n -= l;
   nblex = nbmvar;
-  return gerepileupto(av, closure_evalres(code));
+  return gc_upto(av, closure_evalres(code));
 }
 
 long

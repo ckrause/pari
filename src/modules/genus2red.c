@@ -52,7 +52,7 @@ static GEN
 igusaj2(GEN a0, GEN a1, GEN a2, GEN a3, GEN a4, GEN a5, GEN a6)
 {
   pari_sp av = avma;
-  return gerepileupto(av, gmul2n(gadd(gsub(gadd(gmul(gmulsg(-120, a0), a6), gmul(gmulsg(20, a1), a5)), gmul(gmulsg(8, a2), a4)), gmulsg(3, gsqr(a3))), -2));
+  return gc_upto(av, gmul2n(gadd(gsub(gadd(gmul(gmulsg(-120, a0), a6), gmul(gmulsg(20, a1), a5)), gmul(gmulsg(8, a2), a4)), gmulsg(3, gsqr(a3))), -2));
 }
 
 /*
@@ -62,7 +62,7 @@ static GEN
 igusaj4(GEN a0, GEN a1, GEN a2, GEN a3, GEN a4, GEN a5, GEN a6)
 {
   pari_sp av = avma;
-  return gerepileupto(av,
+  return gc_upto(av,
 gmul2n(gadd(gsub(gadd(gadd(gsub(gadd(gsub(gsub(gadd(gsub(gadd(gsub(gsub(gmulsg(240,
 gadd(gmul(gmul(gmul(a0, a3), a4), a5), gmul(gmul(gmul(a1, a2), a3), a6))),
 gmulsg(400, gadd(gmul(gmul(a0, a2), gsqr(a5)), gmul(gmul(gsqr(a1), a4), a6)))),
@@ -83,7 +83,7 @@ static GEN
 igusaj6(GEN a0, GEN a1, GEN a2, GEN a3, GEN a4, GEN a5, GEN a6)
 {
   pari_sp av = avma;
-  return gerepileupto(av,
+  return gc_upto(av,
 gmul2n(gsub(gsub(gsub(gsub(gadd(gsub(gadd(gsub(gadd(gadd(gsub(gadd(gadd(gadd(gadd(gsub(gadd(gsub(gsub(gadd(gadd(gadd(gsub(gadd(gsub(gadd(gsub(gsub(gadd(gadd(gsub(gsub(gsub(gadd(gadd(gmulsg(1600,
 gadd(gmul(gmul(gsqr(a0), gsqr(a4)), gsqr(a5)), gmul(gmul(gsqr(a1), gsqr(a2)),
 gsqr(a6)))), gmulsg(1600, gadd(gmul(gmul(gmul(a0, a1), a2), gpowgs(a5, 3)),
@@ -139,7 +139,7 @@ igusaj8(GEN a0, GEN a1, GEN a2, GEN a3, GEN a4, GEN a5, GEN a6)
   GEN j2 = igusaj2(a0,a1,a2,a3,a4,a5,a6);
   GEN j4 = igusaj4(a0,a1,a2,a3,a4,a5,a6);
   GEN j6 = igusaj6(a0,a1,a2,a3,a4,a5,a6);
-  return gerepileupto(av, igusaj8_fromj246(j2,j4,j6));
+  return gc_upto(av, igusaj8_fromj246(j2,j4,j6));
 }
 
 static GEN
@@ -149,7 +149,7 @@ igusaj10(GEN a0, GEN a1, GEN a2, GEN a3, GEN a4, GEN a5, GEN a6)
   GEN polr = mkpoln(7, a0, a1, a2, a3, a4, a5, a6);
   GEN disc = RgX_disc(polr);
   GEN j10 = degpol(polr) < 6? gmul(gsqr(a1), disc): disc;
-  return gerepileupto(av, gmul2n(j10, -12));
+  return gc_upto(av, gmul2n(j10, -12));
 }
 
 static GEN
@@ -161,7 +161,7 @@ igusaall(GEN a0, GEN a1, GEN a2, GEN a3, GEN a4, GEN a5, GEN a6)
   gel(V,2) = j4 = igusaj4(a0,a1,a2,a3,a4,a5,a6);
   gel(V,3) = j6 = igusaj6(a0,a1,a2,a3,a4,a5,a6);
   av = avma;
-  gel(V,4) = gerepileupto(av, igusaj8_fromj246(j2, j4, j6));
+  gel(V,4) = gc_upto(av, igusaj8_fromj246(j2, j4, j6));
   gel(V,5) = igusaj10(a0,a1,a2,a3,a4,a5,a6);
   return V;
 }
@@ -189,7 +189,7 @@ genus2igusa(GEN P, long n)
       pari_err_FLAG("genus2igusa");
       return NULL; /* LCOV_EXCL_LINE */
   }
-  return gerepileupto(av, r);
+  return gc_upto(av, r);
 }
 
 /********************************************************************/

@@ -187,12 +187,12 @@ readseq_i(char *t)
 }
 GEN
 readseq(char *t)
-{ pari_sp av = avma; return gerepileupto(av, readseq_i(t)); }
+{ pari_sp av = avma; return gc_upto(av, readseq_i(t)); }
 
 /* filtered readseq = remove blanks and comments */
 GEN
 gp_read_str(const char *s)
-{ pari_sp av = avma; return gerepileupto(av, readseq_i(gp_filter(s))); }
+{ pari_sp av = avma; return gc_upto(av, readseq_i(gp_filter(s))); }
 
 GEN
 compile_str(const char *s) { return pari_compile_str(gp_filter(s)); }
@@ -600,7 +600,7 @@ real_read(pari_sp av, const char **s, GEN y, long prec)
     y = mulrr(y, rpowuu(10UL, (ulong)n, l));
   else
     y = divrr(y, rpowuu(10UL, (ulong)-n, l));
-  return gerepileuptoleaf(av, rtor(y, prec));
+  return gc_uptoleaf(av, rtor(y, prec));
 }
 
 static GEN
@@ -626,7 +626,7 @@ strtor(const char *s, long prec)
   GEN y = dec_read(&s);
   y = real_read(av, &s, y, prec);
   if (typ(y) == t_REAL) return y;
-  return gerepileuptoleaf(av, itor(y, prec));
+  return gc_uptoleaf(av, itor(y, prec));
 }
 
 static void

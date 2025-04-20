@@ -310,7 +310,7 @@ integrand_h0(GEN sel, GEN s, GEN VCALL, GEN x, long prec)
     p1 = gdiv(mkvec(mulcxI(p1)), gmul2n(gsin(gmul(pmd, zn), prec), 2));
   else
     p1 = gdivgs(gmul(p1, wd(VCALL, pmd, zn, prec)), -2);
-  return gerepileupto(av, p1);
+  return gc_upto(av, p1);
 }
 
 static GEN
@@ -322,9 +322,9 @@ integral_h0(GEN sel, GEN s, GEN VCALL, long prec)
   for (j = 1; j < l; j++)
   {
     S = gadd(S, integrand_h0(sel, s, VCALL, gel(lin_grid, j), prec));
-    if ((j & 0xff) == 0) S = gerepileupto(av, S);
+    if ((j & 0xff) == 0) S = gc_upto(av, S);
   }
-  return gerepileupto(av, gmul(m_h(sel), S));
+  return gc_upto(av, gmul(m_h(sel), S));
 }
 
 /* a + log |x|, a t_REAL, low accuracy */
@@ -761,7 +761,7 @@ integral_h0l(GEN lin_grid, GEN selsm0, GEN s, GEN a, GEN lam, long prec)
   for (j = 1; j < l; j++)
   {
     S = gadd(S, integrand_h0l(selsm0, s, A, gel(lin_grid, j), prec));
-    if ((j & 0xff) == 0) S = gerepileupto(av, S);
+    if ((j & 0xff) == 0) S = gc_upto(av, S);
   }
   S = gmul(m_h(selsm0), S);
   A = gmul(a, gaddsg(1, gadd(a, gmul2n(lam, 1))));
@@ -781,7 +781,7 @@ integral_h12(GEN lin_grid, GEN selsm1, GEN s, GEN a, GEN lam, long prec)
   for (j = 1; j < l; j++)
   {
     S = gadd(S, integrand_h12(selsm1, s, A, gel(lin_grid, j), prec));
-    if ((j & 0xff) == 0) S = gerepileupto(av, S);
+    if ((j & 0xff) == 0) S = gc_upto(av, S);
   }
   if (gequal0(S)) return gen_0;
   S = gmul(m_h(selsm1), S);
@@ -902,20 +902,20 @@ lerchlarge(GEN s, GEN a, GEN lam, GEN al, GEN numpoles, long prec)
   {
     GEN P = gexp(gmul(PiI2(prec), lam), prec);
     GEN L = lerchlarge(s, gaddgs(a, 1), lam, al, numpoles, prec);
-    return gerepileupto(av, gadd(gpow(a, gneg(s), prec), gmul(P, L)));
+    return gc_upto(av, gadd(gpow(a, gneg(s), prec), gmul(P, L)));
   }
   if (gcmpgs(real_i(a), 2) >= 0)
   {
     GEN L, P = gexp(gneg(gmul(PiI2(prec), lam)), prec);
     a = gsubgs(a, 1); L = lerchlarge(s, a, lam, al, numpoles, prec);
-    return gerepileupto(av, gmul(P, gsub(L, gpow(a, gneg(s), prec))));
+    return gc_upto(av, gmul(P, gsub(L, gpow(a, gneg(s), prec))));
   }
   if (gsigne(imag_i(s)) > 0)
   {
     GEN L;
     lam = mygfrac(gneg(gconj(lam)));
     L = lerchlarge(gconj(s), a, lam, al, numpoles, prec);
-    return gerepileupto(av, gconj(L));
+    return gc_upto(av, gconj(L));
   }
   prec2 = prec + EXTRAPREC64;
   a = gprec_w(a, prec2);

@@ -425,7 +425,7 @@ get_SM(GEN Vga)
       GEN e = gmul(gel(nS1, m-k+1), gcoeff(C, d-k+1, m-k+1));
       s = gadd(s, gmul(e, RgX_coeff(pol, d-k)));
     }
-    gel(SM, m+1) = gerepileupto(av, s);
+    gel(SM, m+1) = gc_upto(av, s);
   }
   return SM;
 }
@@ -485,7 +485,7 @@ Klargeinit(GEN Vga, long nlimmax, long *status, long prec)
       s = gadd(s, gmul(gdiv(z, gel(vd, p+1)), gel(M, n+1-p)));
     }
     if (prec && !isinexact(s)) s = gtofp(s, prec);
-    gel(M,n) = s = gerepileupto(av, gdivgs(s, 1-n));
+    gel(M,n) = s = gc_upto(av, gdivgs(s, 1-n));
     if (gequal0(s))
     {
       cnt++; *status = 1;
@@ -673,5 +673,5 @@ gammamellininv(GEN K, GEN s, long m, long bitprec)
     K = gammamellininvinit(K, m, bitprec);
   d = GMi_get_degree(K);
   s2d = gpow(s, gdivgu(gen_2, d), nbits2prec(bitprec));
-  return gerepileupto(av, gammamellininvrt_i(K, s, s2d, bitprec));
+  return gc_upto(av, gammamellininvrt_i(K, s, s2d, bitprec));
 }

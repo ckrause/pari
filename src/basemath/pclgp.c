@@ -1859,7 +1859,7 @@ get_Xi(GEN K, GEN tInvA)
     gel(XI, i) = Xi;
     EL[i] = el;
   }
-  return gerepileupto(av, nmV_chinese_center(XI, EL, NULL));
+  return gc_upto(av, nmV_chinese_center(XI, EL, NULL));
 }
 
 /* K is a cyclic field of conductor f with degree d=d_K
@@ -1964,7 +1964,7 @@ minpol_xi(GEN K)
     gel(POL, i) = pol_xi_el(K, el);
     EL[i] = el;
   }
-  return gerepileupto(av, nxV_chinese_center(POL, EL, NULL));
+  return gc_upto(av, nxV_chinese_center(POL, EL, NULL));
 }
 
 static long
@@ -2665,7 +2665,7 @@ D_xi_el_ss(GEN K, GEN elg, GEN ellg, ulong d, ulong j0)
     }
     gk = Fl_mul(gk, g_K, f);
   }
-  return gerepileupto(av, Flv_to_ZV(z));
+  return gc_upto(av, Flv_to_ZV(z));
 }
 
 static GEN
@@ -3190,7 +3190,7 @@ gauss_ZX_mul(ulong f, GEN elg, GEN ellg)
     gi = Fl_mul(gi, g_el, el);
     if ((i2+=i+i+1)>=f2) i2%=f2;
   }
-  w0 = gerepileupto(av2, FpX_mul(u, v, ell)) + 1; av2 = avma;
+  w0 = gc_upto(av2, FpX_mul(u, v, ell)) + 1; av2 = avma;
   if (m==1)
   {
     for (i=1; i < f; i++) gel(W,i) = Fp_add(gel(w0, i), gel(w0, i+lv), ell);
@@ -3246,7 +3246,7 @@ gauss_el_vell(ulong f, GEN elg, GEN vellg, GEN vz_2f)
     if ((i2+=i+i+1)>=f2) i2%=f2;
   }
   M = gclone(M);
-  w0 = gerepileupto(av2, FpX_mul(u, v, M)) + 1;
+  w0 = gc_upto(av2, FpX_mul(u, v, M)) + 1;
   u = M; M = icopy(M); gunclone(u);
   av2 = avma;
   if (m==1)

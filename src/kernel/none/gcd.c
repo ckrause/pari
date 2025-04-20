@@ -83,7 +83,7 @@ gcdii_basecase(GEN a, GEN b)
     return igcduu((ulong)b[2], u);
   }
 
-  /* larger than gcd: "set_avma(av)" gerepile (erasing t) is valid */
+  /* larger than gcd: "set_avma(av)" gc_GEN_unsafe (erasing t) is valid */
   av = avma; (void)new_chunk(lgefint(b)); /* HACK */
   t = remii(a,b);
   if (!signe(t)) { set_avma(av); return absi(b); }

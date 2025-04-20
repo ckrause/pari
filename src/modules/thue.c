@@ -88,7 +88,7 @@ LogHeight(GEN x, long prec)
     GEN t = gabs(gel(x,i), prec);
     if (gcmpgs(t,1) > 0) LH = gmul(LH, t);
   }
-  return gerepileupto(av, gdivgu(glog(LH,prec), n));
+  return gc_upto(av, gdivgu(glog(LH,prec), n));
 }
 
 /* |x|^(1/n), x t_INT */
@@ -1148,7 +1148,7 @@ START:
       {
         if (! (Bx = get_Bx_LLL(i1, Delta2, Lambda, prec, &BS)) )
            goto START;
-        x3 = gerepileupto(av2, gmax_shallow(Bx, x3));
+        x3 = gc_upto(av2, gmax_shallow(Bx, x3));
       }
     }
     ine = 1;
@@ -1376,7 +1376,7 @@ thue(GEN tnf, GEN rhs, GEN ne)
   }
   S = filter_sol_x(S, L);
   S = gen_sort_uniq(S, (void*)lexcmp, cmp_nodata);
-  return gerepileupto(av, S);
+  return gc_upto(av, S);
 }
 
 /********************************************************************/

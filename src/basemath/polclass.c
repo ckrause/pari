@@ -1938,7 +1938,7 @@ polclass_psum(
 
   dbg_printf(1)("Classpoly power sum (e = %ld) is %Ps; found with %.2f%% of the primes\n",
       e, *psum, 100 * (i - 1) / (double) nprimes);
-  *psum = gerepileupto(av, *psum);
+  *psum = gc_upto(av, *psum);
   *d = e;
 }
 
@@ -1974,7 +1974,7 @@ polclass_worker(GEN q, GEN G, GEN db)
   pari_sp av = avma;
   norm_eqn_t ne; norm_eqn_set(ne, pcp_get_D(G), t, pcp_get_u(G), v, faw, p);
   z = polclass_roots_modp(&n_curves_tested, ne, rho_inv, G, db);
-  gel(T,1) = gerepileuptoleaf(av, z);
+  gel(T,1) = gc_uptoleaf(av, z);
   gel(T,2) = mkvecsmall3(ne->p, ne->pi, n_curves_tested); return T;
 }
 
@@ -2097,7 +2097,7 @@ polclass0(long D, long inv, long vx, GEN *db)
     v = Flv_roots_to_pol(gel(H,i), p, vx); l = lg(v);
     *++v = evaltyp(t_VECSMALL) | _evallg(l-1); /* Flx_to_Flv inplace */
     uel(plist, j) = p;
-    gel(H, j++) = gerepileuptoleaf(av2, v);
+    gel(H, j++) = gc_uptoleaf(av2, v);
   }
   setlg(H,nprimes+1-del);
   setlg(plist,nprimes+1-del);

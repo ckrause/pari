@@ -557,7 +557,7 @@ GEN
 divisorsu(ulong N)
 {
   pari_sp av = avma;
-  return gerepileupto(av, divisorsu_fact(factoru(N)));
+  return gc_upto(av, divisorsu_fact(factoru(N)));
 }
 
 static GEN
@@ -655,7 +655,7 @@ coredisc2(GEN n)
   if (_mod4(c)<=1) return gc_GEN(av, y);
   y = cgetg(3,t_VEC);
   gel(y,1) = shifti(c,2);
-  gel(y,2) = gmul2n(f,-1); return gerepileupto(av, y);
+  gel(y,2) = gmul2n(f,-1); return gc_upto(av, y);
 }
 
 GEN
@@ -961,7 +961,7 @@ sumdivk(GEN n, long k)
 
   if (F) n = arith_n(n);
   if (k != 1) n = powiu(n,k);
-  return gerepileupto(av, gdiv(v, n));
+  return gc_upto(av, gdiv(v, n));
 }
 
 GEN

@@ -134,7 +134,7 @@ charorder(GEN cyc, GEN x)
     {
       GEN c, o = gel(cyc,i);
       if (!signe(o))
-        return gerepileupto(av,mkoo());
+        return gc_upto(av,mkoo());
       c = gcdii(o, gel(x,i));
       if (!is_pm1(c)) o = diviiexact(o,c);
       f = lcmii(f, o);
@@ -308,7 +308,7 @@ chareval(GEN G, GEN chi, GEN x, GEN z)
       nchi = get_chi(bnf_get_cyc(G), chi);
       break;
     case typ_BIDZ:
-      if (checkznstar_i(G)) return gerepileupto(av, znchareval(G, chi, x, z));
+      if (checkznstar_i(G)) return gc_upto(av, znchareval(G, chi, x, z));
       /* don't implement chars on general bid: need an nf... */
     case typ_GCHAR:
         pari_err_TYPE("chareval [use gchareval to evaluate a grossencharacter]", G);
@@ -316,7 +316,7 @@ chareval(GEN G, GEN chi, GEN x, GEN z)
       pari_err_TYPE("chareval", G);
       return NULL;/* LCOV_EXCL_LINE */
   }
-  return gerepileupto(av, chareval_i(nchi, L, z));
+  return gc_upto(av, chareval_i(nchi, L, z));
 }
 
 /* nchi = [ord,D] a quasi-normalized character (ord may be a multiple of
@@ -538,7 +538,7 @@ chargalois(GEN G, GEN ORD)
     }
   v = cyc2elts_normal(cyc, maxord, ORD); l = lg(v);
   for(i = 1; i < l; i++) gel(v,i) = zv_to_ZV(gel(v,i));
-  return gerepileupto(av, v);
+  return gc_upto(av, v);
 }
 
 /*********************************************************************/
@@ -824,7 +824,7 @@ znconreylog(GEN bid, GEN x)
     case t_COL: /* log_bid(x) */
       Ui = znstar_get_Ui(bid);
       if (!RgV_is_ZV(x) || lg(x) != lg(Ui)) pari_err_TYPE("znconreylog", x);
-      return gerepileupto(av, ZV_ZV_mod(ZM_ZC_mul(Ui,x), cycg));
+      return gc_upto(av, ZV_ZV_mod(ZM_ZC_mul(Ui,x), cycg));
     case t_VEC:
       return gc_GEN(av, znconreyfromchar(bid, x));
     default: pari_err_TYPE("znconreylog", x);
@@ -873,7 +873,7 @@ Zideallog(GEN bid, GEN x)
 {
   pari_sp av = avma;
   GEN y = znconreylog(bid, x), U = znstar_get_U(bid);
-  return gerepileupto(av, ZM_ZC_mul(U, y));
+  return gc_upto(av, ZM_ZC_mul(U, y));
 }
 GEN
 znlog0(GEN h, GEN g, GEN o)

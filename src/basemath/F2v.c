@@ -513,7 +513,7 @@ F2m_inv_upper_1_ind(GEN A, long index)
     for (j=i+2; j<=n; j++) m ^= F2m_coeff(A,i,j) & uel(u,j);
     u[i] = m & 1;
   }
-  return gerepileuptoleaf(av, Flv_to_F2v(u));
+  return gc_uptoleaf(av, Flv_to_F2v(u));
 }
 static GEN
 F2m_inv_upper_1(GEN A)
@@ -590,7 +590,7 @@ F2m_gauss(GEN a, GEN b)
 {
   pari_sp av = avma;
   if (lg(a) == 1) return cgetg(1,t_MAT);
-  return gerepileupto(av, F2m_gauss_sp(F2m_copy(a), F2m_copy(b)));
+  return gc_upto(av, F2m_gauss_sp(F2m_copy(a), F2m_copy(b)));
 }
 GEN
 F2m_F2c_gauss(GEN a, GEN b)
@@ -599,7 +599,7 @@ F2m_F2c_gauss(GEN a, GEN b)
   GEN z = F2m_gauss(a, mkmat(b));
   if (!z) return gc_NULL(av);
   if (lg(z) == 1) retgc_const(av, cgetg(1, t_VECSMALL));
-  return gerepileuptoleaf(av, gel(z,1));
+  return gc_uptoleaf(av, gel(z,1));
 }
 
 GEN
@@ -607,7 +607,7 @@ F2m_inv(GEN a)
 {
   pari_sp av = avma;
   if (lg(a) == 1) return cgetg(1,t_MAT);
-  return gerepileupto(av, F2m_gauss_sp(F2m_copy(a), matid_F2m(gel(a,1)[1])));
+  return gc_upto(av, F2m_gauss_sp(F2m_copy(a), matid_F2m(gel(a,1)[1])));
 }
 
 GEN
@@ -642,7 +642,7 @@ F2m_invimage(GEN A, GEN B)
   pari_sp av = avma;
   GEN X = F2m_invimage_i(A,B);
   if (!X) return gc_NULL(av);
-  return gerepileupto(av, X);
+  return gc_upto(av, X);
 }
 
 GEN
@@ -662,7 +662,7 @@ F2m_F2c_invimage(GEN A, GEN y)
   x = gel(M,i);
   if (!F2v_coeff(x,l)) return gc_NULL(av);
   F2v_clear(x, x[1]); x[1]--; /* remove last coord */
-  return gerepileuptoleaf(av, x);
+  return gc_uptoleaf(av, x);
 }
 
 /*  Block Lanczos algorithm for kernel of sparse matrix (F2Ms)
@@ -1066,7 +1066,7 @@ F2Ms_ker(GEN M, long nbrow)
   long nbcol = lg(M)-1;
   GEN Mp, R, Rp, p;
   if (nbrow <= 640)
-    return gerepileupto(av, F2m_ker(F2Ms_to_F2m(M, nbrow)));
+    return gc_upto(av, F2m_ker(F2Ms_to_F2m(M, nbrow)));
   p = F2Ms_colelim(M, nbrow);
   Mp = vecpermute(M, p);
   do

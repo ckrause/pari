@@ -303,7 +303,7 @@ mk_v_t_el(GEN vT, GEN Data, ulong el)
       v_t_el[y] = t;
     }
   }
-  return gerepileuptoleaf(av, v_t_el);
+  return gc_uptoleaf(av, v_t_el);
 }
 
 /* G=[[G_1,...,G_d],M,el]
@@ -1865,7 +1865,7 @@ factormodcyclo(long n, GEN p, long fl, long v)
     else
       z = FpX_factcyclo_i(n, p, 1);
     setvarn(z, v);
-    return gerepileupto(av, FpX_to_mod(z, p));
+    return gc_upto(av, FpX_to_mod(z, p));
   }
   else
   {
@@ -1874,6 +1874,6 @@ factormodcyclo(long n, GEN p, long fl, long v)
     else
       z = FpX_factcyclo_i(n, p, 0);
     l = lg(z); for (i = 1; i < l; i++) setvarn(gel(z, i), v);
-    return gerepileupto(av, FpXC_to_mod(z, p));
+    return gc_upto(av, FpXC_to_mod(z, p));
   }
 }

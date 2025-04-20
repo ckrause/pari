@@ -134,7 +134,7 @@ GEN
 zetamultconvert(GEN a, long fl)
 {
   pari_sp av = avma;
-  return gerepileuptoleaf(av, zetamultconvert_i(a, fl));
+  return gc_uptoleaf(av, zetamultconvert_i(a, fl));
 }
 
 GEN
@@ -142,7 +142,7 @@ zetamultdual(GEN s)
 {
   pari_sp av = avma;
   GEN e = zetamultconvert_i(s, 0);
-  return gerepileuptoleaf(av, etoa(revslice(e, lg(e))));
+  return gc_uptoleaf(av, etoa(revslice(e, lg(e))));
 }
 
 /********************************************************************/
@@ -298,7 +298,7 @@ zetamult_interpolate2_i(GEN avec, GEN t, long prec)
         }
         if (!odd(j)) S = gsub(S, gmul(C, gcoeff(a,i+1, j/2+1)));
       }
-      gcoeff(a, i+1, j) = gerepileupto(av, gdivgu(S, j));
+      gcoeff(a, i+1, j) = gc_upto(av, gdivgu(S, j));
     }
   }
   _1 = real_1(prec + EXTRAPREC64); av = avma;
@@ -413,18 +413,18 @@ filllg1(GEN ibin1, GEN r1, GEN y, long N, long prec)
     {
       pari_sp av2 = avma;
       GEN z = gmul(y2, gsub(gel(v, n+1), gmul(y1, gel(ibin1, n+1))));
-      gel(v, n) = gerepileupto(av2, z);
+      gel(v, n) = gc_upto(av2, z);
     }
   }
   else
   {
     pari_sp av0 = avma;
-    gel(v, 1) = gerepileupto(av0, glog(gdiv(y, gsubgs(y, 1)), prec));
+    gel(v, 1) = gc_upto(av0, glog(gdiv(y, gsubgs(y, 1)), prec));
     for (n = 1; n < N; n++)
     {
       pari_sp av2 = avma;
       GEN z = gadd(gmul(y3, gel(v, n)), gmul(y1, gel(ibin1, n+1)));
-      gel(v, n + 1) = gerepileupto(av2, z);
+      gel(v, n + 1) = gc_upto(av2, z);
     }
   }
   return v;
@@ -453,13 +453,13 @@ fillrec(hashtable *H, GEN evec, long _0, long _1, GEN X, GEN pab, GEN r1,
     GEN t = gmul(gel(ini, n+1), gmael(pab, n, a));
     GEN u = gadd(gmul(gel(fin, n+1), gmael(pab, n, b)), gel(mid, n+1));
     GEN v = gdiv(x0? gadd(t, u): gsub(t, u), gmael(pab, n, a+b));
-    gel(r, n) = gerepileupto(av, gmul(xy1, gadd(gel(r, n+1), v)));
+    gel(r, n) = gc_upto(av, gmul(xy1, gadd(gel(r, n+1), v)));
   }
   { /* n = 1 */
     pari_sp av = avma;
     GEN t = gel(ini, 2), u = gadd(gel(fin, 2), gel(mid, 2));
     GEN v = x0? gadd(t, u): gsub(t, u);
-    gel(r,1) = gerepileupto(av, gmul(xy1, gadd(gel(r,2), v)));
+    gel(r,1) = gc_upto(av, gmul(xy1, gadd(gel(r,2), v)));
   }
   hash_insert(H, (void*)evec, (void*)r); return r;
 }
@@ -732,7 +732,7 @@ zetamult_interpolate(GEN s, GEN t, long prec)
     long n = lg(a)-1; /* > 0 */
     affrr(addrr(gel(V,n), zetamult_i(a, prec)), gel(V,n));
   }
-  return gerepileupto(av, poleval(vecreverse(V),t));
+  return gc_upto(av, poleval(vecreverse(V),t));
 }
 
 GEN
@@ -770,9 +770,9 @@ polylogmult_interpolate(GEN a, GEN z, GEN t, long prec)
     pari_sp av2 = avma;
     GEN ai = gel(A,i), e = aztoe(ai, gel(Z,i), prec);
     long n = lg(ai)-1; /* > 0 */
-    gel(V,n) = gerepileupto(av2, gadd(gel(V,n), zetamultevec(e, prec)));
+    gel(V,n) = gc_upto(av2, gadd(gel(V,n), zetamultevec(e, prec)));
   }
-  return gerepileupto(av, poleval(vecreverse(V),t));
+  return gc_upto(av, poleval(vecreverse(V),t));
 }
 
 GEN
@@ -1003,7 +1003,7 @@ zetamultall(long k, long flag, long prec)
       pari_sp av = avma;
       long j, mc = m;
       for (j = k1; j >= 1; j--) { w[j] = mc & 1; mc >>= 1; }
-      gel(res, ct++) = gerepileupto(av, zetamultstar_i(L, etoa(w), fl));
+      gel(res, ct++) = gc_upto(av, zetamultstar_i(L, etoa(w), fl));
     }
   }
   if (flag & 8L) res = mkvec2(res, gel(Lind, 2));

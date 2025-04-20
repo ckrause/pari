@@ -72,7 +72,7 @@ lift_to_frac(GEN t, GEN N, GEN amax, GEN bmax, GEN den, GEN tden)
   if (tden)
   {
     a = Fp_center_i(Fp_mul(t, tden, N), N, shifti(N,-1));
-    if (abscmpii(a, amax) < 0) return gerepileupto(av, Qdivii(a, tden));
+    if (abscmpii(a, amax) < 0) return gc_upto(av, Qdivii(a, tden));
   }
   if (!Fp_ratlift(t, N, amax,bmax, &a,&b)) return gc_NULL(av);
   if (is_pm1(b)) return gc_GEN(av, a);
@@ -258,7 +258,7 @@ QXQX_gcd(GEN P, GEN Q, GEN T)
   pari_sp av = avma;
   GEN P1 = Q_remove_denom(P, NULL);
   GEN Q1 = Q_remove_denom(Q, NULL);
-  return gerepileupto(av, ZXQX_gcd(P1, Q1, T));
+  return gc_upto(av, ZXQX_gcd(P1, Q1, T));
 }
 
 int
@@ -446,7 +446,7 @@ nfroots(GEN nf,GEN pol)
     return gc_GEN(av, mkcol(A));
   }
   dT = degpol(T);
-  if (dT == 1) return gerepileupto(av, nfrootsQ(simplify_shallow(A)));
+  if (dT == 1) return gc_upto(av, nfrootsQ(simplify_shallow(A)));
 
   den = get_nfsqff_data(&nf, &T, &A, &B, NULL);
   if (RgX_is_ZX(B))
@@ -464,7 +464,7 @@ nfroots(GEN nf,GEN pol)
   }
   else
     z = nfsqff(nf,B, ROOTS, den);
-  z = gerepileupto(av, QXQV_to_mod(z, T));
+  z = gc_upto(av, QXQV_to_mod(z, T));
   gen_sort_inplace(z, (void*)&cmp_RgX, &cmp_nodata, NULL);
   settyp(z, t_COL); return z;
 }
@@ -561,7 +561,7 @@ fact_from_sqff(GEN rep, GEN A, GEN B, GEN y, GEN T, GEN bad)
     if (n == 1)
     { /* perfect power, simple ! */
       long e = degpol(A) / degpol(gel(y,1));
-      y = gerepileupto(av, QXQXV_to_mod(y, T));
+      y = gc_upto(av, QXQXV_to_mod(y, T));
       ex = mkcol(utoipos(e));
     }
     else
@@ -598,13 +598,13 @@ fact_from_sqff(GEN rep, GEN A, GEN B, GEN y, GEN T, GEN bad)
         E[j] = e;
       }
       E[1] = degpol(quo) / degpol(gel(y,1));
-      y = gerepileupto(av, QXQXV_to_mod(y, T));
+      y = gc_upto(av, QXQXV_to_mod(y, T));
       ex = zc_to_ZC(E); pari_free((void*)E);
     }
   }
   else
   {
-    y = gerepileupto(av, QXQXV_to_mod(y, T));
+    y = gc_upto(av, QXQXV_to_mod(y, T));
     ex = const_col(n, gen_1);
   }
   gel(rep,1) = y; settyp(y, t_COL);
@@ -635,7 +635,7 @@ nffactor_i(GEN nf,GEN T,GEN pol)
     gel(rep,1) = mkcol(A);
     gel(rep,2) = mkcol(gen_1); return rep;
   }
-  if (degpol(T) == 1) return gerepileupto(av, QX_factor(simplify_shallow(A)));
+  if (degpol(T) == 1) return gc_upto(av, QX_factor(simplify_shallow(A)));
 
   den = get_nfsqff_data(&nf, &T, &A, &B, &bad);
   if (DEBUGLEVEL>2) timer_printf(&ti, "squarefree test");
@@ -795,7 +795,7 @@ nf_factor_bound(GEN nf, GEN polbase)
     err_printf("Mignotte bound: %Ps\n",a);
     err_printf("Beauzamy bound: %Ps\n",b);
   }
-  return gerepileupto(av, gmin(a, b));
+  return gc_upto(av, gmin(a, b));
 }
 
 /* True nf; return Bs: if r a root of sigma_i(P), |r| < Bs[i] */
@@ -1354,7 +1354,7 @@ max_radius(GEN PRK, GEN B)
       s = mpadd(s, mpdiv( mpsqr(gcoeff(S,i,j)), gel(B,j)));
     if (mpcmp(s, smax) > 0) smax = s;
   }
-  return gerepileupto(av, ginv(gmul2n(smax, 2)));
+  return gc_upto(av, ginv(gmul2n(smax, 2)));
 }
 
 static void
@@ -1422,7 +1422,7 @@ get_V(GEN Tra, GEN M_L, GEN PRK, GEN PRKinv, GEN pk, long *eT2)
     T2 = ZC_sub(T2, ZM_ZC_mul(PRK, v));
     e = gexpo(T2); if (e > *eT2) *eT2 = e;
     set_avma(av2);
-    gel(V,i) = gerepileupto(av, v); /* small */
+    gel(V,i) = gc_upto(av, v); /* small */
   }
   return V;
 }
@@ -2246,9 +2246,9 @@ rnfgaloisconj_bound(GEN P, GEN z, GEN den, long prec)
   {
     GEN a = gabs(RgX_cxeval(den, gel(z,i), NULL),prec);
     GEN b = RgX_galconj_bound(RgXY_cxevalx(P, gel(z,i), NULL), prec);
-    s = gerepileupto(av, gadd(s, gsqr(gmul(a,b))));
+    s = gc_upto(av, gadd(s, gsqr(gmul(a,b))));
   }
-  return gerepileupto(av, ceil_safe(s));
+  return gc_upto(av, ceil_safe(s));
 }
 
 static GEN

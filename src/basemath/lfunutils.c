@@ -771,7 +771,7 @@ chigeneval_i(GEN logx, GEN d, GEN nchi, GEN z, long prec)
   pari_sp av = avma;
   GEN e = FpV_dotproduct(nchi, logx, d);
   if (!is_vec_t(typ(z)))
-    return gerepileupto(av, gpow(z, e, prec));
+    return gc_upto(av, gpow(z, e, prec));
   else
   {
     ulong i = itou(e);
@@ -801,7 +801,7 @@ gaddmul(GEN x, GEN y, GEN z)
   }
   if (isintzero(x)) return gmul(y,z);
   av = avma;
-  return gerepileupto(av, gadd(x, gmul(y,z)));
+  return gc_upto(av, gadd(x, gmul(y,z)));
 }
 
 static GEN
@@ -1080,7 +1080,7 @@ lfunchiZ(GEN G, GEN CHI)
     {
       case 1: set_avma(av); return lfunzeta();
       case 2: if (zncharisodd(G,CHI)) N = negi(N);
-              return gerepileupto(av, lfunchiquad(N));
+              return gc_upto(av, lfunchiquad(N));
     }
     nchi = znconreylog_normalize(G, CHI);
     s = zncharisodd(G, CHI);
@@ -1473,7 +1473,7 @@ lfunellQ(GEN e)
   gel(ldata, 4) = gen_2;
   gel(ldata, 5) = ellQ_get_N(e);
   gel(ldata, 6) = stoi(ellrootno_global(e));
-  return gc_GEN(av, ldata); /* ellanal_globalred not gerepile-safe */
+  return gc_GEN(av, ldata); /* ellanal_globalred not gc_GEN_unsafe-safe */
 }
 
 static GEN
@@ -1561,7 +1561,7 @@ ellsympow(GEN E, ulong m, GEN p, long n)
     return deg1pol_shallow(t, gen_1, 0);
   }
   else
-    return gerepileupto(av, RgXn_inv_i(ellsympow_abelian(p, ap, m, 1), n));
+    return gc_upto(av, RgXn_inv_i(ellsympow_abelian(p, ap, m, 1), n));
 }
 
 GEN
@@ -2031,7 +2031,7 @@ lfunellmfpetersmintwist(GEN E, long bitprec)
     long s = signe(gel(v,2));
     if (s) fudge = gmul(fudge, s==1 ? gaddsg(1, q): gsubsg(1, q));
   }
-  return gerepileupto(av, mfpeters(gel(symsq,1),fudge,N,k,bitprec));
+  return gc_upto(av, mfpeters(gel(symsq,1),fudge,N,k,bitprec));
 }
 
 /* From Christophe Delaunay, http://delaunay.perso.math.cnrs.fr/these.pdf */
@@ -2075,7 +2075,7 @@ lfunellmfpeters(GEN E, long bitprec)
   GEN D, Et = ellminimaldotwist(E, &D);
   GEN nor = lfunellmfpetersmintwist(Et, bitprec);
   GEN nor2 = gmul(nor, elldiscfix(E, Et, D));
-  obj_free(Et); return gerepileupto(ltop, nor2);
+  obj_free(Et); return gc_upto(ltop, nor2);
 }
 
 /*************************************************************/
@@ -2139,7 +2139,7 @@ dirgenus2(GEN Q, GEN p, long n)
     long t = Flx_genus2trace_naive(Qp, pp);
     f = deg1pol_shallow(stoi(t), gen_1, 0);
   }
-  return gerepileupto(av, RgXn_inv_i(f, n));
+  return gc_upto(av, RgXn_inv_i(f, n));
 }
 
 GEN
@@ -2523,7 +2523,7 @@ artin_ram(GEN nf, GEN gal, GEN aut, GEN pr, GEN ramg, GEN ch, long d)
   }
   delete_var();
   V = RgXn_expint(RgX_neg(V),d+1);
-  setvarn(V,0); return gerepileupto(av, ginv(V));
+  setvarn(V,0); return gc_upto(av, ginv(V));
 }
 
 /* N true nf; [Artin conductor, vec of [p, Lp]] */

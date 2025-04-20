@@ -254,7 +254,7 @@ INLINE ulong Flx_deg1_root(GEN f, ulong p) {
   return Fl_div(Fl_neg(Flx_coeff(f, 0), p), Flx_coeff(f, 1), p);
 }
 
-/* Allocation / gerepile */
+/* Allocation / gc_GEN_unsafe */
 long   getdebugvar(void);
 void   setdebugvar(long n);
 void   debug_stack(void);

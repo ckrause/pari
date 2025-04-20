@@ -73,7 +73,7 @@ tablemul_ei(GEN M, GEN x, long i)
       GEN c = gcoeff(tab,k,j);
       if (!gequal0(c)) s = gadd(s, gmul(c, gel(x,j)));
     }
-    gel(v,k) = gerepileupto(av,s);
+    gel(v,k) = gc_upto(av,s);
   }
   return v;
 }
@@ -155,7 +155,7 @@ nftrace(GEN nf, GEN x)
   x = nf_to_scalar_or_basis(nf, x);
   x = (typ(x) == t_COL)? RgV_dotproduct(x, gel(nf_get_Tr(nf),1))
                        : gmulgu(x, nf_get_degree(nf));
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 GEN
 rnfelttrace(GEN rnf, GEN x)
@@ -168,7 +168,7 @@ rnfelttrace(GEN rnf, GEN x)
   x = rnfeltabstorel(rnf, x);
   x = (typ(x) == t_POLMOD)? rnfeltdown(rnf, gtrace(x))
                           : gmulgu(x, rnf_get_degree(rnf));
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 
 static GEN
@@ -248,7 +248,7 @@ famat_norm(GEN nf, GEN fa)
   fa = famat_reduce(famat_abs(fa));
   fa = famat_cba(fa);
   g = factorback(fa);
-  return gerepileupto(av, s < 0? gneg(g): g);
+  return gc_upto(av, s < 0? gneg(g): g);
 }
 GEN
 nfnorm(GEN nf, GEN x)
@@ -261,11 +261,11 @@ nfnorm(GEN nf, GEN x)
   if (typ(x) == t_MAT) return famat_norm(nf, x);
   x = nf_to_scalar_or_basis(nf, x);
   if (typ(x)!=t_COL)
-    return gerepileupto(av, gpowgs(x, n));
+    return gc_upto(av, gpowgs(x, n));
   x = nf_to_scalar_or_alg(nf, Q_primitive_part(x, &c));
   x = Q_remove_denom(x, &den);
   x = ZX_resultant_all(nf_get_pol(nf), x, den, 0);
-  return gerepileupto(av, c ? gmul(x, gpowgs(c, n)): x);
+  return gc_upto(av, c ? gmul(x, gpowgs(c, n)): x);
 }
 
 static GEN
@@ -289,7 +289,7 @@ rnfeltnorm(GEN rnf, GEN x)
   x = (typ(x) == t_POL)
     ? rnfeltdown(rnf, nfX_resultant(nf,pol,to_RgX(x,v)))
     : gpowgs(x, rnf_get_degree(rnf));
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 
 /* x + y in nf */
@@ -306,7 +306,7 @@ nfadd(GEN nf, GEN x, GEN y)
   { z = (typ(y) == t_COL)? RgC_Rg_add(y, x): gadd(x,y); }
   else
   { z = (typ(y) == t_COL)? RgC_add(x, y): RgC_Rg_add(x, y); }
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 /* x - y in nf */
 GEN
@@ -322,7 +322,7 @@ nfsub(GEN nf, GEN x, GEN y)
   { z = (typ(y) == t_COL)? Rg_RgC_sub(x,y): gsub(x,y); }
   else
   { z = (typ(y) == t_COL)? RgC_sub(x,y): RgC_Rg_sub(x,y); }
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 /* product of ZC x,y in (true) nf; ( sum_i x_i sum_j y_j m^{i,j}_k )_k */
@@ -397,7 +397,7 @@ nfmul(GEN nf, GEN x, GEN y)
       if (dx) z = ZC_Z_div(z, dx);
     }
   }
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 /* square of ZC x in nf */
 static GEN
@@ -453,7 +453,7 @@ nfsqr(GEN nf, GEN x)
     z = nfsqri_ZC(nf,x);
     if (dx) z = RgC_Rg_div(z, sqri(dx));
   }
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 /* x a ZC, v a t_COL of ZC/Z */
@@ -585,7 +585,7 @@ nfinv(GEN nf, GEN x)
   }
   else
     z = ginv(x);
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 /* quotient of x and y in nf */
@@ -610,7 +610,7 @@ nfdiv(GEN nf, GEN x, GEN y)
     z = nfmul(nf, x, zk_inv(nf,y));
     if (d) z = typ(z) == t_COL? RgC_Rg_mul(z, d): gmul(z, d);
   }
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 /* product of INTEGERS (t_INT or ZC) x and y in (true) nf */
@@ -660,7 +660,7 @@ tablemul(GEN TAB, GEN x, GEN y)
       }
       if (t) s = gadd(s, gmul(xi, t));
     }
-    gel(v,k) = gerepileupto(av,s);
+    gel(v,k) = gc_upto(av,s);
   }
   return v;
 }
@@ -699,7 +699,7 @@ tablesqr(GEN TAB, GEN x)
       }
       if (t) s = gadd(s, gmul(xi, t));
     }
-    gel(v,k) = gerepileupto(av,s);
+    gel(v,k) = gc_upto(av,s);
   }
   return v;
 }
@@ -736,7 +736,7 @@ nfpow(GEN nf, GEN z, GEN n)
     x = primitive_part(x, &cx);
   x = gen_pow_i(x, n, (void*)nf, _sqr, _mul);
   if (cx)
-    x = gerepileupto(av, gmul(x, powgi(cx, n)));
+    x = gc_upto(av, gmul(x, powgi(cx, n)));
   else
     x = gc_GEN(av, x);
   return x;
@@ -756,7 +756,7 @@ nfpow_u(GEN nf, GEN z, ulong n)
   if (cx)
   {
     x = gmul(x, powgi(cx, utoipos(n)));
-    return gerepileupto(av,x);
+    return gc_upto(av,x);
   }
   return gc_GEN(av, x);
 }
@@ -772,7 +772,7 @@ nfissquare(GEN nf, GEN z, GEN *px)
   {
     z = algtobasis(nf, z);
     if (!issquareall(gel(z,1), px)) return gc_long(av, 0);
-    if (px) *px = gerepileupto(av, *px); else set_avma(av);
+    if (px) *px = gc_upto(av, *px); else set_avma(av);
     return 1;
   }
   z = nf_to_scalar_or_alg(nf, z);
@@ -794,7 +794,7 @@ nfispower(GEN nf, GEN z, long n, GEN *px)
   {
     z = algtobasis(nf, z);
     if (!ispower(gel(z,1), stoi(n), px)) return gc_long(av, 0);
-    if (px) *px = gerepileupto(av, *px); else set_avma(av);
+    if (px) *px = gc_upto(av, *px); else set_avma(av);
     return 1;
   }
   if (n <= 0)
@@ -847,7 +847,7 @@ idealfactorback(GEN nf, GEN L, GEN e, long red)
     a = idealpow(nf, gel(L,1), gel(e,1));
     for (i = 2; i < l; i++)
       if (signe(gel(e,i))) a = idealmulpowprime(nf, a, gel(L,i), gel(e,i));
-    return gerepileupto(av, a);
+    return gc_upto(av, a);
   }
   return gen_factorback(L, e, (void*)nf, &idmul, &idpow, NULL);
 }
@@ -1063,7 +1063,7 @@ nfvalrem(GEN nf, GEN x, GEN pr, GEN *py)
   if (typ(x) != t_COL) {
     w = Q_pvalrem(x,p, py);
     if (!w) { *py = gc_GEN(av, x); return 0; }
-    *py = gerepileupto(av, gmul(powp(nf, pr, w), *py));
+    *py = gc_upto(av, gmul(powp(nf, pr, w), *py));
     return e*w;
   }
   x = Q_primitive_part(x, &cx);
@@ -1072,7 +1072,7 @@ nfvalrem(GEN nf, GEN x, GEN pr, GEN *py)
   {
     long v = Q_pvalrem(cx,p, &t);
     *py = nfmul(nf, *py, gmul(powp(nf,pr,v), t));
-    *py = gerepileupto(av, *py);
+    *py = gc_upto(av, *py);
     w += e*v;
   }
   else
@@ -1266,13 +1266,13 @@ algtobasis(GEN nf, GEN x)
         case t_FRAC: return scalarcol(x, nf_get_degree(nf));
         case t_POL:
           av = avma;
-          return gerepileupto(av,poltobasis(nf,x));
+          return gc_upto(av,poltobasis(nf,x));
       }
       break;
 
     case t_POL:
       av = avma;
-      return gerepileupto(av,poltobasis(nf,x));
+      return gc_upto(av,poltobasis(nf,x));
 
     case t_COL:
       if (!RgV_is_QV(x)) pari_err_TYPE("nfalgtobasis",x);
@@ -1309,7 +1309,7 @@ rnfbasistoalg(GEN rnf,GEN x)
         gel(z,i) = c;
       }
       z = RgV_RgC_mul(gel(rnf_get_zk(rnf),1), z);
-      return gerepileupto(av, gmodulo(z,R));
+      return gc_upto(av, gmodulo(z,R));
 
     case t_POLMOD:
       x = polmod_nffix(f, rnf, x, 0);
@@ -1439,7 +1439,7 @@ rnfalgtobasis(GEN rnf,GEN x)
     case t_POLMOD:
       x = polmod_nffix(f, rnf, x, 0);
       if (typ(x) != t_POL) break;
-      return gerepileupto(av, RgM_RgX_mul(rnf_get_invzk(rnf), x));
+      return gc_upto(av, RgM_RgX_mul(rnf_get_invzk(rnf), x));
     case t_POL:
       if (varn(x) == varn(T))
       {
@@ -1449,9 +1449,9 @@ rnfalgtobasis(GEN rnf,GEN x)
       }
       x = RgX_nffix(f, T, x, 0);
       if (degpol(x) >= degpol(R)) x = RgX_rem(x, R);
-      return gerepileupto(av, RgM_RgX_mul(rnf_get_invzk(rnf), x));
+      return gc_upto(av, RgM_RgX_mul(rnf_get_invzk(rnf), x));
   }
-  return gerepileupto(av, scalarcol(x, rnf_get_degree(rnf)));
+  return gc_upto(av, scalarcol(x, rnf_get_degree(rnf)));
 }
 
 /* Given a and b in nf, gives an algebraic integer y in nf such that a-b.y
@@ -1461,7 +1461,7 @@ nfdiveuc(GEN nf, GEN a, GEN b)
 {
   pari_sp av = avma;
   a = nfdiv(nf,a,b);
-  return gerepileupto(av, ground(a));
+  return gc_upto(av, ground(a));
 }
 
 /* Given a and b in nf, gives a "small" algebraic integer r in nf
@@ -1471,7 +1471,7 @@ nfmod(GEN nf, GEN a, GEN b)
 {
   pari_sp av = avma;
   GEN p1 = gneg_i(nfmul(nf,b,ground(nfdiv(nf,a,b))));
-  return gerepileupto(av, nfadd(nf,a,p1));
+  return gc_upto(av, nfadd(nf,a,p1));
 }
 
 /* Given a and b in nf, gives a two-component vector [y,r] in nf such
@@ -1485,7 +1485,7 @@ nfdivrem(GEN nf, GEN a, GEN b)
   p1 = gneg_i(nfmul(nf,b,y));
   z = cgetg(3,t_VEC);
   gel(z,1) = gcopy(y);
-  gel(z,2) = nfadd(nf,a,p1); return gerepileupto(av, z);
+  gel(z,2) = nfadd(nf,a,p1); return gc_upto(av, z);
 }
 
 /*************************************************************************/
@@ -1724,7 +1724,7 @@ nfembed(GEN nf, GEN x, long k)
   nf = checknf(nf);
   x = nf_to_scalar_or_basis(nf,x);
   if (typ(x) != t_COL) return gc_GEN(av, x);
-  return gerepileupto(av, nfembed_i(nf_get_M(nf),x,k));
+  return gc_upto(av, nfembed_i(nf_get_M(nf),x,k));
 }
 
 /* x a ZC */
@@ -2135,7 +2135,7 @@ idealchinese(GEN nf, GEN x0, GEN w)
     }
   }
   else if (!s) return gc_const(av, gen_0);
-  return gerepileupto(av, dw? gdiv(s, dw): s);
+  return gc_upto(av, dw? gdiv(s, dw): s);
 }
 
 /*************************************************************************/
@@ -2284,7 +2284,7 @@ nfeltsign(GEN nf, GEN x, GEN ind0)
   if (ind0 && typ(ind0) == t_INT) { set_avma(av); return v[1]? gen_m1: gen_1; }
   settyp(v, t_VEC);
   for (i = 1; i < l; i++) gel(v,i) = v[i]? gen_m1: gen_1;
-  return gerepileupto(av, v);
+  return gc_upto(av, v);
 }
 
 /* true nf */
@@ -2381,7 +2381,7 @@ nfpolsturm(GEN nf, GEN f, GEN ind0)
     u = v; v = r;
   }
   if (single) return gc_stoi(av,vr1[1]);
-  return gerepileupto(av, zv_to_ZV(vr1));
+  return gc_upto(av, zv_to_ZV(vr1));
 }
 
 /* True nf; return the vector of signs of x; the matrix of such if x is a vector
@@ -2414,11 +2414,11 @@ nfinvmodideal(GEN nf, GEN x, GEN y)
 
   if (equali1(yZ)) return gen_0;
   x = nf_to_scalar_or_basis(nf, x);
-  if (typ(x) == t_INT) return gerepileupto(av, Fp_inv(x, yZ));
+  if (typ(x) == t_INT) return gc_upto(av, Fp_inv(x, yZ));
 
   a = hnfmerge_get_1(idealhnf_principal(nf,x), y);
   if (!a) pari_err_INV("nfinvmodideal", x);
-  return gerepileupto(av, zk_modHNF(nfdiv(nf,a,x), y));
+  return gc_upto(av, zk_modHNF(nfdiv(nf,a,x), y));
 }
 
 static GEN
@@ -2440,14 +2440,14 @@ nfpowmodideal(GEN nf,GEN x,GEN k,GEN A)
   x = nf_to_scalar_or_basis(nf, x);
   if (typ(x) != t_COL) return Fp_pow(x, k, gcoeff(A,1,1));
   if (s < 0) { k = negi(k); x = nfinvmodideal(nf, x,A); }
-  if (equali1(k)) return gerepileupto(av, s > 0? zk_modHNF(x, A): x);
+  if (equali1(k)) return gc_upto(av, s > 0? zk_modHNF(x, A): x);
   for(y = NULL;;)
   {
     if (mpodd(k)) y = nfmulmodideal(nf,y,x,A);
     k = shifti(k,-1); if (!signe(k)) break;
     x = nfsqrmodideal(nf,x,A);
   }
-  return gerepileupto(av, y);
+  return gc_upto(av, y);
 }
 
 /* a * g^n mod id */
@@ -3541,7 +3541,7 @@ ideallog_i(GEN nf, GEN x, zlog_S *S)
   else
     y = zlog(nf, x, NULL, S);
   y = ZMV_ZCV_mul(S->U, y);
-  return gerepileupto(av, ZV_ZV_mod(y, bid_get_cyc(S->bid)));
+  return gc_upto(av, ZV_ZV_mod(y, bid_get_cyc(S->bid)));
 }
 GEN
 ideallogmod(GEN nf, GEN x, GEN bid, GEN mod)

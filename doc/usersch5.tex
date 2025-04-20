@@ -36,13 +36,17 @@ or 64 bits). The type \tet{ulong} is defined as \kbd{unsigned long}. The word
 We shall often refer to the notion of \tev{shallow} function, which means that
 some components of the result may point to components of the input, which is
 more efficient than a \emph{deep} copy (full recursive copy of the object
-tree). Such outputs are not suitable for \kbd{gerepileupto} and particular
+tree). Such outputs are not suitable for \kbd{gc\_upto} and particular
 care must be taken when garbage collecting objects which have been input to
 shallow functions: corresponding outputs also become invalid and should no
-longer be accessed.
+longer be accessed. A \kbd{GEN} returned by a shallow function is
+called \emph{not gc-safe}: one should use \kbd{gc\_GEN} or \kbd{gc\_all}
+to recover it when collecting garbage.
 
-A function is \emph{not stack clean} if it leaves intermediate data on the
-stack besides its output, for efficiency reasons.
+A function is \emph{not stack-clean} if it leaves intermediate data on the
+stack besides its output, for efficiency reasons. If is is nevertheless
+suitable for \tet{gc_upto}, the function description will state it. Of course
+\tet{gc_GEN} and \tet{gc_all} are always able to handle it.
 
 \section{Initializing the library}
 
@@ -1149,8 +1153,8 @@ to zero.
 \kbd{stack\_malloc\_align}, setting the memory to zero.
 
 \noindent Objects allocated through these last three functions cannot be
-\kbd{gerepile}'d, since they are not yet valid \kbd{GEN}s: their codewords
-must be filled first.
+handled by garbage collection routines, since they are not yet valid
+\kbd{GEN}s: their codewords must be filled first.
 
 \fun{GEN}{cgetalloc}{size_t l, long t}, same as \kbd{cgetg(l, t)}, except
 that the result is allocated using \tet{pari_malloc} instead of the PARI
@@ -1219,8 +1223,8 @@ do not provide access to TLS variables.
 \fun{void}{cgiv}{GEN x} frees object \kbd{x}, assuming it is the last created
 on the stack.
 
-\fun{GEN}{gerepile}{pari_sp p, pari_sp q, GEN x} general garbage collector
-for the stack.
+\fun{GEN}{gc_GEN_unsafe}{pari_sp p, pari_sp q, GEN x} low level garbage
+collector for the stack.
 
 \fun{GEN}{gc_GEN}{pari_sp av, GEN x} cleans up the stack from
 \kbd{av} on, recopying the object \kbd{x} to a new address which is
@@ -1287,13 +1291,14 @@ as a side effect. Not that we can later use \kbd{cgiv}$(y)$ to recover the
 memory used by $y$ while still keeping $x$.
 
 \fun{GEN}{gc_all_unsafe}{pari_sp av, pari_sp ltop, int n, ...} unsafe
-variant of \tet{gc_all}, about twice faster.
-Cleans up the stack between \kbd{av} and \kbd{ltop}, updating
-the \kbd{n} elements which follow \kbd{n} in the argument list (of type
-\kbd{GEN*}). Check that the elements of \kbd{g} have no component between
-\kbd{av} and \kbd{ltop}, and assumes that no garbage is present between
-\kbd{avma} and \kbd{ltop}. To be used in the
-following scenario:
+variant of \tet{gc_all}, about twice faster. This is subject to the same
+restrictions as \tet{gc_GEN_unsafe}, the only difference being that more than
+one address gets updated. Cleans up the stack between \kbd{av} and
+\kbd{ltop}, updating the \kbd{n} elements which follow \kbd{n} in the
+argument list (of type \kbd{GEN*}). Check that the elements of \kbd{g} have
+no component between \kbd{av} and \kbd{ltop}, and assumes that no garbage is
+present between \kbd{avma} and \kbd{ltop}. To be used in the following
+scenario:
 \bprog
   GEN f(..., GEN *py)
   {
@@ -1330,32 +1335,33 @@ and its two components. This is marginally more efficient than the standard
   av = avma; garbage(); ltop = avma;
   z = cgetg(3, t_COMPLEX);
   z[1] = fun1();
-  z[2] = fun2(); return gerepile(av, ltop, z);
+  z[2] = fun2(); return gc_GEN_unsafe(av, ltop, z);
 @eprog\noindent
 
-\fun{GEN}{gerepileupto}{pari_sp av, GEN q} analogous to (but faster than)
+\fun{GEN}{gc_upto}{pari_sp av, GEN q} analogous to (but faster than)
 \kbd{gc\_GEN}. Assumes that \kbd{q} is connected and that its root was
 created before any component. If \kbd{q} is not on the stack, this is
 equivalent to \kbd{set\_avma(av)}; in particular, sentinels which are not even
 proper \kbd{GEN}s such as \kbd{q = NULL} are allowed.
 
-\fun{GEN}{gerepileuptoleaf}{pari_sp av, GEN q} analogous to (but faster than)
-\kbd{gerepileupto}. Assumes further that \kbd{q} is a leaf, i.e a
+\fun{GEN}{gc_uptoleaf}{pari_sp av, GEN q} analogous to (but faster than)
+\kbd{gc\_upto}. Assumes further that \kbd{q} is a leaf, i.e a
 nonrecursive type (\kbd{is\_recursive\_t(typ(q))} is nonzero). Contrary to
-\kbd{gc\_INT} and \kbd{gerepileupto}, \kbd{gerepileuptoleaf} leaves
+\kbd{gc\_INT} and \kbd{gc\_upto}, \kbd{gc\_uptoleaf} leaves
 length and effective length of a \typ{INT} unchanged.
 
 \subsec{Garbage collection: advanced use}
 
 \fun{void}{stackdummy}{pari_sp av, pari_sp ltop} inhibits the memory area
 between \kbd{av} \emph{included} and \kbd{ltop} \emph{excluded} with respect to
-\kbd{gerepile}, in order to avoid a call to \kbd{gerepile(av, ltop,...)}.
-The stack space is not reclaimed though.
+garbage collection. This avoids a garbage collection which would copy objects
+around, but the stack space between \kbd{av} and \kbd{ltop} is not reclaimed.
 
 More precisely, this routine assumes that \kbd{av} is recorded earlier
 than \kbd{ltop}, then marks the specified stack segment as a
-nonrecursive type of the correct length. Thus gerepile will not inspect
-the zone, at most copy it. To be used in the following situation:
+nonrecursive type of the correct length. Thus garbage collection functions
+will not inspect the zone, at most copy it. To be used in the following
+situation:
 \bprog
   av0 = avma; z = cgetg(t_VEC, 3);
   gel(z,1) = HUGE(); av = avma; garbage(); ltop = avma;
@@ -1363,14 +1369,14 @@ the zone, at most copy it. To be used in the following situation:
 @eprog\noindent
 Compared to the orthodox
 \bprog
-  gel(z,2) = gerepile(av, ltop, gel(z,2));
+  gel(z,2) = gc_upto(av, gel(z,2));
 @eprog\noindent
 or even more wasteful
 \bprog
   z = gc_GEN(av0, z);
 @eprog\noindent
 we temporarily lose $(\kbd{av} - \kbd{ltop})$ words but save a costly
-\kbd{gerepile}. In principle, a garbage collection higher up the call
+\kbd{gc\_upto}. In principle, a garbage collection higher up the call
 chain should reclaim this later anyway.
 
 Without the \kbd{stackdummy}, if the $[\kbd{av}, \kbd{ltop}]$ zone is
@@ -1378,10 +1384,10 @@ arbitrary (not even valid \kbd{GEN}s as could happen after direct
 truncation via \kbd{setlg}), we would leave dangerous data in the middle
 of~\kbd{z}, which would be a problem for a later
 \bprog
-  gerepile(..., ... , z);
+  gc_upto(..., z);
 @eprog\noindent
 And even if it were made of valid \kbd{GEN}s, inhibiting the area makes sure
-\kbd{gerepile} will not inspect their components, saving time.
+\tet{gc_GEN_unsafe} will not inspect their components, saving time.
 
 Another natural use in low-level routines is to ``shorten'' an existing
 \kbd{GEN} \kbd{z} to its first $\kbd{n}-1$ components:
@@ -1401,7 +1407,7 @@ common, that we provide a function for this:
 
 \fun{void}{fixlg}{GEN z, long ly} a safe variant of \kbd{setlg(z, ly)}. If
 \kbd{ly} is larger than \kbd{lg(z)} do nothing. Otherwise, shorten $z$ in
-place, using \kbd{stackdummy} to avoid later \kbd{gerepile} problems.
+place, using \kbd{stackdummy} to avoid later garbage collection problems.
 
 \fun{GEN}{gcopy_avma}{GEN x, pari_sp *AVMA} return a copy of $x$ as from
 \kbd{gcopy}, except that we pretend that initially \kbd{avma} is \kbd{*AVMA},
@@ -1419,15 +1425,15 @@ pointer and update the value of the second argument: the new (fictitious)
 \subsec{Debugging the PARI stack}
 
 \fun{int}{chk_gerepileupto}{GEN x} returns 1 if \kbd{x} is suitable for
-\kbd{gerepileupto}, and 0 otherwise. In the latter case, print a warning
+\kbd{gc\_upto}, and 0 otherwise. In the latter case, print a warning
 explaining the problem.
 
 \fun{void}{dbg_gerepile}{pari_sp ltop} outputs the list of all objects on the
 stack between \kbd{avma} and \kbd{ltop}, i.e. the ones that would be inspected
-in a call to \kbd{gerepile(...,ltop,...)}.
+in a call to \kbd{gc\_GEN\_unsafe(...,ltop,...)}.
 
 \fun{void}{dbg_gerepileupto}{GEN q} outputs the list of all objects on the
-stack that would be inspected in a call to \kbd{gerepileupto(...,q)}.
+stack that would be inspected in a call to \kbd{gc\_upto(...,q)}.
 
 \fun{void}{dbg_fill_stack}{void} marks the unused portion of the stack
 (between its bottom and \kbd{avma}) with repeated magic values:
@@ -1643,7 +1649,7 @@ before exiting your main function, since otherwise successive calls to
 the function clutters the stack with unnecessary garbage, and stack
 overflow occurs sooner. Also, if it returns a \kbd{GEN} and you want it
 to be accessible to \kbd{gp}, you have to make sure this \kbd{GEN} is
-suitable for \kbd{gerepileupto} (see \secref{se:garbage}).
+suitable for \kbd{gc\_upto} (see \secref{se:garbage}).
 
 If error messages or warnings are to be generated in your function, use
 \kbd{pari\_err} and \kbd{pari\_warn} respectively.
@@ -1682,14 +1688,14 @@ the following atoms:
 \settabs\+\indent&\kbd{Dxxx}\quad&\cr
 
 \noindent\item Return type: \kbd{GEN} by default (must be valid for
-\kbd{gerepileupto}), otherwise the following can appear as the \emph{first}
+\kbd{gc\_upto}), otherwise the following can appear as the \emph{first}
 char of the code string:
 %
 \+& \kbd{i} & return \kbd{int}\cr
 \+& \kbd{l} & return \kbd{long}\cr
 \+& \kbd{u} & return \kbd{ulong}\cr
 \+& \kbd{v} & return \kbd{void}\cr
-\+& \kbd{m} & return a \kbd{GEN} which is not \kbd{gerepile}-safe.\cr
+\+& \kbd{m} & return a \kbd{GEN} which is not gc-safe.\cr
 
 The \kbd{m} code is used for member functions, to avoid unnecessary copies. A
 copy opcode is generated by the compiler if the result needs to be kept safe
@@ -1836,7 +1842,7 @@ functions. Check their descriptions and adapt the source code in
 In this section we assume that your Operating System is supported by
 \tet{install}. You have written a function in C following the guidelines is
 \secref{se:coding_guidelines}; in case the function returns a \kbd{GEN}, it
-must satisfy \kbd{gerepileupto} assumptions (see \secref{se:garbage}).
+must satisfy \kbd{gc\_upto} assumptions (see \secref{se:garbage}).
 
 You then succeeded in building it as part of a shared library and want to
 finally tell \kbd{gp} about your function. First, find a name for it. It does
@@ -2451,8 +2457,8 @@ anticipated; instead of appending meaningless $0$s to the mantissa, we store
 what was actually computed.
 
 Note that shortening $z$ is not quite straightforward, since \kbd{setlg(z, ly)}
-would leave garbage on the stack, which \kbd{gerepile} might later inspect.
-It is done using
+would leave garbage on the stack, which garbage collection functions might
+later inspect. It is done using
 
 \fun{void}{fixlg}{GEN z, long ly} see \tet{stackdummy} and the examples that
 follow.
@@ -2728,7 +2734,7 @@ the new value of $x$ is $ < p^2$ (and $0$ otherwise). To be used when trial
 dividing $x$ by successive primes: the \kbd{stop} condition is cheaply tested
 while testing whether $p$ divides $x$ (is the quotient less than $p$?), and
 allows to decide that $n$ is prime if no prime $< p$ divides $n$. Not
-memory-clean.
+stack-clean.
 
 \fun{long}{Z_lval}{GEN x, ulong p} as \kbd{Z\_pval},
 except that \kbd{p} is an \kbd{ulong} ($\kbd{p} > 1$).
@@ -3095,16 +3101,13 @@ Return $0$ if $xy$ does not fit in an \kbd{ulong}.
 \fun{GEN}{addmulii}{GEN x, GEN y, GEN z} returns $x + yz$.
 
 \fun{GEN}{addmulii_inplace}{GEN x, GEN y, GEN z} returns $x + yz$, but
-returns $x$ itself and not a copy if $yz = 0$. Not suitable for
-\tet{gerepile} or \tet{gerepileupto}.
+returns $x$ itself and not a copy if $yz = 0$. Shallow function.
 
 \fun{GEN}{addmuliu_inplace}{GEN x, GEN y, ulong u} returns $x +yu$, but
-returns $x$ itself and not a copy if $yu = 0$. Not suitable for
-\tet{gerepile} or \tet{gerepileupto}.
+returns $x$ itself and not a copy if $yu = 0$. Shallow function.
 
 \fun{GEN}{submuliu_inplace}{GEN x, GEN y, ulong u} returns $x- yu$, but
-returns $x$ itself and not a copy if $yu = 0$. Not suitable for
-\tet{gerepile} or \tet{gerepileupto}.
+returns $x$ itself and not a copy if $yu = 0$. Shallow function.
 
 \fun{GEN}{lincombii}{GEN u, GEN v, GEN x, GEN y} returns $ux + vy$.
 
@@ -3429,11 +3432,11 @@ $B > 0$ and $y > 1$ are integers.
 \kbd{ulong} arguments.
 
 \fun{GEN}{vecpowuu}{long N, ulong a} return the vector of $n^a$, $n = 1,
-\dots, N$. Not memory clean.
+\dots, N$. Not stack-clean.
 
 \fun{GEN}{vecpowug}{long N, GEN a, long prec} return the vector of $n^a$, $n
 = 1, \dots, N$, where the powers are computed at precision \kbd{prec}. Not
-memory clean.
+stack-clean.
 
 \subsec{GCD, extended GCD and LCM}
 
@@ -3545,8 +3548,8 @@ nonnegative residue).
 \kbd{shifti(p,-1)} and that $-p/2 < a < p$, returns the representative of
 \kbd{a} in the symmetric residue system $]-p/2,p/2]$.
 
-\fun{GEN}{Fp_center_i}{GEN a, GEN p, GEN pov2} internal variant of
-\tet{Fp_center}, not \kbd{gerepile}-safe: when $a$ is already in the
+\fun{GEN}{Fp_center_i}{GEN a, GEN p, GEN pov2} shallow internal variant of
+\tet{Fp_center}: when $a$ is already in the
 proper interval, it is returned as is, without a copy.
 
 \fun{GEN}{Fp_mul}{GEN a, GEN b, GEN m} returns the product of \kbd{a} by
@@ -3561,22 +3564,22 @@ proper interval, it is returned as is, without a copy.
 \kbd{b} modulo \kbd{m} (smallest nonnegative residue).
 
 \fun{GEN}{Fp_halve}{GEN x, GEN m} returns $z$ such that $2\*z = x$ modulo
-$m$ assuming such $z$ exists. Assume that $0 \leq x < m$. Not memory-clean,
-but suitable for \kbd{gerepileupto}.
+$m$ assuming such $z$ exists. Assume that $0 \leq x < m$. Not stack-clean,
+but suitable for \kbd{gc\_upto}.
 
 \fun{GEN}{Fp_double}{GEN x, GEN m} return $2x$ modulo $m$. Assume that $0
-\leq x < m$. Not memory-clean, but suitable for \kbd{gerepileupto}.
+\leq x < m$. Not stack-clean, but suitable for \kbd{gc\_upto}.
 
 \fun{GEN}{Fp_sqr}{GEN a, GEN m} returns $\kbd{a}^2$ modulo \kbd{m} (smallest
 nonnegative residue).
 
 \fun{ulong}{Fp_powu}{GEN x, ulong n, GEN m} raises \kbd{x} to the \kbd{n}-th
-power modulo \kbd{m} (smallest nonnegative residue). Not memory-clean, but
-suitable for \kbd{gerepileupto}.
+power modulo \kbd{m} (smallest nonnegative residue). Not stack-clean, but
+suitable for \kbd{gc\_upto}.
 
 \fun{ulong}{Fp_pows}{GEN x, long n, GEN m} raises \kbd{x} to the \kbd{n}-th
 power modulo \kbd{m} (smallest nonnegative residue). A negative \kbd{n} is
-allowed Not memory-clean, but suitable for \kbd{gerepileupto}.
+allowed Not stack-clean, but suitable for \kbd{gc\_upto}.
 
 \fun{GEN}{Fp_pow}{GEN x, GEN n, GEN m} returns $\kbd{x}^\kbd{n}$
 modulo \kbd{m} (smallest nonnegative residue).
@@ -4287,7 +4290,7 @@ square \kbd{FpM}.
 by the \kbd{ZC}~\kbd{y} (seen as a column vector, assumed to have compatible
 dimensions), and reduce modulo \kbd{p} to obtain an \kbd{FpC}.
 
-\fun{GEN}{FpM_FpC_mul_FpX}{GEN x, GEN y, GEN p, long v} is a memory-clean
+\fun{GEN}{FpM_FpC_mul_FpX}{GEN x, GEN y, GEN p, long v} is a stack-clean
 version of
 \bprog
   GEN tmp = FpM_FpC_mul(x,y,p);
@@ -4329,8 +4332,8 @@ is a \kbd{FpM} and $b$ a \kbd{FpC}.
 
 \fun{GEN}{FpM_intersect_i}{GEN x, GEN y, GEN p} internal variant of
 \kbd{FpM\_intersect} but the result is only a generating set, not
-necessarily an $\F_p$-basis. It is not \kbd{gerepile}-clean either, but
-suitable for \kbd{gerepileupto}.
+necessarily an $\F_p$-basis. It is not stack-clean, but suitable for
+\kbd{gc\_upto}.
 
 \fun{GEN}{FpM_inv}{GEN x, GEN p} returns a left inverse of \kbd{x}
 (the inverse if $x$ is square), or \kbd{NULL} if \kbd{x} is not invertible.
@@ -4476,7 +4479,7 @@ the \kbd{Flv} \kbd{x} by $\kbd{x}/\kbd{y}$.
 
 \fun{void}{Flc_lincomb1_inplace}{GEN X, GEN Y, ulong v, ulong q}
 sets $X\leftarrow X + vY$, where $X,Y$ are \kbd{Flc}. Memory efficient (e.g.
-no-op if $v = 0$), and gerepile-safe.
+no-op if $v = 0$); if the input was gc-safe, it remains so.
 
 \fun{GEN}{Flv_add}{GEN x, GEN y, ulong p} adds two \kbd{Flv}.
 
@@ -4607,8 +4610,8 @@ if no such matrix exist.
 \fun{GEN}{Flm_intersect_i}{GEN x, GEN y, GEN p} internal variant of
 \kbd{Flm\_intersect} but the result is only a generating set, not
 necessarily an $\F_p$-basis. It \emph{is} a basis if both $x$ and $y$
-have independent columns. It is not \kbd{gerepile}-clean either, but
-suitable for \kbd{gerepileupto}.
+have independent columns. The function is not stack-clean, but
+suitable for \kbd{gc\_upto}.
 
 \fun{GEN}{Flm_transpose}{GEN x}
 
@@ -4970,8 +4973,8 @@ valuation at \kbd{t} of~\kbd{x}, and \kbd{*r} is the prime-to-\kbd{t} part
 of~\kbd{x}.
 
 \fun{GEN}{FpX_deriv}{GEN x, GEN p} returns the derivative of \kbd{x}.
-This function is not memory-clean, but nevertheless suitable for
-\kbd{gerepileupto}.
+This function is not stack-clean, but nevertheless suitable for
+\kbd{gc\_upto}.
 
 \fun{GEN}{FpX_integ}{GEN x, GEN p} returns the primitive of \kbd{x} whose
 constant term is $0$.
@@ -5008,8 +5011,8 @@ This is useful when computing the inverse of $y$ modulo $x$.
 coefficient belong to the symmetric residue system. Assumes the coefficients
 already belong to $]-p/2, p[$ and that \kbd{pov2} is \kbd{shifti(p,-1)}.
 
-\fun{GEN}{FpX_center_i}{GEN z, GEN p, GEN pov2} internal variant of
-\tet{FpX_center}, not \kbd{gerepile}-safe.
+\fun{GEN}{FpX_center_i}{GEN z, GEN p, GEN pov2} shallow internal variant of
+\tet{FpX_center}.
 
 \fun{GEN}{FpX_Frobenius}{GEN T, GEN p} returns $X^{p}\pmod{T(X)}$.
 
@@ -5028,15 +5031,13 @@ polynomial in variable $v$, reduced modulo $p$.
 \kbd{FpX}~\kbd{y}.
 
 \fun{GEN}{FpX_Fp_add_shallow}{GEN y, GEN x, GEN p} add the \kbd{Fp}~\kbd{x}
-to the \kbd{FpX}~\kbd{y}, using a shallow copy (result not suitable for
-\kbd{gerepileupto})
+to the \kbd{FpX}~\kbd{y}. Shallow function.
 
 \fun{GEN}{FpX_Fp_sub}{GEN y, GEN x, GEN p} subtract the \kbd{Fp}~\kbd{x} from
 the \kbd{FpX}~\kbd{y}.
 
 \fun{GEN}{FpX_Fp_sub_shallow}{GEN y, GEN x, GEN p} subtract the
-\kbd{Fp}~\kbd{x} from the \kbd{FpX}~\kbd{y}, using a shallow copy (result not
-suitable for \kbd{gerepileupto})
+\kbd{Fp}~\kbd{x} from the \kbd{FpX}~\kbd{y}. Shallow function.
 
 \fun{GEN}{Fp_FpX_sub}{GEN x,GEN y,GEN p} returns $x - y$, where $x$ is
 a \typ{INT} and $y$ an \kbd{FpX}.
@@ -5071,7 +5072,7 @@ the degree of $T$.
 \fun{GEN}{FpX_rescale}{GEN P, GEN h, GEN p} returns $h^{\deg(P)} P(x/h)$.
 \kbd{P} is an \kbd{FpX} and \kbd{h} is a nonzero \kbd{Fp} (the routine would
 work with any nonzero \typ{INT} but is not efficient in this case).
-Neither memory-clean nor suitable for \kbd{gerepileupto}.
+Shallow function.
 
 \fun{GEN}{FpX_eval}{GEN x, GEN y, GEN p} evaluates the \kbd{FpX}~\kbd{x}
 at the \kbd{Fp}~\kbd{y}. The result is an~\kbd{Fp}.
@@ -5263,7 +5264,7 @@ place. In addition, \kbd{Fq} routines also allow $\kbd{T} = \kbd{NULL}$, in
 which case no reduction mod \kbd{T} is performed on the result.
 
 For efficiency, the routines in this section may leave small unused objects
-behind on the stack (their output is still suitable for \kbd{gerepileupto}).
+behind on the stack (their output is still suitable for \kbd{gc\_upto}).
 Besides \kbd{T} and \kbd{p}, arguments are either \kbd{FpXQ} or \kbd{Fq}
 depending on the function name. (All \kbd{Fq} routines accept \kbd{FpXQ}s by
 definition, not the other way round.)
@@ -5726,7 +5727,7 @@ by its leading term. The leading coefficient becomes $1$ as a \typ{INT}.
 \fun{GEN}{FqX_rem}{GEN x, GEN y, GEN T, GEN p}
 
 \fun{GEN}{FqX_deriv}{GEN x, GEN T, GEN p} returns the derivative of \kbd{x}.
-(This function is suitable for \kbd{gerepilupto} but not memory-clean.)
+Not stack-clean but suitable for \kbd{gc\_upto}.
 
 \fun{GEN}{FqX_integ}{GEN x, GEN T, GEN p} returns the primitive of \kbd{x}.
 whose constant term is $0$.
@@ -8050,8 +8051,7 @@ usually more efficient than computations using a priori bounds.
 \kbd{ZX}, $p$ a prime, return the $p$-adic factorization of $f$, modulo
 $p^M$. This is the underlying low-level recursive function behind
 \kbd{factorpadic} (using a combination of Round 4 factorization and Hensel
-lifting); the factors are not sorted and the function is not
-\kbd{gerepile}-clean.
+lifting); the factors are not sorted and the function is shallow.
 
 \fun{GEN}{ZpX_primedec}{GEN T, GEN p} $T$ a monic separable \kbd{ZX}, $p$ a
 prime, return as a factorization matrix the shape of the prime ideal
@@ -8601,8 +8601,7 @@ prime factors of the \typ{INT} $n$ are less or equal to $lim$.
 \fun{GEN}{Z_issmooth_fact}{GEN n, ulong lim} returns \kbd{NULL} if a prime
 factor of the \typ{INT} $n$ is $> lim$, and returns the factorization
 of $n$ otherwise, as a \typ{MAT} with \typ{VECSMALL} columns (word-size
-primes and exponents). Neither memory-clean nor suitable for
-\kbd{gerepileupto}.
+primes and exponents). Shallow function.
 
 \fun{GEN}{Z_factor_until}{GEN n, GEN lim} as \kbd{Z\_factor}, but stop the
 factorization process as soon as the unfactored part is smaller than \kbd{lim}.
@@ -8643,8 +8642,7 @@ power of $q$ dividing $n$. It may happen that $q$ is prime.
 $L$ containing a list of primes and a \typ{INT} $n$, trial divide
 $n$ by the elements of $L$ and return the cofactor. Return \kbd{NULL} if the
 cofactor is $\pm 1$. \kbd{*P} and \kbd{*E} contain the list of prime divisors
-found and their exponents, as \typ{VECSMALL}s. Neither memory-clean, nor
-suitable for \tet{gerepileupto}.
+found and their exponents, as \typ{VECSMALL}s. Shallow function.
 
 \fun{GEN}{Z_lsmoothen}{GEN n, GEN L, GEN *pP, GEN *pE} as
 \kbd{Z\_smoothen} where $L$ is a \typ{VECSMALL} of small primes and both
@@ -8652,7 +8650,7 @@ suitable for \tet{gerepileupto}.
 
 \fun{GEN}{Z_factor_listP}{GEN N, GEN L} given a \typ{INT} $N$, a vector or
 primes $L$ containing all prime divisors of $N$ (and possibly others). Return
-\kbd{factor(N)}. Neither memory-clean, nor suitable for \tet{gerepileupto}.
+\kbd{factor(N)}. Shallow function.
 
 \fun{GEN}{factor_pn_1}{GEN p, ulong n} returns the factorization of $p^n-1$,
 where $p$ is prime and $n$ is a positive integer.
@@ -8695,10 +8693,10 @@ $\sqrt{b}$. For all odd $c$, $a \leq c \leq b$, the factorization of $c$ is
 given in in $v[(c-a)/2 + 1]$.
 
 \fun{GEN}{vecfactoru_i}{ulong a, ulong b}, private version of
-\kbd{vecfactoru}, not memory clean.
+\kbd{vecfactoru}, not stack-clean.
 
 \fun{GEN}{vecfactoroddu_i}{ulong a, ulong b}, private version of
-\kbd{vecfactoroddu}, not memory clean.
+\kbd{vecfactoroddu}, not stack-clean.
 
 \fun{GEN}{vecfactorsquarefreeu}{ulong a, ulong b} return a \typ{VEC} $v$
 containing the prime divisors of squarefree integers in $a,\dots,b$; assume
@@ -8706,8 +8704,7 @@ that $a \leq b$. Uses a sieve with primes up to $\sqrt{b}$.
 For all squarefree $c$, $a\leq c\leq b$, the prime divisors of $c$ (as a
 \typ{VECSMALL}) are given in $v[c-a+1]$, and the other entries are
 \kbd{NULL}. Note that because of these \kbd{NULL} markers, $v$ is not a valid
-\kbd{GEN}, it is not memory clean and cannot be used in garbage collection
-routines.
+\kbd{GEN}, it is not stack-clean.
 
 \fun{GEN}{vecfactorsquarefreeu_coprime}{ulong a, ulong b, GEN P}
 given a \emph{sorted} \typ{VECSMALL} of primes $P$, return a \typ{VEC} $v$
@@ -8716,8 +8713,7 @@ the elements of $P$; assume that $a \leq b$. Uses a sieve with primes up to
 $\sqrt{b}$. For all squarefree $c$, $a\leq c\leq b$, the prime divisors of $c$
 (as a \typ{VECSMALL}) are given in $v[c-a+1]$, and the other entries are
 \kbd{NULL}. Note that because of these \kbd{NULL} markers, $v$ is not a valid
-\kbd{GEN}, it is not memory clean and cannot be used in garbage collection
-routines.
+\kbd{GEN}, it is not stack-clean.
 
 \fun{GEN}{vecsquarefreeu}{ulong a, ulong b} return a \typ{VECSMALL} $v$
 containing the squarefree integers in $a,\dots,b$. Assume that
@@ -8866,7 +8862,7 @@ will be aborted as soon as a repeated factor is detected (Moebius mode).
 The function assumes that $n > 1$ is a \emph{composite} \typ{INT} whose prime
 divisors satisfy $p > 2^{14}$ \emph{and} that one can write to $n$ in place.
 
-This function stores data on the stack, no \kbd{gerepile} call should
+This function stores data on the stack, no garbage collection call should
 delete this data until the factorization is complete. Returns \kbd{partial},
 a data structure recording the partial factorization state.
 
@@ -9160,8 +9156,7 @@ $u$, $v$ are \typ{INT} and $x,y$ are \kbd{ZC} or \kbd{ZV}. Return a \kbd{ZC}
 
 \fun{void}{ZC_lincomb1_inplace}{GEN X, GEN Y, GEN v} sets $X\leftarrow X +
 vY$, where $v$ is a \typ{INT} and $X,Y$ are \kbd{ZC} or \kbd{ZV}. (The result
-has the type of $X$.) Memory efficient (e.g. no-op if $v = 0$), but not
-gerepile-safe.
+has the type of $X$.) Memory efficient (e.g. no-op if $v = 0$), but shallow.
 
 \fun{void}{ZC_lincomb1_inplace_i}{GEN X, GEN Y, GEN v, long n}
 variant of \tet{ZC_lincomb1_inplace}: only update $X[1], \dots, X[n]$,
@@ -9366,14 +9361,14 @@ rational reconstruction along the way. To be used when you expect that the
 denominator of $M^{-1}$ is much smaller than $\det M$ else use \kbd{ZM\_inv}.
 
 \fun{GEN}{SL2_inv_shallow}{GEN M} return the inverse of $M \in
-\text{SL}_2(\Z)$. Not gerepile-safe.
+\text{SL}_2(\Z)$. Shallow function.
 
 \fun{GEN}{ZM_pseudoinv}{GEN M, GEN *pv, GEN *pd} if \kbd{M} is a nonempty
 \kbd{ZM}, let $v = [y,z]$ returned by \kbd{indexrank} and
 let $M_1$ be the corresponding square invertible matrix.
 Return a primitive left-inverse $H$ such that $H M_1$ is
 $d$ times the identity and set \kbd{*pd} to $d$. If \kbd{pv} is not
-\kbd{NULL}, set \kbd{*pv} to $v$. Not gerepile-safe.
+\kbd{NULL}, set \kbd{*pv} to $v$. Shallow function.
 
 \fun{GEN}{ZM_gauss}{GEN a, GEN b} as \kbd{gauss}, where $a$ and $b$
 coefficients are \typ{INT}s.
@@ -9427,8 +9422,7 @@ the original equation $a x = b$ if and only if a solution exists.
 \fun{GEN}{QM_image}{GEN x} returns an integral matrix with primitive columns
 generating the image of $x$.
 
-\fun{GEN}{QM_image_shallow}{GEN A} shallow version of the previous function,
-not suitable for \kbd{gerepile}.
+\fun{GEN}{QM_image_shallow}{GEN A} shallow version of the previous function.
 
 \subsec{\kbd{Qevproj}}
 
@@ -9589,13 +9583,13 @@ the number of rows, resp.~columns of the \typ{MAT} $x$.
 and $y$ a scalar, returns the square matrix $x + y*\text{Id}$.
 
 \fun{GEN}{RgM_Rg_add_shallow}{GEN x, GEN y} as \kbd{RgM\_Rg\_add} with much
-fewer copies. Not suitable for \kbd{gerepileupto}.
+fewer copies. Shallow function.
 
 \fun{GEN}{RgM_Rg_sub}{GEN x, GEN y} assuming $x$ is a square matrix
 and $y$ a scalar, returns the square matrix $x - y*\text{Id}$.
 
 \fun{GEN}{RgM_Rg_sub_shallow}{GEN x, GEN y} as \kbd{RgM\_Rg\_sub} with much
-fewer copies. Not suitable for \kbd{gerepileupto}.
+fewer copies. Shallow function.
 
 \fun{GEN}{RgC_Rg_add}{GEN x, GEN y} assuming $x$ is a nonempty column vector
 and $y$ a scalar, returns the vector $[x_1 + y, x_2,\dots,x_n]$.
@@ -9896,7 +9890,7 @@ coefficients, apply \tet{RgM_gtomp} first.
 invertible \typ{MAT} with \typ{INT} or \typ{REAL} coefficients, returns
 \kbd{qfgaussred(x\til * x)}; this is essentially the upper triangular $R$
 matrix from the $QR$ decomposition of $x$, renormalized to accomodate
-\kbd{qfgaussred} conventions. Not memory clean.
+\kbd{qfgaussred} conventions. Not stack-clean.
 
 \fun{GEN}{RgM_gram_schmidt}{GEN e, GEN *ptB} naive (unstable) Gram-Schmidt
 orthogonalization of the basis $(e_i)$ given by the columns of \typ{MAT} $e$.
@@ -10092,8 +10086,7 @@ component in $x$.
 $v$ equal to the \typ{INT} $x$.
 
 \fun{GEN}{scalar_ZX_shallow}{GEN x, long v} returns the constant \kbd{ZX} in
-variable $v$ equal to the \typ{INT} $x$. Shallow function not suitable for
-\kbd{gerepile} and friends.
+variable $v$ equal to the \typ{INT} $x$. Shallow function.
 
 \fun{GEN}{ZX_renormalize}{GEN x, long l}, as \kbd{normalizepol}, where
 $\kbd{l} = \kbd{lg(x)}$, in place.
@@ -10179,10 +10172,10 @@ is a vector of \kbd{ZX}, returns $\sum_{i=0}^{n}{c_i\*B^i}$.
 \fun{GEN}{ZX_gcd_all}{GEN x, GEN y, GEN *pX} returns a gcd $d$ of $x$ and
 $y$. If \kbd{pX} is not \kbd{NULL}, set $\kbd{*pX}$ to a (nonzero) integer
 multiple of $x/d$. If $x$ and $y$ are both monic, then $d$ is monic and
-\kbd{*pX} is exactly $x/d$. Not memory clean.
+\kbd{*pX} is exactly $x/d$. Not stack-clean.
 
 \fun{GEN}{ZX_radical}{GEN x} returns the largest squarefree divisor
-of the \kbd{ZX} $x$. Not memory clean.
+of the \kbd{ZX} $x$. Not stack-clean.
 
 \fun{GEN}{ZX_content}{GEN x} returns the content of the \kbd{ZX} $x$.
 
@@ -10226,16 +10219,14 @@ polynomial with integer coefficients $P$, sets \kbd{d} to
 function.
 
 \fun{GEN}{ZX_rescale}{GEN P, GEN h} returns $h^{\deg(P)} P(x/h)$.
-\kbd{P} is a \kbd{ZX} and \kbd{h} is a nonzero integer. Neither memory-clean
-nor suitable for \kbd{gerepileupto}.
+\kbd{P} is a \kbd{ZX} and \kbd{h} is a nonzero integer. Shallow function.
 
 \fun{GEN}{ZX_rescale2n}{GEN P, long n} returns $2^{n\deg(P)} P(x>>n)$ where
 \kbd{P} is a \kbd{ZX}.
 
 \fun{GEN}{ZX_rescale_lt}{GEN P} returns the monic integral polynomial
 $h^{\deg(P)-1} P(x/h)$, where \kbd{P} is a nonzero \kbd{ZX} and \kbd{h} is
-its leading coefficient. Neither memory-clean nor suitable for
-\kbd{gerepileupto}.
+its leading coefficient. Shallow function.
 
 \fun{GEN}{ZX_translate}{GEN P, GEN c} assume $P$ is a \kbd{ZX} and $c$ an
 integer. Returns $P(X + c)$ (optimized for $c = \pm 1$).
@@ -10247,20 +10238,20 @@ clean.
 \fun{GEN}{ZX_Z_eval}{GEN P,GEN x} evaluate the \kbd{ZX} $P$ at the integer $x$.
 
 \fun{GEN}{ZX_unscale}{GEN P, GEN h} given a \kbd{ZX} $P$ and a \typ{INT} $h$,
-returns $P(hx)$. Not memory clean.
+returns $P(hx)$. Not stack-clean.
 
 \fun{GEN}{ZX_z_unscale}{GEN P, long h} given a \kbd{ZX} $P$,
-returns $P(hx)$. Not memory clean.
+returns $P(hx)$. Not stack-clean.
 
 \fun{GEN}{ZX_unscale2n}{GEN P, long n} given a \kbd{ZX} $P$, returns
-$P(x<<n)$. Not memory clean.
+$P(x<<n)$. Not stack-clean.
 
 \fun{GEN}{ZX_unscale_div}{GEN P, GEN h} given a \kbd{ZX} $P$ and a \typ{INT} $h$
-such that $h \mid P(0)$, returns $P(hx)/h$. Not memory clean.
+such that $h \mid P(0)$, returns $P(hx)/h$. Not stack-clean.
 
 \fun{GEN}{ZX_unscale_divpow}{GEN P, GEN h, long k} given a \kbd{ZX} $P$,
 a \typ{INT} $h$ and $k > 0$, returns $P(hx)/h^k$ assuming the result has
-integral coefficients. Not memory clean.
+integral coefficients. Not stack-clean.
 
 \fun{GEN}{ZX_eval1}{GEN P} returns the integer $P(1)$.
 
@@ -10289,7 +10280,7 @@ product $\prod T_i^{e_i}$ with the $e_1 < e_2 < \cdots$ all distinct and the
 $T_i$ pairwise coprime. Return the vector of the $T_i$, and set \kbd{*E} to
 the vector of the $e_i$, as a \typ{VECSMALL}. For efficiency, powers of $x$
 should have been removed from $T$ using \kbd{ZX\_valrem}, but the result is
-also correct if not. Not memory clean.
+also correct if not. Not stack-clean.
 
 \fun{GEN}{ZX_Uspensky}{GEN P, GEN ab, long flag, long bitprec} let \kbd{P} be a
 \kbd{ZX} polynomial whose real roots are simple and \kbd{bitprec} is the
@@ -10483,11 +10474,11 @@ n$. Not stack-clean. Note that $t$ need not be the same variable as $Y$!
 
 \fun{GEN}{ZXX_mul_Kronecker}{GEN P, GEN Q, long n} return \tet{ZX_mul}
 applied to the Kronecker forms $P(X,X^{2\*n-1})$ and $Q(X,X^{2\*n-1})$
-of $P$ and $Q$. Not memory clean.
+of $P$ and $Q$. Not stack-clean.
 
 \fun{GEN}{ZXX_sqr_Kronecker}{GEN P, long n} return \tet{ZX_sqr}
 applied to the Kronecker forms $P(X,X^{2\*n-1})$
-of $P$. Not memory clean.
+of $P$. Not stack-clean.
 
 \subsec{\kbd{ZXk/QXk}}
 \kbd{ZXk} are multivariate polynomials with \typ{INT} coefficients.
@@ -10590,18 +10581,18 @@ is a \kbd{QX} and $T$ is a \kbd{ZX}.
 \fun{GEN}{QX_ZXQV_eval}{GEN f, GEN nV, GEN dV} as \kbd{RgX\_RgXQV\_eval},
 except that $f$ is assumed to be a \kbd{QX}, $V$ is given implicitly
 by a numerator \kbd{nV} (\kbd{ZV}) and denominator \kbd{dV} (a positive
-\typ{INT} or \kbd{NULL} for trivial denominator). Not memory clean, but
-suitable for \kbd{gerepileupto}.
+\typ{INT} or \kbd{NULL} for trivial denominator). Not stack-clean, but
+suitable for \kbd{gc\_upto}.
 
 \fun{GEN}{QXV_QXQ_eval}{GEN v, GEN a, GEN T} $v$ is a vector of \kbd{QX}s
 (possibly scalars, i.e.~rational numbers, for convenience), $a$ and $T$ both
 \kbd{QX}. Return the vector of evaluations at $a$ modulo $T$.
-Not memory clean, nor suitable for \kbd{gerepileupto}.
+Not stack-clean.
 
 \fun{GEN}{QXY_QXQ_evalx}{GEN P, GEN a, GEN T} $P(X,Y)$ is a \typ{POL} with
 \kbd{QX} coefficients (possibly scalars, i.e.~rational numbers, for
 convenience) , $a$ and $T$ both \kbd{QX}. Return the \kbd{QX} $P(a \mod
-T, Y)$. Not memory clean, nor suitable for \kbd{gerepileupto}.
+T, Y)$. Not stack-clean.
 
 \subsec{\kbd{QXQX}}
 
@@ -10622,7 +10613,7 @@ denominator of the (monic) gcd of $P,Q$ in $K[X]$.
 \fun{GEN}{nfgcd_all}{GEN P, GEN Q, GEN T, GEN den, GEN *Pnew} as \kbd{nfgcd}.
 If \kbd{Pnew} is not \kbd{NULL}, set \kbd{*Pnew} to a nonzero integer
 multiple of $P/d$. If $P$ and $Q$ are both monic, then $d$ is monic and
-\kbd{*Pnew} is exactly $P/d$. Not memory clean if the gcd is $1$
+\kbd{*Pnew} is exactly $P/d$. Not stack-clean if the gcd is $1$
 (in that case \kbd{*Pnew} is set to $P$).
 
 \fun{GEN}{QXQX_gcd}{GEN x, GEN y, GEN T} returns the gcd of $x$ and $y$,
@@ -10735,8 +10726,7 @@ where $A$ and $B$ are coprime to $X$ and $v$ in $\Z$. Set \kbd{*a} to A,
 \kbd{*b} to $B$ and return $v$.
 
 \fun{GEN}{RgX_deflate}{GEN P, long d} assuming $P$ is a polynomial of the
-form $Q(X^d)$, return $Q$. Shallow function, not suitable for
-\kbd{gerepileupto}.
+form $Q(X^d)$, return $Q$. Shallow function.
 
 \fun{long}{RgX_deflate_order}{GEN P} given a nonconstant polynomial
 $P$, returns the largest exponent $d$ such that $P$ is of the form $P(x^d)$
@@ -10755,8 +10745,7 @@ as \kbd{RgX\_deflate\_max} where $F$ is a nonconstant \typ{RFRAC}.
 \fun{GEN}{rfrac_deflate}{GEN F, long m}
 as \kbd{RgX\_deflate} where $F$ is a \typ{RFRAC}.
 
-\fun{GEN}{RgX_inflate}{GEN P, long d} return $P(X^d)$. Shallow function, not
-suitable for \kbd{gerepileupto}.
+\fun{GEN}{RgX_inflate}{GEN P, long d} return $P(X^d)$. Shallow function.
 
 \fun{GEN}{RgX_rescale_to_int}{GEN x} given a polynomial $x$ with real entries
 (\typ{INT}, \typ{FRAC} or \typ{REAL}), return a \kbd{ZX} wich is very close
@@ -10810,7 +10799,7 @@ by shifting $x$ in place. To be used as follows
   RgX_shift_inplace_init(v);
   av = avma;
   ...
-  x = gerepileupto(av, ...); /* a t_POL */
+  x = gc_upto(av, ...); /* a t_POL */
   return RgX_shift_inplace(x, v);
 @eprog
 
@@ -11044,13 +11033,13 @@ $0$, with respect to its main variable.
 
 \fun{GEN}{RgX_rescale}{GEN P, GEN h} returns $h^{\deg(P)} P(x/h)$.
 \kbd{P} is an \kbd{RgX} and \kbd{h} is nonzero. (Leaves small objects on the
-stack. Suitable but inefficient for \kbd{gerepileupto}.)
+stack. Suitable but inefficient for \kbd{gc\_upto}.)
 
 \fun{GEN}{RgXV_rescale}{GEN v, GEN h} apply \kbd{RgX\_unscale} to a vector
 of \kbd{RgX}.
 
 \fun{GEN}{RgX_unscale}{GEN P, GEN h} returns $P(h x)$. (Leaves small objects
-on the stack. Suitable but inefficient for \kbd{gerepileupto}.)
+on the stack. Suitable but inefficient for \kbd{gc\_upto}.)
 
 \fun{GEN}{RgXV_unscale}{GEN v, GEN h} apply \kbd{RgX\_unscale} to a vector
 of \kbd{RgX}.
@@ -11060,7 +11049,7 @@ a polynomials whose main variable has lower priority than the main variable
 $X$ of $P$. Returns $P(X + c)$ (optimized for $c = \pm 1$).
 
 \fun{GEN}{RgX_affine}{GEN P, GEN a, GEN b} Return $P(aX + b)$
-(optimized for $b = \pm 1$). Not memory clean.
+(optimized for $b = \pm 1$). Not stack-clean.
 
 \subsubsec{Function related to modular forms}
 
@@ -11092,25 +11081,25 @@ Karatsuba algorithm (Mulders, Hanrot-Zimmermann variant).
 
 \fun{GEN}{RgX_mulhigh_i}{GEN f, GEN g, long n} return the Euclidean quotient
 of $f(x)*g(x)$ by $x^n$ (high product). Uses \tet{RgXn_mul} applied to
-the reciprocal polynomials of $f$ and $g$. Not suitable for \kbd{gerepile}.
+the reciprocal polynomials of $f$ and $g$. Shallow function.
 
 \fun{GEN}{RgX_sqrhigh_i}{GEN f, long n} return the Euclidean quotient
 of $f(x)^2$ by $x^n$ (high product). Uses \tet{RgXn_sqr} applied to
-the reciprocal polynomial of $f$. Not suitable for \kbd{gerepile}.
+the reciprocal polynomial of $f$. Shallow function.
 
 \fun{GEN}{RgXn_inv}{GEN a, long n} returns $a^{-1}$ modulo $X^n$,
 where $a$ is a \typ{POL} in the variable $X$ and $n \geq 0$. Uses
 Newton-Raphson algorithm.
 
 \fun{GEN}{RgXn_inv_i}{GEN a, long n} as \tet{RgXn_inv} without final garbage
-collection (suitable for \kbd{gerepileupto}).
+collection (suitable for \kbd{gc\_upto}).
 
 \fun{GEN}{RgXn_div}{GEN a, GEN b, long n} returns $a/b$ modulo $X^n$,
 where $a$ and $b$ are \typ{POL}s in the variable $X$ and $n \geq 0$. Uses
 Newton-Raphson/Karp-Markstein algorithm.
 
 \fun{GEN}{RgXn_div_i}{GEN a, GEN b, long n} as \tet{RgXn_div} without final garbage
-collection (suitable for \kbd{gerepileupto}).
+collection (suitable for \kbd{gc\_upto}).
 
 \fun{GEN}{RgXn_powers}{GEN x, long m, long n} returns $[\kbd{x}^0,
 \dots, \kbd{x}^\kbd{m}]$ modulo $X^n$ as a \typ{VEC} of \kbd{RgXn}s.
@@ -11119,7 +11108,7 @@ collection (suitable for \kbd{gerepileupto}).
 $X^n$.
 
 \fun{GEN}{RgXn_powu_i}{GEN x, ulong m, long n} as \tet{RgXn_powu},
-not memory clean.
+not stack-clean.
 
 \fun{GEN}{RgXn_sqrt}{GEN a, long n} returns $a^{1/2}$ modulo $X^n$,
 where $a$ is a \typ{POL} in the variable $X$ and $n \geq 0$.
@@ -11805,7 +11794,7 @@ modulus would then become equal to $0$, as in $1.E-100 + 0.E-38 = 0.E-38$.
 
 \fun{GEN}{gtomp}{GEN z, long prec} converts the real number~\kbd{x}
 (\typ{INT}, \typ{REAL}, \typ{FRAC}, real \typ{QUAD}) to either
-a \typ{INT} or a \typ{REAL} of precision \kbd{prec}. Not memory clean
+a \typ{INT} or a \typ{REAL} of precision \kbd{prec}. Not stack-clean
 if $x$ is a \typ{INT}: we return $x$ itself and not a copy.
 
 \fun{GEN}{gcvtop}{GEN x, GEN p, long l} converts $x$ into a \typ{PADIC}
@@ -11906,9 +11895,10 @@ with the difference that we just delete all leading zeroes (as per
 \kbd{gequal0}). This rougher normalization is used when we have no other
 choice, for instance before attempting a Euclidean division by $x$.
 
-The following routines do \emph{not} copy coefficients on the stack (they
-only move pointers around), hence are very fast but not suitable for
-\kbd{gerepile} calls. Recall that an \kbd{RgV} (resp.~an \kbd{RgX}, resp.~an
+The following routines are all shallow: they do \emph{not} copy coefficients
+on the stack and only move pointers around, hence are very fast but not
+suitable for \kbd{gc\_GEN\_unsafe} or \kbd{gc\_upto} calls. Recall that an
+\kbd{RgV} (resp.~an \kbd{RgX}, resp.~an
 \kbd{RgM}) is a \typ{VEC} or \typ{COL} (resp.~a \typ{POL}, resp.~a \typ{MAT})
 with arbitrary components. Similarly, an \kbd{RgXV} is a \typ{VEC} or
 \typ{COL} with \kbd{RgX} components, etc.
@@ -11985,12 +11975,11 @@ remainder is $O(T^{d+l-2})$.
 to a \emph{shallow} \typ{SER} of length~$l\geq 2$.
 
 \fun{GEN}{rfrac_to_ser}{GEN F, long l} applied to a \typ{RFRAC}~$F$,
-creates a \typ{SER} of length~$l\geq 2$ congruent to $F$. Not memory-clean
-but suitable for \kbd{gerepileupto}.
+creates a \typ{SER} of length~$l\geq 2$ congruent to $F$. Not stack-clean
+but suitable for \kbd{gc\_upto}.
 
 \fun{GEN}{rfrac_to_ser_i}{GEN F, long l} internal variant of
-\kbd{rfrac\_to\_ser}, neither memory-clean nor suitable for
-\kbd{gerepileupto}.
+\kbd{rfrac\_to\_ser}. Shallow function.
 
 \fun{GEN}{rfracrecip_to_ser_absolute}{GEN F, long d} applied to a
 \typ{RFRAC}~$F$, creates the \typ{SER} $F(1/t) + O(t^d)$. Note that
@@ -12231,7 +12220,7 @@ but \kbd{mkvecsmalln(2, 1, 2)} is not.
 
 Contrary to the policy of general PARI functions, the functions in this
 subsection do \emph{not} copy their arguments, nor do they produce an object
-a priori suitable for \tet{gerepileupto}. In particular, they are
+a priori suitable for \tet{gc_upto}. In particular, they are
 faster than their clean equivalent (which may not exist). \emph{If} you
 restrict their arguments to universal objects (e.g \kbd{gen\_0}),
 then the above warning does not apply.
@@ -12334,7 +12323,7 @@ to \kbd{Qfb(a,b,c)}, assuming that $D = b^2 - 4ac$.
 \smallskip
 
 It is sometimes useful to return such a container whose entries are not
-universal objects, but nonetheless suitable for \tet{gerepileupto}.
+universal objects, but nonetheless suitable for \tet{gc_upto}.
 If the entries can be computed at the time the result is returned, the
 following macros achieve this effect:
 
@@ -12492,7 +12481,7 @@ polynomials, return their roots, i.e. the $- L[i](0)$.
 
 \fun{GEN}{roots_to_pol}{GEN L, long v} given a vector of scalars $L$,
 returns the monic polynomial in variable $v$ whose roots are the $L[i]$.
-Leaves some garbage on stack, but suitable for \kbd{gerepileupto}.
+Leaves some garbage on stack, but suitable for \kbd{gc\_upto}.
 
 \fun{GEN}{roots_to_pol_r1}{GEN L, long v, long r1} as \kbd{roots\_to\_pol}
 assuming the first $r_1$ roots are ``real'', and the following ones are
@@ -12501,7 +12490,7 @@ r_2$ elements, we obtain a polynomial of degree $r_1 + 2r_2$. In most
 applications, the roots are indeed real and complex, but the implementation
 assumes only that each ``complex'' root $z$ introduces a quadratic
 factor $X^2 - \kbd{trace}(z) X + \kbd{norm}(z)$.
-Leaves some garbage on stack, but suitable for \kbd{gerepileupto}.
+Leaves some garbage on stack, but suitable for \kbd{gc\_upto}.
 
 \section{Integer parts}
 
@@ -13075,7 +13064,7 @@ efficiency, the content remains on the stack.)
 \typ{MAT}, the result has primitive columns.
 
 \fun{GEN}{row_Q_primpart}{GEN x} as above, applied to the rows of a
-\typ{MAT}, so that the result has primitive rows. Not \kbd{gerepile}-safe.
+\typ{MAT}, so that the result has primitive rows. Shallow function.
 
 \fun{GEN}{Q_remove_denom}{GEN x, GEN *ptd} sets \kbd{d} to the
 $\Q$-denominator of \kbd{x} and returns \kbd{x * d}, which is integral.
@@ -13241,7 +13230,7 @@ associative binary operator. If $v$ has $k$ entries, return
 $$v[1]~\var{op}~v[2]~\var{op}~\ldots ~\var{op}~v[k];$$
 returns \kbd{gen\_1} if $k = 0$ and a copy of $v[1]$ if $k = 1$.
 Use divide and conquer strategy. Leave some garbage on stack, but suitable for
-\kbd{gerepileupto} if \kbd{mul} is.
+\kbd{gc\_upto} if \kbd{mul} is.
 
 \fun{GEN}{gen_pow}{GEN x, GEN n, void *D, F1 sqr, F2 mul} $n > 0$ a
 \typ{INT}, returns $x^n$; \kbd{mul(D, $x$, $y$)} implements the multiplication
@@ -13252,10 +13241,10 @@ in the underlying monoid; \kbd{sqr} is a (presumably optimized) shortcut for
 returns $x^n$. See \tet{gen_pow}.
 
 \fun{GEN}{gen_pow_i}{GEN x, GEN n, void *E, F1 sqr, F2 mul}
-internal variant of \tet{gen_pow}, not memory-clean.
+internal variant of \tet{gen_pow}, not stack-clean.
 
 \fun{GEN}{gen_powu_i}{GEN x, ulong n, void *E, F1 sqr, F2 mul}
-internal variant of \tet{gen_powu}, not memory-clean.
+internal variant of \tet{gen_powu}, not stack-clean.
 
 \fun{GEN}{gen_pow_fold}{GEN x, GEN n, void *D, F1 sqr, F1 msqr} variant
 of \tet{gen_pow}, where \kbd{mul} is replaced by \kbd{msqr}, with
@@ -13263,7 +13252,7 @@ of \tet{gen_pow}, where \kbd{mul} is replaced by \kbd{msqr}, with
 contain $x$.
 
 \fun{GEN}{gen_pow_fold_i}{GEN x, GEN n, void *E, F1 sqr, F1 msqr}
-internal variant of the function \tet{gen_pow_fold}, not memory-clean.
+internal variant of the function \tet{gen_pow_fold}, not stack-clean.
 
 \fun{GEN}{gen_powu_fold}{GEN x, ulong n, void *D, F1 sqr, F1 msqr}, see
 \tet{gen_pow_fold}.
@@ -13482,7 +13471,7 @@ $$\kbd{exponent}(b) - \kbd{exponent}(x) > \kbd{bit\_prec(x)}\;.$$
 \section{Quadratic numbers and binary quadratic forms}
 
 \fun{GEN}{quad_disc}{GEN x} returns the discriminant of the \typ{QUAD} $x$.
-Not stack-clean but suitable for \kbd{gerepileupto}.
+Not stack-clean but suitable for \kbd{gc\_upto}.
 
 \fun{GEN}{quadnorm}{GEN x} norm of the \typ{QUAD} $x$.
 
@@ -13504,10 +13493,10 @@ are automatically primitive.
 
 \fun{GEN}{truecoef}{GEN x, long n} returns \kbd{polcoef(x,n, -1)}, i.e.
 the coefficient of the term of degree \kbd{n} in the main variable. This is
-a safe but expensive function that must \emph{copy} its return value so that
-it be \kbd{gerepile}-safe. Use \kbd{polcoef\_i} for a fast internal variant.
+a safe but expensive function that \emph{copies} its return value to ease
+garbage collection. Use \kbd{polcoef\_i} for a fast shallow variant.
 
-\fun{GEN}{polcoef_i}{GEN x, long n, long v} internal shallow function. Rewrite
+\fun{GEN}{polcoef_i}{GEN x, long n, long v} shallow function. Rewrite
 $x$ as a Laurent polynomial in the variable $v$ and returns its coefficient
 of degree $n$ (\kbd{gen\_0} if this falls outside the coefficient array).
 Allow \typ{POL}, \typ{SER}, \typ{RFRAC} and scalars.
@@ -13593,10 +13582,10 @@ with respect to its main variable.
 
 \fun{GEN}{truecoef}{GEN x, long n} returns \kbd{polcoef(x,n, -1)}, i.e.
 the coefficient of the term of degree \kbd{n} in the main variable. This is a
-safe but expensive function that must \emph{copy} its return value so that it
-be \kbd{gerepile}-safe. Use \kbd{polcoef\_i} for a fast internal variant.
+safe but expensive function that \emph{copies} its return value to simplify
+garbage collection. Use \kbd{polcoef\_i} for a fast shallow variant.
 
-\fun{GEN}{ser_unscale}{GEN P, GEN h} return $P(h x)$, not memory clean.
+\fun{GEN}{ser_unscale}{GEN P, GEN h} return $P(h x)$, not stack-clean.
 
 \fun{GEN}{ser_normalize}{GEN x} divide $x$ by its ``leading term'' so that
 the series is either $0$ or equal to $t^v(1+O(t))$. Shallow function if the
@@ -14090,14 +14079,14 @@ solve $x  \log(x) - a  x = b$; if $b < 0$, assume $a \geq 1 + \log |b|$.
 \subsec{Other complex transcendental functions}
 
 \fun{GEN}{atanhuu}{ulong u, ulong v, long prec} computes \text{atanh}$(u/v)$
-using binary splitting, assuming $0 < u < v$. Not memory clean but suitable
-for \kbd{gerepileupto}. The complexity is $O(b / \log(v/u))$, where $b$ is
+using binary splitting, assuming $0 < u < v$. Not stack-clean but suitable
+for \kbd{gc\_upto}. The complexity is $O(b / \log(v/u))$, where $b$ is
 \kbd{prec2nbits(prec)}, so becomes impractical when $v/u$ is too close to
 $1$.
 
 \fun{GEN}{atanhui}{ulong u, GEN v, long prec} computes \text{atanh}$(u/v)$
-using binary splitting, assuming $0 < u < v$. Not memory clean but suitable
-for \kbd{gerepileupto}.
+using binary splitting, assuming $0 < u < v$. Not stack-clean but suitable
+for \kbd{gc\_upto}.
 
 \fun{GEN}{szeta}{long s, long prec} returns the value of Riemann's zeta
 function at the (possibly negative) integer $s\neq 1$, in relative accuracy
@@ -14173,7 +14162,7 @@ $T = \kbd{rootsof1powinit}(a,b,\kbd{prec})$, return $e(ac/b)$.
 \fun{GEN}{affc_fixlg}{GEN x, GEN res} assume \kbd{res} was allocated using
 \tet{cgetc}, and that $x$ is either a \typ{REAL} or a \typ{COMPLEX}
 with \typ{REAL} components. Assign $x$ to \kbd{res}, first shortening
-the components of \kbd{res} if needed (in a \kbd{gerepile}-safe way). Further
+the components of \kbd{res} if needed (in a stack-safe way). Further
 convert \kbd{res} to a \typ{REAL} if $x$ is a \typ{REAL}.
 
 \fun{GEN}{trans_eval}{const char *fun, GEN (*f) (GEN, long), GEN x, long prec}
@@ -14207,8 +14196,8 @@ belongs to the standard fundamental domain and set \kbd{*g} to $\gamma$.
 \fun{GEN}{cxEk}{GEN tau, long k, long prec} returns $E_k(\tau)$ by direct
 evaluation of $1 + 2/\zeta(1-k) \sum_n n^{k-1} q^n/(1-q^n)$, $q = e(\tau)$.
 Assume that $\Im \tau > 0$ and $k$ even. Very slow unless $\tau$ is already
-reduced modulo $\text{SL}_2(\Z)$. Not \kbd{gerepile}-clean but suitable for
-\kbd{gerepileupto}.
+reduced modulo $\text{SL}_2(\Z)$. Not stack-clean but suitable for
+\kbd{gc\_upto}.
 
 \subsec{Transcendental functions with \typ{PADIC} arguments}
 
@@ -14687,7 +14676,7 @@ which is the string itself and \kbd{use\_stack} which tells whether the
 string lives
 
 \item on the PARI stack (value $1$), meaning that it will be destroyed by any
-manipulation of the stack, e.g. a \kbd{gerepile} call or resetting
+manipulation of the stack, e.g. a garbage collection or resetting
 \kbd{avma};
 
 \item in malloc'ed memory (value $0$), in which case it is impervious to
@@ -15483,9 +15472,9 @@ typecast to a \kbd{void **}.
 See~\secref{se:clean} and~\secref{se:unclean} for various useful constructors.
 Coefficients are accessed and set using \tet{gel}, \tet{gcoeff},
 see~\secref{se:accessors}. There are many internal functions to extract or
-manipulate subvectors or submatrices but, like the accessors above, none of
-them are suitable for \tet{gerepileupto}. Worse, there are no type
-verification, nor bound checking, so use at your own risk.
+manipulate subvectors or submatrices but, like the accessors above, all of
+them are shallow functions. Worse, there are no type verification, nor bound
+checking, so use at your own risk.
 
 \fun{GEN}{shallowcopy}{GEN x} returns a \kbd{GEN} whose components are the
 components of $x$ (no copy is made). The result may now be used to compute in
@@ -15552,8 +15541,8 @@ row of \typ{MAT}~$A$: $A[i,j_1]$, $A[i,j_1+1]\dots,A[i,j_2]$. Assume $j_1
 \leq j_2$.
 
 \fun{GEN}{rowcopy}{GEN A, long i} return the row $A[i,]$ of
-the~\typ{MAT}~$A$. This function is memory clean and suitable for
-\kbd{gerepileupto}. See \kbd{row} for the shallow equivalent.
+the~\typ{MAT}~$A$. This function is stack-clean. See \kbd{row} for the
+shallow equivalent.
 
 \fun{GEN}{rowslice}{GEN A, long i1, long i2} return the \typ{MAT}
 formed by the $i_1$-th through $i_2$-th rows of \typ{MAT} $A$. Assume $i_1
@@ -16361,12 +16350,12 @@ be handled in a special way: you should never access or modify its components
 directly, only through the API we are about to describe. Indeed, its entries
 are meant to contain dynamic data, which will be stored, retrieved and
 replaced (for instance by a value computed to a higher accuracy), while
-interacting safely with intermediate \kbd{gerepile} calls. This mechanism
+interacting safely with intermediate garbage collections. This mechanism
 allows to simulate C \kbd{struct}s, in a simpler way than with general
-hashtables, while remaining compatible with the GP language, which knows
-neither structs nor hashtables. It also serialize the structure in an
+hashtables, while remaining compatible with the GP language (which knows
+neither structs nor hashtables). It also serialize the structure in an
 ordinary \kbd{GEN}, which facilitates copies and garbage collection (use
-\kbd{gcopy} or \kbd{gerepile}), rather than having to deal with individual
+\kbd{gcopy} or \kbd{gc\_upto}), rather than having to deal with individual
 components of actual C \kbd{struct}s.
 
 \fun{GEN}{obj_reinit}{GEN S} make a shallow copy of $S$, re-initializing

@@ -1654,7 +1654,7 @@ act_ZGl2Q(GEN z, struct m_act *T, hashtable *H)
     if (gc_needed(av,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"act_ZGl2Q, j = %ld",j);
-      S = gerepileupto(av, S);
+      S = gc_upto(av, S);
     }
   }
   return gc_GEN(av, S);
@@ -2173,7 +2173,7 @@ dual_act(long dimV, GEN act, GEN phi)
   {
     pari_sp av = avma;
     GEN s = ACT(gel(act,j), phi);
-    gel(v,j) = s? gerepileupto(av,s): zerocol(dimV);
+    gel(v,j) = s? gc_upto(av,s): zerocol(dimV);
   }
   return v;
 }
@@ -3945,7 +3945,7 @@ mspadicmoments(GEN W, GEN PHI, long D)
         z = moments_act_i(&S, mkmat22(gaD,utoipos(b), gen_0,gaD));
         d = s > 0? Dk: Fp_neg(Dk, pn);
         z = equali1(d)? gc_GEN(av2, z)
-                      : gerepileupto(av2, FpM_Fp_mul(z, d, pn));
+                      : gc_upto(av2, FpM_Fp_mul(z, d, pn));
       }
       gel(Dact,b) = z;
     }
@@ -4099,9 +4099,9 @@ mspadicint(GEN oms, long teichi, GEN S)
       s = gadd(s, v);
     }
     s = gadd(s, zeropadic_shallow(gp,nfinal));
-    gel(res,i) = gerepileupto(av2, s);
+    gel(res,i) = gc_upto(av2, s);
   }
-  return gerepileupto(av, gmul(alpha, res));
+  return gc_upto(av, gmul(alpha, res));
 }
 /* integrate P = polynomial in log(x); vlog[j+1] = mspadicint(0,log(1+x)^j) */
 static GEN
@@ -4166,7 +4166,7 @@ mspadicseries(GEN oms, long teichi)
   s = RgV_to_ser(s,0,lg(s)+1);
   if (s2) { s2 = RgV_to_ser(s2,0,lg(s2)+1); s = mkvec2(s, s2); }
   if (kross(oms_get_D(oms), p) >= 0) return gc_GEN(av, s);
-  return gerepileupto(av, gneg(s));
+  return gc_upto(av, gneg(s));
 }
 void
 mspadic_parse_chi(GEN s, GEN *s1, GEN *s2)
@@ -4707,7 +4707,7 @@ polygon2tex(GEN V, GEN Ast, GEN G)
     if (Ast[j] == j) decorate(&s, gel(G,j), arc, high);
   }
   str_printf(&s, "\n\\end{tikzpicture}");
-  return gerepileuptoleaf(av, strtoGENstr(s.string));
+  return gc_uptoleaf(av, strtoGENstr(s.string));
 }
 
 static GEN
@@ -4749,7 +4749,7 @@ circle2tex(GEN Ast, GEN G)
                      (Ast[u] - u)*ang > 179? "s": "", u, v[u], Ast[u], v[Ast[u]], ang);
   }
   str_printf(&s, "\\end{tikzpicture}\\endgroup");
-  return gerepileuptoleaf(av, strtoGENstr(s.string));
+  return gc_uptoleaf(av, strtoGENstr(s.string));
 }
 
 GEN
@@ -4873,7 +4873,7 @@ mslattice(GEN M, GEN F)
   U = Q_remove_denom(U, &d);
   F = ZM_hnf(ZM_mul(F, U));
   if (d) F = RgM_Rg_div(F, d);
-  return gerepileupto(av, F);
+  return gc_upto(av, F);
 }
 
 /**** Petersson scalar product ****/
@@ -4994,7 +4994,7 @@ mspetersson(GEN W, GEN F, GEN G)
   { /* <F,G>, two symbols */
     GEN s = gen_0;
     for (k = 1; k < l; k++) s = gadd(s, bil(gel(vf,k), gel(vg,k), CD));
-    return gerepileupto(av, gmul(s, A));
+    return gc_upto(av, gmul(s, A));
   }
   else if (F != G)
   { /* <(f_1,...,f_m), (g_1,...,g_n)> */
@@ -5012,7 +5012,7 @@ mspetersson(GEN W, GEN F, GEN G)
         gel(c,iF) = s; /* M[iF,iG] = <F[iF], G[iG] > */
       }
     }
-    return gerepileupto(av, RgM_Rg_mul(M, A));
+    return gc_upto(av, RgM_Rg_mul(M, A));
   }
   else
   { /* <(f_1,...,f_n), (f_1,...,f_n)> */
@@ -5027,7 +5027,7 @@ mspetersson(GEN W, GEN F, GEN G)
         gcoeff(M,iF,iG) = s; /* <F[iF], F[iG] > */
         gcoeff(M,iG,iF) = gneg(s);
       }
-    return gerepileupto(av, RgM_Rg_mul(M, A));
+    return gc_upto(av, RgM_Rg_mul(M, A));
   }
 }
 
@@ -5180,7 +5180,7 @@ evalcap(GEN co, GEN fg, GEN a)
     }
   }
   if (co_get_BD(co)) z = gmul(co_get_BD(co),z);
-  z = gerepileupto(av, gdivgs(z, -k * (k-1)));
+  z = gc_upto(av, gdivgs(z, -k * (k-1)));
   return RgX_Rg_mul(P, z);
 };
 
@@ -5266,7 +5266,7 @@ eiscocycle(GEN co, GEN f, GEN g)
     P = gsub(evalhull(co, f, gdiv(negi(d),c)),
              act(evalcap(co, actf(N,f,gi), gdiv(a,c)), gi, co_get_k(co)));
   }
-  return gerepileupto(av, P);
+  return gc_upto(av, P);
 }
 
 static GEN
@@ -5312,7 +5312,7 @@ eispetersson(GEN M, GEN F, GEN Eis, GEN CD)
     long d = itou(gel(e,1));
     res = gadd(res, d == 1? z: gdivgu(z,d));
   }
-  return gerepileupto(av, gdiv(simplify_shallow(res), gel(CD,2)));
+  return gc_upto(av, gdiv(simplify_shallow(res), gel(CD,2)));
 };
 
 /*vB[j][i] = {i/N} */
@@ -5340,7 +5340,7 @@ eisker_worker(GEN Ei, GEN M, GEN D, GEN co, GEN CD)
   V = s? gel(msk_get_starproj(M), 1): matid(n);
   /* T is multiplied by N * BD^2: same Ker */
   for (j = 1; j <= n; j++) gel(v,j) = eispetersson(M, gel(V,j), Eis, CD);
-  return gerepileupto(av, v);
+  return gc_upto(av, v);
 }
 /* vC = vecbinomial(k-2); vC[j] = binom(k-2,j-1) = vC[k-j], j = 1..k-1, k even.
  * C[k-j+1] = (-1)^(j-1) binom(k-2, j-1) / (j(k-j)) = C[j+1] */

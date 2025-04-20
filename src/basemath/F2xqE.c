@@ -52,7 +52,7 @@ F2xqE_changepoint(GEN x, GEN ch, GEN T)
   z = cgetg(3,t_VEC);
   gel(z,1) = F2xq_mul(v2, p1, T);
   gel(z,2) = F2xq_mul(v3, F2x_add(gel(x,2), F2x_add(F2xq_mul(s, p1, T),t)), T);
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 GEN
@@ -94,12 +94,12 @@ F2xq_elltwist(GEN a, GEN a6, GEN T, GEN *pt_a, GEN *pt_a6)
   GEN n = nonzerotrace_F2xq(T);
   if (typ(a)==t_VECSMALL)
   {
-    *pt_a = gerepileuptoleaf(av, F2x_add(n, a));
+    *pt_a = gc_uptoleaf(av, F2x_add(n, a));
     *pt_a6 = vecsmall_copy(a6);
   } else
   {
     GEN a6t = F2x_add(a6, F2xq_mul(n, F2xq_sqr(gel(a,1), T), T));
-    *pt_a6 = gerepileuptoleaf(av, a6t);
+    *pt_a6 = gc_uptoleaf(av, a6t);
     *pt_a = vecsmall_copy(a);
   }
 }
@@ -135,7 +135,7 @@ F2xqE_dbl(GEN P, GEN a, GEN T)
 {
   pari_sp av = avma;
   GEN slope;
-  return gerepileupto(av, F2xqE_dbl_slope(P, a, T,&slope));
+  return gc_upto(av, F2xqE_dbl_slope(P, a, T,&slope));
 }
 
 static GEN
@@ -175,7 +175,7 @@ F2xqE_add(GEN P, GEN Q, GEN a, GEN T)
 {
   pari_sp av = avma;
   GEN slope;
-  return gerepileupto(av, F2xqE_add_slope(P, Q, a, T, &slope));
+  return gc_upto(av, F2xqE_add_slope(P, Q, a, T, &slope));
 }
 
 static GEN
@@ -202,7 +202,7 @@ F2xqE_sub(GEN P, GEN Q, GEN a2, GEN T)
 {
   pari_sp av = avma;
   GEN slope;
-  return gerepileupto(av, F2xqE_add_slope(P, F2xqE_neg_i(Q, a2), a2, T, &slope));
+  return gc_upto(av, F2xqE_add_slope(P, F2xqE_neg_i(Q, a2), a2, T, &slope));
 }
 
 struct _F2xqE
@@ -472,7 +472,7 @@ F2xqE_Miller(GEN Q, GEN P, GEN m, GEN a2, GEN T)
   g1 = pol1_F2x(T[1]);
   v = gen_pow_i(mkvec3(g1,g1,Q), m, (void*)&d, F2xqE_Miller_dbl, F2xqE_Miller_add);
   N = gel(v,1); D = gel(v,2);
-  return gerepileupto(av, F2xq_div(N, D, T));
+  return gc_upto(av, F2xq_div(N, D, T));
 }
 
 GEN
@@ -485,7 +485,7 @@ F2xqE_weilpairing(GEN P, GEN Q, GEN m, GEN a2, GEN T)
     return pol1_F2x(T[1]);
   N    = F2xqE_Miller(P, Q, m, a2, T);
   D  = F2xqE_Miller(Q, P, m, a2, T);
-  return gerepileupto(av, F2xq_div(N, D, T));
+  return gc_upto(av, F2xq_div(N, D, T));
 }
 
 GEN
@@ -530,7 +530,7 @@ gen_Z2x_Dixon(GEN F, GEN V, long N, void *E, GEN lin(void *E, GEN F, GEN d, long
   bil = lin(E, F, VN2, N);
   V2 = Z2x_rshift(Flx_sub(V, bil, q), N2);
   VM = gen_Z2x_Dixon(F, V2, M, E, lin, invl);
-  return gerepileupto(av, Flx_add(VN2, Flx_Fl_mul(VM, 1UL<<N2, q), q));
+  return gc_upto(av, Flx_add(VN2, Flx_Fl_mul(VM, 1UL<<N2, q), q));
 }
 
 /* Solve F(X) = V mod 2^N
@@ -561,7 +561,7 @@ gen_Z2X_Dixon(GEN F, GEN V, long N, void *E,
   FXn = lin(E, F, Xn, N);
   Vm = ZX_shifti(ZX_sub(V, FXn), -n);
   Xm = gen_Z2X_Dixon(F, Vm, m, E, lin, lins, invls);
-  return gerepileupto(av, ZX_remi2n(ZX_add(Xn, ZX_shifti(Xm, n)), N));
+  return gc_upto(av, ZX_remi2n(ZX_add(Xn, ZX_shifti(Xm, n)), N));
 }
 
 /* H -> H mod 2*/
@@ -577,7 +577,7 @@ static GEN _can_lin(void *E, GEN F, GEN V, long N)
   (void) E;
   RgX_even_odd(V, &d0, &d1);
   z =  ZX_sub(V, ZX_sub(ZX_mul(gel(F,1), d0), ZX_mul(gel(F,2), d1)));
-  return gerepileupto(av, ZX_remi2n(z, N));
+  return gc_upto(av, ZX_remi2n(z, N));
 }
 
 static GEN _can_lins(void *E, GEN F, GEN V, long N)

@@ -47,10 +47,10 @@ vecsum(GEN v)
     if (gc_needed(av, 2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"sum");
-      p = gerepileupto(av, p);
+      p = gc_upto(av, p);
     }
   }
-  return gerepileupto(av, p);
+  return gc_upto(av, p);
 }
 
 /*******************************************************************/
@@ -624,7 +624,7 @@ genselect(void *E, long (*f)(void* E, GEN x), GEN A)
       pari_err_TYPE("select",A);
       return NULL;/*LCOV_EXCL_LINE*/
   }
-  clone_unlock_deep(A); return gerepileupto(av, y);
+  clone_unlock_deep(A); return gc_upto(av, y);
 }
 
 static void
@@ -779,7 +779,7 @@ veccatselapply(void *Epred, long (*pred)(void* E, GEN x), void *Efun,
   return lg(v) == 1? v: gc_GEN(av, shallowconcat1(v));
 }
 
-/* suitable for gerepileupto */
+/* suitable for gc_upto */
 GEN
 parapply_slice_worker(GEN x, GEN worker)
 { pari_APPLY_same(closure_callgen1(worker, gel(x,i))); }
@@ -857,7 +857,7 @@ parapply(GEN C, GEN D)
   pari_sp av = avma;
   check_callgen1(C, "parapply");
   if (!is_vec_t(typ(D))) pari_err_TYPE("parapply",D);
-  return gerepileupto(av, gen_parapply(C, D));
+  return gc_upto(av, gen_parapply(C, D));
 }
 
 GEN

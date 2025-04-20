@@ -91,7 +91,7 @@ qrom3(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long bit)
       if ((j1 & 0x1ff) == 0) (void)gc_all(av2, 2, &sum,&x);
     }
     sum = gmul(sum,del);
-    gel(s,j) = gerepileupto(av, gmul2n(gadd(gel(s,j-1), sum), -1));
+    gel(s,j) = gc_upto(av, gmul2n(gadd(gel(s,j-1), sum), -1));
     if (j >= KLOC && (ss = interp(h, s, j, bit-j-6, KLOC)))
       return gmulsg(sig,ss);
   }
@@ -132,7 +132,7 @@ qrom2(void *E, GEN (*eval)(void *, GEN), GEN a, GEN b, long bit)
       if ((j1 & 0x1ff) == 0) (void)gc_all(av2, 2, &sum,&x);
     }
     sum = gmul(sum,del); p1 = gdivgu(gel(s,j-1),3);
-    gel(s,j) = gerepileupto(av, gadd(p1,sum));
+    gel(s,j) = gc_upto(av, gadd(p1,sum));
     if (j >= KLOC && (ss = interp(h, s, j, bit-(3*j/2)+3, KLOC)))
       return gmulsg(sig, ss);
   }
@@ -195,7 +195,7 @@ intnumromb(void *E, GEN (*f)(void *, GEN), GEN a,GEN b, long fl, long B)
     case 3: z = qrom2  (E, f, a, b, B); break;
     default: pari_err_FLAG("intnumromb"); return NULL; /* LCOV_EXCL_LINE */
   }
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 GEN
 intnumromb0(GEN a, GEN b, GEN code, long flag, long bit)
@@ -521,7 +521,7 @@ initsinhsinh(long m, long prec)
     wp = divr2_ip(mulrr(ct, addrr(ext, exu)));
     if (expo(wp) - 2*expo(xp) < -D.bit) { nt = k-1; break; }
     affrr(xp, gel(D.tabxp,k));
-    affrr(wp, gel(D.tabwp,k)); et = gerepileuptoleaf(av, mulrr(et, ex));
+    affrr(wp, gel(D.tabwp,k)); et = gc_uptoleaf(av, mulrr(et, ex));
   }
   return intinit_end(&D, nt, 0);
 }
@@ -549,7 +549,7 @@ initsinh(long m, long prec)
     wp = addrr(et, eti);
     if (cmprs(xp, (long)(M_LN2*(expo(wp)+D.bit) + 1)) > 0) { nt = k-1; break; }
     affrr(xp, gel(D.tabxp,k));
-    affrr(wp, gel(D.tabwp,k)); et = gerepileuptoleaf(av, mulrr(et, ex));
+    affrr(wp, gel(D.tabwp,k)); et = gc_uptoleaf(av, mulrr(et, ex));
   }
   return intinit_end(&D, nt, 0);
 }
@@ -612,7 +612,7 @@ initexpexp(long m, long prec)
     affrr(xp, gel(D.tabxp,k));
     affrr(wp, gel(D.tabwp,k));
     affrr(xm, gel(D.tabxm,k));
-    affrr(wm, gel(D.tabwm,k)); et = gerepileuptoleaf(av, mulrr(et, ex));
+    affrr(wm, gel(D.tabwm,k)); et = gc_uptoleaf(av, mulrr(et, ex));
   }
   return intinit_end(&D, nt, nt);
 }
@@ -659,7 +659,7 @@ initnumsine(long m, long prec)
     affrr(xp, gel(D.tabxp,k));
     affrr(wp, gel(D.tabwp,k));
     affrr(xm, gel(D.tabxm,k));
-    affrr(wm, gel(D.tabwm,k)); et = gerepileuptoleaf(av, mulrr(et, ex));
+    affrr(wm, gel(D.tabwm,k)); et = gc_uptoleaf(av, mulrr(et, ex));
   }
   return intinit_end(&D, nt, nt);
 }
@@ -715,10 +715,10 @@ intn(void *E, GEN (*eval)(void*, GEN), GEN a, GEN b, GEN tab)
     SP = eval(E, gsub(bpa, bmb));
     SM = eval(E, gadd(bpa, bmb));
     S = gadd(S, gmul(gel(tabwp,i), gadd(SP, SM)));
-    if ((i & 0x7f) == 1) S = gerepileupto(av, S);
+    if ((i & 0x7f) == 1) S = gc_upto(av, S);
     S = gprec_wensure(S, prec);
   }
-  return gerepileupto(ltop, gmul(S, gmul(bma, TABh(tab))));
+  return gc_upto(ltop, gmul(S, gmul(bma, TABh(tab))));
 }
 
 /* compute \int_a^b f(t)dt with [a,b] compact, possible singularity with
@@ -747,10 +747,10 @@ intnsing(void *E, GEN (*eval)(void*, GEN), GEN a, GEN b, GEN tab)
     GEN SP = gmul(gdiv(bp, p), eval(E, gadd(bp, a)));
     GEN SM = gmul(gdiv(bm, m), eval(E, gadd(bm, a)));
     S = gadd(S, gmul(gel(tabwp,i), gadd(SP, SM)));
-    if ((i & 0x7f) == 1) S = gerepileupto(av, S);
+    if ((i & 0x7f) == 1) S = gc_upto(av, S);
     S = gprec_wensure(S, prec);
   }
-  return gerepileupto(ltop, gmul(gmul(S, TABh(tab)), ea));
+  return gc_upto(ltop, gmul(gmul(S, TABh(tab)), ea));
 }
 
 static GEN id(GEN x) { return x; }
@@ -780,7 +780,7 @@ intninfpm(void *E, GEN (*eval)(void*, GEN), GEN a, long sb, GEN tab)
       GEN SP = eval(E, NEG(gel(tabxp,i)));
       GEN SM = eval(E, NEG(gel(tabxm,i)));
       S = gadd(S, gadd(gmul(gel(tabwp,i), SP), gmul(gel(tabwm,i), SM)));
-      if ((i & 0x7f) == 1) S = gerepileupto(av, S);
+      if ((i & 0x7f) == 1) S = gc_upto(av, S);
       S = gprec_wensure(S, prec);
     }
   }
@@ -793,7 +793,7 @@ intninfpm(void *E, GEN (*eval)(void*, GEN), GEN a, long sb, GEN tab)
       GEN SP = eval(E, ADD(a, gel(tabxp,i)));
       GEN SM = eval(E, ADD(a, gel(tabxm,i)));
       S = gadd(S, gadd(gmul(gel(tabwp,i), SP), gmul(gel(tabwm,i), SM)));
-      if ((i & 0x7f) == 1) S = gerepileupto(av, S);
+      if ((i & 0x7f) == 1) S = gc_upto(av, S);
       S = gprec_wensure(S, prec);
     }
   }
@@ -809,12 +809,12 @@ intninfpm(void *E, GEN (*eval)(void*, GEN), GEN a, long sb, GEN tab)
       GEN SP = eval(E, gmul(A, ADD(sa, gel(tabxp,i))));
       GEN SM = eval(E, gmul(A, ADD(sa, gel(tabxm,i))));
       S = gadd(S, gadd(gmul(gel(tabwp,i), SP), gmul(gel(tabwm,i), SM)));
-      if ((i & 0x7f) == 1) S = gerepileupto(av2, S);
+      if ((i & 0x7f) == 1) S = gc_upto(av2, S);
       S = gprec_wensure(S, prec);
     }
     S = gmul(S,A);
   }
-  return gerepileupto(av, gmul(S, TABh(tab)));
+  return gc_upto(av, gmul(S, TABh(tab)));
 }
 
 /* Compute  \int_{-oo}^oo f(t)dt
@@ -848,11 +848,11 @@ intninfinf(void *E, GEN (*eval)(void*, GEN), GEN tab)
       GEN SM = eval(E, negr(gel(tabxp,i)));
       S = gadd(S, gmul(gel(tabwp,i), gadd(SP,SM)));
     }
-    if ((i & 0x7f) == 1) S = gerepileupto(ltop, S);
+    if ((i & 0x7f) == 1) S = gc_upto(ltop, S);
     S = gprec_wensure(S, prec);
   }
   if (spf) S = gmul2n(S,1);
-  return gerepileupto(ltop, gmul(S, TABh(tab)));
+  return gc_upto(ltop, gmul(S, TABh(tab)));
 }
 
 /* general num integration routine int_a^b f(t)dt, where a and b are as follows:
@@ -975,7 +975,7 @@ static GEN
 expscalpr(GEN vnew, GEN xold, GEN wold, GEN ea)
 {
   pari_sp av = avma;
-  return gerepileupto(av, gdiv(gmul(gmul(vnew, wold), ea), xold));
+  return gc_upto(av, gdiv(gmul(gmul(vnew, wold), ea), xold));
 }
 static GEN
 expvecpr(GEN vnew, GEN xold, GEN wold, GEN ea)
@@ -1600,7 +1600,7 @@ GEN
 contfraceval(GEN CF, GEN t, long nlim)
 {
   pari_sp av = avma;
-  return gerepileupto(av, contfraceval_inv(CF, ginv(t), nlim));
+  return gc_upto(av, contfraceval_inv(CF, ginv(t), nlim));
 }
 
 /* MONIEN SUMMATION */
@@ -1621,7 +1621,7 @@ monrefine(GEN Q, GEN QP, GEN z, long prec)
   }
   z = gprec_wensure(z, precdbl(prec));
   z = gsub(z, gdiv(poleval(Q, z), poleval(QP, z)));
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 static GEN
@@ -1910,10 +1910,10 @@ sumnuminit(GEN fast, long prec)
       S = odd(j)? gsub(S,t): gadd(S,t);
     }
     if (odd(m)) S = gneg(S);
-    gel(v,m) = gerepileupto(av, S);
+    gel(v,m) = gc_upto(av, S);
   }
   v = RgC_gtofp(v,prec); settyp(v, t_VEC);
-  gel(res, 4) = gerepileupto(av, v);
+  gel(res, 4) = gc_upto(av, v);
   gel(res, 2) = utoi(N);
   gel(res, 3) = utoi(k);
   if (!fast) fast = get_oo(gen_0);
@@ -1961,7 +1961,7 @@ sumnum(void *E, GEN (*eval)(void*, GEN), GEN a, GEN tab, long prec)
     if (gc_needed(av, 2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"sumnum [1], %ld/%ld",m,N);
-      S = gerepileupto(av2, S);
+      S = gc_upto(av2, S);
     }
     S = gprec_wensure(S, prec2);
   }
@@ -1973,7 +1973,7 @@ sumnum(void *E, GEN (*eval)(void*, GEN), GEN a, GEN tab, long prec)
     if (gc_needed(av2, 2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"sumnum [2], %ld/%ld",m,k/2);
-      S = gerepileupto(av2, S);
+      S = gc_upto(av2, S);
     }
     S = gprec_wensure(S, prec2);
   }
@@ -2098,7 +2098,7 @@ sumnumap(void *E, GEN (*eval)(void*,GEN), GEN a, GEN tab, long prec)
   }
   S = gadd(S, gmulsg(N, intnum(&T, &_exfn, gen_1, fast, gel(tab, 2), prec)));
   S = gadd(S, intnumgauexp(E, eval, gN, gel(tab, 1), prec));
-  return gerepileupto(av, S);
+  return gc_upto(av, S);
 }
 
 GEN
@@ -2276,7 +2276,7 @@ sumnumrat(GEN F, GEN a, long prec)
       pari_err_TYPE("sumnumrat",a);
       return NULL; /* LCOV_EXCL_LINE */
   }
-  return gerepileupto(av, sumnumrat_i(F, F0, vF, prec));
+  return gc_upto(av, sumnumrat_i(F, F0, vF, prec));
 }
 /* deg ((a / b) - 1), assuming b a t_POL of positive degree in main variable  */
 static long
@@ -2320,7 +2320,7 @@ prodnumrat(GEN F, long a, long prec)
   S2 = gen_0;
   for (j = 2; j <= k; j += 2)
     S2 = gadd(S2, gmul(gdivgu(bernfrac(j),j*(j-1)), sercoeff(S, j-2)));
-  return gerepileupto(ltop, gmul(S1, gexp(gsub(intf, S2), prec)));
+  return gc_upto(ltop, gmul(S1, gexp(gsub(intf, S2), prec)));
 }
 
 /* fan = factoru(n); sum_{d | n} mu(d)/d * s[n/d] */
@@ -2354,7 +2354,7 @@ logzetan(GEN s, GEN P, long N, long prec)
     for (i = 1; i < l; i++)
     {
       Z = auxeuler(Z, gel(P,i), s, ms, prec);
-      if (gc_needed(av,2)) Z = gerepileupto(av, Z);
+      if (gc_needed(av,2)) Z = gc_upto(av, Z);
     }
   }
   else
@@ -2365,7 +2365,7 @@ logzetan(GEN s, GEN P, long N, long prec)
     while ((p = forprime_next(&T)))
     {
       Z = auxeuler(Z, p, s, ms, prec);
-      if (gc_needed(av,2)) Z = gerepileupto(av, Z);
+      if (gc_needed(av,2)) Z = gc_upto(av, Z);
     }
   }
   return glog(Z, prec);
@@ -2387,7 +2387,7 @@ sumlogzeta(GEN ser, GEN s, GEN P, long N, double rs, double lN, long vF,
     { /* (n Re(s) - 1) log2(N) bits cancel in logzetan */
       long prec2 = prec + nbits2extraprec((n*rs-1) * lN);
       GEN L = logzetan(gmulsg(n,gprec_wensure(s,prec2)), P, N, prec2);
-      z = gerepileupto(av, gadd(z, gmul(L, t)));
+      z = gc_upto(av, gadd(z, gmul(L, t)));
       z = gprec_wensure(z, prec);
     }
   }
@@ -2417,7 +2417,7 @@ opFps(GEN(*op)(GEN,GEN), GEN P, long N, long a, GEN F, GEN s, long prec)
     {
       GEN p = gel(P,i); if (cmpiu(p, a) < 0) continue;
       S = op(S, rfrac_evalfp(F, gpow(p, s, prec), prec));
-      if (gc_needed(av,2)) S = gerepileupto(av, S);
+      if (gc_needed(av,2)) S = gc_upto(av, S);
     }
   }
   else
@@ -2428,7 +2428,7 @@ opFps(GEN(*op)(GEN,GEN), GEN P, long N, long a, GEN F, GEN s, long prec)
     while ((p = forprime_next(&T)))
     {
       S = op(S, rfrac_evalfp(F, gpow(p, s, prec), prec));
-      if (gc_needed(av,2)) S = gerepileupto(av, S);
+      if (gc_needed(av,2)) S = gc_upto(av, S);
     }
   }
   return S;
@@ -2649,7 +2649,7 @@ sumnumlagrangeinit_i(GEN al, GEN c1, long flag, long prec)
     GEN t = NULL, vn = gel(V, n);
     for (j = 1; j <= N; j++)
       if (j != n) t = _mpmul(t, mpsub(vn, gel(V, j)));
-    gel(W, n) = gerepileuptoleaf(av2, mpdiv(gpowgs(vn, N-1), t));
+    gel(W, n) = gc_uptoleaf(av2, mpdiv(gpowgs(vn, N-1), t));
   }
   if (flag)
     for (n = N-1; n >= 1; n--) gel(W, n) = gadd(gel(W, n+1), gel(W, n));

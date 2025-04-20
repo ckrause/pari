@@ -164,8 +164,8 @@ discriminant and $k \geq 0$.
 
 \fun{GEN}{gammamellininvinit}{GEN Vga, long m, long bitprec}
 
-\fun{GEN}{gammamellininvrt}{GEN K, GEN s, long bitprec} not GC-clean, but
-suitable for \kbd{gerepileupto}.
+\fun{GEN}{gammamellininvrt}{GEN K, GEN s, long bitprec} not stack-clean, but
+suitable for \kbd{gc\_upto}.
 
 \fun{int}{Vgaeasytheta}{GEN Vga} return 1 if the inverse Mellin transform is
 an exponential and 0 otherwise.

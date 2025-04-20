@@ -176,7 +176,7 @@ primorial_vec(ulong x)
     GEN q = mulii(gel(w,i-1), zv_prod_Z(vecslice(v,ind[i-1]+1,ind[i])));
     gel(w,i) = gc_INT(av2, q);
   }
-  return gerepileupto(av, w);
+  return gc_upto(av, w);
 }
 
 /* NDmqg contains

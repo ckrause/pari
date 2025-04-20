@@ -132,7 +132,7 @@ nfembedlog(GEN *pnf, GEN x, long prec)
   extrabit = gexpo(logs);
   if (extrabit < 0) extrabit = 0;
   prec += nbits2extraprec(extrabit);
-  return gerepileupto(av, gdiv(logs, Pi2n(1,prec)));
+  return gc_upto(av, gdiv(logs, Pi2n(1,prec)));
 }
 
 static GEN
@@ -1514,7 +1514,7 @@ gchareval(GEN gc, GEN chi, GEN x, long flag)
   check_gchar_group(gc);
   prec = gchar_get_evalprec(gc);
   chi = gchar_internal(gc, chi, &s);
-  return gerepileupto(av, gchari_eval(gc, chi, x, flag, NULL, s, prec));
+  return gc_upto(av, gchari_eval(gc, chi, x, flag, NULL, s, prec));
 }
 
 /*******************************************************************/
@@ -1751,7 +1751,7 @@ gaddmul(GEN x, GEN y, GEN z)
   }
   if (isintzero(x)) return gmul(y,z);
   av = avma;
-  return gerepileupto(av, gadd(x, gmul(y,z)));
+  return gc_upto(av, gadd(x, gmul(y,z)));
 }
 
 GEN
@@ -1796,7 +1796,7 @@ vecan_gchar(GEN an, long n, long prec)
       /* TODO: extract code and use precom sprk? */
       av = avma;
       ch = gchari_eval(gc, chi, pr, 1, chilog, gen_0, prec);
-      ch = gerepileupto(av, ch);
+      ch = gc_upto(av, ch);
       q = upr_norm(pr);
       gel(v, q) = gadd(gel(v, q), ch);
       for (k = 2*q; k <= (ulong)n; k += q)

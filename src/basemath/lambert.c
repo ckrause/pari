@@ -231,7 +231,7 @@ lambertW(GEN z, long k, long prec)
       if (vp) { if (--ct) p = vp[ct]; w = gprec_w(w, ct? p: prec); }
     }
   }
-  return gerepileupto(av, w);
+  return gc_upto(av, w);
 }
 
 /*********************************************************************/
@@ -407,7 +407,7 @@ lambertp(GEN x)
   y = gpowgs(cvstop2(k, x), k - 1);
   for (k--; k; k--)
     y = gsub(gpowgs(cvstop2(k, x), k - 1), gdivgu(gmul(x, y), k + 1));
-  return gerepileupto(av, gmul(x, y));
+  return gc_upto(av, gmul(x, y));
 }
 
 /* y a t_REAL */
@@ -441,7 +441,7 @@ glambertW_i(void *E, GEN y, long prec)
       return lambertWC(y, k, p? p: prec);
     default:
       av = avma; if (!(z = toser_i(y))) break;
-      return gerepileupto(av, serlambertW(z, k, prec));
+      return gc_upto(av, serlambertW(z, k, prec));
   }
   return trans_evalgen("lambert", E, glambertW_i, y, prec);
 }
@@ -460,14 +460,14 @@ mplambertx_logx(GEN a, GEN b, long bit)
 {
   pari_sp av = avma;
   GEN e = gexp(gneg(gdiv(b, a)), nbits2prec(bit));
-  return gerepileupto(av, gmul(gneg(a), lambertW(gneg(gdiv(e, a)), -1, bit)));
+  return gc_upto(av, gmul(gneg(a), lambertW(gneg(gdiv(e, a)), -1, bit)));
 }
 /* Special case a = 1, b = log(y): solve e^x / x = y with y >= exp(1). */
 GEN
 mplambertX(GEN y, long bit)
 {
   pari_sp av = avma;
-  return gerepileupto(av, gneg(lambertW(gneg(ginv(y)), -1, bit)));
+  return gc_upto(av, gneg(lambertW(gneg(ginv(y)), -1, bit)));
 }
 
 /* Solve x * log(x) - a * x = b; if b < 0, assume a >= 1 + log |b|. */
@@ -479,5 +479,5 @@ mplambertxlogx_x(GEN a, GEN b, long bit)
   GEN e;
   if (!s) return gen_0;
   e = gexp(gneg(a), nbits2prec(bit));
-  return gerepileupto(av, gdiv(b, lambertW(gmul(b, e), s > 0? 0: -1, bit)));
+  return gc_upto(av, gdiv(b, lambertW(gmul(b, e), s > 0? 0: -1, bit)));
 }

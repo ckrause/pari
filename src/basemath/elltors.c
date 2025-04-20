@@ -437,7 +437,7 @@ ellisdivisible(GEN E, GEN Q, GEN n, GEN *pQ)
   if (gequal(Q, ellmul(E, P, N)))
     P = gc_GEN(av, P);
   else
-    P = gerepileupto(av, ellneg(E, P));
+    P = gc_upto(av, ellneg(E, P));
   *pQ = P; return 1;
 }
 

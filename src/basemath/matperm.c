@@ -44,7 +44,7 @@ matpermanent(GEN M)
     GEN cM;
     M = Q_primitive_part(M, &cM);
     p = ZM_permanent(M);
-    if (cM) p = gerepileupto(av, gmul(p, gpowgs(cM,n)));
+    if (cM) p = gc_upto(av, gmul(p, gpowgs(cM,n)));
     return p;
   }
 
@@ -66,7 +66,7 @@ matpermanent(GEN M)
     if (gc_needed(av, 1)) (void)gc_all(av, 2, &in, &p);
   }
   if (n&1) p = gneg(p);
-  return gerepileupto(av, p);
+  return gc_upto(av, p);
 }
 
 /* ||M||_oo = max_i \sum_j | M[i,j] | */

@@ -39,7 +39,7 @@ invmod(GEN a, GEN b, GEN *res)
       na = a;
     /* Copy serves two purposes:
      * 1) mpn_gcdext destroys its input and needs an extra limb
-     * 2) allows us to use icopy instead of gerepile later. */
+     * 2) allows us to use icopy instead of gc_GEN_unsafe later. */
     lb = lgefint(b); lna = lgefint(na);
     ca = icopy_ef(na,lna+1);
     cb = icopy_ef( b,lb+1);
@@ -140,7 +140,7 @@ bezout(GEN a, GEN b, GEN *pu, GEN *pv)
     pari_sp av = avma;
     /*Copy serves two purposes:
      * 1) mpn_gcdext destroys its input and needs an extra limb
-     * 2) allows us to use icopy instead of gerepile later.
+     * 2) allows us to use icopy instead of gc_GEN_unsafe later.
      * NOTE: we must put u before d else the final icopy could fail. */
     GEN ca = icopy_ef(a,lgefint(a)+1);
     GEN cb = icopy_ef(b,lgefint(b)+1);

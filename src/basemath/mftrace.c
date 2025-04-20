@@ -1019,7 +1019,7 @@ c_bracket(long n, long d, GEN S)
                gmulsg(-(j+1), gaddgs(gk,j)));
   }
   if (lg(S) == 6) res = chicompatfix(gel(S,5), res);
-  return gerepileupto(av, res);
+  return gc_upto(av, res);
 }
 /* linear combination \sum L[j] vecF[j] */
 static GEN
@@ -1037,7 +1037,7 @@ c_linear(long n, long d, GEN F, GEN L, GEN dL)
   }
   if (!S) return zerovec(n+1);
   if (!is_pm1(dL)) S = gdiv(S, dL);
-  return gerepileupto(av, S);
+  return gc_upto(av, S);
 }
 
 /* B_d(T_j Trace^new) as t_MF_BD(t_MF_HECKE(t_MF_NEWTRACE)) or
@@ -1106,7 +1106,7 @@ c_linear_bhn(long n, long d, GEN F)
   M = bhnmat_extend_nocache(NULL, mf_get_N(F), n, d, vF);
   v = RgM_RgC_mul(M,L); settyp(v, t_VEC);
   if (!is_pm1(dL)) v = gdiv(v, dL);
-  return gerepileupto(av, v);
+  return gc_upto(av, v);
 }
 
 /* c in K, K := Q[X]/(T) vz = vector of consecutive powers of root z of T
@@ -1290,7 +1290,7 @@ c_deriv(long n, long d, GEN F, GEN gm)
   { for (i=1; i <= n; i++) gel(res, i+1) = gdiv(gel(V, i+1), powuu(i,-m)); }
   else
   { for (i=1; i <= n; i++) gel(res, i+1) = gmul(gel(V,i+1), powuu(i,m)); }
-  return gerepileupto(av, res);
+  return gc_upto(av, res);
 }
 
 static GEN
@@ -1308,7 +1308,7 @@ c_derivE2(long n, long d, GEN F, GEN gm)
     res = cgetg(n+2, t_VEC);
     for (i = 0; i <= n; i++) gel(res, i+1) = gmulsg(i, gel(VF, i*d+1));
     tmp = c_deflate(n, d, RgV_mul_RgXn(VF, VE));
-    return gerepileupto(av, gsub(res, gmul(gdivgu(gk, 12), tmp)));
+    return gc_upto(av, gsub(res, gmul(gdivgu(gk, 12), tmp)));
   }
   else
   {
@@ -1348,7 +1348,7 @@ c_twist(long n, long d, GEN F, GEN D)
     }
     gel(z, i+1) = a;
   }
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 /* form F given by closure, compute T(n)(F) as closure */
@@ -1421,10 +1421,10 @@ c_theta(long n, long d, GEN psi)
     {
       pari_sp av = avma;
       GEN c = mfchareval(psi, f);
-      gel(V, f*f/d + 1) = gerepileupto(av, par < 0? gmulgu(c,2*f): gmul2n(c,1));
+      gel(V, f*f/d + 1) = gc_upto(av, par < 0? gmulgu(c,2*f): gmul2n(c,1));
     }
   if (F == 1) gel(V, 1) = gen_1;
-  return V; /* no gerepile needed */
+  return V; /* no gc_GEN_unsafe needed */
 }
 
 static GEN
@@ -1482,7 +1482,7 @@ c_Bd(long n, long d, GEN F, GEN A)
   if (a == 1) return v;
   n++; w = zerovec(n);
   for (i = j = 1; j <= n; i++, j += aad) gel(w,j) = gcopy(gel(v,i));
-  return gerepileupto(av, w);
+  return gc_upto(av, w);
 }
 
 static GEN
@@ -1494,7 +1494,7 @@ c_dihedral(long n, long d, GEN F)
   GEN Tinit = gel(w,3), Pm = gel(Tinit,1);
   GEN A = c_deflate(n, d, V);
   if (degpol(Pm) == 1 || RgV_is_ZV(A)) return gc_GEN(av, A);
-  return gerepileupto(av, gmodulo(A, Pm));
+  return gc_upto(av, gmodulo(A, Pm));
 }
 
 static GEN
@@ -1515,7 +1515,7 @@ c_mfEH(long n, long d, GEN F)
       long id = i*d, a = id & 3;
       gel(v,i+1) = (a==1 || a==2)? gen_0: uutoQ(hclassno6u(id), 6);
     }
-    return v; /* no gerepile needed */
+    return v; /* no gc_GEN_unsafe needed */
   }
   M = mfEHmat(n*d+1,r);
   if (d > 1)
@@ -1525,7 +1525,7 @@ c_mfEH(long n, long d, GEN F)
   }
   A = gel(F,2); /* [num(B), den(B)] */
   v = RgC_Rg_div(RgM_RgC_mul(M, gel(A,1)), gel(A,2));
-  settyp(v,t_VEC); return gerepileupto(av, v);
+  settyp(v,t_VEC); return gc_upto(av, v);
 }
 
 static GEN
@@ -1554,7 +1554,7 @@ c_mfeisen(long n, long d, GEN F)
   { /* E_k(chi) */
     for (i = 1; i <= n; i++) gel(v, i+1) = sigchi(k, CHI, i*d);
   }
-  if (degpol(P) != 1 && !RgV_is_QV(v)) return gerepileupto(av, gmodulo(v, P));
+  if (degpol(P) != 1 && !RgV_is_QV(v)) return gc_upto(av, gmodulo(v, P));
   return gc_GEN(av, v);
 }
 
@@ -3074,7 +3074,7 @@ TA2(long N, long k, GEN VCHI, long n, GEN SQRTS, GEN MUP, GEN GCD)
       else if (D0 == -4) sh = gdivgu(sh, 2);
       else sh = gmulgu(sh, myh(D0));
     }
-    S = gerepileupto(av, gadd(S, mfrhopowsimp(Q,sh,nu,t,t2,n)));
+    S = gc_upto(av, gadd(S, mfrhopowsimp(Q,sh,nu,t,t2,n)));
   }
   return S;
 }
@@ -3424,7 +3424,7 @@ mfcusptrace_i(long N, long k, long n, GEN Dn, GEN S)
   b = TA2(N, k, VCHIP, n, gel(S,_SQRTS), gel(S,_MUP), GCD);
   b = gadd(b, TA3(N, k, VCHIP, GCD, Dn, gel(S,_BEZ)));
   b = gsub(a,b);
-  if (typ(b) != t_POL) return gerepileupto(av, b);
+  if (typ(b) != t_POL) return gc_upto(av, b);
   return gc_GEN(av, vchip_polmod(VCHIP, b));
 }
 
@@ -4476,7 +4476,7 @@ mflineardivtomat(long N, GEN vF, long n)
     if (a0) f = ser_unscale(f, ginv(a0));
     f = sertocol(f); setlg(f, n+2);
     if (!gequal1(gel(dB,j))) f = RgC_Rg_div(f, gel(dB,j));
-    gel(B,j) = gerepileupto(av,f);
+    gel(B,j) = gc_upto(av,f);
   }
   if (V) B = gmodulo(QabM_tracerel(V, 0, B), gel(V,1));
   return B;
@@ -4502,7 +4502,7 @@ mfheckemat_mfcoefs_p2(GEN mf, long p, GEN B)
 {
   pari_sp av = avma;
   GEN DATA = heckef2_data(MF_get_N(mf), p*p);
-  return gerepileupto(av, mfheckemat_mfcoefs(mf, B, DATA));
+  return gc_upto(av, mfheckemat_mfcoefs(mf, B, DATA));
 }
 /* convert Mindex from row-index to mfcoef indexation: a(n) is stored in
  * mfcoefs()[n+1], so subtract 1 from all indices */
@@ -4540,7 +4540,7 @@ mfheckemat_mfcoefs_p(GEN mf, long p, GEN B)
       gcoeff(Q, i, j) = s;
     }
   }
-  return gerepileupto(av, Minv_RgM_mul(Minv,Q));
+  return gc_upto(av, Minv_RgM_mul(Minv,Q));
 }
 /* Matrix of T(p), p prime, dim(mf) > 0 and integral weight */
 static GEN
@@ -4549,7 +4549,7 @@ mfheckemat_p(GEN mf, long p)
   pari_sp av = avma;
   long N = MF_get_N(mf), sb = mfsturm_mf(mf);
   GEN B = (N % p)? mfcoefs_mf(mf, sb * p, 1): mfcoefs_mf(mf, sb, p);
-  return gerepileupto(av, mfheckemat_mfcoefs(mf, B, hecke_data(N,p)));
+  return gc_upto(av, mfheckemat_mfcoefs(mf, B, hecke_data(N,p)));
 }
 
 /* mf_NEW != (0), weight > 1, p prime. Use
@@ -4585,7 +4585,7 @@ mfnewmathecke_p(GEN mf, long p)
     if (C && j % p == 0) t = RgC_add(t, RgC_Rg_mul(gel(V, perm[j/p]),C));
     gel(M,i) = t;
   }
-  return gerepileupto(av, Minv_RgM_mul(Minv, M));
+  return gc_upto(av, Minv_RgM_mul(Minv, M));
 }
 
 GEN
@@ -5518,7 +5518,7 @@ mf1intermat(GEN A, GEN Mindex, GEN e, GEN Iden, long lim, GEN POLCYC)
     c1 = vecslice(c, lim+1, LIM);
     if (den) c1 = RgC_Rg_mul(c1, den);
     c2 = RgM_RgC_mul(I, vecpermute(c, Mindex));
-    gel(B, j) = gerepileupto(av, RgC_sub(c2, c1));
+    gel(B, j) = gc_upto(av, RgC_sub(c2, c1));
   }
   return B;
 }
@@ -5648,7 +5648,7 @@ mf1basis(long N, GEN CHI, GEN TMP, GEN vSP, GEN *pS, long *pdih)
       if (POLCYC && i == 1) e = liftpol_shallow(e);
       B = mf1intermat(A, Mindex, e, Iden, lim, i == 1? NULL: POLCYC);
       if (DEBUGLEVEL) timer_printf(&TT, "mf1basis: ... intermat");
-      z = gerepileupto(av2, QabM_ker(B, POLCYC, ordchi));
+      z = gc_upto(av2, QabM_ker(B, POLCYC, ordchi));
       if (DEBUGLEVEL)
         timer_printf(&TT, "mf1basis: ... kernel (dim %ld)",lg(z)-1);
       if (lg(z) == 1) return NULL;
@@ -6164,7 +6164,7 @@ mfgaloistype(GEN NK, GEN f)
   F = mfeigenbasis(mf); lL = lg(F);
   T = cgetg(lL, t_VEC);
   for (i=1; i < lL; i++) gel(T,i) = mfgaloistype0(N, CHI, gel(F,i), DIH, lim);
-  return gerepileupto(av, T);
+  return gc_upto(av, T);
 }
 
 /******************************************************************/
@@ -7456,7 +7456,7 @@ mfcuspval(GEN mf, GEN F, GEN cusp, long bitprec)
       GEN z = uutoQ(1,4);
       r = gsub(r, typ(r) == t_VEC? const_vec(lg(r)-1, z): z);
     }
-    return gerepileupto(av, r);
+    return gc_upto(av, r);
   }
   vE = mfgetembed(F, prec);
   lvE = lg(vE);
@@ -7840,7 +7840,7 @@ mfatkin(GEN mfa, GEN F)
   mf = gel(mfa,4);
   if (typ(mfB) == t_INT) mfB = mf;
   z = RgM_RgC_mul(MQ, mftobasis_i(mf,F));
-  return gerepileupto(av, mflinear(mfB, z));
+  return gc_upto(av, mflinear(mfB, z));
 }
 
 GEN
@@ -7862,7 +7862,7 @@ mfatkineigenvalues(GEN mf, long Q, long prec)
     return L;
   }
   vE = mfeigenembed(mf,prec);
-  if (Q == N) return gerepileupto(av, mffrickeeigen(mf, vE, prec));
+  if (Q == N) return gc_upto(av, mffrickeeigen(mf, vE, prec));
   Q = labs(Q);
   NQ = atkin_get_NQ(N, Q, "mfatkineigenvalues"); /* != 1 */
   mfatk = mfatkininit(mf, Q, prec);
@@ -8600,7 +8600,7 @@ mfdim(GEN NK, long space)
       if (joker==2) { d = mfkdimsum(N,k,dk,space); return gc_utoi(av,d); }
       D = mfkdims(N, k, dk, CHI, space);
     }
-    if (!CHI) return gerepileupto(av, vecsort(D, mkvecsmall(1)));
+    if (!CHI) return gc_upto(av, vecsort(D, mkvecsmall(1)));
     return gc_GEN(av, D);
   }
   return utoi( mfdim_Nndkchi(N, k, dk, CHI, space) );
@@ -8838,7 +8838,7 @@ c_QF_i(long n, GEN Q, GEN P)
   pari_sp av = avma;
   GEN V, v, va;
   long i, l;
-  if (!P || typ(P) != t_POL) return gerepileupto(av, c_QFsimple_i(n, Q, P));
+  if (!P || typ(P) != t_POL) return gc_upto(av, c_QFsimple_i(n, Q, P));
   v = gel(minim(Q, utoi(2*n), NULL), 3);
   va = variables_vecsmall(P);
   V = zerovec(n + 1); l = lg(v);
@@ -8847,7 +8847,7 @@ c_QF_i(long n, GEN Q, GEN P)
     pari_sp av = avma;
     GEN X = gel(v,i);
     long c = (itos(qfeval(Q, X)) >> 1) + 1;
-    gel(V, c) = gerepileupto(av, gadd(gel(V, c), gsubstvec_i(P, va, X)));
+    gel(V, c) = gc_upto(av, gadd(gel(V, c), gsubstvec_i(P, va, X)));
   }
   return gmul2n(V, 1);
 }
@@ -8913,7 +8913,7 @@ sigchi(long k, GEN CHI, long n)
     long d = D[i], a = mfcharevalord(CHI, d, ord);
     S = gadd(S, Qab_Czeta(a, ord, powuu(d, k-1), vt));
   }
-  return gerepileupto(av,S);
+  return gc_upto(av,S);
 }
 
 /* write n = n0*n1*n2, (n0,N1*N2) = 1, n1 | N1^oo, n2 | N2^oo;
@@ -8963,7 +8963,7 @@ sigchi2(long k, GEN CHI1, GEN CHI2, long n, long ord)
     if (a >= ord) a -= ord;
     S = gadd(S, Qab_Czeta(a, ord, powuu(d, k-1), vt));
   }
-  return gerepileupto(av, S);
+  return gc_upto(av, S);
 }
 
 /**************************************************************************/
@@ -9389,7 +9389,7 @@ mftobasis(GEN mf, GEN F, long flag)
   G = mflinear(mf, y);
   if (!gequal(v, mfcoefs_i(G, lg(v)-2,1))) y = NULL;
   if (!y) { set_avma(av); return not_in_space(F, flag); }
-  set_avma(av2); return gerepileupto(av, y);
+  set_avma(av2); return gc_upto(av, y);
 }
 
 /* assume N > 0; first cusp is always 0 */
@@ -9478,7 +9478,7 @@ c_Ek(long n, long d, GEN F)
   for (i = 1; i <= n; i++)
   {
     pari_sp av = avma;
-    gel(E, i+1) = gerepileupto(av, gmul(C, mysumdivku(i*d, k-1)));
+    gel(E, i+1) = gc_upto(av, gmul(C, mysumdivku(i*d, k-1)));
   }
   return E;
 }
@@ -10022,7 +10022,7 @@ mfeisensteindec(GEN mf, GEN F)
     V = gsubst(liftpol_shallow(V), vt, z);
   }
   B = Minv_RgC_mul(M, vecpermute(V, Mindex));
-  return gerepileupto(av, B);
+  return gc_upto(av, B);
 }
 
 /*********************************************************************/
@@ -10162,7 +10162,7 @@ fg1g2n(long n, long k, GEN CHI1vec, GEN CHI2vec, GEN data, GEN z1, GEN z2)
     GEN w = odd(k) ? gsub(u, v) : gadd(u, v);
     S = gadd(S, gmul(powuu(m, k-1), w));
   }
-  return gerepileupto(av, gmul(S, rootsof1pow(z2, n)));
+  return gc_upto(av, gmul(S, rootsof1pow(z2, n)));
 }
 
 static GEN
@@ -10455,7 +10455,7 @@ mfisCM(GEN F)
   if (lD == 1) return gc_const(av, gen_0);
   if (lD == 2) return gc_stoi(av, D[1]);
   if (k > 1) pari_err_BUG("mfisCM");
-  return gerepileupto(av, zv_to_ZV(D));
+  return gc_upto(av, zv_to_ZV(D));
 }
 
 static long
@@ -10805,7 +10805,7 @@ get_Shimura(GEN mf, GEN CHI, GEN vB, long t)
     pari_sp av = avma;
     GEN f = c_deflate(sb*sb, t, gel(vB,i));
     f = mftobasis_i(mf, RgV_shimura(f, sb, t, N, r, CHI));
-    gel(a,i) = gerepileupto(av, f);
+    gel(a,i) = gc_upto(av, f);
   }
   return a;
 }
@@ -11560,7 +11560,7 @@ static GEN
 normalizeapprox(GEN x, long bit)
 {
   pari_sp av = avma;
-  return gerepileupto(av, normalizeapprox_i(x, bit));
+  return gc_upto(av, normalizeapprox_i(x, bit));
 }
 
 /* make sure T is a t_POL in variable 0 */
@@ -12299,7 +12299,7 @@ mfsymboleval(GEN fs, GEN path, GEN ga, long bitprec)
       z2 = mfsymbolevalpartial(fs, be, ga, bitprec);
     z = gsub(z, z2);
     if (vabd) z = unact(z, vabd, k, prec);
-    return gerepileupto(av, normalizeapprox_i(z, bitprec-20));
+    return gc_upto(av, normalizeapprox_i(z, bitprec-20));
   }
   else if (!tsc2)
   {
@@ -12307,7 +12307,7 @@ mfsymboleval(GEN fs, GEN path, GEN ga, long bitprec)
     if (c) z = gsub(mfsymboleval(fs, mkvec2(al, mkoo()), ga, bitprec), z);
     else z = gneg(z);
     if (vabd) z = unact(z, vabd, k, prec);
-    return gerepileupto(av, normalizeapprox_i(z, bitprec-20));
+    return gc_upto(av, normalizeapprox_i(z, bitprec-20));
   }
   if (F) pari_err_TYPE("mfsymboleval", fs);
   D = a*d-b*c;
@@ -12340,7 +12340,7 @@ mfsymboleval(GEN fs, GEN path, GEN ga, long bitprec)
   }
   if (vabd) S = unact(S, vabd, k, prec);
   S = RgX_embedall(S, fs_get_vE(fs));
-  return gerepileupto(av, normalizeapprox_i(S, bitprec-20));
+  return gc_upto(av, normalizeapprox_i(S, bitprec-20));
 }
 
 /* v a scalar or t_POL; set *pw = a if expo(a) > E for some coefficient;
@@ -12583,7 +12583,7 @@ mfpeterssonnoncusp(GEN F1S, GEN F2S)
     }
   }
   delete_var();
-  return gerepileupto(av, gdivgu(Haberland(GF1,GF2, vE1,vE2, k), r));
+  return gc_upto(av, gdivgu(Haberland(GF1,GF2, vE1,vE2, k), r));
 }
 
 /* Petersson product of F and G, given by mfsymbol's [k > 1 integral] */
@@ -12630,7 +12630,7 @@ mfpetersson_i(GEN FS, GEN GS)
     PGjm1 = RgX_Rg_mul(PGjm1, mfcharcxeval(CHI, D, prec));
     gel(PH,j) = gsub(PGj1, PGjm1);
   }
-  return gerepileupto(av, gdivgu(Haberland(PF, PH, vEF, vEG, k), 6*r));
+  return gc_upto(av, gdivgu(Haberland(PF, PH, vEF, vEG, k), 6*r));
 }
 
 /****************************************************************/
@@ -12754,7 +12754,7 @@ WfromZ(GEN Z, GEN vP, GEN gkm1, Wfun_t W, long k, GEN pi4, long prec)
 {
   pari_sp av = avma;
   GEN Zk = gpow(Z, gkm1, prec), z = gmul(pi4, gsqrt(Z,prec));
-  return gerepileupto(av, gdiv(W(k, vP, z, prec), Zk));
+  return gc_upto(av, gdiv(W(k, vP, z, prec), Zk));
 }
 /* mf a true mf or an fs2 */
 static GEN
@@ -12859,14 +12859,14 @@ mfpetersson2(GEN Fs, GEN Gs)
       if (!isintzero(a) && !isintzero(b))
       {
         T = gadd(T, gmul(gel(W,n), gmul(conj_i(a),b)));
-        if (gc_needed(av,2)) T = gerepileupto(av,T);
+        if (gc_needed(av,2)) T = gc_upto(av,T);
       }
     }
     if (w != 1) T = gmulgu(T,w);
-    RES = gerepileupto(av, gadd(RES, T));
+    RES = gc_upto(av, gadd(RES, T));
   }
   if (!Gs) RES = real_i(RES);
-  return gerepileupto(av, gdiv(RES, fs2_get_den(Fs)));
+  return gc_upto(av, gdiv(RES, fs2_get_den(Fs)));
 }
 
 static long

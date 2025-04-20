@@ -244,7 +244,7 @@ elldatagenerators(GEN E)
   GEN V=ellidentify(E);
   GEN gens=gmael(V,1,3);
   GEN W=ellchangepointinv(gens,gel(V,2));
-  return gerepileupto(ltop,W);
+  return gc_upto(ltop,W);
 }
 
 void

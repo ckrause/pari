@@ -58,7 +58,9 @@ BA  23- [libpari] get_FlxqX_algebra
      2- removed elleisnum optional flag. If you really want elliptic
         invariants, use E4/12 and -E6/216.
 AP   3- strtime: use days in addition to hours, minutes, ms.
-BA   4- gerepilecopy renamed to gc_GEN, gerepileuptoint to gc_INT
+BA   4- rename gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
+     5- rename gerepile -> gc_GEN_unsafe, gerepileupto -> gc_upto,
+        gerepileuptoleaf -> gc_uptoleaf
 
   Removed
      1- obsolete functions gerepileall, gerepilemany: use gc_all

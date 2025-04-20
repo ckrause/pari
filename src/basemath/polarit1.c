@@ -43,7 +43,7 @@ rem_scal_scal(GEN x, GEN y)
   pari_sp av = avma;
   GEN z = gadd(gmul(gen_0,x), gmul(gen_0,y));
   if (gequal0(y)) pari_err_INV("grem",y);
-  return gerepileupto(av, simplify(z));
+  return gc_upto(av, simplify(z));
 }
 /* x pol, y "scalar", return 0 with type info */
 static GEN
@@ -51,7 +51,7 @@ rem_pol_scal(GEN x, GEN y)
 {
   pari_sp av = avma;
   if (gequal0(y)) pari_err_INV("grem",y);
-  return gerepileupto(av, simplify(gmul(Rg_get_0(x),y)));
+  return gc_upto(av, simplify(gmul(Rg_get_0(x),y)));
 }
 /* x "scalar", y pol, return x % y with type info */
 static GEN
@@ -144,14 +144,14 @@ grem(GEN x, GEN y)
             if (t == t_FRAC || t == t_INT) return QXQ_div(a, b, y);
           }
           av = avma; z = RgXQ_inv(RgX_rem(b, y), y);
-          return gerepileupto(av, grem(gmul(a, z), y));
+          return gc_upto(av, grem(gmul(a, z), y));
         }
         case t_SER:
           if (RgX_is_monomial(y))
           {
             if (lg(x)-2 + valser(x) < degpol(y)) pari_err_OP("%",x,y);
             av = avma;
-            return gerepileupto(av, gmod(ser2rfrac_i(x), y));
+            return gc_upto(av, gmod(ser2rfrac_i(x), y));
           }
         default: pari_err_TYPE2("%",x,y);
       }

@@ -765,7 +765,7 @@ Zlx_gcd(GEN f1, GEN f2, ulong p, ulong pm)
     {
       a = Flx_to_ZX(Flv_to_Flx(gel(a,c), sv));
       if (t == 1) return gc_GEN(av, a);
-      return gerepileupto(av, RgX_Rg_div(a, utoipos(t)));
+      return gc_upto(av, RgX_Rg_div(a, utoipos(t)));
     }
   }
   set_avma(av);
@@ -791,7 +791,7 @@ ZpX_gcd(GEN f1, GEN f2, GEN p, GEN pm)
     {
       a = RgV_to_RgX(gel(a,c), v);
       if (equali1(t)) return gc_GEN(av, a);
-      return gerepileupto(av, RgX_Rg_div(a, t));
+      return gc_upto(av, RgX_Rg_div(a, t));
     }
   }
   set_avma(av); return pol_0(v);
@@ -1396,7 +1396,7 @@ mycaract(decomp_t *S, GEN f, GEN a, GEN pp, GEN pdr)
   chi = newtoncharpoly(prec1, S->p, ns);
   if (!chi) return NULL;
   setvarn(chi, varn(f));
-  return gerepileupto(av, centermod(chi, pp));
+  return gc_upto(av, centermod(chi, pp));
 }
 
 static GEN
@@ -2142,7 +2142,7 @@ pow_ei_mod_p(GEN nf, long I, GEN p)
   D.p = p;
   D.I = I;
   y = gen_pow_fold(y, p, (void*)&D, &sqr_mod, &ei_msqr_mod);
-  return gerepileupto(av,y);
+  return gc_upto(av,y);
 }
 
 /* nf a true nf; return a Z basis of Z_K's p-radical, phi = x--> x^p-x */
@@ -2361,7 +2361,7 @@ idealprimedec_limit_f(GEN nf, GEN p, long f)
   if (f < 0) pari_err_DOMAIN("idealprimedec", "f", "<", gen_0, stoi(f));
   v = primedec_aux(checknf(nf), p, f);
   v = gen_sort(v, (void*)&cmp_prime_over_p, &cmp_nodata);
-  return gerepileupto(av,v);
+  return gc_upto(av,v);
 }
 /* true nf */
 GEN
@@ -2377,7 +2377,7 @@ idealprimedec_degrees(GEN nf, GEN p)
 {
   pari_sp av = avma;
   GEN v = primedec_aux(nf, p, -2);
-  vecsmall_sort(v); return gerepileuptoleaf(av, v);
+  vecsmall_sort(v); return gc_uptoleaf(av, v);
 }
 GEN
 idealprimedec_limit_norm(GEN nf, GEN p, GEN B)
@@ -2719,7 +2719,7 @@ zk_to_Fq(GEN x, GEN modpr)
 
 /* REDUCTION Modulo a prime ideal */
 
-/* nf a true nf, not GC-clean, OK for gerepileupto */
+/* nf a true nf, not GC-clean, OK for gc_upto */
 static GEN
 nf_to_Fq_i(GEN nf, GEN x0, GEN modpr)
 {
@@ -2782,7 +2782,7 @@ nfreducemodpr(GEN nf, GEN x, GEN modpr)
 {
   pari_sp av = avma;
   nf = checknf(nf); checkmodpr(modpr);
-  return gerepileupto(av, algtobasis(nf, Fq_to_nf(nf_to_Fq_i(nf,x,modpr),modpr)));
+  return gc_upto(av, algtobasis(nf, Fq_to_nf(nf_to_Fq_i(nf,x,modpr),modpr)));
 }
 
 GEN
@@ -2804,7 +2804,7 @@ nfmodpr(GEN nf, GEN x, GEN pr)
   }
   else
     x = nf_to_Fq_i(nf, x, modpr);
-  if (!T) return gerepileupto(av, Fp_to_mod(x, p));
+  if (!T) return gc_upto(av, Fp_to_mod(x, p));
   x = Fq_to_FF(x, Tp_to_FF(T,p));
   return gc_GEN(av, x);
 }
@@ -2872,7 +2872,7 @@ static GEN
 gc_nf_to_Fq(GEN nf, GEN A, GEN modpr)
 {
   pari_sp av = avma;
-  return gerepileupto(av, nf_to_Fq_i(nf, A, modpr));
+  return gc_upto(av, nf_to_Fq_i(nf, A, modpr));
 }
 GEN
 nf_to_Fq(GEN nf, GEN A, GEN modpr)
@@ -3855,7 +3855,7 @@ rnfdet(GEN nf, GEN M)
   nf = checknf(nf);
   M = get_module(nf, M, "rnfdet");
   D = idealmul(nf, nfM_det(nf, gel(M,1)), idealprod(nf, gel(M,2)));
-  return gerepileupto(av, D);
+  return gc_upto(av, D);
 }
 
 /* Given two fractional ideals a and b, gives x in a, y in b, z in b^-1,

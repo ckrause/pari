@@ -921,7 +921,7 @@ hnfmerge_get_1(GEN A, GEN B)
   if (j >= l) return NULL;
   b = lcmii(gcoeff(A,1,1),b);
   A = FpC_red(ZM_ZC_mul(A,gel(U,1)), b);
-  return gerepileupto(av, FpC_center(A, b, shifti(b,-1)));
+  return gc_upto(av, FpC_center(A, b, shifti(b,-1)));
 }
 
 /* remove the first r columns */
@@ -980,7 +980,7 @@ hnf_i(GEN A, int remove)
   }
   /* rank A = n - def */
   if (remove) { GEN B = NULL; remove_0cols(def, &A, &B, remove); }
-  return gerepileupto(av0, ZM_copy(A));
+  return gc_upto(av0, ZM_copy(A));
 }
 
 GEN
@@ -2857,7 +2857,7 @@ matsnf0(GEN x,long flag)
   if (typ(x)!=t_MAT) pari_err_TYPE("matsnf",x);
   if (RgM_is_ZM(x)) x = flag&1 ? smithall(x): smith(x);
   else              x = RgXM_snf(x, flag&1);
-  if (flag & 4) x = gerepileupto(av, smithclean(x));
+  if (flag & 4) x = gc_upto(av, smithclean(x));
   return x;
 }
 GEN

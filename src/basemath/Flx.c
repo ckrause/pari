@@ -581,14 +581,14 @@ Flx_addshift(GEN x, GEN y, ulong p, long d)
   *--zd = evaltyp(t_VECSMALL) | evallg(lz); return zd;
 }
 
-/* shift polynomial + gerepile */
+/* shift polynomial + gc_GEN_unsafe */
 /* Do not set evalvarn*/
 static GEN
 Flx_shiftip(pari_sp av, GEN x, long v)
 {
   long i, lx = lg(x), ly;
   GEN y;
-  if (!v || lx==2) return gerepileuptoleaf(av, x);
+  if (!v || lx==2) return gc_uptoleaf(av, x);
   ly = lx + v; /* result length */
   (void)new_chunk(ly); /* check that result fits */
   x += lx; y = (GEN)av;
@@ -843,7 +843,7 @@ Flx_mulspec_mulii_inflate(GEN x, GEN y, long N, ulong p, long nx, long ny)
 {
   pari_sp av = avma;
   GEN z = mulii(Flx_eval2BILspec(x,N,nx), Flx_eval2BILspec(y,N,ny));
-  return gerepileupto(av, Z_mod2BIL_Flx(z, N, nx+ny-2, p));
+  return gc_upto(av, Z_mod2BIL_Flx(z, N, nx+ny-2, p));
 }
 
 static GEN
@@ -1079,7 +1079,7 @@ Flx_sqrspec_sqri_inflate(GEN x, long N, ulong p, long nx)
 {
   pari_sp av = avma;
   GEN  z = sqri(Flx_eval2BILspec(x,N,nx));
-  return gerepileupto(av, Z_mod2BIL_Flx(z, N, (nx-1)*2, p));
+  return gc_upto(av, Z_mod2BIL_Flx(z, N, (nx-1)*2, p));
 }
 
 static GEN
@@ -1345,7 +1345,7 @@ Flx_invBarrett_pre(GEN T, ulong p, ulong pi)
   }
   else
     r = Flx_invBarrett_Newton(T, p, pi);
-  return gerepileuptoleaf(ltop, r);
+  return gc_uptoleaf(ltop, r);
 }
 GEN
 Flx_invBarrett(GEN T, ulong p)
@@ -1629,7 +1629,7 @@ Flx_divrem_pre(GEN x, GEN T, ulong p, ulong pi, GEN *pr)
     GEN mg = B? B: Flx_invBarrett_pre(y, p, pi);
     GEN q1 = Flx_divrem_Barrett(x,mg,y,p,pi,pr);
     if (!q1) return gc_NULL(av);
-    if (!pr || pr==ONLY_DIVIDES) return gerepileuptoleaf(av, q1);
+    if (!pr || pr==ONLY_DIVIDES) return gc_uptoleaf(av, q1);
     return gc_all(av, 2, &q1, pr);
   }
 }
@@ -1650,7 +1650,7 @@ Flx_rem_pre(GEN x, GEN T, ulong p, ulong pi)
     pari_sp av=avma;
     GEN mg = B ? B: Flx_invBarrett_pre(y, p, pi);
     GEN r  = Flx_divrem_Barrett(x, mg, y, p, pi, ONLY_REM);
-    return gerepileuptoleaf(av, r);
+    return gc_uptoleaf(av, r);
   }
 }
 GEN
@@ -2185,7 +2185,7 @@ Flx_gcd_pre(GEN x, GEN y, ulong p, ulong pi)
       (void)gc_all(av,2,&x,&y);
     }
   }
-  return gerepileuptoleaf(av, Flx_gcd_basecase(x,y,p,pi));
+  return gc_uptoleaf(av, Flx_gcd_basecase(x,y,p,pi));
 }
 GEN
 Flx_gcd(GEN x, GEN y, ulong p)
@@ -2450,10 +2450,10 @@ Flx_extresultant_basecase(GEN a, GEN b, ulong p, ulong pi, GEN *ptU, GEN *ptV)
   }
   res = Fl_mul(res, Fl_powu_pre(y[2], dx, p, pi), p);
   lb = Fl_mul(res, Fl_inv(y[2],p), p);
-  v = gerepileuptoleaf(av, Flx_Fl_mul_pre(v, lb, p, pi));
+  v = gc_uptoleaf(av, Flx_Fl_mul_pre(v, lb, p, pi));
   av = avma;
   u = Flx_sub(Fl_to_Flx(res,vs), Flx_mul_pre(b,v,p,pi), p);
-  u = gerepileuptoleaf(av, Flx_div_pre(u,a,p,pi)); /* = (res - b v) / a */
+  u = gc_uptoleaf(av, Flx_div_pre(u,a,p,pi)); /* = (res - b v) / a */
   *ptU = u;
   *ptV = v; return res;
 }
@@ -2798,7 +2798,7 @@ FlvV_polint_tree(GEN T, GEN R, GEN s, GEN xa, GEN ya, ulong p, ulong pi, long vs
                           Flx_mul_pre(gel(u, k+1), gel(v, k), p, pi), p);
     gel(Tp, i) = t;
   }
-  return gerepileuptoleaf(av, gmael(Tp,m,1));
+  return gc_uptoleaf(av, gmael(Tp,m,1));
 }
 
 GEN
@@ -2808,7 +2808,7 @@ Flx_Flv_multieval(GEN P, GEN xa, ulong p)
   GEN s = producttree_scheme(lg(xa)-1);
   ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
   GEN T = Flv_producttree(xa, s, p, pi, P[1]);
-  return gerepileuptoleaf(av, Flx_Flv_multieval_tree(P, xa, T, p, pi));
+  return gc_uptoleaf(av, Flx_Flv_multieval_tree(P, xa, T, p, pi));
 }
 
 static GEN
@@ -2822,7 +2822,7 @@ FlxV_Flv_multieval(GEN P, GEN xa, ulong p)
   GEN s = producttree_scheme(lg(xa)-1);
   ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
   GEN T = Flv_producttree(xa, s, p, pi, P[1]);
-  return gerepileupto(av, FlxV_Flv_multieval_tree(P, xa, T, p, pi));
+  return gc_upto(av, FlxV_Flv_multieval_tree(P, xa, T, p, pi));
 }
 
 GEN
@@ -2835,7 +2835,7 @@ Flv_polint(GEN xa, GEN ya, ulong p, long vs)
   long m = lg(T)-1;
   GEN P = Flx_deriv(gmael(T, m, 1), p);
   GEN R = Flv_inv(Flx_Flv_multieval_tree(P, xa, T, p, pi), p);
-  return gerepileuptoleaf(av, FlvV_polint_tree(T, R, s, xa, ya, p, pi, vs));
+  return gc_uptoleaf(av, FlvV_polint_tree(T, R, s, xa, ya, p, pi, vs));
 }
 
 GEN
@@ -2851,7 +2851,7 @@ Flv_Flm_polint(GEN xa, GEN ya, ulong p, long vs)
   GEN M = cgetg(l+1, t_VEC);
   for (i=1; i<=l; i++)
     gel(M,i) = FlvV_polint_tree(T, R, s, xa, gel(ya,i), p, pi, vs);
-  return gerepileupto(av, M);
+  return gc_upto(av, M);
 }
 
 GEN
@@ -2931,7 +2931,7 @@ _Flxq_powu_i(struct _Flxq *D, GEN x, ulong n)
 { return gen_powu_i(x, n, (void*)D, &_Flxq_sqr, &_Flxq_mul); }
 static GEN
 _Flxq_powu(struct _Flxq *D, GEN x, ulong n)
-{ pari_sp av = avma; return gerepileuptoleaf(av, _Flxq_powu_i(D, x, n)); }
+{ pari_sp av = avma; return gc_uptoleaf(av, _Flxq_powu_i(D, x, n)); }
 /* n-Power of x in Z/pZ[X]/(T), as t_VECSMALL. */
 GEN
 Flxq_powu_pre(GEN x, ulong n, GEN T, ulong p, ulong pi)
@@ -2945,7 +2945,7 @@ Flxq_powu_pre(GEN x, ulong n, GEN T, ulong p, ulong pi)
     case 2: return Flxq_sqr_pre(x, T, p, pi);
   }
   av = avma; set_Flxq_pre(&D, T, p, pi);
-  return gerepileuptoleaf(av, _Flxq_powu_i(&D, x, n));
+  return gc_uptoleaf(av, _Flxq_powu_i(&D, x, n));
 }
 GEN
 Flxq_powu(GEN x, ulong n, GEN T, ulong p)
@@ -2964,7 +2964,7 @@ Flxq_pow_pre(GEN x, GEN n, GEN T, ulong p, ulong pi)
   if (is_pm1(n)) return s < 0 ? x : Flx_copy(x);
   set_Flxq_pre(&D, T, p, pi);
   y = gen_pow_i(x, n, (void*)&D, &_Flxq_sqr, &_Flxq_mul);
-  return gerepileuptoleaf(av, y);
+  return gc_uptoleaf(av, y);
 }
 GEN
 Flxq_pow(GEN x, GEN n, GEN T, ulong p)
@@ -3011,7 +3011,7 @@ Flxq_inv_pre(GEN x, GEN T, ulong p, ulong pi)
   pari_sp av=avma;
   GEN U = Flxq_invsafe_pre(x, T, p, pi);
   if (!U) pari_err_INV("Flxq_inv",Flx_to_ZX(x));
-  return gerepileuptoleaf(av, U);
+  return gc_uptoleaf(av, U);
 }
 GEN
 Flxq_inv(GEN x, GEN T, ulong p)
@@ -3021,7 +3021,7 @@ GEN
 Flxq_div_pre(GEN x, GEN y, GEN T, ulong p, ulong pi)
 {
   pari_sp av = avma;
-  return gerepileuptoleaf(av, Flxq_mul_pre(x,Flxq_inv_pre(y,T,p,pi),T,p,pi));
+  return gc_uptoleaf(av, Flxq_mul_pre(x,Flxq_inv_pre(y,T,p,pi),T,p,pi));
 }
 GEN
 Flxq_div(GEN x, GEN y, GEN T, ulong p)
@@ -3124,7 +3124,7 @@ Flx_FlxqV_eval_pre(GEN Q, GEN x, GEN T, ulong p, ulong pi)
   }
   A = FlxV_to_Flm_lg(x, m, n);
   B = Flx_blocks_Flm(Q, n, d);
-  C = gerepileupto(av, Flm_mul(A, B, p));
+  C = gc_upto(av, Flm_mul(A, B, p));
   g = gel(x, l);
   if (pi && SMALL_ULONG(p)) pi = 0;
   T = Flx_get_red_pre(T, p, pi);
@@ -3134,9 +3134,9 @@ Flx_FlxqV_eval_pre(GEN Q, GEN x, GEN T, ulong p, ulong pi)
   {
     S = Flx_add(Flxq_mul_pre(S, g, T, p, pi), Flv_to_Flx(gel(C,i), sv), p);
     if (gc_needed(btop,1))
-      S = gerepileuptoleaf(btop, S);
+      S = gc_uptoleaf(btop, S);
   }
-  return gerepileuptoleaf(av, S);
+  return gc_uptoleaf(av, S);
 }
 GEN
 Flx_FlxqV_eval(GEN Q, GEN x, GEN T, ulong p)
@@ -3154,7 +3154,7 @@ Flx_Flxq_eval_pre(GEN Q, GEN x, GEN T, ulong p, ulong pi)
   T = Flx_get_red_pre(T, p, pi);
   V = Flxq_powers_pre(x, rtd, T, p, pi);
   z = Flx_FlxqV_eval_pre(Q, V, T, p, pi);
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 GEN
 Flx_Flxq_eval(GEN Q, GEN x, GEN T, ulong p)
@@ -3354,7 +3354,7 @@ Flxq_pow_Frobenius(GEN x, GEN n, GEN aut, GEN T, ulong p, ulong pi)
     if (!is_pm1(u)) z = Flxq_pow_pre(z, u, T, p, pi);
     if (signe(v)) z = Flxq_mul_pre(z, Flxq_pow_pre(x, v, T, p, pi), T, p, pi);
   }
-  return gerepileupto(av,signe(n)>0 ? z : Flxq_inv_pre(z,T,p,pi));
+  return gc_upto(av,signe(n)>0 ? z : Flxq_inv_pre(z,T,p,pi));
 }
 
 static GEN
@@ -3405,7 +3405,7 @@ Fl_Flxq_log(ulong a, GEN g, GEN o, GEN T, ulong p)
     }
   }
   n_q = Fp_log(utoi(a), utoipos(uel(g,2)), op, utoipos(p));
-  if (lg(n_q)==1) return gerepileuptoleaf(av, n_q);
+  if (lg(n_q)==1) return gc_uptoleaf(av, n_q);
   if (q) n_q = mulii(q, n_q);
   return gc_INT(av, n_q);
 }
@@ -3454,7 +3454,7 @@ Flxq_log(GEN a, GEN g, GEN ord, GEN T, ulong p)
   GEN v = get_arith_ZZM(ord), F = gmael(v,2,1);
   if (lg(F) > 1 && Flxq_log_use_index(veclast(F), T, p))
     v = mkvec2(gel(v, 1), ZM_famat_limit(gel(v, 2), int2n(27)));
-  return gerepileuptoleaf(av, gen_PH_log(a, g, v, E, S));
+  return gc_uptoleaf(av, gen_PH_log(a, g, v, E, S));
 }
 
 static GEN
@@ -3623,8 +3623,8 @@ Flxq_sqrtn_spec_pre(GEN a, GEN n, GEN T, ulong p, ulong pi, GEN q, GEN *zetan)
     *zetan = z;
     (void)gc_all(ltop,2,&a,zetan);
   }
-  else /* is_1 is 0: a was modified above -> gerepileupto valid */
-    a = gerepileupto(ltop, a);
+  else /* is_1 is 0: a was modified above -> gc_upto valid */
+    a = gc_upto(ltop, a);
   return a;
 }
 
@@ -3644,7 +3644,7 @@ Flxq_sqrtn(GEN a, GEN n, GEN T, ulong p, GEN *zeta)
     z = F2xq_sqrtn(Flx_to_F2x(a), n, Flx_to_F2x(get_FpX_mod(T)), zeta);
     if (!z) return NULL;
     z = F2x_to_Flx(z);
-    if (!zeta) return gerepileuptoleaf(av, z);
+    if (!zeta) return gc_uptoleaf(av, z);
     *zeta=F2x_to_Flx(*zeta);
     return gc_all(av, 2, &z,zeta);
   }
@@ -3693,7 +3693,7 @@ Flxq_sqrt_pre(GEN z, GEN T, ulong p, ulong pi)
   if (p==2)
   {
     GEN r = F2xq_sqrt(Flx_to_F2x(z), Flx_to_F2x(get_Flx_mod(T)));
-    return gerepileupto(av, F2x_to_Flx(r));
+    return gc_upto(av, F2x_to_Flx(r));
   }
   d = get_Flx_degree(T);
   if (d==2)
@@ -3717,7 +3717,7 @@ Flxq_sqrt_pre(GEN z, GEN T, ulong p, ulong pi)
       if (!r) return gc_NULL(av);
       s = mkvecsmall3(P[1], Fl_add(uel(r,1), Fl_mul(uel(r,2),t,p), p), uel(r,2));
     }
-    return gerepileuptoleaf(av, Flx_renormalize(s, 4));
+    return gc_uptoleaf(av, Flx_renormalize(s, 4));
   }
   if (lgpol(z)<=1 && odd(d))
   {
@@ -3782,7 +3782,7 @@ Flxq_lroot_fast_pre(GEN a, GEN sqx, GEN T, long p, ulong pi)
 {
   pari_sp av=avma;
   GEN A = Flx_splitting(a,p);
-  return gerepileuptoleaf(av, FlxqV_dotproduct_pre(A,sqx,T,p,pi));
+  return gc_uptoleaf(av, FlxqV_dotproduct_pre(A,sqx,T,p,pi));
 }
 GEN
 Flxq_lroot_fast(GEN a, GEN sqx, GEN T, long p)
@@ -3797,13 +3797,13 @@ Flxq_lroot_pre(GEN a, GEN T, long p, ulong pi)
   if (n==1) return leafcopy(a);
   if (n==2) return Flxq_powu_pre(a, p, T, p, pi);
   sqx = Flxq_autpow_pre(Flx_Frobenius_pre(T, p, pi), n-1, T, p, pi);
-  if (d==1 && a[2]==0 && a[3]==1) return gerepileuptoleaf(av, sqx);
+  if (d==1 && a[2]==0 && a[3]==1) return gc_uptoleaf(av, sqx);
   if (d>=p)
   {
     V = Flxq_powers_pre(sqx,p-1,T,p,pi);
-    return gerepileuptoleaf(av, Flxq_lroot_fast_pre(a,V,T,p,pi));
+    return gc_uptoleaf(av, Flxq_lroot_fast_pre(a,V,T,p,pi));
   } else
-    return gerepileuptoleaf(av, Flx_Flxq_eval_pre(a,sqx,T,p,pi));
+    return gc_uptoleaf(av, Flx_Flxq_eval_pre(a,sqx,T,p,pi));
 }
 GEN
 Flxq_lroot(GEN a, GEN T, long p)
@@ -3840,7 +3840,7 @@ Flxq_charpoly(GEN x, GEN TB, ulong p)
   GEN xm1 = deg1pol_shallow(pol1_Flx(x[1]),Flx_neg(x,p),vs);
   GEN r = Flx_FlxY_resultant(T, xm1, p);
   r[1] = x[1];
-  (void)delete_var(); return gerepileupto(ltop, r);
+  (void)delete_var(); return gc_upto(ltop, r);
 }
 
 /* Computing minimal polynomial :                         */
@@ -3878,11 +3878,11 @@ Flxq_transmul(GEN tau, GEN a, long n, ulong p, ulong pi)
   GEN bt = gel(tau, 1), bht = gel(tau, 2), ft = gel(tau, 3);
   if (lgpol(a)==0) return pol0_Flx(a[1]);
   t2  = Flx_shift(Flx_mul_pre(bt, a, p, pi),1-n);
-  if (lgpol(bht)==0) return gerepileuptoleaf(ltop, t2);
+  if (lgpol(bht)==0) return gc_uptoleaf(ltop, t2);
   t1  = Flx_shift(Flx_mul_pre(ft, a, p, pi),-n);
   t3  = Flxn_mul_pre(t1, bht, n-1, p, pi);
   vec = Flx_sub(t2, Flx_shift(t3, 1), p);
-  return gerepileuptoleaf(ltop, vec);
+  return gc_uptoleaf(ltop, vec);
 }
 
 GEN
@@ -3923,7 +3923,7 @@ Flxq_minpoly_pre(GEN x, GEN T, ulong p, ulong pi)
     tau = Flxq_mul_pre(tau, Flx_FlxqV_eval_pre(g_prime, v_x, T,p,pi), T,p,pi);
   }
   g = Flx_normalize(g,p);
-  return gerepileuptoleaf(ltop,g);
+  return gc_uptoleaf(ltop,g);
 }
 GEN
 Flxq_minpoly(GEN x, GEN T, ulong p)
@@ -4001,7 +4001,7 @@ gener_Flxq(GEN T, ulong p, GEN *po)
   if (!po)
   {
     set_avma((pari_sp)g);
-    g = gerepileuptoleaf(av0, g);
+    g = gc_uptoleaf(av0, g);
   }
   else {
     *po = mkvec2(subiu(powuu(p,f), 1), o);
@@ -4158,10 +4158,10 @@ Flxn_div_pre(GEN g, GEN f, long e, ulong p, ulong pi)
     if (gc_needed(av2,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"Flxn_div, e = %ld", n);
-      W = gerepileupto(av2, W);
+      W = gc_upto(av2, W);
     }
   }
-  return gerepileupto(av, W);
+  return gc_upto(av, W);
 }
 GEN
 Flxn_div(GEN g, GEN f, long e, ulong p)
@@ -4198,7 +4198,7 @@ Flxn_expint(GEN h, long e, ulong p)
       (void)gc_all(av2, 2, &f, &g);
     }
   }
-  return gerepileupto(av, f);
+  return gc_upto(av, f);
 }
 
 GEN
@@ -4224,7 +4224,7 @@ Flx_Newton(GEN P, long n, ulong p)
   long d = degpol(P);
   GEN dP = Flxn_recip(Flx_deriv(P, p), d);
   GEN Q = Flxn_div(dP, Flxn_recip(P, d+1), n, p);
-  return gerepileuptoleaf(av, Q);
+  return gc_uptoleaf(av, Q);
 }
 
 GEN
@@ -4234,7 +4234,7 @@ Flx_fromNewton(GEN P, ulong p)
   ulong n = Flx_constant(P)+1;
   GEN z = Flx_neg(Flx_shift(P, -1), p);
   GEN Q = Flxn_recip(Flxn_expint(z, n, p), n);
-  return gerepileuptoleaf(av, Q);
+  return gc_uptoleaf(av, Q);
 }
 
 static void
@@ -4310,7 +4310,7 @@ Flx_composedsum(GEN P, GEN Q, ulong p)
     GEN L  = ZX_Z_divexact(FpX_Laplace(Ln, q), pv);
     R = ZX_to_Flx(FpX_fromNewton(L, qf), p);
   }
-  return gerepileuptoleaf(av, Flx_Fl_mul(R, lead, p));
+  return gc_uptoleaf(av, Flx_Fl_mul(R, lead, p));
 }
 
 static GEN
@@ -4340,7 +4340,7 @@ Flx_composedprod(GEN P, GEN Q, ulong p)
     GEN Pl = FpX_convol(FpX_Newton(Flx_to_ZX(P), n, qf), FpX_Newton(Flx_to_ZX(Q), n, qf), qf);
     R = ZX_to_Flx(FpX_fromNewton(Pl, qf), p);
   }
-  return gerepileuptoleaf(av, Flx_Fl_mul(R, lead, p));
+  return gc_uptoleaf(av, Flx_Fl_mul(R, lead, p));
 
 }
 
@@ -4438,7 +4438,7 @@ Flx_translate(GEN P, ulong c, ulong p)
   if (c==0) return Flx_copy(P);
   if (c==1) return Flx_translate1(P, p);
   Q = Flx_unscale(Flx_translate1(Flx_unscale(P, c, p), p), Fl_inv(c, p), p);
-  return gerepileuptoleaf(av, Q);
+  return gc_uptoleaf(av, Q);
 }
 
 static GEN
@@ -4642,7 +4642,7 @@ Fl2_pow_pre(GEN x, GEN n, ulong D, ulong p, ulong pi)
   if (is_pm1(n)) return s < 0 ? x : zv_copy(x);
   d.p = p; d.pi = pi; d.D=D;
   y = gen_pow_i(x, n, (void*)&d, &_Fl2_sqr, &_Fl2_mul);
-  return gerepileuptoleaf(av, y);
+  return gc_uptoleaf(av, y);
 }
 
 static GEN
@@ -4727,7 +4727,7 @@ FlxV_Flc_mul(GEN V, GEN W, ulong p)
   GEN z = Flx_Fl_mul(gel(V,1),W[1],p);
   for(i=2;i<lg(V);i++)
     z=Flx_add(z,Flx_Fl_mul(gel(V,i),W[i],p),p);
-  return gerepileuptoleaf(ltop,z);
+  return gc_uptoleaf(ltop,z);
 }
 
 GEN
@@ -4769,7 +4769,7 @@ FlxqV_dotproduct_pre(GEN x, GEN y, GEN T, ulong p, ulong pi)
   if (lx == 1) return pol0_Flx(get_Flx_var(T));
   av = avma; c = Flx_mul_pre(gel(x,1),gel(y,1), p, pi);
   for (i=2; i<lx; i++) c = Flx_add(c, Flx_mul_pre(gel(x,i),gel(y,i), p, pi), p);
-  return gerepileuptoleaf(av, Flx_rem_pre(c,T,p,pi));
+  return gc_uptoleaf(av, Flx_rem_pre(c,T,p,pi));
 }
 GEN
 FlxqV_dotproduct(GEN x, GEN y, GEN T, ulong p)
@@ -4786,7 +4786,7 @@ FlxqX_dotproduct(GEN x, GEN y, GEN T, ulong p)
   av = avma; pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
   c = Flx_mul_pre(gel(x,2),gel(y,2), p, pi);
   for (i=3; i<l; i++) c = Flx_add(c, Flx_mul_pre(gel(x,i),gel(y,i), p, pi), p);
-  return gerepileuptoleaf(av, Flx_rem_pre(c,T,p,pi));
+  return gc_uptoleaf(av, Flx_rem_pre(c,T,p,pi));
 }
 
 /* allow pi = 0 */
@@ -5057,7 +5057,7 @@ FlxqM_mul_Kronecker(GEN A, GEN B, GEN T, ulong p)
   long sv = get_Flx_var(T), d = get_Flx_degree(T);
   GEN C = FlxM_mul_Kronecker_i(A, B, p, pi, d, sv);
   C = FlxqM_red_pre(C, T, p, pi);
-  return gerepileupto(av, C);
+  return gc_upto(av, C);
 }
 
 /* assume m > 1 */

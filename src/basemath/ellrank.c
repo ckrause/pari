@@ -82,7 +82,7 @@ zpsol(GEN T, GEN p, long nu, GEN pnu, GEN x0)
     if (zpsol(T,p,nu+1,pnup,x)) return gc_long(av,1);
     if (gc_needed(btop, 2))
     {
-      x = gerepileupto(btop, x);
+      x = gc_upto(btop, x);
       if (DEBUGMEM > 1)
         pari_warn(warnmem, "hyperell_locally_soluble: %ld/%Ps",i,p);
     }
@@ -815,7 +815,7 @@ cassels_Qp_solve(GEN q, GEN gam, GEN p)
     if (Qp_issquare(poleval(q, b), p))
     {
       c = poleval(gam, b);
-      if (!gequal0(c)) return gerepileupto(av,c);
+      if (!gequal0(c)) return gc_upto(av,c);
     }
   }
 }
@@ -1078,7 +1078,7 @@ kpmodsquares(GEN vnf, GEN z, GEN PP)
     for (j = 1; j < lp; j++) gel(kp, j) = kpmodsquares1(nf, delta, gel(pp,j));
     gel(vchar, i) = shallowconcat1(kp);
   }
-  return gerepileuptoleaf(av, shallowconcat1(vchar));
+  return gc_uptoleaf(av, shallowconcat1(vchar));
 }
 
 static GEN
@@ -1520,7 +1520,7 @@ redquadric(GEN base, GEN pol, GEN zc)
       s = s? RgM_add(s, M): M;
     }
     s = RgM_Cholesky(s, prec);
-    if (s) return gerepileupto(av, lll(s));
+    if (s) return gc_upto(av, lll(s));
     prec = precdbl(prec); set_avma(av);
   }
 }
@@ -1776,7 +1776,7 @@ dim_selmer(GEN p, GEN pol, GEN K, GEN vnf, GEN LS2, GEN helpLS2,
   X = Flm_ker(shallowconcat(LS2image, L), 2); setlgall(X, lg(LS2image));
   /* intersect(LS2image, locim) = LS2image.X */
   *selmer = Flm_intersect_i(*selmer, shallowconcat(Flm_ker(LS2image,2), X), 2);
-  *selmer = gerepileupto(av, Flm_image(*selmer, 2));
+  *selmer = gc_upto(av, Flm_image(*selmer, 2));
   dim = lg(*selmer)-1; return (dim == Flm_rank(helpimage,2))? dim: -1;
 }
 

@@ -842,7 +842,7 @@ divrr(GEN x, GEN y)
  *   if z = ONLY_REM return remainder, otherwise return quotient
  *   if z != NULL set *z to remainder
  *   *z is the last object on stack (and thus can be disposed of with cgiv
- *   instead of gerepile)
+ *   instead of gc_GEN_unsafe)
  * If *z is zero, we put gen_0 here and no copy.
  * space needed: lx + ly
  */

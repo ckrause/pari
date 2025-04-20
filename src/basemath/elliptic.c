@@ -309,7 +309,7 @@ ec_f_evalx(GEN E, GEN x)
   z = gadd(ell_get_a2(E),x);
   z = gadd(ell_get_a4(E), gmul(x,z));
   z = gadd(ell_get_a6(E), gmul(x,z));
-  return gerepileupto(av, z); /* ((x + E.a2) * x + E.a4) * x + E.a6 */
+  return gc_upto(av, z); /* ((x + E.a2) * x + E.a4) * x + E.a6 */
 }
 
 /* a1 x + a3 */
@@ -349,7 +349,7 @@ ec_dFdx_evalQ(GEN E, GEN Q)
   GEN a2 = ell_get_a2(E);
   GEN a4 = ell_get_a4(E);
   GEN tmp = gmul(gadd(gmulsg(3L,x), gmul2n(a2,1)), x);
-  return gerepileupto(av, gadd(tmp, gsub(a4, gmul(a1, y))));
+  return gc_upto(av, gadd(tmp, gsub(a4, gmul(a1, y))));
 }
 
 /* 2y + a1 x + a3 = -ec_dFdy_evalQ */
@@ -368,7 +368,7 @@ GEN
 ec_dFdy_evalQ(GEN E, GEN Q)
 {
   pari_sp av = avma;
-  return gerepileupto(av, gneg(ec_dmFdy_evalQ(E,Q)));
+  return gc_upto(av, gneg(ec_dmFdy_evalQ(E,Q)));
 }
 
 /* Given E and a point Q = [xQ, yQ], return
@@ -395,7 +395,7 @@ ec_2divpol_evalx(GEN E, GEN x)
     t2 = gadd(t1, b42);
     t2 = gadd(gmul(t2, x), b6);
   }
-  return gerepileupto(av, t2);
+  return gc_upto(av, t2);
 }
 
 /* Given E and a point Q = [xQ, yQ], return
@@ -412,7 +412,7 @@ ec_3divpol_evalx(GEN E, GEN x)
   GEN x2 = gsqr(x);
   GEN t1 = gadd(gadd(gmulsg(3L, x2), gmul(b2, x)), gmulsg(3L, b4));
   GEN t2 = gadd(gmul(gmulsg(3L, b6), x), b8);
-  return gerepileupto(av, gadd(gmul(t1, x2), t2));
+  return gc_upto(av, gadd(gmul(t1, x2), t2));
 }
 
 /* Given E and a point Q = [xQ, yQ], return
@@ -429,7 +429,7 @@ ec_half_deriv_2divpol_evalx(GEN E, GEN x)
   GEN b2 = ell_get_b2(E);
   GEN b4 = ell_get_b4(E);
   GEN res = gadd(gmul(gadd(gmulsg(6L, x), b2), x), b4);
-  return gerepileupto(av, res);
+  return gc_upto(av, res);
 }
 
 /* Return the characteristic of the ring over which E is defined. */
@@ -973,7 +973,7 @@ ellchangeinvert(GEN E, GEN v)
   checkell(E);
   if (ell_get_type(E) == t_ELL_NF) v = ellchangetoalg(ellnf_get_nf(E), v);
   if (is_trivial_change(v, "ellchangeinvert")) return gc_const(av, gen_1);
-  return gerepileupto(av, ellchangeinvert_i(v));
+  return gc_upto(av, ellchangeinvert_i(v));
 }
 
 static GEN
@@ -1006,7 +1006,7 @@ ellchangecompose(GEN E, GEN v, GEN w)
   }
   if (is_trivial_change(w, "ellchajgecompose"))
     return nf? gc_GEN(av, v): gcopy(v);
-  return gerepileupto(av, ellchangecompose_i(v, w));
+  return gc_upto(av, ellchangecompose_i(v, w));
 }
 
 static GEN
@@ -1935,7 +1935,7 @@ ellminimaltwist(GEN e)
     }
   }
   obj_free(E);
-  return gerepileuptoleaf(av, D);
+  return gc_uptoleaf(av, D);
 }
 
 /* Reference: William A. Stein and Mark Watkins
@@ -1961,7 +1961,7 @@ ellminimaltwistcond(GEN e)
     }
     D = shifti(D, s);
   }
-  return gerepileuptoleaf(av, D);
+  return gc_uptoleaf(av, D);
 }
 
 GEN
@@ -2092,7 +2092,7 @@ elladd(GEN e, GEN z1, GEN z2)
   y = gadd(gadd(y1, ec_h_evalx(e,x)), gmul(s,gsub(x,x1)));
   z = cgetg(3,t_VEC);
   gel(z,1) = gcopy(x);
-  gel(z,2) = gneg(y); return gerepileupto(av, z);
+  gel(z,2) = gneg(y); return gc_upto(av, z);
 }
 
 static GEN
@@ -2123,7 +2123,7 @@ ellneg(GEN e, GEN z)
   gel(t,1) = gcopy(gel(z,1));
   av = avma;
   y = gneg(gadd(gel(z,2), ec_h_evalx(e,gel(z,1))));
-  gel(t,2) = gerepileupto(av, y);
+  gel(t,2) = gc_upto(av, y);
   return t;
 }
 
@@ -2134,7 +2134,7 @@ ellsub(GEN e, GEN z1, GEN z2)
   checkell(e);
   if (!checkellpt_i(z1)) pari_err_TYPE("ellsub", z1);
   if (!checkellpt_i(z2)) pari_err_TYPE("ellsub", z2);
-  return gerepileupto(av, elladd(e, z1, ellneg_i(e,z2)));
+  return gc_upto(av, elladd(e, z1, ellneg_i(e,z2)));
 }
 
 /* E an ell, x a scalar */
@@ -2158,7 +2158,7 @@ ellordinate_i(GEN E, GEN x, long prec)
       retmkvec( FF_sqrt(a) );
     b = gneg_i(b); y = cgetg(2,t_VEC);
     gel(y,1) = gmul2n(b,-1);
-    return gerepileupto(av,y);
+    return gc_upto(av,y);
   }
   /* D != 0 */
   switch(ell_get_type(E))
@@ -2174,7 +2174,7 @@ ellordinate_i(GEN E, GEN x, long prec)
       {
         GEN F = FFX_roots(mkpoln(3, gen_1, b, a), D);
         if (lg(F) == 1) retgc_const(av, cgetg(1, t_VEC));
-        return gerepileupto(av, F);
+        return gc_upto(av, F);
       }
       if (!FF_issquareall(D,&d)) retgc_const(av, cgetg(1, t_VEC));
       break;
@@ -2201,7 +2201,7 @@ ellordinate_i(GEN E, GEN x, long prec)
   a = gsub(d,b); y = cgetg(3,t_VEC);
   gel(y,1) = gmul2n(a, -1);
   gel(y,2) = gsub(gel(y,1),d);
-  return gerepileupto(av,y);
+  return gc_upto(av,y);
 }
 
 GEN
@@ -2226,7 +2226,7 @@ ellrandom(GEN E)
     GEN p = fg, e = ellff_get_a4a6(E);
     GEN P = random_FpE(gel(e,1),gel(e,2),p);
     P = FpE_to_mod(FpE_changepoint(P,gel(e,3),p),p);
-    return gerepileupto(av, P);
+    return gc_upto(av, P);
   }
 }
 
@@ -2300,7 +2300,7 @@ ellffmul(GEN E, GEN P, GEN n)
     GEN Pp = FpE_changepointinv(RgE_to_FpE(P, p), gel(e,3), p);
     GEN Qp = FpE_mul(Pp, n, gel(e,1), p);
     Q = FpE_to_mod(FpE_changepoint(Qp, gel(e,3), p), p);
-    return gerepileupto(av, Q);
+    return gc_upto(av, Q);
   }
 }
 /* [n] z, n integral */
@@ -2438,11 +2438,11 @@ ellmul(GEN e, GEN z, GEN n)
     case t_QUAD: {
       GEN pol = gel(n,1), a = gel(n,2), b = gel(n,3);
       if (signe(gel(pol,2)) < 0) pari_err_TYPE("ellmul_CM",n); /* disc > 0 ? */
-      return gerepileupto(av, ellmul_CM_aux(e,z,a,mkquad(pol, gen_0,b)));
+      return gc_upto(av, ellmul_CM_aux(e,z,a,mkquad(pol, gen_0,b)));
     }
     case t_COMPLEX: {
       GEN a = gel(n,1), b = gel(n,2);
-      return gerepileupto(av, ellmul_CM_aux(e,z,a,mkcomplex(gen_0,b)));
+      return gc_upto(av, ellmul_CM_aux(e,z,a,mkcomplex(gen_0,b)));
     }
   }
   pari_err_TYPE("ellmul (non integral, non CM exponent)",n);
@@ -2460,7 +2460,7 @@ ellR_area(GEN E, long prec)
   w = ellR_omega(E, prec);
   w1 = gel(w,1); a = real_i(w1); b = imag_i(w1);
   w2 = gel(w,2); c = real_i(w2); d = imag_i(w2);
-  return gerepileupto(av, gabs(gsub(gmul(a,d),gmul(b,c)), prec));
+  return gc_upto(av, gabs(gsub(gmul(a,d),gmul(b,c)), prec));
 }
 
 /********************************************************************/
@@ -3976,7 +3976,7 @@ ellminimaldisc(GEN E)
       L = gel(S,1);
       U = ZC_z_mul(gel(S,2), 12);
       D = idealfactorback(nf, L, U, 0);
-      return gerepileupto(av, idealdiv(nf, ell_get_disc(E), D));
+      return gc_upto(av, idealdiv(nf, ell_get_disc(E), D));
     }
     default: pari_err_TYPE("ellminimaldisc (E / number field)", E);
              return NULL; /*LCOV_EXCL_LINE*/
@@ -4439,7 +4439,7 @@ ellnf_bsdperiod(GEN E, long prec)
     per = mulrr(per, pi);
   }
   ellnfembed_free(Eb);
-  return gerepileuptoleaf(av, per);
+  return gc_uptoleaf(av, per);
 }
 static GEN
 ellnf_adelicvolume(GEN E, long prec)
@@ -4484,7 +4484,7 @@ ellbsd(GEN E, long prec)
     case t_ELL_Q:  v = ellQ_bsd(E, prec);  break;
     case t_ELL_NF: v = ellnf_bsd(E, prec); break;
   }
-  return gerepileupto(av, v);
+  return gc_upto(av, v);
 }
 
 static GEN
@@ -4562,7 +4562,7 @@ ellQ_factorback1(GEN A, GEN L, ulong l, GEN E, long CM, ulong p)
     Hp = Flj_mulu_pre(Hp, d, a4, p, pi);
   Hp = Flj_to_Fle_pre(Hp, p, pi);
   Hp = Fle_changepoint(Hp, a4a6, p);
-  return gerepileuptoleaf(av, Hp);
+  return gc_uptoleaf(av, Hp);
 }
 
 static GEN
@@ -4652,7 +4652,7 @@ ellQ_factorback(GEN E, GEN A, GEN L, ulong l, GEN h, long prec)
       GEN g;
       settyp(r,t_VEC); g = ellheight(E,r,prec);
       if (signe(g) && expo(subrs(divrr(g,h),1))<-prec/2)
-        return gerepileupto(av, r);
+        return gc_upto(av, r);
     }
     if (hn && gcmpsg(expi(mod)>>2,hn) > 0) return gc_NULL(av);
   }
@@ -4733,7 +4733,7 @@ ellQ_isdivisible(GEN E, GEN P, ulong l)
                        && oncurve_exact(E,r))
     {
       settyp(r,t_VEC);
-      if (gequal(ellmul(E,r,utoi(l)), P)) return gerepileupto(av, r);
+      if (gequal(ellmul(E,r,utoi(l)), P)) return gc_upto(av, r);
       if (!ellQ_isdivisible_test(&U, E, CM, PJ, l, 10)) return gc_NULL(av);
     }
   }
@@ -5511,7 +5511,7 @@ ellnflocal(GEN E, GEN p, long n)
   }
   if (!T) { set_avma(av); return pol_1(0); }
   if (n==0) return gc_GEN(av, mkrfrac(gen_1,T));
-  return gerepileupto(av, RgXn_inv_i(T, n));
+  return gc_upto(av, RgXn_inv_i(T, n));
 }
 
 
@@ -5696,7 +5696,7 @@ elllseries(GEN e, GEN s, GEN A, long prec)
       z = gc_GEN(av1,z);
     }
   }
-  return gerepileupto(av, gdiv(z,gs));
+  return gc_upto(av, gdiv(z,gs));
 }
 
 /********************************************************************/
@@ -5742,7 +5742,7 @@ ellheightfaltings(GEN e, long prec)
       pari_err_TYPE("ellheight", e);
       return NULL; /*LCOV_EXCL_LINE*/
   }
-  return gerepileupto(av, gdivgs(logr_abs(h), -2*d));
+  return gc_upto(av, gdivgs(logr_abs(h), -2*d));
 }
 
 static GEN
@@ -5821,7 +5821,7 @@ hoo_aux(GEN E, GEN z, GEN d, long prec)
   else
     h = exphellagm(E, z, 1, prec);
   if (!is_pm1(d)) h = gmul(h, sqri(d));
-  return gerepileuptoleaf(av, gmul2n(mplog(h), -2));
+  return gc_uptoleaf(av, gmul2n(mplog(h), -2));
 }
 GEN
 ellheightoo(GEN E, GEN z, long prec) { return hoo_aux(E, z, gen_1, prec); }
@@ -5841,7 +5841,7 @@ ellheight_C(GEN E, GEN P, long prec)
   GEN eta = gadd(gmul(a, e1), gmul(b, e2));
   GEN r = gmul2n(real_i(gmul(z, eta)), -1);
   GEN l = real_i(ellsigma(per, z, 1, prec));
-  return gerepileupto(av, gsub(r, l));
+  return gc_upto(av, gsub(r, l));
 }
 
 static GEN
@@ -5853,7 +5853,7 @@ ellheightpairing(GEN E, GEN p, long n, GEN P, GEN Q)
   pari_sp av = avma;
   GEN a = _hell(E,p,n, elladd(E,P,Q));
   GEN b = _hell(E,p,n, ellsub(E,P,Q));
-  return gerepileupto(av, gmul2n(gsub(a,b), -2));
+  return gc_upto(av, gmul2n(gsub(a,b), -2));
 }
 GEN
 ellheight0(GEN e, GEN a, GEN b, long n)
@@ -5952,7 +5952,7 @@ ellnf_height(GEN E, GEN P, long prec)
     if (!oldp || !equalii(p, oldp)) { oldp = p; logp = glog(p, prec); }
     s = gadd(s, gmul(lam, mulru(logp, pr_get_f(pr))));
   }
-  return gerepileupto(av, gmul2n(s, 1));
+  return gc_upto(av, gmul2n(s, 1));
 }
 
 /* assume e is an ell and a an ellpt */
@@ -6018,7 +6018,7 @@ ellQ_height(GEN e, GEN a, long prec)
     z = gsub(z, divru(mulur(u, logr_abs(itor(p,prec))), v));
   }
   if (newell) obj_free(e);
-  return gerepileupto(av, gmul2n(z, 1));
+  return gc_upto(av, gmul2n(z, 1));
 }
 
 GEN
@@ -6195,13 +6195,13 @@ elltaniyama(GEN e, long prec)
       s2 = gsub(gmul(c,gsqr(w)), s1);
       s1 = signe(s2)? gdivgu(gel(s2,2), 28): gen_0; /* = x_4 */
     }
-    gel(X,n+2) = gerepileupto(av2, s1);
+    gel(X,n+2) = gc_upto(av2, s1);
   }
   w = gmul(d,derivser(x)); setvalser(w, valser(w)+1);
   w = gsub(w, ec_h_evalx(e,x));
   c = cgetg(3,t_VEC);
   gel(c,1) = gcopy(x);
-  gel(c,2) = gmul2n(w,-1); return gerepileupto(av, c);
+  gel(c,2) = gmul2n(w,-1); return gc_upto(av, c);
 }
 
 /********************************************************************/
@@ -6261,7 +6261,7 @@ ellweilpairing(GEN E, GEN P, GEN Q, GEN m)
     GEN w, a4;
     RgE2_Fp_init(E, &P, &Q, &a4, p);
     w = FpE_weilpairing(P, Q, m, a4, p);
-    return gerepileupto(av, Fp_to_mod(w, p));
+    return gc_upto(av, Fp_to_mod(w, p));
   }
 }
 
@@ -6281,7 +6281,7 @@ elltatepairing(GEN E, GEN P, GEN Q, GEN m)
     GEN t, a4;
     RgE2_Fp_init(E, &P, &Q, &a4, p);
     t = FpE_tatepairing(P, Q, m, a4, p);
-    return gerepileupto(av, Fp_to_mod(t, p));
+    return gc_upto(av, Fp_to_mod(t, p));
   }
 }
 
@@ -6526,7 +6526,7 @@ ellgroup0(GEN E, GEN p, long flag)
   }
   G = mkvec3(ellff_get_card(E), ellff_get_group(E), ellff_get_gens(E));
   if (!freeE) return gc_GEN(av, G);
-  G = gcopy(G); obj_free(E); return gerepileupto(av, G);
+  G = gcopy(G); obj_free(E); return gc_upto(av, G);
 }
 
 GEN
@@ -6553,7 +6553,7 @@ ellfromj_simple(GEN j)
   GEN k = gsubsg(1728,j), kj = gmul(k, j), k2j = gmul(kj, k);
   GEN E = zerovec(5);
   gel(E,4) = gmulsg(3,kj);
-  gel(E,5) = gmulsg(2,k2j); return gerepileupto(av, E);
+  gel(E,5) = gmulsg(2,k2j); return gc_upto(av, E);
 }
 GEN
 ellfromj(GEN j)
@@ -6574,7 +6574,7 @@ ellfromj(GEN j)
       {
         GEN E = zerovec(5);
         pari_sp av = avma;
-        gel(E,5) = gerepileupto(av, gneg(gsqr(j)));
+        gel(E,5) = gc_upto(av, gneg(gsqr(j)));
         gel(E,2) = gcopy(j);
         return E;
       }
@@ -6764,7 +6764,7 @@ elldivpol(GEN e, long n0, long v)
       f = elldivpol0(e, const_vec(n,NULL), N,RgX_sqr(d2), n, v);
     if (n%2==0) f = RgX_mul(f, d2);
   }
-  if (n0 < 0) return gerepileupto(av, RgX_neg(f));
+  if (n0 < 0) return gc_upto(av, RgX_neg(f));
   return gc_GEN(av, f);
 }
 
@@ -7059,7 +7059,7 @@ elltrace(GEN E, GEN P)
   {
     if (degpol(yP) > 0) { set_avma(av); retmkvec(gen_0); }
     P = mkvec2(constant_coeff(xP), constant_coeff(yP));
-    return gerepileupto(av, ellmul(E, P, utoipos(n)));
+    return gc_upto(av, ellmul(E, P, utoipos(n)));
   }
   /* Strategy: look for a function with divisor equal to
    *   [P_1] + ... + [P_n] + [-Tr(P)] - (n+1)[0]. */
@@ -7102,5 +7102,5 @@ elltrace(GEN E, GEN P)
    * we still need to compute [L:K(P)] */
   d = 0;
   for (i = n+1; i > 0; i--) if (!gequal0(gel(K,i))) { d = i; break; }
-  return gerepileupto(av, ellmul(E, Q, stoi(-n / (d-1))));
+  return gc_upto(av, ellmul(E, Q, stoi(-n / (d-1))));
 }

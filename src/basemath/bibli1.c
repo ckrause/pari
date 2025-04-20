@@ -242,7 +242,7 @@ RgM_gram_schmidt(GEN e, GEN *ptB)
       GEN p2 = gmul(mu, gel(f,j));
       p1 = p1? gadd(p1,p2): p2;
     }
-    p1 = p1? gerepileupto(av, gsub(gel(e,i), p1)): gel(e,i);
+    p1 = p1? gc_upto(av, gsub(gel(e,i), p1)): gel(e,i);
     gel(f,i) = p1;
     gel(B,i) = RgV_dotsquare(gel(f,i));
     gel(iB,i) = ginv(gel(B,i));
@@ -473,7 +473,7 @@ lllintpartialall(GEN m, long flag)
       }
     }
   } /* local block */
-  return gerepileupto(av, ZM_mul(tm1? tm1: mid, tm2));
+  return gc_upto(av, ZM_mul(tm1? tm1: mid, tm2));
 }
 
 GEN
@@ -563,7 +563,7 @@ zncoppersmith(GEN P, GEN N, GEN X, GEN B)
   if (d < 0) pari_err_ROOTS0("zncoppersmith");
   if (B && typ(B) != t_INT) B = gceil(B);
   if (abscmpiu(X, X_SMALL) <= 0)
-    return gerepileupto(av, do_exhaustive(P, N, itos(X), B));
+    return gc_upto(av, do_exhaustive(P, N, itos(X), B));
 
   if (B && equalii(B,N)) B = NULL;
   if (B) bnd = 1; /* bnd-hack is only for the case B = N */
@@ -680,7 +680,7 @@ zncoppersmith(GEN P, GEN N, GEN X, GEN B)
     }
     if (i < bnd) gel(R,2) = addii(gel(R,2), Z);
   }
-  return gerepileupto(av, ZV_sort_uniq(sol));
+  return gc_upto(av, ZV_sort_uniq(sol));
 }
 
 /********************************************************************/
@@ -821,7 +821,7 @@ lindep_Xadic(GEN x)
   }
   if (prec == LONG_MAX) prec = deg+1;
   m = RgXV_to_RgM(x, prec);
-  return gerepileupto(av, deplin(m));
+  return gc_upto(av, deplin(m));
 }
 static GEN
 vec_lindep(GEN x)
@@ -837,7 +837,7 @@ vec_lindep(GEN x)
     if (t != t_COL) y = shallowtrans(y); /* Sigh */
     gel(m,i) = y;
   }
-  return gerepileupto(av, deplin(m));
+  return gc_upto(av, deplin(m));
 }
 
 GEN
@@ -893,7 +893,7 @@ algdep0(GEN x, long n, long bit)
   if (lg(y) == 1) pari_err(e_DOMAIN,"algdep", "degree(x)",">", stoi(n), x);
   y = RgV_to_RgX(y, 0);
   if (signe(leading_coeff(y)) > 0) return gc_GEN(av, y);
-  return gerepileupto(av, ZX_neg(y));
+  return gc_upto(av, ZX_neg(y));
 }
 
 GEN
@@ -1109,7 +1109,7 @@ ZM_zc_mul_canon_zm(GEN u, GEN x)
 {
   pari_sp av = avma;
   GEN y = ZV_to_zv(ZM_zc_mul(u,x));
-  zv_canon_inplace(y); return gerepileupto(av, y);
+  zv_canon_inplace(y); return gc_upto(av, y);
 }
 
 struct qfvec
@@ -1972,11 +1972,11 @@ smallvectors(GEN q, GEN BORNE, long maxnum, FP_chk_fun *CHECK)
         av1 = avma;
         p1 = mulimp(gel(x,k), gcoeff(q,l,k));
         for (j=k+1; j<N; j++) p1 = addmulimp(p1, gel(x,j), gcoeff(q,l,j));
-        gel(z,l) = gerepileuptoleaf(av1,p1);
+        gel(z,l) = gc_uptoleaf(av1,p1);
 
         av1 = avma;
         p1 = norm_aux(gel(x,k), gel(y,k), gel(z,k), gel(v,k));
-        gel(y,l) = gerepileuptoleaf(av1, p1);
+        gel(y,l) = gc_uptoleaf(av1, p1);
         /* skip the [x_1,...,x_skipfirst,0,...,0] */
         if ((l <= skipfirst && !signe(gel(y,skipfirst)))
          || mplessthan(borne1, gel(y,l))) skip = 1;
@@ -2015,7 +2015,7 @@ smallvectors(GEN q, GEN BORNE, long maxnum, FP_chk_fun *CHECK)
     norme1 = norm_aux(gel(x,1),gel(y,1),gel(z,1),gel(v,1));
     if (mpgreaterthan(norme1,borne1)) { set_avma(av1); continue; /* main */ }
 
-    norme1 = gerepileuptoleaf(av1,norme1);
+    norme1 = gc_uptoleaf(av1,norme1);
     if (check)
     {
       if (checkcnt < 5 && mpcmp(norme1, borne2) < 0)
@@ -2205,5 +2205,5 @@ fincke_pohst(GEN a, GEN B0, long stockmax, long PREC, FP_chk_fun *CHECK)
   z = cgetg(4,t_VEC);
   gel(z,1) = gcopy(gel(res,1));
   gel(z,2) = gcopy(gel(res,2));
-  gel(z,3) = ZM_mul(u, gel(res,3)); return gerepileupto(av,z);
+  gel(z,3) = ZM_mul(u, gel(res,3)); return gc_upto(av,z);
 }

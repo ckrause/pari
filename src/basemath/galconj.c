@@ -59,7 +59,7 @@ galoisconj1(GEN nf)
     gel(y,i) = t;
   }
   (void)delete_var();
-  return gerepileupto(av, y);
+  return gc_upto(av, y);
 }
 
 /*************************************************************************/
@@ -192,7 +192,7 @@ embed_disc(GEN z, long r1, long prec)
   }
   t = gsqr(t);
   if (odd(r2)) t = gneg(t);
-  return gerepileupto(av, t);
+  return gc_upto(av, t);
 }
 
 /* Compute bound for the coefficients of automorphisms.
@@ -396,7 +396,7 @@ galoisdolift(struct galois_lift *gl)
   pari_sp av = avma;
   GEN Tp = FpX_red(gl->T, gl->p);
   GEN S = FpX_Frobenius(Tp, gl->p);
-  return gerepileupto(av, automorphismlift(S, gl));
+  return gc_upto(av, automorphismlift(S, gl));
 }
 
 static GEN
@@ -405,7 +405,7 @@ galoisdoliftn(struct galois_lift *gl, long e)
   pari_sp av = avma;
   GEN Tp = FpX_red(gl->T, gl->p);
   GEN S = FpXQ_autpow(FpX_Frobenius(Tp, gl->p), e, Tp, gl->p);
-  return gerepileupto(av, automorphismlift(S, gl));
+  return gc_upto(av, automorphismlift(S, gl));
 }
 
 static ulong
@@ -876,7 +876,7 @@ Flv_sympol_eval(GEN v, GEN NS, ulong p)
   GEN S = Flv_Fl_mul(gel(NS,1), uel(v,1), p);
   for (i=2; i<l; i++)
     if (v[i]) S = Flv_add(S, Flv_Fl_mul(gel(NS,i), uel(v,i), p), p);
-  return gerepileuptoleaf(av, S);
+  return gc_uptoleaf(av, S);
 }
 
 static GEN
@@ -903,7 +903,7 @@ sympol_eval(GEN sym, GEN O, GEN mod)
   GEN S = gen_0;
   for (i=1; i<lg(v); i++)
     if (v[i]) S = gadd(S, gmulsg(v[i],  sympol_eval_newtonsum(w[i], O, mod)));
-  return gerepileupto(av, S);
+  return gc_upto(av, S);
 }
 
 /* Let sigma be an automorphism of L (as a polynomial with rational coefs)
@@ -925,7 +925,7 @@ sympol_aut_evalmod(GEN sym, long g, GEN sigma, GEN Tp, GEN p)
     for(j=1; j<lg(v); j++)
       s = FpX_add(s, FpX_Fp_mul(FpXQ_pow(f,gel(w,j),Tp,p),gel(v,j),p),p);
   }
-  return gerepileupto(ltop, s);
+  return gc_upto(ltop, s);
 }
 
 /* Let Sp be as computed with sympol_aut_evalmod
@@ -1505,7 +1505,7 @@ FpXV_ffisom(GEN V, GEN p)
   M = cgetg(l, t_MAT);
   for (j = 1; j < l; j++)
     gel(M,j) = FpXC_FpXQ_eval(Si, gel(S,j), gel(V,j), p);
-  return gerepileupto(av, M);
+  return gc_upto(av, M);
 }
 
 static GEN
@@ -2308,7 +2308,7 @@ galoisgenliftauto(GEN O, GEN gj, long s, long n, struct galois_test *td)
     }
     pf = perm_mul(pf, perm_powu(pf1, el));
   }
-  return gerepileuptoleaf(av, pf);
+  return gc_uptoleaf(av, pf);
 }
 
 static GEN
@@ -2798,7 +2798,7 @@ galoisgen(GEN T, GEN L, GEN M, GEN den, GEN bad, struct galois_borne *gb,
     inittest(L, M, gb->bornesol, gb->ladicsol, &td);
     PG = a4galoisgen(&td);
     freetest(&td);
-    if (PG) return gerepileupto(ltop, PG);
+    if (PG) return gc_upto(ltop, PG);
     set_avma(av);
   }
   if (n == 24 && ga->ord==3 && ga->p4)
@@ -2808,7 +2808,7 @@ galoisgen(GEN T, GEN L, GEN M, GEN den, GEN bad, struct galois_borne *gb,
     if (DEBUGLEVEL >= 4) err_printf("GaloisConj: Testing S4 first\n");
     initlift(T, den, ga->p4, L, makeLden(L,den,gb), gb, &gl);
     PG = s4galoisgen(&gl);
-    if (PG) return gerepileupto(ltop, PG);
+    if (PG) return gc_upto(ltop, PG);
     set_avma(av);
   }
   if (n == 36 && ga->ord==3 && ga->p4)
@@ -2818,7 +2818,7 @@ galoisgen(GEN T, GEN L, GEN M, GEN den, GEN bad, struct galois_borne *gb,
     if (DEBUGLEVEL >= 4) err_printf("GaloisConj: Testing 3x3:4 first (p=%ld)\n",ga->p4);
     initlift(T, den, ga->p4, L, makeLden(L,den,gb), gb, &gl);
     PG = f36galoisgen(&gl);
-    if (PG) return gerepileupto(ltop, PG);
+    if (PG) return gc_upto(ltop, PG);
     set_avma(av);
   }
   frob = galoisfindfrobenius(T, L, den, bad, &gf, gb, ga);
@@ -2888,7 +2888,7 @@ conjcyclo(GEN T, long N)
       if (i >= d) s = ZX_rem(s, T);
       gel(L,k++) = s;
     }
-  return gerepileupto(av, gen_sort(L, (void*)&gcmp, &gen_cmp_RgX));
+  return gc_upto(av, gen_sort(L, (void*)&gcmp, &gen_cmp_RgX));
 }
 
 static GEN
@@ -2979,7 +2979,7 @@ galoissplittinginit(GEN T, GEN D)
   pari_sp av = avma;
   GEN R = nfsplitting0(T, D, 3), P = gel(R,1), aut = gel(R,2);
   ulong p = itou(gel(R,3));
-  return gerepileupto(av, galoisinitfromaut(P, aut, p));
+  return gc_upto(av, galoisinitfromaut(P, aut, p));
 }
 
 /* T: polynomial or nf, den multiple of common denominator of solutions or
@@ -3054,7 +3054,7 @@ galoisconj4_main(GEN T, GEN den, long flag)
   aut = galoisvecpermtopol(grp, gal_get_group(grp), gb.ladicabs, shifti(gb.ladicabs,-1));
   settyp(aut, t_COL);
   if (DEBUGLEVEL >= 1) timer_printf(&ti, "Computation of polynomials");
-  return gerepileupto(ltop, gen_sort(aut, (void*)&gcmp, &gen_cmp_RgX));
+  return gc_upto(ltop, gen_sort(aut, (void*)&gcmp, &gen_cmp_RgX));
 }
 
 /* Heuristic computation of #Aut(T), pinit = first prime to be tested */
@@ -3144,7 +3144,7 @@ galoisconj(GEN nf, GEN d)
   T = Q_primpart(T);
   if (ZX_is_monic(T)) return galoisconj_monic(T, d);
   S = galoisconj_monic(poltomonic(T,&L), NULL);
-  return gerepileupto(av, gdiv(RgXV_unscale(S, L),L));
+  return gc_upto(av, gdiv(RgXV_unscale(S, L),L));
 }
 
 /* FIXME: obsolete, use galoisconj(nf, d) directly */
@@ -3250,9 +3250,9 @@ fixedfieldfactor(GEN L, GEN O, GEN perm, GEN M, GEN den, GEN mod, GEN mod2,
       for(k = 1; k < l; k++) gel(V,k) = gmael(G,k,j+1);
       gel(F,j) = vectopol(V, M, den, mod, mod2, y);
     }
-    gel(res,i) = gerepileupto(av,gtopolyrev(F,x));
+    gel(res,i) = gc_upto(av,gtopolyrev(F,x));
   }
-  return gerepileupto(ltop,res);
+  return gc_upto(ltop,res);
 }
 
 static void
@@ -3330,7 +3330,7 @@ galoisfixedfield(GEN gal, GEN perm, long flag, long y)
   }
   gel(res,1) = gcopy(P);
   gel(res,2) = gmodulo(S, T);
-  return gerepileupto(ltop, res);
+  return gc_upto(ltop, res);
 }
 
 /* gal a galois group output the underlying wss group */
@@ -3391,9 +3391,9 @@ galoisisabelian(GEN gal, long flag)
   if (!group_isabelian(G)) { set_avma(av); return gen_0; }
   switch(flag)
   {
-    case 0: return gerepileupto(av, group_abelianHNF(G,S));
+    case 0: return gc_upto(av, group_abelianHNF(G,S));
     case 1: set_avma(av); return gen_1;
-    case 2: return gerepileupto(av, group_abelianSNF(G,S));
+    case 2: return gc_upto(av, group_abelianSNF(G,S));
     default: pari_err_FLAG("galoisisabelian");
   }
   return NULL; /* LCOV_EXCL_LINE */
@@ -3452,10 +3452,10 @@ galoissubgroups(GEN gal)
 {
   pari_sp av = avma;
   GEN S = group_is_elt(gal), G;
-  if (S) return gerepileupto(av,
+  if (S) return gc_upto(av,
       vec_groupelts_to_group_or_elts(groupelts_solvablesubgroups(S)));
   G = checkgroup(gal, &S);
-  return gerepileupto(av, group_subgroups(G));
+  return gc_upto(av, group_subgroups(G));
 }
 
 GEN
@@ -3466,7 +3466,7 @@ galoissubfields(GEN G, long flag, long v)
   long i, l = lg(L);
   GEN S = cgetg(l, t_VEC);
   for (i = 1; i < l; ++i) gel(S,i) = galoisfixedfield(G, gmael(L,i,1), flag, v);
-  return gerepileupto(av, S);
+  return gc_upto(av, S);
 }
 
 GEN
@@ -3474,7 +3474,7 @@ galoisexport(GEN gal, long format)
 {
   pari_sp av = avma;
   GEN S, G = checkgroup(gal,&S);
-  return gerepileupto(av, group_export(G,format));
+  return gc_upto(av, group_export(G,format));
 }
 
 GEN

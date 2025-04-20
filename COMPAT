@@ -32,7 +32,9 @@ This file lists the incompatible changes between Version 2.x and older versions
      instead. And preferably polredbest!
   - oncurve was renamed to ellisoncurve_i
   - renamed ZC_hnfremdiv -> ZC_hnfdivrem
-  - gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
+  - gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT,
+    gerepile -> gc_GEN_unsafe, gerepileupto -> gc_upto,
+    gerepileuptoleaf -> gc_uptoleaf
   - removed obsolete functions gerepileall/gerepilemany: use gc_all. Type cast
     the result to (void) to ignore the return value if the compiler complains.
   - removed obsolete functions gerepilemanysp: use gc_all_unsafe

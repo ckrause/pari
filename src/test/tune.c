@@ -134,7 +134,7 @@ rand_NFpX(long n)
 {
   pari_sp av = avma;
   GEN x = gadd(pol_xn(n,0), random_FpX(n, 0, LARGE_mod));
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 
 /* normalized Flx, degree n */
@@ -143,7 +143,7 @@ rand_NFlx(long n, ulong l)
 {
   pari_sp av = avma;
   GEN x = Flx_add(Flx_shift(pol1_Flx(0),n), random_Flx(n, 0, l), l);
-  return gerepileuptoleaf(av, x);
+  return gc_uptoleaf(av, x);
 }
 
 static GEN
@@ -151,7 +151,7 @@ rand_NF2xqX(long n, GEN T)
 {
   pari_sp av = avma;
   GEN x = F2xX_add(monomial(pol1_F2x(0),n,0), random_F2xqX(n, 0, T));
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 
 static GEN
@@ -159,7 +159,7 @@ rand_NFlxqX(long n, GEN T, long l)
 {
   pari_sp av = avma;
   GEN x = FlxX_add(monomial(pol1_Flx(0),n,0), random_FlxqX(n, 0, T, l), l);
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 
 static GEN
@@ -167,7 +167,7 @@ rand_NFpXQX(long n, GEN T)
 {
   pari_sp av = avma;
   GEN x = gadd(pol_xn(n,0), random_FpXQX(n, 0, T, LARGE_mod));
-  return gerepileupto(av, x);
+  return gc_upto(av, x);
 }
 
 #define t_F2x     100

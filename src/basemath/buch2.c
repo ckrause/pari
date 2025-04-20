@@ -597,7 +597,7 @@ compute_invres(GRHcheck_t *S, long LIMC)
     }
     loginvres -= (addpsi*c0 - addpsi1*c1 + addpsi2*c2)*logp;
   }
-  return gerepileuptoleaf(av, mpexp(dbltor(loginvres)));
+  return gc_uptoleaf(av, mpexp(dbltor(loginvres)));
 }
 
 static long
@@ -1054,7 +1054,7 @@ chinese_unit_slice(GEN A, GEN U, GEN B, GEN D, GEN C, GEN P, GEN *mod)
     GEN a = ZXV_to_FlxV(A, p), b = ZM_to_Flm(B, p), c = ZX_to_Flx(C, p);
     GEN d = D ? ZV_to_Flv(D, p): NULL;
     GEN Hp = FlxqX_chinese_unit(a, U, b, d, c, p);
-    H = gerepileupto(av, Flm_to_ZM(Hp));
+    H = gc_upto(av, Flm_to_ZM(Hp));
     *mod = utoi(p);
     return H;
   }
@@ -2095,7 +2095,7 @@ isprincipalfact(GEN bnf, GEN C, GEN P, GEN e, long flag)
       else
       {
         GEN u = gel(y,2);
-        if (!gen || typ(y) != t_VEC) return gerepileupto(av,y);
+        if (!gen || typ(y) != t_VEC) return gc_upto(av,y);
         if (lg(u) != 1) gel(y,2) = add_principal_part(nf, u, Cext, flag);
       }
       return gc_GEN(av, y);
@@ -3237,7 +3237,7 @@ makematal(GEN bnf)
     else
     {
       if (DEBUGLEVEL>1) err_printf("%ld ",j);
-      gel(ma,j) = gerepileupto(av,y);
+      gel(ma,j) = gc_upto(av,y);
     }
   }
   if (prec)
@@ -3255,7 +3255,7 @@ makematal(GEN bnf)
       y = get_y(bnf,W,B,NULL, pFB, j);
       if (typ(y) == t_INT) pari_err_PREC("makematal");
       if (DEBUGLEVEL>1) err_printf("%ld ",j);
-      gel(ma,j) = gerepileupto(av,y);
+      gel(ma,j) = gc_upto(av,y);
     }
   }
   if (DEBUGLEVEL>1) err_printf("\n");
@@ -3329,7 +3329,7 @@ get_regulator(GEN A)
 
   if (lg(A) == 1) return gen_1;
   R = det( rowslice(real_i(A), 1, lgcols(A)-2) );
-  setabssign(R); return gerepileuptoleaf(av, R);
+  setabssign(R); return gc_uptoleaf(av, R);
 }
 
 /* return corrected archimedian components for elts of x (vector)
@@ -3649,7 +3649,7 @@ trim_list(FB_t *F)
     long k = minidx[ L_jid[i] ];
     if (!present[k]) { v[j++] = L_jid[i]; present[k] = 1; }
   }
-  setlg(v, j); return gerepileuptoleaf(av, v);
+  setlg(v, j); return gc_uptoleaf(av, v);
 }
 
 /* x t_INT or primitive ZC */

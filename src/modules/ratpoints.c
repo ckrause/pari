@@ -1800,7 +1800,7 @@ ZX_homogenous_evalpow(GEN Q, GEN A, GEN B)
   GEN s = gel(Q, d+2);
   for (i = d-1; i >= 0; i--)
     s = addii(mulii(s, A), mulii(gel(B,d+1-i), gel(Q,i+2)));
-  return d? gerepileupto(av, s): s;
+  return d? gc_upto(av, s): s;
 }
 
 static GEN

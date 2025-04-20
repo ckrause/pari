@@ -2617,7 +2617,7 @@ GEN
 nflist_CL_worker(GEN f, GEN bnf, GEN gell)
 {
   pari_sp av = avma;
-  return gerepileupto(av, RgXV_polred(mybnrclassfield(bnf, f, gell[1])));
+  return gc_upto(av, RgXV_polred(mybnrclassfield(bnf, f, gell[1])));
 }
 
 static GEN
@@ -3979,7 +3979,7 @@ nflist_S46M_worker(GEN P3, GEN X, GEN Xinf, GEN gs)
     gel(V, c++) = makeS46Mpols(t, X, Xinf);
   }
   setlg(V,c); V = myshallowconcat1(V);
-  return gerepileupto(av, gtoset(V));
+  return gc_upto(av, gtoset(V));
 }
 
 static GEN

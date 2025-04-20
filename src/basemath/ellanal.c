@@ -290,7 +290,7 @@ vecF2_lk_bsgs(GEN E, GEN bnd, GEN rbnd, GEN Q, GEN sleh, GEN N, long prec)
     long j, g = rbnd[k];
     GEN giant = gmael(bb.baby, k, g+1), Sl = gmael(bb.giant, k, g);
     for (j = g-1; j >=1; j--) Sl = addrr(mulrr(Sl, giant), gmael(bb.giant,k,j));
-    gel(S, k) = gerepileuptoleaf(av, mulrr(gel(sleh,k), Sl));
+    gel(S, k) = gc_uptoleaf(av, mulrr(gel(sleh,k), Sl));
   }
   return S;
 }
@@ -321,7 +321,7 @@ vecF(struct lcritical *C, GEN E)
     vec = vecF2_lk(E, bnd, rbnd, Q, elh, prec);
   else
     vec = vecF2_lk_bsgs(E, bnd, rbnd, Q, elh, N, prec);
-  return gerepileupto(av, vec);
+  return gc_upto(av, vec);
 }
 
 /* Lambda function by Fourier inversion. vec is a grid, t a scalar or t_SER */
@@ -397,7 +397,7 @@ ellL1(GEN E, long r, long bitprec)
   vec = Lpoints(&C, e, 0., bitprec);
   t = r ? scalarser(gen_1, 0, r):  zeroser(0, 0);
   setvalser(t, 1);
-  return gerepileupto(av, ellL1_der(e, vec, &C, t, r, prec));
+  return gc_upto(av, ellL1_der(e, vec, &C, t, r, prec));
 }
 
 GEN
@@ -551,9 +551,9 @@ heegner_psi(GEN E, GEN N, GEN points, long bitprec)
       long j, g = rbnd[k];
       GEN giant = gmael(bb.baby, k, g+1), Sl = real_0(prec);
       for (j = g; j >=1; j--) Sl = gadd(gmul(Sl, giant), gmael(bb.giant,k,j));
-      gel(S, k) = gerepileupto(av2, real_i(Sl));
+      gel(S, k) = gc_upto(av2, real_i(Sl));
     }
-    return gerepileupto(av, S);
+    return gc_upto(av, S);
   }
   else
   {
@@ -689,7 +689,7 @@ qimag2(GEN Q)
 {
   pari_sp av = avma;
   GEN z = gdiv(negi(qfb_disc(Q)), shifti(sqri(gel(Q, 1)),2));
-  return gerepileupto(av, z);
+  return gc_upto(av, z);
 }
 
 /***************************************************/
@@ -903,7 +903,7 @@ ltwist1(GEN E, GEN d, long bitprec)
 {
   pari_sp av = avma;
   GEN Ed = elltwist(E, d), z = ellL1(Ed, 0, bitprec);
-  obj_free(Ed); return gerepileuptoleaf(av, z);
+  obj_free(Ed); return gc_uptoleaf(av, z);
 }
 
 /* Return O_re*c(E)/(4*O_vol*|E_t|^2) */
@@ -913,7 +913,7 @@ heegner_indexmult(GEN om, long t, GEN tam, long prec)
 {
   pari_sp av = avma;
   GEN Ovr = gabs(imag_i(gel(om, 2)), prec); /* O_vol/O_re, t_REAL */
-  return gerepileupto(av, divru(divir(tam, Ovr), 4*t*t));
+  return gc_upto(av, divru(divir(tam, Ovr), 4*t*t));
 }
 
 /* omega(gcd(D, N)), given faN = factor(N) */
@@ -940,7 +940,7 @@ heegner_indexmultD(GEN faN, GEN a, long D, GEN sqrtD)
     default: w = 1;
   }
   c = shifti(stoi(w), omega_N_D(faN,-D)); /* (w(D)/2)^2 * 2^omega(gcd(D,N)) */
-  return gerepileupto(av, mulri(mulrr(a, sqrtD), c));
+  return gc_upto(av, mulri(mulrr(a, sqrtD), c));
 }
 
 static GEN
@@ -1006,7 +1006,7 @@ heegner_descent_try_point(GEN nfA, GEN z, GEN den, long prec)
       V = gdiv(QXQ_mul(S2, Aj, T), sqri(den));
       if (typ(V) != t_POL || degpol(V) != 1) continue;
       if (gequalm1(gel(V,3)))
-        return gerepileupto(av,gadd(gmul(gel(V,2),u2),r));
+        return gc_upto(av,gadd(gmul(gel(V,2),u2),r));
     }
   }
   return gc_NULL(av);
@@ -1425,7 +1425,7 @@ ellmoddegree(GEN E)
     d = grndtoi(deg, &e);
     if (DEBUGLEVEL) err_printf("ellmoddegree: %Ps, bit=%ld, err=%ld\n",deg,b,e);
     s = expo(deg);
-    if (e <= -8 && s <= b-8) return gerepileupto(av, gdiv(d,mc2));
+    if (e <= -8 && s <= b-8) return gc_upto(av, gdiv(d,mc2));
     b = maxss(s, b+e) + 16;
   }
 }
