@@ -1631,7 +1631,7 @@ FlxX_pseudorem(GEN x, GEN y, ulong p, ulong pi)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"FlxX_pseudorem dx = %ld >= %ld",dx,dy);
-      gerepilecoeffs(av2,x,dx+1);
+      gc_slice(av2,x,dx+1);
     }
   }
   if (dx < 0) return zero_Flx(0);

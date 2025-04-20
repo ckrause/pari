@@ -13,6 +13,8 @@ with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 /* For compatibility with older PARI versions */
+#define gerepilecoeffs gc_slice
+#define gerepilecoeffssp gc_slice_unsafe
 #define gerepileupto gc_upto
 #define gerepileuptoleaf gc_uptoleaf
 #define gerepile gc_GEN_unsafe

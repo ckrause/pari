@@ -2562,7 +2562,7 @@ gc_all_unsafe(pari_sp av, pari_sp tetpil, int n, ...)
 /* Takes an array of GENs (cast to longs), of length n.
  * Cleans up the stack between av and tetpil, updating those GENs. */
 void
-gerepilecoeffssp(pari_sp av, pari_sp tetpil, GEN g, int n)
+gc_slice_unsafe(pari_sp av, pari_sp tetpil, GEN g, int n)
 {
   const pari_sp av0 = avma;
   const size_t dec = av-tetpil;

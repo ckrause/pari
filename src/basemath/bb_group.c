@@ -371,7 +371,7 @@ gen_product(GEN x, void *E, GEN (*mul)(void *,GEN,GEN))
     long n = k - 1;
     if (DEBUGLEVEL>7) timer_printf(&ti,"gen_product: remaining objects %ld",n);
     for (k = i = 1; i < n; i += 2) gel(y,k++) = mul(E, gel(y,i), gel(y,i+1));
-    if (gc_needed(av,1)) gerepilecoeffs(av, y+1, k-1);
+    if (gc_needed(av,1)) gc_slice(av, y+1, k-1);
   }
   return gel(y,1);
 }

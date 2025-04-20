@@ -2445,7 +2445,7 @@ cxexp(GEN x, long prec)
   tetpil = avma;
   gel(y,1) = gmul(r,p1);
   gel(y,2) = gmul(r,p2);
-  gerepilecoeffssp(av,tetpil,y+1,2);
+  gc_slice_unsafe(av,tetpil,y+1,2);
   return y;
 }
 

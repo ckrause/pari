@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define fix_frac_if_int_GC(z,tetpil) { if (equali1(gel(z,2)))\
   z = gc_upto((pari_sp)(z+3), gel(z,1));\
 else\
-  gerepilecoeffssp((pari_sp)z, tetpil, z+1, 2); }
+  gc_slice_unsafe((pari_sp)z, tetpil, z+1, 2); }
 
 static void
 warn_coercion(GEN x, GEN y, GEN z)
@@ -1499,7 +1499,7 @@ quad_polmod_mul(GEN P, GEN x, GEN y)
   tetpil = avma;
   gel(T,2) = gadd(p2, p1);
   gel(T,3) = gadd(p4, p3);
-  gerepilecoeffssp(av,tetpil,T+2,2);
+  gc_slice_unsafe(av,tetpil,T+2,2);
   return normalizepol_lg(T,4);
 }
 /* Mod(x,T) * Mod(y,T) */
@@ -1710,7 +1710,7 @@ mulcc(GEN x, GEN y)
   }
 #endif
 
-  gerepilecoeffssp(av,tetpil, z+1,2); return z;
+  gc_slice_unsafe(av,tetpil, z+1,2); return z;
 }
 /* x,y PADIC */
 static GEN
@@ -1747,7 +1747,7 @@ mulqq(GEN x, GEN y) {
   tetpil = avma;
   gel(z,2) = gadd(p2,p1);
   gel(z,3) = gadd(p4,p3);
-  gerepilecoeffssp(av,tetpil,z+2,2); return z;
+  gc_slice_unsafe(av,tetpil,z+2,2); return z;
 }
 
 GEN
@@ -2166,7 +2166,7 @@ gsqr(GEN x)
       p3 = gmul(gel(x,1),gel(x,2));
       tetpil = avma;
       gel(z,1) = gmul(p1,p2);
-      gel(z,2) = gshift(p3,1); gerepilecoeffssp(av,tetpil,z+1,2); return z;
+      gel(z,2) = gshift(p3,1); gc_slice_unsafe(av,tetpil,z+1,2); return z;
 
     case t_PADIC:
     {
@@ -2200,7 +2200,7 @@ gsqr(GEN x)
       tetpil = avma;
       gel(z,2) = gadd(p2,p4);
       gel(z,3) = gadd(p1,p3);
-      gerepilecoeffssp(av,tetpil,z+2,2); return z;
+      gc_slice_unsafe(av,tetpil,z+2,2); return z;
 
     case t_POLMOD:
       return sqr_polmod(gel(x,1), gel(x,2));

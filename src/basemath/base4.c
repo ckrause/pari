@@ -500,7 +500,7 @@ mat_ideal_two_elt(GEN nf, GEN x)
     gel(y,1) = icopy(xZ);
     gel(y,2) = centermod(a, xZ);
   }
-  gerepilecoeffssp(av,tetpil,y+1,2); return y;
+  gc_slice_unsafe(av,tetpil,y+1,2); return y;
 }
 
 /* Given an ideal x, returns [a,alpha] such that a is in Q,

@@ -2106,7 +2106,7 @@ ZXQX_dvd(GEN x, GEN y, GEN T)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"ZXQX_dvd dx = %ld >= %ld",dx,dy);
-      gerepilecoeffs(av2,x,dx+1);
+      gc_slice(av2,x,dx+1);
     }
   }
   return gc_bool(av, dx < 0);
@@ -2153,7 +2153,7 @@ RgXQX_pseudorem(GEN x, GEN y, GEN T)
     if (gc_needed(av2,1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgX_pseudorem dx = %ld >= %ld",dx,dy);
-      gerepilecoeffs(av2,x,dx+1);
+      gc_slice(av2,x,dx+1);
     }
   }
   if (dx < 0) return pol_0(vx);

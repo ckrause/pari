@@ -642,7 +642,7 @@ fft2(GEN W, GEN p, GEN f, long step, long l)
     gel(f,i)    = gadd(f0, f1);
     gel(f,i+l1) = gsub(f0, f1);
   }
-  gerepilecoeffs(av, f, l);
+  gc_slice(av, f, l);
 }
 
 static void
@@ -697,7 +697,7 @@ fft(GEN W, GEN p, GEN f, long step, long l, long inv)
     gel(f,i+l2) = gsub(f02, f13);
     gel(f,i+l3) = gsub(g02, g13);
   }
-  gerepilecoeffs(av, f, l);
+  gc_slice(av, f, l);
 }
 
 static GEN

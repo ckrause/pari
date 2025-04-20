@@ -1313,11 +1313,11 @@ scenario:
 as a side effect. Not that we can later use \kbd{cgiv}$(y)$ to recover the
 memory used by $y$ while still keeping $x$.
 
-\fun{void}{gerepilecoeffs}{pari_sp av, GEN x, int n} cleans up the stack
+\fun{void}{gc_slice}{pari_sp av, GEN x, int n} cleans up the stack
 from \kbd{av} on, preserving \kbd{x[0]}, \dots, \kbd{x[n-1]} (which are
 \kbd{GEN}s).
 
-\fun{void}{gerepilecoeffssp}{pari_sp av, pari_sp ltop, GEN x, int n}
+\fun{void}{gc_slice_unsafe}{pari_sp av, pari_sp ltop, GEN x, int n}
 cleans up the stack from \kbd{av} to \kbd{ltop}, preserving \kbd{x[0]},
 \dots, \kbd{x[n-1]} (which are \kbd{GEN}s). Same assumptions as in
 \kbd{gc\_all\_unsafe}, of which this is a variant. For instance
@@ -1326,7 +1326,7 @@ cleans up the stack from \kbd{av} to \kbd{ltop}, preserving \kbd{x[0]},
   av = avma; garbage(); ltop = avma;
   z[1] = fun1();
   z[2] = fun2();
-  gerepilecoeffssp(av, ltop, z + 1, 2);
+  gc_slice_unsafe(av, ltop, z + 1, 2);
   return z;
 @eprog\noindent
 cleans up the garbage between \kbd{av} and \kbd{ltop}, and connects \kbd{z}

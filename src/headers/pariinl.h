@@ -1332,7 +1332,7 @@ gc_all(pari_sp av, int n, ...)
 }
 
 INLINE void
-gerepilecoeffs(pari_sp av, GEN x, int n)
+gc_slice(pari_sp av, GEN x, int n)
 {
   int i;
   for (i=0; i<n; i++) gel(x,i) = (GEN)copy_bin(gel(x,i));

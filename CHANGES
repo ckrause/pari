@@ -60,7 +60,8 @@ BA  23- [libpari] get_FlxqX_algebra
 AP   3- strtime: use days in addition to hours, minutes, ms.
 BA   4- rename gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
      5- rename gerepile -> gc_GEN_unsafe, gerepileupto -> gc_upto,
-        gerepileuptoleaf -> gc_uptoleaf
+        gerepileuptoleaf -> gc_uptoleaf,
+        gerepilecoeffs -> gc_slice, gerepilecoeffssp -> gc_slice_unsafe
 
   Removed
      1- obsolete functions gerepileall, gerepilemany: use gc_all
