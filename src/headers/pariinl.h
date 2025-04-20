@@ -1307,18 +1307,6 @@ guncloneNULL(GEN x) { if (x) gunclone(x); }
 INLINE void
 guncloneNULL_deep(GEN x) { if (x) gunclone_deep(x); }
 
-/* Takes an array of pointers to GENs, of length n. Copies all
- * objects to contiguous locations and cleans up the stack between
- * av and avma. */
-INLINE void
-gerepilemany(pari_sp av, GEN* gptr[], int n)
-{
-  int i;
-  for (i=0; i<n; i++) *gptr[i] = (GEN)copy_bin(*gptr[i]);
-  set_avma(av);
-  for (i=0; i<n; i++) *gptr[i] = bin_copy((GENbin*)*gptr[i]);
-}
-
 /* assume 1 <= n < 10 */
 INLINE GEN
 gc_all(pari_sp av, int n, ...)
