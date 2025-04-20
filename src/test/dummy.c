@@ -10,7 +10,7 @@ void pari_malloc(){}
 void shiftaddress(){}
 void shiftaddress_canon(){}
 void powuu(){}
-void gerepilemanysp(){}
+void gerepileallsp(){}
 void ceilr(){}
 void roundr(){}
 void pari_err(){}

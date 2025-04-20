@@ -671,7 +671,7 @@ from \kbd{ltop} to the old \kbd{avma}, and updates the pointers \kbd{z1} and
 \kbd{z2}. Here we do not assume anything about the stack: the garbage can be
 disconnected and \kbd{z1}, \kbd{z2} need not be at the bottom of the stack.
 If all of these assumptions are in fact satisfied, then we can call
-\kbd{gerepilemanysp} instead, which is usually faster since we do not need
+\kbd{gerepileallsp} instead, which is usually faster since we do not need
 the initial copy (on the other hand, it is less cache friendly).
 
 A most important usage is ``random'' garbage collection during loops

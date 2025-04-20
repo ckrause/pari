@@ -2090,10 +2090,8 @@ galoisfindfrobenius(GEN T, GEN L, GEN den, GEN bad, struct galois_frobenius *gf,
       frob = galoisfrobeniuslift(T, den, L, Lden, gf, gb);
     if (frob)
     {
-      GEN *gptr[3];
       gf->Tmod = gcopy(Ti);
-      gptr[0]=&gf->Tmod; gptr[1]=&gf->psi; gptr[2]=&frob;
-      gerepilemanysp(ltop,lbot,gptr,3); return frob;
+      return gerepileallsp(ltop, lbot, 3, &frob, &gf->Tmod, &gf->psi);
     }
     if (is_nilpotent) continue;
     if ((ga->group&ga_all_normal) && d % deg == 0) gmask &= ~1;

@@ -757,7 +757,7 @@ GEN
 truedvmdii(GEN x, GEN y, GEN *z)
 {
   pari_sp av;
-  GEN r, q, *gptr[2];
+  GEN r, q;
   if (!is_bigint(y)) return truedvmdis(x, itos(y), z);
   if (z == ONLY_REM) return modii(x,y);
 
@@ -777,8 +777,7 @@ truedvmdii(GEN x, GEN y, GEN *z)
   if (!z) return gc_INT(av, q);
 
   *z = subiispec(y+2,r+2, lgefint(y)-2,lgefint(r)-2);
-  gptr[0]=&q; gptr[1]=z; gerepilemanysp(av,(pari_sp)r,gptr,2);
-  return q;
+  return gerepileallsp(av,(pari_sp)r,2,&q,z);
 }
 GEN
 truedvmdis(GEN x, long y, GEN *z)

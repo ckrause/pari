@@ -1759,14 +1759,11 @@ Qp_sqrtn(GEN x, GEN n, GEN *zetan)
   if (!x) return NULL;
   if (zetan)
   {
-    GEN *gptr[2];
     if (e && absequaliu(p, 2))/*-1 in Q_2*/
     {
       tetpil = avma; x = gcopy(x); *zetan = gneg(*zetan);
     }
-    gptr[0] = &x; gptr[1] = zetan;
-    gerepilemanysp(av,tetpil,gptr,2);
-    return x;
+    return gerepileallsp(av,tetpil,2,&x,zetan);
   }
   return gerepile(av,tetpil,x);
 }
@@ -3587,7 +3584,7 @@ mpsincos(GEN x, GEN *s, GEN *c)
 {
   long mod8;
   pari_sp av, tetpil;
-  GEN z, *gptr[2];
+  GEN z;
 
   if (!signe(x))
   {
@@ -3609,7 +3606,7 @@ mpsincos(GEN x, GEN *s, GEN *c)
     case 6: *c = subsr(-1,z); *s = mpaut(z); break;
     case 7: *s = subsr(-1,z); *c = mpaut(z); togglesign(*c); break;
   }
-  gptr[0] = s; gptr[1] = c; gerepilemanysp(av,tetpil,gptr,2);
+  (void)gerepileallsp(av,tetpil,2,s,c);
 }
 
 /* SINE and COSINE - 1 */
@@ -3618,7 +3615,7 @@ mpsincosm1(GEN x, GEN *s, GEN *c)
 {
   long mod8;
   pari_sp av, tetpil;
-  GEN z, *gptr[2];
+  GEN z;
 
   if (!signe(x))
   {
@@ -3639,8 +3636,7 @@ mpsincosm1(GEN x, GEN *s, GEN *c)
     case 6: *c = subsr(-2,z); *s = mpaut(z); break;
     case 7: *s = subsr(-1,z); *c = subsr(-1,mpaut(z)); break;
   }
-  gptr[0] = s; gptr[1] = c;
-  gerepilemanysp(av,tetpil,gptr,2);
+  (void)gerepileallsp(av,tetpil,2,s,c);
 }
 
 /* return exp(ix), x a t_REAL */
@@ -3689,7 +3685,6 @@ gsincos(GEN x, GEN *s, GEN *c, long prec)
   long i, j, ex, ex2, lx, ly, mi;
   pari_sp av, tetpil;
   GEN y, r, u, v, u1, v1, p1, p2, p3, p4, ps, pc;
-  GEN *gptr[4];
 
   switch(typ(x))
   {
@@ -3743,9 +3738,7 @@ gsincos(GEN x, GEN *s, GEN *c, long prec)
         p4 = gmul(u1,v); tetpil = avma;
         *c = gsub(p1,p2);
         *s = gadd(p3,p4);
-        gptr[0]=s; gptr[1]=c;
-        gerepilemanysp(av,tetpil,gptr,2);
-        return;
+        gerepileallsp(av,tetpil,2,s,c); return;
       }
 
       ly = lx+2*ex;

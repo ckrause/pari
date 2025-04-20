@@ -61,8 +61,8 @@ AP   3- strtime: use days in addition to hours, minutes, ms.
 BA   4- gerepilecopy renamed to gc_GEN, gerepileuptoint to gc_INT
 
   Removed
-     1- obsolete function gerepileall: use gc_all
-     2- obsolete function gerepilemany : use gc_all
+     1- obsolete functions gerepileall, gerepilemany: use gc_all
+     2- obsolete function gerepilemanysp : use gerepileallsp
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed

@@ -2799,7 +2799,7 @@ RgX_extgcd(GEN x, GEN y, GEN *U, GEN *V)
   pari_sp av, av2, tetpil;
   long signh; /* junk */
   long dx, dy, vx, tx = typ(x), ty = typ(y);
-  GEN r, z, g, h, p1, cu, cv, u, v, um1, uze, vze, *gptr[3];
+  GEN r, z, g, h, p1, cu, cv, u, v, um1, uze, vze;
 
   if (tx!=t_POL) pari_err_TYPE("RgX_extgcd",x);
   if (ty!=t_POL) pari_err_TYPE("RgX_extgcd",y);
@@ -2851,10 +2851,7 @@ RgX_extgcd(GEN x, GEN y, GEN *U, GEN *V)
   z = RgX_Rg_mul(v,p1);
   *U = RgX_Rg_mul(uze,p1);
   *V = RgX_Rg_mul(vze,p1);
-  gptr[0] = &z;
-  gptr[1] = U;
-  gptr[2] = V;
-  gerepilemanysp(av,tetpil,gptr,3); return z;
+  return gerepileallsp(av,tetpil, 3, &z, U, V);
 }
 
 static GEN
@@ -2961,7 +2958,7 @@ RgXQ_ratlift(GEN x, GEN T, long amax, long bmax, GEN *P, GEN *Q)
   pari_sp av = avma, av2, tetpil;
   long signh; /* junk */
   long vx;
-  GEN g, h, p1, cu, cv, u, v, um1, uze, *gptr[2];
+  GEN g, h, p1, cu, cv, u, v, um1, uze;
 
   if (typ(x)!=t_POL) pari_err_TYPE("RgXQ_ratlift",x);
   if (typ(T)!=t_POL) pari_err_TYPE("RgXQ_ratlift",T);
@@ -3005,9 +3002,7 @@ RgXQ_ratlift(GEN x, GEN T, long amax, long bmax, GEN *P, GEN *Q)
   tetpil = avma;
   *P = RgX_Rg_mul(v,p1);
   *Q = RgX_Rg_mul(uze,p1);
-  gptr[0] = P;
-  gptr[1] = Q;
-  gerepilemanysp(av,tetpil,gptr,2); return 1;
+  (void)gerepileallsp(av,tetpil,2,P,Q); return 1;
 }
 
 GEN

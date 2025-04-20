@@ -1294,9 +1294,6 @@ the \kbd{n} elements which follow \kbd{n} in the argument list (of type
 \kbd{avma} and \kbd{ltop}. Analogous to (but faster than) \kbd{gerepileall}
 otherwise.
 
-\fun{void}{gerepilemanysp}{pari_sp av, pari_sp ltop, GEN* g[], int n}
-alternative interface to \kbd{gerepileallsp}. Obsolete.
-
 \fun{void}{gerepilecoeffs}{pari_sp av, GEN x, int n} cleans up the stack
 from \kbd{av} on, preserving \kbd{x[0]}, \dots, \kbd{x[n-1]} (which are
 \kbd{GEN}s).
@@ -1304,7 +1301,7 @@ from \kbd{av} on, preserving \kbd{x[0]}, \dots, \kbd{x[n-1]} (which are
 \fun{void}{gerepilecoeffssp}{pari_sp av, pari_sp ltop, GEN x, int n}
 cleans up the stack from \kbd{av} to \kbd{ltop}, preserving \kbd{x[0]},
 \dots, \kbd{x[n-1]} (which are \kbd{GEN}s). Same assumptions as in
-\kbd{gerepilemanysp}, of which this is a variant. For instance
+\kbd{gerepileallsp}, of which this is a variant. For instance
 \bprog
   z = cgetg(3, t_COMPLEX);
   av = avma; garbage(); ltop = avma;
