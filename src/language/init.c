@@ -2534,7 +2534,7 @@ obj_free(GEN S)
 /*                                                                 */
 /*******************************************************************/
 INLINE void
-dec_gerepile(pari_sp *x, pari_sp av0, pari_sp av, pari_sp tetpil, size_t dec)
+gc_dec(pari_sp *x, pari_sp av0, pari_sp av, pari_sp tetpil, size_t dec)
 {
   if (*x < av && *x >= av0)
   { /* update address if in stack */
@@ -2554,8 +2554,8 @@ gc_all_unsafe(pari_sp av, pari_sp tetpil, int n, ...)
   if (n <= 0) return NULL;
   va_start(a, n);
   pz = va_arg(a,GEN*); (void)gc_GEN_unsafe(av,tetpil,NULL);
-  dec_gerepile((pari_sp*)pz, av0,av,tetpil,dec);
-  for (i=1; i<n; i++) dec_gerepile((pari_sp*)va_arg(a,GEN*), av0,av,tetpil,dec);
+  gc_dec((pari_sp*)pz, av0,av,tetpil,dec);
+  for (i=1; i<n; i++) gc_dec((pari_sp*)va_arg(a,GEN*), av0,av,tetpil,dec);
   va_end(a); return *pz;
 }
 
@@ -2568,7 +2568,7 @@ gc_slice_unsafe(pari_sp av, pari_sp tetpil, GEN g, int n)
   const size_t dec = av-tetpil;
   int i;
   (void)gc_GEN_unsafe(av,tetpil,NULL);
-  for (i=0; i<n; i++,g++) dec_gerepile((pari_sp*)g, av0, av, tetpil, dec);
+  for (i=0; i<n; i++,g++) gc_dec((pari_sp*)g, av0, av, tetpil, dec);
 }
 
 static int
@@ -2651,7 +2651,7 @@ gc_GEN_unsafe(pari_sp av, pari_sp tetpil, GEN q)
   if (dec == 0) return q;
   if ((long)dec < 0) pari_err(e_MISC,"lbot>ltop in gc");
 
-  /* dec_gerepile(&q, av0, av, tetpil, dec), saving 1 comparison */
+  /* gc_dec(&q, av0, av, tetpil, dec), saving 1 comparison */
   if (q >= (GEN)av0 && q < (GEN)tetpil)
     q = (GEN) (((pari_sp)q) + dec);
 
@@ -2663,7 +2663,7 @@ gc_GEN_unsafe(pari_sp av, pari_sp tetpil, GEN q)
 
     if (! is_recursive_t(tx)) { x += lx; continue; }
     a = x + lontyp[tx]; x += lx;
-    for (  ; a < x; a++) dec_gerepile((pari_sp*)a, av0, av, tetpil, dec);
+    for (  ; a < x; a++) gc_dec((pari_sp*)a, av0, av, tetpil, dec);
   }
   return q;
 }
