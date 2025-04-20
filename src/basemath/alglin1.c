@@ -24,94 +24,65 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define DEBUGLEVEL DEBUGLEVEL_mat
 
 /*******************************************************************/
-/*                                                                 */
-/*                         GEREPILE                                */
-/*                                                                 */
+/*                        GC FOR HUGE MATRICES                     */
 /*******************************************************************/
+/* update address if in stack range */
+#define gc_dec(x, av0, av, dec) \
+{ pari_sp _A = (pari_sp)(x); if (_A < (av) && _A >= (av0)) (x) += (dec); }
 
+/* Perform GC on t_MAT x updating only needed elements, on columns >= k.
+ * On column k, we only need to consider rows > t */
 static void
-gerepile_mat(pari_sp av, pari_sp tetpil, GEN x, long k, long m, long n, long t)
+gen_gc_ker(pari_sp av, GEN x, long k, long t, void *E, GEN (*red)(void*, GEN))
 {
-  pari_sp A, bot = pari_mainstack->bot;
-  long u, i;
-  size_t dec;
-
-  (void)gerepile(av,tetpil,NULL); dec = av-tetpil;
-
-  for (u=t+1; u<=m; u++)
-  {
-    A = (pari_sp)coeff(x,u,k);
-    if (A < av && A >= bot) coeff(x,u,k) += dec;
-  }
-  for (i=k+1; i<=n; i++)
-    for (u=1; u<=m; u++)
-    {
-      A = (pari_sp)coeff(x,u,i);
-      if (A < av && A >= bot) coeff(x,u,i) += dec;
-    }
-}
-
-static void
-gen_gerepile_gauss_ker(GEN x, long k, long t, pari_sp av, void *E, GEN (*copy)(void*, GEN))
-{
-  pari_sp tetpil = avma;
+  pari_sp tetpil = avma, bot = pari_mainstack->bot;
   long u,i, n = lg(x)-1, m = n? nbrows(x): 0;
+  size_t dec = av-tetpil;
 
   if (DEBUGMEM > 1) pari_warn(warnmem,"gauss_pivot_ker. k=%ld, n=%ld",k,n);
-  for (u=t+1; u<=m; u++) gcoeff(x,u,k) = copy(E,gcoeff(x,u,k));
-  for (i=k+1; i<=n; i++)
-    for (u=1; u<=m; u++) gcoeff(x,u,i) = copy(E,gcoeff(x,u,i));
-  gerepile_mat(av,tetpil,x,k,m,n,t);
+  for (u=1; u<=m; u++)
+  {
+    if (u > t) gcoeff(x,u,k) = red(E,gcoeff(x,u,k));
+    for (i=k+1; i<=n; i++) gcoeff(x,u,i) = red(E,gcoeff(x,u,i));
+  }
+  (void)gerepile(av,tetpil,NULL);
+  for (u=1; u<=m; u++)
+  {
+    if (u > t) gc_dec(coeff(x,u,k), bot, av, dec);
+    for (i=k+1; i<=n; i++) gc_dec(coeff(x,u,i), bot, av, dec);
+  }
 }
 
-/* special gerepile for huge matrices */
-
-#define COPY(x) {\
-  GEN _t = (x); if (!is_universal_constant(_t)) x = gcopy(_t); \
-}
-
+#define COPY(x) \
+{ GEN _t = (x); if (!is_universal_constant(_t)) x = gcopy(_t); }
 INLINE GEN
-_copy(void *E, GEN x)
-{
-  (void) E; COPY(x);
-  return x;
-}
-
+_copy(void *E, GEN x) { (void) E; COPY(x); return x; }
 static void
-gerepile_gauss_ker(GEN x, long k, long t, pari_sp av)
-{
-  gen_gerepile_gauss_ker(x, k, t, av, NULL, &_copy);
-}
+gc_ker(pari_sp av, GEN x, long k, long t)
+{ gen_gc_ker(av, x, k, t, NULL, &_copy); }
 
+/* Perform GC on t_MAT x updating only needed elements: on columns >= k
+ * and row j or not containing a pivot yet (c[i] = 0). On column k,
+ * we only need to consider rows > t */
 static void
-gerepile_gauss(GEN x,long k,long t,pari_sp av, long j, GEN c)
+gc_gauss(pari_sp av, GEN x,long k,long t, long j, GEN c)
 {
-  pari_sp tetpil = avma, A, bot;
+  pari_sp tetpil = avma, bot = pari_mainstack->bot;
   long u,i, n = lg(x)-1, m = n? nbrows(x): 0;
-  size_t dec;
+  size_t dec = av-tetpil;
 
   if (DEBUGMEM > 1) pari_warn(warnmem,"RgM_pivots. k=%ld, n=%ld",k,n);
-  for (u=t+1; u<=m; u++)
-    if (u==j || !c[u]) COPY(gcoeff(x,u,k));
-  for (u=1; u<=m; u++)
-    if (u==j || !c[u])
-      for (i=k+1; i<=n; i++) COPY(gcoeff(x,u,i));
-
-  (void)gerepile(av,tetpil,NULL); dec = av-tetpil;
-  bot = pari_mainstack->bot;
-  for (u=t+1; u<=m; u++)
-    if (u==j || !c[u])
-    {
-      A=(pari_sp)coeff(x,u,k);
-      if (A<av && A>=bot) coeff(x,u,k)+=dec;
-    }
-  for (u=1; u<=m; u++)
-    if (u==j || !c[u])
-      for (i=k+1; i<=n; i++)
-      {
-        A=(pari_sp)coeff(x,u,i);
-        if (A<av && A>=bot) coeff(x,u,i)+=dec;
-      }
+  for (u=1; u<=m; u++) if (u==j || !c[u])
+  {
+    if (u > t) COPY(gcoeff(x,u,k));
+    for (i=k+1; i<=n; i++) COPY(gcoeff(x,u,i));
+  }
+  (void)gerepile(av,tetpil,NULL);
+  for (u=1; u<=m; u++) if (u==j || !c[u])
+  {
+    if (u > t) gc_dec(coeff(x,u,k), bot, av, dec);
+    for (i=k+1; i<=n; i++) gc_dec(coeff(x,u,i), bot, av, dec);
+  }
 }
 
 /*******************************************************************/
@@ -170,8 +141,7 @@ gen_ker(GEN x, long deplin, void *E, const struct bb_field *ff)
         for (i=k+1; i<=n; i++)
            gcoeff(x,t,i) = ff->red(E, ff->add(E, gcoeff(x,t,i),
                                       ff->mul(E,piv,gcoeff(x,j,i))));
-        if (gc_needed(av,1))
-          gen_gerepile_gauss_ker(x,k,t,av,E,ff->red);
+        if (gc_needed(av,1)) gen_gc_ker(av, x,k,t,E,ff->red);
       }
     }
   }
@@ -233,9 +203,9 @@ gen_Gauss_pivot(GEN x, long *rr, void *E, const struct bb_field *ff)
         if (ff->equal0(piv)) continue;
         gcoeff(x,t,k) = g0;
         for (i=k+1; i<=n; i++)
-          gcoeff(x,t,i) = ff->red(E, ff->add(E,gcoeff(x,t,i), ff->mul(E,piv,gcoeff(x,j,i))));
-        if (gc_needed(av,1))
-          gerepile_gauss(x,k,t,av,j,c);
+          gcoeff(x,t,i) = ff->red(E, ff->add(E,gcoeff(x,t,i),
+                                     ff->mul(E,piv,gcoeff(x,j,i))));
+        if (gc_needed(av,1)) gc_gauss(av, x,k,t,j,c);
       }
       for (i=k; i<=n; i++) gcoeff(x,j,i) = g0; /* dummy */
     }
@@ -3661,7 +3631,7 @@ gauss_pivot_ker(GEN x, GEN *dd, long *rr, pivot_fun pivot, GEN data)
           if (gequal0(p)) continue;
           for (i=k+1; i<=n; i++)
             gcoeff(x,t,i) = gadd(gcoeff(x,t,i),gmul(p,gcoeff(x,j,i)));
-          if (gc_needed(av,1)) gerepile_gauss_ker(x,k,t,av);
+          if (gc_needed(av,1)) gc_ker(av, x,k,t);
         }
     }
   }
@@ -3702,7 +3672,7 @@ RgM_pivots(GEN x0, long *rr, pivot_fun pivot, GEN data)
           p = gcoeff(x,t,k); gcoeff(x,t,k) = gen_0;
           for (i=k+1; i<=n; i++)
             gcoeff(x,t,i) = gadd(gcoeff(x,t,i), gmul(p, gcoeff(x,j,i)));
-          if (gc_needed(av,1)) gerepile_gauss(x,k,t,av,j,c);
+          if (gc_needed(av,1)) gc_gauss(av, x,k,t,j,c);
         }
       for (i=k; i<=n; i++) gcoeff(x,j,i) = gen_0; /* dummy */
     }
