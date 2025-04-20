@@ -23,7 +23,7 @@ extgcd(GEN A, GEN B, GEN *U, GEN *V)
   }
   *U = ux;
   *V = diviiexact( subii(a, mulii(A,ux)), B );
-  gerepileall(av, 3, &a, U, V); return a;
+  return gc_all(av, 3, &a, U, V);
 }
 
 int

@@ -74,11 +74,11 @@ module PARI
       integer(kind=C_LONG), VALUE :: x
       integer(kind=C_LONG), VALUE :: prec
     end function Pi2n
-    type(C_PTR) function gerepilecopy(av, z) bind(C,name='gerepilecopy')
+    type(C_PTR) function gc_GEN(av, z) bind(C,name='gc_GEN')
       import C_PTR, C_LONG
       integer(kind=C_LONG), VALUE :: av
       type(C_PTR), VALUE :: z
-    end function gerepilecopy
+    end function gc_GEN
  end interface
 end module PARI
 !
