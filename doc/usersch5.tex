@@ -1216,6 +1216,12 @@ issues (by invalidating the PARI stack below \kbd{av}).
 \fun{ulong}{get_avma}{void} return \kbd{avma}. Useful for languages that
 do not provide access to TLS variables.
 
+\fun{void}{cgiv}{GEN x} frees object \kbd{x}, assuming it is the last created
+on the stack.
+
+\fun{GEN}{gerepile}{pari_sp p, pari_sp q, GEN x} general garbage collector
+for the stack.
+
 \fun{GEN}{gc_GEN}{pari_sp av, GEN x} cleans up the stack from
 \kbd{av} on, recopying the object \kbd{x} to a new address which is
 returned.
@@ -1264,7 +1270,7 @@ before \kbd{av}.
 before evaluating $x$ and returning it.
 
 \fun{GEN}{gc_all}{pari_sp av, int n, ...}. Assumes that $1 \leq n$. This
-functions expacts $n$ further \kbd{GEN*}
+functions expects $n$ further \kbd{GEN*}
 arguments: the stack is cleaned and the corresponding \kbd{GEN} are
 copied to the stack starting from \kbd{av} (in this order: the first argument
 comes first), and the first such \kbd{GEN} is returned. To be used in the
@@ -1280,19 +1286,27 @@ following scenario:
 as a side effect. Not that we can later use \kbd{cgiv}$(y)$ to recover the
 memory used by $y$ while still keeping $x$.
 
-\fun{void}{cgiv}{GEN x} frees object \kbd{x}, assuming it is the last created
-on the stack.
-
-\fun{GEN}{gerepile}{pari_sp p, pari_sp q, GEN x} general garbage collector
-for the stack.
-
-\fun{void}{gerepileallsp}{pari_sp av, pari_sp ltop, int n, ...}
-cleans up the stack between \kbd{av} and \kbd{ltop}, updating
+\fun{GEN}{gc_all_unsafe}{pari_sp av, pari_sp ltop, int n, ...} unsafe
+variant of \tet{gc_all}, about twice faster.
+Cleans up the stack between \kbd{av} and \kbd{ltop}, updating
 the \kbd{n} elements which follow \kbd{n} in the argument list (of type
 \kbd{GEN*}). Check that the elements of \kbd{g} have no component between
 \kbd{av} and \kbd{ltop}, and assumes that no garbage is present between
-\kbd{avma} and \kbd{ltop}. Analogous to (but faster than) \kbd{gerepileall}
-otherwise.
+\kbd{avma} and \kbd{ltop}. To be used in the
+following scenario:
+\bprog
+  GEN f(..., GEN *py)
+  {
+    ltop = avma;
+    ... junk ...
+    av = avma;
+    x = fun1();    // gc clean
+    y = fun2()   // gc clean
+    *py = y; return gc_all_unsafe(av, ltop, 2, &x, py);
+  }
+@eprog\noindent This function returns $x$, and the user also recovers $y$
+as a side effect. Not that we can later use \kbd{cgiv}$(y)$ to recover the
+memory used by $y$ while still keeping $x$.
 
 \fun{void}{gerepilecoeffs}{pari_sp av, GEN x, int n} cleans up the stack
 from \kbd{av} on, preserving \kbd{x[0]}, \dots, \kbd{x[n-1]} (which are
@@ -1301,7 +1315,7 @@ from \kbd{av} on, preserving \kbd{x[0]}, \dots, \kbd{x[n-1]} (which are
 \fun{void}{gerepilecoeffssp}{pari_sp av, pari_sp ltop, GEN x, int n}
 cleans up the stack from \kbd{av} to \kbd{ltop}, preserving \kbd{x[0]},
 \dots, \kbd{x[n-1]} (which are \kbd{GEN}s). Same assumptions as in
-\kbd{gerepileallsp}, of which this is a variant. For instance
+\kbd{gc_all_unsafe}, of which this is a variant. For instance
 \bprog
   z = cgetg(3, t_COMPLEX);
   av = avma; garbage(); ltop = avma;

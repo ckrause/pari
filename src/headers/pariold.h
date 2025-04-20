@@ -13,6 +13,7 @@ with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 /* For compatibility with older PARI versions */
+#define gerepileallsp gc_all_unsafe
 #define gerepilecopy gc_GEN
 #define gerepileuptoint gc_INT
 #define ZC_hnfremdiv ZC_hnfdivrem

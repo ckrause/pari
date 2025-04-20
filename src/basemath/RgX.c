@@ -1946,7 +1946,7 @@ RgX_divrem_i(GEN x, GEN y, GEN *pr)
   rem -= 2;
   if (!sx) (void)normalizepol_lg(rem, lr);
   if (pr == ONLY_REM) return gerepileupto(av,rem);
-  z -= 2; *pr = rem; return gerepileallsp(av,avy,2,&z,pr);
+  z -= 2; *pr = rem; return gc_all_unsafe(av,avy,2,&z,pr);
 }
 
 GEN

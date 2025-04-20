@@ -4427,7 +4427,7 @@ GEN     gcopy(GEN x);
 GEN     gcopy_avma(GEN x, pari_sp *AVMA);
 GEN     gcopy_lg(GEN x, long lx);
 GEN     gerepile(pari_sp ltop, pari_sp lbot, GEN q);
-GEN     gerepileallsp(pari_sp av, pari_sp tetpil, int n, ...);
+GEN     gc_all_unsafe(pari_sp av, pari_sp tetpil, int n, ...);
 void    gerepilecoeffssp(pari_sp av, pari_sp tetpil, GEN g, int n);
 GEN     getheap(void);
 void    gp_context_save(struct gp_context* rec);

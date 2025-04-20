@@ -887,7 +887,7 @@ msnew(GEN W)
       av2 = avma;
       T1 = RgM_mul(T1,S);
       Td = RgM_mul(Td,S);  /* multiply by S = restrict to mscusp */
-      gerepileallsp(av, av2, 2, &T1, &Td);
+      gc_all_unsafe(av, av2, 2, &T1, &Td);
       gel(v,2*i-1) = T1;
       gel(v,2*i)   = Td;
     }

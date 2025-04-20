@@ -2544,7 +2544,7 @@ dec_gerepile(pari_sp *x, pari_sp av0, pari_sp av, pari_sp tetpil, size_t dec)
 }
 
 GEN
-gerepileallsp(pari_sp av, pari_sp tetpil, int n, ...)
+gc_all_unsafe(pari_sp av, pari_sp tetpil, int n, ...)
 {
   const pari_sp av0 = avma;
   const size_t dec = av-tetpil;

@@ -777,7 +777,7 @@ truedvmdii(GEN x, GEN y, GEN *z)
   if (!z) return gc_INT(av, q);
 
   *z = subiispec(y+2,r+2, lgefint(y)-2,lgefint(r)-2);
-  return gerepileallsp(av,(pari_sp)r,2,&q,z);
+  return gc_all_unsafe(av,(pari_sp)r,2,&q,z);
 }
 GEN
 truedvmdis(GEN x, long y, GEN *z)

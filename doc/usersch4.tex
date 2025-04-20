@@ -490,7 +490,7 @@ them, so they do not need to be connected before the call. With
 (the less prone to user error), hence the slowest. For convenience,
 this function also returns the new value of $x$.
 
-\fun{void}{gerepileallsp}{pari_sp ltop, pari_sp lbot, int n, ...}.
+\fun{void}{gc_all_unsafe}{pari_sp ltop, pari_sp lbot, int n, ...}.
 More efficient, but trickier than \kbd{gc\_all}. Cleans the stack between
 \kbd{lbot} and \kbd{ltop} and updates the \kbd{GEN}s pointed at by the
 elements of \kbd{gptr} without any further copying. This is subject to the
@@ -671,7 +671,7 @@ from \kbd{ltop} to the old \kbd{avma}, and updates the pointers \kbd{z1} and
 \kbd{z2}. Here we do not assume anything about the stack: the garbage can be
 disconnected and \kbd{z1}, \kbd{z2} need not be at the bottom of the stack.
 If all of these assumptions are in fact satisfied, then we can call
-\kbd{gerepileallsp} instead, which is usually faster since we do not need
+\kbd{gc_all_unsafe} instead, which is usually faster since we do not need
 the initial copy (on the other hand, it is less cache friendly).
 
 A most important usage is ``random'' garbage collection during loops

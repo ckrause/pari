@@ -62,7 +62,8 @@ BA   4- gerepilecopy renamed to gc_GEN, gerepileuptoint to gc_INT
 
   Removed
      1- obsolete functions gerepileall, gerepilemany: use gc_all
-     2- obsolete function gerepilemanysp : use gerepileallsp
+     2- renamed gerepileallsp -> gc_all_unsafe
+     3- obsolete function gerepilemanysp : use gc_all_unsafe
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed

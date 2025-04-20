@@ -2091,7 +2091,7 @@ galoisfindfrobenius(GEN T, GEN L, GEN den, GEN bad, struct galois_frobenius *gf,
     if (frob)
     {
       gf->Tmod = gcopy(Ti);
-      return gerepileallsp(ltop, lbot, 3, &frob, &gf->Tmod, &gf->psi);
+      return gc_all_unsafe(ltop, lbot, 3, &frob, &gf->Tmod, &gf->psi);
     }
     if (is_nilpotent) continue;
     if ((ga->group&ga_all_normal) && d % deg == 0) gmask &= ~1;

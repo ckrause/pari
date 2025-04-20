@@ -2851,7 +2851,7 @@ RgX_extgcd(GEN x, GEN y, GEN *U, GEN *V)
   z = RgX_Rg_mul(v,p1);
   *U = RgX_Rg_mul(uze,p1);
   *V = RgX_Rg_mul(vze,p1);
-  return gerepileallsp(av,tetpil, 3, &z, U, V);
+  return gc_all_unsafe(av,tetpil, 3, &z, U, V);
 }
 
 static GEN
@@ -3002,7 +3002,7 @@ RgXQ_ratlift(GEN x, GEN T, long amax, long bmax, GEN *P, GEN *Q)
   tetpil = avma;
   *P = RgX_Rg_mul(v,p1);
   *Q = RgX_Rg_mul(uze,p1);
-  (void)gerepileallsp(av,tetpil,2,P,Q); return 1;
+  (void)gc_all_unsafe(av,tetpil,2,P,Q); return 1;
 }
 
 GEN

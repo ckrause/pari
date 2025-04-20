@@ -1763,7 +1763,7 @@ Qp_sqrtn(GEN x, GEN n, GEN *zetan)
     {
       tetpil = avma; x = gcopy(x); *zetan = gneg(*zetan);
     }
-    return gerepileallsp(av,tetpil,2,&x,zetan);
+    return gc_all_unsafe(av,tetpil,2,&x,zetan);
   }
   return gerepile(av,tetpil,x);
 }
@@ -3606,7 +3606,7 @@ mpsincos(GEN x, GEN *s, GEN *c)
     case 6: *c = subsr(-1,z); *s = mpaut(z); break;
     case 7: *s = subsr(-1,z); *c = mpaut(z); togglesign(*c); break;
   }
-  (void)gerepileallsp(av,tetpil,2,s,c);
+  (void)gc_all_unsafe(av,tetpil,2,s,c);
 }
 
 /* SINE and COSINE - 1 */
@@ -3636,7 +3636,7 @@ mpsincosm1(GEN x, GEN *s, GEN *c)
     case 6: *c = subsr(-2,z); *s = mpaut(z); break;
     case 7: *s = subsr(-1,z); *c = subsr(-1,mpaut(z)); break;
   }
-  (void)gerepileallsp(av,tetpil,2,s,c);
+  (void)gc_all_unsafe(av,tetpil,2,s,c);
 }
 
 /* return exp(ix), x a t_REAL */
@@ -3738,7 +3738,7 @@ gsincos(GEN x, GEN *s, GEN *c, long prec)
         p4 = gmul(u1,v); tetpil = avma;
         *c = gsub(p1,p2);
         *s = gadd(p3,p4);
-        gerepileallsp(av,tetpil,2,s,c); return;
+        gc_all_unsafe(av,tetpil,2,s,c); return;
       }
 
       ly = lx+2*ex;

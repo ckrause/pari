@@ -671,7 +671,7 @@ fft(GEN W, GEN p, GEN f, long step, long l, long inv)
     gel(f,1) = gadd(f2, f02);
     gel(f,2) = gsub(f1, f3);
     gel(f,3) = gsub(f2, f02);
-    gerepileallsp(av,av2,4,&gel(f,0),&gel(f,1),&gel(f,2),&gel(f,3));
+    gc_all_unsafe(av,av2,4,&gel(f,0),&gel(f,1),&gel(f,2),&gel(f,3));
     return;
   }
   l1 = l>>2; l2 = 2*l1; l3 = l1+l2; step4 = step<<2;

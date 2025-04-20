@@ -1293,7 +1293,7 @@ FpXQX_divrem(GEN x, GEN S, GEN T, GEN p, GEN *pr)
     if (pr && pr != ONLY_DIVIDES && pr != ONLY_REM)
       *pr = FlxX_to_ZXX(*pr);
     else return gerepile(av, tetpil, z);
-    gerepileallsp(av,tetpil,2, pr, &z);
+    gc_all_unsafe(av,tetpil,2, pr, &z);
     return z;
   }
   if (!B && d+3 < FpXQX_DIVREM_BARRETT_LIMIT)
