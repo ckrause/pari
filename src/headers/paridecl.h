@@ -4412,12 +4412,12 @@ GEN     vecsquarefreeu(ulong a, ulong b);
 
 /* init.c */
 
-int     chk_gerepileupto(GEN x);
+int     chk_gc_upto(GEN x);
 GENbin* copy_bin(GEN x);
 GENbin* copy_bin_canon(GEN x);
 void    dbg_fill_stack(void);
-void    dbg_gerepile(pari_sp av);
-void    dbg_gerepileupto(GEN q);
+void    dbg_stack(pari_sp av);
+void    dbg_gc_upto(GEN q);
 GEN     errname(GEN err);
 void    exportall(void);
 GEN     gclone(GEN x);

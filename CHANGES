@@ -62,6 +62,8 @@ BA   4- rename gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
      5- rename gerepile -> gc_GEN_unsafe, gerepileupto -> gc_upto,
         gerepileuptoleaf -> gc_uptoleaf,
         gerepilecoeffs -> gc_slice, gerepilecoeffssp -> gc_slice_unsafe
+     6- rename chk_gerepileupto -> chk_gc_upto, dbg_gerepile -> dbg_stack,
+        dbg_gerepileupto -> dbg_gc_upto
 
   Removed
      1- obsolete functions gerepileall, gerepilemany: use gc_all

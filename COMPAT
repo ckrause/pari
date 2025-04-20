@@ -36,6 +36,8 @@ This file lists the incompatible changes between Version 2.x and older versions
     gerepile -> gc_GEN_unsafe, gerepileupto -> gc_upto,
     gerepileuptoleaf -> gc_uptoleaf
     gerepilecoeffs -> gc_slice, gerepilecoeffssp -> gc_slice_unsafe
+  - chk_gerepileupto -> chk_gc_upto, dbg_gerepile -> dbg_stack,
+    dbg_gerepileupto -> dbg_gc_upto
   - removed obsolete functions gerepileall/gerepilemany: use gc_all. Type cast
     the result to (void) to ignore the return value if the compiler complains.
   - removed obsolete functions gerepilemanysp: use gc_all_unsafe

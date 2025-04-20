@@ -1424,15 +1424,15 @@ pointer and update the value of the second argument: the new (fictitious)
 
 \subsec{Debugging the PARI stack}
 
-\fun{int}{chk_gerepileupto}{GEN x} returns 1 if \kbd{x} is suitable for
+\fun{int}{chk_gc_upto}{GEN x} returns 1 if \kbd{x} is suitable for
 \kbd{gc\_upto}, and 0 otherwise. In the latter case, print a warning
 explaining the problem.
 
-\fun{void}{dbg_gerepile}{pari_sp ltop} outputs the list of all objects on the
+\fun{void}{dbg_stack}{pari_sp ltop} outputs the list of all objects on the
 stack between \kbd{avma} and \kbd{ltop}, i.e. the ones that would be inspected
 in a call to \kbd{gc\_GEN\_unsafe(...,ltop,...)}.
 
-\fun{void}{dbg_gerepileupto}{GEN q} outputs the list of all objects on the
+\fun{void}{dbg_gc_upto}{GEN q} outputs the list of all objects on the
 stack that would be inspected in a call to \kbd{gc\_upto(...,q)}.
 
 \fun{void}{dbg_fill_stack}{void} marks the unused portion of the stack
@@ -1440,7 +1440,7 @@ stack that would be inspected in a call to \kbd{gc\_upto(...,q)}.
 \kbd{0xBADC0FFEE0DDF00D} on 64-bit archs, and \kbd{0xDEADBEEF} on 32-bit.
 This allows to quickly detect garbage collection errors, e.g., objets one of
 whose component would be overwritten later or uninitialized memory access.
-The \kbd{valgrind} framework more thorough possibilities but requires
+The \kbd{valgrind} framework offers more thorough possibilities but requires
 instrumenting the code.
 
 \subsec{Copies}

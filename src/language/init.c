@@ -2572,7 +2572,7 @@ gc_slice_unsafe(pari_sp av, pari_sp tetpil, GEN g, int n)
 }
 
 static int
-dochk_gerepileupto(GEN av, GEN x)
+dochk_gc_upto(GEN av, GEN x)
 {
   long i,lx,tx;
   if (!isonstack(x)) return 1;
@@ -2586,7 +2586,7 @@ dochk_gerepileupto(GEN av, GEN x)
 
   lx = lg(x);
   for (i=lontyp[tx]; i<lx; i++)
-    if (!dochk_gerepileupto(av, gel(x,i)))
+    if (!dochk_gc_upto(av, gel(x,i)))
     {
       pari_warn(warner,"bad component %ld in object %Ps",i,x);
       return 0;
@@ -2596,11 +2596,11 @@ dochk_gerepileupto(GEN av, GEN x)
 /* check that x and all its components are out of stack, or have been
  * created after av */
 int
-chk_gerepileupto(GEN x) { return dochk_gerepileupto(x, x); }
+chk_gc_upto(GEN x) { return dochk_gc_upto(x, x); }
 
 /* print stack between avma & av */
 void
-dbg_gerepile(pari_sp av)
+dbg_stack(pari_sp av)
 {
   GEN x = (GEN)avma;
   while (x < (GEN)av)
@@ -2635,10 +2635,10 @@ dbg_gerepile(pari_sp av)
   }
 }
 void
-dbg_gerepileupto(GEN q)
+dbg_gc_upto(GEN q)
 {
   err_printf("%Ps:\n", q);
-  dbg_gerepile((pari_sp) (q+lg(q)));
+  dbg_stack((pari_sp) (q+lg(q)));
 }
 
 GEN
