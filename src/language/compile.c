@@ -1803,7 +1803,7 @@ compilefunc(entree *ep, long n, int mode, long flag)
   if (ret_typ==Ggen && nbpointers==0 && s_opcode.n>nbopcodes+128)
   {
     op_insert_loc(nbopcodes,OCavma,0,str);
-    op_push_loc(OCgerepile,0,str);
+    op_push_loc(OCgc,0,str);
   }
   compilecast(n,ret_typ,mode);
   if (nbpointers) op_push_loc(OCendptr,nbpointers, str);

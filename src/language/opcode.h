@@ -33,7 +33,7 @@ typedef enum {OCexportvar='!',OCunexportvar,OCsetref,OClock,OCpackargs,OCevalmne
               OCpushlex,OCstorelex,OCnewptrlex,OCsimpleptrlex,
               OCgetargs,OCdefaultarg,OClocalvar,OClocalvar0,
               OCcheckargs,OCcheckargs0,OCdefaultgen,OCdefaultlong,
-              OCavma,OCgerepile,
+              OCavma,OCgc,
               OCcowvardyn,OCcowvarlex,
               OCdup,OCstoreptr,OCcheckuserargs,
               OCitou,OCutoi,OCdefaultulong} op_code;

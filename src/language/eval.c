@@ -1128,7 +1128,7 @@ closure_eval(GEN C)
     case OCcopy:
       gel(st,sp-1) = gcopy(gel(st,sp-1));
       break;
-    case OCgerepile:
+    case OCgc:
     {
       pari_sp av;
       GEN x;
@@ -2786,7 +2786,7 @@ closure_disassemble(GEN C)
     case OCavma:
       pari_printf("avma\n",operand);
       break;
-    case OCgerepile:
+    case OCgc:
       pari_printf("gc_GEN_unsafe\n",operand);
       break;
     case OCcowvardyn:
@@ -2869,7 +2869,7 @@ opcode_need_relink(op_code opcode)
   case OCdup:
   case OCpop:
   case OCavma:
-  case OCgerepile:
+  case OCgc:
   case OCcowvarlex:
   case OCsetref:
   case OClock:
