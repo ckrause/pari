@@ -1315,7 +1315,7 @@ from \kbd{av} on, preserving \kbd{x[0]}, \dots, \kbd{x[n-1]} (which are
 \fun{void}{gerepilecoeffssp}{pari_sp av, pari_sp ltop, GEN x, int n}
 cleans up the stack from \kbd{av} to \kbd{ltop}, preserving \kbd{x[0]},
 \dots, \kbd{x[n-1]} (which are \kbd{GEN}s). Same assumptions as in
-\kbd{gc_all_unsafe}, of which this is a variant. For instance
+\kbd{gc\_all\_unsafe}, of which this is a variant. For instance
 \bprog
   z = cgetg(3, t_COMPLEX);
   av = avma; garbage(); ltop = avma;
