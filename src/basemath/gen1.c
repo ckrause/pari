@@ -63,17 +63,11 @@ addRc(GEN x, GEN y) {
   gel(z,2) = gcopy(gel(y,2)); return z;
 }
 static GEN
-mulRc(GEN x, GEN y) {
-  GEN z = cgetg(3,t_COMPLEX);
-  gel(z,1) = isintzero(gel(y,1))? gen_0: gmul(x,gel(y,1));
-  gel(z,2) = gmul(x,gel(y,2)); return z;
-}
-/* for INTMODs: can't simplify when Re(x) = gen_0 */
-static GEN
-mulRc_direct(GEN x, GEN y) {
-  GEN z = cgetg(3,t_COMPLEX);
-  gel(z,1) = gmul(x,gel(y,1));
-  gel(z,2) = gmul(x,gel(y,2)); return z;
+mulRc(GEN x, GEN y)
+{
+  GEN a = gel(y,1), b = gel(y,2), z = cgetg(3,t_COMPLEX);
+  gel(z,1) = (typ(x) != t_INTMOD && isintzero(a))? gen_0: gmul(x, a);
+  gel(z,2) = gmul(x, b); return z;
 }
 static GEN
 divRc(GEN x, GEN y)
@@ -1972,7 +1966,7 @@ gmul(GEN x, GEN y)
           z = cgetg(3, t_INTMOD); p1 = Fp_mul(gel(y,1), gel(x,2), X);
           return div_intmod_same(z, X, p1, remii(gel(y,2), X));
         }
-        case t_COMPLEX: return mulRc_direct(x,y);
+        case t_COMPLEX: return mulRc(x,y);
         case t_PADIC: { GEN X = gel(x,1);
           z = cgetg(3, t_INTMOD);
           return mul_intmod_same(z, X, gel(x,2), padic_to_Fp(y, X));
@@ -2626,7 +2620,7 @@ gdiv(GEN x, GEN y)
 
         case t_COMPLEX:
           av = avma;
-          return gc_upto(av, mulRc_direct(gdiv(x,cxnorm(y)), conj_i(y)));
+          return gc_upto(av, mulRc(gdiv(x,cxnorm(y)), conj_i(y)));
 
         case t_QUAD: return divRq(x,y);
 
@@ -2696,7 +2690,7 @@ gdiv(GEN x, GEN y)
       switch(ty)
       {
         case t_INT: case t_REAL: case t_FRAC: return divcR(x,y);
-        case t_INTMOD: return mulRc_direct(ginv(y), x);
+        case t_INTMOD: return mulRc(ginv(y), x);
         case t_PADIC:
           return Zp_nosquare_m1(padic_p(y))? divcR(x,y): divTp(x, y);
         case t_QUAD:
