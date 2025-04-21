@@ -7,14 +7,14 @@
 \chapter{Programming PARI in Library Mode}
 
 \noindent The \emph{User's Guide to Pari/GP} gives in three chapters a
-general presentation of the system, of the \kbd{gp} calculator, and detailed
-explanation of high level PARI routines available through the calculator. The
-present manual assumes general familiarity with the contents of these
-chapters and the basics of ANSI C programming, and focuses on the usage of
-the PARI library. In this chapter, we introduce the general concepts of PARI
-programming and describe useful general purpose functions; the following
-chapters describes all public low or high-level functions, underlying or
-extending the GP functions seen in Chapter 3 of the User's guide.
+general presentation of the system, of the \kbd{gp} calculator, and describes
+high level PARI routines available through the calculator. The
+present manual focuses on the usage of the PARI library, assuming
+general familiarity with the contents of these chapters and with ANSI C
+programming. In the present chapter, we introduce concepts and describe
+useful general purpose functions; the following chapters describes all public
+low or high-level functions, underlying or extending the GP functions seen in
+Chapter 3 of the User's guide.
 
 \section{Introduction: initializations, universal objects}
 \label{se:intro4}
@@ -97,12 +97,12 @@ need the above things to function properly. So if you forget the call to
 
 \section{Important technical notes}
 
-\subsec{Backward compatibility} The PARI function names evolved over time,
+\subsec{Backward compatibility} The PARI function names evolve over time,
 and deprecated functions are eventually deleted.  The file \kbd{pariold.h}
 contains macros implementing a weak form of backward compatibility.
 In particular, whenever the name of a documented function changes, a
 \kbd{\#define} is added to this file so that the old name expands to the new
-one (provided the prototype didn't change also).
+one (provided the function prototype remained the same).
 
 This file is included by \kbd{pari.h}, but a large section is commented out
 by default. Define \tet{PARI_OLD_NAMES} before including \kbd{pari.h} to
