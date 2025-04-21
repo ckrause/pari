@@ -31,9 +31,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 GEN
 polsym_gen(GEN P, GEN y0, long n, GEN T, GEN N)
 {
-  long dP=degpol(P), i, k, m;
-  pari_sp av1, av2;
-  GEN s,y,P_lead;
+  long dP = degpol(P), i, k, m;
+  GEN y, P_lead;
 
   if (n<0) pari_err_IMPL("polsym of a negative n");
   if (typ(P) != t_POL) pari_err_TYPE("polsym",P);
@@ -60,7 +59,8 @@ polsym_gen(GEN P, GEN y0, long n, GEN T, GEN N)
   }
   for (k=m; k<=n; k++)
   {
-    av1 = avma; s = (dP>=k)? gmulsg(k,gel(P,dP-k)): gen_0;
+    pari_sp av1 = avma;
+    GEN s = (dP>=k)? gmulsg(k,gel(P,dP-k)): gen_0;
     for (i=1; i<k && i<=dP; i++)
       s = gadd(s, gmul(gel(y,k-i+1),gel(P,dP-i)));
     if (N)
@@ -75,7 +75,7 @@ polsym_gen(GEN P, GEN y0, long n, GEN T, GEN N)
     }
     else
       if (P_lead) s = gdiv(s, P_lead);
-    av2 = avma; gel(y,k+1) = gc_GEN_unsafe(av1,av2, gneg(s));
+    gel(y,k+1) = gc_upto(av1, gneg(s));
   }
   return y;
 }
