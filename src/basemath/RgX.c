@@ -1960,14 +1960,11 @@ RgX_divrem(GEN x, GEN y, GEN *pr)
 GEN
 RgXQX_divrem(GEN x, GEN y, GEN T, GEN *pr)
 {
-  long vx, dx, dy, dz, i, j, sx, lr;
-  pari_sp av0, av, tetpil;
-  GEN z,p1,rem,lead;
+  long vx = varn(x), dx = degpol(x), dy = degpol(y), dz, i, j, sx, lr;
+  pari_sp av0, av;
+  GEN z, p1, rem, lead;
 
   if (!signe(y)) pari_err_INV("RgXQX_divrem",y);
-  vx = varn(x);
-  dx = degpol(x);
-  dy = degpol(y);
   if (dx < dy)
   {
     if (pr)
@@ -1988,8 +1985,8 @@ RgXQX_divrem(GEN x, GEN y, GEN T, GEN *pr)
       *pr = pol_0(vx);
     }
     if (gequal1(lead)) return RgX_copy(x);
-    av0 = avma; x = gmul(x, ginvmod(lead,T)); tetpil = avma;
-    return gc_GEN_unsafe(av0,tetpil,RgXQX_red(x,T));
+    av0 = avma; x = gmul(x, ginvmod(lead,T));
+    return gc_upto(av0, RgXQX_red(x,T));
   }
   av0 = avma; dz = dx-dy;
   lead = gequal1(lead)? NULL: gclone(ginvmod(lead,T));
@@ -2001,10 +1998,10 @@ RgXQX_divrem(GEN x, GEN y, GEN T, GEN *pr)
   gel(z,dz) = lead? gc_upto(av, grem(gmul(p1,lead), T)): gcopy(p1);
   for (i=dx-1; i>=dy; i--)
   {
-    av=avma; p1=gel(x,i);
+    av = avma; p1 = gel(x,i);
     for (j=i-dy+1; j<=i && j<=dz; j++) p1 = gsub(p1, gmul(gel(z,j),gel(y,i-j)));
     if (lead) p1 = gmul(grem(p1, T), lead);
-    tetpil=avma; gel(z,i-dy) = gc_GEN_unsafe(av,tetpil, grem(p1, T));
+    gel(z,i-dy) = gc_upto(av, grem(p1, T));
   }
   if (!pr) { guncloneNULL(lead); return z-2; }
 
@@ -2013,7 +2010,7 @@ RgXQX_divrem(GEN x, GEN y, GEN T, GEN *pr)
   {
     p1 = gel(x,i);
     for (j=0; j<=i && j<=dz; j++) p1 = gsub(p1, gmul(gel(z,j),gel(y,i-j)));
-    tetpil=avma; p1 = grem(p1, T); if (!gequal0(p1)) { sx = 1; break; }
+    p1 = grem(p1, T); if (!gequal0(p1)) { sx = 1; break; }
     if (!i) break;
     set_avma(av);
   }
@@ -2023,17 +2020,15 @@ RgXQX_divrem(GEN x, GEN y, GEN T, GEN *pr)
     if (sx) return gc_NULL(av0);
     return gc_const((pari_sp)rem, z-2);
   }
-  lr=i+3; rem -= lr;
+  lr=i+3; rem -= lr; av = (pari_sp)rem;
   rem[0] = evaltyp(t_POL) | _evallg(lr);
   rem[1] = z[-1];
-  p1 = gc_GEN_unsafe((pari_sp)rem,tetpil,p1);
-  rem += 2; gel(rem,i) = p1;
+  rem += 2; gel(rem,i) = gc_upto(av, p1);
   for (i--; i>=0; i--)
   {
-    av=avma; p1 = gel(x,i);
-    for (j=0; j<=i && j<=dz; j++)
-      p1 = gsub(p1, gmul(gel(z,j),gel(y,i-j)));
-    tetpil=avma; gel(rem,i) = gc_GEN_unsafe(av,tetpil, grem(p1, T));
+    av = avma; p1 = gel(x,i);
+    for (j=0; j<=i && j<=dz; j++) p1 = gsub(p1, gmul(gel(z,j),gel(y,i-j)));
+    gel(rem,i) = gc_upto(av, grem(p1, T));
   }
   rem -= 2;
   guncloneNULL(lead);
