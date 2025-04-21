@@ -74,7 +74,7 @@ divRc(GEN x, GEN y)
 {
   GEN a = gel(y,1), b = gel(y,2), z = cgetg(3,t_COMPLEX);
   pari_sp av = avma, av2;
-  if (isintzero(a))
+  if (isintzero(a) && typ(x) != t_INTMOD)
   {
     gel(z,1) = gen_0;
     gel(z,2) = gc_upto(av, gdiv(x, gneg(b)));
@@ -2618,10 +2618,7 @@ gdiv(GEN x, GEN y)
             pari_err_OP("/",x,y);
           return Z_FF_div(gel(x,2),y);
 
-        case t_COMPLEX:
-          av = avma;
-          return gc_upto(av, mulRc(gdiv(x,cxnorm(y)), conj_i(y)));
-
+        case t_COMPLEX: return divRc(x,y);
         case t_QUAD: return divRq(x,y);
 
         case t_PADIC: { GEN X = gel(x,1);
