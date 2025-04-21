@@ -1323,13 +1323,13 @@ RgX_addspec(GEN x, GEN y, long nx, long ny)
 
 /* Return the vector of coefficients of x, where we replace rational 0s by NULL
  * [ to speed up basic operation s += x[i]*y[j] ]. We create a proper
- * t_VECSMALL, to hold this, which can be left on stack: gc_GEN_unsafe
+ * t_VECSMALL, to hold this, which can be left on stack: GC functions
  * will not crash on it. The returned vector itself is not a proper GEN,
  * we access the coefficients as x[i], i = 0..deg(x) */
 static GEN
 RgXspec_kill0(GEN x, long lx)
 {
-  GEN z = cgetg(lx+1, t_VECSMALL) + 1; /* inhibit gc_GEN_unsafe-wise */
+  GEN z = cgetg(lx+1, t_VECSMALL) + 1; /* inhibit GC-wise */
   long i;
   for (i=0; i <lx; i++)
   {

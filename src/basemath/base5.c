@@ -1133,7 +1133,7 @@ rnflllgram(GEN nf, GEN pol, GEN order,long prec)
   I = leafcopy(I);
   H = NULL;
   MPOL = matbasistoalg(nf, M);
-  MCS = matid(lx-1); /* dummy for gc_GEN_unsafe */
+  MCS = matid(lx-1); /* dummy for GC */
 PRECNF:
   if (count == MAX_COUNT)
   {

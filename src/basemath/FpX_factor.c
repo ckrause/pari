@@ -1281,7 +1281,7 @@ prime_fact(GEN x) { retmkmat2(mkcolcopy(x), mkcol(gen_1)); }
 GEN
 trivial_fact(void) { retmkmat2(cgetg(1,t_COL), cgetg(1,t_COL)); }
 
-/* not gc_GEN_unsafe safe */
+/* not GC safe */
 static GEN
 FpX_factor_2(GEN f, GEN p, long d)
 {

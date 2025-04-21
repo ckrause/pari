@@ -141,7 +141,7 @@ qfb_inv(GEN x) {
   gel(z,2) = negi(gel(z,2));
   return z;
 }
-/* valid for t_QFB, gc_GEN_unsafe-safe */
+/* valid for t_QFB, GC clean */
 static GEN
 qfbinv(GEN x)
 { retmkqfb(icopy(gel(x,1)),negi(gel(x,2)),icopy(gel(x,3)), icopy(gel(x,4))); }

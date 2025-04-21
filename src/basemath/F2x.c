@@ -413,8 +413,7 @@ F2x_addshift(GEN x, GEN y, long d)
   *--zd = evaltyp(t_VECSMALL) | evallg(lz); return zd;
 }
 
-/* shift polynomial + gc_GEN_unsafe */
-/* Do not set evalvarn. Cf Flx_shiftip */
+/* shift polynomial + GC; do not set evalvarn. Cf Flx_shiftip */
 static GEN
 F2x_shiftip(pari_sp av, GEN x, long v)
 {

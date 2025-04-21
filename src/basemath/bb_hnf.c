@@ -555,7 +555,7 @@ gen_howell_i(GEN A, long remove_zerocols, long permute_zerocols, long early_abor
   if(ops)
   {
     maxop = m*n + (m*(m+1))/2 + 1;
-    *ops = zerovec(maxop); /* filled with placeholders so gc_GEN_unsafe can handle it */
+    *ops = zerovec(maxop); /* filled with placeholders for GC */
   }
 
   /* put in triangular form */
