@@ -1412,21 +1412,25 @@ polisirreducible(GEN x)
 /*                         GENERIC GCD                             */
 /*                                                                 */
 /*******************************************************************/
+static GEN
+gcd3(GEN x, GEN y, GEN z) { return ggcd(ggcd(x, y), z); }
+
 /* x is a COMPLEX or a QUAD */
 static GEN
 triv_cont_gcd(GEN x, GEN y)
 {
   pari_sp av = avma;
-  GEN c;
+  GEN a, b;
   if (typ(x)==t_COMPLEX)
   {
-    GEN a = gel(x,1), b = gel(x,2);
+    a = gel(x,1); b = gel(x,2);
     if (typ(a) == t_REAL || typ(b) == t_REAL) return gen_1;
-    c = ggcd(a,b);
   }
   else
-    c = ggcd(gel(x,2),gel(x,3));
-  return gc_upto(av, ggcd(c,y));
+  {
+    a = gel(x,2); b = gel(x,3);
+  }
+  return gc_upto(av, gcd3(a, b, y));
 }
 
 /* y is a PADIC, x a rational number or an INTMOD */
@@ -1616,14 +1620,33 @@ Q_gcd(GEN x, GEN y)
   else
   { return (ty == t_INT)? gcdiq(y,x): gcdqq(x,y); }
 }
+
+/* t_QUADs */
 static GEN
-gcd3(GEN x, GEN y, GEN z) { return ggcd(ggcd(x, y), z); }
+qgcd(GEN x, GEN y)
+{
+  pari_sp av = avma;
+  GEN q = gdiv(x,y), u, v;
+  /* e.g. x = y with t_PADIC components */
+  if (typ(q) != t_QUAD) { set_avma(av); return triv_cont_gcd(x,y); }
+  u = gel(q,2); v = gel(q,3);
+  if (gequal0(v))
+  {
+    if (typ(u)==t_INT) { set_avma(av); return gcopy(y); }
+    if (typ(u)==t_FRAC) return gc_upto(av, gdiv(y, gel(u,2)));
+    set_avma(av); return triv_cont_gcd(x,y);
+  }
+  if (typ(u)==t_INT && typ(v)==t_INT) { set_avma(av); return gcopy(y); }
+  q = ginv(q); u = gel(q,2); v = gel(q,3); set_avma(av);
+  if (typ(u)==t_INT && typ(v)==t_INT) return gcopy(x);
+  return triv_cont_gcd(y,x);
+}
 
 GEN
 ggcd(GEN x, GEN y)
 {
   long vx, vy, tx = typ(x), ty = typ(y);
-  pari_sp av, tetpil;
+  pari_sp av;
   GEN p1,z;
 
   if (is_noncalc_t(tx) || is_matvec_t(tx) ||
@@ -1673,18 +1696,7 @@ ggcd(GEN x, GEN y)
         if (!equalii(padic_p(x), padic_p(y))) return gen_1;
         return powis(padic_p(x), minss(valp(x), valp(y)));
 
-      case t_QUAD:
-        av=avma; p1=gdiv(x,y);
-        if (gequal0(gel(p1,3)))
-        {
-          p1=gel(p1,2);
-          if (typ(p1)==t_INT) { set_avma(av); return gcopy(y); }
-          tetpil=avma; return gc_GEN_unsafe(av,tetpil, gdiv(y,gel(p1,2)));
-        }
-        if (typ(gel(p1,2))==t_INT && typ(gel(p1,3))==t_INT) {set_avma(av); return gcopy(y);}
-        p1 = ginv(p1); set_avma(av);
-        if (typ(gel(p1,2))==t_INT && typ(gel(p1,3))==t_INT) return gcopy(x);
-        return triv_cont_gcd(y,x);
+      case t_QUAD: return qgcd(x, y);
 
       default: return gen_1; /* t_REAL */
     }
