@@ -1726,13 +1726,14 @@ mulpp(GEN x, GEN y) {
 }
 /* x,y QUAD */
 static GEN
-mulqq(GEN x, GEN y) {
+mulqq(GEN x, GEN y)
+{
   GEN z = cgetg(4,t_QUAD);
-  GEN p1, p2, p3, p4, P = gel(x,1), b = gel(P,3), c = gel(P,2);
+  GEN p1, p2, p3, p4, T = gel(x,1), b = gel(T,3), c = gel(T,2);
   pari_sp av, tetpil;
-  if (!ZX_equal(P, gel(y,1))) pari_err_OP("*",x,y);
+  if (!ZX_equal(T, gel(y,1))) pari_err_OP("*",x,y);
 
-  gel(z,1) = ZX_copy(P); av = avma;
+  gel(z,1) = ZX_copy(T); av = avma;
   p2 = gmul(gel(x,2),gel(y,2));
   p3 = gmul(gel(x,3),gel(y,3));
   p1 = gmul(gneg_i(c),p3);
@@ -2137,12 +2138,37 @@ sqr_ser_part(GEN x, long l1, long l2)
   return Z;
 }
 
+/* (u + v X)^2 mod (X^2 + bX + c), b = 0 or -1 */
+static GEN
+sqrq(GEN x)
+{
+  GEN T = gel(x,1), c = gel(T,2), b = gel(T,3);
+  GEN u = gel(x,2), v = gel(x,3), u2, v2, uv, s, z;
+  pari_sp av, av2;
+  z = cgetg(4, t_QUAD), gel(z,1) = ZX_copy(T); av = avma;
+  u2 = gsqr(u); v2 = gsqr(v); uv = gmul(u, v); s = gmul(c, v2);
+  if (!signe(b))
+  {
+    av2 = avma;
+    gel(z,2) = gsub(u2, s);
+    gel(z,3) = gmul2n(uv,1);
+  }
+  else
+  {
+    GEN t = gmul2n(uv, 1);
+    av2 = avma;
+    gel(z,2) = gsub(u2, s);
+    gel(z,3) = gadd(t, v2);
+  }
+  gc_slice_unsafe(av, av2, z+2, 2); return z;
+}
+
 GEN
 gsqr(GEN x)
 {
   long i, lx;
   pari_sp av, tetpil;
-  GEN z, p1, p2, p3, p4;
+  GEN z, p1, p2, p3;
 
   switch(typ(x))
   {
@@ -2180,29 +2206,9 @@ gsqr(GEN x)
         retmkpadic(gen_1, gen_2, utoipos(8), v2, 3);
       retmkpadic(remi2n(sqri(u), d + 1), gen_2, int2n(d + 1), v2, d + 1);
     }
-    case t_QUAD: z = cgetg(4,t_QUAD);
-      p1 = gel(x,1);
-      gel(z,1) = ZX_copy(p1); av = avma;
-      p2 = gsqr(gel(x,2));
-      p3 = gsqr(gel(x,3));
-      p4 = gmul(gneg_i(gel(p1,2)),p3);
+    case t_QUAD: return sqrq(x);
 
-      if (gequal0(gel(p1,3)))
-      {
-        gel(z,2) = gc_upto(av, gadd(p4,p2));
-        av = avma;
-        p2 = gmul(gel(x,2),gel(x,3));
-        gel(z,3) = gc_upto(av, gmul2n(p2,1)); return z;
-      }
-
-      p1 = gmul2n(gmul(gel(x,2),gel(x,3)), 1);
-      tetpil = avma;
-      gel(z,2) = gadd(p2,p4);
-      gel(z,3) = gadd(p1,p3);
-      gc_slice_unsafe(av,tetpil,z+2,2); return z;
-
-    case t_POLMOD:
-      return sqr_polmod(gel(x,1), gel(x,2));
+    case t_POLMOD: return sqr_polmod(gel(x,1), gel(x,2));
 
     case t_FFELT: return FF_sqr(x);
 
