@@ -4460,6 +4460,7 @@ poleval(GEN x, GEN y)
       t = gadd(gmul(t,y),gel(x,i));
 #endif
     /* specific attention to sparse polynomials */
+    av = avma;
     for ( ; i>=imin; i=j-1)
     {
       for (j=i; isexactzero(gel(x,j)); j--)
@@ -4475,7 +4476,7 @@ poleval(GEN x, GEN y)
       if (gc_needed(av0,2))
       {
         if (DEBUGMEM>1) pari_warn(warnmem,"poleval: i = %ld",i);
-        t = gc_upto(av0, t);
+        t = gc_upto(av, t);
       }
     }
     if (M == 1) return gc_upto(av0, t);
