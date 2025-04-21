@@ -465,12 +465,11 @@ FpXQX_FpXQ_mul(GEN P, GEN U, GEN T, GEN p)
 static GEN
 FpXQX_divrem_basecase(GEN x, GEN y, GEN T, GEN p, GEN *pr)
 {
-  long vx, dx, dy, dy1, dz, i, j, sx, lr;
-  pari_sp av0, av, tetpil;
-  GEN z,p1,rem,lead;
+  long vx = varn(x), dx = degpol(x), dy = degpol(y), dy1, dz, i, j, sx, lr;
+  pari_sp av0, av;
+  GEN z, p1, rem, lead;
 
   if (!signe(y)) pari_err_INV("FpX_divrem",y);
-  vx=varn(x); dy=degpol(y); dx=degpol(x);
   if (dx < dy)
   {
     if (pr)
@@ -509,7 +508,7 @@ FpXQX_divrem_basecase(GEN x, GEN y, GEN T, GEN p, GEN *pr)
     for (j=i-dy1; j<=i && j<=dz; j++)
       p1 = Fq_sub(p1, Fq_mul(gel(z,j),gel(y,i-j),NULL,p),NULL,p);
     if (lead) p1 = Fq_mul(p1, lead, NULL,p);
-    tetpil=avma; gel(z,i-dy) = gc_GEN_unsafe(av,tetpil,Fq_red(p1,T,p));
+    gel(z,i-dy) = gc_upto(av, Fq_red(p1,T,p));
   }
   if (!pr) { guncloneNULL(lead); return z-2; }
 
@@ -519,7 +518,7 @@ FpXQX_divrem_basecase(GEN x, GEN y, GEN T, GEN p, GEN *pr)
     p1 = gel(x,i);
     for (j=maxss(0,i-dy1); j<=i && j<=dz; j++)
       p1 = Fq_sub(p1, Fq_mul(gel(z,j),gel(y,i-j),NULL,p),NULL,p);
-    tetpil=avma; p1 = Fq_red(p1, T, p); if (signe(p1)) { sx = 1; break; }
+    p1 = Fq_red(p1, T, p); if (signe(p1)) { sx = 1; break; }
     if (!i) break;
     set_avma(av);
   }
@@ -529,17 +528,16 @@ FpXQX_divrem_basecase(GEN x, GEN y, GEN T, GEN p, GEN *pr)
     if (sx) return gc_NULL(av0);
     return gc_const((pari_sp)rem, z-2);
   }
-  lr=i+3; rem -= lr;
+  lr=i+3; rem -= lr; av = (pari_sp)rem;
   rem[0] = evaltyp(t_POL) | _evallg(lr);
   rem[1] = z[-1];
-  p1 = gc_GEN_unsafe((pari_sp)rem,tetpil,p1);
-  rem += 2; gel(rem,i) = p1;
+  rem += 2; gel(rem,i) = gc_upto(av, p1);
   for (i--; i>=0; i--)
   {
-    av=avma; p1 = gel(x,i);
+    av = avma; p1 = gel(x,i);
     for (j=maxss(0,i-dy1); j<=i && j<=dz; j++)
       p1 = Fq_sub(p1, Fq_mul(gel(z,j),gel(y,i-j), NULL,p), NULL,p);
-    tetpil=avma; gel(rem,i) = gc_GEN_unsafe(av,tetpil, Fq_red(p1, T, p));
+    gel(rem,i) = gc_upto(av, Fq_red(p1, T, p));
   }
   rem -= 2;
   guncloneNULL(lead);
