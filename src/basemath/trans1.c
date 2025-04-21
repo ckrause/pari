@@ -3147,7 +3147,7 @@ teich(GEN x) { return teichmuller(x, NULL); }
 GEN
 glog(GEN x, long prec)
 {
-  pari_sp av, tetpil;
+  pari_sp av;
   GEN y, p1;
   long l;
 
@@ -3186,9 +3186,8 @@ glog(GEN x, long prec)
       }
       if (prec >= LOGAGMCX_LIMIT) return logagmcx(x, prec);
       y = cgetg(3,t_COMPLEX);
-      gel(y,2) = garg(x,prec);
-      av = avma; p1 = glog(cxnorm(x),prec); tetpil = avma;
-      gel(y,1) = gc_GEN_unsafe(av,tetpil,gmul2n(p1,-1)); return y;
+      gel(y,2) = garg(x,prec); av = avma;
+      gel(y,1) = gc_upto(av, gmul2n(glog(cxnorm(x),prec),-1)); return y;
 
     case t_PADIC: return Qp_log(x);
     default:
@@ -3756,7 +3755,6 @@ mpsinc(GEN x)
     if (l < LOWDEFAULTPREC) l = LOWDEFAULTPREC;
     return real_1(l);
   }
-
   mpsincos(x,&s,&c);
   return gc_uptoleaf(av, divrr(s,x));
 }
@@ -3901,11 +3899,9 @@ gtan(GEN x, long prec)
 static GEN
 mpcotan(GEN x)
 {
-  pari_sp av=avma, tetpil;
+  pari_sp av = avma;
   GEN s,c;
-
-  mpsincos(x,&s,&c); tetpil=avma;
-  return gc_GEN_unsafe(av,tetpil,divrr(c,s));
+  mpsincos(x,&s,&c); return gc_uptoleaf(av, divrr(c,s));
 }
 
 GEN
