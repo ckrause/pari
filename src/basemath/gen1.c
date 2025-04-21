@@ -2410,7 +2410,7 @@ gdiv(GEN x, GEN y)
 {
   long tx = typ(x), ty = typ(y), lx, ly, vx, vy, i;
   pari_sp av, tetpil;
-  GEN z, p1, p2;
+  GEN z, p1;
 
   if (tx == ty) switch(tx)
   {
@@ -2569,8 +2569,8 @@ gdiv(GEN x, GEN y)
       case t_COMPLEX: return divRc(x,y);
       case t_PADIC: return divTp(x, y);
       case t_QUAD:
-        av = avma; p1 = quadnorm(y); p2 = mulRq(x, conj_i(y)); tetpil = avma;
-        return gc_GEN_unsafe(av, tetpil, gdiv(p2,p1));
+        av = avma;
+        return gc_upto(av, gdiv(mulRq(x, conj_i(y)), quadnorm(y)));
     }
   }
   if (gequal0(y))
@@ -2613,8 +2613,8 @@ gdiv(GEN x, GEN y)
           return gc_upto(av, mulRc_direct(gdiv(x,cxnorm(y)), conj_i(y)));
 
         case t_QUAD:
-          av = avma; p1 = quadnorm(y); p2 = gmul(x,conj_i(y)); tetpil = avma;
-          return gc_GEN_unsafe(av,tetpil, gdiv(p2,p1));
+          av = avma;
+          return gc_upto(av, gdiv(gmul(x,conj_i(y)), quadnorm(y)));
 
         case t_PADIC: { GEN X = gel(x,1);
           z = cgetg(3, t_INTMOD);
@@ -2644,8 +2644,8 @@ gdiv(GEN x, GEN y)
         return z;
 
         case t_REAL:
-          av=avma; p1=mulri(y,gel(x,2)); tetpil=avma;
-          return gc_GEN_unsafe(av, tetpil, divir(gel(x,1), p1));
+          av = avma;
+          return gc_uptoleaf(av, divir(gel(x,1), mulri(y,gel(x,2))));
 
         case t_INTMOD: { GEN Y = gel(y,1);
           z = cgetg(3,t_INTMOD); p1 = remii(mulii(gel(y,2),gel(x,2)), Y);
@@ -2662,8 +2662,8 @@ gdiv(GEN x, GEN y)
           return divTp(x, y);
 
         case t_QUAD:
-          av=avma; p1=quadnorm(y); p2=gmul(x,conj_i(y)); tetpil=avma;
-          return gc_GEN_unsafe(av,tetpil,gdiv(p2,p1));
+          av = avma;
+          return gc_upto(av, gdiv(gmul(x,conj_i(y)), quadnorm(y)));
       }
 
     case t_FFELT:
@@ -2703,9 +2703,12 @@ gdiv(GEN x, GEN y)
           z = cgetg(3, t_INTMOD);
           return div_intmod_same(z, Y, padic_to_Fp(x, Y), gel(y,2));
         }
-        case t_COMPLEX: case t_QUAD:
-          av=avma; p1=gmul(x,conj_i(y)); p2=gnorm(y); tetpil=avma;
-          return gc_GEN_unsafe(av,tetpil,gdiv(p1,p2));
+        case t_COMPLEX:
+          av = avma;
+          return gc_upto(av, gdiv(gmul(x,conj_i(y)), cxnorm(y)));
+        case t_QUAD:
+          av = avma;
+          return gc_upto(av, gdiv(gmul(x,conj_i(y)), quadnorm(y)));
 
         case t_REAL: pari_err_TYPE2("/",x,y);
       }
@@ -3259,8 +3262,8 @@ GEN
 ginv(GEN x)
 {
   long s;
-  pari_sp av, tetpil;
-  GEN z, y, p1, p2;
+  pari_sp av;
+  GEN z, y;
 
   switch(typ(x))
   {
@@ -3287,15 +3290,12 @@ ginv(GEN x)
       normalize_frac(z); return z;
     }
     case t_COMPLEX:
-      av=avma;
-      p1=cxnorm(x);
-      p2=mkcomplex(gel(x,1), gneg(gel(x,2)));
-      tetpil=avma;
-      return gc_GEN_unsafe(av,tetpil,divcR(p2,p1));
+      av = avma;
+      return gc_upto(av, divcR(conj_i(x), cxnorm(x)));
 
     case t_QUAD:
-      av=avma; p1=quadnorm(x); p2=conj_i(x); tetpil=avma;
-      return gc_GEN_unsafe(av,tetpil,gdiv(p2,p1));
+      av = avma;
+      return gc_upto(av, gdiv(conj_i(x), quadnorm(x)));
 
     case t_PADIC:
     {
