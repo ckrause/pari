@@ -1656,24 +1656,15 @@ Qp_log(GEN x)
 
 static GEN Qp_exp_safe(GEN x);
 
-/*compute the p^e th root of x p-adic, assume x != 0 */
+/*compute the p^e th root of x p-adic, ignoring valuation; assume x != 0 */
 static GEN
-Qp_sqrtn_ram(GEN x, long e)
+Up_sqrtn_ram(GEN x, long e)
 {
   GEN a, p = padic_p(x), n = powiu(p,e);
-  long v = valp(x), va;
-  if (v)
-  {
-    long z;
-    v = sdivsi_rem(v, n, &z);
-    if (z) return NULL;
-    x = leafcopy(x);
-    setvalp(x,0);
-  }
+  long va;
   /*If p = 2, -1 is a root of 1 in U1: need extra check*/
   if (absequaliu(p, 2) && mod8(padic_u(x)) != 1) return NULL;
-  a = Qp_log(x);
-  va = valp(a) - e;
+  a = Qp_log(x); va = valp(a) - e;
   if (va <= 0)
   {
     if (signe(padic_u(a))) return NULL;
@@ -1689,50 +1680,30 @@ Qp_sqrtn_ram(GEN x, long e)
      * Since z^n=z, we have (a/z)^n = x. */
     a = gdiv(x, powgi(a,subiu(n,1))); /* = a/z = x/a^(n-1)*/
   }
-  if (v) setvalp(a,v);
   return a;
 }
 
-/*compute the nth root of x p-adic p prime with n*/
-static GEN
-Qp_sqrtn_unram(GEN x, GEN n, GEN *zetan)
+/* set q = s/n if n | s */
+static int
+dvdsi_quot(long s, GEN n, long *q)
 {
-  pari_sp av;
-  GEN Z, a, r, p = padic_p(x), u = padic_u(x);
-  long v = valp(x);
-  if (v)
-  {
-    long z;
-    v = sdivsi_rem(v,n,&z);
-    if (z) return NULL;
-  }
-  r = cgetp(x); setvalp(r,v);
-  Z = NULL; /* -Wall */
-  if (zetan) Z = cgetp(x);
-  av = avma; a = Fp_sqrtn(u, n, p, zetan);
-  if (!a) return NULL;
-  affii(Zp_sqrtnlift(u, n, a, p, precp(x)), padic_u(r));
-  if (zetan)
-  {
-    affii(Zp_sqrtnlift(gen_1, n, *zetan, p, precp(x)), padic_u(Z));
-    *zetan = Z;
-  }
-  return gc_const(av,r);
+  long r;
+  *q = sdivsi_rem(s, n, &r);
+  return !r;
 }
 
 GEN
 Qp_sqrtn(GEN x, GEN n, GEN *zetan)
 {
-  pari_sp av, tetpil;
-  GEN q, p;
-  long e;
+  pari_sp av = avma;
+  GEN a, u, q, p = padic_p(x);
+  long e, v, prec;
   if (absequaliu(n, 2))
   {
     if (zetan) *zetan = gen_m1;
     if (signe(n) < 0) x = ginv(x);
     return Qp_sqrt(x);
   }
-  av = avma; p = padic_p(x);
   if (!signe(padic_u(x)))
   {
     if (signe(n) < 0) pari_err_INV("Qp_sqrtn", x);
@@ -1740,31 +1711,30 @@ Qp_sqrtn(GEN x, GEN n, GEN *zetan)
     if (zetan) *zetan = gen_1;
     set_avma(av); return zeropadic(p, itos(q));
   }
+  if (!dvdsi_quot(valp(x), n, &v)) return NULL;
   /* treat the ramified part using logarithms */
   e = Z_pvalrem(n, p, &q);
-  if (e) { x = Qp_sqrtn_ram(x,e); if (!x) return NULL; }
+  if (e) { x = Up_sqrtn_ram(x,e); if (!x) return NULL; }
   if (is_pm1(q))
   { /* finished */
     if (signe(q) < 0) x = ginv(x);
+    if (v) setvalp(x, v);
     x = gc_upto(av, x);
-    if (zetan)
-      *zetan = (e && absequaliu(p, 2))? gen_m1 /*-1 in Q_2*/
-                                   : gen_1;
+    if (zetan) *zetan = (e && absequaliu(p, 2))? gen_m1 /*-1 in Q_2*/
+                                               : gen_1;
     return x;
   }
-  tetpil = avma;
-  /* use hensel lift for unramified case */
-  x = Qp_sqrtn_unram(x, q, zetan);
-  if (!x) return NULL;
-  if (zetan)
-  {
-    if (e && absequaliu(p, 2))/*-1 in Q_2*/
-    {
-      tetpil = avma; x = gcopy(x); *zetan = gneg(*zetan);
-    }
-    return gc_all_unsafe(av,tetpil,2,&x,zetan);
-  }
-  return gc_GEN_unsafe(av,tetpil,x);
+  /* Hensel lift for unramified case */
+  u = padic_u(x); prec = precp(x);
+  a = Fp_sqrtn(u, q, p, zetan); if (!a) return NULL;
+  u = Zp_sqrtnlift(u, q, a, p, prec);
+  x = mkpadic(u, p, padic_pd(x), v, prec);
+  if (!zetan) return gc_GEN(av, x);
+
+  u = Zp_sqrtnlift(gen_1, q, *zetan, p, prec);
+  *zetan = mkpadic(u, p,  padic_pd(x), 0, prec);
+  if (e && absequaliu(p, 2)) *zetan = gneg(*zetan); /*-1 in Q_2*/
+  return gc_all(av, 2, &x, zetan);
 }
 
 GEN
