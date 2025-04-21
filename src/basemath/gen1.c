@@ -1464,43 +1464,30 @@ mul_polmod_scal(GEN Y, GEN y, GEN x)
 
 /* cf mulqq */
 static GEN
-quad_polmod_mul(GEN P, GEN x, GEN y)
+quad_polmod_mul(GEN T, GEN x, GEN y)
 {
-  GEN T = cgetg(4, t_POL), b = gel(P,3), c = gel(P,2), p1, p2, p3, p4;
-  pari_sp tetpil, av = avma;
-  T[1] = x[1];
-  p2 = gmul(gel(x,2), gel(y,2));
-  p3 = gmul(gel(x,3), gel(y,3));
-  p1 = gmul(gneg_i(c),p3);
-  /* operands are usually small: gadd ~ gmul and Karatsuba is a waste */
-  if (typ(b) == t_INT)
-  {
-    if (signe(b))
-    {
-      p4 = gadd(gmul(gel(x,2), gel(y,3)), gmul(gel(x,3), gel(y,2)));
-      if (is_pm1(b))
-      {
-        if (signe(b) > 0) p3 = gneg(p3);
-      }
-      else
-        p3 = gmul(negi(b), p3);
-    }
-    else
-    {
-      p3 = gmul(gel(x,2),gel(y,3));
-      p4 = gmul(gel(x,3),gel(y,2));
-    }
-  }
+  GEN b = gel(T,3), c = gel(T,2);
+  GEN ux = gel(x,2), vx = gel(x,3), uy = gel(y,2), vy = gel(y,3);
+  GEN z, s, U, V, E, F;
+  pari_sp av, av2;
+  z = cgetg(4, t_POL); z[1] = x[1]; av = avma;
+  U = gmul(ux, uy);
+  V = gmul(vx, vy); s = gmul(c, V);
+  E = gmul(gadd(ux, vx), gadd(uy, vy));
+  if (typ(b) != t_INT) F = gadd(U, gmul(gaddgs(b, 1), V)); /* = U + (b+1) V */
   else
-  {
-    p4 = gadd(gmul(gel(x,2), gel(y,3)), gmul(gel(x,3), gel(y,2)));
-    p3 = gmul(gneg_i(b), p3);
+  { /* minor optimization */
+    if (!signe(b)) F = gadd(U, V); /* b = 0 */
+    else if (is_pm1(b)) /* b = 1 or -1 */
+      F = signe(b) < 0? U: gadd(U, gmul2n(V,1));
+    else /* |b| > 1 */
+      F = gadd(U, gmul(addis(b, 1), V));
   }
-  tetpil = avma;
-  gel(T,2) = gadd(p2, p1);
-  gel(T,3) = gadd(p4, p3);
-  gc_slice_unsafe(av,tetpil,T+2,2);
-  return normalizepol_lg(T,4);
+  av2 = avma;
+  gel(z,2) = gsub(U, s);
+  gel(z,3) = gsub(E, F);
+  gc_slice_unsafe(av, av2, z+2, 2);
+  return normalizepol_lg(z,4);
 }
 /* Mod(x,T) * Mod(y,T) */
 static GEN
