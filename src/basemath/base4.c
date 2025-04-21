@@ -2457,9 +2457,8 @@ isideal(GEN nf,GEN x)
 GEN
 idealdiv(GEN nf, GEN x, GEN y)
 {
-  pari_sp av = avma, tetpil;
-  GEN z = idealinv(nf,y);
-  tetpil = avma; return gc_GEN_unsafe(av,tetpil, idealmul(nf,x,z));
+  pari_sp av = avma;
+  return gc_upto(av, idealmul(nf, x, idealinv(nf,y)));
 }
 
 /* This routine computes the quotient x/y of two ideals in the number field nf.
