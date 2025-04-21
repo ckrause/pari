@@ -2744,7 +2744,7 @@ gdiv(GEN x, GEN y)
   }
   switch(ty) {
     case t_REAL: case t_INTMOD: case t_PADIC: case t_POLMOD:
-      return gmul(x, ginv(y)); /* missing gc_GEN_unsafe, for speed */
+      return gmul(x, ginv(y)); /* no GC, for speed */
     case t_MAT:
       av = avma; p1 = RgM_inv(y);
       if (!p1) pari_err_INV("gdiv",y);

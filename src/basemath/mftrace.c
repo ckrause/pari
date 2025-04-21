@@ -1424,7 +1424,7 @@ c_theta(long n, long d, GEN psi)
       gel(V, f*f/d + 1) = gc_upto(av, par < 0? gmulgu(c,2*f): gmul2n(c,1));
     }
   if (F == 1) gel(V, 1) = gen_1;
-  return V; /* no gc_GEN_unsafe needed */
+  return V; /* no GC needed */
 }
 
 static GEN
@@ -1515,7 +1515,7 @@ c_mfEH(long n, long d, GEN F)
       long id = i*d, a = id & 3;
       gel(v,i+1) = (a==1 || a==2)? gen_0: uutoQ(hclassno6u(id), 6);
     }
-    return v; /* no gc_GEN_unsafe needed */
+    return v; /* no GC needed */
   }
   M = mfEHmat(n*d+1,r);
   if (d > 1)

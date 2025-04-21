@@ -1137,7 +1137,7 @@ one_iter(GEN *x, GEN *P, GEN x1, GEN n, long delta)
  * class (NULL for unknown or zero for known composite),  matching the
  * internal representation used by the ifac_*() routines below. Repeated
  * factors may arise; the caller will sort the factors anyway. Result
- * is not gc_GEN_unsafe-able (contains NULL) */
+ * is not GC-able (contains NULL) */
 static GEN
 pollardbrent_i(GEN n, long size, long c0, long retries)
 {

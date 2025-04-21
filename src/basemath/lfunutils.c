@@ -1473,7 +1473,7 @@ lfunellQ(GEN e)
   gel(ldata, 4) = gen_2;
   gel(ldata, 5) = ellQ_get_N(e);
   gel(ldata, 6) = stoi(ellrootno_global(e));
-  return gc_GEN(av, ldata); /* ellanal_globalred not gc_GEN_unsafe-safe */
+  return gc_GEN(av, ldata); /* ellanal_globalred not stack-safe */
 }
 
 static GEN
