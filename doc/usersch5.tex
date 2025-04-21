@@ -1119,11 +1119,6 @@ of length~\kbd{n}, and initializes its first codeword. Identical to
 \typ{COMPLEX}, whose real and imaginary parts are \typ{REAL}s
 of length~\kbd{n}.
 
-\fun{GEN}{cgetp}{GEN x} creates space sufficient to hold the
-\typ{PADIC}~\kbd{x}, and sets the prime $p$ and the $p$-adic precision to
-those of~\kbd{x}, but does not copy (the $p$-adic unit or zero representative
-and the modulus of)~\kbd{x}.
-
 \fun{GEN}{new_chunk}{size_t n} allocates a \kbd{GEN} with $n$ components,
 \emph{without} filling the required code words. This is the low-level
 constructor underlying \kbd{cgetg}, which calls \kbd{new\_chunk} then sets

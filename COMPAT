@@ -41,6 +41,11 @@ This file lists the incompatible changes between Version 2.x and older versions
   - removed obsolete functions gerepileall/gerepilemany: use gc_all. Type cast
     the result to (void) to ignore the return value if the compiler complains.
   - removed obsolete functions gerepilemanysp: use gc_all_unsafe
+  - removed obscure function cgetp: use high level cvtop or proper
+    low level constructor
+      mkpadic(u, padic_p(x), padic_pd(x), v, precp(x))
+    No need to copy p / pd or allocate a cgeti to later affii into u.
+    Also, one can use the correct value of v directly.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.16 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - binomial changed to agree with Loeb's definition

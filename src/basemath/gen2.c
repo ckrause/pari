@@ -73,18 +73,6 @@ gassoc_proto(GEN (*f)(GEN,GEN), GEN x, GEN y)
   }
   return f(x,y);
 }
-/*******************************************************************/
-/*                                                                 */
-/*                    CREATION OF A P-ADIC GEN                     */
-/*                                                                 */
-/*******************************************************************/
-GEN
-cgetp(GEN x)
-{
-  GEN pd = padic_pd(x), p = padic_p(x);
-  long l = lgefint(pd);
-  retmkpadic(cgeti(l), icopy(p), icopy(pd), 0, precp(x));
-}
 
 /*******************************************************************/
 /*                                                                 */
