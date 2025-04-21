@@ -136,10 +136,8 @@ icopy_ef(GEN x, long l)
 
 /* NOTE: arguments of "spec" routines (muliispec, addiispec, etc.) aren't
  * GENs but pairs (long *a, long na) representing a list of digits (in basis
- * BITS_IN_LONG) : a[0], ..., a[na-1]. [ In ordre to facilitate splitting: no
- * need to reintroduce codewords ]
- * Use speci(a,na) to visualize the corresponding GEN.
- */
+ * BITS_IN_LONG) : a[0], ..., a[na-1]. In order to facilitate splitting: no
+ * need to reintroduce codewords. */
 
 /***********************************************************************/
 /**                                                                   **/

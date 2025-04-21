@@ -31,8 +31,8 @@ pari_kernel_version(void) { return ""; }
 
 /* NOTE: arguments of "spec" routines (muliispec, addiispec, etc.) aren't
  * GENs but pairs (long *a, long na) representing a list of digits (in basis
- * BITS_IN_LONG) : a[0], ..., a[na-1]. [ In ordre to facilitate splitting: no
- * need to reintroduce codewords ] */
+ * BITS_IN_LONG) : a[0], ..., a[na-1]. In order to facilitate splitting: no
+ * need to reintroduce codewords. */
 
 #define LIMBS(x)  ((x)+2)
 #define NLIMBS(x) (lgefint(x)-2)
