@@ -970,7 +970,7 @@ GEN
 gadd(GEN x, GEN y)
 {
   long tx = typ(x), ty = typ(y), vx, vy, lx, i, l;
-  pari_sp av, tetpil;
+  pari_sp av;
   GEN z, p1;
 
   if (tx == ty) switch(tx) /* shortcut to generic case */
@@ -1081,8 +1081,8 @@ gadd(GEN x, GEN y)
             lx = expi(gel(y,1)) - expi(gel(y,2)) - expo(x);
             return lx <= 0? rcopy(x): fractor(y, nbits2prec(lx));
           }
-          av=avma; z=addir(gel(y,1),mulir(gel(y,2),x)); tetpil=avma;
-          return gc_GEN_unsafe(av,tetpil,divri(z,gel(y,2)));
+          av = avma; z = addir(gel(y,1), mulir(gel(y,2),x));
+          return gc_uptoleaf(av, divri(z,gel(y,2)));
         case t_COMPLEX: return addRc(x, y);
         case t_QUAD: return gequal0(y)? rcopy(x): addqf(y, x, realprec(x));
 
@@ -2189,11 +2189,10 @@ gsqr(GEN x)
 
       if (gequal0(gel(p1,3)))
       {
-        tetpil = avma;
-        gel(z,2) = gc_GEN_unsafe(av,tetpil,gadd(p4,p2));
+        gel(z,2) = gc_upto(av, gadd(p4,p2));
         av = avma;
-        p2 = gmul(gel(x,2),gel(x,3)); tetpil = avma;
-        gel(z,3) = gc_GEN_unsafe(av,tetpil,gmul2n(p2,1)); return z;
+        p2 = gmul(gel(x,2),gel(x,3));
+        gel(z,3) = gc_upto(av, gmul2n(p2,1)); return z;
       }
 
       p1 = gmul2n(gmul(gel(x,2),gel(x,3)), 1);
