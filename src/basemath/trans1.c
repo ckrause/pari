@@ -1660,7 +1660,6 @@ static GEN Qp_exp_safe(GEN x);
 static GEN
 Qp_sqrtn_ram(GEN x, long e)
 {
-  pari_sp av = avma;
   GEN a, p = padic_p(x), n = powiu(p,e);
   long v = valp(x), va;
   if (v)
@@ -1691,7 +1690,7 @@ Qp_sqrtn_ram(GEN x, long e)
     a = gdiv(x, powgi(a,subiu(n,1))); /* = a/z = x/a^(n-1)*/
   }
   if (v) setvalp(a,v);
-  return gc_upto(av,a);
+  return a;
 }
 
 /*compute the nth root of x p-adic p prime with n*/
