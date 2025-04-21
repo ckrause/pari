@@ -42,7 +42,7 @@ gcdii(GEN a, GEN b)
     if (!u) return absi(b);
     return igcduu((ulong)b[2], u);
   }
-  /* larger than gcd: "set_avma(av)" gc_GEN_unsafe (erasing t) is valid */
+  /* larger than gcd: GC using set_avma(av) (erasing t) is valid */
   av = avma; (void)new_chunk(lgefint(b)+1); /* HACK */
   t = remii(a,b);
   if (!signe(t)) { set_avma(av); return absi(b); }
@@ -58,17 +58,13 @@ gcdii(GEN a, GEN b)
   }
   if (is_pm1(b)) { set_avma(av); return int2n(v); }
  {
-  /* general case */
-  /*This serve two purposes: 1) mpn_gcd destroy its input and need an extra
-   * limb 2) this allows us to use icopy instead of gc_GEN_unsafe later.  NOTE: we
-   * must put u before d else the final icopy could fail.
-   */
+  /* Serves two purposes: 1) mpn_gcd destroys its input and needs an extra limb
+   * 2) allows us to use icopy for GC. */
   GEN res= cgeti(lgefint(a)+1);
   GEN ca = icopy_ef(a,lgefint(a)+1);
   GEN cb = icopy_ef(b,lgefint(b)+1);
   long l = mpn_gcd(LIMBS(res), LIMBS(ca), NLIMBS(ca), LIMBS(cb), NLIMBS(cb));
   res[1] = evalsigne(1)|evallgefint(l+2);
-  set_avma(av);
-  return shifti(res,v);
+  set_avma(av); return shifti(res,v);
   }
 }
