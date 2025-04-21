@@ -76,12 +76,30 @@ mulRc_direct(GEN x, GEN y) {
   gel(z,2) = gmul(x,gel(y,2)); return z;
 }
 static GEN
-divRc(GEN x, GEN y) {
-  GEN t = gdiv(x, cxnorm(y)), mt = gneg(t); /* left on stack for efficiency */
-  GEN z = cgetg(3,t_COMPLEX);
-  gel(z,1) = isintzero(gel(y,1))? gen_0: gmul(t, gel(y,1));
-  gel(z,2) = gmul(mt, gel(y,2));
+divRc(GEN x, GEN y)
+{
+  GEN a = gel(y,1), b = gel(y,2), z = cgetg(3,t_COMPLEX);
+  pari_sp av = avma, av2;
+  if (isintzero(a))
+  {
+    gel(z,1) = gen_0;
+    gel(z,2) = gc_upto(av, gdiv(x, gneg(b)));
+  }
+  else
+  {
+    GEN t = gdiv(x, cxnorm(y)), mb = gneg(b);
+    av2 = avma;
+    gel(z,1) = gmul(t, a);
+    gel(z,2) = gmul(t, mb);
+    gc_slice_unsafe(av, av2, z+1, 2);
+  }
   return z;
+}
+static GEN
+divRq(GEN x, GEN y)
+{
+  pari_sp av = avma;
+  return gc_upto(av, gdiv(gmul(x,conj_i(y)), quadnorm(y)));
 }
 static GEN
 divcR(GEN x, GEN y) {
@@ -2568,9 +2586,7 @@ gdiv(GEN x, GEN y)
       case t_FFELT: return Z_FF_div(x,y);
       case t_COMPLEX: return divRc(x,y);
       case t_PADIC: return divTp(x, y);
-      case t_QUAD:
-        av = avma;
-        return gc_upto(av, gdiv(mulRq(x, conj_i(y)), quadnorm(y)));
+      case t_QUAD: return divRq(x,y);
     }
   }
   if (gequal0(y))
@@ -2612,9 +2628,7 @@ gdiv(GEN x, GEN y)
           av = avma;
           return gc_upto(av, mulRc_direct(gdiv(x,cxnorm(y)), conj_i(y)));
 
-        case t_QUAD:
-          av = avma;
-          return gc_upto(av, gdiv(gmul(x,conj_i(y)), quadnorm(y)));
+        case t_QUAD: return divRq(x,y);
 
         case t_PADIC: { GEN X = gel(x,1);
           z = cgetg(3, t_INTMOD);
@@ -2661,9 +2675,7 @@ gdiv(GEN x, GEN y)
           if (!signe(gel(x,1))) return gen_0;
           return divTp(x, y);
 
-        case t_QUAD:
-          av = avma;
-          return gc_upto(av, gdiv(gmul(x,conj_i(y)), quadnorm(y)));
+        case t_QUAD: return divRq(x, y);
       }
 
     case t_FFELT:
@@ -2703,13 +2715,8 @@ gdiv(GEN x, GEN y)
           z = cgetg(3, t_INTMOD);
           return div_intmod_same(z, Y, padic_to_Fp(x, Y), gel(y,2));
         }
-        case t_COMPLEX:
-          av = avma;
-          return gc_upto(av, gdiv(gmul(x,conj_i(y)), cxnorm(y)));
-        case t_QUAD:
-          av = avma;
-          return gc_upto(av, gdiv(gmul(x,conj_i(y)), quadnorm(y)));
-
+        case t_COMPLEX: return divRc(x,y);
+        case t_QUAD: return divRq(x,y);
         case t_REAL: pari_err_TYPE2("/",x,y);
       }
 
