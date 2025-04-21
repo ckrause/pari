@@ -1733,8 +1733,6 @@ mulqq(GEN x, GEN y)
   GEN ux = gel(x,2), vx = gel(x,3), uy = gel(y,2), vy = gel(y,3);
   GEN z, s, U, V, E, F;
   pari_sp av, av2;
-
-  if (!ZX_equal(T, gel(y,1))) pari_err_OP("*",x,y);
   z = cgetg(4, t_QUAD), gel(z,1) = ZX_copy(T); av = avma;
   U = gmul(ux, uy);
   V = gmul(vx, vy); s = gmul(c, V);
@@ -1865,7 +1863,9 @@ gmul(GEN x, GEN y)
     }
     case t_COMPLEX: return mulcc(x, y);
     case t_PADIC: return mulpp(x, y);
-    case t_QUAD: return mulqq(x, y);
+    case t_QUAD:
+      if (!ZX_equal(gel(x,1), gel(y,1))) pari_err_OP("*",x,y);
+      return mulqq(x, y);
     case t_FFELT: return FF_mul(x, y);
     case t_POLMOD:
       if (RgX_equal_var(gel(x,1), gel(y,1)))
@@ -2466,8 +2466,8 @@ gdiv(GEN x, GEN y)
         gel(z,2) = gc_upto(av, gneg(gdiv(gel(x,1), y)));
         return z;
       }
-      av = avma; p1 = cxnorm(y); p2 = mulcc(x, conj_i(y)); tetpil = avma;
-      return gc_GEN_unsafe(av, tetpil, gdiv(p2,p1));
+      av = avma;
+      return gc_upto(av, gdiv(mulcc(x, conj_i(y)), cxnorm(y)));
 
     case t_PADIC:
       if (!equalii(padic_p(x), padic_p(y))) pari_err_OP("/",x,y);
@@ -2475,8 +2475,8 @@ gdiv(GEN x, GEN y)
 
     case t_QUAD:
       if (!ZX_equal(gel(x,1),gel(y,1))) pari_err_OP("/",x,y);
-      av = avma; p1 = quadnorm(y); p2 = mulqq(x, conj_i(y)); tetpil = avma;
-      return gc_GEN_unsafe(av, tetpil, gdiv(p2,p1));
+      av = avma;
+      return gc_upto(av, gdiv(mulqq(x, conj_i(y)), quadnorm(y)));
 
     case t_FFELT: return FF_div(x,y);
 
