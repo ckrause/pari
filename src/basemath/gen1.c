@@ -1724,31 +1724,27 @@ mulpp(GEN x, GEN y) {
   if (dx > dy) { pd = padic_pd(y); dx = dy; } else pd = padic_pd(x);
   retmkpadic(Fp_mul(ux, uy, pd), icopy(p), icopy(pd), e, dx);
 }
-/* x,y QUAD */
+/* x,y QUAD, w^2 = - b w - c, where b = 0 or -1
+ * (ux + vx w)(uy + vy w) = ux uy - c vx vy + (ux vy + uy vx - b vx vy) w */
 static GEN
 mulqq(GEN x, GEN y)
 {
-  GEN z = cgetg(4,t_QUAD);
-  GEN p1, p2, p3, p4, T = gel(x,1), b = gel(T,3), c = gel(T,2);
-  pari_sp av, tetpil;
+  GEN T = gel(x,1), b = gel(T,3), c = gel(T,2);
+  GEN ux = gel(x,2), vx = gel(x,3), uy = gel(y,2), vy = gel(y,3);
+  GEN z, s, U, V, E, F;
+  pari_sp av, av2;
+
   if (!ZX_equal(T, gel(y,1))) pari_err_OP("*",x,y);
-
-  gel(z,1) = ZX_copy(T); av = avma;
-  p2 = gmul(gel(x,2),gel(y,2));
-  p3 = gmul(gel(x,3),gel(y,3));
-  p1 = gmul(gneg_i(c),p3);
-
-  if (signe(b))
-    p4 = gadd(gmul(gel(x,2),gel(y,3)), gmul(gel(x,3),gel(y,2)));
-  else
-  {
-    p3 = gmul(gel(x,2),gel(y,3));
-    p4 = gmul(gel(x,3),gel(y,2));
-  }
-  tetpil = avma;
-  gel(z,2) = gadd(p2,p1);
-  gel(z,3) = gadd(p4,p3);
-  gc_slice_unsafe(av,tetpil,z+2,2); return z;
+  z = cgetg(4, t_QUAD), gel(z,1) = ZX_copy(T); av = avma;
+  U = gmul(ux, uy);
+  V = gmul(vx, vy); s = gmul(c, V);
+  E = gmul(gadd(ux, vx), gadd(uy, vy));
+  F = signe(b)? U: gadd(U, V);
+  /* E - F = ux vy + uy vx - b vx vy */
+  av2 = avma;
+  gel(z,2) = gsub(U, s);
+  gel(z,3) = gsub(E, F);
+  gc_slice_unsafe(av, av2, z+2, 2); return z;
 }
 
 GEN
@@ -2138,28 +2134,23 @@ sqr_ser_part(GEN x, long l1, long l2)
   return Z;
 }
 
-/* (u + v X)^2 mod (X^2 + bX + c), b = 0 or -1 */
+/* (u + v X)^2 mod (X^2 + bX + c), b = 0 or -1
+ * = u^2 - c v^2 + (2uv - b v^2) X */
 static GEN
 sqrq(GEN x)
 {
   GEN T = gel(x,1), c = gel(T,2), b = gel(T,3);
-  GEN u = gel(x,2), v = gel(x,3), u2, v2, uv, s, z;
+  GEN u = gel(x,2), v = gel(x,3), U, V, E, F, s, z;
   pari_sp av, av2;
+
   z = cgetg(4, t_QUAD), gel(z,1) = ZX_copy(T); av = avma;
-  u2 = gsqr(u); v2 = gsqr(v); uv = gmul(u, v); s = gmul(c, v2);
-  if (!signe(b))
-  {
-    av2 = avma;
-    gel(z,2) = gsub(u2, s);
-    gel(z,3) = gmul2n(uv,1);
-  }
-  else
-  {
-    GEN t = gmul2n(uv, 1);
-    av2 = avma;
-    gel(z,2) = gsub(u2, s);
-    gel(z,3) = gadd(t, v2);
-  }
+  U = gsqr(u);
+  V = gsqr(v); s = gmul(c, V);
+  E = gmul(u, v);
+  F = signe(b)? gadd(E, V): E; /* u v - b v^2 */
+  av2 = avma;
+  gel(z,2) = gsub(U, s);
+  gel(z,3) = gadd(E, F);
   gc_slice_unsafe(av, av2, z+2, 2); return z;
 }
 
