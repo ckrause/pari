@@ -93,7 +93,7 @@ gc_gauss(pari_sp av, GEN x,long k,long t, long j, GEN c)
 GEN
 gen_ker(GEN x, long deplin, void *E, const struct bb_field *ff)
 {
-  pari_sp av0 = avma, av, tetpil;
+  pari_sp av0 = avma, av;
   GEN y, c, d;
   long i, j, k, r, t, n, m;
 
@@ -147,7 +147,7 @@ gen_ker(GEN x, long deplin, void *E, const struct bb_field *ff)
   }
   if (deplin) return gc_NULL(av0);
 
-  tetpil=avma; y=cgetg(r+1,t_MAT);
+  y = cgetg(r+1, t_MAT);
   for (j=k=1; j<=r; j++,k++)
   {
     GEN C = cgetg(n+1,t_COL);
@@ -163,7 +163,7 @@ gen_ker(GEN x, long deplin, void *E, const struct bb_field *ff)
         gel(C,i) = g0;
     gel(C,k) = g1; for (i=k+1; i<=n; i++) gel(C,i) = g0;
   }
-  return gc_GEN_unsafe(av0,tetpil,y);
+  return gc_upto(av0, y);
 }
 
 GEN
