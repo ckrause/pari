@@ -1276,33 +1276,31 @@ FpXQX_divrem(GEN x, GEN S, GEN T, GEN p, GEN *pr)
 {
   GEN B, y;
   long dy, dx, d;
-  if (pr==ONLY_REM) return FpXQX_rem(x, S, T, p);
+  if (pr == ONLY_REM) return FpXQX_rem(x, S, T, p);
   y = get_FpXQX_red(S, &B);
   dy = degpol(y); dx = degpol(x); d = dx-dy;
   if (lgefint(p) == 3)
   {
     GEN a, b, t, z;
-    pari_sp tetpil, av = avma;
+    pari_sp av = avma, tetpil;
     ulong pp = to_FlxqX(x, y, T, p, &a, &b, &t);
     z = FlxqX_divrem(a, b, t, pp, pr);
-    if (pr == ONLY_DIVIDES && !z) return gc_NULL(av);
-    tetpil=avma;
+    if (!z) return gc_NULL(av);
+    if (!pr || pr == ONLY_DIVIDES) return gc_upto(av, FlxX_to_ZXX(z));
+    tetpil = avma;
     z = FlxX_to_ZXX(z);
-    if (pr && pr != ONLY_DIVIDES && pr != ONLY_REM)
-      *pr = FlxX_to_ZXX(*pr);
-    else return gc_GEN_unsafe(av, tetpil, z);
-    gc_all_unsafe(av,tetpil,2, pr, &z);
-    return z;
+    *pr = FlxX_to_ZXX(*pr);
+    return gc_all_unsafe(av,tetpil,2, &z, pr);
   }
   if (!B && d+3 < FpXQX_DIVREM_BARRETT_LIMIT)
     return FpXQX_divrem_basecase(x,y,T,p,pr);
   else
   {
-    pari_sp av=avma;
+    pari_sp av = avma;
     GEN mg = B? B: FpXQX_invBarrett(y, T, p);
     GEN q = FpXQX_divrem_Barrett(x,mg,y,T,p,pr);
     if (!q) return gc_NULL(av);
-    if (!pr || pr==ONLY_DIVIDES) return gc_GEN(av, q);
+    if (!pr || pr == ONLY_DIVIDES) return gc_GEN(av, q);
     return gc_all(av, 2, &q, pr);
   }
 }
@@ -1319,8 +1317,7 @@ FpXQX_rem(GEN x, GEN S, GEN T, GEN p)
     GEN a, b, t, z;
     ulong pp = to_FlxqX(x, y, T, p, &a, &b, &t);
     z = FlxqX_rem(a, b, t, pp);
-    z = FlxX_to_ZXX(z);
-    return gc_upto(av, z);
+    return gc_upto(av, FlxX_to_ZXX(z));
   }
   if (!B && d+3 < FpXQX_REM_BARRETT_LIMIT)
     return FpXQX_divrem_basecase(x,y, T, p, ONLY_REM);
