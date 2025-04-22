@@ -30,6 +30,7 @@ a/x,
 (x+a)/(x-a),
 if(1,setrand(1);b=ffprimroot(a)),
 fforder(a),
+fforder(a,factor(1)),
 b^fflog(a,b),
 factormod(x^2+x+a),
 polrootsmod(x^2+x+a)

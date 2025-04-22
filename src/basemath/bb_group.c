@@ -707,6 +707,7 @@ gen_order(GEN a, GEN o, void *E, const struct bb_group *grp)
   m = get_arith_ZZM(o);
   if (!m) pari_err_TYPE("gen_order [missing order]",a);
   o = gel(m,1);
+  if (is_pm1(o)) return gen_1;
   m = gel(m,2); l = lgcols(m);
   return gc_GEN(av, rec_order(a, o, m, E, grp, 1, l-1));
 }
