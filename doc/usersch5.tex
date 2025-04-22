@@ -11692,7 +11692,10 @@ sufficient size, then assign to it:
   GEN y = cgeti(3); affsi(s, y);
 @eprog\noindent
 These functions can still be moderately useful in complicated garbage
-collecting scenarios but you will be better off not using them.
+collecting scenarios. When the type and size of the PARI objects which appear
+in a computation are under control, one may allocate sufficiently large
+objects at the beginning, use assignment statements, then simply restore
+\kbd{avma}. But you will be better off not using them.
 
 \fun{void}{gaffsg}{long s, GEN x} assigns the \kbd{long}~\kbd{s} into the
 object~\kbd{x}.

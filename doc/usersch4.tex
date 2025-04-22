@@ -506,21 +506,6 @@ depends on the compiler. If we are out of luck, it is evaluated
 \emph{after} the call and the result belongs to the garbage zone.
 Thus we return a pointer to random garbage.
 
-\misctitle{Remark on assignments} When the tree structure
-and the size of the PARI objects which will appear in a computation are under
-control, one may allocate sufficiently large objects at the beginning, use
-assignment statements, then simply restore \kbd{avma}. Coming back to the
-above example, note that \emph{if} we know that x and y are of type real
-fitting into \kbd{DEFAULTPREC} words, we can program without using
-\kbd{gc\_GEN\_unsafe} at all:
-\bprog
-  z = cgetr(DEFAULTPREC); ltop = avma;
-  gaffect(gadd(gsqr(x), gsqr(y)), z);
-  set_avma(ltop);
-@eprog\noindent This is often \emph{slower} than garbage collection, and
-certainly more cumbersome to use. As a rule, assignment statements using
-\kbd{gaffect} and variants should be avoided.
-
 \subsec{The basic 3 garbage collecting functions}
 
 Let us recap: although all is implemented in terms of the
