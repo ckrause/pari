@@ -1269,13 +1269,12 @@ gc_upto(pari_sp av, GEN x)
 {
   if (!isonstack(x) || (GEN)av<=x) return gc_const(av,x);
   switch(typ(x))
-  { /* non-default = !is_recursive_t(tq) */
+  { /* non-default = non recursive types */
     case t_INT: return gc_INT(av, x);
     case t_REAL:
     case t_STR:
     case t_VECSMALL: return gc_uptoleaf(av,x);
-    default:
-      /* NB: x+i --> ((long)x) + i*sizeof(long) */
+    default: /* NB: x+i --> ((long)x) + i*sizeof(long) */
       return gc_GEN_unsafe(av, (pari_sp) (x+lg(x)), x);
   }
 }
