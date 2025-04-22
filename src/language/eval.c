@@ -2787,7 +2787,7 @@ closure_disassemble(GEN C)
       pari_printf("avma\n",operand);
       break;
     case OCgc:
-      pari_printf("gc_GEN_unsafe\n",operand);
+      pari_printf("gc\n",operand);
       break;
     case OCcowvardyn:
       {
