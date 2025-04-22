@@ -2539,7 +2539,7 @@ gc_dec(pari_sp *x, pari_sp av0, pari_sp av, pari_sp tetpil, size_t dec)
   if (*x < av && *x >= av0)
   { /* update address if in stack */
     if (*x < tetpil) *x += dec;
-    else pari_err_BUG("gc_GEN_unsafe, significant pointers lost");
+    else pari_err_BUG("gc, significant pointers lost");
   }
 }
 
