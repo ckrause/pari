@@ -2553,21 +2553,21 @@ gc_all_unsafe(pari_sp av, pari_sp tetpil, int n, ...)
   va_list a;
   if (n <= 0) return NULL;
   va_start(a, n);
-  pz = va_arg(a,GEN*); (void)gc_GEN_unsafe(av,tetpil,NULL);
+  pz = va_arg(a,GEN*); gc_stack_update(av, tetpil, dec);
   gc_dec((pari_sp*)pz, av0,av,tetpil,dec);
   for (i=1; i<n; i++) gc_dec((pari_sp*)va_arg(a,GEN*), av0,av,tetpil,dec);
   va_end(a); return *pz;
 }
 
-/* Takes an array of GENs (cast to longs), of length n.
- * Cleans up the stack between av and tetpil, updating those GENs. */
+/* Takes a slice g[0..n-1] of GENs. Cleans up the stack between av and
+ * tetpil, updating those GENs. */
 void
 gc_slice_unsafe(pari_sp av, pari_sp tetpil, GEN g, int n)
 {
   const pari_sp av0 = avma;
   const size_t dec = av-tetpil;
   int i;
-  (void)gc_GEN_unsafe(av,tetpil,NULL);
+  gc_stack_update(av, tetpil, dec);
   for (i=0; i<n; i++,g++) gc_dec((pari_sp*)g, av0, av, tetpil, dec);
 }
 
@@ -2646,26 +2646,32 @@ gc_GEN_unsafe(pari_sp av, pari_sp tetpil, GEN q)
 {
   const size_t dec = av - tetpil;
   const pari_sp av0 = avma;
-  GEN x, a;
-
   if (dec == 0) return q;
-  if ((long)dec < 0) pari_err(e_MISC,"lbot>ltop in gc");
-
   /* gc_dec(&q, av0, av, tetpil, dec), saving 1 comparison */
   if (q >= (GEN)av0 && q < (GEN)tetpil)
     q = (GEN) (((pari_sp)q) + dec);
+  gc_stack_update(av, tetpil, dec);
+  return q;
+}
 
+/* dec = av - tetpil */
+void
+gc_stack_update(pari_sp av, pari_sp tetpil, size_t dec)
+{
+  const pari_sp av0 = avma;
+  GEN x, a;
+
+  if (dec == 0) return;
+  if ((long)dec < 0) pari_err(e_MISC,"lbot>ltop in gc");
   for (x = (GEN)av, a = (GEN)tetpil; a > (GEN)av0; ) *--x = *--a;
   set_avma((pari_sp)x);
   while (x < (GEN)av)
   {
     const long tx = typ(x), lx = lg(x);
-
     if (! is_recursive_t(tx)) { x += lx; continue; }
     a = x + lontyp[tx]; x += lx;
     for (  ; a < x; a++) gc_dec((pari_sp*)a, av0, av, tetpil, dec);
   }
-  return q;
 }
 
 void

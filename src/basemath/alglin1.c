@@ -45,7 +45,7 @@ gen_gc_ker(pari_sp av, GEN x, long k, long t, void *E, GEN (*red)(void*, GEN))
     if (u > t) gcoeff(x,u,k) = red(E,gcoeff(x,u,k));
     for (i=k+1; i<=n; i++) gcoeff(x,u,i) = red(E,gcoeff(x,u,i));
   }
-  (void)gc_GEN_unsafe(av,tetpil,NULL);
+  gc_stack_update(av, tetpil, dec);
   for (u=1; u<=m; u++)
   {
     if (u > t) gc_dec(coeff(x,u,k), bot, av, dec);
@@ -77,7 +77,7 @@ gc_gauss(pari_sp av, GEN x,long k,long t, long j, GEN c)
     if (u > t) COPY(gcoeff(x,u,k));
     for (i=k+1; i<=n; i++) COPY(gcoeff(x,u,i));
   }
-  (void)gc_GEN_unsafe(av,tetpil,NULL);
+  gc_stack_update(av, tetpil, dec);
   for (u=1; u<=m; u++) if (u==j || !c[u])
   {
     if (u > t) gc_dec(coeff(x,u,k), bot, av, dec);

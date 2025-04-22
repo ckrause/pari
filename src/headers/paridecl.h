@@ -4428,6 +4428,7 @@ GEN     gcopy_lg(GEN x, long lx);
 GEN     gc_GEN_unsafe(pari_sp ltop, pari_sp lbot, GEN q);
 GEN     gc_all_unsafe(pari_sp av, pari_sp tetpil, int n, ...);
 void    gc_slice_unsafe(pari_sp av, pari_sp tetpil, GEN g, int n);
+void    gc_stack_update(pari_sp av, pari_sp tetpil, size_t dec);
 GEN     getheap(void);
 void    gp_context_save(struct gp_context* rec);
 void    gp_context_restore(struct gp_context* rec);
