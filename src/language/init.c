@@ -2546,14 +2546,14 @@ gc_dec(pari_sp *x, pari_sp av0, pari_sp av, pari_sp tetpil, size_t dec)
 GEN
 gc_all_unsafe(pari_sp av, pari_sp tetpil, int n, ...)
 {
-  const pari_sp av0 = avma;
-  const size_t dec = av-tetpil;
+  pari_sp av0 = avma;
+  size_t dec = gc_stack_update(av, tetpil);
   GEN *pz;
   int i;
   va_list a;
   if (n <= 0) return NULL;
   va_start(a, n);
-  pz = va_arg(a,GEN*); gc_stack_update(av, tetpil, dec);
+  pz = va_arg(a,GEN*);
   gc_dec((pari_sp*)pz, av0,av,tetpil,dec);
   for (i=1; i<n; i++) gc_dec((pari_sp*)va_arg(a,GEN*), av0,av,tetpil,dec);
   va_end(a); return *pz;
@@ -2564,10 +2564,9 @@ gc_all_unsafe(pari_sp av, pari_sp tetpil, int n, ...)
 void
 gc_slice_unsafe(pari_sp av, pari_sp tetpil, GEN g, int n)
 {
-  const pari_sp av0 = avma;
-  const size_t dec = av-tetpil;
+  pari_sp av0 = avma;
+  size_t dec = gc_stack_update(av, tetpil);
   int i;
-  gc_stack_update(av, tetpil, dec);
   for (i=0; i<n; i++,g++) gc_dec((pari_sp*)g, av0, av, tetpil, dec);
 }
 
@@ -2644,24 +2643,23 @@ dbg_gc_upto(GEN q)
 GEN
 gc_GEN_unsafe(pari_sp av, pari_sp tetpil, GEN q)
 {
-  const size_t dec = av - tetpil;
-  const pari_sp av0 = avma;
+  pari_sp av0 = avma;
+  size_t dec = gc_stack_update(av, tetpil);
   if (dec == 0) return q;
   /* gc_dec(&q, av0, av, tetpil, dec), saving 1 comparison */
   if (q >= (GEN)av0 && q < (GEN)tetpil)
     q = (GEN) (((pari_sp)q) + dec);
-  gc_stack_update(av, tetpil, dec);
   return q;
 }
 
-/* dec = av - tetpil */
-void
-gc_stack_update(pari_sp av, pari_sp tetpil, size_t dec)
+size_t
+gc_stack_update(pari_sp av, pari_sp tetpil)
 {
   const pari_sp av0 = avma;
+  size_t dec = av - tetpil;
   GEN x, a;
 
-  if (dec == 0) return;
+  if (dec == 0) return 0;
   if ((long)dec < 0) pari_err(e_MISC,"lbot>ltop in gc");
   for (x = (GEN)av, a = (GEN)tetpil; a > (GEN)av0; ) *--x = *--a;
   set_avma((pari_sp)x);
@@ -2672,6 +2670,7 @@ gc_stack_update(pari_sp av, pari_sp tetpil, size_t dec)
     a = x + lontyp[tx]; x += lx;
     for (  ; a < x; a++) gc_dec((pari_sp*)a, av0, av, tetpil, dec);
   }
+  return dec;
 }
 
 void
