@@ -343,7 +343,6 @@ and restore it upon exit:
 
 \bprog
   pari_sp av = avma; /*@Ccom record initial avma */
-
   ... garbage ...
   set_avma(av); /*@Ccom restore it */
 @eprog
@@ -394,8 +393,8 @@ the most robust (hence slowest) garbage collection function: \tet{gc_GEN}.
   newz = gc_GEN(av, oldz); /*@Ccom destroy garbage but keep z safe */
 @eprog\noindent This function even allows $z$ to contain shallow data
 (pointers to other parts of the stack), which is forbidden for high-level
-PARI functions. This is at most twice slower than \kbd{gc\_upto}. Again
-\kbd{oldz} should not be accessed anymore.
+PARI functions. Robustness comes at a price but this is at most twice slower
+than \kbd{gc\_upto}. Again \kbd{oldz} should not be accessed anymore.
 
 \noindent\item
 Finally, when more that one result needs to be saved, you can use the
@@ -547,7 +546,7 @@ to the argument list. A copy is done just before the cleaning to preserve
 them, so they do not need to be connected before the call. With
 \kbd{gc\_GEN}, this is the most robust of the garbage collecting functions
 (the less prone to user error), hence the slowest. For convenience,
-this function also returns the new value of $x$.
+this function also returns the new value of $x$, the first object recovered.
 
 \subsec{A first detailed example}
 
