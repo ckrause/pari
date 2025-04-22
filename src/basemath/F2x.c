@@ -2230,12 +2230,11 @@ F2xqV_roots_to_pol(GEN V, GEN T, long v)
 static GEN
 F2xqX_divrem_basecase(GEN x, GEN y, GEN T, GEN *pr)
 {
-  long vx, dx, dy, dz, i, j, sx, lr;
-  pari_sp av0, av, tetpil;
-  GEN z,p1,rem,lead;
+  long vx = varn(x), dx = degpol(x), dy = degpol(y), dz, i, j, sx, lr;
+  pari_sp av0, av;
+  GEN z, p1, rem, lead;
 
   if (!signe(y)) pari_err_INV("F2xqX_divrem",y);
-  vx=varn(x); dy=degpol(y); dx=degpol(x);
   if (dx < dy)
   {
     if (pr)
@@ -2269,11 +2268,11 @@ F2xqX_divrem_basecase(GEN x, GEN y, GEN T, GEN *pr)
   gel(z,dz) = lead? gc_upto(av, F2xq_mul(p1,lead, T)): leafcopy(p1);
   for (i=dx-1; i>=dy; i--)
   {
-    av=avma; p1=gel(x,i);
+    av = avma; p1 = gel(x,i);
     for (j=i-dy+1; j<=i && j<=dz; j++)
       p1 = F2x_add(p1, F2x_mul(gel(z,j),gel(y,i-j)));
     if (lead) p1 = F2x_mul(p1, lead);
-    tetpil=avma; gel(z,i-dy) = gc_GEN_unsafe(av,tetpil,F2x_rem(p1,T));
+    gel(z,i-dy) = gc_uptoleaf(av, F2x_rem(p1,T));
   }
   if (!pr) { guncloneNULL(lead); return z-2; }
 
@@ -2283,7 +2282,7 @@ F2xqX_divrem_basecase(GEN x, GEN y, GEN T, GEN *pr)
     p1 = gel(x,i);
     for (j=0; j<=i && j<=dz; j++)
       p1 = F2x_add(p1, F2x_mul(gel(z,j),gel(y,i-j)));
-    tetpil=avma; p1 = F2x_rem(p1, T); if (lgpol(p1)) { sx = 1; break; }
+    p1 = F2x_rem(p1, T); if (lgpol(p1)) { sx = 1; break; }
     if (!i) break;
     set_avma(av);
   }
@@ -2293,17 +2292,16 @@ F2xqX_divrem_basecase(GEN x, GEN y, GEN T, GEN *pr)
     if (sx) return gc_NULL(av0);
     return gc_const((pari_sp)rem, z-2);
   }
-  lr=i+3; rem -= lr;
+  lr=i+3; rem -= lr; av = (pari_sp)rem;
   rem[0] = evaltyp(t_POL) | _evallg(lr);
   rem[1] = z[-1];
-  p1 = gc_GEN_unsafe((pari_sp)rem,tetpil,p1);
-  rem += 2; gel(rem,i) = p1;
+  rem += 2; gel(rem,i) = gc_uptoleaf(av, p1);
   for (i--; i>=0; i--)
   {
-    av=avma; p1 = gel(x,i);
+    av = avma; p1 = gel(x,i);
     for (j=0; j<=i && j<=dz; j++)
       p1 = F2x_add(p1, F2x_mul(gel(z,j),gel(y,i-j)));
-    tetpil=avma; gel(rem,i) = gc_GEN_unsafe(av,tetpil, F2x_rem(p1, T));
+    gel(rem,i) = gc_uptoleaf(av, F2x_rem(p1, T));
   }
   rem -= 2;
   guncloneNULL(lead);
