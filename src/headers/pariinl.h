@@ -1265,17 +1265,16 @@ gc_INT(pari_sp av, GEN x)
   return (GEN)avma;
 }
 INLINE GEN
-gc_upto(pari_sp av, GEN x)
+gc_upto(pari_sp av, GEN q)
 {
-  if (!isonstack(x) || (GEN)av<=x) return gc_const(av,x);
-  switch(typ(x))
-  { /* non-default = non recursive types */
-    case t_INT: return gc_INT(av, x);
+  if (!isonstack(q) || (GEN)av<=q) return gc_const(av,q);
+  switch(typ(q))
+  { /* first all non recursive types */
+    case t_INT: return gc_INT(av, q);
     case t_REAL:
     case t_STR:
-    case t_VECSMALL: return gc_uptoleaf(av,x);
-    default: /* NB: x+i --> ((long)x) + i*sizeof(long) */
-      return gc_GEN_unsafe(av, (pari_sp) (x+lg(x)), x);
+    case t_VECSMALL: return gc_uptoleaf(av,q);
+    default: return (GEN)((pari_sp)q + gc_stack_update(av, (pari_sp)(q+lg(q))));
   }
 }
 

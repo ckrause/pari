@@ -74,7 +74,7 @@ varnmax(long x, long y)
 { return (varpriority[x] >= varpriority[y])? x: y; }
 
 /* Inhibit some area GC-wise: declare it to be a non recursive
- * type, of length l. Thus gc_GEN_unsafe won't inspect the zone, just copy it.
+ * type, of length l. Thus gc_stack_update won't inspect the zone, just copy it.
  * For the following situation:
  *   z = cgetg(t,a); av = avma; garbage(); ltop = avma;
  *   for (i=1; i<HUGE; i++) gel(z,i) = blah();
