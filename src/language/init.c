@@ -2643,13 +2643,12 @@ dbg_gc_upto(GEN q)
 GEN
 gc_GEN_unsafe(pari_sp av, pari_sp tetpil, GEN q)
 {
-  pari_sp av0 = avma;
+  pari_sp av0 = avma, Q = (pari_sp)q;
   size_t dec = gc_stack_update(av, tetpil);
   if (dec == 0) return q;
   /* gc_dec(&q, av0, av, tetpil, dec), saving 1 comparison */
-  if (q >= (GEN)av0 && q < (GEN)tetpil)
-    q = (GEN) (((pari_sp)q) + dec);
-  return q;
+  if (Q >= av0 && Q < tetpil) Q += dec;
+  return (GEN)Q;
 }
 
 size_t
