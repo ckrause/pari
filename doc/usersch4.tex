@@ -418,16 +418,16 @@ $n$ objects need to be updated, use
 \subsec{Gory technical details}
 
 You may skip this section on first reading. We will now describe
-the underlying mechanisms in terms of low level functions. The most
-fundamental (and fastest) one is
+the underlying mechanisms in terms of the lowest level function
 
-\fun{GEN}{gc_GEN_unsafe}{pari_sp ltop, pari_sp lbot, GEN q}. This function
-cleans up the stack between \kbd{ltop} and \kbd{lbot}, where $\kbd{lbot} <
-\kbd{ltop}$, and returns the updated object \kbd{q}. This means:
+\fun{size_t}{gc_stack_update}{pari_sp ltop, pari_sp lbot}. This function
+cleans up the stack between \kbd{ltop} and \kbd{lbot}, where
+$\kbd{lbot} \leq \kbd{ltop}$, and returns the offset $o = \kbd{ltop} -
+\kbd{lbot}$. This means the following.
 
-1) we translate (copy) all the objects in the interval
-$[\kbd{avma}, \kbd{lbot}[$, so that its right extremity abuts the address
-\kbd{ltop}. Graphically
+1) we translate (copy) all data in the interval $[\kbd{avma}, \kbd{lbot}[$
+to $[\kbd{avma} + o, \kbd{lbot} + o]$. Note that the right extremity
+is now exactly \kbd{ltop}. Graphically
 
 \vbox{\bprog
              bot           avma   lbot          ltop     top
@@ -444,92 +444,52 @@ End of stack  |---------------------------[++++++[++++++++|  Start
 \noindent where \kbd{++} denote significant objects, \kbd{--} the unused part
 of the stack, and \kbd{-/-} the garbage we remove.
 
-2) The function then inspects all the PARI objects between \kbd{avma} and
-\kbd{lbot} (i.e.~the ones that we want to keep and that have been translated)
-and looks at every component of such an object which is not a codeword. Each
-such component is a pointer to an object whose address is either
+2) The function then inspects all the PARI objects between (the original)
+\kbd{avma} and \kbd{lbot}, i.e.~the ones that we want to keep and that have
+been translated. Every component of such an object which is not a codeword is
+a pointer to an address which is either
 
---- between \kbd{avma} and \kbd{lbot}, in which case it is suitably updated,
+-- between \kbd{avma} and \kbd{lbot}, in which case we add to it the offset~$o$;
 
---- larger than or equal to \kbd{ltop}, in which case it does not change, or
+-- larger than or equal to \kbd{ltop}, in which case it does not change, or
 
---- between \kbd{lbot} and \kbd{ltop} in which case the function
+-- between \kbd{lbot} and \kbd{ltop} in which case the function
 raises an error: ``significant pointers lost in gc''.
 
-3) \key{avma} is updated (we add $\kbd{ltop} - \kbd{lbot}$ to the old value).
+3) \key{avma} is replaced by $\key{avma} + o$ as in the diagram above.
 
-4) We return the (possibly updated) object \kbd{q}: if \kbd{q} initially
-pointed between \kbd{avma} and \kbd{lbot}, we return the updated address, as
-in~2). If not, the original address is still valid, and is returned!
+4) The function returns the offset $o$.
 
-As stated above, no component of the remaining objects (in particular
-\kbd{q}) should belong to the erased segment [\kbd{lbot}, \kbd{ltop}[, and
-this is checked in the function. But beware as well that the addresses
-of the objects in the translated zone have now changed,
-so you must not access any pointer which previously pointed into the zone
-below \kbd{ltop}. If you need to recover more than one object, use the
-\kbd{gc\_all} function below.
-
-\misctitle{Remark}
-As a consequence of the preceding explanation, if a PARI object is to be
-relocated by \tet{gc_GEN_unsafe} then, apart from universal objects, the chunks
-of memory used by its components should be in consecutive memory locations.
-All \kbd{GEN}s created by documented PARI functions are guaranteed to satisfy
-this. This is because that function knows only about \emph{two
-connected zones}: the garbage that is erased (between \kbd{lbot} and
-\kbd{ltop}) and the significant pointers that are copied and updated. If
-there is garbage interspersed with your objects, disaster occurs when we try
-to update them and consider the corresponding ``pointers''. In most cases of
-course the said garbage is in fact a bunch of other \kbd{GEN}s, in which case
-we simply waste time copying and updating them for nothing. But be wary when
-you allow objects to become disconnected.
-
-\noindent In practice this is achieved by the following programming idiom:
-\bprog
-  ltop = avma; garbage(); lbot = avma; q = anything();
-  return gc_GEN_unsafe(ltop, lbot, q); /*@Ccom returns the updated q */
-@eprog\noindent or directly
-\bprog
-  ltop = avma; garbage(); lbot = avma;
-  return gc_GEN_unsafe(ltop, lbot, anything());
-@eprog\noindent
-Beware that
-\bprog
-  ltop = avma; garbage();
-  return gc_GEN_unsafe(ltop, avma, anything())
-@eprog
-
-\noindent is incorrect. We cannot predict whether
-\kbd{avma} is evaluated after or before the call to \kbd{anything()}: it
-depends on the compiler. If we are out of luck, it is evaluated
-\emph{after} the call and the result belongs to the garbage zone.
-Thus we return a pointer to random garbage.
+As stated above, no component of the remaining objects should belong to the
+erased segment [\kbd{lbot}, \kbd{ltop}[, and the function checks this.
+But beware as well that the addresses of the objects in the translated zone
+have now changed, so you must not access any pointer which previously pointed
+into the zone below \kbd{ltop}.
 
 \subsec{The basic 3 garbage collecting functions}
 
 Let us recap: although all is implemented in terms of the
-\kbd{gc\_GEN\_unsafe} low level function, you don't want to use it directly.
+\kbd{gc\_stack\_update} low level function, you don't want to use it directly.
 You mostly want to use one of the following three functions to collect
-garbage while keeping some results safe.
+garbage while keeping some results safe. Many others will be described in
+\secref{se:garbage2} for specialized scenarios.
 
 \fun{GEN}{gc_upto}{pari_sp ltop, GEN q}. This applies when \kbd{q} is the last
 object on the stack, returned by a high level PARI function. It cleans the
 stack between \kbd{ltop} and the object \kbd{q} and returns \kbd{q} updated.
-Low level PARI functions (such as shallow functions) may not satisfy this:
-this will be mentioned in their documentation. The technical condition is as
-follows: \kbd{q} must be connected and have been created \emph{before} all
-its components, otherwise they would belong to the garbage zone!
+Your own functions or low level PARI functions (such as shallow functions)
+described in the next Chapter may not satisfy this: this will be mentioned in
+their documentation.
 
-\fun{GEN}{gc_GEN}{pari_sp ltop, GEN x}. Works in all cases. Functionally
+\fun{GEN}{gc_GEN}{pari_sp ltop, GEN q}. Works in all cases. Functionally
 equivalent to, but more efficient than
 \bprog
-  gc_upto(ltop, gcopy(x))
-@eprog\noindent In this case, the \kbd{GEN} parameter \kbd{x} need not
-satisfy any property before the garbage collection: it may be disconnected,
-components created before the root, and so on. Of course, this is about
-twice slower than either \tet{gc_upto} or \tet{gc_GEN_unsafe}, because
-\kbd{x} has to be copied to a clean stack zone first. This function is a
-special case of \tet{gc_all} below, where $n=1$.
+  gc_upto(ltop, gcopy(q))
+@eprog\noindent In this case, the \kbd{GEN} parameter \kbd{q} need not
+satisfy any property before the garbage collection. Of course, this is about
+twice slower than \tet{gc_upto}, because \kbd{q} has to be copied to a clean
+stack zone first. This function is a special case of \tet{gc_all} below,
+where $n=1$.
 
 \fun{GEN}{gc_all}{pari_sp ltop, int n, ...}.
 To cope with complicated cases where many objects have to be preserved. The
@@ -537,15 +497,13 @@ routine expects $n$ further arguments, which are the \emph{addresses} of
 the \kbd{GEN}s you want to preserve:
 \bprog
   pari_sp ltop = avma;
-  ...; y = ...; ... x = ...; ...;
-  gc_all(ltop, 2, &x, &y);
+  garbage(); x = anything();
+  garbage(); y = anything();
+  garbage(); gc_all(ltop, 2, &x, &y);
 @eprog\noindent
 It cleans up the most recent part of the
 stack (between \kbd{ltop} and \kbd{avma}), updating all the \kbd{GEN}s added
-to the argument list. A copy is done just before the cleaning to preserve
-them, so they do not need to be connected before the call. With
-\kbd{gc\_GEN}, this is the most robust of the garbage collecting functions
-(the less prone to user error), hence the slowest. For convenience,
+to the argument list. This is as robust as \kbd{gc\_GEN}. For convenience,
 this function also returns the new value of $x$, the first object recovered.
 
 \subsec{A first detailed example}
@@ -568,43 +526,35 @@ destroy \kbd{z} as well. It is not possible either to use the function
 \kbd{cgiv} since \kbd{x2} and \kbd{y2} are not the latest computed objects
 and we do not want to give back~\kbd{z}.
 
-Using \tet{gc_GEN_unsafe}, we can give back the memory locations
+Using \tet{gc_upto}, we can give back the memory locations
 corresponding to \kbd{x2}, \kbd{y2}, and move the object \kbd{z} upwards so
 that no space is lost. Specifically:
 \bprog
   pari_sp ltop = avma;  /*@Ccom remember the current top of the stack */
   GEN x2 = gsqr(x);
   GEN y2 = gsqr(y);
-  pari_sp lbot = avma;  /*@Ccom the bottom of the garbage pile */
-  GEN z = gadd(x2, y2); /*@Ccom z is now the last object on the stack */
-  z = gc_GEN_unsafe(ltop, lbot, z);
-@eprog
-\noindent Of course, the last two instructions could also have been
-written more simply:
-\bprog
-  z = gc_GEN_unsafe(ltop, lbot, gadd(x2,y2));
-@eprog\noindent Finally, the best solution is to use \kbd{gc\_upto}, because
-the result of \kbd{gadd} is the last object on the stack (and \kbd{gadd}
-is not a shallow function):
+  GEN z = gc_upto(ltop, gadd(x2, y2));
+@eprog\noindent or even
 \bprog
   ltop = avma;
   z = gc_upto(ltop, gadd(gsqr(x), gsqr(y)));
-@eprog\noindent Another possibility is to use
+@eprog\noindent This works because the output of \kbd{gadd} is the last
+object on the stack and everything else is deleted. Another possibility is
+to use
 \bprog
   ltop = avma;
   z = gc_GEN(ltop, gadd(gsqr(x), gsqr(y)));
 @eprog\noindent which would work in all cases, even if \kbd{gadd} were
-shallow: garbage collection would be at most twice slower, and certainly
-negligible compared to the squaring times.
-
-Make sure you understand exactly what has happened before you go on!
+shallow. Garbage collection would be at most twice slower, and certainly
+negligible compared to the squaring times. Make sure you understand exactly
+what has happened before you go on!
 
 \subsec{More examples: variations on a theme} it is often necessary to do
 several garbage collections during a computation. However, the fewer the
-better. The only condition for \tet{gc_GEN_unsafe} to work is that the
-garbage be connected. If the computation can be arranged so that there is a
-minimal number of connected pieces of garbage, then it should be done that
-way.
+better. The only condition for \tet{gc_upto} to work is that the
+garbage be connected and we need only recover the last result on the stack.
+The computation should be arranged so that there is a minimal number of
+connected pieces of garbage.
 
 For example suppose we want to write a function of two \kbd{GEN} variables
 \kbd{x} and \kbd{y} which creates the vector $\kbd{[x}^2+\kbd{y},
@@ -625,7 +575,7 @@ and we get the following program with garbage collecting:
   ltop = avma; x2 = gsqr(x); y2 = gsqr(y);
   z = cgetg(3, t_VEC);
   gel(z, 1) = gadd(x2,y);
-  gel(z, 2) = gadd(y2,x); z = gc_upto(ltop,lbot,z);
+  gel(z, 2) = gadd(y2,x); z = gc_upto(ltop, z);
 @eprog\noindent Beware that
 \bprog
   ltop = avma; a = gadd(gsqr(x), y); b = gadd(gsqr(y), x);
@@ -635,18 +585,8 @@ and we get the following program with garbage collecting:
 @eprog\noindent
 is a disaster since \kbd{a} and \kbd{b} are created before
 \kbd{z}, so the call to \kbd{gc\_upto} overwrites them, leaving
-\kbd{gel(z, 1)} and \kbd{gel(z, 2)} pointing at random data! The following
-almost works:
-\bprog
-  ltop = avma; x2 = gsqr(x); y2 = gsqr(y);
-  lbot = avma; z = mkvec2(gadd(x2,y), gadd(y2,x));
-  z = gc_GEN_unsafe(ltop,lbot,z);
-@eprog\noindent but is subtly wrong in the sense that
-\kbd{z = gc\_upto(ltop, z)} would \emph{not} work. The reason being
-that \kbd{mkvec2} creates the root \kbd{z} of the vector \emph{after}
-its arguments have been evaluated, creating the components of \kbd{z}
-too early; \tet{gc_GEN_unsafe} does not care, but the created \kbd{z} is a time
-bomb which will explode on any later \kbd{gc\_upto}.
+\kbd{gel(z, 1)} and \kbd{gel(z, 2)} pointing at random data!
+
 On the other hand
 \bprog
   ltop = avma; z = cgetg(3, t_VEC);
@@ -654,8 +594,8 @@ On the other hand
   gel(z, 2) = gadd(gsqr(y), x); z = gc_upto(ltop,z); /*@Ccom inefficient */
 @eprog\noindent
 leaves the results of \kbd{gsqr(x)} and \kbd{gsqr(y)} on the stack (and
-lets \kbd{gc\_upto} update them for naught). Finally, the most elegant
-and efficient version (with respect to time and memory use) is as follows
+lets \kbd{gc\_upto} update them for naught). In some sense, the best
+version is
 \bprog
   z = cgetg(3, t_VEC);
   ltop = avma; gel(z, 1) = gc_upto(ltop, gadd(gsqr(x), y));
@@ -678,7 +618,7 @@ b = gmul(gel(x,2), gel(y,2));
 c = gmul(gadd(gel(x,1), gel(x,2)), gadd(gel(y,1), gel(y,2)));
 d = gadd(a,b); z = cgetg(3, t_COMPLEX);
 gel(z, 1) = gsub(a,b);
-gel(z, 2) = gsub(c,d); z = gc_upto(ltop,lbot,z);
+gel(z, 2) = gsub(c,d); z = gc_upto(ltop, z);
 @eprog
 
 \subsec{Random garbage collection}
@@ -723,9 +663,6 @@ to a consistent PARI programming style. At first, just use \tet{gc_GEN} or
 you have sorted out exactly which routines are crucial and what objects need
 to be preserved and their usual sizes. In any case, all garbage collections
 routines run in almost linear complexity in the size of the recovered data.
-
-\smallskip If you followed us this far, congratulations, and rejoice: the
-rest will be easier.
 
 \section{Creation of PARI objects, assignments, conversions}
 

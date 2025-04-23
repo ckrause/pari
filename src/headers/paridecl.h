@@ -4425,7 +4425,7 @@ void    gclone_refc(GEN x);
 GEN     gcopy(GEN x);
 GEN     gcopy_avma(GEN x, pari_sp *AVMA);
 GEN     gcopy_lg(GEN x, long lx);
-GEN     gc_GEN_unsafe(pari_sp ltop, pari_sp lbot, GEN q);
+GEN     gerepile(pari_sp ltop, pari_sp lbot, GEN q);
 GEN     gc_all_unsafe(pari_sp av, pari_sp tetpil, int n, ...);
 void    gc_slice_unsafe(pari_sp av, pari_sp tetpil, GEN g, int n);
 size_t  gc_stack_update(pari_sp av, pari_sp tetpil);

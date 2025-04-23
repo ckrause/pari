@@ -2640,8 +2640,9 @@ dbg_gc_upto(GEN q)
   dbg_stack((pari_sp) (q+lg(q)));
 }
 
+/* OBSOLETE: kept for backward compatibility */
 GEN
-gc_GEN_unsafe(pari_sp av, pari_sp tetpil, GEN q)
+gerepile(pari_sp av, pari_sp tetpil, GEN q)
 {
   pari_sp av0 = avma, Q = (pari_sp)q;
   size_t dec = gc_stack_update(av, tetpil);

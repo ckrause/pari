@@ -1204,7 +1204,7 @@ by writebin and read back into a session, and a linking table $V$, restore all
 closures contained in $C$ (function pointers are translated to their current
 value).
 
-\subsec{Garbage collection}
+\subsec{Garbage collection}\label{se:garbage2}
 See \secref{se:garbage} for a detailed explanation and many examples.
 
 \fun{void}{set_avma}{ulong av} reset \kbd{avma} to \kbd{av}. You may think
@@ -1218,8 +1218,9 @@ do not provide access to TLS variables.
 \fun{void}{cgiv}{GEN x} frees object \kbd{x}, assuming it is the last created
 on the stack.
 
-\fun{GEN}{gc_GEN_unsafe}{pari_sp p, pari_sp q, GEN x} low level garbage
-collector for the stack.
+\fun{GEN}{gerepile}{pari_sp av, pari_sp av2, GEN x} obsolete low level garbage
+collector. Don't use this. In proper code, this can be replaced by
+\kbd{gc\_upto(av, x)}
 
 \fun{GEN}{gc_GEN}{pari_sp av, GEN x} cleans up the stack from
 \kbd{av} on, recopying the object \kbd{x} to a new address which is
@@ -1287,7 +1288,7 @@ memory used by $y$ while still keeping $x$.
 
 \fun{GEN}{gc_all_unsafe}{pari_sp av, pari_sp ltop, int n, ...} unsafe
 variant of \tet{gc_all}, about twice faster. This is subject to the same
-restrictions as \tet{gc_GEN_unsafe}, the only difference being that more than
+restrictions as \tet{gc_upto}, the only difference being that more than
 one address gets updated. Cleans up the stack between \kbd{av} and
 \kbd{ltop}, updating the \kbd{n} elements which follow \kbd{n} in the
 argument list (of type \kbd{GEN*}). Check that the elements of \kbd{g} have
@@ -1300,11 +1301,11 @@ scenario:
     ltop = avma;
     ... junk ...
     av = avma;
-    x = fun1();    // gc clean
-    y = fun2()   // gc clean
+    x = fun1();  // gc clean
+    y = fun2();  // gc clean
     *py = y; return gc_all_unsafe(av, ltop, 2, &x, py);
   }
-@eprog\noindent This function returns $x$, and the user also recovers $y$
+@eprog\noindent This function returns $x$, and we also recover $y$
 as a side effect. Not that we can later use \kbd{cgiv}$(y)$ to recover the
 memory used by $y$ while still keeping $x$.
 
@@ -1319,18 +1320,18 @@ cleans up the stack from \kbd{av} to \kbd{ltop}, preserving \kbd{x[0]},
 \bprog
   z = cgetg(3, t_COMPLEX);
   av = avma; garbage(); ltop = avma;
-  z[1] = fun1();
-  z[2] = fun2();
+  gel(z,1) = fun1();
+  gel(z,2) = fun2();
   gc_slice_unsafe(av, ltop, z + 1, 2);
   return z;
 @eprog\noindent
 cleans up the garbage between \kbd{av} and \kbd{ltop}, and connects \kbd{z}
 and its two components. This is marginally more efficient than the standard
 \bprog
-  av = avma; garbage(); ltop = avma;
+  av = avma; garbage();
   z = cgetg(3, t_COMPLEX);
-  z[1] = fun1();
-  z[2] = fun2(); return gc_GEN_unsafe(av, ltop, z);
+  gel(z,1) = fun1();
+  gel(z,2) = fun2(); return gc_upto(av, z);
 @eprog\noindent
 
 \fun{GEN}{gc_upto}{pari_sp av, GEN q} analogous to (but faster than)
@@ -1382,7 +1383,7 @@ of~\kbd{z}, which would be a problem for a later
   gc_upto(..., z);
 @eprog\noindent
 And even if it were made of valid \kbd{GEN}s, inhibiting the area makes sure
-\tet{gc_GEN_unsafe} will not inspect their components, saving time.
+\tet{gc_stack_update} will not inspect their components, saving time.
 
 Another natural use in low-level routines is to ``shorten'' an existing
 \kbd{GEN} \kbd{z} to its first $\kbd{n}-1$ components:
