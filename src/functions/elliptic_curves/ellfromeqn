@@ -49,28 +49,28 @@ Doc:
  %3 = [0, 0, 0, -16*n^2, 0]
  ? Mn
  %4 = [-16*n^2/y^2*x^2,-16*n^2/y^3*x^5+64*n^4/y^3*x]
- @eprog
- We check that \kbd{Mn} maps to a point on \kbd{En} (modulo \kbd{Cn}):
- \bprog
- ? ellisoncurve(ellinit(En), Mn*Mod(1,Cn))
+ ? ellisoncurve(ellinit(En), Mod(Mn, Cn)) \\ Mn maps to a point on En
  %5 = 1
- @eprog
- For example $23$ is congruent since the curve has a point of infinite order,
- namely:
+ @eprog\noindent
+ We now check that $23$ is congruent since the curve $E_{23}$ has a point of
+ infinite order, namely:
  \bprog
- ? C = subst(Cn,n,23); E = ellinit(subst(En,n,23)); M = subst(Mn,n,23);
+ ? [C,E,M] = subst([Cn,En,Mn], n, 23); E = ellinit(E);
  ? H = ellheegner(E)
  %7 = [-406847/6084,245194145/474552]
- @eprog
+ @eprog\noindent
  Using $M$, we can recover the point on the original curve.
  \bprog
  ? T = elltors(E).gen
  %8 = [[-92,0],[0,0]]
- ? P = elladd(E,T[2],ellmul(E,H,2));
+ ? P = elladd(E, T[2], ellmul(E,H,2));
  ? U = numerator(M[1] - P[1]);
  ? S = [[x,y]| y<-nfroots(,polresultant(U*y^2,C)) \
-             ; x<-nfroots(,subst(C,'y,y))];
- ? [S[1],S[3]]
- %12 = [[-41496/3485,-1810283234/12145225],[-80155/20748,-20818257191/430479504]]
+             ; x<-nfroots(,subst(C,'y,y))]; #S
+ %12 = 8
+ ? S[1]
+ %13 = [-41496/3485,-1810283234/12145225]
+ ? S[3]
+ %14 = [-80155/20748,-20818257191/430479504]
  @eprog
 Variant: Also available is \fun{GEN}{ellfromeqn}{GEN f} when $P$ is omitted.
