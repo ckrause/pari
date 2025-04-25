@@ -146,6 +146,11 @@ checkspace(mfinit([22,2],1))
 checkspace(mfinit([48,2],1))
 checkspace(mfinit([62,2],1))
 checkspace(mfinit([36,4],1))
+\\ #2619
+S = mfinit([50,5,Mod(7,50)],1);
+f = mfeigenbasis(S)[1]; g = mftwist(f,5);
+G = mftonew(S,g);
+liftall(sum(i = 1, #G, mfcoefs(mfbd(G[i][3],G[i][2]), 10)))
 
 mfconductor(mf,F)
 #mfinit([96,6],2)[3]

@@ -4364,16 +4364,17 @@ mftonew_i(GEN mf, GEN L, long *plevel)
       C = gcoeff(Acoef,i,j);
       NK = mf_get_NK(gel(f, 1));
       if (d > 1)
-      {
-        if (lg(f) > 2) pari_err_BUG("mftonew [should be only one form]");
-        f = gel(f, 1);
-        if (mf_get_type(f) == t_MF_BD)
+      { /* remove mfbd(, d) wrappers */
+        long h, lf = lg(f);
+        GEN newf = cgetg_copy(f, &lf);
+        for (h = 1; h < lf; h++)
         {
-          if (!equaliu(gel(f,3), d))
+          GEN fh = gel(f, h);
+          if (mf_get_type(fh) != t_MF_BD || !equaliu(gel(fh,3), d))
             pari_err_BUG("mftonew [inconsistent multiplier]");
-          f = gel(f, 2);
+          gel(newf, h) = gel(fh, 2);
         }
-        f = mkvec(f);
+        f = newf;
       }
       level = ulcm(level, M*d);
       gel(res,t++) = mkvec3(gM, utoipos(d), mflinear_i(NK,f,C));
