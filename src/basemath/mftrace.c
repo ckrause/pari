@@ -4357,27 +4357,25 @@ mftonew_i(GEN mf, GEN L, long *plevel)
     GEN gM = utoipos(M);
     for (j = 1; j < lD; j++)
     {
-      GEN f = gcoeff(Aclos,i,j), C, NK;
+      GEN vf = gcoeff(Aclos,i,j), C, NK;
       long d;
-      if (lg(f) == 1) continue;
+      if (lg(vf) == 1) continue;
       d = D[j];
       C = gcoeff(Acoef,i,j);
-      NK = mf_get_NK(gel(f, 1));
+      NK = mf_get_NK(gel(vf, 1));
       if (d > 1)
       { /* remove mfbd(, d) wrappers */
-        long h, lf = lg(f);
-        GEN newf = cgetg_copy(f, &lf);
+        long h, lf = lg(vf);
         for (h = 1; h < lf; h++)
         {
-          GEN fh = gel(f, h);
-          if (mf_get_type(fh) != t_MF_BD || !equaliu(gel(fh,3), d))
+          GEN fd = gel(vf, h);
+          if (mf_get_type(fd) != t_MF_BD || !equaliu(gel(fd,3), d))
             pari_err_BUG("mftonew [inconsistent multiplier]");
-          gel(newf, h) = gel(fh, 2);
+          gel(vf, h) = gel(fd, 2);
         }
-        f = newf;
       }
       level = ulcm(level, M*d);
-      gel(res,t++) = mkvec3(gM, utoipos(d), mflinear_i(NK,f,C));
+      gel(res,t++) = mkvec3(gM, utoipos(d), mflinear_i(NK,vf,C));
     }
   }
   if (plevel) *plevel = level;
