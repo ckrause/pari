@@ -19,6 +19,6 @@ Doc: \kbd{mf} being being a full or cuspidal space with parameters $[N,k,\chi]$
  %2 = [48, 2]
  ? mfcoefs(F,10)
  %3 = [0, 0, -160, 0, 0, 0, 0, 0, 0, 0, -14400]
- ? mfcoefs(G,10)
- %4 = [0, 0, -160, 0, 0, 0, 0, 0, 0, 0, -14400]
+ ? mfcoefs(G,5)
+ %4 = [0, -160, 0, 0, 0, -14400]
  @eprog
