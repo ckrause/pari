@@ -35,6 +35,10 @@ sumeulerrat(1/p,1+1E-17)
 sumeulerrat(1/p,1+1E-50)
 sumeulerrat(1/p,1+1E-100)
 
+\\ #2620
+sumeulerrat(1/(p^2-5),1.1)
+prodeulerrat(1+1/(p^2-p-23),0.6)
+
 \\ errors
 sumnumrat(1/x^2,oo)
 sumnumrat(1.0,1)

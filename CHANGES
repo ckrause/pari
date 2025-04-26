@@ -25,6 +25,8 @@ BA  19- parforeach([1..1000],j,vector(10^5,i,i)) -> stack overflow
     20- mfpetersson() incorrect when one form not cuspidal
     21- gc_all: support any number of arguments
     22- lift_to_frac: use of cgiv could corrupt PARI stack
+    23- sumeulerrat / prodeulerrat fail in cases where they shouldn't [#2620]
+        e.g., sumeulerrat(1/(p^2-5),1.1), prodeulerrat(1+1/(p^2-p-23),0.6)
 
   Added
      1- [libpari] prodprimes, prodprimeslim
