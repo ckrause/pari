@@ -14112,11 +14112,19 @@ $\sinh(x)$ and $\cosh(x)$ respectively, where $x$ is a \typ{REAL}
 The return type is \typ{COMPLEX} unless the imaginary part is equal to $0$
 to the current accuracy (its sign is $0$).
 
-\fun{GEN}{expIPiR}{GEN x, long prec} return $\exp(i \pi x)$, where $x$ is a
-real number (\typ{INT}, \typ{FRAC} or \typ{REAL}).
+\fun{GEN}{expIPiQ}{GEN x, long prec} returns $\exp(i \pi x)$, where $x$ is a
+rational number (\typ{INT} or \typ{FRAC}). Contrary to general transcendental
+functions, \kbd{expIPiQ} returns a result with exact components if possible.
+E.g, it returns \kbd{gen\_1} or \kbd{gen\_m1} when $x$ is integral.
+
+\fun{GEN}{expIPiR}{GEN x, long prec} returns $\exp(i \pi x)$, where $x$ is a
+real number (\typ{INT}, \typ{FRAC} or \typ{REAL}). Calls \kbd{expIPiQ} for
+rational arguments and returns a result with exact components if possible.
 
 \fun{GEN}{expIPiC}{GEN z, long prec} return $\exp(i \pi x)$, where $x$ is a
 complex number (\typ{INT}, \typ{FRAC}, \typ{REAL} or \typ{COMPLEX}).
+Calls \kbd{expIPiR} for real arguments and returns a result with exact
+components if possible.
 
 \fun{GEN}{expIxy}{GEN x, GEN y, long prec} returns $\exp(ixy)$. Efficient
 when $x$ is real and $y$ pure imaginary.
