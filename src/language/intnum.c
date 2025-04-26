@@ -2446,13 +2446,11 @@ euler_set_Fs(GEN *F, GEN *s)
   }
 }
 static long
-eulerrat_init(long prec, GEN r, GEN s, GEN sigma, long *pa,
+eulerrat_init(long prec, GEN r, GEN s, GEN sigma, long a,
               double *plN, double *plr, double *prs, long *plim)
 {
   double lN, lr = dbllog2(r), rs = gtodouble(sigma);
-  long N;
-  if (*pa < 2) *pa = 2;
-  N = *pa;
+  long N = a;
   /* if s not integral, computing p^-s at increased accuracy is too expensive */
   if (typ(s) == t_INT) N = maxss(N, 30);
   if (rs == 1) /* generic case, optimize */
@@ -2494,8 +2492,8 @@ sumeulerrat(GEN F, GEN s, long a, long prec)
   vF = -poldegree(F, -1);
   if (vF <= 0 || gcmpgs(gmulgs(sigma, vF), 1) <= 0)
     pari_err(e_MISC, "sum diverges in sumeulerrat");
-  r = polmax(gel(F,2));
-  N = eulerrat_init(prec, r, s, sigma, &a, &lN, &lr, &rs, &lim);
+  r = polmax(gel(F,2)); if (a < 2) a = 2;
+  N = eulerrat_init(prec, r, s, sigma, a, &lN, &lr, &rs, &lim);
   ser = rfracrecip_to_ser_absolute(rfrac_gtofp(F, prec2), lim+1);
   P = N < 1000000? primes_interval(gen_2, utoipos(N)): NULL;
   z = sumlogzeta(ser, s, P, N, rs, lN, vF, lim, prec);
@@ -2539,8 +2537,8 @@ prodeulerrat(GEN F, GEN s, long a, long prec)
   sigma = real_i(s);
   if (gcmpgs(gmulgs(sigma, vF), 1) <= 0)
     pari_err(e_MISC, "product diverges in prodeulerrat");
-  r = ratpolemax2(F);
-  N = eulerrat_init(prec, r, s, sigma, &a, &lN, &lr, &rs, &lim);
+  r = ratpolemax2(F); if (a < 2) a = 2;
+  N = eulerrat_init(prec, r, s, sigma, a, &lN, &lr, &rs, &lim);
   (void)rfracrecip(&NF, &DF); /* returned value is 0 */
   if (!RgX_is_ZX(DF) || !is_pm1(gel(DF,2))
       || lim * lr > 4 * prec) NF = gmul(NF, real_1(prec2));
