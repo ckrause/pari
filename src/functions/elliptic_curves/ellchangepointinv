@@ -24,4 +24,4 @@ Variant: The curve is needed to
  defined over a simple domain which can be infered from the coordinates (e.g.,
  a finite field or the rationals), so that generic arithmetic operations
  (\kbd{gadd}, \kbd{gmul}, etc.) apply directly, then the elliptic curve is not
- needed: one may then use \fun{GEN}{ellchangepoint}{GEN x, GEN ch}.
+ needed: one may then use \fun{GEN}{ellchangepointinv}{GEN x, GEN ch}.
