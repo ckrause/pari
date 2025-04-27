@@ -66,7 +66,7 @@ L(GEN n, ulong k, long bitprec)
     if (m == 0)
     {
       GEN c = mpcos(divru(mulru(pi, 6*l+1), 6*k));
-      if (odd(l)) subrrz(s, c, s); else addrrz(s, c, s);
+      affrr(odd(l)? subrr(s, c): addrr(s, c), s);
       set_avma(av);
     }
     m += r; if (m >= k) m -= k;
