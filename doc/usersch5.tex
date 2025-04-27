@@ -707,7 +707,7 @@ the coefficients of a \typ{POL} in the following situation:
 \fun{long}{precision}{GEN x} If \kbd{x} is of type \typ{REAL}, returns the
 precision of~\kbd{x}, namely
 
-\item if \kbd{x} is not zero: the length of \kbd{x} in \B-bit words;
+\item if \kbd{x} is not zero: the mantissa length of \kbd{x} in bits;
 
 \item if \kbd{x} is numerically equal to $0$, of exponent $e$:
 the absolute accuracy \kbd{nbits2prec}$(e)$ if $e < 0$ and
@@ -11760,7 +11760,7 @@ a~\typ{INT}), converts \kbd{x} into a \kbd{long} if possible.
 
 \fun{GEN}{quadtofp}{GEN x, long l} applied to a \typ{QUAD}~\kbd{x}, converts
 \kbd{x} into a \typ{REAL} or \typ{COMPLEX} depending on the sign of the
-discriminant of~\kbd{x}, to precision \hbox{\kbd{l} \B-bit} words.
+discriminant of~\kbd{x}, to precision \kbd{l}.
 % forbid line brk at hyphen here [GN]
 
 \fun{GEN}{upper_to_cx}{GEN x, long *prec} valid for a \typ{COMPLEX}
