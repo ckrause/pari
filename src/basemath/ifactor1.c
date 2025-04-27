@@ -2536,6 +2536,32 @@ ifac_whoiswho(GEN *partial, GEN *where, long after_crack)
   }
 }
 
+/* if y | x, set x /= y and return 1; else return 0 */
+static int
+dvdii_inplace(GEN x, GEN y)
+{
+  pari_sp av = avma;
+  GEN r, q = dvmdii(x, y, &r);
+  if (r != gen_0) return gc_bool(av, 0);
+  affii(q, x); return gc_bool(av, 1);
+}
+/* return v = v_p(x), set x /= p^v in place */
+static long
+Z_pval_inplace(GEN x, GEN p)
+{
+  pari_sp av = avma;
+  GEN r, q = dvmdii(x, p, &r);
+  long v;
+  if (r != gen_0) return gc_long(av, 0);
+  for (v = 1;; v++)
+  {
+    GEN Q = dvmdii(q, p, &r);
+    if (r != gen_0) break;
+    q = Q;
+  }
+  affii(q, x); return gc_long(av, v);
+}
+
 /* Divide all current composites by first (prime, class Q) entry, updating its
  * exponent, and turning it into a finished prime (class P).  Return 1 if any
  * such divisions succeeded  (in Moebius mode, the update may then not have
@@ -2562,8 +2588,7 @@ ifac_divide(GEN *partial, GEN *where, long moebius_mode)
   {
     if (CLASS(scan) != gen_0) continue; /* the other thing ain't composite */
     otherexp = 0;
-    /* divide in place to keep stack clutter minimal */
-    while (dvdiiz(VALUE(scan), VALUE(*where), VALUE(scan)))
+    while (dvdii_inplace(VALUE(scan), VALUE(*where)))
     {
       if (moebius_mode) return 1; /* immediately */
       if (!otherexp) otherexp = itos(EXPON(scan));
@@ -4144,16 +4169,14 @@ STOREi(long *nb, GEN x, long e) { STORE(nb, icopy(x), e); }
 static int
 special_primes(GEN n, ulong p, long *nb, GEN T)
 {
-  long i, l = lg(T);
+  long l = lg(T);
   if (l > 1)
   { /* pp = square of biggest p tried so far */
-    long pp[] = { evaltyp(t_INT)|_evallg(4), 0,0,0 };
+    long i, k, pp[] = { evaltyp(t_INT)|_evallg(4), 0,0,0 };
     pari_sp av = avma; affii(sqru(p), pp); set_avma(av);
-
     for (i = 1; i < l; i++)
-      if (dvdiiz(n, gel(T,i), n))
+      if ((k = Z_pval_inplace(n, gel(T,i))))
       {
-        long k = 1; while (dvdiiz(n, gel(T,i), n)) k++;
         STOREi(nb, gel(T,i), k);
         if (abscmpii(pp, n) > 0)
         {
