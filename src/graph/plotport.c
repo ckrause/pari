@@ -1333,7 +1333,7 @@ plotrecthin(void *E, GEN(*eval)(void*, GEN), GEN a, GEN b, ulong flags,
       for (i=0; i<N-1; i++, set_avma(av2))
       {
         if (i) { affrr(tr,tl); xl = xr; yl = yr; }
-        addrrz(tl,dx,tr);
+        affrr(addrr(tl,dx),tr);
         t = eval(E, tr);
         get_xy(cplx,t, &xr,&yr);
         Appendx(&pl[0],&pl[0],xl);
@@ -1351,7 +1351,7 @@ plotrecthin(void *E, GEN(*eval)(void*, GEN), GEN a, GEN b, ulong flags,
       yl = gtodouble(eval(E,xl));
       for (i=0; i<N-1; i++, set_avma(av2))
       {
-        addrrz(xl,dx,xr);
+        affrr(addrr(xl,dx),xr);
         yr = gtodouble(eval(E,xr));
         Appendx(&pl[0],&pl[0],rtodbl(xl));
         Appendy(&pl[0],&pl[1],yl);
