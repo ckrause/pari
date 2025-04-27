@@ -2698,32 +2698,6 @@ powIs(long n) {
 
 /*******************************************************************/
 /*                                                                 */
-/*                             ASSIGNMENTS                         */
-/*                                                                 */
-/*******************************************************************/
-INLINE void gnegz(GEN x, GEN z)
-{ pari_sp av = avma; gaffect(gneg(x), z); set_avma(av); }
-INLINE void gabsz(GEN x, long prec, GEN z)
-{ pari_sp av = avma; gaffect(gabs(x,prec), z); set_avma(av); }
-INLINE void gaddz(GEN x, GEN y, GEN z)
-{ pari_sp av = avma; gaffect(gadd(x,y), z); set_avma(av); }
-INLINE void gsubz(GEN x, GEN y, GEN z)
-{ pari_sp av = avma; gaffect(gsub(x,y), z); set_avma(av); }
-INLINE void gmulz(GEN x, GEN y, GEN z)
-{ pari_sp av = avma; gaffect(gmul(x,y), z); set_avma(av); }
-INLINE void gdivz(GEN x, GEN y, GEN z)
-{ pari_sp av = avma; gaffect(gdiv(x,y), z); set_avma(av); }
-INLINE void gdiventz(GEN x, GEN y, GEN z)
-{ pari_sp av = avma; gaffect(gdivent(x,y), z); set_avma(av); }
-INLINE void gmodz(GEN x, GEN y, GEN z)
-{ pari_sp av = avma; gaffect(gmod(x,y), z); set_avma(av); }
-INLINE void gmul2nz(GEN x, long s, GEN z)
-{ pari_sp av = avma; gaffect(gmul2n(x,s), z); set_avma(av); }
-INLINE void gshiftz(GEN x, long s, GEN z)
-{ pari_sp av = avma; gaffect(gshift(x,s), z); set_avma(av); }
-
-/*******************************************************************/
-/*                                                                 */
 /*                       ELLIPTIC CURVES                           */
 /*                                                                 */
 /*******************************************************************/

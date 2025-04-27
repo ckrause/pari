@@ -2329,15 +2329,15 @@ small), and at the very end (very small, arbitrary).
 immediately followed by an assignment statement. They will be introduced as
 in the following example:
 
-\fun{GEN}{gadd[z]}{GEN x, GEN y[, GEN z]} followed by the explicit
+\fun{GEN}{addrr[z]}{GEN x, GEN y[, GEN z]} followed by the explicit
 description of the function
 
-\fun{GEN}{gadd}{GEN x, GEN y}
+\fun{GEN}{addrr}{GEN x, GEN y}
 
 \noindent which creates its result on the stack, returning a \kbd{GEN} pointer
 to it, and the parts in brackets indicate that there exists also a function
 
-\fun{void}{gaddz}{GEN x, GEN y, GEN z}
+\fun{void}{addrrz}{GEN x, GEN y, GEN z}
 
 \noindent which assigns its result to the pre-existing object
 \kbd{z}, leaving the stack unchanged. These assignment variants are kept for
@@ -12527,13 +12527,13 @@ componentwise for vector or matrix inputs; otherwise, sets \kbd{*e} to
 
 \section{Valuation and shift}
 
-\fun{GEN}{gshift[z]}{GEN x, long n[, GEN z]} yields the result of shifting
+\fun{GEN}{gshift}{GEN x, long n} yields the result of shifting
 (the components of) \kbd{x} left by \kbd{n} (if \kbd{n} is nonnegative)
 or right by $-\kbd{n}$ (if \kbd{n} is negative). Applies only to \typ{INT}
 and vectors/matrices of such. For other types, it is simply multiplication
 by~$2^{\kbd{n}}$.
 
-\fun{GEN}{gmul2n[z]}{GEN x, long n[, GEN z]} yields the product of \kbd{x}
+\fun{GEN}{gmul2n}{GEN x, long n} yields the product of \kbd{x}
 and~$2^{\kbd{n}}$. This is different from \kbd{gshift} when \kbd{n} is negative
 and \kbd{x} is a \typ{INT}: \key{gshift} truncates, while \key{gmul2n}
 creates a fraction if necessary.
@@ -12894,17 +12894,17 @@ assuming $\kbd{y}$ divides $\kbd{x}$. Not stack clean if $y = 1$
 vector whose components are the true Euclidean quotient and remainder
 of \kbd{x} and~\kbd{y}.
 
-\fun{GEN}{gdivent[z]}{GEN x, GEN y[, GEN z]} yields the true Euclidean
+\fun{GEN}{gdivent}{GEN x, GEN y} yields the true Euclidean
 quotient of \kbd{x} and the \typ{INT} or \typ{POL}~\kbd{y}, as per
 the \kbd{\bs} GP operator.
 
-\fun{GEN}{gdiventsg}{long s, GEN y[, GEN z]}, as \kbd{gdivent}
+\fun{GEN}{gdiventsg}{long s, GEN y}, as \kbd{gdivent}
 except that \kbd{x} is a \kbd{long}.
 
-\fun{GEN}{gdiventgs[z]}{GEN x, long s[, GEN z]}, as \kbd{gdivent}
+\fun{GEN}{gdiventgs}{GEN x, long s}, as \kbd{gdivent}
 except that \kbd{y} is a \kbd{long}.
 
-\fun{GEN}{gmod[z]}{GEN x, GEN y[, GEN z]} yields the remainder of \kbd{x}
+\fun{GEN}{gmod}{GEN x, GEN y} yields the remainder of \kbd{x}
 modulo the \typ{INT} or \typ{POL}~\kbd{y}, as per the \kbd{\%} GP operator.
 A \typ{REAL} or \typ{FRAC} \kbd{y} is also allowed, in which case the
 remainder is the unique real $r$ such that $0 \leq r < |\kbd{y}|$ and
@@ -13101,11 +13101,11 @@ the trivial denominator $1$. Returns their product (either a \typ{INT} or
 
 \subsec{Unary operators}
 
-\fun{GEN}{gneg[z]}{GEN x[, GEN z]} yields $-\kbd{x}$.
+\fun{GEN}{gneg}{GEN x} yields $-\kbd{x}$.
 
 \fun{GEN}{gneg_i}{GEN x} shallow function yielding $-\kbd{x}$.
 
-\fun{GEN}{gabs[z]}{GEN x[, GEN z]} yields $|\kbd{x}|$.
+\fun{GEN}{gabs}{GEN x} yields $|\kbd{x}|$.
 
 \fun{GEN}{gsqr}{GEN x} creates the square of~\kbd{x}.
 
@@ -13199,16 +13199,6 @@ doubt about what the result should be).
 $[1,x,\dots,x^{n-1}]$, where $x$ is the $n$-th root of unity $\exp(2i\pi/n)$.
 
 \fun{GEN}{gsqrpowers}{GEN x, long n} returns the vector $[x,x^4,\dots,x^{n^2}]$.
-
-In addition we also have the obsolete forms:
-
-\fun{void}{gaddz}{GEN x, GEN y, GEN z}
-
-\fun{void}{gsubz}{GEN x, GEN y, GEN z}
-
-\fun{void}{gmulz}{GEN x, GEN y, GEN z}
-
-\fun{void}{gdivz}{GEN x, GEN y, GEN z}
 
 \section{Generic operators: product, powering, factorback}
 

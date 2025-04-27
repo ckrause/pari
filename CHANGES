@@ -75,6 +75,8 @@ BA   4- rename gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
      4- obscure function cgetp: use mkpadic
      5- obsolete functions mpcosz, mpsinz, mplogz, mpexpz: use affrr or
         proper GC
+     6- obsolete functions gabsz, gaddz, gdiventz, gdivz, gmodz, gmul2nz,
+        gmulz, gnegz, gshiftz, gsubz: use gaffect or (better) proper GC
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed
