@@ -1819,13 +1819,12 @@ jacobi(GEN a, long prec)
   de = prec2nbits(prec);
 
  /* e1 = min expo(a[i,i])
-  * e2 = max expo(a[i,j]), i != j */
+  * e2 = max expo(a[i,j]), i < j, occurs at a[p,q] (p < q)*/
   while (e1-e2 < de)
   {
     pari_sp av2 = avma;
     GEN x, y, t, c, s, u;
-    /* compute attached rotation in the plane formed by basis vectors number
-     * p and q */
+    /* compute attached rotation in the plane formed by basis vectors p and q */
     x = subrr(gel(L,q),gel(L,p));
     if (signe(x))
     {
@@ -1846,26 +1845,18 @@ jacobi(GEN a, long prec)
     for (i=q+1; i<l; i++) rot(gcoeff(a,p,i), gcoeff(a,q,i), s,u);
     y = gcoeff(a,p,q);
     t = mulrr(t, y); shiftr_inplace(y, -de - 1);
-    x = gel(L,p); subrrz(x,t, x);
-    y = gel(L,q); addrrz(y,t, y);
+    affrr(subrr(gel(L,p),t), gel(L,p));
+    affrr(addrr(gel(L,q),t), gel(L,q));
     for (i=1; i<l; i++) rot(gcoeff(r,i,p), gcoeff(r,i,q), s,u);
 
     e2 = -(long)HIGHEXPOBIT; p = q = 1;
     for (j=1; j<l; j++)
-    {
       for (i=1; i<j; i++)
       {
         GEN z = gcoeff(a,i,j);
         if (!signe(z)) continue;
-        e = expo(z); if (e > e2) { e2=e; p=i; q=j; }
+        e = expo(z); if (e > e2) { e2 = e; p = i; q = j; }
       }
-      for (i=j+1; i<l; i++)
-      {
-        GEN z = gcoeff(a,j,i);
-        if (!signe(z)) continue;
-        e = expo(z); if (e > e2) { e2=e; p=j; q=i; }
-      }
-    }
     set_avma(av2);
   }
   /* sort eigenvalues from smallest to largest */
