@@ -2701,14 +2701,6 @@ powIs(long n) {
 /*                             ASSIGNMENTS                         */
 /*                                                                 */
 /*******************************************************************/
-INLINE void mpexpz(GEN x, GEN z)
-{ pari_sp av = avma; gaffect(mpexp(x), z); set_avma(av); }
-INLINE void mplogz(GEN x, GEN z)
-{ pari_sp av = avma; gaffect(mplog(x), z); set_avma(av); }
-INLINE void mpcosz(GEN x, GEN z)
-{ pari_sp av = avma; gaffect(mpcos(x), z); set_avma(av); }
-INLINE void mpsinz(GEN x, GEN z)
-{ pari_sp av = avma; gaffect(mpsin(x), z); set_avma(av); }
 INLINE void gnegz(GEN x, GEN z)
 { pari_sp av = avma; gaffect(gneg(x), z); set_avma(av); }
 INLINE void gabsz(GEN x, long prec, GEN z)

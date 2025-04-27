@@ -47,6 +47,9 @@ This file lists the incompatible changes between Version 2.x and older versions
       mkpadic(u, padic_p(x), padic_pd(x), v, precp(x))
     No need to copy p / pd or allocate a cgeti to later affii into u.
     Also, one can use the correct value of v directly.
+  - obsolete functions mpcosz, mpsinz, mplogz, mpexpz: use, e.g.,
+      affrr(mpcos(x), z)
+    or (better) proper GC
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.16 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - binomial changed to agree with Loeb's definition

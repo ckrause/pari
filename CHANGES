@@ -73,6 +73,8 @@ BA   4- rename gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
      2- renamed gerepileallsp -> gc_all_unsafe
      3- obsolete function gerepilemanysp : use gc_all_unsafe
      4- obscure function cgetp: use mkpadic
+     5- obsolete functions mpcosz, mpsinz, mplogz, mpexpz: use affrr or
+        proper GC
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed

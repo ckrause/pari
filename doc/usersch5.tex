@@ -14024,15 +14024,15 @@ $n\geq 1$ and $x \geq 0$.
 \fun{GEN}{sqrtnr_abs}{GEN x, long n} returns the $n$-th root of $|x|$,
 assuming $n\geq 1$ and $x \neq 0$.
 
-\fun{GEN}{mpcos[z]}{GEN x[, GEN z]} returns $\cos(x)$.
+\fun{GEN}{mpcos}{GEN x} returns $\cos(x)$.
 
-\fun{GEN}{mpsin[z]}{GEN x[, GEN z]} returns $\sin(x)$.
+\fun{GEN}{mpsin}{GEN x} returns $\sin(x)$.
 
-\fun{GEN}{mplog[z]}{GEN x[, GEN z]} returns $\log(x)$. We must have $x > 0$
+\fun{GEN}{mplog}{GEN x} returns $\log(x)$. We must have $x > 0$
 since the result must be a \typ{REAL}. Use \kbd{glog} for the general case,
 where you want such computations as $\log(-1) = I$.
 
-\fun{GEN}{mpexp[z]}{GEN x[, GEN z]} returns $\exp(x)$.
+\fun{GEN}{mpexp}{GEN x} returns $\exp(x)$.
 
 \fun{GEN}{mpexpm1}{GEN x} returns $\exp(x)-1$, but is more accurate than
 \kbd{subrs(mpexp(x), 1)}, which suffers from catastrophic cancellation if
