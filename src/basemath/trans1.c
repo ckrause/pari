@@ -303,7 +303,7 @@ consteuler(long prec)
       affrr(addrr(v,b), v); set_avma(av2);
     }
   }
-  divrrz(u,v,tmpeuler);
+  affrr(divrr(u,v),tmpeuler);
   swap_clone(&geuler,tmpeuler);
   return gc_const(av1, geuler);
 }
