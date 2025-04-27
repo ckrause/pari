@@ -487,8 +487,8 @@ inittanhsinh(long m, long prec)
     shiftr_inplace(z, 1); if (expo(z) < -D.bit) { nt = k-1; break; }
     xp = subsr(1, z);
     wp = divr2_ip(mulrr(ct, subsr(1, sqrr(xp))));
-    affrr(xp, gel(D.tabxp,k)); mulrrz(ek, e, ek);
-    affrr(wp, gel(D.tabwp,k)); mulrrz(eik, ei, eik); set_avma(av);
+    affrr(xp, gel(D.tabxp,k)); affrr(mulrr(ek, e), ek);
+    affrr(wp, gel(D.tabwp,k)); affrr(mulrr(eik, ei), eik); set_avma(av);
   }
   return intinit_end(&D, nt, 0);
 }
