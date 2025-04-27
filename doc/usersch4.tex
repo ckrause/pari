@@ -871,18 +871,6 @@ a bad idea to use \tet{gaffect} statements. There is one exception: for simple
 objects (e.g.~leaves) whose size is controlled, they can be easier to use than
 garbage collection, and about as efficient.
 
-\misctitle{Coercion} It is often useful to coerce an inexact object to a
-given precision. For instance at the beginning of a routine where precision
-can be kept to a minimum; otherwise the precision of the input is used in all
-subsequent computations, which is inefficient if the latter is known to
-thousands of digits. One may use the \kbd{gaffect} function for this, but it
-is easier and more efficient to call
-
-\fun{GEN}{gtofp}{GEN x, long prec} converts the complex number~\kbd{x}
-(\typ{INT}, \typ{REAL}, \typ{FRAC}, \typ{QUAD} or \typ{COMPLEX}) to either
-a \typ{REAL} or \typ{COMPLEX} whose components are \typ{REAL} of length
-\kbd{prec}.
-
 \subsec{Copy} It is also very useful to \idx{copy} a PARI object, not
 just by moving around a pointer as in the \kbd{y = x} example, but by
 creating a copy of the whole tree structure, without pre-allocating a

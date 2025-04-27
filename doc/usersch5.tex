@@ -7919,7 +7919,7 @@ denominators divide \kbd{denom}.
 \fun{GEN}{FpC_ratlift}{GEN P, GEN m, GEN amax, GEN bmax, GEN denom} as
 \kbd{FpM\_ratlift}, where $P$ is an \kbd{FpC}.
 
-\subsec{Zp}
+\subsec{\kbd{Zp}}
 
 \fun{GEN}{Zp_invlift}{GEN b, GEN a, GEN p, long e} let
 $p$ be a prime \typ{INT}, $a$ be a \typ{INT} and
@@ -7968,7 +7968,7 @@ reduced mod $p^e$), return $\exp_p(a)$ mod $p^e$ (\typ{INT}).
 reduced mod $p^e$), such that $a \equiv 1 \pmod{p}$, return
 $\log_p(a)$ mod $p^e$ (\typ{INT}).
 
-\subsec{ZpM}
+\subsec{\kbd{ZpM}}
 
 \fun{GEN}{ZpM_invlift}{GEN M, GEN Np, GEN p, long e} let
 $p$ be a prime \typ{INT}, $Np$ be a \kbd{FpM} (modulo $p$) and
@@ -7976,7 +7976,7 @@ $M$ a \kbd{ZpM} such that $M\*Np \equiv 1 \mod p$.
 Returns an \kbd{ZpM} $N$ such that $N \equiv Np \pmod{p}$ and
 $M\*N \equiv 1 \mod p^e$.
 
-\subsec{ZpX}
+\subsec{\kbd{ZpX}}
 
 \fun{GEN}{ZpX_roots}{GEN f, GEN p, long e} $f$ a \kbd{ZX} with leading
 term prime to $p$, and without multiple roots mod $p$. Return a vector
@@ -8054,7 +8054,7 @@ prime, return as a factorization matrix the shape of the prime ideal
 decomposition of $(p)$ in $\Q[X]/(T)$: the first column contains inertia
 degrees, the second columns contains ramification degrees.
 
-\subsec{ZpXQ}
+\subsec{\kbd{ZpXQ}}
 
 \fun{GEN}{ZpXQ_invlift}{GEN b, GEN a, GEN T, GEN p, long e} let
 $p$ be a prime \typ{INT}, $a$ be a \kbd{FpXQ} (modulo $(p, T)$) and
@@ -8095,18 +8095,18 @@ irreducible modulo $p$, return the logarithm of $a$ in $\Z_p[X]/(T)$ to
 precision $e$, assuming that $a\equiv 1 \pmod{p\Z_p[X]}$ if $p$ odd or
 $a\equiv 1 \pmod{4\Z_2[X]}$ if $p=2$.
 
-\subsec{Zq}
+\subsec{\kbd{Zq}}
 
 \fun{GEN}{Zq_sqrtnlift}{GEN b, GEN n, GEN a, GEN T, GEN p, long e}
 
-\subsec{ZpXQM}
+\subsec{\kbd{ZpXQM}}
 
 \fun{GEN}{ZpXQM_prodFrobenius}{GEN M, GEN T, GEN p, long e}
 returns the product of matrices $M\*\sigma(M)\*\sigma^2(M)\ldots\sigma^{n-1}(M)$
 to precision $e$ where $\sigma$ is the lift of the Frobenius automorphism
 over $\Z_p[X]/(T)$ and $n$ is the degree of $T$.
 
-\subsec{ZpXQX}
+\subsec{\kbd{ZpXQX}}
 
 \fun{GEN}{ZpXQX_liftfact}{GEN A, GEN B, GEN T, GEN pe, GEN p, long e} is the
 routine underlying \tet{polhensellift}. Here, $p$ is prime, $T(Y)$ defines a
@@ -8140,7 +8140,7 @@ As \kbd{FpXQX\_digits}. The parameter $q$ must be equal to $p^e$.
 as \tet{ZpXQX_liftroot}, except that $a$ is an element of
 $\Z_p[X,Y]/(S(X,Y),T(X))$.
 
-\subsec{ZqX}
+\subsec{\kbd{ZqX}}
 \kbd{ZqX} are either \kbd{ZpX} or \kbd{ZpXQX} depending whether \kbd{T} is \kbd{NULL} or not.
 
 \fun{GEN}{ZqX_roots}{GEN F, GEN T, GEN p, long e}
@@ -11713,6 +11713,11 @@ otherwise.
 \section{Conversions}
 
 \subsec{Scalars}
+
+\fun{GEN}{gtofp}{GEN x, long prec} converts the complex number~\kbd{x}
+(\typ{INT}, \typ{REAL}, \typ{FRAC}, \typ{QUAD} or \typ{COMPLEX}) to either
+a \typ{REAL} or \typ{COMPLEX} whose components are \typ{REAL} of length
+\kbd{prec}.
 
 \fun{double}{rtodbl}{GEN x} applied to a \typ{REAL}~\kbd{x}, converts \kbd{x}
 into a \kbd{double} if possible.
