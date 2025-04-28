@@ -49,13 +49,13 @@ GEN
 FpM_center(GEN x, GEN p, GEN pov2)
 { pari_APPLY_same(FpC_center(gel(x,i), p,pov2)) }
 
-/* p != 3; assume entries in [0,p[ and ps2 = p>>1. */
+/* p > 3; assume entries in [0,p[ and ps2 = p>>1. */
 static void
 _FpC_center_inplace(GEN z, GEN p, GEN ps2)
 {
   long i, l = lg(z);
   for (i = 1; i < l; i++)
-  { /* HACK: assume p != 3, which ensures u = gen_[0-2] is never written to */
+  { /* HACK: assume p > 3, which ensures u = gen_[0-2] is never written to */
     GEN u = gel(z,i);
     if (abscmpii(u, ps2) > 0) subiiz(u, p, u);
   }
@@ -70,20 +70,27 @@ _F3C_center_inplace(GEN z)
 void
 FpC_center_inplace(GEN z, GEN p, GEN ps2)
 {
-  if (equaliu(p, 3))
-    _F3C_center_inplace(z);
-  else
-    _FpC_center_inplace(z, p, ps2);
+  switch (itou_or_0(p))
+  {
+    case 2: break;
+    case 3:_F3C_center_inplace(z); break;
+    default: _FpC_center_inplace(z, p, ps2);
+  }
 }
 
 void
 FpM_center_inplace(GEN z, GEN p, GEN pov2)
 {
   long i, l = lg(z);
-  if (equaliu(p, 3))
-    for (i = 1; i < l; i++) _F3C_center_inplace(gel(z,i));
-  else
-    for (i = 1; i < l; i++) _FpC_center_inplace(gel(z,i), p, pov2);
+  switch (itou_or_0(p))
+  {
+    case 2: break;
+    case 3:
+      for (i = 1; i < l; i++) _F3C_center_inplace(gel(z,i));
+      break;
+    default:
+      for (i = 1; i < l; i++) _FpC_center_inplace(gel(z,i), p, pov2);
+  }
 }
 GEN
 Flm_center(GEN x, ulong p, ulong ps2)
