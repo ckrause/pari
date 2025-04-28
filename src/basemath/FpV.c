@@ -49,16 +49,24 @@ GEN
 FpM_center(GEN x, GEN p, GEN pov2)
 { pari_APPLY_same(FpC_center(gel(x,i), p,pov2)) }
 
+/* HACK: assume p > 3, which ensures u = gen_[0-2] is never written to */
+static void
+Fp_center_inplace(GEN u, GEN p, GEN ps2)
+{
+  if (abscmpii(u, ps2) > 0)
+  {
+    pari_sp av = avma;
+    affii(subii(u, p), u);
+    set_avma(av);
+  }
+}
+
 /* p > 3; assume entries in [0,p[ and ps2 = p>>1. */
 static void
 _FpC_center_inplace(GEN z, GEN p, GEN ps2)
 {
   long i, l = lg(z);
-  for (i = 1; i < l; i++)
-  { /* HACK: assume p > 3, which ensures u = gen_[0-2] is never written to */
-    GEN u = gel(z,i);
-    if (abscmpii(u, ps2) > 0) subiiz(u, p, u);
-  }
+  for (i = 1; i < l; i++) Fp_center_inplace(gel(z,i), p, ps2);
 }
 static void
 _F3C_center_inplace(GEN z)
