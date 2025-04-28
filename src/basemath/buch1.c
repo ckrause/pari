@@ -773,10 +773,13 @@ imag_be_honest(struct buch_quad *B)
 }
 
 static GEN
-dist(GEN e, GEN d, long prec)
+dist(GEN e, GEN d, long prec) { return mkvec2(qfr5_dist(e, d, prec), d); }
+/* z a pre-allocated pair [t_REAL, t_INT], D = [t,d] from dist() */
+static void
+dist_set(GEN z, GEN D)
 {
-  GEN t = qfr5_dist(e, d, prec);
-  return signe(d) < 0 ? mkcomplex(t, gen_1): t;
+  affrr(gel(D,1), gel(z,1));
+  affsi(signe(gel(D,2)) < 0? 1: 0, gel(z,2));
 }
 
 /* Real Quadratic fields */
@@ -923,7 +926,7 @@ CYCLE:
       d = dist(gel(form1,4), gel(form1,5), prec);
       if (DEBUGLEVEL>2) err_printf(" %ld",s);
     }
-    gaffect(d, gel(C,s));
+    dist_set(gel(C,s), d);
     if (first)
     {
       if (s >= lim) continue;
