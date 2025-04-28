@@ -908,6 +908,14 @@ Fl_ellpoint(long KRO, ulong *px, ulong c4, ulong c6, ulong p)
   return mkvecsmall2(Fl_mul(x,u,p), Fl_sqr(u,p));
 }
 
+/* y <- x, both are pairs of t_INT */
+static void
+affii2(GEN x, GEN y)
+{
+  affii(gel(x,1), gel(y,1));
+  affii(gel(x,2), gel(y,2));
+}
+
 static GEN ap_j1728(GEN a4,GEN p);
 /* compute a_p using Shanks/Mestre + Montgomery's trick. Assume p > 457 */
 static GEN
@@ -1048,12 +1056,12 @@ Fp_ellcard_Shanks(GEN c4, GEN c6, GEN p)
     if (DEBUGLEVEL >= 6) timer_printf(&T, "[Fp_ellcard_Shanks] sorting");
     set_avma(av2);
 
-    gaffect(fg, gel(pts,1));
+    affii2(fg, gel(pts,1));
     for (j=2; j<=nb; j++) /* pts[j] = j.fg = (s*j).F */
     {
       P = FpE_add(gel(pts,j-1),fg,a4,p);
       if (ell_is_inf(P)) { h = mulii(mulss(s,j), B); goto FOUND; }
-      gaffect(P, gel(pts,j));
+      affii2(P, gel(pts,j));
     }
     /* replace fg by nb.fg since we do nb points at a time */
     set_avma(av2);
