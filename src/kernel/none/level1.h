@@ -1397,8 +1397,9 @@ affur(ulong x, GEN y)
 }
 
 INLINE void
-affiz(GEN x, GEN y) { if (typ(y)==t_INT) affii(x,y); else affir(x,y); }
-INLINE void
-affsz(long x, GEN y) { if (typ(y)==t_INT) affsi(x,y); else affsr(x,y); }
-INLINE void
-mpaff(GEN x, GEN y) { if (typ(x)==t_INT) affiz(x, y); else affrr(x,y); }
+mpaff(GEN x, GEN y)
+{
+  if (typ(x)==t_INT)
+  { if (typ(y)==t_INT) affii(x,y); else affir(x,y); }
+  else affrr(x,y);
+}

@@ -88,6 +88,7 @@ BA   4- rename gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
      subisz, subriz, subrrz, subrsz, subsiz, subsrz, subssz. Use affii, affrr
      or proper GC
      8- obsolete functions gaffsg and gaffect
+     9- obsolete functions affiz, affsz
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed
