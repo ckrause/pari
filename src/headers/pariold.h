@@ -247,7 +247,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define ggrandocp ggrando
 #define glogagm glog
 #define logagm  mplog
-#define mpsqrtz  gopgz(absr,(x),(y))
 #define adduumod Fl_add
 #define subuumod Fl_sub
 #define muluumod Fl_mul
