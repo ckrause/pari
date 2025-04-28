@@ -419,7 +419,7 @@ fix_expo(GEN x)
   }
 }
 
-/* (1/2) log (d * 2^{e * 2^EMAX}). Not stack clean if e != 0 */
+/* (1/2) log (|d| * 2^{e * 2^EMAX}). Not stack clean if e != 0 */
 GEN
 qfr5_dist(GEN e, GEN d, long prec)
 {
