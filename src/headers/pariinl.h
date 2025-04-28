@@ -1556,12 +1556,10 @@ RgM_fpnorml2(GEN x, long prec)
 INLINE void
 affgr(GEN x, GEN y)
 {
-  pari_sp av;
   switch(typ(x)) {
     case t_INT:  affir(x,y); break;
     case t_REAL: affrr(x,y); break;
     case t_FRAC: rdiviiz(gel(x,1),gel(x,2), y); break;
-    case t_QUAD: av = avma; affgr(quadtofp(x,realprec(y)), y); set_avma(av); break;
     default: pari_err_TYPE2("=",x,y);
   }
 }

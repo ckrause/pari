@@ -2439,8 +2439,8 @@ Assumes that $\kbd{lg(z)} > 2$.
 \fun{void}{affrr}{GEN x, GEN z} assigns the \typ{REAL}~\kbd{x} into the
 \typ{REAL}~\kbd{z}.
 
-\fun{void}{affgr}{GEN x, GEN z} assigns the scalar \kbd{x} into the
-\typ{REAL}~\kbd{z}, if possible.
+\fun{void}{affgr}{GEN x, GEN z} assigns the real number
+(\typ{INT}, \typ{FRAC} or \typ{REAL}) \kbd{x} into the \typ{REAL}~\kbd{z}.
 
 \noindent The function \kbd{affrs} and \kbd{affri} do not exist. So don't use
 them.
@@ -14148,14 +14148,17 @@ varying $c$.
 \fun{GEN}{rootsof1pow}{GEN T, long c} given
 $T = \kbd{rootsof1powinit}(a,b,\kbd{prec})$, return $e(ac/b)$.
 
-
-\noindent A generalization of \tet{affrr_fixlg}
+\fun{void}{affcc}{GEN x, GEN res} assume \kbd{res} \kbd{res} was allocated
+using \tet{cgetc}, and that $x$ is a complex number (\typ{INT}, \typ{FRAC},
+\typ{REAL} or \typ{COMPLEX} with real components). Assign $x$ to \kbd{res}.
+Generalizes \kbd{affgr}.
 
 \fun{GEN}{affc_fixlg}{GEN x, GEN res} assume \kbd{res} was allocated using
 \tet{cgetc}, and that $x$ is either a \typ{REAL} or a \typ{COMPLEX}
 with \typ{REAL} components. Assign $x$ to \kbd{res}, first shortening
 the components of \kbd{res} if needed (in a stack-safe way). Further
 convert \kbd{res} to a \typ{REAL} if $x$ is a \typ{REAL}.
+Generalizes \kbd{affrr\_fixlg}.
 
 \fun{GEN}{trans_eval}{const char *fun, GEN (*f) (GEN, long), GEN x, long prec}
 evaluate the transcendental function $f$ (named \kbd{"fun"} at the argument

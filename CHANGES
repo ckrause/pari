@@ -55,6 +55,7 @@ BA  21- [libpari] Rg_is_QXk, ZXk_gcd, QXk_gcd, ZXk_divexact, ZXk_divides
 BA  22- [libpari] FpXk_gcd, FpXk_red, Rg_is_FpXk, Rg_to_FpXk
 BA  23- [libpari] get_FlxqX_algebra
     24- [libpari] gc_INT_affii
+    25- [libpari] affcc
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate
@@ -68,6 +69,7 @@ BA   4- rename gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
      6- rename chk_gerepileupto -> chk_gc_upto, dbg_gerepile -> dbg_stack,
         dbg_gerepileupto -> dbg_gc_upto
      7- implement 3M multiplication for t_QUADs
+     8- affgr(x,y): no longer support t_QUAD x; use gtofp
 
   Removed
      1- obsolete functions gerepileall, gerepilemany: use gc_all

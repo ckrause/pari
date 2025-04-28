@@ -2294,6 +2294,33 @@ padicaff0(GEN x)
   }
 }
 
+/* y a t_COMPLEX of t_REAL from cgetc; x a "complex number" (INT, FRAC, REAL,
+ * COMPLEX), raise an exception on exotic types (t_QUAD, etc) */
+void
+affcc(GEN x, GEN y)
+{
+  switch(typ(x))
+  {
+    case t_INT:
+      affir(x, gel(y,1));
+      affir(gen_0,gel(y,2)); break;
+
+    case t_REAL:
+      affrr(x,gel(y,1));
+      affir(gen_0,gel(y,2)); break;
+
+    case t_COMPLEX:
+      affgr(gel(x,1),gel(y,1));
+      affgr(gel(x,2),gel(y,2)); break;
+
+    case t_FRAC:
+      rdiviiz(gel(x,1),gel(x,2), gel(y,1));
+      affir(gen_0,gel(y,2)); break;
+
+    default: pari_err_TYPE2("=",x,y);
+  }
+}
+
 void
 gaffect(GEN x, GEN y)
 {
