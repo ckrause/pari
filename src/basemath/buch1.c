@@ -894,7 +894,7 @@ CYCLE:
         sub_fact(B,col, form2);
         if (fpd[-2]) col[fpd[-2]]++;
         d = dist(subii(gel(form1,4),gel(form2,4)),
-                      divrr(gel(form1,5),gel(form2,5)), prec);
+                 divrr(gel(form1,5),gel(form2,5)), prec);
       }
       else
       {
@@ -902,7 +902,7 @@ CYCLE:
         add_fact(B, col, form2);
         if (fpd[-2]) col[fpd[-2]]--;
         d = dist(addii(gel(form1,4),gel(form2,4)),
-                      mulrr(gel(form1,5),gel(form2,5)), prec);
+                 mulrr(gel(form1,5),gel(form2,5)), prec);
       }
       if (DEBUGLEVEL>2) err_printf(" %ldP",s);
     }
