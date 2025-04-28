@@ -1442,6 +1442,14 @@ fix_partrel(struct sol_abs *T, long i)
   set_avma(av);
 }
 
+/* assume compatible dimensions */
+static void
+ZV_affect(GEN x, GEN y)
+{
+  long i, l = lg(y);
+  for (i = 1; i < l; i++) affii(gel(x,i), gel(y,i));
+}
+
 /* Recursive loop. Suppose u[1..i] has been filled
  * Find possible solutions u such that, Norm(prod PR[i]^u[i]) = a, taking
  * into account:
@@ -1456,7 +1464,7 @@ isintnorm_loop(struct sol_abs *T, long i)
     if (next == 0) { test_sol(T, i); return; } /* no primes left */
 
     /* some primes left */
-    if (T->partrel) gaffect(gel(T->partrel,i), gel(T->partrel, next-1));
+    if (T->partrel) ZV_affect(gel(T->partrel,i), gel(T->partrel, next-1));
     for (k=i+1; k < next; k++) T->u[k] = 0;
     i = next-1;
   }
@@ -1471,7 +1479,7 @@ isintnorm_loop(struct sol_abs *T, long i)
   }
 
   i++; T->u[i] = 0;
-  if (T->partrel) gaffect(gel(T->partrel,i-1), gel(T->partrel,i));
+  if (T->partrel) ZV_affect(gel(T->partrel,i-1), gel(T->partrel,i));
   if (i == T->next[i-1])
   { /* change prime */
     if (T->next[i] == i+1 || i == T->nPR) /* only one Prime above p */
@@ -1490,7 +1498,7 @@ isintnorm_loop(struct sol_abs *T, long i)
     T->u[i]++;
     if (T->partrel) {
       pari_sp av = avma;
-      gaffect(ZC_add(gel(T->partrel,i), gel(T->rel,i)), gel(T->partrel,i));
+      ZV_affect(ZC_add(gel(T->partrel,i), gel(T->rel,i)), gel(T->partrel,i));
       set_avma(av);
     }
   }
