@@ -1226,9 +1226,27 @@ collector. Don't use this. In proper code, this can be replaced by
 \kbd{av} on, recopying the object \kbd{x} to a new address which is
 returned.
 
-\fun{GEN}{gc_INT}{pari_sp av, GEN q} faster variant of \kbd{gc\_GEN} when
-\kbd{q} is a \typ{INT}. The length and effective length of the resulting
+\fun{GEN}{gc_INT}{pari_sp av, GEN x} faster variant of \kbd{gc\_GEN} when
+\kbd{x} is a \typ{INT}. The length and effective length of the resulting
 \typ{INT} are equal.
+
+\fun{GEN}{gc_INT_affii}{pari_sp av, GEN x, GEN *z} This routine is technical,
+meant to reduce stack use when we modify big structures in place, for
+instance in linear algebra over the integers. Let \typ{INT}s \kbd{x}
+and \kbd{*z} be such that \kbd{*z} was created \emph{before} \kbd{av} was
+recorded. Then this function sets $\kbd{*z} \leftarrow \kbd{x}$ and collects
+accumulated garbage. This is done as follows:
+
+\item if \kbd{*z} is on the stack and large enough to store \kbd{x}, do so
+using \kbd{affii}. This destroys the \emph{content} of \kbd{z} and leave a
+clean stack with $\kbd{avma} = \kbd{av}$.
+
+\item else set \kbd{*z = gc\_INT(av, x)}. Compared to the previous case,
+we cleaned up the stack from \kbd{av} on, but the old \kbd{*z} is still
+taking up space that couldn't be (easily) reclaimed.
+
+In a nutshell, we perform a \kbd{gc\_INT} while taking advantage of the
+opportunity of overwriting \kbd{*z} without growing the stack, if possible.
 
 \fun{GEN}{gc_NULL}{pari_sp av} reset \kbd{avma} to \kbd{av} and return
 \kbd{NULL}.

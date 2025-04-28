@@ -1700,18 +1700,6 @@ affii2_or_copy_gc(pari_sp av, GEN x, GEN *y, GEN x1, GEN *y1)
   }
 }
 static void
-affii_or_copy_gc(pari_sp av, GEN x, GEN *y)
-{
-  long l = lg(*y);
-  if (lgefint(x) <= l && isonstack(*y))
-  {
-    affii(x,*y);
-    set_avma(av);
-  }
-  else
-    *y = gc_INT(av, x);
-}
-static void
 hnfswap(GEN A, GEN B, long k, GEN lambda, GEN D)
 {
   pari_sp av;
@@ -1737,7 +1725,7 @@ hnfswap(GEN A, GEN B, long k, GEN lambda, GEN D)
   av = avma;
   p1 = mulii(gel(D,k-2), gel(D,k));
   p2 = sqri(gel(Lk,k-1));
-  affii_or_copy_gc(av, diviiexact(addii(p1,p2), gel(D,k-1)), &gel(D,k-1));
+  gc_INT_affii(av, diviiexact(addii(p1,p2), gel(D,k-1)), &gel(D,k-1));
 }
 
 /* reverse row order in matrix A, IN PLACE */

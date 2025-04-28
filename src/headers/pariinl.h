@@ -1264,6 +1264,18 @@ gc_INT(pari_sp av, GEN x)
   set_avma((pari_sp)icopy_avma(x, av));
   return (GEN)avma;
 }
+INLINE void
+gc_INT_affii(pari_sp av, GEN x, GEN *y)
+{
+  long l = lg(*y);
+  if (lgefint(x) <= l && isonstack(*y))
+  {
+    affii(x,*y);
+    set_avma(av);
+  }
+  else
+    *y = gc_INT(av, x);
+}
 INLINE GEN
 gc_upto(pari_sp av, GEN q)
 {
