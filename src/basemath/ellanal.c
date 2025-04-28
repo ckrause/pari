@@ -224,22 +224,15 @@ static void
 baby_init(struct baby_giant *bb, GEN Q, GEN bnd, GEN rbnd, long prec)
 {
   long i, j, l = lg(Q);
-  GEN R, C, r0;
+  GEN R, C;
   C = cgetg(l,t_VEC);
-  for (i = 1; i < l; ++i)
-    gel(C, i) = powersr(gel(Q, i), rbnd[i]);
+  for (i = 1; i < l; ++i) gel(C, i) = powersr(gel(Q, i), rbnd[i]);
   R = cgetg(l,t_VEC);
-  r0 = real_0(prec);
   for (i = 1; i < l; ++i)
   {
     gel(R, i) = cgetg(rbnd[i]+1, t_VEC);
-    gmael(R, i, 1) = cgetr(prec);
-    affrr(gmael(C, i, 2),gmael(R, i, 1));
-    for (j = 2; j <= rbnd[i]; j++)
-    {
-      gmael(R, i, j) = cgetr(prec);
-      affrr(r0, gmael(R, i, j));
-    }
+    gmael(R, i, 1) = rtor(gmael(C, i, 2), prec);
+    for (j = 2; j <= rbnd[i]; j++) gmael(R, i, j) = stor(0, prec);
   }
   bb->baby = C; bb->giant = R;
   bb->bnd = bnd; bb->rbnd = rbnd;
@@ -451,7 +444,8 @@ heegner_L1_bg(void*E, GEN n, GEN a)
     {
       ulong r, q = uabsdiviu_rem(n, bb->rbnd[j], &r);
       GEN giant = gel(bb->giant, j), baby = gel(bb->baby, j);
-      gaffect(gadd(gel(giant, q+1), gdiv(gmul(gel(baby, r+1), a), n)), gel(giant, q+1));
+      affcc(gadd(gel(giant, q+1), gdiv(gmul(gel(baby, r+1), a), n)),
+            gel(giant, q+1));
     }
 }
 
@@ -466,30 +460,31 @@ heegner_L1(void*E, GEN n, GEN a)
       ulong r, q = uabsdiviu_rem(n, bb->rbnd[j], &r);
       GEN giant = gel(bb->giant, j), baby = gel(bb->baby, j);
       GEN ex = mulreal(gel(baby, r+1), gel(giant, q+1));
-      affrr(addrr(gel(bb->sum, j), divri(mulri(ex, a), n)), gel(bb->sum, j));
+      affrr(addrr(gel(bb->sum, j), divri(mulri(ex, a), n)),
+            gel(bb->sum, j));
     }
 }
+/* export ? */
+static GEN
+ctoc(GEN x, long prec)
+{ GEN y = cgetc(prec); affcc(x, y); return y; }
+
+/* [powers(x[i], n[i]), i=1..#x] */
+static GEN
+RgV_zv_powers(GEN x, GEN n)
+{ pari_APPLY_same(gpowers(gel(x,i), n[i])); }
+
 /* Return C, C[i][j] = Q[j]^i, i = 1..nb */
 static void
 baby_init2(struct baby_giant *bb, GEN Q, GEN bnd, GEN rbnd, long prec)
 {
   long i, j, l = lg(Q);
-  GEN R, C, r0;
-  C = cgetg(l,t_VEC);
-  for (i = 1; i < l; ++i)
-    gel(C, i) = gpowers(gel(Q, i), rbnd[i]);
-  R = cgetg(l,t_VEC);
-  r0 = mkcomplex(real_0(prec),real_0(prec));
+  GEN C = RgV_zv_powers(Q, rbnd), R = cgetg(l,t_VEC);
   for (i = 1; i < l; ++i)
   {
     gel(R, i) = cgetg(rbnd[i]+1, t_VEC);
-    gmael(R, i, 1) = cgetc(prec);
-    gaffect(gmael(C, i, 2),gmael(R, i, 1));
-    for (j = 2; j <= rbnd[i]; j++)
-    {
-      gmael(R, i, j) = cgetc(prec);
-      gaffect(r0, gmael(R, i, j));
-    }
+    gmael(R, i, 1) = ctoc(gmael(C, i, 2), prec);
+    for (j = 2; j <= rbnd[i]; j++) gmael(R, i, j) = ctoc(gen_0, prec);
   }
   bb->baby = C; bb->giant = R;
   bb->bnd = bnd; bb->rbnd = rbnd;
@@ -500,19 +495,11 @@ static void
 baby_init3(struct baby_giant *bb, GEN Q, GEN bnd, GEN rbnd, long prec)
 {
   long i, l = lg(Q);
-  GEN R, C, S;
-  C = cgetg(l,t_VEC);
-  for (i = 1; i < l; ++i)
-    gel(C, i) = gpowers(gel(Q, i), rbnd[i]);
-  R = cgetg(l,t_VEC);
+  GEN S, C = RgV_zv_powers(Q, rbnd), R = cgetg(l,t_VEC);
   for (i = 1; i < l; ++i)
     gel(R, i) = gpowers(gmael(C, i, 1+rbnd[i]), rbnd[i]);
   S = cgetg(l,t_VEC);
-  for (i = 1; i < l; ++i)
-  {
-    gel(S, i) = cgetr(prec);
-    affrr(real_i(gmael(C, i, 2)), gel(S, i));
-  }
+  for (i = 1; i < l; ++i) gel(S, i) = rtor(real_i(gmael(C, i, 2)), prec);
   bb->baby = C; bb->giant = R; bb->sum = S;
   bb->bnd = bnd; bb->rbnd = rbnd;
 }
