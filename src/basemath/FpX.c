@@ -1362,7 +1362,7 @@ FpX_eval(GEN x,GEN y,GEN p)
     if ((i & 7) == 0) { affii(p1, res); p1 = res; set_avma(av); }
   }
  fppoleval:
-  modiiz(p1,p,res); return gc_const(av, res);
+  affii(modii(p1,p), res); return gc_const(av, res);
 }
 
 /* Tz=Tx*Ty where Tx and Ty coprime
