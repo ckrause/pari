@@ -265,10 +265,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define resis  remis
 #define ressi  remsi
 #define resss  remss
-#define resiiz  remiiz
-#define resisz  remisz
-#define ressiz  remsiz
-#define resssz  remssz
 #define gres    grem
 #define lres    lrem
 #define gdivise gdvd
@@ -276,13 +272,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define mpdivis dvdiiz
 #define mpdivisis dvdisz
 #define mpent mpfloor
-#define mpentz mpfloorz
-#define mpnegz(x,y) \
-  STMT_START {pari_sp _av=avma;mpaff(mpneg(x),y);avma=_av;} STMT_END
-#define mpabsz(x,y) \
-  STMT_START {pari_sp _av=avma;mpaff(mpabs(x),y);avma=_av;} STMT_END
-#define absrz(x,z)  mpabsz((x),(z))
-#define negrz(x,z)  mpnegz((x),(z))
 
 #define err pari_err
 #define init pari_init
