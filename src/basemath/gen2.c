@@ -2262,7 +2262,12 @@ gaffsg(long s, GEN x)
   {
     case t_INT: affsi(s,x); break;
     case t_REAL: affsr(s,x); break;
-    case t_INTMOD: modsiz(s,gel(x,1),gel(x,2)); break;
+    case t_INTMOD:
+    {
+      pari_sp av = avma;
+      affii(modsi(s,gel(x,1)),gel(x,2)); set_avma(av);
+      break;
+    }
     case t_FRAC: affsi(s,gel(x,1)); affsi(1,gel(x,2)); break;
     case t_COMPLEX: gaffsg(s,gel(x,1)); gaffsg(0,gel(x,2)); break;
     case t_PADIC: {

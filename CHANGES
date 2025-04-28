@@ -78,6 +78,13 @@ BA   4- rename gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
         proper GC
      6- obsolete functions gabsz, gaddz, gdiventz, gdivz, gmodz, gmul2nz,
         gmulz, gnegz, gshiftz, gsubz: use gaffect or (better) proper GC
+     8- obsolete functions addiiz, addirz, addriz, addrrz, addsiz, addsrz,
+     addssz, diviiz, divirz, divisz, divriz, divrrz, divrsz, divsiz, divsrz,
+     divssz, dvdiiz, dvdisz, dvdiuz, dvmdiiz, dvmdisz, dvmdsiz, dvmdssz, modisz,
+     modsiz, modssz, mpaddz, mpmulz, mpsubz, muliiz, mulirz, mulriz, mulrrz,
+     mulsiz, mulsrz, mulssz, remiiz, remisz, remsiz, remssz, subiiz, subirz,
+     subisz, subriz, subrrz, subrsz, subsiz, subsrz, subssz. Use affii, affrr
+     or proper GC
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed

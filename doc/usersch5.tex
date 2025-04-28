@@ -2343,24 +2343,6 @@ small), and at the very end (very small, arbitrary).
 
 \section{Level 1 kernel (operations on longs, integers and reals)}
 
-\misctitle{Note} Some functions consist of an elementary operation,
-immediately followed by an assignment statement. They will be introduced as
-in the following example:
-
-\fun{GEN}{addrr[z]}{GEN x, GEN y[, GEN z]} followed by the explicit
-description of the function
-
-\fun{GEN}{addrr}{GEN x, GEN y}
-
-\noindent which creates its result on the stack, returning a \kbd{GEN} pointer
-to it, and the parts in brackets indicate that there exists also a function
-
-\fun{void}{addrrz}{GEN x, GEN y, GEN z}
-
-\noindent which assigns its result to the pre-existing object
-\kbd{z}, leaving the stack unchanged. These assignment variants are kept for
-backward compatibility but are inefficient: don't use them.
-
 \subsec{Creation}
 
 \fun{GEN}{cgeti}{long n} allocates memory on the PARI stack for a \typ{INT}
@@ -3037,43 +3019,40 @@ to \op\ are as follows. In this section, the \kbd{z} argument in the
 appears in the argument code (no \typ{REAL} operand is involved, only integer
 types), and of type \typ{REAL} otherwise.
 
-\funno{GEN}{mp\op[z]}{GEN x, GEN y[, GEN z]} applies \op\ to
-the \typ{INT} or \typ{REAL} \kbd{x} and~\kbd{y}. The function
-\kbd{mpdivz} does not exist (its semantic would change drastically
-depending on the type of the \kbd{z} argument), and neither do
-\kbd{mprem[z]} nor \kbd{mpmod[z]} (specific to integers).
+\funno{GEN}{mp\op}{GEN x, GEN y} applies \op\ to
+the \typ{INT} or \typ{REAL} \kbd{x} and~\kbd{y}.
 
-\funno{GEN}{\op si[z]}{long s, GEN x[, GEN z]} applies \op\ to the
+\funno{GEN}{\op si}{long s, GEN x} applies \op\ to the
 \kbd{long}~\kbd{s} and the \typ{INT}~\kbd{x}.
  These functions always return the global constant
 \kbd{gen\_0} (not a copy) when the sign of the result is $0$.
 
-\funno{GEN}{\op sr[z]}{long s, GEN x[, GEN z]} applies \op\ to the
+\funno{GEN}{\op sr}{long s, GEN x} applies \op\ to the
 \kbd{long}~\kbd{s} and the \typ{REAL}~\kbd{x}.
 
-\funno{GEN}{\op ss[z]}{long s, long t[, GEN z]} applies \op\ to the longs
+\funno{GEN}{\op ss}{long s, long t} applies \op\ to the longs
 \kbd{s} and~\kbd{t}. These functions always return the global constant
 \kbd{gen\_0} (not a copy) when the sign of the result is $0$.
 
-\funno{GEN}{\op ii[z]}{GEN x, GEN y[, GEN z]} applies \op\ to the
+\funno{GEN}{\op ii}{GEN x, GEN y} applies \op\ to the
 \typ{INT}s \kbd{x} and~\kbd{y}. These functions always return the global
 constant \kbd{gen\_0} (not a copy) when the sign of the result is $0$.
 
-\funno{GEN}{\op ir[z]}{GEN x, GEN y[, GEN z]} applies \op\ to the
+\funno{GEN}{\op ir}{GEN x, GEN y} applies \op\ to the
 \typ{INT} \kbd{x} and the \typ{REAL}~\kbd{y}.
 
-\funno{GEN}{\op is[z]}{GEN x, long s[, GEN z]} applies \op\ to the
+\funno{GEN}{\op is}{GEN x, long s} applies \op\ to the
 \typ{INT}~\kbd{x} and the \kbd{long}~\kbd{s}. These functions always return
 the global constant \kbd{gen\_0} (not a copy) when the sign of the result
 is $0$.
 
-\funno{GEN}{\op ri[z]}{GEN x, GEN y[, GEN z]} applies \op\ to the
+\funno{GEN}{\op ri}{GEN x, GEN y} applies \op\ to the
 \typ{REAL}~\kbd{x} and the \typ{INT}~\kbd{y}.
 
-\funno{GEN}{\op rr[z]}{GEN x, GEN y[, GEN z]} applies \op\ to the
+\funno{GEN}{\op rr}{GEN x, GEN y} applies \op\ to the
 \typ{REAL}s~\kbd{x} and~\kbd{y}.
 
-\funno{GEN}{\op rs[z]}{GEN x, long s[, GEN z]} applies \op\ to the
+\funno{GEN}{\op rs}{GEN x, long s} applies \op\ to the
 \typ{REAL}~\kbd{x} and the \kbd{long}~\kbd{s}.
 
 \noindent Some miscellaneous routines:
@@ -3251,12 +3230,8 @@ quotient and can be disposed of individually with a \kbd{cgiv(r)}. The
 remainder is always of the sign of the dividend~\kbd{x}. If the remainder
 is $0$ set \kbd{r = gen\_0}.
 
-\fun{void}{dvmdiiz}{GEN x, GEN y, GEN z, GEN t} assigns the Euclidean
-quotient of the \typ{INT}s \kbd{x} and \kbd{y} into the \typ{INT}~\kbd{z},
-and the Euclidean remainder into the \typ{INT}~\kbd{t}.
-
-\noindent Analogous routines \tet{dvmdis}\kbd{[z]}, \tet{dvmdsi}\kbd{[z]},
-\tet{dvmdss}\kbd{[z]} are available, where \kbd{s} denotes a \kbd{long}
+\noindent Analogous routines \tet{dvmdis}, \tet{dvmdsi},
+\tet{dvmdss} are available, where \kbd{s} denotes a \kbd{long}
 argument. But the following routines are in general more flexible:
 
 \fun{long}{sdivss_rem}{long s, long t, long *r} computes the Euclidean
@@ -12933,10 +12908,10 @@ A \typ{REAL} or \typ{FRAC} \kbd{y} is also allowed, in which case the
 remainder is the unique real $r$ such that $0 \leq r < |\kbd{y}|$ and
 $\kbd{y} = q\kbd{x} + r$ for some (in fact unique) integer $q$.
 
-\fun{GEN}{gmodsg}{long s, GEN y[, GEN z]} as \kbd{gmod}, except \kbd{x} is
+\fun{GEN}{gmodsg}{long s, GEN y} as \kbd{gmod}, except \kbd{x} is
 a \kbd{long}.
 
-\fun{GEN}{gmodgs}{GEN x, long s[, GEN z]} as \kbd{gmod}, except \kbd{y} is
+\fun{GEN}{gmodgs}{GEN x, long s} as \kbd{gmod}, except \kbd{y} is
 a \kbd{long}.
 
 \fun{GEN}{gdivmod}{GEN x, GEN y, GEN *r} If \kbd{r} is not equal to
