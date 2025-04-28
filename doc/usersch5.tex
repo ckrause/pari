@@ -2405,8 +2405,24 @@ consists exclusively of digits and optional decimal point and exponent
 discarded.
 
 \subsec{Assignment}
+It is in general easier to use a direct conversion,
+e.g.~\kbd{y = stoi(s)}, than to allocate a target of correct type and
+sufficient size, then assign to it:
+\bprog
+  GEN y = cgeti(3); affsi(s, y);
+@eprog\noindent
+These functions can still be useful in complicated garbage
+collecting scenarios. When the type and size of the PARI objects which appear
+in a computation are under control, one may allocate sufficiently large
+objects at the beginning, use assignment statements, then simply restore
+\kbd{avma}.
+
 In this section, the \kbd{z} argument in the \kbd{z}-functions must be of type
 \typ{INT} or~\typ{REAL}.
+
+\fun{int}{is_universal_constant}{GEN x} returns $1$ if $x$ is a global PARI
+constant you should never assign to (such as \kbd{gen\_1}), and $0$
+otherwise.
 
 \fun{void}{mpaff}{GEN x, GEN z} assigns \kbd{x} into~\kbd{z} (where \kbd{x}
 and \kbd{z} are \typ{INT} or \typ{REAL}).
@@ -2441,9 +2457,6 @@ Assumes that $\kbd{lg(z)} > 2$.
 
 \fun{void}{affgr}{GEN x, GEN z} assigns the real number
 (\typ{INT}, \typ{FRAC} or \typ{REAL}) \kbd{x} into the \typ{REAL}~\kbd{z}.
-
-\noindent The function \kbd{affrs} and \kbd{affri} do not exist. So don't use
-them.
 
 \fun{void}{affrr_fixlg}{GEN y, GEN z} a variant of \kbd{affrr}. First shorten
 $z$ so that it is no longer than $y$, then assigns $y$ to $z$. This is used
@@ -11676,29 +11689,6 @@ as above, with polynomials replaced by matrices.
 
 \newpage
 \chapter{Operations on general PARI objects}
-
-\section{Assignment}
-
-It is in general easier to use a direct conversion,
-e.g.~\kbd{y = stoi(s)}, than to allocate a target of correct type and
-sufficient size, then assign to it:
-\bprog
-  GEN y = cgeti(3); affsi(s, y);
-@eprog\noindent
-These functions can still be moderately useful in complicated garbage
-collecting scenarios. When the type and size of the PARI objects which appear
-in a computation are under control, one may allocate sufficiently large
-objects at the beginning, use assignment statements, then simply restore
-\kbd{avma}. But you will be better off not using them.
-
-\fun{void}{gaffect}{GEN x, GEN y} assigns the object \kbd{x} into the
-object~\kbd{y}. Both \kbd{x} and \kbd{y} must be scalar types. Type
-conversions (e.g.~from \typ{INT} to \typ{REAL} or \typ{INTMOD}) occur if
-legitimate.
-
-\fun{int}{is_universal_constant}{GEN x} returns $1$ if $x$ is a global PARI
-constant you should never assign to (such as \kbd{gen\_1}), and $0$
-otherwise.
 
 \section{Conversions}
 

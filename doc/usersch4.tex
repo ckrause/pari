@@ -676,7 +676,7 @@ objects also have a second codeword (types \typ{INT}, \typ{REAL},
 those from scratch, which should be exceedingly rare, \emph{it is your
 responsibility to fill this second codeword}, either explicitly (using the
 macros described in \secref{se:impl}), or implicitly using an assignment
-statement (using \kbd{gaffect}).
+statement (for instance \kbd{affii} or \kbd{affrr}).
 
 Note that the length argument $l$ is predetermined for a number of types:
 3 for types \typ{INTMOD}, \typ{FRAC}, \typ{COMPLEX}, \typ{POLMOD},
@@ -685,8 +685,7 @@ However for the sake of efficiency, \kbd{cgetg} does not check this: disasters
 will occur if you give an incorrect length for those types.
 
 \misctitle{Notes} 1)  The main use of this function is create efficiently
-a constant object, or to prepare for later assignments (see
-\secref{se:assign}). Most of the time you will use \kbd{GEN} objects as they
+a constant object. Most of the time you will use \kbd{GEN} objects as they
 are created and returned by PARI functions. In this case you do not need to
 use \kbd{cgetg} to create space to hold them.
 
@@ -806,57 +805,17 @@ by the tree representing~\kbd{x}, i.e.~\kbd{gsizeword(x)} multiplied by
 \kbd{sizeof(long)}. This is normally useless since PARI functions use
 a number of \emph{words} as input for lengths and precisions.
 
-\subsec{Assignments}
+\subsec{Assignment and copy}
 Firstly, if \kbd{x} and \kbd{y} are both declared as \kbd{GEN} (i.e.~pointers
 to something), the ordinary C assignment \kbd{y = x} makes perfect sense: we
 are just moving a pointer around. However, physically modifying either
 \kbd{x} or \kbd{y} (for instance, \kbd{x[1] = 0}) also changes the other
-one, which is usually not desirable. \label{se:assign}
+one, which is usually not desirable.
 
-\misctitle{Very important note} Using the functions described in this
-paragraph is inefficient and often awkward: one of the garbage collection
-functions (see~\secref{se:garbage}) should be preferred. See the paragraph
-end for one exception to this rule.
-
-\noindent
-The general PARI \idx{assignment} function is the function \teb{gaffect} with
-the following syntax:
-
-\fun{void}{gaffect}{GEN x, GEN y}
-
-\noindent
-Its effect is to assign the PARI object \kbd{x} into the \emph{preexisting}
-object \kbd{y}. Both \kbd{x} and \kbd{y} must be \emph{scalar} types. For
-convenience, vector or matrices of scalar types are also allowed.
-
-This copies the whole structure of \kbd{x} into \kbd{y} so many conditions
-must be met for the assignment to be possible. For instance it is allowed to
-assign a \typ{INT} into a \typ{REAL}, but the converse is forbidden. For
-that, you must use the truncation or rounding function of your choice,
-e.g.\kbd{mpfloor}.
-
-It can also happen that \kbd{y} is not large enough or does not have the proper
-tree structure to receive the object \kbd{x}. For instance, let \kbd{y} the zero
-integer with length equal to 2; then \kbd{y} is too small to accommodate any
-nonzero \typ{INT}. In general common sense tells you what is possible,
-keeping in mind the PARI philosophy which says that if it makes sense it is
-valid. For instance, the assignment of an imprecise object into a precise one
-does \emph{not} make sense. However, a change in precision of imprecise
-objects is allowed, even if it \emph{increases} its accuracy: we complement
-the ``mantissa'' with infinitely many $0$ digits in this case. (Mantissa
-between quotes, because this is not restricted to \typ{REAL}s, it also
-applies for $p$-adics for instance.)
-
-\misctitle{Note} Due to the requirements mentioned above, it is usually
-a bad idea to use \tet{gaffect} statements. There is one exception: for simple
-objects (e.g.~leaves) whose size is controlled, they can be easier to use than
-garbage collection, and about as efficient.
-
-\subsec{Copy} It is also very useful to \idx{copy} a PARI object, not
-just by moving around a pointer as in the \kbd{y = x} example, but by
-creating a copy of the whole tree structure, without pre-allocating a
-possibly complicated \kbd{y} to use with \kbd{gaffect}. The function which
-does this is called \teb{gcopy}. Its syntax is:
+It is also very useful to \idx{copy} a PARI object, not just by moving around
+a pointer as in the \kbd{y = x} example, but by creating a copy of the whole
+tree structure. The function which does this is called \teb{gcopy}. Its
+syntax is:
 
 \fun{GEN}{gcopy}{GEN x}
 
@@ -868,8 +827,8 @@ speed instead of making a full recursive copy. Use
 \fun{GEN}{shallowcopy}{GEN x} for this. Note that the result is not suitable
 for \tet{gc_upto} !
 
-Make sure at this point that you understand the difference between \kbd{y =
-x}, \kbd{y = gcopy(x)}, \kbd{y = shallowcopy(x)} and \kbd{gaffect(x,y)}.
+Make sure at this point that you understand the difference between
+\kbd{y = x}, \kbd{y = gcopy(x)} and \kbd{y = shallowcopy(x)}.
 
 \subsec{Clones}\sidx{clone}\label{se:clone}
 Sometimes, it is more efficient to create a \emph{persistent} copy of a PARI

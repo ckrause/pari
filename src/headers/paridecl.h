@@ -3967,7 +3967,6 @@ GEN     cvtop2(GEN x, GEN y);
 int     cx_approx_equal(GEN a, GEN b);
 int     cx_approx0(GEN x, GEN y);
 GEN     gabs(GEN x, long prec);
-void    gaffect(GEN x, GEN y);
 int     gcmp(GEN x, GEN y);
 int     gequal0(GEN x);
 int     gequal1(GEN x);
