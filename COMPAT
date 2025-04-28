@@ -59,6 +59,8 @@ This file lists the incompatible changes between Version 2.x and older versions
     mulsiz, mulsrz, mulssz, remiiz, remisz, remsiz, remssz, subiiz, subirz,
     subisz, subriz, subrrz, subrsz, subsiz, subsrz, subssz. Use affii, affrr
     or proper GC
+  - obsolete function gaffsg: don't use "generic" assignments; use low level
+    affii / affrr with inputs/outputs of controlled type or proper GC.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.16 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - binomial changed to agree with Loeb's definition

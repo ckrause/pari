@@ -11691,9 +11691,6 @@ in a computation are under control, one may allocate sufficiently large
 objects at the beginning, use assignment statements, then simply restore
 \kbd{avma}. But you will be better off not using them.
 
-\fun{void}{gaffsg}{long s, GEN x} assigns the \kbd{long}~\kbd{s} into the
-object~\kbd{x}.
-
 \fun{void}{gaffect}{GEN x, GEN y} assigns the object \kbd{x} into the
 object~\kbd{y}. Both \kbd{x} and \kbd{y} must be scalar types. Type
 conversions (e.g.~from \typ{INT} to \typ{REAL} or \typ{INTMOD}) occur if

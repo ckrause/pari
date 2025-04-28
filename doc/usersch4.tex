@@ -173,19 +173,11 @@ is given in Chapter~6):
 
 \fun{GEN}{gaddsg}{long x, GEN y}
 
-\noindent In the following one, \kbd{z} is a preexisting \kbd{GEN} and the
-result of the corresponding operation is put into~\kbd{z}. The size of the PARI
-stack does not change:
-
-\fun{void}{gaddz}{GEN x, GEN y, GEN z}
-
-\noindent (This last form is inefficient in general and deprecated outside of
-PARI kernel programming.) Low level kernel functions implement these
-operators for specialized arguments and are also available: Level 0 deals
-with operations at the word level (\kbd{long}s and \kbd{ulong}s), Level 1
-with \typ{INT} and \typ{REAL} and Level 2 with the rest (modular arithmetic,
-polynomial arithmetic and linear algebra). Here are some examples of Level
-$1$ functions:
+Low level kernel functions implement these operators for specialized
+arguments and are also available: Level 0 deals with operations at the word
+level (\kbd{long}s and \kbd{ulong}s), Level 1 with \typ{INT} and \typ{REAL}
+and Level 2 with the rest (modular arithmetic, polynomial arithmetic and
+linear algebra). Here are some examples of Level $1$ functions:
 
 \fun{GEN}{addii}{GEN x, GEN y}: here $x$ and $y$ are \kbd{GEN}s of type
 \typ{INT} (this is not checked).
@@ -854,17 +846,6 @@ objects is allowed, even if it \emph{increases} its accuracy: we complement
 the ``mantissa'' with infinitely many $0$ digits in this case. (Mantissa
 between quotes, because this is not restricted to \typ{REAL}s, it also
 applies for $p$-adics for instance.)
-
-All functions ending in ``\kbd{z}'' such as \teb{gaddz}
-(see~\secref{se:low_level}) implicitly use this function. In fact what they
-exactly do is record {\teb{avma}} (see~\secref{se:garbage}), perform the
-required operation, \teb{gaffect} the result to the last operand, then
-restore the initial \kbd{avma}.
-
-You can assign ordinary C long integers into a PARI object (not necessarily
-of type \typ{INT}) using
-
-\fun{void}{gaffsg}{long s, GEN y}
 
 \misctitle{Note} Due to the requirements mentioned above, it is usually
 a bad idea to use \tet{gaffect} statements. There is one exception: for simple

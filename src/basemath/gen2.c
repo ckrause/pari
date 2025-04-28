@@ -2240,51 +2240,6 @@ vecmin(GEN x) { return vecmin0(x, NULL); }
 
 /*******************************************************************/
 /*                                                                 */
-/*                      AFFECT long --> GEN                        */
-/*         affect long s to GEN x. Useful for initialization.      */
-/*                                                                 */
-/*******************************************************************/
-
-static void
-padicaff0(GEN x)
-{
-  if (signe(padic_u(x)))
-  {
-    setvalp(x, valp(x) + precp(x));
-    affsi(0, padic_u(x));
-  }
-}
-
-void
-gaffsg(long s, GEN x)
-{
-  switch(typ(x))
-  {
-    case t_INT: affsi(s,x); break;
-    case t_REAL: affsr(s,x); break;
-    case t_INTMOD:
-    {
-      pari_sp av = avma;
-      affii(modsi(s,gel(x,1)),gel(x,2)); set_avma(av);
-      break;
-    }
-    case t_FRAC: affsi(s,gel(x,1)); affsi(1,gel(x,2)); break;
-    case t_COMPLEX: gaffsg(s,gel(x,1)); gaffsg(0,gel(x,2)); break;
-    case t_PADIC: {
-      long vx;
-      GEN y;
-      if (!s) { padicaff0(x); break; }
-      vx = Z_pvalrem(stoi(s), padic_p(x), &y);
-      setvalp(x,vx); modiiz(y, padic_pd(x), padic_u(x));
-      break;
-    }
-    case t_QUAD: gaffsg(s,gel(x,2)); gaffsg(0,gel(x,3)); break;
-    default: pari_err_TYPE2("=",stoi(s),x);
-  }
-}
-
-/*******************************************************************/
-/*                                                                 */
 /*                     GENERIC AFFECTATION                         */
 /*         Affect the content of x to y, whenever possible         */
 /*                                                                 */
@@ -2327,6 +2282,16 @@ croak(const char *s) {
   char *t;
   t = stack_sprintf("gaffect [overwriting universal object: %s]",s);
   pari_err_BUG(t);
+}
+
+static void
+padicaff0(GEN x)
+{
+  if (signe(padic_u(x)))
+  {
+    setvalp(x, valp(x) + precp(x));
+    affsi(0, padic_u(x));
+  }
 }
 
 void
@@ -2385,7 +2350,7 @@ gaffect(GEN x, GEN y)
           modiiz(x,gel(y,1),gel(y,2)); break;
 
         case t_COMPLEX:
-          gaffect(x,gel(y,1)); gaffsg(0,gel(y,2)); break;
+          gaffect(x,gel(y,1)); gaffect(gen_0,gel(y,2)); break;
 
         case t_PADIC:
           if (!signe(x)) { padicaff0(y); break; }
@@ -2394,7 +2359,7 @@ gaffect(GEN x, GEN y)
           affii(modii(p1, padic_pd(y)), padic_u(y));
           set_avma(av); break;
 
-        case t_QUAD: gaffect(x,gel(y,2)); gaffsg(0,gel(y,3)); break;
+        case t_QUAD: gaffect(x,gel(y,2)); gaffect(gen_0,gel(y,3)); break;
         default: pari_err_TYPE2("=",x,y);
       }
       break;
@@ -2402,7 +2367,7 @@ gaffect(GEN x, GEN y)
     case t_REAL:
       switch(ty)
       {
-        case t_COMPLEX: gaffect(x,gel(y,1)); gaffsg(0,gel(y,2)); break;
+        case t_COMPLEX: gaffect(x,gel(y,1)); gaffect(gen_0,gel(y,2)); break;
         default: pari_err_TYPE2("=",x,y);
       }
       break;
@@ -2415,7 +2380,7 @@ gaffect(GEN x, GEN y)
           p1 = Fp_inv(gel(x,2),gel(y,1));
           affii(modii(mulii(gel(x,1),p1),gel(y,1)), gel(y,2));
           set_avma(av); break;
-        case t_COMPLEX: gaffect(x,gel(y,1)); gaffsg(0,gel(y,2)); break;
+        case t_COMPLEX: gaffect(x,gel(y,1)); gaffect(gen_0,gel(y,2)); break;
         case t_PADIC:
         {
           GEN p = padic_p(y), pd = padic_pd(y);
@@ -2428,7 +2393,7 @@ gaffect(GEN x, GEN y)
           p1 = mulii(num, Fp_inv(den, pd));
           affii(modii(p1,pd), padic_u(y)); set_avma(av); break;
         }
-        case t_QUAD: gaffect(x,gel(y,2)); gaffsg(0,gel(y,3)); break;
+        case t_QUAD: gaffect(x,gel(y,2)); gaffect(gen_0,gel(y,3)); break;
         default: pari_err_TYPE2("=",x,y);
       }
       break;
