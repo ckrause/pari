@@ -1395,11 +1395,3 @@ affur(ulong x, GEN y)
   y[1] = evalsigne(1) | _evalexpo((BITS_IN_LONG-1)-sh);
   y[2] = x<<sh; for (i=3; i<ly; i++) y[i] = 0;
 }
-
-INLINE void
-mpaff(GEN x, GEN y)
-{
-  if (typ(x)==t_INT)
-  { if (typ(y)==t_INT) affii(x,y); else affir(x,y); }
-  else affrr(x,y);
-}

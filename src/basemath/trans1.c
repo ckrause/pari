@@ -745,7 +745,7 @@ rpowuu(ulong a, ulong n, long prec)
   D.prec = prec;
   D.a = (long)a;
   y = gen_powu_fold_i(utoipos(a), n, (void*)&D, &_rpowuu_sqr, &_rpowuu_msqr);
-  mpaff(y, z); return gc_const(av,z);
+  affgr(y, z); return gc_const(av,z);
 }
 
 GEN

@@ -6046,7 +6046,6 @@ INLINE GEN    modss(long x, long y);
 INLINE GEN    mpabs(GEN x);
 INLINE GEN    mpabs_shallow(GEN x);
 INLINE GEN    mpadd(GEN x, GEN y);
-INLINE void   mpaff(GEN x, GEN y);
 INLINE GEN    mpceil(GEN x);
 INLINE int    mpcmp(GEN x, GEN y);
 INLINE GEN    mpcopy(GEN x);

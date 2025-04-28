@@ -538,13 +538,13 @@ fillrecs(hashtable *H, GEN evec, GEN pab, long N, long prec)
     GEN t = mpmul(gel(ini, n+1), gmael(pab, n, a));
     GEN u = mpadd(mpmul(gel(fin, n+1), gmael(pab, n, b)), gel(mid,n+1));
     GEN v = mpdiv(mpadd(t, u), gmael(pab, n, a+b));
-    mpaff(mpadd(gel(r, n+1), v), z); set_avma(av); gel(r,n) = z;
+    affgr(mpadd(gel(r, n+1), v), z); set_avma(av); gel(r,n) = z;
   }
   { /* n = 1 */
     GEN z = cgetr(prec);
     pari_sp av = avma;
     GEN t = gel(ini,2), u = mpadd(gel(fin,2), gel(mid,2)), v = mpadd(t, u);
-    mpaff(mpadd(gel(r, 2), v), z); set_avma(av); gel(r,1) = z;
+    affgr(mpadd(gel(r, 2), v), z); set_avma(av); gel(r,1) = z;
   }
   hash_insert(H, (void*)evec, (void*)r); return r;
 }
@@ -883,18 +883,18 @@ fillL(long k, long bitprec)
         GEN u = mpmul(gel(pfin, n+1), gmael(pab, n, a));
         GEN v = gel(pmid, n+1), S = s < k ? gel(p1, n+1): p1;
         S = mpadd(S, mpdiv(mpadd(mpadd(t, u), v), gmael(pab, n, a+b)));
-        mpaff(S, s < k ? gel(p1, n) : p1);
-        if (p2 && s < k) mpaff(S, gel(p2, n));
+        affgr(S, s < k ? gel(p1, n) : p1);
+        if (p2 && s < k) affgr(S, gel(p2, n));
       }
       { /* n = 1: same formula simplifies */
         GEN t = gel(pinit,2), u = gel(pfin,2), v = gel(pmid,2);
         GEN S = s < k ? gel(p1,2): p1;
         S = mpadd(S, mpadd(mpadd(t, u), v));
-        mpaff(S, s < k ? gel(p1,1) : p1);
-        if (p2 && s < k) mpaff(S, gel(p2, 1));
+        affgr(S, s < k ? gel(p1,1) : p1);
+        if (p2 && s < k) affgr(S, gel(p2, 1));
         set_avma(av);
       }
-      if (p2 && s == k) mpaff(p1, p2);
+      if (p2 && s == k) affgr(p1, p2);
     }
   }
   return L;

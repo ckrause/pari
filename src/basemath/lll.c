@@ -2049,7 +2049,7 @@ Babai(pari_sp av, long kappa, GEN *pG, GEN *pB, GEN *pU, GEN mu, GEN r, GEN s,
       GEN g = gmael(G,kappa,j);
       for (k = zeros+1; k < j; k++)
         g = mpsub(g, mulrr(gmael(mu,j,k), gmael(r,kappa,k)));
-      mpaff(g, gmael(r,kappa,j));
+      affgr(g, gmael(r,kappa,j));
       affrr(divrr(gmael(r,kappa,j), gmael(r,j,j)), gmael(mu,kappa,j));
       emaxmu = maxss(emaxmu, expo(gmael(mu,kappa,j)));
       set_avma(btop);
