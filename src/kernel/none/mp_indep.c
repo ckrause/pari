@@ -670,13 +670,6 @@ modii(GEN x, GEN y)
   }
 }
 
-void
-modiiz(GEN x, GEN y, GEN z)
-{
-  const pari_sp av = avma;
-  affii(modii(x,y),z); set_avma(av);
-}
-
 GEN
 divrs(GEN x, long y)
 {

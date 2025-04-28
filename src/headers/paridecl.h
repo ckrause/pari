@@ -4965,7 +4965,6 @@ ulong   invmod2BIL(ulong b);
 GEN     invr(GEN b);
 GEN     mantissa_real(GEN x, long *e);
 GEN     modii(GEN x, GEN y);
-void    modiiz(GEN x, GEN y, GEN z);
 GEN     mulii(GEN x, GEN y);
 GEN     mulir(GEN x, GEN y);
 GEN     mulrr(GEN x, GEN y);
