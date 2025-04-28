@@ -55,7 +55,7 @@ BA  21- [libpari] Rg_is_QXk, ZXk_gcd, QXk_gcd, ZXk_divexact, ZXk_divides
 BA  22- [libpari] FpXk_gcd, FpXk_red, Rg_is_FpXk, Rg_to_FpXk
 BA  23- [libpari] get_FlxqX_algebra
     24- [libpari] gc_INT_affii
-    25- [libpari] affcc
+    25- [libpari] affgc
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate

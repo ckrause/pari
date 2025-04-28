@@ -444,7 +444,7 @@ heegner_L1_bg(void*E, GEN n, GEN a)
     {
       ulong r, q = uabsdiviu_rem(n, bb->rbnd[j], &r);
       GEN giant = gel(bb->giant, j), baby = gel(bb->baby, j);
-      affcc(gadd(gel(giant, q+1), gdiv(gmul(gel(baby, r+1), a), n)),
+      affgc(gadd(gel(giant, q+1), gdiv(gmul(gel(baby, r+1), a), n)),
             gel(giant, q+1));
     }
 }
@@ -467,7 +467,7 @@ heegner_L1(void*E, GEN n, GEN a)
 /* export ? */
 static GEN
 ctoc(GEN x, long prec)
-{ GEN y = cgetc(prec); affcc(x, y); return y; }
+{ GEN y = cgetc(prec); affgc(x, y); return y; }
 
 /* [powers(x[i], n[i]), i=1..#x] */
 static GEN

@@ -3960,7 +3960,7 @@ long    ZX_pval(GEN x, GEN p);
 long    ZX_pvalrem(GEN x, GEN p, GEN *px);
 long    ZXV_pvalrem(GEN x, GEN p, GEN *px);
 long    ZXX_pvalrem(GEN x, GEN p, GEN *px);
-void    affcc(GEN x, GEN y);
+void    affgc(GEN x, GEN y);
 GEN     cvstop2(long s, GEN y);
 GEN     cvtop(GEN x, GEN p, long l);
 GEN     cvtop2(GEN x, GEN y);

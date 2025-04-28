@@ -1858,8 +1858,8 @@ QuadGetST(GEN bnr, GEN *pS, GEN *pT, GEN CR, long prec)
           t = gadd(t, gmul(an, gel(vf1,n)));
           if (++c == 256) { (void)gc_all(av2,2, &s,&t); c = 0; }
         }
-      affcc(gmul(cf0, s), gel(S,u));
-      affcc(gmul(cf1, conj_i(t)), gel(T,u));
+      affgc(gmul(cf0, s), gel(S,u));
+      affgc(gmul(cf1, conj_i(t)), gel(T,u));
       FreeMat(matan,NN); set_avma(av2);
     }
     if (DEBUGLEVEL>1) err_printf("\n");
@@ -2108,8 +2108,8 @@ GetST0(GEN bnr, GEN *pS, GEN *pT, GEN CR, long prec)
           t = gadd(t, gmul(an, gel(cScT.cT,n)));
           if (++c == 256) { (void)gc_all(av2,2, &s,&t); c = 0; }
         }
-      affcc(s,         gel(S,u));
-      affcc(conj_i(t), gel(T,u));
+      affgc(s,         gel(S,u));
+      affgc(conj_i(t), gel(T,u));
       FreeMat(matan, N); set_avma(av2);
     }
     if (DEBUGLEVEL>1) err_printf("\n");

@@ -2280,7 +2280,7 @@ padic_to_Fl(GEN x, ulong Y) {
 /* y a t_COMPLEX of t_REAL from cgetc; x a "complex number" (INT, FRAC, REAL,
  * COMPLEX), raise an exception on exotic types (t_QUAD, etc) */
 void
-affcc(GEN x, GEN y)
+affgc(GEN x, GEN y)
 {
   switch(typ(x))
   {
