@@ -1779,7 +1779,7 @@ jacobi(GEN a, long prec)
 {
   pari_sp av;
   long de, e, e1, e2, i, j, p, q, l = lg(a);
-  GEN c, ja, L, r, L2, r2, unr;
+  GEN c, ja, L, r, L2, r2, unr, sqrt2;
 
   if (typ(a) != t_MAT) pari_err_TYPE("jacobi",a);
   ja = cgetg(3,t_VEC);
@@ -1816,6 +1816,7 @@ jacobi(GEN a, long prec)
     }
   }
   a = c; unr = real_1(prec);
+  sqrt2 = sqrtr_abs(shiftr(unr, 1));
   de = prec2nbits(prec);
 
  /* e1 = min expo(a[i,i])
@@ -1831,20 +1832,25 @@ jacobi(GEN a, long prec)
       x = divrr(x, shiftr(gcoeff(a,p,q),1));
       y = sqrtr(addrr(unr, sqrr(x)));
       t = invr((signe(x)>0)? addrr(x,y): subrr(x,y));
+      c = sqrtr(addrr(unr,sqrr(t)));
+      s = divrr(t,c);
+      u = divrr(t,addrr(unr,c));
     }
-    else
-      y = t = unr;
-    c = sqrtr(addrr(unr,sqrr(t)));
-    s = divrr(t,c);
-    u = divrr(t,addrr(unr,c));
+    else /* same formulas for t = 1.0 */
+    {
+      t = NULL; /* 1.0 */
+      c = sqrt2;
+      s = shiftr(c, -1);
+      u = subrr(c, unr);
+    }
 
     /* compute successive transforms of a and the matrix of accumulated
      * rotations (r) */
     for (i=1;   i<p; i++) rot(gcoeff(a,i,p), gcoeff(a,i,q), s,u);
     for (i=p+1; i<q; i++) rot(gcoeff(a,p,i), gcoeff(a,i,q), s,u);
     for (i=q+1; i<l; i++) rot(gcoeff(a,p,i), gcoeff(a,q,i), s,u);
-    y = gcoeff(a,p,q);
-    t = mulrr(t, y); shiftr_inplace(y, -de - 1);
+    y = gcoeff(a,p,q); t = t? mulrr(t, y): rcopy(y);
+    shiftr_inplace(y, -de - 1);
     affrr(subrr(gel(L,p),t), gel(L,p));
     affrr(addrr(gel(L,q),t), gel(L,q));
     for (i=1; i<l; i++) rot(gcoeff(r,i,p), gcoeff(r,i,q), s,u);
