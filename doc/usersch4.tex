@@ -211,8 +211,8 @@ e.g.~using \kbd{addii} on a \typ{FRAC} argument will cause disasters. Type
 mismatches may corrupt the PARI stack, though in most cases they will just
 immediately overflow the stack. Because of this, the PARI philosophy of
 giving a result which is as exact as possible, enforced for generic functions
-like \kbd{gadd} or \kbd{gmul}, is dropped in kernel routines of Level $1$,
-where it is replaced by the much simpler rule: the result is a \typ{INT} if
+like \kbd{gadd} or \kbd{gmul}, is dropped in kernel routines of Level $1$.
+There, it is replaced by the simpler rule: the result is a \typ{INT} if
 and only if all arguments are integer types (\typ{INT} but also C \kbd{long}
 and \kbd{ulong}) and a \typ{REAL} otherwise. For instance, multiplying a
 \typ{REAL} by a \typ{INT} always yields a \typ{REAL} if you use \kbd{mulir},
