@@ -241,7 +241,8 @@ ones:
 \kbd{GEN \key{gexp}(GEN x, long prec)}.
 
 \noindent The last argument \kbd{prec} is an integer multiple of $\tet{BITS_IN_LONG}$,
-corresponding to the default floating point precision required. It is \emph{only} used if
+corresponding to the default floating point precision required, given in bits.
+It is \emph{only} used if
 \kbd{x} is an exact object, otherwise the relative precision is determined by
 the precision of~\kbd{x}. Note that for parity reasons, half the accuracies
 available on $32$-bit architectures (the odd multiples of $32$) have no precise
@@ -461,8 +462,8 @@ into the zone below \kbd{ltop}.
 Let us recap: although all is implemented in terms of the
 \kbd{gc\_stack\_update} low level function, you don't want to use it directly.
 You mostly want to use one of the following three functions to collect
-garbage while keeping some results safe. Many others will be described in
-\secref{se:garbage2} for specialized scenarios.
+garbage (reclaim memory) while keeping some results safe. Many others will be
+described in \secref{se:garbage2} for specialized scenarios.
 
 \fun{GEN}{gc_upto}{pari_sp ltop, GEN q}. This applies when \kbd{q} is the last
 object on the stack, returned by a high level PARI function. It cleans the
@@ -529,8 +530,8 @@ that no space is lost. Specifically:
   ltop = avma;
   z = gc_upto(ltop, gadd(gsqr(x), gsqr(y)));
 @eprog\noindent This works because the output of \kbd{gadd} is the last
-object on the stack and everything else is deleted. Another possibility is
-to use
+object on the stack and everything else that was introduced after recording
+the \kbd{ltop} reference point is deleted. Another possibility is to use
 \bprog
   ltop = avma;
   z = gc_GEN(ltop, gadd(gsqr(x), gsqr(y)));
