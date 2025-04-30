@@ -163,7 +163,7 @@ implementation of \typ{MAT}s as horizontal lists of vertical vectors,
 \subsec{Variations on basic functions}\label{se:low_level} In the library
 syntax descriptions in Chapter~3, we have only given the basic names of the
 functions. For example \kbd{gadd}$(x,y)$ assumes that $x$ and $y$ are
-\kbd{GEN}s, and \emph{creates} the result $x+y$ on the PARI stack. For most
+\kbd{GEN}s, and creates the result $x+y$ on the PARI stack. For most
 of the basic operators and functions, many other variants are available. We
 give some examples for \kbd{gadd}, but the same is true for all the basic
 operators, as well as for some simple common functions (a complete list
@@ -192,9 +192,7 @@ two arguments can be of type \typ{INT} or \typ{REAL}), \teb{addis} (to add a
 
 The Level $1$ names are self-explanatory once you know that {\bf i} stands for a
 \typ{INT}, {\bf r} for a \typ{REAL}, {\bf mp} for i or r, {\bf s} for a signed C
-long integer, {\bf u} for an unsigned C long integer; finally the suffix {\bf z}
-means that the result is not created on the PARI stack but assigned to a
-preexisting GEN object passed as an extra argument. Chapter 6 gives a
+long integer, {\bf u} for an unsigned C long integer. Chapter 6 gives a
 description of these low-level functions.
 
 Level $2$ names are more complicated, see \secref{se:level2names} for all the
