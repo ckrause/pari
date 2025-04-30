@@ -45,8 +45,8 @@ to recover it when collecting garbage.
 
 A function is \emph{not stack-clean} if it leaves intermediate data on the
 stack besides its output, for efficiency reasons. If is is nevertheless
-suitable for \tet{gc_upto}, the function description will state it. Of course
-\tet{gc_GEN} and \tet{gc_all} are always able to handle it.
+suitable for \kbd{gc\_upto}, the function description will state it. Of course
+\kbd{gc\_GEN} and \kbd{gc\_all} are always able to handle it.
 
 \section{Initializing the library}
 
@@ -1305,8 +1305,8 @@ as a side effect. Not that we can later use \kbd{cgiv}$(y)$ to recover the
 memory used by $y$ while still keeping $x$.
 
 \fun{GEN}{gc_all_unsafe}{pari_sp av, pari_sp ltop, int n, ...} unsafe
-variant of \tet{gc_all}, about twice faster. This is subject to the same
-restrictions as \tet{gc_upto}, the only difference being that more than
+variant of \kbd{gc\_all}, about twice faster. This is subject to the same
+restrictions as \kbd{gc\_upto}, the only difference being that more than
 one address gets updated. Cleans up the stack between \kbd{av} and
 \kbd{ltop}, updating the \kbd{n} elements which follow \kbd{n} in the
 argument list (of type \kbd{GEN*}). Check that the elements of \kbd{g} have
@@ -12200,7 +12200,7 @@ but \kbd{mkvecsmalln(2, 1, 2)} is not.
 
 Contrary to the policy of general PARI functions, the functions in this
 subsection do \emph{not} copy their arguments, nor do they produce an object
-a priori suitable for \tet{gc_upto}. In particular, they are
+a priori suitable for \kbd{gc\_upto}. In particular, they are
 faster than their clean equivalent (which may not exist). \emph{If} you
 restrict their arguments to universal objects (e.g \kbd{gen\_0}),
 then the above warning does not apply.
@@ -12303,7 +12303,7 @@ to \kbd{Qfb(a,b,c)}, assuming that $D = b^2 - 4ac$.
 \smallskip
 
 It is sometimes useful to return such a container whose entries are not
-universal objects, but nonetheless suitable for \tet{gc_upto}.
+universal objects, but nonetheless suitable for \kbd{gc\_upto}.
 If the entries can be computed at the time the result is returned, the
 following macros achieve this effect:
 

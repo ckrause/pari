@@ -479,8 +479,8 @@ equivalent to, but more efficient than
   gc_upto(ltop, gcopy(q))
 @eprog\noindent In this case, the \kbd{GEN} parameter \kbd{q} need not
 satisfy any property before the garbage collection. Of course, this is about
-twice slower than \tet{gc_upto}, because \kbd{q} has to be copied to a clean
-stack zone first. This function is a special case of \tet{gc_all} below,
+twice slower than \kbd{gc\_upto}, because \kbd{q} has to be copied to a clean
+stack zone first. This function is a special case of \kbd{gc\_all} below,
 where $n=1$.
 
 \fun{GEN}{gc_all}{pari_sp ltop, int n, ...}.
@@ -518,7 +518,7 @@ destroy \kbd{z} as well. It is not possible either to use the function
 \kbd{cgiv} since \kbd{x2} and \kbd{y2} are not the latest computed objects
 and we do not want to give back~\kbd{z}.
 
-Using \tet{gc_upto}, we can give back the memory locations
+Using \kbd{gc\_upto}, we can give back the memory locations
 corresponding to \kbd{x2}, \kbd{y2}, and move the object \kbd{z} upwards so
 that no space is lost. Specifically:
 \bprog
@@ -543,7 +543,7 @@ what has happened before you go on!
 
 \subsec{More examples: variations on a theme} it is often necessary to do
 several garbage collections during a computation. However, the fewer the
-better. The only condition for \tet{gc_upto} to work is that the
+better. The only condition for \kbd{gc\_upto} to work is that the
 garbage be connected and we need only recover the last result on the stack.
 The computation should be arranged so that there is a minimal number of
 connected pieces of garbage.
@@ -650,8 +650,8 @@ collections, when properly used, is usually less than 1\%
 of the total running time, which is quite acceptable!
 
 It is of course harder on the programmer, and error-prone if you do not stick
-to a consistent PARI programming style. At first, just use \tet{gc_GEN} or
-\tet{gc_all} to fix up the stack for you. You can always optimize later when
+to a consistent PARI programming style. At first, just use \kbd{gc\_GEN} or
+\kbd{gc\_all} to fix up the stack for you. You can always optimize later when
 you have sorted out exactly which routines are crucial and what objects need
 to be preserved and their usual sizes. In any case, all garbage collections
 routines run in almost linear complexity in the size of the recovered data.
