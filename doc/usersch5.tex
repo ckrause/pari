@@ -10724,7 +10724,7 @@ where $A$ and $B$ are coprime to $X$ and $v$ in $\Z$. Set \kbd{*a} to A,
 \kbd{*b} to $B$ and return $v$.
 
 \fun{GEN}{RgX_deflate}{GEN P, long d} assuming $P$ is a polynomial of the
-form $Q(X^d)$, return $Q$. Shallow function.
+form $Q(X^d)$, return $Q$. Shallow function, may return $P$ itself.
 
 \fun{long}{RgX_deflate_order}{GEN P} given a nonconstant polynomial
 $P$, returns the largest exponent $d$ such that $P$ is of the form $P(x^d)$
@@ -10732,7 +10732,7 @@ $P$, returns the largest exponent $d$ such that $P$ is of the form $P(x^d)$
 
 \fun{long}{RgX_deflate_max}{GEN P, long *d} given a nonconstant polynomial
 $P$, sets \kbd{d} to \kbd{RgX\_deflate\_order(P)} and
-returns \kbd{RgX\_deflate(P,d)}. Shallow function.
+returns \kbd{RgX\_deflate(P,d)}. Shallow function, may return $P$ itself.
 
 \fun{long}{rfrac_deflate_order}{GEN F}
 as \kbd{RgX\_deflate\_order} where $F$ is a nonconstant \typ{RFRAC}.

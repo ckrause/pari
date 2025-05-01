@@ -450,7 +450,7 @@ RgX_deflate(GEN x0, long d)
 {
   GEN z, y, x;
   long i,id, dy, dx = degpol(x0);
-  if (d == 1 || dx <= 0) return leafcopy(x0);
+  if (dx <= 1) return x0;
   dy = dx/d;
   y = cgetg(dy+3, t_POL); y[1] = x0[1];
   z = y + 2;
