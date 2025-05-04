@@ -4838,6 +4838,15 @@ zero_FlxM(long r, long c, long sv)
 }
 
 GEN
+zero_FlxM_copy(long r, long c, long sv)
+{
+  GEN x = cgetg(c + 1, t_MAT);
+  long j;
+  for (j = 1; j <= c; j++) gel(x, j) = zero_FlxC(r, sv);
+  return x;
+}
+
+GEN
 FlxM_neg(GEN x, ulong p)
 { pari_APPLY_same(FlxC_neg(gel(x, i), p)) }
 

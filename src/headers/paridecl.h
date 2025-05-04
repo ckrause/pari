@@ -564,6 +564,7 @@ GEN     monomial_Flx(ulong a, long d, long vs);
 GEN     random_Flx(long d1, long v, ulong p);
 GEN     zero_FlxC(long n, long sv);
 GEN     zero_FlxM(long r, long c, long sv);
+GEN     zero_FlxM_copy(long r, long c, long sv);
 GEN     zlx_translate1(GEN P, ulong p, long e);
 GEN     zx_to_Flx(GEN x, ulong p);
 
