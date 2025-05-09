@@ -1556,6 +1556,31 @@ ZV_producttree(GEN xa)
   return T;
 }
 
+GEN
+ZMV_producttree(GEN xa)
+{
+  long n = lg(xa)-1;
+  long m = n==1 ? 1: expu(n-1)+1;
+  GEN T = cgetg(m+1, t_VEC), t;
+  long i, j, k;
+  t = cgetg(((n+1)>>1)+1, t_VEC);
+  for (j=1, k=1; k<n; j++, k+=2)
+    gel(t, j) = ZM_mul(gel(xa,k+1), gel(xa,k));
+  if (k==n) gel(t, j) = ZM_copy(gel(xa,k));
+  gel(T,1) = t;
+  for (i=2; i<=m; i++)
+  {
+    GEN u = gel(T, i-1);
+    long n = lg(u)-1;
+    t = cgetg(((n+1)>>1)+1, t_VEC);
+    for (j=1, k=1; k<n; j++, k+=2)
+      gel(t, j) = ZM_mul(gel(u, k+1), gel(u, k));
+    if (k==n) gel(t, j) = gel(u, k);
+    gel(T, i) = t;
+  }
+  return T;
+}
+
 /* return [A mod P[i], i=1..#P], T = ZV_producttree(P) */
 GEN
 Z_ZV_mod_tree(GEN A, GEN P, GEN T)

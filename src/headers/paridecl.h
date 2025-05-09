@@ -2212,6 +2212,7 @@ void    Z_chinese_pre(GEN A, GEN B, GEN *pC, GEN *pU, GEN *pd);
 GEN     Z_factor_listP(GEN N, GEN L);
 GEN     Z_nv_mod(GEN P, GEN xa);
 GEN     ZM_nv_mod_tree(GEN M, GEN xa, GEN T);
+GEN     ZMV_producttree(GEN xa);
 GEN     ZV_allpnqn(GEN x);
 GEN     ZV_chinese(GEN A, GEN P, GEN *pt_mod);
 GEN     ZV_chinese_tree(GEN A, GEN P, GEN T, GEN R);

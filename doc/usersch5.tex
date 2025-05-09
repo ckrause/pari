@@ -7750,6 +7750,15 @@ is even and $[p_1\*p_2,p_3\*p_4,\ldots,p_{m-2}\*p_{m-1},p_m]$ if $m$ is odd,
 and $k = O(\log m)$ is minimal so that $f^k(P)$ has length $1$; in other
 words, $f^k(P) = [p_1\*p_2\*\ldots\*p_m]$.
 
+\fun{GEN}{ZMV_producttree}{GEN P} where $P$ is a vector of \kbd{ZM}
+of length $n\ge 1$, return the vector of \typ{VEC}s
+$[f(P),f^2(P),\ldots,f^k(P)]$ where $f$ is the transformation
+$[p_1,p_2,\ldots,p_m] \mapsto [p_2\*p_1,p_4\*p_3,\ldots,p_m\*p_{m-1}]$ if $m$
+is even and $[p_2\*p_1,p_4\*p_3,\ldots,p_{m-1}\*p_{m-2},p_m]$ if $m$ is odd,
+and $k = O(\log m)$ is minimal so that $f^k(P)$ has length $1$; in other
+words, $f^k(P) = [p_m\*\ldots\*p_2\*p_1]$.
+
+
 \fun{GEN}{Z_ZV_mod_tree}{GEN A, GEN P, GEN T}
 as \kbd{Z\_ZV\_mod} where $T$ is the tree \kbd{ZV\_producttree(P)}.
 
