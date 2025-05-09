@@ -2082,14 +2082,6 @@ lfunellmfpeters(GEN E, long bitprec)
 /*               Genus 2 curves                              */
 /*************************************************************/
 
-static void
-Flv_diffnext(GEN d, ulong p)
-{
-  long j, n = lg(d)-1;
-  for(j = n; j>=2; j--)
-    uel(d,j) = Fl_add(uel(d,j), uel(d,j-1), p);
-}
-
 static GEN
 Flx_difftable(GEN P, ulong p)
 {
@@ -2119,7 +2111,13 @@ Flx_genus2trace_naive(GEN H, ulong p)
   for (i=0; i < p; i++)
   {
     a += k[1+uel(d,n+1)];
-    Flv_diffnext(d, p);
+    if (n==6)
+      uel(d,7) = Fl_add(uel(d,7), uel(d,6), p);
+    uel(d,6) = Fl_add(uel(d,6), uel(d,5), p);
+    uel(d,5) = Fl_add(uel(d,5), uel(d,4), p);
+    uel(d,4) = Fl_add(uel(d,4), uel(d,3), p);
+    uel(d,3) = Fl_add(uel(d,3), uel(d,2), p);
+    uel(d,2) = Fl_add(uel(d,2), uel(d,1), p);
   }
   set_avma(av);
   return a;
