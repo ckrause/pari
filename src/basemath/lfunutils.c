@@ -773,10 +773,7 @@ chigeneval_i(GEN logx, GEN d, GEN nchi, GEN z, long prec)
   if (!is_vec_t(typ(z)))
     return gc_upto(av, gpow(z, e, prec));
   else
-  {
-    ulong i = itou(e);
-    set_avma(av); return gel(z, i+1);
-  }
+    return gc_const(av, gel(z, itou(e) + 1));
 }
 
 static GEN
@@ -1344,8 +1341,7 @@ dirzetak0(GEN nf, ulong N)
         for (k = N/p, k2 = k*p; k > 0; k--, k2 -= p) c[k2] += c[k];
       }
   }
-  set_avma(av);
-  pari_free(c2); return c;
+  pari_free(c2); return gc_const(av, c);
 }
 
 static GEN
@@ -2119,8 +2115,7 @@ Flx_genus2trace_naive(GEN H, ulong p)
     uel(d,3) = Fl_add(uel(d,3), uel(d,2), p);
     uel(d,2) = Fl_add(uel(d,2), uel(d,1), p);
   }
-  set_avma(av);
-  return a;
+  return gc_long(av, a);
 }
 
 static GEN
@@ -2450,7 +2445,7 @@ galois_get_conj(GEN G)
     {
       pari_sp av = avma;
       GEN F = galoisfixedfield(G, g, 1, -1);
-      if (ZX_sturmpart(F, NULL) > 0) { set_avma(av); return g; }
+      if (ZX_sturmpart(F, NULL) > 0) return gc_const(av, g);
       for (i = 1; i<=r; i++)
       {
         GEN h = gel(grp, i);
@@ -2574,7 +2569,7 @@ idealfrobenius_easy(GEN nf, GEN gal, GEN aut, GEN T, GEN p)
     if (perm_orderu(g) == (ulong)f)
     {
       GEN A = FpM_FpC_mul(DzkT, gel(aut,g[1]), p);
-      if (ZV_equal(A, DXp)) {set_avma(av); return g; }
+      if (ZV_equal(A, DXp)) return gc_const(av, g);
     }
   }
   return NULL; /* LCOV_EXCL_LINE */
@@ -2602,7 +2597,7 @@ idealfrobenius_hard(GEN nf, GEN gal, GEN aut, GEN pr)
       GEN A = nf_to_Fq(nf, zk_galoisapplymod(nf,X,S,p), modpr);
       /* sigma(X) = X^p (mod pr) and sigma(pi) in pr */
       if (ZX_equal(A, Xp) && (f == nf_get_degree(nf) ||
-          ZC_prdvd(zk_galoisapplymod(nf,pi,S,p),pr))) { set_avma(av); return g; }
+          ZC_prdvd(zk_galoisapplymod(nf,pi,S,p),pr))) return gc_const(av, g);
     }
   }
   return NULL; /* LCOV_EXCL_LINE */
