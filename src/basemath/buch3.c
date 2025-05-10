@@ -1596,12 +1596,9 @@ GEN
 bnrconductor_raw(GEN bnr, GEN H)
 { return bnrconductor_factored_i(bnr, H, 1); }
 
-/* (see bnrdisc_i). Given a bnr, and a subgroup
- * H0 (possibly given as a character chi, in which case H0 = ker chi) of the
- * ray class group, compute the conductor of H if flag=0. If flag > 0, compute
- * also the corresponding H' and output
- * if flag = 1: [[ideal,arch],[hm,cyc,gen],H']
- * if flag = 2: [[ideal,arch],newbnr,H'] */
+/* (see bnrdisc_i). Given a bnr and a subgroup H0 (possibly given as a
+ * character chi, in which case H0 = ker chi) of the ray class group,
+ * return [conductor(H0), bnr attached to conductor, image of H0] */
 GEN
 bnrconductormod(GEN bnr, GEN H0, GEN MOD)
 {
