@@ -822,7 +822,7 @@ InitChar(GEN bnr, GEN ch, long all, long prec)
   {
     GEN D, bnrc, v = gel(vChar, n); /* indices of chars of given cond */
     long a, i = v[1], lc = lg(v);
-    GEN F = gmael(ch,i,2);
+    GEN F = gmael(ch,i,2), map = NULL;
     gel(dataCR, i) = D = cgetg(8, t_VEC);
     ch_C(D) = sqrtr_abs(divir(mulii(dk, ZM_det_triangular(gel(F,1))), P));
     ch_3(D) = _data3(gel(F,2), r2);
@@ -835,6 +835,7 @@ InitChar(GEN bnr, GEN ch, long all, long prec)
     {
       ch_bnr(D) = bnrc = Buchray(bnf, F, nf_INIT);
       ch_diff(D) = get_prdiff(divcond(bnr), divcond(bnrc));
+      map = bnrsurjection(bnr, bnrc);
     }
     for (a = 1; a < lc; a++)
     {
@@ -844,11 +845,11 @@ InitChar(GEN bnr, GEN ch, long all, long prec)
       if (a > 1) gel(dataCR, i) = D = leafcopy(D);
       chi = char_normalize(chi,ncyc);
       ch_CHI(D) = get_Char(chi, prec2);
-      if (bnrc == bnr)
+      if (!map)
         ch_CHI0(D) = ch_CHI(D);
       else
       {
-        chi = bnrchar_primitive(bnr, chi, bnrc);
+        chi = abmap_nchar_image(map, chi);
         ch_CHI0(D) = get_Char(chi, prec2);
       }
       /* set last */

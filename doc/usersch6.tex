@@ -2050,19 +2050,6 @@ $G = (\Z_K/f)^*$ be the finite abelian group attached to \kbd{bid}.
 Return the images of the units generators \kbd{bnf.tu} and \kbd{bnf.tu} in
 $G / G^N$. If $N$ is \kbd{NULL}, same as \tet{ideallog_units}.
 
-\fun{GEN}{bnrchar_primitive}{GEN bnr, GEN chi, GEN bnrc}
-Given a normalized character $\kbd{chi} = [d,c]$ on \kbd{bnr.clgp} (see
-\tet{char_normalize}) of conductor \kbd{bnrc.mod},  compute the primitive
-character \kbd{chic} on \kbd{bnrc.clgp} equivalent to \kbd{chi}, given as a
-normalized character $[D,C]$ : \kbd{chic(bnrc.gen[i])} is $\zeta_D^{C[i]}$,
-where $D$ is minimal. It is easier to use \kbd{bnrconductor\_i(bnr,chi,2)},
-but the latter recomputes \kbd{bnrc} for each new character.
-
-\fun{GEN}{bnrchar_primitive_raw}{GEN bnr, GEN chi, GEN bnrc} as
-\tet{bnrchar_primitive}, with \kbd{chi} a regular (unnormalized) character
-on \kbd{bnr.clgp} of conductor \kbd{bnrc.mod}. Return a regular
-(unnormalized) primitive character on \kbd{bnrc}.
-
 \fun{GEN}{bnrdisc}{GEN bnr, GEN H, long flag} returns the discriminant and
 signature of the class field defined by \kbd{bnr} and $H$. See the description
 of the GP function for details. \fl\ is an or-ed combination of the flags

@@ -1471,22 +1471,6 @@ bnrmap(GEN A, GEN B)
   return gc_GEN(av, B);
 }
 
-/* Given normalized chi on bnr.clgp of conductor bnrc.mod,
- * compute primitive character chic on bnrc.clgp equivalent to chi,
- * still normalized wrt. bnr:
- *   chic(genc[i]) = zeta_C^chic[i]), C = cyc_normalize(bnr.cyc)[1] */
-GEN
-bnrchar_primitive(GEN bnr, GEN nchi, GEN bnrc)
-{ return abmap_nchar_image(bnrsurjection(bnr, bnrc), nchi); }
-
-/* s: <gen> = Cl_f -> Cl_f2 -> 0, H subgroup of Cl_f (generators given as
- * HNF on [gen]). Return subgroup s(H) in Cl_f2 */
-static GEN
-imageofgroup(GEN bnr, GEN bnr2, GEN H)
-{
-  if (!H) return diagonal_shallow(bnr_get_cyc(bnr2));
-  return abmap_subgroup_image(bnrsurjection(bnr, bnr2), H);
-}
 GEN
 bnrchar_primitive_raw(GEN bnr, GEN bnrc, GEN chi)
 { return abmap_char_image(bnrsurjection(bnr, bnrc), chi); }
@@ -1661,9 +1645,17 @@ bnrconductormod(GEN bnr, GEN H0, GEN MOD)
     bnrc = Buchraymod_i(bnr, bid, fl, MOD);
     cond = bnr_get_mod(bnrc);
     if (ischi)
-      H = bnrchar_primitive_raw(bnr, bnrc, H0);
+    {
+      GEN map = bnrsurjection(bnr, bnrc);
+      H = abmap_char_image(map, H0);
+    }
+    else if (H)
+    {
+      GEN map = bnrsurjection(bnr, bnrc);
+      H = abmap_subgroup_image(map, H);
+    }
     else
-      H = imageofgroup(bnr, bnrc, H);
+      H = diagonal_shallow(bnr_get_cyc(bnrc));
   }
   return mkvec3(cond, bnrc, H);
 }
