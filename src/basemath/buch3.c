@@ -1602,12 +1602,12 @@ bnrconductor_raw(GEN bnr, GEN H)
 GEN
 bnrconductormod(GEN bnr, GEN H0, GEN MOD)
 {
-  GEN nf, bid, arch, archp, bnrc, e, H, cond = NULL;
+  GEN nf, arch, archp, bnrc, e, H, cond = NULL;
   int ischi;
   zlog_S S;
 
   checkbnr(bnr);
-  bid = bnr_get_bid(bnr); init_zlog(&S, bid);
+  init_zlog(&S, bnr_get_bid(bnr));
   nf = bnr_get_nf(bnr);
   H = bnr_subgroup_check(bnr, H0, NULL);
   e = cond0_e(bnr, H, &S);
