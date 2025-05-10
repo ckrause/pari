@@ -80,6 +80,23 @@ char_normalize(GEN chi, GEN ncyc)
   return char_simplify(gel(ncyc,1), c);
 }
 
+/* \chi(gen[i]) = zeta_D^chic[i])
+ * denormalize: express chi(gen[i]) in terms of zeta_{cyc[i]} */
+GEN
+char_denormalize(GEN cyc, GEN D, GEN chic)
+{
+  long i, l = lg(chic);
+  GEN chi = cgetg(l, t_VEC);
+  /* \chi(gen[i]) = e(chic[i] / D) = e(chi[i] / cyc[i])
+   * hence chi[i] = chic[i]cyc[i]/ D  mod cyc[i] */
+  for (i = 1; i < l; ++i)
+  {
+    GEN di = gel(cyc, i), t = diviiexact(mulii(di, gel(chic,i)), D);
+    gel(chi, i) = modii(t, di);
+  }
+  return chi;
+}
+
 /* Called by function 's'. x is a group object affording ".cyc" method, and
  * chi an abelian character. Return NULL if the group is (Z/nZ)^* [special
  * case more character types allowed] and x.cyc otherwise */

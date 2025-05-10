@@ -1276,22 +1276,6 @@ bnfcertify(GEN bnf) { return bnfcertify0(bnf, 0); }
 /*        RAY CLASS FIELDS: CONDUCTORS AND DISCRIMINANTS           */
 /*                                                                 */
 /*******************************************************************/
-/* \chi(gen[i]) = zeta_D^chic[i])
- * denormalize: express chi(gen[i]) in terms of zeta_{cyc[i]} */
-GEN
-char_denormalize(GEN cyc, GEN D, GEN chic)
-{
-  long i, l = lg(chic);
-  GEN chi = cgetg(l, t_VEC);
-  /* \chi(gen[i]) = e(chic[i] / D) = e(chi[i] / cyc[i])
-   * hence chi[i] = chic[i]cyc[i]/ D  mod cyc[i] */
-  for (i = 1; i < l; ++i)
-  {
-    GEN di = gel(cyc, i), t = diviiexact(mulii(di, gel(chic,i)), D);
-    gel(chi, i) = modii(t, di);
-  }
-  return chi;
-}
 static GEN
 bnrchar_i(GEN bnr, GEN g, GEN v)
 {
