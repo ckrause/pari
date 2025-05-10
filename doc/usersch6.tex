@@ -2095,14 +2095,22 @@ group generators of \kbd{BNR} in terms of the ones in \kbd{bnr},
 $\var{cyc}_F$ and $\var{cyc}_f$ are the cyclic structures of \kbd{BNR} and
 \kbd{bnr} respectively (as per \tet{bnr_get_cyc}). Shallow function.
 
-\fun{GEN}{abmap_kernel}{GEN S} returns the kernel of the abelian map $S$,
+\fun{GEN}{abmap_kernel}{GEN f} returns the kernel of the abelian map $f$,
 ans a matrix $H$ in HNF: the subgroup is $(g_i)\cdot H$.
 
-\fun{GEN}{abmap_subgroup_image}{GEN S, GEN H} given a subgroup $H$ of
+\fun{GEN}{abmap_subgroup_image}{GEN f, GEN H} given a subgroup $H$ of
 $A$ (its generators are the $(g_i) H$); for efficiency, $H$ should be given in
 canonical form, i.e., as an HNF left divisor of $\var{diag}(a_1,\dots,a_m)$.
 Returns the subgroup $f(H)$ of $B$, as an HNF left divisor of
 $\var{diag}(b_1,\dots,b_n)$.
+
+\fun{GEN}{abmap_char_image}{GEN f, GEN chi} given a regular (unnormalized)
+character \kbd{chi}, return its image by $f$, as a regular (unnormalized)
+character with respect to $\var{cyc}_B$.
+
+\fun{GEN}{abmap_nchar_image}{GEN f, GEN nchi} given a normalized character
+\kbd{nchi}, return its image by $f$, still as a normalized character
+with respect to $\var{cyc}_A$.
 
 \subsec{Grunwald--Wang theorem}
 

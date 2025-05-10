@@ -1431,7 +1431,7 @@ bnrsurjection(GEN bnr1, GEN bnr2)
 
 /* nchi a normalized character, S a surjective map ; return S(nchi)
  * still normalized wrt the original cyclic structure (S[2]) */
-static GEN
+GEN
 abmap_nchar_image(GEN S, GEN nchi)
 {
   GEN U, M = gel(S,1), Mc = diagonal_shallow(gel(S,3));
@@ -1441,7 +1441,7 @@ abmap_nchar_image(GEN S, GEN nchi)
   U = matslice(U,1,l-1, l,lg(U)-1);
   return char_simplify(gel(nchi,1), ZV_ZM_mul(gel(nchi,2), U));
 }
-static GEN
+GEN
 abmap_char_image(GEN S, GEN chi)
 {
   GEN nchi = char_normalize(chi, cyc_normalize(gel(S,2)));
