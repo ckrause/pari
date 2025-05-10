@@ -1471,10 +1471,6 @@ bnrmap(GEN A, GEN B)
   return gc_GEN(av, B);
 }
 
-GEN
-bnrchar_primitive_raw(GEN bnr, GEN bnrc, GEN chi)
-{ return abmap_char_image(bnrsurjection(bnr, bnrc), chi); }
-
 /* convert A,B,C to [bnr, H] */
 GEN
 ABC_to_bnr(GEN A, GEN B, GEN C, GEN *H, int gen)
