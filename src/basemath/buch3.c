@@ -1570,8 +1570,8 @@ bnrconductor_factored_i(GEN bnr, GEN H, long raw)
   GEN nf, bid, arch, archp, e, fa, cond = NULL;
   zlog_S S;
 
-  checkbnr(bnr);
-  bid = bnr_get_bid(bnr); init_zlog(&S, bid);
+  checkbnr(bnr); bid = bnr_get_bid(bnr);
+  init_zlog(&S, bid);
   nf = bnr_get_nf(bnr);
   H = bnr_subgroup_check(bnr, H, NULL);
   e = cond0_e(bnr, H, &S); /* in terms of S.P */
@@ -1606,12 +1606,12 @@ bnrconductor_raw(GEN bnr, GEN H)
 GEN
 bnrconductormod(GEN bnr, GEN H0, GEN MOD)
 {
-  GEN nf, arch, archp, bnrc, e, H, cond = NULL;
+  GEN nf, bid, arch, archp, bnrc, e, H, cond = NULL;
   int ischi;
   zlog_S S;
 
-  checkbnr(bnr);
-  init_zlog(&S, bnr_get_bid(bnr));
+  checkbnr(bnr); bid = bnr_get_bid(bnr);
+  init_zlog(&S, bid);
   nf = bnr_get_nf(bnr);
   H = bnr_subgroup_check(bnr, H0, NULL);
   e = cond0_e(bnr, H, &S);
@@ -1637,8 +1637,8 @@ bnrconductormod(GEN bnr, GEN H0, GEN MOD)
   }
   else
   {
+    GEN fa = e? famat_remove_trivial(mkmat2(S.P, e)): bid_get_fact(bid);
     long fl = lg(bnr_get_clgp(bnr)) == 4? nf_INIT | nf_GEN: nf_INIT;
-    GEN fa = famat_remove_trivial(mkmat2(S.P, e? e: S.k));
     bnrc = Buchraymod_i(bnr, mkvec2(fa, arch), fl, MOD);
     cond = bnr_get_mod(bnrc);
     if (ischi)
