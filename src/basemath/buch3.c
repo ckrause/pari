@@ -1567,7 +1567,7 @@ condoo_archp(GEN bnr, GEN H, zlog_S *S)
 static GEN
 bnrconductor_factored_i(GEN bnr, GEN H, long raw)
 {
-  GEN nf, bid, ideal, arch, archp, e, fa, cond = NULL;
+  GEN nf, bid, arch, archp, e, fa, cond = NULL;
   zlog_S S;
 
   checkbnr(bnr);
@@ -1576,15 +1576,19 @@ bnrconductor_factored_i(GEN bnr, GEN H, long raw)
   H = bnr_subgroup_check(bnr, H, NULL);
   e = cond0_e(bnr, H, &S); /* in terms of S.P */
   archp = condoo_archp(bnr, H, &S);
-  ideal = e? factorbackprime(nf, S.P, e): bid_get_ideal(bid);
   if (archp == S.archp)
   {
-    if (!e) cond = bnr_get_mod(bnr);
-    arch = bid_get_arch(bid);
+    GEN mod = bnr_get_mod(bnr);
+    if (!e) cond = mod;
+    arch = gel(mod,2);
   }
   else
     arch = indices_to_vec01(archp, nf_get_r1(nf));
-  if (!cond) cond = mkvec2(ideal, arch);
+  if (!cond)
+  {
+    GEN ideal = e? factorbackprime(nf, S.P, e): bid_get_ideal(bid);
+    cond = mkvec2(ideal, arch);
+  }
   if (raw) return cond;
   fa = e? famat_remove_trivial(mkmat2(S.P, e)): bid_get_fact(bid);
   return mkvec2(cond, fa);
@@ -1614,8 +1618,9 @@ bnrconductormod(GEN bnr, GEN H0, GEN MOD)
   archp = condoo_archp(bnr, H, &S);
   if (archp == S.archp)
   {
-    if (!e) cond = bnr_get_mod(bnr);
-    arch = gel(bnr_get_mod(bnr), 2);
+    GEN mod = bnr_get_mod(bnr);
+    if (!e) cond = mod;
+    arch = gel(mod,2);
   }
   else
     arch = indices_to_vec01(archp, nf_get_r1(nf));
@@ -1633,9 +1638,8 @@ bnrconductormod(GEN bnr, GEN H0, GEN MOD)
   else
   {
     long fl = lg(bnr_get_clgp(bnr)) == 4? nf_INIT | nf_GEN: nf_INIT;
-    GEN fa = famat_remove_trivial(mkmat2(S.P, e? e: S.k)), bid;
-    bid = Idealstarmod(nf, mkvec2(fa, arch), nf_INIT | nf_GEN, MOD);
-    bnrc = Buchraymod_i(bnr, bid, fl, MOD);
+    GEN fa = famat_remove_trivial(mkmat2(S.P, e? e: S.k));
+    bnrc = Buchraymod_i(bnr, mkvec2(fa, arch), fl, MOD);
     cond = bnr_get_mod(bnrc);
     if (ischi)
     {
