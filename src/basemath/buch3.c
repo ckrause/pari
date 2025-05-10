@@ -1866,7 +1866,7 @@ rnfconductor0(GEN bnf, GEN T, long flag)
   bnr = Buchraymod_i(bnf, module, nf_INIT|nf_GEN, MOD);
   H = rnfnormgroup_i(bnr,T); if (!H) return gc_const(av,gen_0);
   return gc_GEN(av, flag == 2? bnrconductor_factored(bnr, H)
-                                   : bnrconductormod(bnr, H, MOD));
+                             : bnrconductormod(bnr, H, MOD));
 }
 GEN
 rnfconductor(GEN bnf, GEN T) { return rnfconductor0(bnf, T, 0); }
