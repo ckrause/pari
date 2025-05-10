@@ -255,12 +255,11 @@ abmap_subgroup_image(GEN S, GEN H)
 
 /* Let m and n be two moduli such that n|m and let C be a congruence
    group modulo n, compute the corresponding congruence group modulo m
-   ie the kernel of the map Clk(m) ->> Clk(n)/C */
+   ie the kernel of the map S: Clk(m) ->> Clk(n)/C */
 static GEN
-ComputeKernel(GEN bnrm, GEN bnrn, GEN dtQ)
+ComputeKernel(GEN S, GEN dtQ)
 {
   pari_sp av = avma;
-  GEN S = bnrsurjection(bnrm, bnrn);
   GEN P = ZM_mul(gel(dtQ,3), gel(S,1));
   return gc_upto(av, abmap_kernel(mkvec3(P, gel(S,2), gel(dtQ,2))));
 }
@@ -461,7 +460,7 @@ FindModulus(GEN bnr, GEN dtQ, long *newprec)
           if (!bnrisconductor(bnrm, NULL)) continue;
 
           /* compute Im(C) in Clk(m)... */
-          Cm = ComputeKernel(bnrm, bnr, dtQ);
+          Cm = ComputeKernel(bnrsurjection(bnrm, bnr), dtQ);
           /* ... and its subgroups of index 2 with conductor m */
           candD = subgrouplist_cond_sub(bnrm, Cm, mkvec(gen_2));
           lD = lg(candD);
@@ -2403,7 +2402,7 @@ bnrstarkunit(GEN bnr, GEN subgrp)
 {
   long newprec, deg;
   pari_sp av = avma;
-  GEN nf, data, dtQ, bnf, bnrf, Cm, candD, D, QD, CR;
+  GEN map, nf, data, dtQ, bnf, bnrf, Cm, candD, D, QD, CR;
 
   /* check the input */
   checkbnr(bnr); bnf = bnr_get_bnf(bnr); nf = bnf_get_nf(bnf);
@@ -2416,9 +2415,10 @@ bnrstarkunit(GEN bnr, GEN subgrp)
   if (lg(bid_get_archp(bnr_get_bid(bnr)))-1 != deg-1)
     pari_err_DOMAIN("bnrstarkunit", "# unramified places", "!=", gen_1, bnr);
   bnrf = Buchray(bnf, gel(bnr_get_mod(bnr), 1), nf_INIT);
-  subgrp = abmap_subgroup_image(bnrsurjection(bnr, bnrf), subgrp);
+  map = bnrsurjection(bnr, bnrf);
+  subgrp = abmap_subgroup_image(map, subgrp);
   dtQ  = InitQuotient(subgrp);
-  Cm   = ComputeKernel(bnr, bnrf, dtQ);
+  Cm   = ComputeKernel(map, dtQ);
   candD = subgrouplist_cond_sub(bnr, Cm, mkvec(gen_2));
   if (lg(candD) != 2) pari_err(e_MISC, "incorrect modulus in bnrstark");
   D    = gel(candD, 1);
