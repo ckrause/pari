@@ -394,7 +394,6 @@ bnr_char_sanitize(GEN *pbnr, GEN *pchi)
   *pbnr = gel(cnd,2); *pchi = gel(cnd,3);
 }
 
-
 /* c a rational content (NULL or t_INT or t_FRAC), return u*c as a ZM/d */
 static GEN
 ZM_content_mul(GEN u, GEN c, GEN *pd)
@@ -1584,13 +1583,14 @@ bnrconductor_factored_i(GEN bnr, GEN H, long raw)
   }
   else
     arch = indices_to_vec01(archp, nf_get_r1(nf));
+  fa = e? famat_remove_trivial(mkmat2(S.P, e)): bid_get_fact(bid);
+  if (raw == 2) return cond? NULL: mkvec2(fa, arch);
   if (!cond)
   {
-    GEN ideal = e? factorbackprime(nf, S.P, e): bid_get_ideal(bid);
-    cond = mkvec2(ideal, arch);
+    GEN f0 = e? factorbackprime(nf, gel(fa,1), gel(fa,2)): bid_get_ideal(bid);
+    cond = mkvec2(f0, arch);
   }
   if (raw) return cond;
-  fa = e? famat_remove_trivial(mkmat2(S.P, e)): bid_get_fact(bid);
   return mkvec2(cond, fa);
 }
 GEN
@@ -1599,6 +1599,54 @@ bnrconductor_factored(GEN bnr, GEN H)
 GEN
 bnrconductor_raw(GEN bnr, GEN H)
 { return bnrconductor_factored_i(bnr, H, 1); }
+
+/* assume lg(CHI) > 1 */
+void
+bnr_vecchar_sanitize(GEN *pbnr, GEN *pCHI)
+{
+  GEN F, cyc, o, bnr = *pbnr, CHI = *pCHI;
+  GEN D, N, nchi, bnrc = bnr, map = NULL;
+  long i, l = lg(CHI);
+
+  if (nftyp(bnr)==typ_BNF) bnr = Buchray(bnr, gen_1, nf_INIT);
+  else checkbnr(bnr);
+  cyc = bnr_get_cyc(bnr); o = gen_1;
+  for (i = 1; i < l; i++)
+  {
+    GEN chi = gel(CHI,i);
+    o = lcmii(o, charorder(cyc, chi));
+    if (typ(chi) != t_VEC || !char_check(cyc, chi))
+      pari_err_TYPE("bnr_char_sanitize [character]", chi);
+  }
+  F = bnrconductor_factored_i(bnr, gel(CHI,1), 2);
+  if (F)
+  {
+    long fl = lg(bnr_get_clgp(bnr)) == 4? nf_INIT | nf_GEN: nf_INIT;
+    bnrc = Buchraymod_i(bnr, F, fl, o);
+    map = bnrsurjection(bnr, bnrc);
+  }
+  N = bnr_get_mod(bnrc);
+  D = cyc_normalize(bnr_get_cyc(bnrc));
+  nchi = cgetg(l, t_VEC);
+  for (i = 1; i < l; i++)
+  {
+    GEN chi = gel(CHI,i);
+    if (!map)
+    {
+      if (i > 1 && !bnrisconductor(bnr, chi)) chi = NULL;
+    }
+    else
+    {
+      if (i > 1 && !gequal(bnrconductor_raw(bnr, chi), N))
+        chi = NULL;
+      else
+        chi = abmap_char_image(map, chi);
+    }
+    if (!chi) pari_err_TYPE("bnr_vecchar_sanitize [different conductors]", CHI);
+    gel(nchi, i) = char_renormalize(char_normalize(chi, D), o);
+  }
+  *pbnr = bnrc; *pCHI = mkvec2(o, nchi);
+}
 
 /* (see bnrdisc_i). Given a bnr and a subgroup H0 (possibly given as a
  * character chi, in which case H0 = ker chi) of the ray class group,

@@ -1019,7 +1019,7 @@ lfunzetak(GEN T)
 
 /* C = normalized character of order dividing o; renormalize so that it has
  * apparent order o */
-static GEN
+GEN
 char_renormalize(GEN C, GEN o)
 {
   GEN oc = gel(C,1), c = gel(C,2);
@@ -1099,36 +1099,8 @@ lfunchigen(GEN bnr, GEN CHI)
 
   if (typ(CHI) == t_VEC && !RgV_is_ZV(CHI))
   {
-    long i, l = lg(CHI);
-    GEN map = NULL, bnr0 = bnr, D, chi = gel(CHI,1), o = gen_1;
-    nchi = cgetg(l, t_VEC);
-    bnr_char_sanitize(&bnr, &chi);
-    D = cyc_normalize(bnr_get_cyc(bnr));
-    N = bnr_get_mod(bnr);
-    if (bnr != bnr0 && l > 2) map = bnrsurjection(bnr0, bnr);
-    for (i = 1; i < l; i++)
-    {
-      if (i > 1)
-      {
-        chi = gel(CHI,i);
-        if (!map)
-        {
-          if (!bnrisconductor(bnr, chi)) chi = NULL;
-        }
-        else
-        {
-          if (!gequal(bnrconductor_raw(bnr0, chi), N))
-            chi = NULL;
-          else
-            chi = abmap_char_image(map, chi);
-        }
-      }
-      if (!chi) pari_err_TYPE("lfuncreate [different conductors]", CHI);
-      chi = char_normalize(chi, D);
-      o = lcmii(o, gel(chi,1)); /* lcm with charorder */
-      gel(nchi,i) = chi;
-    }
-    nchi = mkvec2(o, vecchar_renormalize(nchi, o));
+    bnr_vecchar_sanitize(&bnr, &CHI);
+    nchi = CHI;
   }
   else
   {

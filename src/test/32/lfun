@@ -319,6 +319,8 @@ O(x^2)
 [0.98840426632758622164719972283433390539, 0.9884042663275862216471997228343
 3390539]
 0
+1.0061627022233767799958301074712996534
+1.0041988224714499514297324480984867732
   ***   at top-level: lfuntheta(1,0)
   ***                 ^--------------
   *** lfuntheta: domain error in lfunthetainit: t = 0
@@ -348,7 +350,7 @@ O(x^2)
   *** lfunzeros: incorrect type in lfunzeros (t_VEC).
   ***   at top-level: lfuncreate([errbnr,[[1],[2]]])
   ***                 ^------------------------------
-  *** lfuncreate: incorrect type in lfuncreate [different conductors] (t_VEC).
+  *** lfuncreate: incorrect type in bnr_vecchar_sanitize [different conductors] (t_VEC).
   ***   at top-level: lfuncreate([errG,[[1],[2]]])
   ***                 ^----------------------------
   *** lfuncreate: incorrect type in lfunchiZ (t_VEC).
@@ -391,4 +393,4 @@ O(x^2)
   ***   at top-level: lfuncheckfeq(1,I)
   ***                 ^-----------------
   *** lfuncheckfeq: domain error in lfunthetaneed: arg t > 0.7853981633974482790
-Total time spent: 5900
+Total time spent: 5282

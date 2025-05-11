@@ -3046,6 +3046,7 @@ GEN     abmap_nchar_image(GEN S, GEN nchi);
 GEN     Hermite_bound(long n, long prec);
 void    bnr_subgroup_sanitize(GEN *pbnr, GEN *pH);
 void    bnr_char_sanitize(GEN *pbnr, GEN *pchi);
+void    bnr_vecchar_sanitize(GEN *pbnr, GEN *pCHI);
 GEN     ABC_to_bnr(GEN A, GEN B, GEN C, GEN *H, int gen);
 GEN     Buchray(GEN bnf, GEN module, long flag);
 GEN     Buchraymod(GEN bnf, GEN f, long flag, GEN MOD);
@@ -4646,6 +4647,7 @@ GEN     znchargauss(GEN G, GEN chi, GEN a, long bitprec);
 
 /* lfunutils.c */
 
+GEN     char_renormalize(GEN C, GEN o);
 GEN     dirzetak(GEN nf, GEN b);
 GEN     ellmoddegree(GEN e);
 GEN     eta_ZXn(long v, long L);
