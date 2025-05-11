@@ -388,7 +388,7 @@ bnr_char_sanitize(GEN *pbnr, GEN *pchi)
   if (nftyp(bnr)==typ_BNF) bnr = Buchray(bnr, gen_1, nf_INIT);
   else checkbnr(bnr);
   cyc = bnr_get_cyc(bnr);
-  if (typ(chi) != t_VEC || !char_check(cyc, chi))
+  if (!char_check(cyc, chi))
     pari_err_TYPE("bnr_char_sanitize [character]", chi);
   cnd = bnrconductormod(bnr, chi, charorder(cyc, chi));
   *pbnr = gel(cnd,2); *pchi = gel(cnd,3);
@@ -1549,8 +1549,8 @@ cond0_e(GEN bnr, GEN H, zlog_S *S)
 static GEN
 condoo_archp(GEN bnr, GEN H, zlog_S *S)
 {
-  GEN archp = S->archp, archp2 = leafcopy(archp);
-  long j, k, l = lg(archp);
+  long j, k, l;
+  GEN archp = S->archp, archp2 = cgetg_copy(archp, &l);
   for (k = j = 1; k < l; k++)
   {
     if (!contains(H, bnr_log_gen_arch(bnr, S, k)))
@@ -1559,23 +1559,21 @@ condoo_archp(GEN bnr, GEN H, zlog_S *S)
       continue;
     }
   }
-  if (j == l) return S->archp;
+  if (j == l) return NULL;
   setlg(archp2, j); return archp2;
 }
 /* MOD useless in this function */
 static GEN
 bnrconductor_factored_i(GEN bnr, GEN H, long raw)
 {
-  GEN nf, bid, arch, archp, e, fa, cond = NULL;
+  GEN nf = bnr_get_nf(bnr), bid = bnr_get_bid(bnr);
+  GEN arch, archp, e, fa, cond = NULL;
   zlog_S S;
 
-  checkbnr(bnr); bid = bnr_get_bid(bnr);
   init_zlog(&S, bid);
-  nf = bnr_get_nf(bnr);
-  H = bnr_subgroup_check(bnr, H, NULL);
   e = cond0_e(bnr, H, &S); /* in terms of S.P */
   archp = condoo_archp(bnr, H, &S);
-  if (archp == S.archp)
+  if (!archp)
   {
     GEN mod = bnr_get_mod(bnr);
     if (!e) cond = mod;
@@ -1595,17 +1593,30 @@ bnrconductor_factored_i(GEN bnr, GEN H, long raw)
 }
 GEN
 bnrconductor_factored(GEN bnr, GEN H)
-{ return bnrconductor_factored_i(bnr, H, 0); }
+{
+  checkbnr(bnr); H = bnr_subgroup_check(bnr, H, NULL);
+  return bnrconductor_factored_i(bnr, H, 0);
+}
 GEN
 bnrconductor_raw(GEN bnr, GEN H)
-{ return bnrconductor_factored_i(bnr, H, 1); }
+{
+  checkbnr(bnr); H = bnr_subgroup_check(bnr, H, NULL);
+  return bnrconductor_factored_i(bnr, H, 1);
+}
+
+static GEN
+Buchraymod_same(GEN bnr, GEN F, GEN MOD)
+{
+  long fl = lg(bnr_get_clgp(bnr)) == 4? nf_INIT | nf_GEN: nf_INIT;
+  return Buchraymod_i(bnr, F, fl, MOD);
+}
 
 /* assume lg(CHI) > 1 */
 void
 bnr_vecchar_sanitize(GEN *pbnr, GEN *pCHI)
 {
   GEN F, cyc, o, bnr = *pbnr, CHI = *pCHI;
-  GEN D, N, nchi, bnrc = bnr, map = NULL;
+  GEN H, D, N, nchi, bnrc = bnr, map = NULL;
   long i, l = lg(CHI);
 
   if (nftyp(bnr)==typ_BNF) bnr = Buchray(bnr, gen_1, nf_INIT);
@@ -1614,15 +1625,15 @@ bnr_vecchar_sanitize(GEN *pbnr, GEN *pCHI)
   for (i = 1; i < l; i++)
   {
     GEN chi = gel(CHI,i);
-    o = lcmii(o, charorder(cyc, chi));
-    if (typ(chi) != t_VEC || !char_check(cyc, chi))
+    if (!char_check(cyc, chi))
       pari_err_TYPE("bnr_char_sanitize [character]", chi);
+    o = lcmii(o, charorder(cyc, chi));
   }
-  F = bnrconductor_factored_i(bnr, gel(CHI,1), 2);
+  H = bnr_subgroup_check(bnr, gel(CHI,1), NULL);
+  F = bnrconductor_factored_i(bnr, H, 2);
   if (F)
   {
-    long fl = lg(bnr_get_clgp(bnr)) == 4? nf_INIT | nf_GEN: nf_INIT;
-    bnrc = Buchraymod_i(bnr, F, fl, o);
+    bnrc = Buchraymod_same(bnr, F, o);
     map = bnrsurjection(bnr, bnrc);
   }
   N = bnr_get_mod(bnrc);
@@ -1654,28 +1665,10 @@ bnr_vecchar_sanitize(GEN *pbnr, GEN *pCHI)
 GEN
 bnrconductormod(GEN bnr, GEN H0, GEN MOD)
 {
-  GEN nf, bid, arch, archp, bnrc, e, H, cond = NULL;
-  int ischi;
-  zlog_S S;
-
-  checkbnr(bnr); bid = bnr_get_bid(bnr);
-  init_zlog(&S, bid);
-  nf = bnr_get_nf(bnr);
-  H = bnr_subgroup_check(bnr, H0, NULL);
-  e = cond0_e(bnr, H, &S);
-  archp = condoo_archp(bnr, H, &S);
-  if (archp == S.archp)
-  {
-    GEN mod = bnr_get_mod(bnr);
-    if (!e) cond = mod;
-    arch = gel(mod,2);
-  }
-  else
-    arch = indices_to_vec01(archp, nf_get_r1(nf));
-
-  /* character or subgroup ? */
-  ischi = H0 && typ(H0) == t_VEC;
-  if (cond)
+  GEN H = bnr_subgroup_check(bnr, H0, NULL);
+  GEN F = bnrconductor_factored_i(bnr, H, 2), bnrc;
+  int ischi = H0 && typ(H0) == t_VEC; /* character or subgroup ? */
+  if (!F)
   { /* same conductor */
     bnrc = bnr;
     if (ischi)
@@ -1685,10 +1678,7 @@ bnrconductormod(GEN bnr, GEN H0, GEN MOD)
   }
   else
   {
-    GEN fa = e? famat_remove_trivial(mkmat2(S.P, e)): bid_get_fact(bid);
-    long fl = lg(bnr_get_clgp(bnr)) == 4? nf_INIT | nf_GEN: nf_INIT;
-    bnrc = Buchraymod_i(bnr, mkvec2(fa, arch), fl, MOD);
-    cond = bnr_get_mod(bnrc);
+    bnrc = Buchraymod_same(bnr, F, MOD);
     if (ischi)
     {
       GEN map = bnrsurjection(bnr, bnrc);
@@ -1702,7 +1692,7 @@ bnrconductormod(GEN bnr, GEN H0, GEN MOD)
     else
       H = diagonal_shallow(bnr_get_cyc(bnrc));
   }
-  return mkvec3(cond, bnrc, H);
+  return mkvec3(bnr_get_mod(bnrc), bnrc, H);
 }
 /* OBSOLETE */
 GEN
