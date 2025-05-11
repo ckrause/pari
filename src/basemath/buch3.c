@@ -1562,14 +1562,18 @@ condoo_archp(GEN bnr, GEN H, zlog_S *S)
   if (j == l) return NULL;
   setlg(archp2, j); return archp2;
 }
-/* MOD useless in this function */
+/* MOD useless in this function. If raw = 2, checks were already done
+ * and we return [factor(f0),foo] or NULL if cond(H) = cond(bnr).
+ * If raw = 1, return f = [f0,foo]; if raw = 0 return [f, factor(f0)].
+ * FIXME: simplify 'raw' interface by adapting callers. */
 static GEN
 bnrconductor_factored_i(GEN bnr, GEN H, long raw)
 {
-  GEN nf = bnr_get_nf(bnr), bid = bnr_get_bid(bnr);
-  GEN arch, archp, e, fa, cond = NULL;
+  GEN nf, bid, arch, archp, e, fa, cond = NULL;
   zlog_S S;
 
+  if (raw != 2) { checkbnr(bnr); H = bnr_subgroup_check(bnr, H, NULL); }
+  nf = bnr_get_nf(bnr); bid = bnr_get_bid(bnr);
   init_zlog(&S, bid);
   e = cond0_e(bnr, H, &S); /* in terms of S.P */
   archp = condoo_archp(bnr, H, &S);
@@ -1588,21 +1592,14 @@ bnrconductor_factored_i(GEN bnr, GEN H, long raw)
     GEN f0 = e? factorbackprime(nf, gel(fa,1), gel(fa,2)): bid_get_ideal(bid);
     cond = mkvec2(f0, arch);
   }
-  if (raw) return cond;
-  return mkvec2(cond, fa);
+  return raw? cond: mkvec2(cond, fa);
 }
 GEN
 bnrconductor_factored(GEN bnr, GEN H)
-{
-  checkbnr(bnr); H = bnr_subgroup_check(bnr, H, NULL);
-  return bnrconductor_factored_i(bnr, H, 0);
-}
+{ return bnrconductor_factored_i(bnr, H, 0); }
 GEN
 bnrconductor_raw(GEN bnr, GEN H)
-{
-  checkbnr(bnr); H = bnr_subgroup_check(bnr, H, NULL);
-  return bnrconductor_factored_i(bnr, H, 1);
-}
+{ return bnrconductor_factored_i(bnr, H, 1); }
 
 static GEN
 Buchraymod_same(GEN bnr, GEN F, GEN MOD)
@@ -1615,8 +1612,8 @@ Buchraymod_same(GEN bnr, GEN F, GEN MOD)
 void
 bnr_vecchar_sanitize(GEN *pbnr, GEN *pCHI)
 {
-  GEN F, cyc, o, bnr = *pbnr, CHI = *pCHI;
-  GEN H, D, N, nchi, bnrc = bnr, map = NULL;
+  GEN F, H, cyc, o, bnr = *pbnr, CHI = *pCHI;
+  GEN D, N, nchi, bnrc = bnr, map = NULL;
   long i, l = lg(CHI);
 
   if (nftyp(bnr)==typ_BNF) bnr = Buchray(bnr, gen_1, nf_INIT);
@@ -1661,7 +1658,11 @@ bnr_vecchar_sanitize(GEN *pbnr, GEN *pCHI)
 
 /* (see bnrdisc_i). Given a bnr and a subgroup H0 (possibly given as a
  * character chi, in which case H0 = ker chi) of the ray class group,
- * return [conductor(H0), bnr attached to conductor, image of H0] */
+ * return [conductor(H0), bnr attached to conductor, image of H0].
+ * FIXME: the interface is awkward and inefficient; split the 4 parts
+ * in caller 1) bnrconductor_factored, 2) bnrinit [with proper MOD depending
+ * on 4)], 3) compute bnrmap, 4) image of objects. Don't use this wrapper
+ * except for lazy GP use. */
 GEN
 bnrconductormod(GEN bnr, GEN H0, GEN MOD)
 {
