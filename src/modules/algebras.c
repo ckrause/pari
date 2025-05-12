@@ -3393,16 +3393,6 @@ algtrace(GEN al, GEN x, long abs)
 }
 
 static GEN
-ZM_trace(GEN x)
-{
-  long i, lx = lg(x);
-  GEN t;
-  if (lx < 3) return lx == 1? gen_0: gcopy(gcoeff(x,1,1));
-  t = gcoeff(x,1,1);
-  for (i = 2; i < lx; i++) t = addii(t, gcoeff(x,i,i));
-  return t;
-}
-static GEN
 FpM_trace(GEN x, GEN p)
 {
   long i, lx = lg(x);

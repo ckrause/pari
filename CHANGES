@@ -59,7 +59,7 @@ BA  23- [libpari] get_FlxqX_algebra
     25- [libpari] affgc
 BA  26- [libpari] zero_FlxM_copy
     27- [libpari] abmap_char_image, abmap_nchar_image
-BA  28- [libpari] ZMV_producttree
+BA  28- [libpari] ZMV_producttree, ZM_trace
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate

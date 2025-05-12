@@ -1988,6 +1988,7 @@ GEN     QM_charpoly_ZX(GEN M);
 GEN     QM_charpoly_ZX_bound(GEN M, long bit);
 GEN     RgM_Cholesky(GEN M, long prec);
 GEN     ZM_charpoly(GEN x);
+GEN     ZM_trace(GEN x);
 GEN     adj(GEN x);
 GEN     adjsafe(GEN x);
 GEN     caract(GEN x, long v);

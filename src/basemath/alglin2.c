@@ -1126,6 +1126,18 @@ ZM_charpoly(GEN M)
   return gc_GEN(av, QM_charpoly_ZX_i(M, NULL, -1));
 }
 
+GEN
+ZM_trace(GEN x)
+{
+  pari_sp av = avma;
+  long i, lx = lg(x);
+  GEN t;
+  if (lx < 3) return lx == 1? gen_0: gcopy(gcoeff(x,1,1));
+  t = gcoeff(x,1,1);
+  for (i = 2; i < lx; i++) t = addii(t, gcoeff(x,i,i));
+  return gc_INT(av, t);
+}
+
 /*******************************************************************/
 /*                                                                 */
 /*        CHARACTERISTIC POLYNOMIAL (BERKOWITZ'S ALGORITHM)        */
