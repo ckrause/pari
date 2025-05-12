@@ -353,10 +353,18 @@ bnr_subgroup_check(GEN bnr, GEN H, GEN *pdeg)
   return H;
 }
 
+/* exponent G/H, assuming H is a left divisor of matdiagonal(G.cyc) */
+static GEN
+quotient_expo(GEN H)
+{
+  GEN D = ZM_snf(H); /* structure of G/H */
+  return lg(D) == 1? gen_1: gel(D,1);
+}
+
 void
 bnr_subgroup_sanitize(GEN *pbnr, GEN *pH)
 {
-  GEN D, cnd, mod, cyc, bnr = *pbnr, H = *pH;
+  GEN cnd, mod, cyc, bnr = *pbnr, H = *pH;
 
   if (nftyp(bnr)==typ_BNF) bnr = Buchray(bnr, gen_1, nf_INIT);
   else checkbnr(bnr);
@@ -369,10 +377,11 @@ bnr_subgroup_sanitize(GEN *pbnr, GEN *pH)
       if (!char_check(cyc, H))
         pari_err_TYPE("bnr_subgroup_sanitize [character]", H);
       H = charker(cyc, H); /* character -> subgroup */
+      mod = quotient_expo(H);
+      break;
     case t_MAT:
       H = hnfmodid(H, cyc); /* make sure H is a left divisor of Mat(cyc) */
-      D = ZM_snf(H); /* structure of Cl_f / H */
-      mod = lg(D) == 1? gen_1: gel(D,1);
+      mod = quotient_expo(H);
       break;
     default: pari_err_TYPE("bnr_subroup_sanitize [subgroup]", H);
       mod = NULL;

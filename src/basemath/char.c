@@ -179,7 +179,7 @@ charker(GEN cyc, GEN chi)
   m = shallowconcat(gel(nchi,2), gel(nchi,1));
   U = gel(ZV_extgcd(m), 2); setlg(U,l);
   for (i = 1; i < l; i++) setlg(U[i], l);
-  return hnfmodid(U, gel(ncyc,1));
+  return hnfmodid(U, cyc);
 }
 GEN
 charker0(GEN x, GEN chi)
