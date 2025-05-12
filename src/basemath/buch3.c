@@ -1915,7 +1915,7 @@ rnfconductor0(GEN bnf, GEN T, long flag)
   }
   module = mkvec2(D, identity_perm(nf_get_r1(nf)));
   MOD = flag? utoipos(degpol(T)): NULL;
-  bnr = Buchraymod_i(bnf, module, nf_INIT|nf_GEN, MOD);
+  bnr = Buchraymod_i(bnf, module, nf_INIT, MOD);
   H = rnfnormgroup_i(bnr,T); if (!H) return gc_const(av,gen_0);
   return gc_GEN(av, flag == 2? bnrconductor_factored(bnr, H)
                              : bnrconductormod(bnr, H, MOD));
