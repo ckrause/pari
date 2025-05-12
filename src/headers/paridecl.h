@@ -1974,6 +1974,7 @@ GEN     Flm_hess_pre(GEN x, ulong p, ulong pi);
 GEN     Flm_hess(GEN x, ulong p);
 GEN     FpM_charpoly(GEN x, GEN p);
 GEN     FpM_hess(GEN x, GEN p);
+GEN     FpM_trace(GEN x, GEN p);
 GEN     Frobeniusform(GEN V, long n);
 GEN     QM_minors_coprime(GEN x, GEN pp);
 GEN     QM_ImZ(GEN x);

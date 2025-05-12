@@ -281,6 +281,13 @@ RgM_adj_from_char(GEN x, long v, GEN C)
     return RgX_RgM_eval(C, x);
   }
 }
+
+GEN
+FpM_trace(GEN x, GEN p)
+{
+  return Fp_red(ZM_trace(x), p);
+}
+
 /* assume x square matrice */
 static GEN
 mattrace(GEN x)
