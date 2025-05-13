@@ -60,6 +60,7 @@ BA  23- [libpari] get_FlxqX_algebra
 BA  26- [libpari] zero_FlxM_copy
     27- [libpari] abmap_char_image, abmap_nchar_image
 BA  28- [libpari] ZMV_producttree, ZM_trace, FpM_trace
+    29- [libpari] bnrconductor_factored_arch, bnrtoprimitive
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate
@@ -97,6 +98,8 @@ BA   4- rename gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
      9- obsolete functions mpaff, affiz, affsz
     10- obsolete functions bnrchar_primitive, bnrchar_primitive_raw. Use
         bnrmap.
+    11- obsolete function bnrconductor_i. Use bnrconductor instead (which is
+        also obsolete but still present) or (better) bnrtoprimitive and bnrmap
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed

@@ -59,6 +59,4 @@ Doc: conductor $f$ of the subfield of a ray class field as defined by $[A,B,C]$
  \kbd{bnrmap}.
 
 Variant:
- Also available are \fun{GEN}{bnrconductor}{GEN bnr, GEN H, long flag}
- and \fun{GEN}{bnrconductormod}{GEN bnr, GEN H, long flag, GEN cycmod}
- which returns ray class groups modulo \kbd{cycmod}-th powers.
+ Also available is \fun{GEN}{bnrconductor}{GEN bnr, GEN H, long flag}.

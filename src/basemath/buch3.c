@@ -353,56 +353,6 @@ bnr_subgroup_check(GEN bnr, GEN H, GEN *pdeg)
   return H;
 }
 
-/* exponent G/H, assuming H is a left divisor of matdiagonal(G.cyc) */
-static GEN
-quotient_expo(GEN H)
-{
-  GEN D = ZM_snf(H); /* structure of G/H */
-  return lg(D) == 1? gen_1: gel(D,1);
-}
-
-void
-bnr_subgroup_sanitize(GEN *pbnr, GEN *pH)
-{
-  GEN cnd, mod, cyc, bnr = *pbnr, H = *pH;
-
-  if (nftyp(bnr)==typ_BNF) bnr = Buchray(bnr, gen_1, nf_INIT);
-  else checkbnr(bnr);
-  cyc = bnr_get_cyc(bnr);
-  if (!H) mod = cyc_get_expo(cyc);
-  else switch(typ(H))
-  {
-    case t_INT: mod = H; break;
-    case t_VEC:
-      if (!char_check(cyc, H))
-        pari_err_TYPE("bnr_subgroup_sanitize [character]", H);
-      H = charker(cyc, H); /* character -> subgroup */
-      mod = quotient_expo(H);
-      break;
-    case t_MAT:
-      H = hnfmodid(H, cyc); /* make sure H is a left divisor of Mat(cyc) */
-      mod = quotient_expo(H);
-      break;
-    default: pari_err_TYPE("bnr_subroup_sanitize [subgroup]", H);
-      mod = NULL;
-  }
-  cnd = bnrconductormod(bnr, H, mod);
-  *pbnr = gel(cnd,2); *pH = gel(cnd,3);
-}
-void
-bnr_char_sanitize(GEN *pbnr, GEN *pchi)
-{
-  GEN cnd, cyc, bnr = *pbnr, chi = *pchi;
-
-  if (nftyp(bnr)==typ_BNF) bnr = Buchray(bnr, gen_1, nf_INIT);
-  else checkbnr(bnr);
-  cyc = bnr_get_cyc(bnr);
-  if (!char_check(cyc, chi))
-    pari_err_TYPE("bnr_char_sanitize [character]", chi);
-  cnd = bnrconductormod(bnr, chi, charorder(cyc, chi));
-  *pbnr = gel(cnd,2); *pchi = gel(cnd,3);
-}
-
 /* c a rational content (NULL or t_INT or t_FRAC), return u*c as a ZM/d */
 static GEN
 ZM_content_mul(GEN u, GEN c, GEN *pd)
@@ -1571,37 +1521,46 @@ condoo_archp(GEN bnr, GEN H, zlog_S *S)
   if (j == l) return NULL;
   setlg(archp2, j); return archp2;
 }
-/* MOD useless in this function. If raw = 2, checks were already done
- * and we return [factor(f0),foo] or NULL if cond(H) = cond(bnr).
- * If raw = 1, return f = [f0,foo]; if raw = 0 return [f, factor(f0)].
- * FIXME: simplify 'raw' interface by adapting callers. */
-static GEN
-bnrconductor_factored_i(GEN bnr, GEN H, long raw)
+
+/* true bnr, H subgroup */
+GEN
+bnrconductor_factored_arch(GEN bnr, GEN H, GEN *parch)
 {
-  GEN nf, bid, arch, archp, e, fa, cond = NULL;
+  GEN nf = bnr_get_nf(bnr), bid = bnr_get_bid(bnr), e;
   zlog_S S;
 
-  if (raw != 2) { checkbnr(bnr); H = bnr_subgroup_check(bnr, H, NULL); }
-  nf = bnr_get_nf(bnr); bid = bnr_get_bid(bnr);
-  init_zlog(&S, bid);
-  e = cond0_e(bnr, H, &S); /* in terms of S.P */
-  archp = condoo_archp(bnr, H, &S);
-  if (!archp)
+  init_zlog(&S, bid); e = cond0_e(bnr, H, &S); /* in terms of S.P */
+  if (parch)
+  {
+    GEN archp = condoo_archp(bnr, H, &S);
+    *parch = archp? indices_to_vec01(archp, nf_get_r1(nf)): NULL;
+  }
+  return e? famat_remove_trivial(mkmat2(S.P, e)): NULL;
+}
+/* we return [factor(f0),foo] or NULL if cond(H) = cond(bnr).
+ * If flag, return f = [f0,foo] else return [f, factor(f0)]. */
+static GEN
+bnrconductor_factored_i(GEN bnr, GEN H, long flag)
+{
+  GEN arch, fa, cond = NULL;
+
+  checkbnr(bnr); H = bnr_subgroup_check(bnr, H, NULL);
+  fa = bnrconductor_factored_arch(bnr, H, &arch);
+  if (!arch)
   {
     GEN mod = bnr_get_mod(bnr);
-    if (!e) cond = mod;
+    if (!fa) cond = mod;
     arch = gel(mod,2);
   }
-  else
-    arch = indices_to_vec01(archp, nf_get_r1(nf));
-  fa = e? famat_remove_trivial(mkmat2(S.P, e)): bid_get_fact(bid);
-  if (raw == 2) return cond? NULL: mkvec2(fa, arch);
   if (!cond)
   {
-    GEN f0 = e? factorbackprime(nf, gel(fa,1), gel(fa,2)): bid_get_ideal(bid);
+    GEN f0 = fa? factorbackprime(bnr_get_nf(bnr), gel(fa,1), gel(fa,2))
+               : bid_get_ideal(bnr_get_bid(bnr));
     cond = mkvec2(f0, arch);
   }
-  return raw? cond: mkvec2(cond, fa);
+  if (flag) return cond;
+  if (!fa) fa = bid_get_fact(bnr_get_bid(bnr));
+  return mkvec2(cond, fa);
 }
 GEN
 bnrconductor_factored(GEN bnr, GEN H)
@@ -1610,19 +1569,85 @@ GEN
 bnrconductor_raw(GEN bnr, GEN H)
 { return bnrconductor_factored_i(bnr, H, 1); }
 
+/* exponent G/H, assuming H is a left divisor of matdiagonal(G.cyc) */
 static GEN
-Buchraymod_same(GEN bnr, GEN F, GEN MOD)
+quotient_expo(GEN H)
 {
-  long fl = lg(bnr_get_clgp(bnr)) == 4? nf_INIT | nf_GEN: nf_INIT;
-  return Buchraymod_i(bnr, F, fl, MOD);
+  GEN D = ZM_snf(H); /* structure of G/H */
+  return lg(D) == 1? gen_1: gel(D,1);
+}
+
+/* H subgroup or NULL (trivial) */
+GEN
+bnrtoprimitive(GEN bnr, GEN H, GEN mod)
+{
+  long fl;
+  GEN arch, fa = bnrconductor_factored_arch(bnr, H, &arch);
+  if (!fa && !arch) return NULL;
+  if (!fa) fa = bid_get_fact(bnr_get_bid(bnr));
+  if (!arch) arch = gel(bnr_get_mod(bnr), 2);
+  fl = lg(bnr_get_clgp(bnr)) == 4? nf_INIT | nf_GEN: nf_INIT;
+  return Buchraymod_i(bnr, mkvec2(fa,arch), fl, mod);
+}
+void
+bnr_subgroup_sanitize(GEN *pbnr, GEN *pH)
+{
+  GEN mod, cyc, bnrc, bnr = *pbnr, H = *pH;
+
+  if (nftyp(bnr)==typ_BNF) bnr = Buchray(bnr, gen_1, nf_INIT);
+  else checkbnr(bnr);
+  cyc = bnr_get_cyc(bnr);
+  if (!H) mod = cyc_get_expo(cyc);
+  else switch(typ(H))
+  {
+    case t_INT:
+      mod = H; H = bnr_subgroup_check(bnr, H, NULL);
+      break;
+    case t_VEC:
+      if (!char_check(cyc, H))
+        pari_err_TYPE("bnr_subgroup_sanitize [character]", H);
+      H = charker(cyc, H); /* character -> subgroup */
+      mod = quotient_expo(H);
+      break;
+    case t_MAT:
+      H = hnfmodid(H, cyc); /* make sure H is a left divisor of Mat(cyc) */
+      mod = quotient_expo(H);
+      break;
+    default: pari_err_TYPE("bnr_subroup_sanitize [subgroup]", H);
+      mod = NULL;
+  }
+  bnrc = bnrtoprimitive(bnr, H, mod);
+  if (!bnrc) bnrc = bnr;
+  else if (H)
+  {
+    GEN map = bnrsurjection(bnr, bnrc);
+    H = abmap_subgroup_image(map, H);
+  }
+  if (!H) H = diagonal_shallow(bnr_get_cyc(bnrc));
+  *pbnr = bnrc; *pH = H;
+}
+void
+bnr_char_sanitize(GEN *pbnr, GEN *pchi)
+{
+  GEN cyc, bnrc, bnr = *pbnr, chi = *pchi;
+
+  checkbnr(bnr); cyc = bnr_get_cyc(bnr);
+  if (!char_check(cyc, chi))
+    pari_err_TYPE("bnr_char_sanitize [character]", chi);
+  bnrc = bnrtoprimitive(bnr, charker(cyc,chi), charorder(cyc,chi));
+  if (bnrc)
+  {
+    GEN map = bnrsurjection(bnr, bnrc);
+    *pbnr = bnrc;
+    *pchi = abmap_char_image(map, chi);
+  }
 }
 
 /* assume lg(CHI) > 1 */
 void
 bnr_vecchar_sanitize(GEN *pbnr, GEN *pCHI)
 {
-  GEN F, H, cyc, o, bnr = *pbnr, CHI = *pCHI;
-  GEN D, N, nchi, bnrc = bnr, map = NULL;
+  GEN D, nchi, map, H, cyc, o, bnr = *pbnr, bnrc = bnr, CHI = *pCHI;
   long i, l = lg(CHI);
 
   if (nftyp(bnr)==typ_BNF) bnr = Buchray(bnr, gen_1, nf_INIT);
@@ -1636,59 +1661,41 @@ bnr_vecchar_sanitize(GEN *pbnr, GEN *pCHI)
     o = lcmii(o, charorder(cyc, chi));
   }
   H = bnr_subgroup_check(bnr, gel(CHI,1), NULL);
-  F = bnrconductor_factored_i(bnr, H, 2);
-  if (F)
-  {
-    bnrc = Buchraymod_same(bnr, F, o);
-    map = bnrsurjection(bnr, bnrc);
-  }
-  N = bnr_get_mod(bnrc);
+  bnrc = bnrtoprimitive(bnr, H, o);
+  map = bnrc? bnrsurjection(bnr, bnrc): NULL;
+  if (!bnrc) bnrc = bnr;
   D = cyc_normalize(bnr_get_cyc(bnrc));
   nchi = cgetg(l, t_VEC);
   for (i = 1; i < l; i++)
   {
     GEN chi = gel(CHI,i);
-    if (!map)
-    {
-      if (i > 1 && !bnrisconductor(bnr, chi)) chi = NULL;
-    }
-    else
-    {
-      if (i > 1 && !gequal(bnrconductor_raw(bnr, chi), N))
-        chi = NULL;
-      else
-        chi = abmap_char_image(map, chi);
-    }
-    if (!chi) pari_err_TYPE("bnr_vecchar_sanitize [different conductors]", CHI);
+    if (map) chi = abmap_char_image(map, chi);
+    if (i > 1 && !bnrisconductor(bnrc, chi))
+      pari_err_TYPE("bnr_vecchar_sanitize [different conductors]", CHI);
     gel(nchi, i) = char_renormalize(char_normalize(chi, D), o);
   }
   *pbnr = bnrc; *pCHI = mkvec2(o, nchi);
 }
 
-/* (see bnrdisc_i). Given a bnr and a subgroup H0 (possibly given as a
+/* Given a bnr and a subgroup H0 (possibly given as a
  * character chi, in which case H0 = ker chi) of the ray class group,
  * return [conductor(H0), bnr attached to conductor, image of H0].
- * FIXME: the interface is awkward and inefficient; split the 4 parts
- * in caller 1) bnrconductor_factored, 2) bnrinit [with proper MOD depending
- * on 4)], 3) compute bnrmap, 4) image of objects. Don't use this wrapper
- * except for lazy GP use. */
-GEN
+ * OBSOLETE: the interface is awkward and inefficient; split the 3 parts
+ * in caller 1) bnrtoprimitive with proper MOD depending on 3), 2) bnrmap,
+ * 3) image of objects. Don't use this wrapper except for lazy GP use. */
+static GEN
 bnrconductormod(GEN bnr, GEN H0, GEN MOD)
 {
   GEN H = bnr_subgroup_check(bnr, H0, NULL);
-  GEN F = bnrconductor_factored_i(bnr, H, 2), bnrc;
+  GEN bnrc = bnrtoprimitive(bnr, H, MOD);
   int ischi = H0 && typ(H0) == t_VEC; /* character or subgroup ? */
-  if (!F)
+  if (!bnrc)
   { /* same conductor */
     bnrc = bnr;
-    if (ischi)
-      H = H0;
-    else if (!H)
-      H = diagonal_shallow(bnr_get_cyc(bnr));
+    if (ischi) H = H0;
   }
   else
   {
-    bnrc = Buchraymod_same(bnr, F, MOD);
     if (ischi)
     {
       GEN map = bnrsurjection(bnr, bnrc);
@@ -1699,28 +1706,21 @@ bnrconductormod(GEN bnr, GEN H0, GEN MOD)
       GEN map = bnrsurjection(bnr, bnrc);
       H = abmap_subgroup_image(map, H);
     }
-    else
-      H = diagonal_shallow(bnr_get_cyc(bnrc));
   }
+  if (!H) H = diagonal_shallow(bnr_get_cyc(bnrc));
   return mkvec3(bnr_get_mod(bnrc), bnrc, H);
-}
-/* OBSOLETE */
-GEN
-bnrconductor_i(GEN bnr, GEN H, long flag)
-{
-  GEN v;
-  if (flag == 0) return bnrconductor_raw(bnr, H);
-  v = bnrconductormod(bnr, H, NULL);
-  if (flag == 1) gel(v,2) = bnr_get_clgp(gel(v,2));
-  return v;
 }
 /* OBSOLETE */
 GEN
 bnrconductor(GEN bnr, GEN H, long flag)
 {
   pari_sp av = avma;
+  GEN v;
+  if (flag == 0) return bnrconductor_raw(bnr, H);
   if (flag > 2 || flag < 0) pari_err_FLAG("bnrconductor");
-  return gc_GEN(av, bnrconductor_i(bnr, H, flag));
+  v = bnrconductormod(bnr, H, NULL); bnr = gel(v,1); H = gel(v,2);
+  if (flag == 1) gel(v,2) = bnr_get_clgp(gel(v,2));
+  return gc_GEN(av, v);
 }
 
 long

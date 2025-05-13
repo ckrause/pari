@@ -2014,28 +2014,69 @@ kernel. If \kbd{pdeg} is not \kbd{NULL}, \kbd{*pdeg} is set to the degree of the
 attached class field: the index of $H$ in the ray class group.
 
 \fun{void}{bnr_subgroup_sanitize}{GEN *pbnr, GEN *pH} given a \var{bnr}
-and a congruence subgroup, make sanity checks and compute the subgroup
+and a congruence subgroup $H$ (a subgroup of $G = \text{Cl}_f(K)$), make sanity checks and compute the subgroup
 conductor. Then replace the pair to match the conductor: the \var{bnr}
 has the right conductor as modulus, and the subgroup is normalized.
 Instead of a \var{bnr}, this function also accepts a \var{bnf} (gets replaced
 by the \var{bnr} with trivial conductor). Instead of a subgroup,
 the function also accepts an integer $N$ (replaced by $\text{Cl}_f(K)^N$)
-or a character (replaced by its kernel).
+or a character (replaced by its kernel). The \var{bnr} (or rather the
+underlying ray class group) is computed modulo the exponent of the Galois
+group $G / H$. Not stack-clean.
 
 \fun{void}{bnr_char_sanitize}{GEN *pbnr, GEN *pchi} same idea as
 \kbd{bnr\_subgroup\_sanitize}: we are given a \var{bnr}
 and a ray class character, make sanity checks and update the data
-to use the conductor as modulus.
+to use the conductor as modulus. The \var{bnr} (or rather the underlying ray
+class group) is computed modulo the order of the character. Not stack-clean.
+
+\fun{void}{bnr_vecchar_sanitize}{GEN *pbnr, GEN *pCHI} same idea as
+\kbd{bnr\_char\_sanitize}: we are given a \var{bnr} and a non empty
+vector of ray class characters of the \emph{same} conductor, make sanity
+checks and update the data to use the conductor as modulus.
+to use the conductor as modulus. The \var{bnr} (or rather the underlying ray
+class group) is computed modulo the lcm of all character orders. Not
+stack-clean.
 
 \fun{GEN}{bnrconductor}{GEN bnr, GEN H, long flag} see the documentation of
 the GP function.
 
 \fun{GEN}{bnrconductor_factored}{GEN bnr, GEN H}
-return a pair $[F,\var{fa}]$ where $F$ is the conductor and \var{fa} is the
-factorization of the finite part of the conductor. Shallow function.
+return a pair $[F,\var{fa}]$ where $F$ is the conductor of $H$ and \var{fa}
+is the factorization of the finite part of the conductor. Shallow function.
+The argument $H$ goes through \kbd{bnr\_subgroup\_check}, so can be a
+congruence subgroup, a ray class character, etc.
+
+\fun{GEN}{bnrconductor_factored_arch}{GEN bnr, GEN H, GEN *parch}
+$H$ must a congruence subgroup with respect to \var{bnr} in normalized form,
+as returned by \kbd{bnr\_subgroup\_check}. This function returns the
+factorization \var{fa} of the finite part of the conductor or \kbd{NULL} if
+\kbd{fa} coincides with the finite part of the \var{bnr} modulus. If
+\kbd{parch} is not \kbd{NULL}, then \kbd{*parch} is set to the conductor at
+infinity, or \kbd{NULL} if it coincides with the infinite places in the
+\var{bnr} modulus. In particular, the modulus of the \var{bnr} is the
+conductor of $H$ if and only if \kbd{*parch} and \kbd{fa} are \kbd{NULL}.
+Shallow function.
 
 \fun{GEN}{bnrconductor_raw}{GEN bnr, GEN H} return the conductor of $H$.
-Shallow function.
+Shallow function. The argument $H$ goes through \kbd{bnr\_subgroup\_check},
+so can be a congruence subgroup, a ray class character, etc.
+
+\fun{GEN}{bnrtoprimitive}{GEN bnr, GEN H, GEN mod} $H$ must a congruence
+subgroup with respect to \var{bnr} in normalized form, as returned by
+\kbd{bnr\_subgroup\_check}. This function computes the conductor $F$ of
+$H$ and returns \kbd{NULL} if it coincides with the \var{bnr} modulus.
+If not, it returns a new \var{bnr} structure attached to the modulus $F$,
+without generators. If \kbd{mod} is not \kbd{NULL}, the latter ray class
+group is computed modulo \kbd{mod}-th powers.
+Not stack-clean.
+
+This is meant to be used in conjunction with \kbd{bnrmap} (or
+\kbd{bnrsurjection}), which can then be used to map subgroups or characters
+from the original \var{bnr} to the new one using the \kbd{abmap\_XXX}
+functions. Beware that \kbd{mod} must be chosen accordingly, with respect to
+all objects which must be mapped in this way; for instance the lcm of all
+character orders.
 
 \fun{long}{bnrisconductor}{GEN bnr, GEN H} returns 1 is the class field
 defined by the subgroup $H$ (of the ray class group mod $f$ coded in \kbd{bnr})
@@ -2338,10 +2379,8 @@ not \kbd{nf\_GENMAT}. Don't use them:
 
 \fun{GEN}{idealappr0}{GEN nf, GEN x, long flag}
 
-\noindent Superseded by \kbd{bnrconductor\_raw} or \kbd{bnrconductormod}:
-
-\fun{GEN}{bnrconductor_i}{GEN bnr, GEN H, long flag} shallow variant of
-\kbd{bnrconductor}.
+\noindent Superseded by \kbd{bnrconductor\_raw} or
+\kbd{bnrconductor\_factored}, \kbd{bnrconductor\_factored\_arch}:
 
 \fun{GEN}{bnrconductorofchar}{GEN bnr, GEN chi}
 
