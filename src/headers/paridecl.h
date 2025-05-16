@@ -5062,6 +5062,8 @@ void    forsubset0(GEN nk, GEN code);
 
 /* lambert.c */
 
+double  dbllambertW0(double a);
+double  dbllambertW_1(double a);
 GEN     glambertW(GEN y, long branch, long prec);
 GEN     mplambertW(GEN y, long prec);
 GEN     mplambertX(GEN y, long bit);
@@ -5570,6 +5572,7 @@ GEN     QX_complex_roots(GEN p, long l);
 GEN     FFT(GEN W, GEN x);
 GEN     FFTinv(GEN W, GEN x);
 GEN     cleanroots(GEN x,long l);
+double  dbllog2(GEN z);
 double  fujiwara_bound(GEN p);
 double  fujiwara_bound_real(GEN p, long sign);
 int     isrealappr(GEN x, long l);

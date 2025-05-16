@@ -11738,9 +11738,6 @@ an unsigned small integer if possible, otherwise raise an exception. This
 function is similar to \tet{itou}, slightly slower since it checks the type
 of \kbd{x}.
 
-\fun{double}{dbllog2r}{GEN x} assuming that \kbd{x} is a nonzero \typ{REAL},
-returns an approximation to \kbd{log2(|x|)}.
-
 \fun{double}{dblmodulus}{GEN x} return an approximation to \kbd{|x|}.
 
 \fun{long}{gtolong}{GEN x} if \kbd{x} is an integer (not necessarily
@@ -13452,6 +13449,25 @@ evaluates to $0$).
 is a reference point. A non-$0$ \typ{REAL} component $x$ is
 approximately $0$ if
 $$\kbd{exponent}(b) - \kbd{exponent}(x) > \kbd{bit\_prec(x)}\;.$$
+
+\section{Low accuracy input or output}
+
+\fun{double}{dbllog2r}{GEN x} assuming that \kbd{x} is a nonzero \typ{REAL},
+returns an approximation to \kbd{log2(|x|)}.
+
+\fun{double}{dbllog2}{GEN x} assuming that \kbd{x} is a complex number
+of type \typ{INT}, \typ{FRAC}, \typ{REAL} or a \typ{COMPLEX} (with real
+components) returns an approximation to \kbd{log2(|x|)}. Returns $1./0.$
+if $x$ is $0$.
+
+\fun{double}{dbllambertW0}{double y} given $y > e^{-1}$ return
+a rough approximation $x$ to $W_0(y)$, where $W_0$ is the principal branch
+of the Lambert function (relative error less than $1\%$).
+We thus have $x e^x \approx y$.
+
+\fun{double}{dbllambertW_1}{double y} given $0 > y > e^{-1}$ return a rough
+approximation $x$ to $W_{-1}(y)$ (relative error less than $1\%$).
+We thus have $x e^x \approx y$.
 
 \section{Quadratic numbers and binary quadratic forms}
 
