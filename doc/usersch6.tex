@@ -3237,25 +3237,36 @@ A \tev{character} on the abelian group $\oplus (\Z/d_j\Z) g_j$
 is given by a row vector $\chi = [a_1,\ldots,a_n]$ such that
 $\chi(\prod g_j^{n_j}) = e(\sum a_j n_j / d_j)$.
 
+A \tev{quasi-normalized character} is of the form $[d, (n_j)]$, such that
+$\chi(\prod g_j^{x_j}) = \zeta_d^{\sum_j n_j x_j}$, where $\zeta_d =
+e(1/d)$.
+
+A \tev{normalized character} is a quasi-normalized $[d, (n_j)]$, such that
+$d$ is \emph{minimal}, i.e., $d$ is the order of \kbd{chi}.
+
 \fun{GEN}{cyc_normalize}{GEN d} shallow function. Given a vector
 $(d_i)_{i \leq n}$
 of elementary divisors for a finite group (no $d_i$ vanish), returns the vector
 $D = [1]$ if $n = 0$ (trivial group) and
  $[d_1, d_1/d_2, \dots, d_1/d_n]$ otherwise. This will allow to define
 characters as $\chi(\prod g_j^{x_j}) = e(\sum_j x_j a_j D_j / D_1)$,
-see \tet{char_normalize}.
+with a common denominator $D_1$ see \tet{char_normalize}.
 
 \fun{GEN}{char_normalize}{GEN chi, GEN ncyc} shallow function. Given a
 character \kbd{chi} $ = (a_j)$ and \var{ncyc} from \kbd{cyc\_normalize}
 above, returns the normalized representation $[d, (n_j)]$, such that
 $\chi(\prod g_j^{x_j}) = \zeta_d^{\sum_j n_j x_j}$, where $\zeta_d =
-e(1/d)$ and $d$ is \emph{minimal}. In particular, $d$ is the order
-of \kbd{chi}. Shallow function.
+e(1/d)$ and $d$ is \emph{minimal}. Shallow function.
 
 \fun{GEN}{char_simplify}{GEN D, GEN N} given a quasi-normalized character
 $[D, (N_j)]$ such that $\chi(\prod g_j^{x_j}) = \zeta_D^{\sum_j N_j x_j}$,
-but where we only  assume that $D$ is a multiple of the character
-order, return a normalized character $[d, (n_j)]$ with $d$ \emph{minimal}.
+return a normalized character $[d, (n_j)]$ with $d$ \emph{minimal}.
+Shallow function.
+
+\fun{GEN}{char_renormalize}{GEN nchi, GEN o} shallow function. Given a
+quasi-normalized character \kbd{nchi} $ = [d, (n_j)]$ and a multiple
+$D$ of $d$, returns the quasi-normalized representation $[D,
+(N_j)]$, such that $\chi(\prod g_j^{x_j}) = \zeta_D^{\sum_j N_j x_j}$.
 Shallow function.
 
 \fun{GEN}{char_denormalize}{GEN cyc, GEN d, GEN n} given a normalized

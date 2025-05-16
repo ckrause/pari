@@ -61,6 +61,7 @@ BA  26- [libpari] zero_FlxM_copy
     27- [libpari] abmap_char_image, abmap_nchar_image
 BA  28- [libpari] ZMV_producttree, ZM_trace, FpM_trace
     29- [libpari] bnrconductor_factored_arch, bnrtoprimitive
+    30- [libpari] char_renormalize
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate
