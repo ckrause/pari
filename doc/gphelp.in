@@ -1,8 +1,17 @@
 #!@runtime_perl@
-$version= "@version@";
-$datadir= "@datadir@";
+
+$version= <<'END_OF_VERSION';
+@version@
+END_OF_VERSION
+chomp($version);
+
+$datadir= <<'END_OF_DATADIR';
+@datadir@
+END_OF_DATADIR
+chomp($datadir);
+
 # no expanded material (@key@) below
-# Copyright (C) 2000  The PARI group.
+# Copyright (C) 2025  The PARI group.
 #
 # This file is part of the PARI/GP package.
 #
