@@ -1238,7 +1238,7 @@ Fl_ellcard_Shanks(ulong c4, ulong c6, ulong p)
       table[i].i = i;
       if (Fle_add_inplace(fh, F, cp4, p)) { h += B*(i+1); goto FOUND; }
     }
-    qsort(table,s,sizeof(multiple),(QSCOMP)compare_multiples);
+    qsort(table,s,sizeof(multiple),compare_multiples);
     fg = Fle_mulu(F, s, cp4, p); ftest = zv_copy(fg);
     if (ell_is_inf(ftest)) {
       if (!uisprime(p)) pari_err_PRIME("ellap",utoi(p));
