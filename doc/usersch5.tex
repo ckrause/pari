@@ -1487,12 +1487,14 @@ One rather uses:
 \section{The PARI heap}
 \subsec{Introduction}
 
-It is implemented as a doubly-linked list of \kbd{malloc}'ed blocks of
-memory, equipped with reference counts. Each block has type \kbd{GEN} but need
-not be a valid \kbd{GEN}: it is a chunk of data preceded by a hidden header
-(meaning that we allocate $x$ and return $x + \kbd{header size}$). A
-\tev{clone}, created by \tet{gclone}, is a block which is a valid \kbd{GEN}
-and whose \emph{clone bit} is set.
+It is implemented as \kbd{malloc}'ed blocks of memory, equipped with
+reference counts. Each block has type \kbd{GEN} but need not be a valid
+\kbd{GEN}: it is a chunk of data preceded by a hidden header (meaning that we
+allocate $x$ and return $x + \kbd{header size}$). A \tev{clone}, created by
+\tet{gclone}, is a block which is a valid \kbd{GEN} and whose \emph{clone
+bit} is set. The collection of blocks is maintained as a doubly-linked list
+(in creation order) \emph{and} as an AVL tree (allowing to check in
+logarithmic time whether a given object / address is a block).
 
 \subsec{Public interface}
 
