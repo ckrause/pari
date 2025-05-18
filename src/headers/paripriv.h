@@ -45,7 +45,6 @@ void clone_unlock_deep(GEN C);
 #define pswap(x,y) {GEN *_z=x; x=y; y=_z;}
 #define swap(x,y)  {GEN  _z=x; x=y; y=_z;}
 #define dswap(x,y) { double _t=x; x=y; y=_t; }
-#define pdswap(x,y) { double* _t=x; x=y; y=_t; }
 #define swapspec(x,y, nx,ny) {swap(x,y); lswap(nx,ny);}
 
 /* loops */
