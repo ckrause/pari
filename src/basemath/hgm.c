@@ -1613,7 +1613,7 @@ mkal(GEN p, GEN W)
   for (j = 1; j < lV; j++)
   {
     GEN t = cgetg(l, t_VECSMALL), v = gel(V,j);
-    for (i = 1; i < l; i++) t[i] = umael2(W, p[i], v[i]+1);
+    for (i = 1; i < l; i++) t[i] = umael(W, p[i], v[i]+1);
     vecsmall_sort(t); if (!RgV_isin(res, t)) res = vec_append(res, t);
   }
   return res;
