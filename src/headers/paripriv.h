@@ -14,9 +14,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 BEGINEXTERN
 
-/* for qsort */
-typedef int (*QSCOMP)(const void *, const void *);
-
 #define uel(a,i)            (((ulong*)(a))[i])
 #define ucoeff(a,i,j)       (((ulong**)(a))[j][i])
 #define umael(a,i,j)        (((ulong**)(a))[i][j])

@@ -1140,7 +1140,11 @@ typedef struct
 } multiple;
 
 static int
-compare_multiples(multiple *a, multiple *b) { return a->x > b->x? 1:a->x<b->x?-1:0; }
+compare_multiples(const void *A, const void *B)
+{
+  multiple *a = (multiple*)A, *b = (multiple*)B;
+  return a->x > b->x? 1: a->x < b->x? -1: 0;
+}
 
 /* find x such that h := a + b x is closest to c and return h:
  * x = round((c-a) / b) = floor( (2(c-a) + b) / 2b )

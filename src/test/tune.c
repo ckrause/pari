@@ -626,7 +626,8 @@ struct dat_t {
 } *dat = NULL;
 
 int
-double_cmp_ptr(double *x, double *y) { return (int)(*x - *y); }
+double_cmp_ptr(const void *x, const void *y)
+{ return (int)(*(double**)x - *(double**)y); }
 
 double
 time_fun(speed_function_t fun, speed_param *s, long enabled)
@@ -665,7 +666,7 @@ time_fun(speed_function_t fun, speed_param *s, long enabled)
       valid measurement.  Return smallest among them.  */
     if (i >= e)
     {
-      qsort (t, i+1, sizeof(t[0]), (QSCOMP)double_cmp_ptr);
+      qsort (t, i+1, sizeof(t[0]), double_cmp_ptr);
       for (j = e-1; j < i; j++)
         if (t[j] <= t[j-e+1] * TOLERANCE) return gc_double(av, t[j-e+1]);
     }

@@ -126,7 +126,8 @@ static int
 has_ext_help(void) { return (GP_DATA->help && *GP_DATA->help); }
 
 static int
-compare_str(char **s1, char **s2) { return strcmp(*s1, *s2); }
+compare_str(const void *s1, const void*s2)
+{ return strcmp(*(char**)s1, *(char**)s2); }
 
 /* Print all elements of list in columns, pausing every nbli lines
  * if nbli is nonzero. list is a NULL terminated list of function names */
@@ -137,7 +138,7 @@ print_fun_list(char **list, long nbli)
   char **l;
 
   while (list[i]) i++;
-  qsort (list, i, sizeof(char *), (QSCOMP)compare_str);
+  qsort (list, i, sizeof(char *), compare_str);
 
   for (l=list; *l; l++)
   {
