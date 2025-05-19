@@ -1998,7 +1998,7 @@ polclass0(long D, long inv, long vx, GEN *db)
   dbg_printf(1)("D = %ld, conductor = %ld, inv = %ld\n", D, u, inv);
 
   ni = modinv_degree(&p1, &p2, inv);
-  orient = modinv_is_double_eta(inv) && kross(D, p1) && kross(D, p2);
+  orient = modinv_is_double_eta(inv) && kross(D, p1) && p2>1 && kross(D, p2);
 
   G = classgp_make_pcp(&height, &ni, h, D, D0, u, Pu, Eu, inv, filter, orient);
   primes = select_classpoly_primes(&vfactors, &biggest_v, delta, G, height);
