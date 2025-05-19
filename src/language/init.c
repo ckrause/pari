@@ -259,39 +259,37 @@ blockdelete(GEN x, GEN bl)
   return bl;
 }
 
+/* If x is a component of a block, return the latter. Else return NULL */
 static GEN
-blocksearch(GEN x, GEN bl)
+is_in_block(GEN x)
 {
-  if (isclone(x)) return x;
-  if (isonstack(x) || is_universal_constant(x)) return NULL;
+  GEN bl = root_block;
   while (bl)
   {
-    if (x >= bl  && x < bl + bl_size(bl))
-      return bl;
+    if (x >= bl  && x < bl + bl_size(bl)) return bl;
     bl = x < bl ? bl_left(bl): bl_right(bl);
   }
   return NULL; /* Unknown address */
 }
-
-static int
-check_clone(GEN x)
+/* If x is a clone, return it. Else if x is a component of a clone, return
+ * the latter. Else return NULL */
+static GEN
+clonesearch(GEN x)
 {
-  GEN bl = root_block;
-  if (isonstack(x) || is_universal_constant(x)) return 1;
-  while (bl)
+  if (isclone(x)) return x;
+  if (!isonstack(x) && !is_universal_constant(x))
   {
-    if (x >= bl  && x < bl + bl_size(bl))
-      return 1;
-    bl = x < bl ? bl_left(bl): bl_right(bl);
+    x = is_in_block(x);
+    if (x && isclone(x)) return x;
   }
-  return 0; /* Unknown address */
+  return NULL;
 }
 
 void
 clone_lock(GEN x)
 {
-  GEN y = blocksearch(x, root_block);
-  if (y && isclone(y))
+  GEN y = clonesearch(x);
+  if (y)
   {
     if (DEBUGMEM > 2)
       err_printf("locking block no %ld: %08lx from %08lx\n", bl_num(y), y, x);
@@ -302,8 +300,8 @@ clone_lock(GEN x)
 void
 clone_unlock(GEN x)
 {
-  GEN y = blocksearch(x, root_block);
-  if (y && isclone(y))
+  GEN y = clonesearch(x);
+  if (y)
   {
     if (DEBUGMEM > 2)
       err_printf("unlocking block no %ld: %08lx from %08lx\n", bl_num(y), y, x);
@@ -314,8 +312,8 @@ clone_unlock(GEN x)
 void
 clone_unlock_deep(GEN x)
 {
-  GEN y = blocksearch(x, root_block);
-  if (y && isclone(y))
+  GEN y = clonesearch(x);
+  if (y)
   {
     if (DEBUGMEM > 2)
       err_printf("unlocking deep block no %ld: %08lx from %08lx\n", bl_num(y), y, x);
@@ -2453,30 +2451,30 @@ obj_init(long d, long n)
   return S;
 }
 
-/* as obj_insert. WITHOUT cloning (for libpari, when creating a *new* obj
- * from an existing one) */
 GEN
 obj_insert(GEN S, long K, GEN O)
 {
   GEN o, v = veclast(S);
   if (typ(v) != t_VEC) pari_err_TYPE("obj_insert", S);
-  if (!check_clone(v))
+  O = gclone(O);
+  if (!isonstack(v) && !is_universal_constant(v) && !is_in_block(v))
   {
     if (DEBUGLEVEL) pari_warn(warner,"trying to update parent object");
-    return gclone(O);
+    return O;
   }
-  o = gel(v,K);
-  gel(v,K) = gclone(O); /*SIGINT: before unclone(o)*/
-  if (isclone(o)) gunclone(o); return gel(v,K);
+  o = gel(v,K); gel(v,K) = O; /* before unclone(o) in case of SIGINT */
+  if (isclone(o)) gunclone(o);
+  return gel(v,K);
 }
 
+/* as obj_insert. WITHOUT cloning (for libpari, when creating a *new* obj
+ * from an existing one) */
 GEN
 obj_insert_shallow(GEN S, long K, GEN O)
 {
   GEN v = veclast(S);
   if (typ(v) != t_VEC) pari_err_TYPE("obj_insert", S);
-  gel(v,K) = O;
-  return gel(v,K);
+  gel(v,K) = O; return gel(v,K);
 }
 
 /* Does S [last position] contain data at position K ? Return it, or NULL */
