@@ -1590,7 +1590,7 @@ FqM_gauss_pivot(GEN x, GEN T, GEN p, long *rr)
     ulong pp = uel(p,2);
     GEN Tp = ZXT_to_FlxT(T, pp);
     GEN d = FlxqM_gauss_pivot(ZXM_to_FlxM(x, pp, get_Flx_var(Tp)), Tp, pp, rr);
-    return d ? gc_uptoleaf(av, d): d;
+    return d ? gc_leaf(av, d): d;
   }
   return FqM_gauss_pivot_gen(x, T, p, rr);
 }
@@ -3749,7 +3749,7 @@ ZM_pivots(GEN M0, long *rr)
   }
 END:
   *rr = rbest; guncloneNULL(dbest);
-  return gc_uptoleaf(av0, d);
+  return gc_leaf(av0, d);
 }
 
 /* compute ker(x) */

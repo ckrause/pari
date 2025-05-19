@@ -513,7 +513,7 @@ F2m_inv_upper_1_ind(GEN A, long index)
     for (j=i+2; j<=n; j++) m ^= F2m_coeff(A,i,j) & uel(u,j);
     u[i] = m & 1;
   }
-  return gc_uptoleaf(av, Flv_to_F2v(u));
+  return gc_leaf(av, Flv_to_F2v(u));
 }
 static GEN
 F2m_inv_upper_1(GEN A)
@@ -599,7 +599,7 @@ F2m_F2c_gauss(GEN a, GEN b)
   GEN z = F2m_gauss(a, mkmat(b));
   if (!z) return gc_NULL(av);
   if (lg(z) == 1) retgc_const(av, cgetg(1, t_VECSMALL));
-  return gc_uptoleaf(av, gel(z,1));
+  return gc_leaf(av, gel(z,1));
 }
 
 GEN
@@ -662,7 +662,7 @@ F2m_F2c_invimage(GEN A, GEN y)
   x = gel(M,i);
   if (!F2v_coeff(x,l)) return gc_NULL(av);
   F2v_clear(x, x[1]); x[1]--; /* remove last coord */
-  return gc_uptoleaf(av, x);
+  return gc_leaf(av, x);
 }
 
 /*  Block Lanczos algorithm for kernel of sparse matrix (F2Ms)

@@ -425,7 +425,7 @@ kbessel1(GEN nu, GEN gx, long prec)
     {
       GEN ak = divru(mulrr(addri(nu2, sqru(k2)), zz), k);
       s = subsr(1, mulrr(ak,s));
-      if (gc_needed(av2,3)) s = gc_uptoleaf(av2, s);
+      if (gc_needed(av2,3)) s = gc_leaf(av2, s);
     }
     zf = sqrtr(divrr(pi,r));
     u = mulrr(s, zf);
@@ -750,7 +750,7 @@ eint1r_asymp(GEN x, GEN expx, long prec)
   }
   if (DEBUGLEVEL > 2) err_printf("eint1: using asymp\n");
   S = expx? divrr(S, expx): mulrr(S, mpexp(negr(x)));
-  return gc_uptoleaf(av, mulrr(S, ix));
+  return gc_leaf(av, mulrr(S, ix));
 }
 /* cf incgam_asymp(0, x); z = -1/x
  *   exp(-x)/x * (1 + z + 2! z^2 + ...) */
@@ -836,7 +836,7 @@ eint1m(GEN x, GEN expx)
     }
     y  = addrr(S, addrr(logr_abs(x), mpeuler(l)));
   }
-  y = gc_uptoleaf(av, y); togglesign(y);
+  y = gc_leaf(av, y); togglesign(y);
   gel(z, 1) = y;
   y = mppi(l); setsigne(y, -1);
   gel(z, 2) = y; return z;
@@ -1345,7 +1345,7 @@ mp_sum_j(GEN a, long j, long E, long prec)
     q = mulrr(q, divru(a, m+j));
     s = addrr(s, q);
   }
-  return gc_uptoleaf(av, s);
+  return gc_leaf(av, s);
 }
 /* Return the s_a(j), j <= J */
 static GEN
@@ -1751,7 +1751,7 @@ szeta(long k, long prec)
       pari_err_OVERFLOW("zeta [large negative argument]");
     k = 1-k;
     z = bernreal(k, prec); togglesign(z);
-    return gc_uptoleaf(av, divru(z, k));
+    return gc_leaf(av, divru(z, k));
   }
   /* k > 1 */
   if (k > prec2nbits(prec)+1) return real_1(prec);
@@ -1782,7 +1782,7 @@ szeta(long k, long prec)
     z = (p * k > prec2nbits(prec))? invr(inv_szeta_euler(k, prec))
                                   : zetaBorwein(k, prec);
   }
-  return gc_uptoleaf(av, z);
+  return gc_leaf(av, z);
 }
 
 /* Ensure |1-s| >= 1/32 and (|s| <= 1/32 or real(s) >= 1/2) */

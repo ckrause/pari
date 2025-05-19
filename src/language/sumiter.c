@@ -1335,10 +1335,10 @@ binsum(GEN S, ulong k, void *E, GEN (*f)(void *, GEN), GEN a,
     else {
       shiftr_inplace(u, e);
       t = addrr(t,u); if (expo(u) < G) break;
-      if ((e & 0x1ff) == 0) t = gc_uptoleaf(av, t);
+      if ((e & 0x1ff) == 0) t = gc_leaf(av, t);
     }
   }
-  gel(S, k << l) = t = gc_uptoleaf(av, t);
+  gel(S, k << l) = t = gc_leaf(av, t);
   /* g(j) = 2g(2j) + f(a+j) for all j > 0 */
   for(i = l-1; i >= 0; i--)
   { /* t ~ g(2 * k*2^i) with error ~ 2^(G-i-1) */
@@ -1346,7 +1346,7 @@ binsum(GEN S, ulong k, void *E, GEN (*f)(void *, GEN), GEN a,
     av = avma; u = gtofp(f(E, a? addiu(a, k << i): utoipos(k << i)), prec);
     if (typ(u) != t_REAL) pari_err_TYPE("sumpos",u);
     t = addrr(gtofp(u,prec), mpshift(t,1)); /* ~ g(k*2^i) */
-    gel(S, k << i) = t = gc_uptoleaf(av, t);
+    gel(S, k << i) = t = gc_leaf(av, t);
   }
 }
 /* For k > 0, let g(k) := \sum_{e >= 0} 2^e f(a + k*2^e).
@@ -1551,7 +1551,7 @@ SOLVE:
     fb = eval(E, b);
   }
   if (iter > itmax) pari_err_IMPL("solve recovery [too many iterations]");
-  return gc_uptoleaf(av, rcopy(b));
+  return gc_leaf(av, rcopy(b));
 }
 
 GEN

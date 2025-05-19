@@ -1518,7 +1518,7 @@ Flx_roots(GEN f, ulong p)
   }
   if (p == 2) return Flx_root_mod_2(f);
   pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
-  return gc_uptoleaf(av, Flx_roots_pre(f, p, pi));
+  return gc_leaf(av, Flx_roots_pre(f, p, pi));
 }
 
 /* assume x reduced mod p, monic. */
@@ -1757,7 +1757,7 @@ F2x_ddf_simple(GEN T, GEN XP)
       gel(f, j) = u;
       Tr = F2x_div(Tr, u);
       av2 = avma;
-    } else z = gc_uptoleaf(av2, z);
+    } else z = gc_leaf(av2, z);
     if (!F2x_degree(Tr)) break;
     z = F2xq_sqr(z, Tr);
   }
@@ -1784,7 +1784,7 @@ F2xq_frobtrace(GEN a, long d, GEN T)
   {
     x = F2x_add(a, F2xq_sqr(x,T));
     if (gc_needed(av, 2))
-      x = gc_uptoleaf(av, x);
+      x = gc_leaf(av, x);
   }
   return x;
 }
@@ -2013,7 +2013,7 @@ Flx_ispower(GEN f, ulong k, ulong p, GEN *pt_r)
       s = Flx_mul_pre(s, gel(F,i), p, pi);
       r = Flx_mul_pre(r, s, p, pi);
     }
-    *pt_r = gc_uptoleaf(av, r);
+    *pt_r = gc_leaf(av, r);
   } else set_avma(av);
   return 1;
 }

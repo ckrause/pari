@@ -1838,7 +1838,7 @@ GEN
 Z_nv_mod(GEN A, GEN P)
 {
   pari_sp av = avma;
-  return gc_uptoleaf(av, Z_ZV_mod_tree(A, P, ZV_producttree(P)));
+  return gc_leaf(av, Z_ZV_mod_tree(A, P, ZV_producttree(P)));
 }
 /* B a ZX, T = ZV_producttree(P) */
 GEN

@@ -1245,7 +1245,7 @@ leafcopy_avma(GEN x, pari_sp av)
   return y;
 }
 INLINE GEN
-gc_uptoleaf(pari_sp av, GEN x)
+gc_leaf(pari_sp av, GEN x)
 {
   long lx;
   GEN q;
@@ -1285,7 +1285,7 @@ gc_upto(pari_sp av, GEN q)
     case t_INT: return gc_INT(av, q);
     case t_REAL:
     case t_STR:
-    case t_VECSMALL: return gc_uptoleaf(av,q);
+    case t_VECSMALL: return gc_leaf(av,q);
     default: return (GEN)((pari_sp)q + gc_stack_update(av, (pari_sp)(q+lg(q))));
   }
 }

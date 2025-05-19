@@ -634,7 +634,7 @@ minkowski_bound(GEN D, long N, long r2, long prec)
   GEN c = divri(mpfactr(N,prec), powuu(N,N));
   if (r2) c = mulrr(c, powru(divur(4,mppi(prec)), r2));
   c = mulrr(c, gsqrt(absi_shallow(D),prec));
-  return gc_uptoleaf(av, c);
+  return gc_leaf(av, c);
 }
 
 /* N = [K:Q] > 1, D = disc(K) */
@@ -707,7 +707,7 @@ Hermite_bound(long n, long prec)
   av = avma;
   h  = powru(divur(2,mppi(prec)), n);
   h1 = sqrr(ggamma(uutoQ(n+4,2),prec));
-  return gc_uptoleaf(av, mulrr(h,h1));
+  return gc_leaf(av, mulrr(h,h1));
 }
 
 /* 1 if L (= nf != Q) primitive for sure, 0 if MAYBE imprimitive (may have a
@@ -2372,7 +2372,7 @@ bnrclassno_all(GEN B, ulong h, GEN sgnU)
       rowselect_p(m, mm, rowsel, nc+1);
       H[k+1] = hdet(h, mm);
     }
-    H = gc_uptoleaf(av, H);
+    H = gc_leaf(av, H);
     gel(L,j) = mkvec2(gel(b,1), H);
   }
   return L;

@@ -72,7 +72,7 @@ mpatan(GEN x)
     return y;
   }
   if (l > AGM_ATAN_LIMIT)
-  { av = avma; return gc_uptoleaf(av, atan2_agm(gen_1, x, l)); }
+  { av = avma; return gc_leaf(av, atan2_agm(gen_1, x, l)); }
 
   e = expo(x); inv = (e >= 0); /* = (|x| > 1 ) */
   if (e > 0) lp += nbits2extraprec(e);
@@ -170,7 +170,7 @@ mpasin(GEN x) {
     z = atan2_agm(a, x, realprec(x));
   else
     z = mpatan(divrr(x, a));
-  return gc_uptoleaf(av, z);
+  return gc_leaf(av, z);
 }
 
 static GEN mpacosh(GEN x);
@@ -240,7 +240,7 @@ mpacos(GEN x)
     z = mpatan(divrr(a, x));
     if (signe(x) < 0) z = addrr(mppi(realprec(z)), z);
   }
-  return gc_uptoleaf(av, z);
+  return gc_leaf(av, z);
 }
 
 GEN
@@ -338,7 +338,7 @@ cxarg(GEN x, GEN y, long prec)
 {
   pari_sp av = avma;
   x = rfix(x,prec);
-  y = rfix(y,prec); return gc_uptoleaf(av, mparg(x,y));
+  y = rfix(y,prec); return gc_leaf(av, mparg(x,y));
 }
 
 GEN
@@ -374,7 +374,7 @@ mpcosh(GEN x)
   if (!signe(x)) return mpcosh0(expo(x));
   av = avma;
   z = mpexp(x); z = addrr(z, invr(z)); shiftr_inplace(z, -1);
-  return gc_uptoleaf(av, z);
+  return gc_leaf(av, z);
 }
 
 GEN
@@ -514,7 +514,7 @@ mptanh(GEN x)
     GEN t;
     if (e < 0) x = rtor(x, lx + nbits2extraprec(-e));
     t = exp1r_abs(gmul2n(x,1)); /* exp(|2x|) - 1 */
-    y = gc_uptoleaf(av, divrr(t, addsr(2,t)));
+    y = gc_leaf(av, divrr(t, addsr(2,t)));
   }
   if (s < 0) togglesign(y); /* tanh is odd */
   return y;
@@ -564,7 +564,7 @@ mpcotanh(GEN x)
     GEN t;
     if (e < 0) x = rtor(x, lx + nbits2extraprec(-e));
     t = exp1r_abs(gmul2n(x,1)); /* exp(|2x|) - 1 */
-    y = gc_uptoleaf(av, divrr(addsr(2,t), t));
+    y = gc_leaf(av, divrr(addsr(2,t), t));
   }
   if (s < 0) togglesign(y); /* cotanh is odd */
   return y;
@@ -768,7 +768,7 @@ mpatanh(GEN x)
   }
   z = invr(z); shiftr_inplace(z, 1); /* 2/(1-|x|) */
   z = logr_abs( addrs(z,-1) ); if (s < 0) togglesign(z);
-  shiftr_inplace(z, -1); return gc_uptoleaf(av, z);
+  shiftr_inplace(z, -1); return gc_leaf(av, z);
 }
 
 static long
@@ -853,7 +853,7 @@ gatanh(GEN x, long prec)
       }
       else
         a = atanhui(1, x, prec);
-      gel(z,1) = gc_uptoleaf(av, a);
+      gel(z,1) = gc_leaf(av, a);
       gel(z,2) = Pi2n(-1, prec);
       togglesign(sx > 0? gel(z,2): gel(z,1));
       return z;
@@ -870,7 +870,7 @@ gatanh(GEN x, long prec)
         set_avma(av); if (e < - prec2nbits(prec)) break;
         z = cgetg(3, t_COMPLEX); av = avma;
         a = ly == 3? atanhuu(u, y[2], prec): atanhui(u, y, prec);
-        gel(z,1) = gc_uptoleaf(av, a);
+        gel(z,1) = gc_leaf(av, a);
         gel(z,2) = Pi2n(-1, prec);
         togglesign(signe(y) > 0? gel(z,2): gel(z,1));
       }
@@ -879,7 +879,7 @@ gatanh(GEN x, long prec)
         av = avma; e = expi((signe(y) < 0)? addii(y, z): subii(y, z));
         set_avma(av); if (e < - prec2nbits(prec)) break;
         a = lz == 3? atanhuu(y[2], z[2], prec): atanhui(y[2], z, prec);
-        z = gc_uptoleaf(av, a);
+        z = gc_leaf(av, a);
         if (signe(y) < 0) togglesign(z);
       }
       return z;
@@ -898,7 +898,7 @@ gatanh(GEN x, long prec)
       if (!signe(z)) err_atanh(x, gen_m1);
       z = logr_abs(z);
       shiftr_inplace(z, -1); /* (1/2)log((1+x)/(x-1)) */
-      gel(y,1) = gc_uptoleaf(av, z);
+      gel(y,1) = gc_leaf(av, z);
       gel(y,2) = Pi2n(-1, realprec(x));
       if (sx > 0) togglesign(gel(y,2));
       return y;
@@ -1218,7 +1218,7 @@ cxgamma(GEN s0, int dolog, long prec)
         if (gc_needed(av2,3))
         {
           if(DEBUGMEM>1) pari_warn(warnmem,"gamma");
-          y = gc_uptoleaf(av2, y);
+          y = gc_leaf(av2, y);
         }
       }
     } else {
@@ -1228,7 +1228,7 @@ cxgamma(GEN s0, int dolog, long prec)
         if (gc_needed(av2,3))
         {
           if(DEBUGMEM>1) pari_warn(warnmem,"gamma");
-          y = gc_uptoleaf(av2, y);
+          y = gc_leaf(av2, y);
         }
       }
     }
@@ -1914,7 +1914,7 @@ glngamma(GEN x, long prec)
                          strtoGENstr("nonpositive integer"), x);
       n = itou_or_0(x);
       if (!n || n > lngamma_n(prec)) return cxgamma(x, 1, prec);
-      return gc_uptoleaf(av, logr_abs( mpfactr_small(n-1, prec) ));
+      return gc_leaf(av, logr_abs( mpfactr_small(n-1, prec) ));
     }
     case t_FRAC:
     {
@@ -2273,7 +2273,7 @@ gpsi(GEN x, long prec)
       if (signe(x) <= 0) err_psi(x);
       if (lgefint(x) > 3 || (n = itou(x)) > psi_n(prec2nbits(prec))) break;
       av = avma; y = mpeuler(prec);
-      return gc_uptoleaf(av, n == 1? negr(y): gsub(harmonic(n-1), y));
+      return gc_leaf(av, n == 1? negr(y): gsub(harmonic(n-1), y));
     case t_REAL: case t_COMPLEX: return cxpsi(x,0,prec);
     case t_PADIC: return Qp_psi(x, 0);
     default:
@@ -2308,7 +2308,7 @@ gpsi_der(GEN x, long der, long prec)
         y = gsub(y, harmonic0(n - 1, stoi(der + 1)));
         if (!odd(der)) y = gneg(y);
         y = gmul(mpfact(der), y);
-        return gc_uptoleaf(av, y);
+        return gc_leaf(av, y);
       }
     case t_REAL: case t_COMPLEX: return cxpsi(x, der, prec);
     case t_PADIC: return Qp_psi(x, der);

@@ -1313,7 +1313,7 @@ Flxq_ellj(GEN a4, GEN a6, GEN T, ulong p)
     GEN J;
     if (typ(a4)!=t_VEC) return pol0_Flx(get_Flx_var(T));
     J = Flxq_div(Flxq_powu(gel(a4,1),3, T, p),Flx_neg(a6,p), T, p);
-    return gc_uptoleaf(av, J);
+    return gc_leaf(av, J);
   }
   else
   {
@@ -1322,7 +1322,7 @@ Flxq_ellj(GEN a4, GEN a6, GEN T, ulong p)
     GEN a62 = Flxq_sqr(a6,T,p);
     GEN num = Flx_mulu(a43,6912,p);
     GEN den = Flx_add(Flx_mulu(a43,4,p),Flx_mulu(a62,27,p),p);
-    return gc_uptoleaf(av, Flxq_div(num, den, T, p));
+    return gc_leaf(av, Flxq_div(num, den, T, p));
   }
 }
 

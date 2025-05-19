@@ -1321,10 +1321,10 @@ FlxqV_factorback(GEN L, GEN e, GEN Tp, ulong p)
   if (!Hi)
   {
     if (!H) { set_avma(av); return mkvecsmall2(v,1); }
-    return gc_uptoleaf(av, H);
+    return gc_leaf(av, H);
   }
   Hi = Flxq_inv(Hi, Tp, p);
-  return gc_uptoleaf(av, H? Flxq_mul(H,Hi,Tp,p): Hi);
+  return gc_leaf(av, H? Flxq_mul(H,Hi,Tp,p): Hi);
 }
 GEN
 FqV_factorback(GEN L, GEN e, GEN Tp, GEN p)

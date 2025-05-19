@@ -679,28 +679,28 @@ quot(GEN x, GEN y)
 { pari_sp av = avma; return gc_upto(av, _quot(x, y)); }
 static GEN
 quotrs(GEN x, long y)
-{ pari_sp av = avma; return gc_uptoleaf(av, _quotrs(x,y)); }
+{ pari_sp av = avma; return gc_leaf(av, _quotrs(x,y)); }
 static GEN
 quotfs(GEN x, long s)
-{ pari_sp av = avma; return gc_uptoleaf(av, _quotfs(x,s)); }
+{ pari_sp av = avma; return gc_leaf(av, _quotfs(x,s)); }
 static GEN
 quotsr(long x, GEN y)
-{ pari_sp av = avma; return gc_uptoleaf(av, _quotsr(x, y)); }
+{ pari_sp av = avma; return gc_leaf(av, _quotsr(x, y)); }
 static GEN
 quotsf(long x, GEN y)
-{ pari_sp av = avma; return gc_uptoleaf(av, _quotsf(x, y)); }
+{ pari_sp av = avma; return gc_leaf(av, _quotsf(x, y)); }
 static GEN
 quotsq(long x, GEN y)
-{ pari_sp av = avma; return gc_uptoleaf(av, _quotsq(x, y)); }
+{ pari_sp av = avma; return gc_leaf(av, _quotsq(x, y)); }
 static GEN
 quotqs(GEN x, long y)
-{ pari_sp av = avma; return gc_uptoleaf(av, _quotqs(x, y)); }
+{ pari_sp av = avma; return gc_leaf(av, _quotqs(x, y)); }
 static GEN
 quotfi(GEN x, GEN y)
-{ pari_sp av = avma; return gc_uptoleaf(av, _quotfi(x, y)); }
+{ pari_sp av = avma; return gc_leaf(av, _quotfi(x, y)); }
 static GEN
 quotri(GEN x, GEN y)
-{ pari_sp av = avma; return gc_uptoleaf(av, _quotri(x, y)); }
+{ pari_sp av = avma; return gc_leaf(av, _quotri(x, y)); }
 
 static GEN
 modrs(GEN x, long y)
@@ -708,7 +708,7 @@ modrs(GEN x, long y)
   pari_sp av = avma;
   GEN q = _quotrs(x,y);
   if (!signe(q)) { set_avma(av); return rcopy(x); }
-  return gc_uptoleaf(av, subri(x, mulis(q,y)));
+  return gc_leaf(av, subri(x, mulis(q,y)));
 }
 static GEN
 modsr(long x, GEN y)
@@ -716,7 +716,7 @@ modsr(long x, GEN y)
   pari_sp av = avma;
   GEN q = _quotsr(x,y);
   if (!signe(q)) return gc_stoi(av, x);
-  return gc_uptoleaf(av, subsr(x, mulir(q,y)));
+  return gc_leaf(av, subsr(x, mulir(q,y)));
 }
 static GEN
 modsf(long x, GEN y)
@@ -2374,7 +2374,7 @@ gfrac(GEN x)
   {
     case t_INT: return gen_0;
     case t_POL: return pol_0(varn(x));
-    case t_REAL: av = avma; return gc_uptoleaf(av, subri(x, floorr(x)));
+    case t_REAL: av = avma; return gc_leaf(av, subri(x, floorr(x)));
     case t_FRAC: retmkfrac(modii(gel(x,1),gel(x,2)), icopy(gel(x,2)));
     case t_QUAD:
       av = avma; if (!(y = quad_floor(x))) break;

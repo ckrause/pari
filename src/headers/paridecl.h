@@ -6551,7 +6551,7 @@ INLINE int    gequalgs(GEN y, long s);
 INLINE GEN    gc_upto(pari_sp av, GEN q);
 INLINE GEN    gc_INT(pari_sp av, GEN q);
 INLINE void   gc_INT_affii(pari_sp av, GEN x, GEN *y);
-INLINE GEN    gc_uptoleaf(pari_sp av, GEN q);
+INLINE GEN    gc_leaf(pari_sp av, GEN q);
 INLINE int    gisdouble(GEN x, double *g);
 INLINE GEN    gmax_shallow(GEN x, GEN y);
 INLINE GEN    gmaxsg(long s, GEN y);

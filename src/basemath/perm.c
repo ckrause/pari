@@ -246,7 +246,7 @@ vecsmall_uniq(GEN v)
     v = vecsmall_counting_uniq(v, max);
   else
   { v = zv_copy(v); vecsmall_sort(v); v = vecsmall_uniq_sorted(v); }
-  return gc_uptoleaf(av, v);
+  return gc_leaf(av, v);
 }
 
 /* assume x sorted */
@@ -444,7 +444,7 @@ vecperm_orbits_i(GEN v, long n)
       k += m - mold;
     }
     setlg(cy, m);
-    gel(cycle,l++) = gc_uptoleaf(ltop, cy);
+    gel(cycle,l++) = gc_leaf(ltop, cy);
   }
   setlg(cycle, l); return cycle;
 }
@@ -1732,7 +1732,7 @@ groupelts_to_regular(GEN elt)
     GEN W = cgetg(n+1,t_VEC);
     for(j=1; j<=n; j++)
       gel(W,j) = perm_mul(g, gel(elt,j));
-    gel(V, i) = gc_uptoleaf(av,vecvecsmall_indexsort(W));
+    gel(V, i) = gc_leaf(av,vecvecsmall_indexsort(W));
   }
   vecvecsmall_sort_inplace(V, NULL);
   return V;

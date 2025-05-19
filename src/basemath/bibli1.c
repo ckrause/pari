@@ -1972,11 +1972,11 @@ smallvectors(GEN q, GEN BORNE, long maxnum, FP_chk_fun *CHECK)
         av1 = avma;
         p1 = mulimp(gel(x,k), gcoeff(q,l,k));
         for (j=k+1; j<N; j++) p1 = addmulimp(p1, gel(x,j), gcoeff(q,l,j));
-        gel(z,l) = gc_uptoleaf(av1,p1);
+        gel(z,l) = gc_leaf(av1,p1);
 
         av1 = avma;
         p1 = norm_aux(gel(x,k), gel(y,k), gel(z,k), gel(v,k));
-        gel(y,l) = gc_uptoleaf(av1, p1);
+        gel(y,l) = gc_leaf(av1, p1);
         /* skip the [x_1,...,x_skipfirst,0,...,0] */
         if ((l <= skipfirst && !signe(gel(y,skipfirst)))
          || mplessthan(borne1, gel(y,l))) skip = 1;
@@ -2015,7 +2015,7 @@ smallvectors(GEN q, GEN BORNE, long maxnum, FP_chk_fun *CHECK)
     norme1 = norm_aux(gel(x,1),gel(y,1),gel(z,1),gel(v,1));
     if (mpgreaterthan(norme1,borne1)) { set_avma(av1); continue; /* main */ }
 
-    norme1 = gc_uptoleaf(av1,norme1);
+    norme1 = gc_leaf(av1,norme1);
     if (check)
     {
       if (checkcnt < 5 && mpcmp(norme1, borne2) < 0)

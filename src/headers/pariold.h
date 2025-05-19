@@ -18,7 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define gerepilecoeffs gc_slice
 #define gerepilecoeffssp gc_slice_unsafe
 #define gerepileupto gc_upto
-#define gerepileuptoleaf gc_uptoleaf
+#define gerepileuptoleaf gc_leaf
 #define gerepileallsp gc_all_unsafe
 #define gerepilecopy gc_GEN
 #define gerepileuptoint gc_INT
@@ -421,7 +421,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define lpilecopy (long)gc_GEN
 #define lpileupto (long)gc_upto
 #define lpileuptoint (long)gc_INT
-#define lpileuptoleaf (long)gc_uptoleaf
+#define lpileuptoleaf (long)gc_leaf
 #define lpoleval (long)poleval
 #define lpowgs  (long)gpowgs
 #define lprec   (long)gprec

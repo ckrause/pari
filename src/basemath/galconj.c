@@ -876,7 +876,7 @@ Flv_sympol_eval(GEN v, GEN NS, ulong p)
   GEN S = Flv_Fl_mul(gel(NS,1), uel(v,1), p);
   for (i=2; i<l; i++)
     if (v[i]) S = Flv_add(S, Flv_Fl_mul(gel(NS,i), uel(v,i), p), p);
-  return gc_uptoleaf(av, S);
+  return gc_leaf(av, S);
 }
 
 static GEN
@@ -2308,7 +2308,7 @@ galoisgenliftauto(GEN O, GEN gj, long s, long n, struct galois_test *td)
     }
     pf = perm_mul(pf, perm_powu(pf1, el));
   }
-  return gc_uptoleaf(av, pf);
+  return gc_leaf(av, pf);
 }
 
 static GEN

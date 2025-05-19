@@ -1671,7 +1671,7 @@ FpX_divrem(GEN x, GEN T, GEN p, GEN *pr)
     GEN z = Flx_divrem(x, T, pp, pr);
     if (!z) return gc_NULL(av);
     if (!pr || pr == ONLY_DIVIDES)
-      return Flx_to_ZX_inplace(gc_uptoleaf(av, z));
+      return Flx_to_ZX_inplace(gc_leaf(av, z));
     z = Flx_to_ZX(z);
     *pr = Flx_to_ZX(*pr);
     return gc_all(av, 2, &z, pr);
@@ -1698,7 +1698,7 @@ FpX_rem(GEN x, GEN T, GEN p)
   {
     pari_sp av = avma;
     ulong pp = to_Flxq(&x, &T, p);
-    return Flx_to_ZX_inplace(gc_uptoleaf(av, Flx_rem(x, T, pp)));
+    return Flx_to_ZX_inplace(gc_leaf(av, Flx_rem(x, T, pp)));
   } else
   {
     pari_sp av = avma;
@@ -2164,7 +2164,7 @@ FpXQ_pow(GEN x, GEN n, GEN T, GEN p)
   {
     ulong pp = to_Flxq(&x, &T, p);
     y = Flxq_pow(x, n, T, pp);
-    return Flx_to_ZX_inplace(gc_uptoleaf(av, y));
+    return Flx_to_ZX_inplace(gc_leaf(av, y));
   }
   if (s < 0) x = FpXQ_inv(x,T,p);
   D.p = p; D.T = FpX_get_red(T,p);
@@ -2185,7 +2185,7 @@ FpXQ_powu(GEN x, ulong n, GEN T, GEN p)
   {
     ulong pp = to_Flxq(&x, &T, p);
     y = Flxq_powu(x, n, T, pp);
-    return Flx_to_ZX_inplace(gc_uptoleaf(av, y));
+    return Flx_to_ZX_inplace(gc_leaf(av, y));
   }
   D.T = FpX_get_red(T, p); D.p = p;
   y = gen_powu_i(x, n, (void*)&D, &_FpXQ_sqr, &_FpXQ_mul);
@@ -2246,7 +2246,7 @@ FpX_FpXQ_eval(GEN Q, GEN x, GEN T, GEN p)
     pari_sp av = avma;
     ulong pp = to_Flxq(&x, &T, p);
     GEN z = Flx_Flxq_eval(ZX_to_Flx(Q, pp), x, T, pp);
-    return Flx_to_ZX_inplace(gc_uptoleaf(av, z));
+    return Flx_to_ZX_inplace(gc_leaf(av, z));
   }
   use_sqr = 2*degpol(x) >= get_FpX_degree(T);
   D.T = FpX_get_red(T,p); D.p = p;
@@ -2527,7 +2527,7 @@ Fp_FpXQ_log(GEN a, GEN g, GEN o, GEN T, GEN p)
     g = constant_coeff(g);
   }
   n_q = Fp_log(a,g,op,p);
-  if (lg(n_q)==1) return gc_uptoleaf(av, n_q);
+  if (lg(n_q)==1) return gc_leaf(av, n_q);
   if (q) n_q = mulii(q, n_q);
   return gc_INT(av, n_q);
 }
@@ -2599,13 +2599,13 @@ FpXQ_log(GEN a, GEN g, GEN ord, GEN T, GEN p)
     {
       GEN z = F2xq_log(ZX_to_F2x(a), ZX_to_F2x(g), ord,
                                      ZX_to_F2x(get_FpX_mod(T)));
-      return gc_uptoleaf(av, z);
+      return gc_leaf(av, z);
     }
     else
     {
       ulong pp = to_Flxq(&a, &T, p);
       GEN z = Flxq_log(a, ZX_to_Flx(g, pp), ord, T, pp);
-      return gc_uptoleaf(av, z);
+      return gc_leaf(av, z);
     }
   }
   else
@@ -2613,7 +2613,7 @@ FpXQ_log(GEN a, GEN g, GEN ord, GEN T, GEN p)
     void *E;
     const struct bb_group *S = get_FpXQ_star(&E,T,p);
     GEN z = gen_PH_log(a,g,ord,E,S);
-    return gc_uptoleaf(av, z);
+    return gc_leaf(av, z);
   }
 }
 
@@ -2822,14 +2822,14 @@ FpXQ_sqrtn(GEN a, GEN n, GEN T, GEN p, GEN *zeta)
       z = F2xq_sqrtn(ZX_to_F2x(a), n, ZX_to_F2x(get_FpX_mod(T)), zeta);
       if (!z) return NULL;
       z = F2x_to_ZX(z);
-      if (!zeta) return gc_uptoleaf(av, z);
+      if (!zeta) return gc_leaf(av, z);
       *zeta=F2x_to_ZX(*zeta);
     } else
     {
       ulong pp = to_Flxq(&a, &T, p);
       z = Flxq_sqrtn(a, n, T, pp, zeta);
       if (!z) return NULL;
-      if (!zeta) return Flx_to_ZX_inplace(gc_uptoleaf(av, z));
+      if (!zeta) return Flx_to_ZX_inplace(gc_leaf(av, z));
       z = Flx_to_ZX(z);
       *zeta=Flx_to_ZX(*zeta);
     }
@@ -3167,7 +3167,7 @@ gener_FpXQ(GEN T, GEN p, GEN *po)
   {
     ulong pp = to_Flxq(NULL, &T, p);
     g = gener_Flxq(T, pp, po);
-    if (!po) return Flx_to_ZX_inplace(gc_uptoleaf(av, g));
+    if (!po) return Flx_to_ZX_inplace(gc_leaf(av, g));
     g = Flx_to_ZX(g); return gc_all(av, 2, &g, po);
   }
   /* p now odd */

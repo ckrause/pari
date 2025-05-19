@@ -1196,7 +1196,7 @@ gprimepi_upper_bound(GEN x)
   x = itor(x, LOWDEFAULTPREC);
   L = 1 / rtodbl(logr_abs(x));
   x = mulrr(x, dbltor(L * (1 + L + 2.51*L*L)));
-  return gc_uptoleaf(av, x);
+  return gc_leaf(av, x);
 }
 GEN
 gprimepi_lower_bound(GEN x)
@@ -1213,7 +1213,7 @@ gprimepi_lower_bound(GEN x)
   x = itor(x, LOWDEFAULTPREC);
   L = 1 / rtodbl(logr_abs(x));
   x = mulrr(x, dbltor(L * (1 + L)));
-  return gc_uptoleaf(av, x);
+  return gc_leaf(av, x);
 }
 
 GEN

@@ -283,7 +283,7 @@ vecF2_lk_bsgs(GEN E, GEN bnd, GEN rbnd, GEN Q, GEN sleh, GEN N, long prec)
     long j, g = rbnd[k];
     GEN giant = gmael(bb.baby, k, g+1), Sl = gmael(bb.giant, k, g);
     for (j = g-1; j >=1; j--) Sl = addrr(mulrr(Sl, giant), gmael(bb.giant,k,j));
-    gel(S, k) = gc_uptoleaf(av, mulrr(gel(sleh,k), Sl));
+    gel(S, k) = gc_leaf(av, mulrr(gel(sleh,k), Sl));
   }
   return S;
 }
@@ -890,7 +890,7 @@ ltwist1(GEN E, GEN d, long bitprec)
 {
   pari_sp av = avma;
   GEN Ed = elltwist(E, d), z = ellL1(Ed, 0, bitprec);
-  obj_free(Ed); return gc_uptoleaf(av, z);
+  obj_free(Ed); return gc_leaf(av, z);
 }
 
 /* Return O_re*c(E)/(4*O_vol*|E_t|^2) */

@@ -303,7 +303,7 @@ mk_v_t_el(GEN vT, GEN Data, ulong el)
       v_t_el[y] = t;
     }
   }
-  return gc_uptoleaf(av, v_t_el);
+  return gc_leaf(av, v_t_el);
 }
 
 /* G=[[G_1,...,G_d],M,el]

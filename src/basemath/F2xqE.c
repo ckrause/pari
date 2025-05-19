@@ -94,12 +94,12 @@ F2xq_elltwist(GEN a, GEN a6, GEN T, GEN *pt_a, GEN *pt_a6)
   GEN n = nonzerotrace_F2xq(T);
   if (typ(a)==t_VECSMALL)
   {
-    *pt_a = gc_uptoleaf(av, F2x_add(n, a));
+    *pt_a = gc_leaf(av, F2x_add(n, a));
     *pt_a6 = vecsmall_copy(a6);
   } else
   {
     GEN a6t = F2x_add(a6, F2xq_mul(n, F2xq_sqr(gel(a,1), T), T));
-    *pt_a6 = gc_uptoleaf(av, a6t);
+    *pt_a6 = gc_leaf(av, a6t);
     *pt_a = vecsmall_copy(a);
   }
 }

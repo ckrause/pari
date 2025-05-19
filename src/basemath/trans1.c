@@ -756,7 +756,7 @@ powrs(GEN x, long n)
   if (!n) return powr0(x);
   y = gen_powu_i(x, (ulong)labs(n), NULL, &_sqrr, &_mulr);
   if (n < 0) y = invr(y);
-  return gc_uptoleaf(av,y);
+  return gc_leaf(av,y);
 }
 GEN
 powru(GEN x, ulong n)
@@ -765,7 +765,7 @@ powru(GEN x, ulong n)
   GEN y;
   if (!n) return powr0(x);
   y = gen_powu_i(x, n, NULL, &_sqrr, &_mulr);
-  return gc_uptoleaf(av,y);
+  return gc_leaf(av,y);
 }
 
 GEN
@@ -1582,23 +1582,23 @@ gsqrt(GEN x, long prec)
         pari_err_IMPL("sqrt(complex of t_INTMODs)");
       r = gsqrt(r, prec); /* t_REAL, |a+Ib| */
       if (!signe(r))
-        u = v = gc_uptoleaf(av, sqrtr(r));
+        u = v = gc_leaf(av, sqrtr(r));
       else if (gsigne(a) < 0)
       {
         /* v > 0 since r > 0, a < 0, rounding errors can't make the sum of two
          * positive numbers = 0 */
         v = sqrtr( gmul2n(gsub(r,a), -1) );
         if (gsigne(b) < 0) togglesign(v);
-        v = gc_uptoleaf(av, v); av = avma;
+        v = gc_leaf(av, v); av = avma;
         /* v = 0 is impossible */
-        u = gc_uptoleaf(av, gdiv(b, shiftr(v,1)));
+        u = gc_leaf(av, gdiv(b, shiftr(v,1)));
       } else {
         u = sqrtr( gmul2n(gadd(r,a), -1) );
-        u = gc_uptoleaf(av, u); av = avma;
+        u = gc_leaf(av, u); av = avma;
         if (!signe(u)) /* possible if a = 0.0, e.g. sqrt(0.e-10+1e-10*I) */
           v = u;
         else
-          v = gc_uptoleaf(av, gdiv(b, shiftr(u,1)));
+          v = gc_leaf(av, gdiv(b, shiftr(u,1)));
       }
       gel(y,1) = u;
       gel(y,2) = v; return y;
@@ -1806,7 +1806,7 @@ sqrtnint(GEN a, long n)
     x = subii(x, divis(addui(nm1, subii(x, q)), n));
     q = divii(a, powiu(x, nm1));
   }
-  return gc_uptoleaf(av, x);
+  return gc_leaf(av, x);
 }
 
 ulong
@@ -1861,7 +1861,7 @@ sqrtnr_abs(GEN a, long n)
   if (prec == DEFAULTPREC)
   {
     if (v) shiftr_inplace(x, v);
-    return gc_uptoleaf(av, x);
+    return gc_leaf(av, x);
   }
   X = rtodbl(x);
   K = (K*K-1) / (12*X*X); /* |x_{n+1} - x| < K |x_n - x|^3 */
@@ -1895,7 +1895,7 @@ sqrtnr_abs(GEN a, long n)
     if (mask == 1)
     {
       if (v) shiftr_inplace(x, v);
-      return gc_uptoleaf(av, gprec_wtrunc(x,prec));
+      return gc_leaf(av, gprec_wtrunc(x,prec));
     }
     eold = enew;
   }
@@ -2212,7 +2212,7 @@ mpexpm1(GEN x)
   av = avma; y = exp1r_abs(x); /* > 0 */
   if (expo(y) >= -B) { z = addsr(1, y); y = divrr(y, z); }
   setsigne(y, -1);
-  return gc_uptoleaf(av, y);
+  return gc_leaf(av, y);
 }
 
 static GEN serexp(GEN x, long prec);
@@ -2273,7 +2273,7 @@ mpexp_basecase(GEN x)
     pari_err_BUG("exp");
 }
 #endif
-  return gc_uptoleaf(av, z); /* NOT affrr, precision often increases */
+  return gc_leaf(av, z); /* NOT affrr, precision often increases */
 }
 
 GEN
@@ -3388,7 +3388,7 @@ mpcosm1(GEN x, long *ptmod8)
     GEN q = sqrr(u);
     shiftr_inplace(u, 1); u = addrr(u, q);
     shiftr_inplace(u, 1);
-    if ((i & 31) == 0) u = gc_uptoleaf((pari_sp)y, u);
+    if ((i & 31) == 0) u = gc_leaf((pari_sp)y, u);
   }
   affrr_fixlg(u, y); return y;
 }
@@ -3426,7 +3426,7 @@ mpcos(GEN x)
     case 2: case 6: y = subsr(-1,z); break;
     default:        y = mpaut(z); break; /* case 3: case 5: */
   }
-  return gc_uptoleaf(av, y);
+  return gc_leaf(av, y);
 }
 
 /* convert INT or FRAC to REAL, which is later reduced mod 2Pi : avoid
@@ -3499,7 +3499,7 @@ mpsin(GEN x)
     case 2: case 4: y = mpaut(z); togglesign(y); break;
     default:        y = subsr(-1,z); break; /* case 3: case 7: */
   }
-  return gc_uptoleaf(av, y);
+  return gc_leaf(av, y);
 }
 
 GEN
@@ -3756,7 +3756,7 @@ mpsinc(GEN x)
     return real_1(l);
   }
   mpsincos(x,&s,&c);
-  return gc_uptoleaf(av, divrr(s,x));
+  return gc_leaf(av, divrr(s,x));
 }
 
 GEN
@@ -3774,7 +3774,7 @@ gsinc(GEN x, long prec)
       {
         av = avma; x = gel(x,2);
         if (gequal0(x)) return gcosh(x,prec);
-        return gc_uptoleaf(av,gdiv(gsinh(x,prec),x));
+        return gc_leaf(av,gdiv(gsinh(x,prec),x));
       }
       i = precision(x); if (i) prec = i;
       y = cgetc(prec); av = avma;
@@ -3840,7 +3840,7 @@ mptan(GEN x)
   mpsincos(x,&s,&c);
   if (!signe(c))
     pari_err_DOMAIN("tan", "argument", "=", strtoGENstr("Pi/2 + kPi"),x);
-  return gc_uptoleaf(av, divrr(s,c));
+  return gc_leaf(av, divrr(s,c));
 }
 
 /* If exp(-|im(x)|) << 1, avoid overflow in sincos(x) */
@@ -3901,7 +3901,7 @@ mpcotan(GEN x)
 {
   pari_sp av = avma;
   GEN s,c;
-  mpsincos(x,&s,&c); return gc_uptoleaf(av, divrr(c,s));
+  mpsincos(x,&s,&c); return gc_leaf(av, divrr(c,s));
 }
 
 GEN

@@ -134,7 +134,7 @@ GEN
 zetamultconvert(GEN a, long fl)
 {
   pari_sp av = avma;
-  return gc_uptoleaf(av, zetamultconvert_i(a, fl));
+  return gc_leaf(av, zetamultconvert_i(a, fl));
 }
 
 GEN
@@ -142,7 +142,7 @@ zetamultdual(GEN s)
 {
   pari_sp av = avma;
   GEN e = zetamultconvert_i(s, 0);
-  return gc_uptoleaf(av, etoa(revslice(e, lg(e))));
+  return gc_leaf(av, etoa(revslice(e, lg(e))));
 }
 
 /********************************************************************/

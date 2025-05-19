@@ -143,7 +143,7 @@ rand_NFlx(long n, ulong l)
 {
   pari_sp av = avma;
   GEN x = Flx_add(Flx_shift(pol1_Flx(0),n), random_Flx(n, 0, l), l);
-  return gc_uptoleaf(av, x);
+  return gc_leaf(av, x);
 }
 
 static GEN

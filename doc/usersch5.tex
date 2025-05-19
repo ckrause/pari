@@ -1358,11 +1358,10 @@ created before any component. If \kbd{q} is not on the stack, this is
 equivalent to \kbd{set\_avma(av)}; in particular, sentinels which are not even
 proper \kbd{GEN}s such as \kbd{q = NULL} are allowed.
 
-\fun{GEN}{gc_uptoleaf}{pari_sp av, GEN q} analogous to (but faster than)
-\kbd{gc\_upto}. Assumes further that \kbd{q} is a leaf, i.e a
-nonrecursive type (\kbd{is\_recursive\_t(typ(q))} is nonzero). Contrary to
-\kbd{gc\_INT} and \kbd{gc\_upto}, \kbd{gc\_uptoleaf} leaves
-length and effective length of a \typ{INT} unchanged.
+\fun{GEN}{gc_leaf}{pari_sp av, GEN q} assumes only that \kbd{q} is a leaf,
+i.e a nonrecursive type (\kbd{is\_recursive\_t(typ(q))} is nonzero). Contrary
+to \kbd{gc\_INT} and \kbd{gc\_upto}, \kbd{gc\_leaf} leaves length and
+effective length of a \typ{INT} unchanged.
 
 \subsec{Garbage collection: advanced use}
 

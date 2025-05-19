@@ -4707,7 +4707,7 @@ polygon2tex(GEN V, GEN Ast, GEN G)
     if (Ast[j] == j) decorate(&s, gel(G,j), arc, high);
   }
   str_printf(&s, "\n\\end{tikzpicture}");
-  return gc_uptoleaf(av, strtoGENstr(s.string));
+  return gc_leaf(av, strtoGENstr(s.string));
 }
 
 static GEN
@@ -4749,7 +4749,7 @@ circle2tex(GEN Ast, GEN G)
                      (Ast[u] - u)*ang > 179? "s": "", u, v[u], Ast[u], v[Ast[u]], ang);
   }
   str_printf(&s, "\\end{tikzpicture}\\endgroup");
-  return gc_uptoleaf(av, strtoGENstr(s.string));
+  return gc_leaf(av, strtoGENstr(s.string));
 }
 
 GEN

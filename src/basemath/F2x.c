@@ -419,7 +419,7 @@ F2x_shiftip(pari_sp av, GEN x, long v)
 {
   long i, lx = lg(x), ly;
   GEN y;
-  if (!v || lx==2) return gc_uptoleaf(av, x);
+  if (!v || lx==2) return gc_leaf(av, x);
   ly = lx + v;
   (void)new_chunk(ly); /* check that result fits */
   x += lx; y = (GEN)av;
@@ -980,7 +980,7 @@ F2x_gcd(GEN a, GEN b)
       (void)gc_all(av,2, &a,&b);
     }
   }
-  if (gc_needed(av,2)) a = gc_uptoleaf(av, a);
+  if (gc_needed(av,2)) a = gc_leaf(av, a);
   return a;
 }
 
@@ -1076,14 +1076,14 @@ F2xq_inv(GEN x,GEN T)
   pari_sp av=avma;
   GEN U = F2xq_invsafe(x, T);
   if (!U) pari_err_INV("F2xq_inv", F2x_to_ZX(x));
-  return gc_uptoleaf(av, U);
+  return gc_leaf(av, U);
 }
 
 GEN
 F2xq_div(GEN x,GEN y,GEN T)
 {
   pari_sp av = avma;
-  return gc_uptoleaf(av, F2xq_mul(x,F2xq_inv(y,T),T));
+  return gc_leaf(av, F2xq_mul(x,F2xq_inv(y,T),T));
 }
 
 static GEN
@@ -1428,7 +1428,7 @@ F2xq_log_find_rel(GEN b, long r, GEN T, GEN *g, ulong *e)
     if (gc_needed(av,2))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"F2xq_log_find_rel");
-      *g = gc_uptoleaf(av, *g);
+      *g = gc_leaf(av, *g);
     }
   }
 }
@@ -1678,7 +1678,7 @@ F2xq_Artin_Schreier(GEN a, GEN T)
   if (lg(Q)!=2) return NULL;
   Q = gel(Q,1);
   Q[1] = vT;
-  return gc_uptoleaf(ltop, F2x_renormalize(Q, lg(Q)));
+  return gc_leaf(ltop, F2x_renormalize(Q, lg(Q)));
 }
 
 GEN
@@ -1701,7 +1701,7 @@ F2xq_sqrt(GEN a, GEN T)
   if (n==1) return F2x_copy(a);
   if (n==2) return F2xq_sqr(a,T);
   sqx = F2xq_autpow(mkF2(4, vT), n-1, T);
-  return gc_uptoleaf(av, F2x_is_x(a)? sqx: F2xq_sqrt_fast(a,sqx,T));
+  return gc_leaf(av, F2x_is_x(a)? sqx: F2xq_sqrt_fast(a,sqx,T));
 }
 
 GEN
@@ -2272,7 +2272,7 @@ F2xqX_divrem_basecase(GEN x, GEN y, GEN T, GEN *pr)
     for (j=i-dy+1; j<=i && j<=dz; j++)
       p1 = F2x_add(p1, F2x_mul(gel(z,j),gel(y,i-j)));
     if (lead) p1 = F2x_mul(p1, lead);
-    gel(z,i-dy) = gc_uptoleaf(av, F2x_rem(p1,T));
+    gel(z,i-dy) = gc_leaf(av, F2x_rem(p1,T));
   }
   if (!pr) { guncloneNULL(lead); return z-2; }
 
@@ -2295,13 +2295,13 @@ F2xqX_divrem_basecase(GEN x, GEN y, GEN T, GEN *pr)
   lr=i+3; rem -= lr; av = (pari_sp)rem;
   rem[0] = evaltyp(t_POL) | _evallg(lr);
   rem[1] = z[-1];
-  rem += 2; gel(rem,i) = gc_uptoleaf(av, p1);
+  rem += 2; gel(rem,i) = gc_leaf(av, p1);
   for (i--; i>=0; i--)
   {
     av = avma; p1 = gel(x,i);
     for (j=0; j<=i && j<=dz; j++)
       p1 = F2x_add(p1, F2x_mul(gel(z,j),gel(y,i-j)));
-    gel(rem,i) = gc_uptoleaf(av, F2x_rem(p1, T));
+    gel(rem,i) = gc_leaf(av, F2x_rem(p1, T));
   }
   rem -= 2;
   guncloneNULL(lead);

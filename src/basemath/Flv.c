@@ -639,7 +639,7 @@ Flm_deplin_echelon(GEN x, ulong p) {
   s = Flm_row(Flm_lsolve_lower_unit_pre(C1, C2, p, pi), 1);
   v = vecsmallpermute(vecsmall_concat(Flv_neg(s, p), vecsmall_ei(n - r, 1)),
                  perm_inv(vecsmall_concat(R, Rc)));
-  return gc_uptoleaf(av, v);
+  return gc_leaf(av, v);
 }
 
 static GEN
@@ -1110,7 +1110,7 @@ Flm_Flc_gauss(GEN a, GEN b, ulong p) {
   GEN z = Flm_gauss(a, mkmat(b), p);
   if (!z) return gc_NULL(av);
   if (lg(z) == 1) retgc_const(av, cgetg(1, t_VECSMALL));
-  return gc_uptoleaf(av, gel(z,1));
+  return gc_leaf(av, gel(z,1));
 }
 
 GEN
@@ -1229,5 +1229,5 @@ Flm_Flc_invimage(GEN A, GEN y, ulong p)
 
   setlg(x,l); t = Fl_inv(Fl_neg(t,p),p);
   if (t!=1) x = Flv_Fl_mul(x, t, p);
-  return gc_uptoleaf(av, x);
+  return gc_leaf(av, x);
 }

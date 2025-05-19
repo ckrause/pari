@@ -558,7 +558,7 @@ quadregulator(GEN x, long prec)
   if (!((e + expo(R)) & ~EXPOBITS)) { setexpo(R, e + expo(R)); e = 0; }
   R = logr_abs(R);
   if (e) R = addrr(R, mulsr(e, mplog2(prec)));
-  return gc_uptoleaf(av, R);
+  return gc_leaf(av, R);
 }
 
 /*************************************************************************/

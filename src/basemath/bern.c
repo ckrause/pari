@@ -337,7 +337,7 @@ inv_szeta_euler(long n, long prec)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"inv_szeta_euler, p = %lu/%lu", p,lim);
-      z = gc_uptoleaf(av2, z);
+      z = gc_leaf(av2, z);
     }
   }
   affrr(z, res); set_avma(av); return res;
@@ -361,7 +361,7 @@ bernreal(long n, long prec)
   p = bernprec(n); av = avma;
   B = bernreal_using_zeta(n, minss(p, prec));
   if (p < prec) B = fractor(bernfrac_i(n, B), prec);
-  return gc_uptoleaf(av, B);
+  return gc_leaf(av, B);
 }
 
 GEN
@@ -583,7 +583,7 @@ inv_lfun4(long n, long prec)
     if (gc_needed(av,1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"inv_lfun4, p = %lu/%lu", p,lim);
-      z = gc_uptoleaf(av2, z);
+      z = gc_leaf(av2, z);
     }
   }
   affrr(z, res); set_avma(av); return res;
@@ -615,7 +615,7 @@ eulerfrac(long n)
   if (!eulerzone) constreuler(0);
   if (eulerzone && k < lg(eulerzone)) return gel(eulerzone, k);
   av = avma; E = eulerreal_using_lfun4(n, eulerprec(n));
-  return gc_uptoleaf(av, roundr(E));
+  return gc_leaf(av, roundr(E));
 }
 GEN
 eulervec(long n)
@@ -646,5 +646,5 @@ eulerreal(long n, long prec)
   p = eulerprec(n);
   B = eulerreal_using_lfun4(n, minss(p, prec));
   if (p < prec) B = itor(roundr(B), prec);
-  return gc_uptoleaf(av, B);
+  return gc_leaf(av, B);
 }

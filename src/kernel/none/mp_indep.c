@@ -582,7 +582,7 @@ divur(ulong x, GEN y)
   if (p > INVNEWTON_LIMIT) {
     av = avma; z = invr(y);
     if (x == 1) return z;
-    return gc_uptoleaf(av, mulur(x, z));
+    return gc_leaf(av, mulur(x, z));
   }
   z = cgetr(p); av = avma;
   affrr(divrr(utor(x, p + BITS_IN_LONG), y), z);
@@ -602,7 +602,7 @@ divsr(long x, GEN y)
     av = avma; z = invr(y);
     if (x == 1) return z;
     if (x ==-1) { togglesign(z); return z; }
-    return gc_uptoleaf(av, mulsr(x, z));
+    return gc_leaf(av, mulsr(x, z));
   }
   z = cgetr(p); av = avma;
   affrr(divrr(stor(x,p + BITS_IN_LONG), y), z);

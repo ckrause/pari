@@ -1078,7 +1078,7 @@ kpmodsquares(GEN vnf, GEN z, GEN PP)
     for (j = 1; j < lp; j++) gel(kp, j) = kpmodsquares1(nf, delta, gel(pp,j));
     gel(vchar, i) = shallowconcat1(kp);
   }
-  return gc_uptoleaf(av, shallowconcat1(vchar));
+  return gc_leaf(av, shallowconcat1(vchar));
 }
 
 static GEN

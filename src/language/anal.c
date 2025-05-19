@@ -600,7 +600,7 @@ real_read(pari_sp av, const char **s, GEN y, long prec)
     y = mulrr(y, rpowuu(10UL, (ulong)n, l));
   else
     y = divrr(y, rpowuu(10UL, (ulong)-n, l));
-  return gc_uptoleaf(av, rtor(y, prec));
+  return gc_leaf(av, rtor(y, prec));
 }
 
 static GEN
@@ -626,7 +626,7 @@ strtor(const char *s, long prec)
   GEN y = dec_read(&s);
   y = real_read(av, &s, y, prec);
   if (typ(y) == t_REAL) return y;
-  return gc_uptoleaf(av, itor(y, prec));
+  return gc_leaf(av, itor(y, prec));
 }
 
 static void

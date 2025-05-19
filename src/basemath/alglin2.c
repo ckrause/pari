@@ -49,7 +49,7 @@ Flm_charpoly_i(GEN x, ulong p)
     z = Flx_sub(Flx_shift(gel(y,r), 1),
                 Flx_Fl_mul(gel(y,r), ucoeff(H,r,r), p), p);
     /* (X - H[r,r])y[r] - b */
-    gel(y,r+1) = gc_uptoleaf(av2, Flx_sub(z, b, p));
+    gel(y,r+1) = gc_leaf(av2, Flx_sub(z, b, p));
   }
   return gel(y,lx);
 }
@@ -58,7 +58,7 @@ GEN
 Flm_charpoly(GEN x, ulong p)
 {
   pari_sp av = avma;
-  return gc_uptoleaf(av, Flm_charpoly_i(x,p));
+  return gc_leaf(av, Flm_charpoly_i(x,p));
 }
 
 GEN
@@ -1348,7 +1348,7 @@ gnormlp(GEN x, GEN p, long prec)
       default: x = pnormlp(x, p, prec); break;
     }
     if (pp && typ(x) == t_INT && Z_ispowerall(x, pp, &x))
-      return gc_uptoleaf(av, x);
+      return gc_leaf(av, x);
     if (pp == 2) return gc_upto(av, gsqrt(x, prec));
   }
   else

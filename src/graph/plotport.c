@@ -1704,7 +1704,7 @@ _plothexport(GEN fmt, void *E, GEN(*f)(void*,GEN), GEN a,GEN b, long flags,
   GEN s;
   PARI_plot T; pari_get_fmtplot(fmt, &T);
   s = plotrecth_i(fmt, E,f, &T, NUMRECT-1, a,b, flags,n, prec);
-  return gc_uptoleaf(av, s);
+  return gc_leaf(av, s);
 }
 GEN
 plothexport(GEN fmt, void *E, GEN(*f)(void*,GEN), GEN a,GEN b, long flags,
@@ -1854,7 +1854,7 @@ plotexport(GEN fmt, GEN wxy, long flag)
   PARI_plot _T, *T = flag? &_T: NULL;
   if (T) pari_get_plot(T);
   wxy_init(wxy, &w, &x, &y, T);
-  return gc_uptoleaf(av, fmt_convert(fmt, w, x, y, T));
+  return gc_leaf(av, fmt_convert(fmt, w, x, y, T));
 }
 
 /* may be called after pari_close(): don't use the PARI stack */

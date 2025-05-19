@@ -521,7 +521,7 @@ initsinhsinh(long m, long prec)
     wp = divr2_ip(mulrr(ct, addrr(ext, exu)));
     if (expo(wp) - 2*expo(xp) < -D.bit) { nt = k-1; break; }
     affrr(xp, gel(D.tabxp,k));
-    affrr(wp, gel(D.tabwp,k)); et = gc_uptoleaf(av, mulrr(et, ex));
+    affrr(wp, gel(D.tabwp,k)); et = gc_leaf(av, mulrr(et, ex));
   }
   return intinit_end(&D, nt, 0);
 }
@@ -549,7 +549,7 @@ initsinh(long m, long prec)
     wp = addrr(et, eti);
     if (cmprs(xp, (long)(M_LN2*(expo(wp)+D.bit) + 1)) > 0) { nt = k-1; break; }
     affrr(xp, gel(D.tabxp,k));
-    affrr(wp, gel(D.tabwp,k)); et = gc_uptoleaf(av, mulrr(et, ex));
+    affrr(wp, gel(D.tabwp,k)); et = gc_leaf(av, mulrr(et, ex));
   }
   return intinit_end(&D, nt, 0);
 }
@@ -612,7 +612,7 @@ initexpexp(long m, long prec)
     affrr(xp, gel(D.tabxp,k));
     affrr(wp, gel(D.tabwp,k));
     affrr(xm, gel(D.tabxm,k));
-    affrr(wm, gel(D.tabwm,k)); et = gc_uptoleaf(av, mulrr(et, ex));
+    affrr(wm, gel(D.tabwm,k)); et = gc_leaf(av, mulrr(et, ex));
   }
   return intinit_end(&D, nt, nt);
 }
@@ -659,7 +659,7 @@ initnumsine(long m, long prec)
     affrr(xp, gel(D.tabxp,k));
     affrr(wp, gel(D.tabwp,k));
     affrr(xm, gel(D.tabxm,k));
-    affrr(wm, gel(D.tabwm,k)); et = gc_uptoleaf(av, mulrr(et, ex));
+    affrr(wm, gel(D.tabwm,k)); et = gc_leaf(av, mulrr(et, ex));
   }
   return intinit_end(&D, nt, nt);
 }
@@ -2659,7 +2659,7 @@ sumnumlagrangeinit_i(GEN al, GEN c1, long flag, long prec)
     GEN t = NULL, vn = gel(V, n);
     for (j = 1; j <= N; j++)
       if (j != n) t = _mpmul(t, mpsub(vn, gel(V, j)));
-    gel(W, n) = gc_uptoleaf(av2, mpdiv(gpowgs(vn, N-1), t));
+    gel(W, n) = gc_leaf(av2, mpdiv(gpowgs(vn, N-1), t));
   }
   if (flag)
     for (n = N-1; n >= 1; n--) gel(W, n) = gadd(gel(W, n+1), gel(W, n));

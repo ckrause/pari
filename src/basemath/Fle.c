@@ -447,7 +447,7 @@ _Fle_mul(void *E, GEN P, GEN n)
   if (is_pm1(n)) return s > 0? zv_copy(P): P;
   Q = (lgefint(n)==3) ? Fle_mulu(P, uel(n,2), e->a4, e->p):
                         gen_pow(P, n, (void*)e, &_Fle_dbl, &_Fle_add);
-  return s > 0? Q: gc_uptoleaf(av, Q);
+  return s > 0? Q: gc_leaf(av, Q);
 }
 
 GEN

@@ -1621,7 +1621,7 @@ ZpMs_ZpCs_solve(GEN M, GEN A, long nbrow, GEN p, long e)
   }
   for (i = 1; i <= lR; ++i)
     if (signe(gel(Rp, i)))
-      return gc_uptoleaf(av, mkvecsmall(pcol[i]));
+      return gc_leaf(av, mkvecsmall(pcol[i]));
   return NULL; /* LCOV_EXCL_LINE */
 }
 

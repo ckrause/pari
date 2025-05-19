@@ -2377,7 +2377,7 @@ idealprimedec_degrees(GEN nf, GEN p)
 {
   pari_sp av = avma;
   GEN v = primedec_aux(nf, p, -2);
-  vecsmall_sort(v); return gc_uptoleaf(av, v);
+  vecsmall_sort(v); return gc_leaf(av, v);
 }
 GEN
 idealprimedec_limit_norm(GEN nf, GEN p, GEN B)

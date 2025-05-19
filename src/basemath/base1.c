@@ -849,7 +849,7 @@ idealfrobenius_aut(GEN nf, GEN gal, GEN pr, GEN aut)
   f = pr_get_f(pr); n = nf_get_degree(nf);
   if (f==1) { set_avma(av); return identity_perm(n); }
   g = idealquasifrob(nf, gal, gal_get_group(gal), pr, NULL, &S, aut);
-  if (f==2) return gc_uptoleaf(av, g);
+  if (f==2) return gc_leaf(av, g);
   modpr = zk_to_Fq_init(nf,&pr,&T,&p);
   a = pol_x(nf_get_varn(nf));
   b = nf_to_Fq(nf, zk_galoisapplymod(nf, modpr_genFq(modpr), S, p), modpr);
@@ -1033,7 +1033,7 @@ idealramgroupswild(GEN nf, GEN gal, GEN aut, GEN pr)
     }
     set_avma(av2);
   }
-  return gc_uptoleaf(av, idx);
+  return gc_leaf(av, idx);
 }
 
 GEN
@@ -2770,7 +2770,7 @@ chk_gen_init(FP_chk_fun *chk, GEN R, GEN U)
       GEN B = embed_T2(gel(M,i), r1);
       if (!firstprim) firstprim = i; /* index of first primitive element */
       if (DEBUGLEVEL>2) err_printf("chk_gen_init: generator %Ps\n",P);
-      if (gcmp(B,bound) < 0) bound = gc_uptoleaf(av2, B);
+      if (gcmp(B,bound) < 0) bound = gc_leaf(av2, B);
     }
     else
     {
@@ -2859,7 +2859,7 @@ chk_gen_init(FP_chk_fun *chk, GEN R, GEN U)
   if (DEBUGLEVEL>2) err_printf("chk_gen_init: skipfirst = %ld\n",skipfirst);
 
   /* should be DEF + gexpo( max_k C^n_k (bound/k)^(k/2) ) */
-  bound = gc_uptoleaf(av, bound);
+  bound = gc_leaf(av, bound);
   prec = chk_gen_prec(N, (gexpo(bound)*N)/2);
   if (DEBUGLEVEL)
     err_printf("chk_gen_init: new prec = %ld (initially %ld)\n", prec, d->prec);

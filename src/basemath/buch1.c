@@ -357,7 +357,7 @@ compute_invresquad(GRHcheck_t *S, long LIMC)
         invres = mulur(p, divru(invres, p - 1));
     }
   }
-  return gc_uptoleaf(av, invres);
+  return gc_leaf(av, invres);
 }
 
 /* p | conductor of order of disc D ? */

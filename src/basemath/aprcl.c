@@ -1006,7 +1006,7 @@ aprcl_step4_worker(ulong q, GEN pC, GEN N, GEN v)
     if (fl == 1) flags[k++] = p;
   }
   setlg(flags, k);
-  return gc_uptoleaf(av1, flags); /* OK so far */
+  return gc_leaf(av1, flags); /* OK so far */
 }
 
 /* return 1 if prime, else 0 */

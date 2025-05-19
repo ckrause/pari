@@ -3772,7 +3772,7 @@ R_random(GEN b)
   pari_sp av = avma;
   long prec = realprec(b);
   GEN z = randomr(prec); shiftr_inplace(z, 1);
-  return gc_uptoleaf(av, mulrr(b,addsr(-1, z)));
+  return gc_leaf(av, mulrr(b,addsr(-1, z)));
 }
 static GEN
 C_random(GEN b)

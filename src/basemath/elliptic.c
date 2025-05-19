@@ -1935,7 +1935,7 @@ ellminimaltwist(GEN e)
     }
   }
   obj_free(E);
-  return gc_uptoleaf(av, D);
+  return gc_leaf(av, D);
 }
 
 /* Reference: William A. Stein and Mark Watkins
@@ -1961,7 +1961,7 @@ ellminimaltwistcond(GEN e)
     }
     D = shifti(D, s);
   }
-  return gc_uptoleaf(av, D);
+  return gc_leaf(av, D);
 }
 
 GEN
@@ -4439,7 +4439,7 @@ ellnf_bsdperiod(GEN E, long prec)
     per = mulrr(per, pi);
   }
   ellnfembed_free(Eb);
-  return gc_uptoleaf(av, per);
+  return gc_leaf(av, per);
 }
 static GEN
 ellnf_adelicvolume(GEN E, long prec)
@@ -4562,7 +4562,7 @@ ellQ_factorback1(GEN A, GEN L, ulong l, GEN E, long CM, ulong p)
     Hp = Flj_mulu_pre(Hp, d, a4, p, pi);
   Hp = Flj_to_Fle_pre(Hp, p, pi);
   Hp = Fle_changepoint(Hp, a4a6, p);
-  return gc_uptoleaf(av, Hp);
+  return gc_leaf(av, Hp);
 }
 
 static GEN
@@ -5821,7 +5821,7 @@ hoo_aux(GEN E, GEN z, GEN d, long prec)
   else
     h = exphellagm(E, z, 1, prec);
   if (!is_pm1(d)) h = gmul(h, sqri(d));
-  return gc_uptoleaf(av, gmul2n(mplog(h), -2));
+  return gc_leaf(av, gmul2n(mplog(h), -2));
 }
 GEN
 ellheightoo(GEN E, GEN z, long prec) { return hoo_aux(E, z, gen_1, prec); }

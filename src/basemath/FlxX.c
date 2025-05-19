@@ -868,7 +868,7 @@ FlxqX_divrem_basecase(GEN x, GEN y, GEN T, ulong p, ulong pi, GEN *pr)
     for (j=i-dy+1; j<=i && j<=dz; j++)
       p1 = Flx_sub(p1, Flx_mul_pre(gel(z,j),gel(y,i-j),p,pi),p);
     if (lead) p1 = Flx_mul_pre(p1, lead,p,pi);
-    gel(z,i-dy) = gc_uptoleaf(av, Flx_rem_pre(p1,T,p,pi));
+    gel(z,i-dy) = gc_leaf(av, Flx_rem_pre(p1,T,p,pi));
   }
   if (!pr) { guncloneNULL(lead); return z-2; }
 
@@ -891,13 +891,13 @@ FlxqX_divrem_basecase(GEN x, GEN y, GEN T, ulong p, ulong pi, GEN *pr)
   lr=i+3; rem -= lr; av = (pari_sp)rem;
   rem[0] = evaltyp(t_POL) | _evallg(lr);
   rem[1] = z[-1];
-  rem += 2; gel(rem,i) = gc_uptoleaf(av, p1);
+  rem += 2; gel(rem,i) = gc_leaf(av, p1);
   for (i--; i>=0; i--)
   {
     av = avma; p1 = gel(x,i);
     for (j=0; j<=i && j<=dz; j++)
       p1 = Flx_sub(p1, Flx_mul_pre(gel(z,j),gel(y,i-j),p,pi), p);
-    gel(rem,i) = gc_uptoleaf(av, Flx_rem_pre(p1, T,p,pi));
+    gel(rem,i) = gc_leaf(av, Flx_rem_pre(p1, T,p,pi));
   }
   rem -= 2;
   guncloneNULL(lead);

@@ -132,7 +132,7 @@ mulrfrac(GEN x, GEN y)
     return z;
   }
   av = avma;
-  return gc_uptoleaf(av, divri(mulri(x,a), b));
+  return gc_leaf(av, divri(mulri(x,a), b));
 }
 static GEN
 mulqf(GEN x, GEN y, long prec) { pari_sp av = avma;
@@ -1094,7 +1094,7 @@ gadd(GEN x, GEN y)
             return lx <= 0? rcopy(x): fractor(y, nbits2prec(lx));
           }
           av = avma; z = addir(gel(y,1), mulir(gel(y,2),x));
-          return gc_uptoleaf(av, divri(z,gel(y,2)));
+          return gc_leaf(av, divri(z,gel(y,2)));
         case t_COMPLEX: return addRc(x, y);
         case t_QUAD: return gequal0(y)? rcopy(x): addqf(y, x, realprec(x));
 
@@ -2597,7 +2597,7 @@ gdiv(GEN x, GEN y)
         case t_INT: return divri(x,y);
         case t_FRAC:
           av = avma; z = divri(mulri(x,gel(y,2)), gel(y,1));
-          return gc_uptoleaf(av, z);
+          return gc_leaf(av, z);
         case t_COMPLEX: return divRc(x, y);
         case t_QUAD: return divfq(x, y, realprec(x));
         default: pari_err_TYPE2("/",x,y);
@@ -2650,7 +2650,7 @@ gdiv(GEN x, GEN y)
 
         case t_REAL:
           av = avma;
-          return gc_uptoleaf(av, divir(gel(x,1), mulri(y,gel(x,2))));
+          return gc_leaf(av, divir(gel(x,1), mulri(y,gel(x,2))));
 
         case t_INTMOD: { GEN Y = gel(y,1);
           z = cgetg(3,t_INTMOD); p1 = remii(mulii(gel(y,2),gel(x,2)), Y);

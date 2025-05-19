@@ -2090,7 +2090,7 @@ gabs(GEN x, long prec)
 
     case t_QUAD:
       av = avma;
-      return gc_uptoleaf(av, gabs(quadtofp(x, prec), prec));
+      return gc_leaf(av, gabs(quadtofp(x, prec), prec));
 
     case t_POL:
       lx = lg(x); if (lx<=2) return RgX_copy(x);

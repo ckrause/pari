@@ -480,7 +480,7 @@ polrootsbound_i(GEN P, double TAU)
   }
   d = logmax_modulus(P, TAU) + TAU;
   /* not dblexp: result differs on ARM emulator */
-  return gc_uptoleaf(av, mpexp(dbltor(d)));
+  return gc_leaf(av, mpexp(dbltor(d)));
 }
 GEN
 polrootsbound(GEN P, GEN tau)
@@ -2193,7 +2193,7 @@ polsolve(GEN P, long bitprec)
       break;
   }
   rc = rb; av = avma;
-  for(;; rc = gc_uptoleaf(av, rc))
+  for(;; rc = gc_leaf(av, rc))
   {
     long exponew;
     GEN Ppc, dist, rcold = rc;

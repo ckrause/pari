@@ -219,7 +219,7 @@ sqrtint(GEN a)
       if (signe(b) < 0) pari_err_DOMAIN("sqrtint", "argument", "<", gen_0,a);
       a = sqrti(b);
     }
-    return gc_uptoleaf(av, a);
+    return gc_leaf(av, a);
   }
   switch (signe(a))
   {

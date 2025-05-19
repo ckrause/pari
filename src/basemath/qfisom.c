@@ -401,7 +401,7 @@ orbit(GEN pt, long ipt, long npt, GEN H, GEN V)
       /* image is a new point in the orbit */
       if (flag[im] == 0) { orb[++no] = im; flag[im] = 1; }
     }
-  setlg(orb,no+1); return gc_uptoleaf(av, orb);
+  setlg(orb,no+1); return gc_leaf(av, orb);
 }
 
 /* return the length of the orbit of pt under the first nG matrices in G */

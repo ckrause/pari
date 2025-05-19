@@ -597,7 +597,7 @@ compute_invres(GRHcheck_t *S, long LIMC)
     }
     loginvres -= (addpsi*c0 - addpsi1*c1 + addpsi2*c2)*logp;
   }
-  return gc_uptoleaf(av, mpexp(dbltor(loginvres)));
+  return gc_leaf(av, mpexp(dbltor(loginvres)));
 }
 
 static long
@@ -3329,7 +3329,7 @@ get_regulator(GEN A)
 
   if (lg(A) == 1) return gen_1;
   R = det( rowslice(real_i(A), 1, lgcols(A)-2) );
-  setabssign(R); return gc_uptoleaf(av, R);
+  setabssign(R); return gc_leaf(av, R);
 }
 
 /* return corrected archimedian components for elts of x (vector)
@@ -3649,7 +3649,7 @@ trim_list(FB_t *F)
     long k = minidx[ L_jid[i] ];
     if (!present[k]) { v[j++] = L_jid[i]; present[k] = 1; }
   }
-  setlg(v, j); return gc_uptoleaf(av, v);
+  setlg(v, j); return gc_leaf(av, v);
 }
 
 /* x t_INT or primitive ZC */

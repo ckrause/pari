@@ -1847,7 +1847,7 @@ F2x_genus2_find_trans(GEN P, GEN Q, GEN F)
   }
   C = F2x_to_F2v(F2x_rem(P, F), d);
   V = F2m_F2c_invimage(M, C);
-  return gc_uptoleaf(av, F2v_to_F2x(V, v));
+  return gc_leaf(av, F2v_to_F2x(V, v));
 }
 
 static GEN

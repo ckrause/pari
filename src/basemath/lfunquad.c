@@ -563,7 +563,7 @@ Linv(long D, long k, ulong den)
     bitnew = (long)(bit - k * log2(p));
     Q = divrr(P, rpowuu(p, k, nbits2prec(maxss(64, bitnew))));
     P = s == 1? subrr(P, Q): addrr(P, Q);
-    if (gc_needed(av,1)) P = gc_uptoleaf(av, P);
+    if (gc_needed(av,1)) P = gc_leaf(av, P);
   }
   return P;
 }
