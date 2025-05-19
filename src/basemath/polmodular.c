@@ -402,7 +402,7 @@ modinv_good_disc(long inv, long D)
   case INV_W3W13: /* NB: This is a guess; avs doesn't have an entry */
     return (D & 1) && (D % 3) && modinv_double_eta_good_disc(D, inv);
   case INV_ATKIN3:
-     return (D%3!=2 && D%9 && (D<-36 || D==-15 || D==-23 || D==-24));
+     return (-D%3!=1 && D%9 && (D<-36 || D==-15 || D==-23 || D==-24));
   }
   pari_err_BUG("modinv_good_discriminant");
   return 0;/*LCOV_EXCL_LINE*/
