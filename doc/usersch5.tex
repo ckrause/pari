@@ -13471,6 +13471,20 @@ We thus have $x e^x \approx y$.
 approximation $x$ to $W_{-1}(y)$ (relative error less than $1\%$).
 We thus have $x e^x \approx y$.
 
+Finally the following 4 functions provide low-accuracy evaluations
+at the complex number $z = s +it$:
+
+\fun{double}{dblcnorm}{double s, double t} returns $|z|^2 = s^2 + t^2$.
+
+\fun{double}{dblcabs}{double s, double t} returns $|z| = \sqrt{s^2 + t^2}$.
+
+\fun{double}{dblcarg}{double s, double t} returns $\arg z$, with
+values in $]-\pi, \pi]$. Assumes $z \neq 0$.
+
+\fun{void}{dblclog}{double s, double t, double *a, double *b}
+sets $a + ib = \text{Log}(z)$, where $\text{Log}$ is the principal branch of
+the natural logarithm, with imaginary part in $]-\pi,\pi]$. Assumes $z \neq 0$.
+
 \section{Quadratic numbers and binary quadratic forms}
 
 \fun{GEN}{quad_disc}{GEN x} returns the discriminant of the \typ{QUAD} $x$.

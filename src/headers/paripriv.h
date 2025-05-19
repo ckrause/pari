@@ -456,12 +456,6 @@ ulong *convi(GEN x, long *l);
 /* powers */
 GEN    rpowuu(ulong a, ulong n, long prec);
 
-/* floats */
-double dabs(double s, double t);
-double darg(double s, double t);
-void   dcxlog(double s, double t, double *a, double *b);
-double dnorm(double s, double t);
-
 /* hnf */
 GEN hnfadd(GEN m,GEN p,GEN* ptdep,GEN* ptA,GEN* ptC,GEN extramat,GEN extraC);
 GEN hnfadd_i(GEN m,GEN p,GEN* ptdep,GEN* ptA,GEN* ptC,GEN extramat,GEN extraC);

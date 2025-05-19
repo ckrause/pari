@@ -63,7 +63,8 @@ BA  28- [libpari] ZMV_producttree, ZM_trace, FpM_trace
     29- [libpari] bnrconductor_factored_arch, bnrtoprimitive
     30- [libpari] char_renormalize
 AP  31- [libpari] alg_get_invol
-    32- [libpari] dblllog2, dbllambertW0, dbllambertW_1
+    32- [libpari] dblllog2, dbllambertW0, dbllambertW_1, dblcnorm, dblcabs,
+        dblcarg, dblclog
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate

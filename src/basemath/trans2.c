@@ -969,29 +969,29 @@ muliunextu(GEN x, ulong i)
   else
     return muliu(x, i*(i+1));
 }
-/* arg(s+it) */
+/* arg(s + it); in principle s + it != 0 but currently arg(0. + i*0.) := 0 */
 double
-darg(double s, double t)
+dblcarg(double s, double t)
 {
   double x;
-  if (!t) return (s>0)? 0.: M_PI;
-  if (!s) return (t>0)? M_PI/2: -M_PI/2;
+  if (!t) return (s >= 0)? 0.: M_PI;
+  if (!s) return (t >= 0)? M_PI/2: -M_PI/2;
   x = atan(t/s);
-  return (s>0)? x
-              : ((t>0)? x+M_PI : x-M_PI);
+  return (s >= 0)? x: (t >= 0)? x + M_PI : x - M_PI;
 }
 
+/* Let z = s + it, set a = Re(log z), b = Im(log z) */
 void
-dcxlog(double s, double t, double *a, double *b)
+dblclog(double s, double t, double *a, double *b)
 {
-  *a = log(s*s + t*t) / 2; /* log |s| = Re(log(s)) */
-  *b = darg(s,t);          /* Im(log(s)) */
+  *a = log(dblcnorm(s, t)) / 2;
+  *b = dblcarg(s, t);
 }
 
 double
-dabs(double s, double t) { return sqrt( s*s + t*t ); }
+dblcabs(double s, double t) { return sqrt(dblcnorm(s, t)); }
 double
-dnorm(double s, double t) { return s*s + t*t; }
+dblcnorm(double s, double t) { return s*s + t*t; }
 
 #if 0
 /* x, z t_REAL. Compute unique x in ]-z,z] congruent to x mod 2z */
@@ -1076,7 +1076,7 @@ gamma_optim(double ssig, double st, long prec, long *plim, long *pN)
 {
   double la, l,l2,u,v, rlogs, ilogs;
   long N = 1, lim;
-  dcxlog(ssig,st, &rlogs,&ilogs);
+  dblclog(ssig,st, &rlogs,&ilogs);
   /* Re (s - 1/2) log(s) */
   u = (ssig - 0.5)*rlogs - st * ilogs;
   /* Im (s - 1/2) log(s) */
@@ -1119,7 +1119,7 @@ gamma_use_1(double s, double t, long prec, long *plim, long *pN)
   if (d < 1e-16) return 1;
   gamma_optim(s, t, prec, plim, pN);
   if (d >= 0.5) return 0;
-  k = prec2nbits(prec) / -log2(dnorm(a, t)); /* 2k = lngamma1 bound */
+  k = prec2nbits(prec) / -log2(dblcnorm(a, t)); /* 2k = lngamma1 bound */
   return (t ? k: 1.5*k) < *plim + *pN;
 }
 static GEN
@@ -1998,8 +1998,8 @@ static double
 dlogE(double s, double t)
 {
   double rlog, ilog;
-  dcxlog(s - 0.57721566, t, &rlog,&ilog);
-  return maxdd(dnorm(rlog,ilog), 1e-6);
+  dblclog(s - 0.57721566, t, &rlog,&ilog);
+  return maxdd(dblcnorm(rlog,ilog), 1e-6);
 }
 static GEN
 cxpsi(GEN s0, long der, long prec)

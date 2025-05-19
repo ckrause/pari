@@ -1583,17 +1583,17 @@ optim_zeta(GEN S, long prec, long *pp, long *pn)
   else if (s <= 0 || t < 0.01) /* s < 0 may occur if s ~ 0 */
   { /* TODO: the crude bounds below are generally valid. Optimize ? */
     double l,l2, la = 1.; /* heuristic */
-    double rlog, ilog; dcxlog(s-1,t, &rlog,&ilog);
+    double rlog, ilog; dblclog(s-1,t, &rlog,&ilog);
     l2 = (s - 0.5)*rlog - t*ilog; /* = Re( (S - 1/2) log (S-1) ) */
     l = (B - l2 + s*log2PI) / (2. * (1.+ log((double)la)));
-    l2 = dabs(s, t)/2;
+    l2 = dblcabs(s, t)/2;
     if (l < l2) l = l2;
     p = (long) ceil(l); if (p < 2) p = 2;
-    n = 1 + dabs(p+s/2.-.25, t/2) * la / M_PI;
+    n = 1 + dblcabs(p+s/2.-.25, t/2) * la / M_PI;
   }
   else
   {
-    double sn = dabs(s, t), L = log(sn/s);
+    double sn = dblcabs(s, t), L = log(sn/s);
     alpha = B - 0.39 + L + s*(log2PI - log(sn));
     beta = (alpha+s)/t - atan(s/t);
     p = 0;
@@ -1604,7 +1604,7 @@ optim_zeta(GEN S, long prec, long *pp, long *pn)
     }
     else
       if (s < 1.0) p = 1;
-    n = p? dabs(s + 2*p-1, t) / (2*M_PI) : exp((B-M_LN2+L) / s);
+    n = p? dblcabs(s + 2*p-1, t) / (2*M_PI) : exp((B-M_LN2+L) / s);
   }
   *pp = p;
   *pn = (long)ceil(n);
