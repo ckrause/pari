@@ -12,7 +12,7 @@ Doc: Let \kbd{E} be an \kbd{ell} structure as output by \kbd{ellinit}, attached
  \bprog
  ? E = ellinit([-3,1], 5); ellcard(E)
  %1 = 7
- ? t = ffgen(3^5,'t); E = ellinit([t,t^2+1]); ellcard(E)
+ ? t = ffgen([3,5],'t); E = ellinit([t,t^2+1]); ellcard(E)
  %2 = 217
  @eprog\noindent
  For other fields of definition and $p$ defining a finite residue field

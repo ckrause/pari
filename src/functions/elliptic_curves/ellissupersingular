@@ -14,7 +14,7 @@ Doc:
  Alternatively, $E$ can be given by its $j$-invariant in a finite field. In
  this case $p$ must be omitted.
  \bprog
- ?  g = ffprimroot(ffgen(7^5))
+ ?  g = ffprimroot(ffgen([7,5]))
  %1 = 4*x^4+5*x^3+6*x^2+5*x+6
  ?  [g^n | n <- [1 .. 7^5 - 1], ellissupersingular(g^n)]
  %2 = [6]

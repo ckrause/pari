@@ -23,11 +23,11 @@ Doc: Let $PQ$ be a polynomial $P$, resp. a vector $[P,Q]$ of polynomials
  ? genus2igusa(x^5+3*Mod(a,a^2-3)*x^2-4) \\ @com{over $\Q(\sqrt{3})$}
  %4 = [Mod(0, a^2 - 3), Mod(9600*a, a^2 - 3), Mod(186624, a^2 - 3),
        Mod(-69120000, a^2 - 3), Mod(-241864704*a + 204800000, a^2 - 3)]
- ? a = ffgen(3^4,'a); \\ @com{over $\F_{3^4} = \F_3[a]$}
+ ? a = ffgen([3,4], 'a); \\ @com{over $\F_{3^4} = \F_3[a]$}
  ? genus2igusa(x^6+a*x^5-a*x^4+2*x^3+a*x+a+1)
  %6 = [2*a^2, a^3 + a^2 + a + 1, a^2 + a + 2, 2*a^3 + 2*a^2 + a + 1,
        2*a^2 + 2]
- ? a = ffgen(2^4,'a); \\ @com{$\F_{2^4} = \F_2[a]$}
+ ? a = ffgen([2,4], 'a); \\ @com{$\F_{2^4} = \F_2[a]$}
  ? genus2igusa(x^6+a*x^5+a*x^4+a*x+a+1) \\ doesn't work in characteristic 2
    ***   at top-level: genus2igusa(x^6+a*x^5+a*x^4+a*x+a+1)
    ***                 ^------------------------------------

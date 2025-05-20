@@ -214,7 +214,7 @@ Doc: factor $x$ over domain $D$; if $D$ is omitted, it is determined from $x$.
  \bprog
  ? factormod(T, 3)              \\ over F_3
  ? factormod(T, [t^2+t+2, 3])   \\ over F_{3^2}
- ? factormod(T, ffgen(3^2, 't)) \\ over F_{3^2}
+ ? factormod(T, ffgen([3,2], 't)) \\ over F_{3^2}
  ? factorpadic(T, 3,6)          \\ over Q_3, precision 6
  ? nffactor(y^3-2, T)           \\ over Q(2^{1/3})
  ? polroots(T)                  \\ over C
