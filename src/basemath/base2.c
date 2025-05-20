@@ -2453,22 +2453,16 @@ modpr_TAU(GEN modpr)
   return isintzero(tau)? NULL: tau;
 }
 
-/* prh = HNF matrix, which is identity but for the first line. Return a
- * projector to ZK / prh ~ Z/prh[1,1] */
+/* H = HNF matrix, which is identity but for the first line. Return a
+ * projector to Z^n / H ~ Z/qZ, with q = H[1,1] */
 GEN
-dim1proj(GEN prh)
+hnf_Znproj(GEN H)
 {
-  long i, N = lg(prh)-1;
-  GEN ffproj = cgetg(N+1, t_VEC);
-  GEN x, q = gcoeff(prh,1,1);
-  gel(ffproj,1) = gen_1;
-  for (i=2; i<=N; i++)
-  {
-    x = gcoeff(prh,1,i);
-    if (signe(x)) x = subii(q,x);
-    gel(ffproj,i) = x;
-  }
-  return ffproj;
+  long i, l = lg(H);
+  GEN p = cgetg(l, t_VEC), q = gcoeff(H,1,1);
+  gel(p,1) = gen_1;
+  for (i = 2; i < l; i++) gel(p,i) = Fp_neg(gcoeff(H,1,i), q);
+  return p;
 }
 
 /* p not necessarily prime, but coprime to denom(basis) */
@@ -2521,7 +2515,7 @@ modprinit(GEN nf, GEN pr, int zk, long vT)
   {
     res = cgetg(SMALLMODPR, t_COL);
     gel(res,mpr_TAU) = tau;
-    gel(res,mpr_FFP) = dim1proj(prh);
+    gel(res,mpr_FFP) = hnf_Znproj(prh);
     gel(res,3) = pr; return gc_GEN(av, res);
   }
 

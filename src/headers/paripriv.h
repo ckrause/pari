@@ -609,7 +609,6 @@ int     ZX_canon_neg(GEN z);
 
 /* base2.c */
 
-GEN     dim1proj(GEN prh);
 GEN     gen_if_principal(GEN bnf, GEN x);
 
 /* base3.c */

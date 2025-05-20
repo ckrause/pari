@@ -1331,7 +1331,7 @@ init_proj(nflift_t *L, GEN prkHNF, GEN nfT)
   else
   {
     L->Tpk = NULL;
-    L->ZqProj = dim1proj(prkHNF);
+    L->ZqProj = hnf_Znproj(prkHNF);
   }
 }
 

@@ -1433,7 +1433,19 @@ This is for instance useful when $v$ contains a $\Z$-basis of the maximal
 order of a number field $\Q[X]/(P)$, $p$ is a prime not dividing the index of
 $P$ and $T$ is an irreducible factor of $P$ mod $p$, attached to a maximal
 ideal $\goth{p}$: left-multiplication by the matrix maps number field
-elements (in basis form) to the residue field of $\goth{p}$.
+elements (in basis form) to the residue field of~$\goth{p}$.
+
+\fun{GEN}{hnf_Znproj}{GEN H} let $H$ be a $n \times n$ HNF matrix which is an
+identity apart from the first row and assume that $q = H[1,1]$ is positive.
+Then $\Z^n / \text{im}_\Z H \simeq \Z/q\Z$ and this function returns a vector
+$v$ allowing to map any $x \in \Z^n$ to the quotient: the image is
+\kbd{FpV\_dotproduct}$(x, v, q)$.
+
+The conditions are for instance satisfied when $H$ is the HNF matrix attached
+to a prime ideal of degree $1$ (because we assume that the implied fixed
+$\Z$-basis for the maximal order starts with~$1$). This allows to map
+algebraic integers to the (prime) residue field. This function is a special
+case of \kbd{zkmodprinit}.
 
 \subsec{Valuations}
 

@@ -2456,6 +2456,7 @@ GEN     compositum(GEN P, GEN Q);
 GEN     compositum2(GEN P, GEN Q);
 long    factorial_lval(ulong n, ulong p);
 GEN     get_modpr(GEN x);
+GEN     hnf_Znproj(GEN H);
 GEN     idealprimedec(GEN nf,GEN p);
 GEN     idealprimedec_degrees(GEN nf, GEN p);
 GEN     idealprimedec_galois(GEN nf, GEN p);
