@@ -10,7 +10,7 @@ Doc: gives the order of the point $z$ on the elliptic
  Return (the impossible value) zero if the point has infinite order.
  \bprog
  ? E = ellinit([-157^2,0]);  \\ the "157-is-congruent" curve
- ? P = [2,2]; ellorder(E, P)
+ ? P = [0,0]; ellorder(E, P)
  %2 = 2
  ? P = ellheegner(E); ellorder(E, P) \\ infinite order
  %3 = 0
@@ -19,9 +19,9 @@ Doc: gives the order of the point $z$ on the elliptic
  %5 = 25
  ? E = ellinit(ellfromj(ffgen(5^10)));
  ? ellcard(E)
- %7 = 9762580
+ %7 = 9767025
  ? P = random(E); ellorder(E, P)
- %8 = 4881290
+ %8 = 1953405
  ? p = 2^160+7; E = ellinit([1,2], p);
  ? N = ellcard(E)
  %9 = 1461501637330902918203686560289225285992592471152
