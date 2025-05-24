@@ -758,51 +758,29 @@ static GEN
 pqfbred_rec(GEN Q, long m, GEN *pt_U)
 {
   pari_sp av = avma;
-  GEN Q0, Q1, QR;
-  GEN d = qfb_disc(Q);
-  long n = qfb_maxexpi(Q) - m;
-  long h;
+  GEN U, Q0, Q1, QR, d = qfb_disc(Q);
+  long h, n = qfb_maxexpi(Q) - m;
   int going_to_r8 = 0;
-  GEN U;
 
-  if (n < 170)
-    return pqfbred_basecase(Q, m, pt_U);
-
-  if (qfb_minexpi(Q) <= m + 2)
-  {
-    U = matid(2);
-    QR = Q;
-  }
+  if (n < 170) return pqfbred_basecase(Q, m, pt_U);
+  if (qfb_minexpi(Q) <= m + 2) { U = matid(2); QR = Q; }
   else
   {
     long p, mm;
-    if (m <= n)
+    if (m <= n) { mm = m; p = 0; Q1 = Q; }
+    else
     {
-      mm = m;
-      p = 0;
-      Q1 = Q;
-    } else
-    {
-      mm = n;
-      p = m + 1 - n;
-      Q0 = mkvec3(remi2n(gel(Q,1), p), remi2n(gel(Q,2), p), remi2n(gel(Q,3), p));
+      mm = n; p = m + 1 - n;
+      Q0 = mkvec3(remi2n(gel(Q,1),p), remi2n(gel(Q,2),p), remi2n(gel(Q,3),p));
       Q1 = qfb3(shifti(gel(Q,1),-p), shifti(gel(Q,2),-p), shifti(gel(Q,3),-p));
     }
     h = mm + (n>>1);
-    if (qfb_minexpi(Q1) <= h)
-    {
-      U = matid(2);
-      QR = Q1;
-    }
+    if (qfb_minexpi(Q1) <= h) { U = matid(2); QR = Q1; }
     else
       QR = pqfbred_rec(Q1, h, &U);
     while (qfb_maxexpi(QR) > h)
     {
-      if (is_minimal(QR, mm))
-      {
-        going_to_r8 = 1;
-        break;
-      }
+      if (is_minimal(QR, mm)) { going_to_r8 = 1; break; }
       QR = pqfbred_1(QR, mm, U);
     }
     if (!going_to_r8)
@@ -820,8 +798,7 @@ pqfbred_rec(GEN Q, long m, GEN *pt_U)
     }
   }
   QR = pqfbred_iter_1(QR, m, U);
-  *pt_U = U;
-  return gc_all(av, 2, &QR, pt_U);
+  *pt_U = U; return gc_all(av, 2, &QR, pt_U);
 }
 
 static GEN
