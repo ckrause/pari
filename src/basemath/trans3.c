@@ -793,7 +793,10 @@ eint1p(GEN x, GEN expx)
   if (gamma_use_asymp(x, bit)
       && (z = eint1r_asymp(x, expx, prec))) return z;
   mx = rtodbl(x);
-  if (mx > 1) prec += nbits2extraprec((mx+log(mx))/M_LN2 + 10);
+  if (mx > 1)
+    prec += nbits2extraprec((mx+log(mx))/M_LN2 + 10);
+  else
+    prec += EXTRAPREC64;
   bit = prec2nbits(prec);
   run = real_1(prec); x = rtor(x, prec);
   av = avma; S = z = t = H = run;
