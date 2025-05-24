@@ -950,14 +950,14 @@ qfbred_imag_basecase_av(pari_sp av, GEN q)
 static GEN
 qfbred_imag_av(pari_sp av, GEN Q)
 {
-  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= QFBRED_LIMIT)
-    return qfbred_imag_basecase_av(av, Q);
-  else
+  if (2*qfb_maxexpi(Q) - expi(gel(Q,4)) > QFBRED_LIMIT)
   {
-    long sb = signe(gel(Q,2));
-    GEN U, Qr = pqfbred_rec(sb < 0 ? mkqfb(gel(Q,1), negi(gel(Q,2)), gel(Q,3), gel(Q,4)): Q, 0, &U);
-    return qfbred_imag_basecase_av(av, Qr);
+    GEN U;
+    if (signe(gel(Q,2)) < 0)
+      Q = mkqfb(gel(Q,1), negi(gel(Q,2)), gel(Q,3), gel(Q,4));
+    Q = pqfbred_rec(Q, 0, &U);
   }
+  return qfbred_imag_basecase_av(av, Q);
 }
 
 static GEN
