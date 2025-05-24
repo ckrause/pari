@@ -1007,8 +1007,8 @@ Flm_Fl_phi3_evalx(GEN phi3, ulong j, ulong p, ulong pi)
   j3 = Fl_mul_pre(j, j2, p, pi);
 
   t1 = Fl_add(j, coeff(phi3, 4, 1), p);
-  res[2] = Fl_addmul3(j, j2, j3, t1,
-                      coeff(phi3, 3, 1), coeff(phi3, 2, 1), p, pi);
+  t1 = Fl_addmul3(j, j2, j3, t1, coeff(phi3, 3, 1), coeff(phi3, 2, 1), p, pi);
+  res[2] = Fl_add(t1, coeff(phi3, 1, 1), p);
 
   t1 = Fl_addmul3(j, j2, j3, coeff(phi3, 4, 2),
                   coeff(phi3, 3, 2), coeff(phi3, 2, 2), p, pi);
