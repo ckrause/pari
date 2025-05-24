@@ -786,14 +786,14 @@ static GEN
 eint1p(GEN x, GEN expx)
 {
   pari_sp av;
-  long l = realprec(x), bit = prec2nbits(l), prec, i;
+  long prec = realprec(x), bit = prec2nbits(prec), i;
   double mx;
   GEN z, S, t, H, run;
 
   if (gamma_use_asymp(x, bit)
-      && (z = eint1r_asymp(x, expx, l))) return z;
+      && (z = eint1r_asymp(x, expx, prec))) return z;
   mx = rtodbl(x);
-  prec = l + nbits2extraprec((mx+log(mx))/M_LN2 + 10);
+  if (mx > 1) prec += nbits2extraprec((mx+log(mx))/M_LN2 + 10);
   bit = prec2nbits(prec);
   run = real_1(prec); x = rtor(x, prec);
   av = avma; S = z = t = H = run;

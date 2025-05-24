@@ -36,6 +36,9 @@ incgamc(2,0)
 printf("%.28Pg\n", imag(incgam(110.0,I)))
 printf("%.28Pg\n", imag(incgam(110,I)))
 incgam(110.0,10*I)
+\\ #2625
+incgam(0,10^-40)
+incgam(0,10^-50)
 
 eint1(-0.3-95*I)
 eint1(100)
