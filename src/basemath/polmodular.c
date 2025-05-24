@@ -49,9 +49,10 @@ modinv_level(long inv)
     case INV_W3W7:  return 42;
     case INV_W5W7:  return 35;
     case INV_W3W13: return 39;
-    case INV_ATKIN3: return 3;
-    case INV_ATKIN5: return 5;
-    case INV_ATKIN7: return 7;
+    case INV_ATKIN3:
+    case INV_ATKIN5:
+    case INV_ATKIN7:
+    case INV_ATKIN11: return inv-100;
   }
   pari_err_BUG("modinv_level"); return 0;/*LCOV_EXCL_LINE*/
 }
@@ -76,9 +77,10 @@ modinv_degree(long *p1, long *p2, long inv)
     case INV_W3W3:  return (*p1 = 3) * (*p2 = 3);
     case INV_W5W7:  return (*p1 = 5) * (*p2 = 7);
     case INV_W3W13: return (*p1 = 3) * (*p2 = 13);
-    case INV_ATKIN3: return (*p1 = 3) * (*p2 = 1);
-    case INV_ATKIN5: return (*p1 = 5) * (*p2 = 1);
-    case INV_ATKIN7: return (*p1 = 7) * (*p2 = 1);
+    case INV_ATKIN3:
+    case INV_ATKIN5:
+    case INV_ATKIN7:
+    case INV_ATKIN11: return (*p1 = inv-100) * (*p2 = 1);
   }
   *p1 = *p2 = 1; return 0;
 }
@@ -121,9 +123,10 @@ modinv_height_factor(long inv)
     case INV_W3W3E2:return 18;
     case INV_W5W7:  return 24;
     case INV_W3W13: return 28;
-    case INV_ATKIN3: return 2;
-    case INV_ATKIN5: return 3;
-    case INV_ATKIN7: return 4;
+    case INV_ATKIN3:
+    case INV_ATKIN5:
+    case INV_ATKIN7:
+    case INV_ATKIN11: return (inv-99)/2;
     default: pari_err_BUG("modinv_height_factor"); return 0;/*LCOV_EXCL_LINE*/
   }
 }
@@ -148,6 +151,7 @@ disc_best_modinv(long D)
   ret = INV_W5W7;  if (modinv_good_disc(ret, D)) return ret;
   ret = INV_W3W3E2;if (modinv_good_disc(ret, D)) return ret;
   ret = INV_G2;    if (modinv_good_disc(ret, D)) return ret;
+  ret = INV_ATKIN11;if (modinv_good_disc(ret, D)) return ret;
   ret = INV_ATKIN7;if (modinv_good_disc(ret, D)) return ret;
   ret = INV_ATKIN5;if (modinv_good_disc(ret, D)) return ret;
   ret = INV_ATKIN3;if (modinv_good_disc(ret, D)) return ret;
@@ -425,11 +429,10 @@ modinv_good_disc(long inv, long D)
   case INV_W3W13: /* NB: This is a guess; avs doesn't have an entry */
     return (D & 1) && (D % 3) && modinv_double_eta_good_disc(D, inv);
   case INV_ATKIN3:
-     return modinv_good_atkin(3, D);
   case INV_ATKIN5:
-     return modinv_good_atkin(5, D);
   case INV_ATKIN7:
-     return modinv_good_atkin(7, D);
+  case INV_ATKIN11:
+     return modinv_good_atkin(inv-100, D);
   }
   pari_err_BUG("modinv_good_discriminant");
   return 0;/*LCOV_EXCL_LINE*/
@@ -462,6 +465,7 @@ modinv_is_double_eta(long inv)
   case INV_ATKIN3: /* as far as we are concerned */
   case INV_ATKIN5: /* as far as we are concerned */
   case INV_ATKIN7: /* as far as we are concerned */
+  case INV_ATKIN11: /* as far as we are concerned */
     return 1;
   }
   return 0;
@@ -1808,7 +1812,8 @@ modinv_max_internal_level(long inv)
     case INV_W3W13:
     case INV_ATKIN3:
     case INV_ATKIN5:
-    case INV_ATKIN7: return 2;
+    case INV_ATKIN7:
+    case INV_ATKIN11: return 2;
   }
   pari_err_BUG("modinv_max_internal_level"); return LONG_MAX;/*LCOV_EXCL_LINE*/
 }
@@ -2271,6 +2276,18 @@ phi2_atkin7_ZV(void)
   return phi;
 }
 
+static GEN
+phi2_atkin11_ZV(void)
+{
+  GEN phi = zerovec(6);
+  gel(phi, 1) = utoi(1600);
+  gel(phi, 2) = utoi(470);
+  gel(phi, 3) = utoi(91);
+  gel(phi, 4) = utoi(34);
+  gel(phi, 6) = gen_m1;
+  return phi;
+}
+
 INLINE long
 modinv_parent(long inv)
 {
@@ -2404,6 +2421,7 @@ internal_db(long L, long inv)
   case INV_ATKIN3: return phi2_atkin3_ZV();
   case INV_ATKIN5: return phi2_atkin5_ZV();
   case INV_ATKIN7: return phi2_atkin7_ZV();
+  case INV_ATKIN11: return phi2_atkin11_ZV();
   }
   pari_err_BUG("internal_db");
   return NULL;/*LCOV_EXCL_LINE*/
@@ -3188,6 +3206,46 @@ phi_atkin7_j(void)
   gel(phi, 3) = gen_0; return phi;
 }
 
+static GEN
+phi_atkin11_j(void)
+{
+  GEN phi, phi0, phi1;
+  phi = cgetg(4, t_VEC);
+
+  phi0 = cgetg(14, t_VEC);
+  gel(phi0, 1) = uu32toi(0x351f,0xe3329000);
+  gel(phi0, 2) = uu32toi(0x5a09,0xb4cae000);
+  gel(phi0, 3) = uu32toi(0x4386,0xeec9c800);
+  gel(phi0, 4) = uu32toi(0x1d6c,0x110f8800);
+  gel(phi0, 5) = uu32toi(0x836,0xd0d89f00);
+  gel(phi0, 6) = uu32toi(0x186,0xd34d0c00);
+  gel(phi0, 7) = uu32toi(0x30,0x8f70b700);
+  gel(phi0, 8) = uu32toi(0x3,0xedd91100);
+  gel(phi0, 9) = utoi(830467440);
+  gel(phi0, 10) = utoi(21354080);
+  gel(phi0, 11) = utoi(196680);
+  gel(phi0, 12) = utoi(744);
+  gel(phi0, 13) = gen_1;
+
+  phi1 = cgetg(13, t_VEC);
+  gel(phi1, 1) = utoineg(8720000);
+  gel(phi1, 2) = utoineg(19849600);
+  gel(phi1, 3) = utoineg(8252640);
+  gel(phi1, 4) = utoi(1867712);
+  gel(phi1, 5) = utoi(1675784);
+  gel(phi1, 6) = utoi(184184);
+  gel(phi1, 7) = utoineg(57442);
+  gel(phi1, 8) = utoineg(11440);
+  gel(phi1, 9) = utoi(506);
+  gel(phi1, 10) = utoi(187);
+  gel(phi1, 11) = gen_0;
+  gel(phi1, 12) = gen_m1;
+
+  gel(phi, 1) = phi0;
+  gel(phi, 2) = phi1;
+  gel(phi, 3) = gen_0; return phi;
+}
+
 GEN
 double_eta_raw(long inv)
 {
@@ -3208,6 +3266,7 @@ double_eta_raw(long inv)
     case INV_ATKIN3: return phi_atkin3_j();
     case INV_ATKIN5: return phi_atkin5_j();
     case INV_ATKIN7: return phi_atkin7_j();
+    case INV_ATKIN11: return phi_atkin11_j();
     default: pari_err_BUG("double_eta_raw"); return NULL;/*LCOV_EXCL_LINE*/
   }
 }
