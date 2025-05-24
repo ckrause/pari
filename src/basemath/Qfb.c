@@ -852,9 +852,10 @@ qfbredsl2_imag(GEN Q)
   else
   {
     long sb = signe(gel(Q,2));
-    GEN Qr, W;
-    Qr = pqfbred_rec(sb < 0 ? mkqfb(gel(Q,1), negi(gel(Q,2)), gel(Q,3), gel(Q,4)): Q, 0, &U);
-    Qt = qfbredsl2_imag_basecase(Qr,&W);
+    GEN W;
+    if (sb < 0) Q = mkqfb(gel(Q,1), negi(gel(Q,2)), gel(Q,3), gel(Q,4));
+    Q = pqfbred_rec(Q, 0, &U);
+    Qt = qfbredsl2_imag_basecase(Q, &W);
     U = ZM2_mul(U,W);
     if (sb < 0)
     {
