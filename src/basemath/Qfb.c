@@ -889,6 +889,7 @@ qfbredsl2(GEN q, GEN isD)
   return gc_upto(av, qfbredsl2_real(q, isD));
 }
 
+/* not gc-clean */
 static GEN
 qfbred_real_i(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
 {
@@ -918,7 +919,10 @@ qfbred_real_i(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
 }
 
 static GEN
-qfbred_real(GEN x) { return qfbred_real_i(x,0,NULL,NULL); }
+qfbred_real_av(pari_sp av, GEN x)
+{ return gc_GEN(av, qfbred_real_i(x,0,NULL,NULL)); }
+static GEN
+qfbred_real(GEN x) { return qfbred_real_av(avma, x); }
 
 static GEN
 qfbred_imag_basecase_av(pari_sp av, GEN q)
@@ -1111,8 +1115,8 @@ qfrcomp0(GEN x, GEN y, int raw)
   gel(z,4) = gel(x,4);
   qfb_comp(z, x,y);
   if (dx) z = mkvec2(z, dy? addrr(dx, dy): dx); else if (dy) z = mkvec2(z, dy);
-  if (!raw) z = qfbred_real(z);
-  return gc_GEN(av, z);
+  if (raw) return gc_GEN(av, z);
+  return qfbred_real_av(av, z);
 }
 /* same discriminant, no distance, no checks */
 GEN
@@ -1174,8 +1178,8 @@ qfrsqr0(GEN x, long raw)
   if (typ(x) == t_VEC) { dx = gel(x,2); x = gel(x,1); }
   gel(z,4) = gel(x,4); qfb_sqr(z,x);
   if (dx) z = mkvec2(z, shiftr(dx,1));
-  if (!raw) z = qfbred_real(z);
-  return gc_GEN(av, z);
+  if (raw) return gc_GEN(av, z);
+  return qfbred_real_av(av, z);
 }
 /* same discriminant, no distance, no checks */
 GEN
