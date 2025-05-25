@@ -85,6 +85,13 @@ Doc:
             $ -195, -228, -259, -288, -315, -340, -384, -403, -420,$
             $ -435, -448, -459, -468, -475, -480, -483$.
 
+ \item 113: $A_{13}$, $(D|13)\geq 0, D \neq 0 \mod 169$, except
+         $D = -3, -4, -12, -16, -27, -35, -36, -40, -43, -48,$
+            $ -51, -52, -64, -68, -75, -88, -100, -120, -144, -147,$
+            $ -160, -168, -192, -235, -276, -315, -352, -387, -420,$
+            $ -451, -480, -532, -555, -576, -595, -612, -627, -640,$
+            $ -651, -660, -667, -672, -675$.
+
  The algorithm for computing the polynomial does not use the floating point
  approach, which would evaluate a precise modular function in a precise
  complex argument. Instead, it relies on a faster Chinese remainder based

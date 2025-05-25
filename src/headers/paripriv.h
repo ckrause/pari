@@ -243,7 +243,8 @@ void norm_eqn_set(norm_eqn_t ne, long D,long t,long u,long v,GEN faw,ulong p);
 #define INV_ATKIN5  105
 #define INV_ATKIN7  107
 #define INV_ATKIN11 111
-#define INV_LAST    111
+#define INV_ATKIN13 113
+#define INV_LAST    113
 
 /* Get coefficient of x^d in f, assuming f is nonzero. */
 INLINE ulong Flx_coeff(GEN f, long d) { return f[d + 2]; }
