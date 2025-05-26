@@ -271,7 +271,7 @@ REDBU(GEN a, GEN *b, GEN *c, GEN u1, GEN *u2)
 
 /* q t_QFB, return reduced representative and set base change U in Sl2(Z) */
 static GEN
-qfbredsl2_imag_basecase(GEN q, GEN *U)
+qfi_redsl2_basecase(GEN q, GEN *U)
 {
   pari_sp av = avma;
   GEN z, u1,u2,v1,v2,Q;
@@ -322,26 +322,26 @@ setq(ulong a, ulong b, ulong c, long sb, GEN D)
 { retmkqfb(utoipos(a), sb==1? utoipos(b): utoineg(b), utoipos(c), icopy(D)); }
 /* 0 < a, c < 2^BIL, b = 0 */
 static GEN
-qfbred_imag_1_b0(ulong a, ulong c, GEN D)
+qfi_red_1_b0(ulong a, ulong c, GEN D)
 { return (a <= c)? setq_b0(a, c, D): setq_b0(c, a, D); }
 
 /* 0 < a, c < 2^BIL: single word affair */
 static GEN
-qfbred_imag_1(pari_sp av, GEN a, GEN b, GEN c, GEN D)
+qfi_red_1(pari_sp av, GEN a, GEN b, GEN c, GEN D)
 {
   ulong ua, ub, uc;
   long sb;
   for(;;)
   { /* at most twice */
     long lb = lgefint(b); /* <= 3 after first loop */
-    if (lb == 2) return qfbred_imag_1_b0(a[2],c[2], D);
+    if (lb == 2) return qfi_red_1_b0(a[2],c[2], D);
     if (lb == 3 && uel(b,2) <= (ulong)LONG_MAX) break;
     REDB(a,&b,&c);
     if (uel(a,2) <= uel(c,2))
     { /* lg(b) <= 3 but may be too large for itos */
       long s = signe(b);
       set_avma(av);
-      if (!s) return qfbred_imag_1_b0(a[2], c[2], D);
+      if (!s) return qfi_red_1_b0(a[2], c[2], D);
       if (a[2] == c[2]) s = 1;
       return setq(a[2], b[2], c[2], s, D);
     }
@@ -374,7 +374,7 @@ qfbred_imag_1(pari_sp av, GEN a, GEN b, GEN c, GEN D)
 }
 
 static GEN
-rhoimag(GEN x)
+qfi_rho(GEN x)
 {
   pari_sp av = avma;
   GEN a = gel(x,1), b = gel(x,2), c = gel(x,3);
@@ -437,7 +437,7 @@ rho_get_BC(GEN *B, GEN *C, GEN a, GEN b, GEN c, struct qfr_data *S)
   GEN t, u, q;
   t = (abscmpii(S->isqrtD,c) >= 0)? S->isqrtD: absi_shallow(c);
   q = truedvmdii(addii(t, b), shifti(c,1), &u);
-  *B = subii(t, u); /* |t| - ((|t|+b) % 2c) */
+  *B = subii(t, u); /* t - ((t+b) % 2c) */
   *C = subii(a, mulii(q, subii(b, mulii(q,c))));
 }
 /* Not stack-clean */
@@ -592,7 +592,7 @@ qfr3_init(GEN x, struct qfr_data *S)
 #define qf_STEP 1
 
 static GEN
-qfbred_real_basecase_i(GEN x, long flag, GEN isqrtD, GEN sqrtD)
+qfr_red_basecase_i(GEN x, long flag, GEN isqrtD, GEN sqrtD)
 {
   struct qfr_data S;
   GEN d = NULL, y;
@@ -611,40 +611,40 @@ qfbred_real_basecase_i(GEN x, long flag, GEN isqrtD, GEN sqrtD)
 }
 
 static void
-_rhorealsl2(GEN *pa, GEN *pb, GEN *pc, GEN *pu1, GEN *pu2, GEN *pv1,
-            GEN *pv2, GEN rd)
+qfr_rhosl2_i(GEN *pa, GEN *pb, GEN *pc, GEN *pu1, GEN *pu2, GEN *pv1,
+             GEN *pv2, GEN rd)
 {
   GEN C = mpabs_shallow(*pc), t = addii(*pb, gmax_shallow(rd,C));
   GEN r, q = truedvmdii(t, shifti(C,1), &r);
-  GEN a = *pa, b= *pb, c = *pc;
+  GEN a = *pa, b = *pb, c = *pc;
   if (signe(c) < 0) togglesign(q);
   *pa = *pc;
   *pb = subii(t, addii(r, *pb));
-  *pc = subii(a,mulii(q,subii(b, mulii(q,c))));
+  *pc = subii(a, mulii(q, subii(b, mulii(q,c))));
   r = *pu1; *pu1 = *pv1; *pv1 = subii(mulii(q, *pv1), r);
   r = *pu2; *pu2 = *pv2; *pv2 = subii(mulii(q, *pv2), r);
 }
 
 static GEN
-rhorealsl2(GEN A, GEN rd)
+qfr_rhosl2(GEN A, GEN rd)
 {
   GEN V = gel(A,1), M = gel(A,2);
   GEN a = gel(V,1), b = gel(V,2), c = gel(V,3), d = qfb_disc(V);
   GEN u1 = gcoeff(M,1,1), v1 = gcoeff(M,1,2);
   GEN u2 = gcoeff(M,2,1), v2 = gcoeff(M,2,2);
-  _rhorealsl2(&a,&b,&c, &u1,&u2,&v1,&v2, rd);
+  qfr_rhosl2_i(&a,&b,&c, &u1,&u2,&v1,&v2, rd);
   return mkvec2(mkqfb(a,b,c,d), mkmat22(u1,v1,u2,v2));
 }
 
 static GEN
-qfbredsl2_real_basecase(GEN V, GEN rd)
+qfr_redsl2_basecase(GEN V, GEN rd)
 {
   pari_sp av = avma;
   GEN u1 = gen_1, u2 = gen_0, v1 = gen_0, v2 = gen_1;
   GEN a = gel(V,1), b = gel(V,2), c = gel(V,3), d = qfb_disc(V);
   while (!ab_isreduced(a,b,rd))
   {
-    _rhorealsl2(&a,&b,&c, &u1,&u2,&v1,&v2, rd);
+    qfr_rhosl2_i(&a,&b,&c, &u1,&u2,&v1,&v2, rd);
     if (gc_needed(av, 1))
     {
       if (DEBUGMEM>1) pari_warn(warnmem,"qfbredsl2");
@@ -802,11 +802,11 @@ pqfbred_rec(GEN Q, long m, GEN *pt_U)
 }
 
 static GEN
-qfbredsl2_real(GEN Q, GEN isqrtD)
+qfr_redsl2(GEN Q, GEN isqrtD)
 {
   pari_sp av = avma;
   if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= QFBRED_LIMIT)
-    return qfbredsl2_real_basecase(Q, isqrtD);
+    return qfr_redsl2_basecase(Q, isqrtD);
   else
   {
     GEN a = gel(Q,1), b = gel(Q,2), c = gel(Q,3), d = gel(Q,4);
@@ -835,7 +835,7 @@ qfbredsl2_real(GEN Q, GEN isqrtD)
       gcoeff(U,1,1) = subii( gcoeff(U,1,1), mulii(gcoeff(U,2,1), t));
       gcoeff(U,1,2) = subii( gcoeff(U,1,2), mulii(gcoeff(U,2,2), t));
     }
-    W = qfbredsl2_real_basecase(Qr, isqrtD);
+    W = qfr_redsl2_basecase(Qr, isqrtD);
     Qf = gel(W,1);
     U = ZM2_mul(U,gel(W,2));
     return gc_GEN(av, mkvec2(Qf,U));
@@ -843,19 +843,19 @@ qfbredsl2_real(GEN Q, GEN isqrtD)
 }
 
 static GEN
-qfbredsl2_imag(GEN Q)
+qfi_redsl2(GEN Q)
 {
   pari_sp av = avma;
   GEN Qt, U;
   if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= QFBRED_LIMIT)
-    Qt = qfbredsl2_imag_basecase(Q, &U);
+    Qt = qfi_redsl2_basecase(Q, &U);
   else
   {
     long sb = signe(gel(Q,2));
     GEN W;
     if (sb < 0) Q = mkqfb(gel(Q,1), negi(gel(Q,2)), gel(Q,3), gel(Q,4));
     Q = pqfbred_rec(Q, 0, &U);
-    Qt = qfbredsl2_imag_basecase(Q, &W);
+    Qt = qfi_redsl2_basecase(Q, &W);
     U = ZM2_mul(U,W);
     if (sb < 0)
     {
@@ -869,7 +869,7 @@ qfbredsl2_imag(GEN Q)
 GEN
 redimagsl2(GEN Q, GEN *U)
 {
-  GEN q = qfbredsl2_imag(Q);
+  GEN q = qfi_redsl2(Q);
   *U = gel(q,2); return gel(q,1);
 }
 
@@ -881,20 +881,20 @@ qfbredsl2(GEN q, GEN isD)
   if (qfb_is_qfi(q))
   {
     if (isD) pari_err_TYPE("qfbredsl2", isD);
-    return qfbredsl2_imag(q);
+    return qfi_redsl2(q);
   }
   av = avma;
   if (!isD) isD = sqrti(qfb_disc(q));
   else if (typ(isD) != t_INT) pari_err_TYPE("qfbredsl2",isD);
-  return gc_upto(av, qfbredsl2_real(q, isD));
+  return gc_upto(av, qfr_redsl2(q, isD));
 }
 
 /* not gc-clean */
 static GEN
-qfbred_real_i(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
+qfr_red_i(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
 {
   if (typ(Q)!=t_QFB || 2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= QFBRED_LIMIT)
-    return qfbred_real_basecase_i(Q, flag, isqrtD, sqrtD);
+    return qfr_red_basecase_i(Q, flag, isqrtD, sqrtD);
   else
   {
     GEN a = gel(Q,1), b = gel(Q,2), c = gel(Q,3), d = gel(Q,4);
@@ -913,24 +913,24 @@ qfbred_real_i(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
     Qr = pqfbred_rec(mkqfb(a, sb < 0 ? negi(b): b, c, d), 0, &U);
     if (sa < 0)
       Qr = mkqfb(negi(gel(Qr,1)), negi(gel(Qr,2)), negi(gel(Qr,3)), gel(Qr,4));
-    W = qfbred_real_basecase_i(Qr, flag, isqrtD, sqrtD);
+    W = qfr_red_basecase_i(Qr, flag, isqrtD, sqrtD);
     return gel(W,1);
   }
 }
 
 static GEN
-qfbred_real_av(pari_sp av, GEN x)
-{ return gc_GEN(av, qfbred_real_i(x,0,NULL,NULL)); }
+qfr_red_av(pari_sp av, GEN x)
+{ return gc_GEN(av, qfr_red_i(x,0,NULL,NULL)); }
 GEN
-qfr_red(GEN x) { return qfbred_real_av(avma, x); }
+qfr_red(GEN x) { return qfr_red_av(avma, x); }
 
 static GEN
-qfbred_imag_basecase_av(pari_sp av, GEN q)
+qfi_red_basecase_av(pari_sp av, GEN q)
 {
   GEN a = gel(q,1), b = gel(q,2), c = gel(q,3), D = gel(q,4);
   long cmp, lc = lgefint(c);
 
-  if (lgefint(a) == 3 && lc == 3) return qfbred_imag_1(av, a, b, c, D);
+  if (lgefint(a) == 3 && lc == 3) return qfi_red_1(av, a, b, c, D);
   cmp = abscmpii(a, b);
   if (cmp < 0)
     REDB(a,&b,&c);
@@ -940,7 +940,7 @@ qfbred_imag_basecase_av(pari_sp av, GEN q)
   {
     cmp = abscmpii(a, c); if (cmp <= 0) break;
     lc = lgefint(a); /* lg(future c): we swap a & c next */
-    if (lc == 3) return qfbred_imag_1(av, a, b, c, D);
+    if (lc == 3) return qfi_red_1(av, a, b, c, D);
     swap(a,c); b = negi(b); /* apply rho */
     REDB(a,&b,&c);
     if (gc_needed(av, 2))
@@ -953,7 +953,7 @@ qfbred_imag_basecase_av(pari_sp av, GEN q)
   return gc_GEN(av, mkqfb(a, b, c, D));
 }
 static GEN
-qfbred_imag_av(pari_sp av, GEN Q)
+qfi_red_av(pari_sp av, GEN Q)
 {
   if (2*qfb_maxexpi(Q) - expi(gel(Q,4)) > QFBRED_LIMIT)
   {
@@ -962,22 +962,22 @@ qfbred_imag_av(pari_sp av, GEN Q)
       Q = mkqfb(gel(Q,1), negi(gel(Q,2)), gel(Q,3), gel(Q,4));
     Q = pqfbred_rec(Q, 0, &U);
   }
-  return qfbred_imag_basecase_av(av, Q);
+  return qfi_red_basecase_av(av, Q);
 }
 
 GEN
-qfi_red(GEN q) { return qfbred_imag_av(avma, q); }
+qfi_red(GEN q) { return qfi_red_av(avma, q); }
 
 GEN
 qfbred0(GEN x, long flag, GEN isqrtD, GEN sqrtD)
 {
   pari_sp av;
   GEN q = check_qfbext("qfbred",x);
-  if (qfb_is_qfi(q)) return (flag & qf_STEP)? rhoimag(x): qfi_red(x);
+  if (qfb_is_qfi(q)) return (flag & qf_STEP)? qfi_rho(x): qfi_red(x);
   if (typ(x)==t_QFB) flag |= qf_NOD;
   else               flag &= ~qf_NOD;
   av = avma;
-  return gc_GEN(av, qfbred_real_i(x,flag,isqrtD,sqrtD));
+  return gc_GEN(av, qfr_red_i(x,flag,isqrtD,sqrtD));
 }
 /* t_QFB */
 GEN
@@ -1102,7 +1102,7 @@ qficomp0(GEN x, GEN y, int raw)
   gel(z,4) = gel(x,4);
   qfb_comp(z, x,y);
   if (raw) return gc_GEN(av,z);
-  return qfbred_imag_av(av, z);
+  return qfi_red_av(av, z);
 }
 static GEN
 qfrcomp0(GEN x, GEN y, int raw)
@@ -1116,7 +1116,7 @@ qfrcomp0(GEN x, GEN y, int raw)
   qfb_comp(z, x,y);
   if (dx) z = mkvec2(z, dy? addrr(dx, dy): dx); else if (dy) z = mkvec2(z, dy);
   if (raw) return gc_GEN(av, z);
-  return qfbred_real_av(av, z);
+  return qfr_red_av(av, z);
 }
 /* same discriminant, no distance, no checks */
 GEN
@@ -1168,7 +1168,7 @@ qfisqr0(GEN x, long raw)
   gel(z,4) = gel(x,4);
   qfb_sqr(z,x);
   if (raw) return gc_GEN(av,z);
-  return qfbred_imag_av(av, z);
+  return qfi_red_av(av, z);
 }
 static GEN
 qfrsqr0(GEN x, long raw)
@@ -1179,7 +1179,7 @@ qfrsqr0(GEN x, long raw)
   gel(z,4) = gel(x,4); qfb_sqr(z,x);
   if (dx) z = mkvec2(z, shiftr(dx,1));
   if (raw) return gc_GEN(av, z);
-  return qfbred_real_av(av, z);
+  return qfr_red_av(av, z);
 }
 /* same discriminant, no distance, no checks */
 GEN
@@ -1383,7 +1383,7 @@ nucomp(GEN x, GEN y, GEN L)
   gel(Q,2) = addii(b2, z? addii(q1,q2): shifti(q1, 1));
   gel(Q,3) = addii(mulii(v3,diviiexact(q2,d)), mulii(g,v2));
   gel(Q,4) = gel(x,4);
-  return qfbred_imag_av(av, Q);
+  return qfi_red_av(av, Q);
 }
 
 GEN
@@ -1425,7 +1425,7 @@ nudupl(GEN x, GEN L)
   gel(Q,2) = addii(b2, subii(sqri(addii(d,v3)), addii(a2,c2)));
   gel(Q,3) = addii(c2, mulii(g,v2));
   gel(Q,4) = gel(x,4);
-  return qfbred_imag_av(av, Q);
+  return qfi_red_av(av, Q);
 }
 
 static GEN
@@ -1775,7 +1775,7 @@ static GEN
 qfisolve_normform(GEN Q, GEN P)
 {
   GEN a = gel(Q,1), N = gel(Q,2);
-  GEN M, b = qfbredsl2_imag_basecase(P, &M);
+  GEN M, b = qfi_redsl2_basecase(P, &M);
   if (!qfb_equal(a,b)) return NULL;
   return SL2_div_mul_e1(N,M);
 }
@@ -1831,7 +1831,7 @@ qfisolvep_all(GEN Q, GEN p, long all)
       return allsols(Q, s, N, M);
     }
   }
-  R = qfbredsl2_imag_basecase(Q, &U);
+  R = qfi_redsl2_basecase(Q, &U);
   if (equali1(gel(R,1)))
   { /* principal form */
     if (!signe(gel(R,2)))
@@ -1848,7 +1848,7 @@ qfisolvep_all(GEN Q, GEN p, long all)
     x = ZM_ZC_mul(U, x); x[0] = evaltyp(t_VEC) | _evallg(3); /* transpose */
     return allsols(Q, s, gel(x,1), gel(x,2));
   }
-  q = qfbredsl2_imag_basecase(primeform(D, p), &V);
+  q = qfi_redsl2_basecase(primeform(D, p), &V);
   if (!GL2_qfb_equal(R,q)) return NULL;
   if (signe(gel(R,2)) != signe(gel(q,2))) gcoeff(V,2,1) = negi(gcoeff(V,2,1));
   x = SL2_div_mul_e1(U,V); return allsols(Q, s, gel(x,1), gel(x,2));
@@ -1865,7 +1865,7 @@ static GEN
 qfrsolve_normform(GEN N, GEN Ps, GEN rd)
 {
   pari_sp av = avma, btop;
-  GEN M = N, P = qfbredsl2_real_basecase(Ps, rd), Q = P;
+  GEN M = N, P = qfr_redsl2_basecase(Ps, rd), Q = P;
 
   btop = avma;
   for(;;)
@@ -1874,9 +1874,9 @@ qfrsolve_normform(GEN N, GEN Ps, GEN rd)
       return gc_upto(av, SL2_div_mul_e1(gel(M,2),gel(P,2)));
     if (qfb_equal(gel(N,1), gel(Q,1)))
       return gc_upto(av, SL2_div_mul_e1(gel(N,2),gel(Q,2)));
-    M = rhorealsl2(M, rd);
+    M = qfr_rhosl2(M, rd);
     if (qfb_equal(gel(M,1), gel(N,1))) return gc_NULL(av);
-    Q = rhorealsl2(Q, rd);
+    Q = qfr_rhosl2(Q, rd);
     if (qfb_equal(gel(P,1), gel(Q,1))) return gc_NULL(av);
     if (gc_needed(btop, 1)) (void)gc_all(btop, 2, &M, &Q);
   }
@@ -1890,7 +1890,7 @@ qfrsolvep(GEN Q, GEN p)
 
   if (kronecker(d, p) < 0) return gc_const(av, gen_0);
   rd = sqrti(d);
-  N = qfbredsl2_real(Q, rd);
+  N = qfr_redsl2(Q, rd);
   x = qfrsolve_normform(N, primeform(d, p), rd);
   return x? gc_upto(av, x): gc_const(av, gen_0);
 }
