@@ -261,7 +261,7 @@ red_primeform(long D, long p)
   GEN P;
   if (!prime_to_conductor(D, p)) return NULL;
   P = primeform_u(stoi(D), p); /* primitive since p \nmid conductor */
-  return gc_upto(av, qfbred_i(P));
+  return gc_upto(av, qfi_red(P));
 }
 
 /* Computes product of primeforms over primes appearing in the prime
@@ -3299,7 +3299,7 @@ qform_primeform2(long p, long D)
     GEN Q, q;
 
     if (!(c % p)) continue;
-    q = mkqfis(a, k * p, c, Dp2); Q = qfbred_i(q);
+    q = mkqfis(a, k * p, c, Dp2); Q = qfi_red(q);
     /* TODO: How do we know that Q has order dividing p - 1? If we don't, then
      * the call to gen_order should be replaced with a call to something with
      * fastorder semantics (i.e. return 0 if ord(Q) \ndiv M). */
@@ -3457,7 +3457,7 @@ check_generators(
     pari_sp av = avma;
     GEN D1 = stoi(D);
     GEN Q = gpowgs(primeform_u(D1, L0), n1 / 2);
-    res = gequal(Q, qfbred_i(primeform_u(D1, L1)));
+    res = gequal(Q, qfi_red(primeform_u(D1, L1)));
     set_avma(av);
     if (res) {
       dbg_printf(3)("Bad D1=%ld, with n1=%ld, h1=%ld, L1=%ld: "
@@ -4025,7 +4025,7 @@ scanD0(long *tablelen, long *minD, long maxD, long maxh, long L0)
      * class group (where f is the L0-primeform). */
     DD = stoi(D);
     f = primeform_u(DD, L0);
-    ordL = qfi_order(qfbred_i(f), stoi(h));
+    ordL = qfi_order(qfi_red(f), stoi(h));
     n = itos(ordL);
     if (n < h/2 || (!L1 && n < h)) continue;
 

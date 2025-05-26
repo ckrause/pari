@@ -67,6 +67,7 @@ AP  31- [libpari] alg_get_invol
     32- [libpari] dblllog2, dbllambertW0, dbllambertW_1, dblcnorm, dblcabs,
         dblcarg, dblclog
     33- [libpari] hnf_Znproj
+    34- [libpari] qfi_red, qfr_red
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate

@@ -592,8 +592,8 @@ qfi_Shanks(GEN a, GEN g, long n)
   GEN T, X;
   long rt_n, c;
 
-  a = qfbred_i(a);
-  g = qfbred_i(g);
+  a = qfi_red(a);
+  g = qfi_red(g);
 
   rt_n = sqrt((double)n);
   c = n / rt_n;

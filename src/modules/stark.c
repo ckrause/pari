@@ -2745,7 +2745,7 @@ init_pq(GEN D, struct gpq_data *T)
       break;
     }
     if (kroiu(D, q) < 0) continue; /* inert */
-    Q = qfbred_i(primeform_u(D, q));
+    Q = qfi_red(primeform_u(D, q));
     if (is_pm1(gel(Q,1))) continue; /* Q | q is principal */
 
     store = 1;
@@ -2885,7 +2885,7 @@ quadhilbertimag(GEN D)
     GEN qfbp2 = qfbcompraw(qfp, qfp);
     u = gel(qfbp2,2);
     T.u = modii(u, T.pq2);
-    T.qfpq = qfbred_i(qfbp2);
+    T.qfpq = qfi_red(qfbp2);
   }
   else
   {

@@ -921,8 +921,8 @@ qfbred_real_i(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
 static GEN
 qfbred_real_av(pari_sp av, GEN x)
 { return gc_GEN(av, qfbred_real_i(x,0,NULL,NULL)); }
-static GEN
-qfbred_real(GEN x) { return qfbred_real_av(avma, x); }
+GEN
+qfr_red(GEN x) { return qfbred_real_av(avma, x); }
 
 static GEN
 qfbred_imag_basecase_av(pari_sp av, GEN q)
@@ -945,7 +945,7 @@ qfbred_imag_basecase_av(pari_sp av, GEN q)
     REDB(a,&b,&c);
     if (gc_needed(av, 2))
     {
-      if (DEBUGMEM>1) pari_warn(warnmem,"qfbred_imag, lc = %ld", lc);
+      if (DEBUGMEM>1) pari_warn(warnmem,"qfi_red, lc = %ld", lc);
       (void)gc_all(av, 3, &a,&b,&c);
     }
   }
@@ -965,15 +965,15 @@ qfbred_imag_av(pari_sp av, GEN Q)
   return qfbred_imag_basecase_av(av, Q);
 }
 
-static GEN
-qfbred_imag(GEN q) { return qfbred_imag_av(avma, q); }
+GEN
+qfi_red(GEN q) { return qfbred_imag_av(avma, q); }
 
 GEN
 qfbred0(GEN x, long flag, GEN isqrtD, GEN sqrtD)
 {
   pari_sp av;
   GEN q = check_qfbext("qfbred",x);
-  if (qfb_is_qfi(q)) return (flag & qf_STEP)? rhoimag(x): qfbred_imag(x);
+  if (qfb_is_qfi(q)) return (flag & qf_STEP)? rhoimag(x): qfi_red(x);
   if (typ(x)==t_QFB) flag |= qf_NOD;
   else               flag &= ~qf_NOD;
   av = avma;
@@ -981,7 +981,7 @@ qfbred0(GEN x, long flag, GEN isqrtD, GEN sqrtD)
 }
 /* t_QFB */
 GEN
-qfbred_i(GEN x) { return qfb_is_qfi(x)? qfbred_imag(x): qfbred_real(x); }
+qfbred_i(GEN x) { return qfb_is_qfi(x)? qfi_red(x): qfr_red(x); }
 GEN
 qfbred(GEN x) { return qfbred0(x, 0, NULL, NULL); }
 /***********************************************************************/

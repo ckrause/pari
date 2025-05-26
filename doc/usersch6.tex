@@ -2566,6 +2566,12 @@ indefinite forms.
 \fun{GEN}{qfbred_i}{GEN x} internal version of \kbd{qfbred}: assume $x$
 is a \typ{QFB}.
 
+\fun{GEN}{qfi_red}{GEN x} internal version of \kbd{qfbred}: assume $x$
+is an imaginary \typ{QFB}.
+
+\fun{GEN}{qfr_red}{GEN x} internal version of \kbd{qfbred}: assume $x$
+is a real \typ{QFB} and returns a \typ{QFB}.
+
 \subsubsec{Composition}
 
 \fun{GEN}{qfbcomp}{GEN x, GEN y} compose the two \typ{QFB} $x$ and $y$ (with
@@ -2601,7 +2607,7 @@ $x$ is a \kbd{QFB}.
 \fun{GEN}{qfbpowraw}{GEN x, long n} compute $x^n$ (pure composition, no
 reduction), for a \typ{QFB} $x$. Also allow indefinite forms.
 
-\subsubsec{Order, discrete log}
+\subsubsec{Order and discrete log for imaginary qfb}
 
 \fun{GEN}{qfi_order}{GEN q, GEN o}
 assuming that the imaginary \typ{QFB} $q$ has order dividing $o$, compute its

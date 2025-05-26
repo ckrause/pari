@@ -1143,7 +1143,7 @@ static void
 listfill(GEN N, GEN b, GEN c, GEN d, GEN D, GEN L, long *s)
 {
   long k, l = lg(L);
-  GEN add, frm2, a = mulii(d, N), V = mkqfb(a,b,c,D), frm = qfbred_i(V);
+  GEN add, frm2, a = mulii(d, N), V = mkqfb(a,b,c,D), frm = qfi_red(V);
   for (k = 1; k < l; ++k)
   { /* Lk = [v,frm] or [v,frm,frm2] */
     GEN Lk = gel(L,k);
@@ -1156,7 +1156,7 @@ listfill(GEN N, GEN b, GEN c, GEN d, GEN D, GEN L, long *s)
         return;
       }
   }
-  frm2 = qfbred_i(mkqfb(d, negi(b), mulii(c,N), D));
+  frm2 = qfi_red(mkqfb(d, negi(b), mulii(c,N), D));
   add = gequal(frm, frm2)? mkvec2(V,frm): mkvec3(V,frm,frm2);
   vectrunc_append(L, add);
   *s += lg(add) - 2;

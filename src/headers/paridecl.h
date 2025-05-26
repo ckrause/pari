@@ -2142,6 +2142,8 @@ GEN     qfbpowraw(GEN x, long n);
 GEN     qfbpows(GEN x, long n);
 GEN     qfbred(GEN x);
 GEN     qfbred_i(GEN x);
+GEN     qfi_red(GEN q);
+GEN     qfr_red(GEN q);
 GEN     qfbred0(GEN x, long flag, GEN isqrtD, GEN sqrtD);
 GEN     qfbredsl2(GEN q, GEN isD);
 GEN     qfbsolve(GEN Q, GEN n, long flag);

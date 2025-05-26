@@ -787,7 +787,7 @@ next_generator(GEN DD, long D, ulong u, long filter, GEN *genred, long *P)
     {
       GEN gen = primeform_u(DD, p);
       /* If gen is in the principal class, skip it */
-      *genred = qfbred_i(gen);
+      *genred = qfi_red(gen);
       if (!equali1(gel(*genred,1))) { *P = (long)p; return gen; }
       set_avma(av);
     }
@@ -1042,7 +1042,7 @@ next_prime_evec(long *qq, long f[], const long m[], long k,
   *qq = q;
 
   /* Get evec f corresponding to q */
-  P = qfbred_i(primeform_u(DD, q));
+  P = qfi_red(primeform_u(DD, q));
   he = hash_search(tbl, P);
   if (!he) pari_err_BUG("next_prime_evec");
   idx = (long)he->val;
@@ -1218,7 +1218,7 @@ classgp_make_pcp(double *height, long *ni, long h, long D, long D0, ulong u,
       if (nelts == 1 && L0) {
         curr_p = L0;
         gamma_i = qfb_nform(D, curr_p);
-        beta = qfbred_i(gamma_i);
+        beta = qfi_red(gamma_i);
         if (equali1(gel(beta, 1))) { curr_p = 1; gamma_i  = NULL; }
       }
       if (!gamma_i)
