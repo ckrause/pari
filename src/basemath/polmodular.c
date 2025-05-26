@@ -375,7 +375,7 @@ modinv_good_atkin(long L, long D)
   GEN q;
   if (kross(D,L) < 0 || -D%L2==0) return 0;
   if (-D > 4*L2) return 1;
-  q = qfbred(primeform_u(stoi(D),L));
+  q = qfi_red(primeform_u(stoi(D),L));
   if (equali1(gel(q,1))) return 0;
   if (D%L==0) return 1;
   q = qfbsqr(q);
