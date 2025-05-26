@@ -68,6 +68,7 @@ AP  31- [libpari] alg_get_invol
         dblcarg, dblclog
     33- [libpari] hnf_Znproj
     34- [libpari] qfi_red, qfr_red
+    35  [libpari] FqC_to_FlxqC FqM_to_FlxqM
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate
@@ -107,6 +108,7 @@ BA   4- rename gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
         bnrmap.
     11- obsolete function bnrconductor_i. Use bnrconductor instead (which is
         also obsolete but still present) or (better) bnrtoprimitive and bnrmap
+    12- ZXC_to_FlxqC, ZXM_to_FlxqM: use FqC_to_FlxqC, FqM_to_FlxqM
 
 Done for version 2.18.0 (released 04/01/2025):
   Fixed

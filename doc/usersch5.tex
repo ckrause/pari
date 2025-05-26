@@ -4370,6 +4370,10 @@ reduced (i.e arbitrary \typ{INT}s and \kbd{ZX}s in the same variable as
 
 \fun{GEN}{RgM_to_FqM}{GEN z, GEN T, GEN p}
 
+\fun{GEN}{FqC_to_FlxqC}{GEN x, GEN T, ulong p} where \kbd{T} is a non-\kbd{NULL} \kbd{Flx}.
+
+\fun{GEN}{FqM_to_FlxqM}{GEN x, GEN T, ulong p} where \kbd{T} is a non-\kbd{NULL} \kbd{Flx}.
+
 \fun{GEN}{FqC_add}{GEN a, GEN b, GEN T, GEN p}
 
 \fun{GEN}{FqC_sub}{GEN a, GEN b, GEN T, GEN p}
@@ -8332,16 +8336,6 @@ $x$ modulo $p$, yielding a \typ{VECSMALL}.
 
 \fun{GEN}{ZVV_to_FlvV}{GEN x, ulong p} reduce \kbd{ZVV}~$x$ modulo $p$
 (yielding an \kbd{FlvV}).
-
-\fun{GEN}{ZXC_to_FlxC}{GEN x, ulong p, long sv} reduce \kbd{ZXC}~$x$ modulo $p$
-(yielding an \kbd{FlxC}). Assume that \kbd{sv = evalvarn(v)} where $v$ is
-the variable number of the entries of $x$. It is allowed for the entries of
-$x$ to be \typ{INT}.
-
-\fun{GEN}{ZXM_to_FlxM}{GEN x, ulong p, long sv} reduce \kbd{ZXM}~$x$ modulo $p$
-(yielding an \kbd{FlxM}). Assume that \kbd{sv = evalvarn(v)} where $v$ is
-the variable number of the entries of $x$. It is allowed for the entries of $x$
-to be \typ{INT}.
 
 \fun{GEN}{ZV_to_zv}{GEN z}, converts coefficients using \kbd{itos}
 

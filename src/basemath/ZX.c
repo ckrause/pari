@@ -923,15 +923,6 @@ ZXV_dotproduct(GEN x, GEN y)
   return gc_upto(av, c);
 }
 
-GEN
-ZXC_to_FlxC(GEN x, ulong p, long sv)
-{ pari_APPLY_type(t_COL,typ(gel(x,i))==t_INT ?
-                  Z_to_Flx(gel(x,i), p, sv): ZX_to_Flx(gel(x,i), p)) }
-
-GEN
-ZXM_to_FlxM(GEN x, ulong p, long sv)
-{ pari_APPLY_same(ZXC_to_FlxC(gel(x,i), p, sv)) }
-
 /*******************************************************************/
 /*                                                                 */
 /*                                ZXQM                             */

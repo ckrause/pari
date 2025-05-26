@@ -873,7 +873,7 @@ FqV_roots_to_pol(GEN V, GEN T, GEN p, long v)
   {
     ulong pp = p[2];
     GEN Tl = ZX_to_Flx(T, pp);
-    GEN Vl = ZXC_to_FlxC(V, pp, get_Flx_var(Tl));
+    GEN Vl = FqC_to_FlxqC(V, Tl, pp);
     Tl = FlxqV_roots_to_pol(Vl, Tl, pp, v);
     return gc_upto(ltop, FlxX_to_ZXX(Tl));
   }
@@ -935,6 +935,16 @@ FqC_FqV_mul(GEN x, GEN y, GEN T, GEN p)
 GEN
 FpXC_center(GEN x, GEN p, GEN pov2)
 { pari_APPLY_type(t_COL, FpX_center(gel(x,i), p, pov2)) }
+
+GEN
+FqC_to_FlxqC(GEN x, GEN T, ulong p)
+{ long sv = get_Flx_var(T);
+  pari_APPLY_type(t_COL,typ(gel(x,i))==t_INT ?
+                  Z_to_Flx(gel(x,i), p, sv): ZX_to_Flx(gel(x,i), p)) }
+
+GEN
+FqM_to_FlxqM(GEN x, GEN T, ulong p)
+{ pari_APPLY_same(FqC_to_FlxqC(gel(x,i), T, p)) }
 
 GEN
 FpXM_center(GEN x, GEN p, GEN pov2)
