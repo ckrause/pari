@@ -902,7 +902,7 @@ qfr_red_i(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
   {
     GEN a = gel(Q,1), b = gel(Q,2), c = gel(Q,3), d = gel(Q,4);
     GEN Qr, W, U, t = NULL;
-    long sa = signe(a), sb;
+    long sa = signe(a);
     if (sa < 0) { a = negi(a); b = negi(b); c = negi(c); }
     if (signe(c) < 0)
     {
@@ -912,8 +912,7 @@ qfr_red_i(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
       c = addii(subii(c, mulii(b, t)), mulii(at, t));
       b = subii(b, shifti(at,1));
     }
-    sb = signe(b);
-    Qr = pqfbred_rec(mkqfb(a, sb < 0 ? negi(b): b, c, d), 0, &U);
+    Qr = pqfbred_rec(mkqfb(a, absi_shallow(b), c, d), 0, &U);
     if (sa < 0)
       Qr = mkqfb(negi(gel(Qr,1)), negi(gel(Qr,2)), negi(gel(Qr,3)), gel(Qr,4));
     W = qfr_red_basecase_i(Qr, flag, isqrtD, sqrtD);
