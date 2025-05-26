@@ -663,15 +663,10 @@ With thanks to Keegan Ryan
 BA20230927
 */
 
-#define QFBRED_LIMIT 9000
-
 /* pqfb: qf with positive coefficients */
 
 static int
-lti2n(GEN a, long m)
-{
-  return signe(a) < 0 || expi(a) < m ? 1 : 0;
-}
+lti2n(GEN a, long m) { return signe(a) < 0 || expi(a) < m;}
 
 static GEN
 pqfbred_1(GEN Q, long m, GEN U)
@@ -747,6 +742,14 @@ static long
 qfb_maxexpi(GEN Q)
 { return 1+maxss(expi(gel(Q,1)), maxss(expi(gel(Q,2)), expi(gel(Q,3)))); }
 
+/* use asymptotically fast reduction ? */
+static int
+qfi_red_fast(GEN Q)
+{
+  const long QFBRED_LIMIT = 9000;
+  return 2*qfb_maxexpi(Q) - expi(gel(Q,4)) > QFBRED_LIMIT;
+}
+
 static long
 qfb_minexpi(GEN Q)
 {
@@ -805,7 +808,7 @@ static GEN
 qfr_redsl2(GEN Q, GEN isqrtD)
 {
   pari_sp av = avma;
-  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= QFBRED_LIMIT)
+  if (!qfi_red_fast(Q))
     return qfr_redsl2_basecase(Q, isqrtD);
   else
   {
@@ -847,7 +850,7 @@ qfi_redsl2(GEN Q)
 {
   pari_sp av = avma;
   GEN Qt, U;
-  if (2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= QFBRED_LIMIT)
+  if (!qfi_red_fast(Q))
     Qt = qfi_redsl2_basecase(Q, &U);
   else
   {
@@ -893,7 +896,7 @@ qfbredsl2(GEN q, GEN isD)
 static GEN
 qfr_red_i(GEN Q, long flag, GEN isqrtD, GEN sqrtD)
 {
-  if (typ(Q)!=t_QFB || 2*qfb_maxexpi(Q)-expi(gel(Q,4)) <= QFBRED_LIMIT)
+  if (typ(Q) != t_QFB || !qfi_red_fast(Q))
     return qfr_red_basecase_i(Q, flag, isqrtD, sqrtD);
   else
   {
@@ -955,7 +958,7 @@ qfi_red_basecase_av(pari_sp av, GEN q)
 static GEN
 qfi_red_av(pari_sp av, GEN Q)
 {
-  if (2*qfb_maxexpi(Q) - expi(gel(Q,4)) > QFBRED_LIMIT)
+  if (qfi_red_fast(Q))
   {
     GEN U;
     if (signe(gel(Q,2)) < 0)
