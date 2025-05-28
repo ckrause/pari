@@ -368,7 +368,7 @@ modinv_ramified(long D, long inv, long *pN)
   return !(D % p1) && !(D % p2);
 }
 
-int
+static int
 modinv_good_atkin(long L, long D)
 {
   long L2 = L*L;
