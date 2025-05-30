@@ -29,6 +29,7 @@ BA  19- parforeach([1..1000],j,vector(10^5,i,i)) -> stack overflow
         e.g., sumeulerrat(1/(p^2-5),1.1), prodeulerrat(1+1/(p^2-p-23),0.6)
     24- lfun(bnr, vector of chars) -> impossible division [#2623]
     25- incgam(0,10^-50) -> GEN corruption
+BA  26- 12*harmonic(1) -> 12/1
 
   Added
      1- [libpari] prodprimes, prodprimeslim

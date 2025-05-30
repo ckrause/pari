@@ -385,7 +385,7 @@ hrec(ulong a, ulong b)
   ulong m;
   switch(b - a)
   {
-    case 1: retmkfrac(gen_1, utoipos(a));
+    case 1: if (a==1) return gen_1; else retmkfrac(gen_1, utoipos(a));
     case 2: if (a < 65536) retmkfrac(utoipos(2*a + 1), utoipos(a * a + a));
       retmkfrac(utoipos(2*a + 1), muluu(a, a+1));
   }

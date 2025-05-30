@@ -1,5 +1,5 @@
 0
-1
+12
 3/2
 11/6
 7381/2520
@@ -10,4 +10,4 @@
   ***   at top-level: harmonic(1,x)
   ***                 ^-------------
   *** harmonic: incorrect type in harmonic (t_POL).
-Total time spent: 0
+Total time spent: 1
