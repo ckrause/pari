@@ -495,8 +495,7 @@ xmP(GEN e, GEN xP, GEN m, GEN N)
 {
   pari_sp av = avma;
   ulong k = expi(m);
-  hashtable *H = hash_create((5+k)*k, (ulong(*)(void*))&hash_GEN,
-                                      (int(*)(void*,void*))&gidentical, 1);
+  hashtable *H = hash_create_GEN((5+k)*k, 1);
   GEN b2 = ell_get_b2(e), b4 = ell_get_b4(e), n = gel(xP,1), d = gel(xP,2);
   GEN b6 = ell_get_b6(e), b8 = ell_get_b8(e);
   GEN B4, B6, B8, T, g4;

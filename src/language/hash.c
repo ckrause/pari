@@ -87,7 +87,14 @@ eq_id(void *x, void *y) { return x == y; }
 hashtable *
 hash_create_ulong(ulong s, long stack)
 { return hash_create(s, &hash_id, &eq_id, stack); }
-
+hashtable *
+hash_create_INT(ulong s, long use_stack)
+{ return hash_create(s, (ulong(*)(void*))&hash_GEN,
+                        (int(*)(void*,void*))&equalii, use_stack); }
+hashtable *
+hash_create_GEN(ulong s, long use_stack)
+{ return hash_create(s, (ulong(*)(void*))&hash_GEN,
+                        (int(*)(void*,void*))&gidentical, use_stack); }
 void
 hash_init(hashtable *h, ulong minsize, ulong (*hash)(void*),
                                        int (*eq)(void*,void*), int use_stack)

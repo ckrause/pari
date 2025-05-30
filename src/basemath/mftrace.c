@@ -8008,8 +8008,7 @@ mfgaexpansion_init(GEN mf, GEN ga, long n, long prec)
   l = lg(vecj);
   M = cgetg(l, t_VEC);
   Valpha = cgetg(l, t_VEC);
-  H = hash_create(l, (ulong(*)(void*))&hash_GEN,
-                     (int(*)(void*,void*))&gidentical, 1);
+  H = hash_create_GEN(l, 1);
   for (i = 1; i < l; i++)
   {
     GEN v = vecj_expand(gel(vecj,i), H, w, ga, n, prec);
@@ -8057,8 +8056,7 @@ mfgaexpansion_i(GEN mf, GEN B0, GEN ga, long n, long prec)
   Valpha = cgetg(l, t_VEC);
   w = mfZC_width(N, gel(ga,1));
   nw = E ? n + w : n;
-  H = hash_create(l, (ulong(*)(void*))&hash_GEN,
-                     (int(*)(void*,void*))&gidentical, 1);
+  H = hash_create_GEN(l, 1);
   for (i = j = 1; i < l; i++)
   {
     GEN v;

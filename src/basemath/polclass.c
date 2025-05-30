@@ -1198,8 +1198,7 @@ classgp_make_pcp(double *height, long *ni, long h, long D, long D0, ulong u,
     k = 0;
     /* Hash table has an imaginary QFB as a key and the index of that
      * form in T as its value */
-    tbl = hash_create(h, (ulong(*)(void*)) hash_GEN,
-                         (int(*)(void*,void*))&gidentical, 1);
+    tbl = hash_create_GEN(h, 1);
     ident = primeform(DD, gen_1);
     hash_insert(tbl, ident, (void*)0);
 

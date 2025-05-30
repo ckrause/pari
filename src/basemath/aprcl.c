@@ -1119,8 +1119,7 @@ divisorslenstra(GEN N, GEN r, GEN s)
 {
   pari_sp av = avma;
   GEN u, Ns2, rp, a0, a1, b0, b1, c0, c1, s2;
-  hashtable *H = hash_create(11, (ulong(*)(void*))&hash_GEN,
-                                 (int(*)(void*,void*))&equalii, 1);
+  hashtable *H = hash_create_INT(11, 1);
   long j;
   if (typ(N) != t_INT) pari_err_TYPE("divisorslenstra", N);
   if (typ(r) != t_INT) pari_err_TYPE("divisorslenstra", r);

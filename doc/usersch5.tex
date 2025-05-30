@@ -15305,6 +15305,12 @@ value of keys and test keys for equality, respectively. If \kbd{use\_stack}
 is non zero, the resulting table will use the PARI stack; otherwise, we use
 \kbd{malloc}.
 
+\fun{hashtable*}{hash_create_GEN}{ulong size, long stack} special case
+when the keys are \kbd{GEN} with \kbd{===} (\kbd{gidentical}) equality test.
+
+\fun{hashtable*}{hash_create_INT}{ulong size, long stack} special case
+when the keys are \typ{INT} with ordinary equality test.
+
 \fun{hashtable*}{hash_create_ulong}{ulong size, long stack} special case
 when the keys are \kbd{ulongs} with ordinary equality test.
 

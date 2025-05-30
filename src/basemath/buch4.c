@@ -71,10 +71,6 @@ nfX_eltup(GEN nf, GEN rnfeq, GEN x)
   y[1] = x[1]; return y;
 }
 
-static hashtable *
-hash_create_INT(ulong s)
-{ return hash_create(s, (ulong(*)(void*))&hash_GEN,
-                        (int(*)(void*,void*))&equalii, 1); }
 GEN
 rnfisnorminit(GEN T, GEN R, long galois)
 {
@@ -82,7 +78,7 @@ rnfisnorminit(GEN T, GEN R, long galois)
   long i, l, dR;
   GEN S, gen, cyc, bnf, nf, nfabs, rnfeq, bnfabs, k, polabs;
   GEN y = cgetg(9, t_VEC);
-  hashtable *H = hash_create_INT(100UL);
+  hashtable *H = hash_create_INT(100UL, 1);
 
   if (galois < 0 || galois > 2) pari_err_FLAG("rnfisnorminit");
   T = get_bnfpol(T, &bnf, &nf);
@@ -172,8 +168,8 @@ rnfisnorm(GEN T, GEN x, long flag)
   /* build set T of ideals involved in the solutions */
   nfpol = nf_get_pol(nf);
   S = gel(T,5);
-  H0 = hash_create_INT(100UL);
-  H2 = hash_create_INT(100UL);
+  H0 = hash_create_INT(100UL, 1);
+  H2 = hash_create_INT(100UL, 1);
   L = lg(S);
   for (i = 1; i < L; i++) p_append(gel(S,i),H0,NULL);
   S1 = gel(T,6);
