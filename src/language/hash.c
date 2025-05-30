@@ -58,27 +58,9 @@ hashtable *
 hash_create(ulong minsize, ulong (*hash)(void*), int (*eq)(void*,void*),
             int use_stack)
 {
-  int i = get_prime_index(minsize);
-  ulong len = hashprimes[i];
-  hashtable *h;
-
-  if (use_stack)
-  {
-    h = (hashtable*)stack_malloc(sizeof(hashtable));
-    h->table = (hashentry**)stack_calloc(len * sizeof(hashentry*));
-    h->use_stack = 1;
-  }
-  else
-  {
-    h = (hashtable*)pari_malloc(sizeof(hashtable));
-    h->table = (hashentry**)pari_calloc(len * sizeof(hashentry*));
-    h->use_stack = 0;
-  }
-  h->pindex = i;
-  h->nb = 0;
-  h->hash = hash;
-  h->eq   = eq;
-  setlen(h, len); return h;
+  hashtable *h = (hashtable*)(use_stack? stack_malloc(sizeof(hashtable))
+                                       : pari_malloc(sizeof(hashtable)));
+  hash_init(h, minsize, hash, eq, use_stack); return h;
 }
 static ulong
 hash_id(void *x) { return (ulong)x; }
