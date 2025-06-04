@@ -47,5 +47,8 @@ hyperellratpoints(x^2+x+1,[5,10])
 P=780778196253125*x^4+406402229450000*x^3+76766809420000*x^2+5710274976000*x+95843046656;
 hyperellratpoints(P,[0,1])
 
+P= -x^4 + 1396354*x^2 - 282104388225;
+hyperellratpoints(P,1073)
+
 \\ errors
 E=ellinit([0,0,1,-7,6]);ellratpoints(E,[10^5,[5]])

@@ -414,29 +414,38 @@ gen_sieve(ratpoints_args *args)
   args->sieves0 = gen_sieves0(listprimes);
 }
 
+/* sub-intervals of [-h,h] where squarefree P is positive. */
 static GEN
 ZX_positive_region(GEN P, long h, long bitprec)
 {
   long prec = nbits2prec(bitprec);
-  GEN it = mkvec2(stoi(-h),stoi(h));
-  GEN R = realroots(P, it, prec);
-  long nR = lg(R)-1;
-  long s = signe(ZX_Z_eval(P,gel(it,1)));
-  long i=1, j;
-  GEN iv, st, en;
-  if (s<0 && nR==0) return NULL;
-  iv = cgetg(((nR+1+(s>=0))>>1)+1, t_VEC);
-  if (s>=0) st = itor(gel(it,1),prec);
-  else    { st = gel(R,i); i++; }
-  for (j=1; i<nR; j++)
-  {
-    gel(iv, j) = mkvec2(st, gel(R,i));
-    st = gel(R,i+1);
-    i+=2;
+  GEN A = stoi(-h), B = stoi(h), R = realroots(P, mkvec2(A,B), prec);
+  long s, j, i = 1, nR = lg(R)-1;
+  GEN v, st, en, r;
+
+  P = RgX_div_by_X_x(P, A, &r); /* r = P(A) */
+  s = signe(r); if (s < 0 && nR == 0) return NULL;
+  v = cgetg(nR + 1, t_VEC);
+  if (!s)
+  { /* P(A) = 0 */
+    i = 2; /* skip first real root r1 = A */
+    if (signe(ZX_Z_eval(P, A)) > 0)
+      st = gel(R,1); /* P > 0 on ]A, r2] */
+    else
+      st = gel(R,2); /* P < 0 on ]A, r2] */
   }
-  if (i==nR) en = gel(R,i); else en = itor(gel(it,2),prec);
-  gel(iv,j) = mkvec2(st, en);
-  return iv;
+  else if (s > 0)
+    st = itor(A,prec); /* P > 0 on [A, r1] */
+  else
+    st = gel(R,i++);   /* P < 0 on [A, r1] */
+  for (j = 1; i < nR; j++, i += 2)
+  { /* P changes sign at each real root */
+    gel(v, j) = mkvec2(st, gel(R,i));
+    st = gel(R,i+1);
+  }
+  en = i == nR? gel(R,i): itor(B,prec);
+  gel(v,j++) = mkvec2(st, en);
+  setlg(v, j); return v;
 }
 
 static long
