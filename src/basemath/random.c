@@ -319,11 +319,21 @@ genrand(GEN N)
       {
         pari_sp av = avma;
         GEN a = gel(N,1), b = gel(N,2), d;
+        long s;
         if (typ(a) != t_INT) a = gceil(a);
         if (typ(b) != t_INT) b = gfloor(b);
         if (typ(a) != t_INT || typ(b) != t_INT) pari_err_TYPE("random", N);
-        d = subii(b,a);
-        if (signe(d) < 0) pari_err_TYPE("random([a,b]) (a > b)", N);
+        d = subii(b,a); s = signe(d);
+        if (s <= 0)
+        {
+          if (!s) return gc_GEN(av, a);
+          pari_err_TYPE("random([a,b]) (a > b)", N);
+        }
+        if (lgefint(d) == 3)
+        {
+          ulong z = d[2];
+          if (z != ~0UL) return gc_INT(av, addiu(a, random_Fl(z + 1)));
+        }
         return gc_INT(av, addii(a, randomi(addiu(d,1))));
       }
       return ellrandom(N);
