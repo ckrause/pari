@@ -1142,28 +1142,30 @@ bnrclassfield_tower(GEN bnr, GEN subgroup, GEN TB, GEN p, long finaldeg, long ab
   }
   else
   {
-    long j=1;
-    fa = cgetg(3, t_MAT);
-    gel(fa,1) = cgetg(lg(famod), t_VEC);
-    Lbad = cgetg(lg(famod), t_VEC);
-    for(i=1; i<lg(famod); i++)
+    long j, l = lg(famod);
+    GEN PR, E;
+    PR = cgetg(l, t_COL);
+    Lbad = cgetg(l, t_VEC);
+    for(i = j = 1; i < l; i++)
     {
       GEN pr = gel(famod,i);
-      gmael(fa,1,i) = rnfidealprimedec(rnf, pr);
+      gel(PR,i) = rnfidealprimedec(rnf, pr);
       q = pr_get_p(pr);
       if (lgefint(q) == 3) gel(Lbad,j++) = q;
     }
     setlg(Lbad,j);
     Lbad = ZV_to_zv(ZV_sort_uniq_shallow(Lbad));
-    gel(fa,1) = shallowconcat1(gel(fa,1));
-    settyp(gel(fa,1), t_COL);
-    gel(fa,2) = cgetg(lg(gel(fa,1)), t_COL);
-    for (i=1; i<lg(gel(fa,1)); i++)
+    PR = shallowconcat1(PR);
+    PR = gen_sort(PR, (void*)&cmp_prime_over_p, &cmp_nodata);
+    settyp(PR, t_COL); l = lg(PR);
+    E = cgetg(l, t_COL);
+    for (i = 1; i < l; i++)
     {
-      GEN pr = gcoeff(fa,i,1);
+      GEN pr = gel(PR,i);
       long e = equalii(p, pr_get_p(pr))? 1 + (pr_get_e(pr)*sp) / (sp-1): 1;
-      gcoeff(fa,i,2) = utoipos(e);
+      gel(E,i) = utoipos(e);
     }
+    fa = mkmat2(PR, E);
   }
   bnr2 = Buchraymod(bnf2, mkvec2(fa, const_vec(r1,gen_1)), nf_INIT, pk);
 

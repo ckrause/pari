@@ -31,6 +31,8 @@ BA  19- parforeach([1..1000],j,vector(10^5,i,i)) -> stack overflow
     25- incgam(0,10^-50) -> GEN corruption
 BA  26- 12*harmonic(1) -> 12/1
     27- hyperellratpoints(P, d) could miss points when P(-d) = 0
+    28- obscure bnrclassfield bug [internally creating an incorrect ideal
+        factorization whose prime ideals were not sorted]
 
   Added
      1- [libpari] prodprimes, prodprimeslim
