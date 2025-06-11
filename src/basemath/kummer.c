@@ -1107,22 +1107,19 @@ static GEN
 bnrclassfield_tower(GEN bnr, GEN subgroup, GEN TB, GEN p, long finaldeg, long absolute, long prec)
 {
   pari_sp av = avma;
-  GEN nf, nf2, rnf, bnf, bnf2, bnr2, q, H, dec, cyc, pk, sgpk, pol2, emb, emb2, famod, fa, Lbad;
+  GEN nf = bnr_get_nf(bnr), nf2, rnf, bnf2, bnr2;
+  GEN H, cyc, pk, sgpk, pol2, emb, emb2, famod, fa, Lbad;
   long i, r1, ell, sp, spk, last;
   forprime_t iter;
 
-  bnf = bnr_get_bnf(bnr);
-  nf = bnf_get_nf(bnf);
   rnf = rnfinit0(nf, TB, 1);
   nf2 = rnf_build_nfabs(rnf, prec);
-  gsetvarn(nf2, varn(nf_get_pol(nf)));
-
   if (lg(nfcertify(nf2)) > 1)
   {
     rnf = rnfinit0(nf, gel(TB,1), 1);
     nf2 = rnf_build_nfabs(rnf, prec);
-    gsetvarn(nf2, varn(nf_get_pol(nf)));
   }
+  gsetvarn(nf2, varn(nf_get_pol(nf)));
 
   r1 = nf_get_r1(nf2);
   bnf2 = Buchall(nf2, nf_FORCE, prec);
@@ -1134,7 +1131,7 @@ bnrclassfield_tower(GEN bnr, GEN subgroup, GEN TB, GEN p, long finaldeg, long ab
   last = spk==finaldeg;
 
   /* compute conductor */
-  famod = gel(bid_get_fact2(bnr_get_bid(bnr)),1);
+  famod = gel(bid_get_fact2(bnr_get_bid(bnr)), 1);
   if (lg(famod)==1)
   {
     fa = trivial_fact();
@@ -1143,29 +1140,29 @@ bnrclassfield_tower(GEN bnr, GEN subgroup, GEN TB, GEN p, long finaldeg, long ab
   else
   {
     long j, l = lg(famod);
-    GEN PR, E;
-    PR = cgetg(l, t_COL);
+    GEN P, E;
+    P = cgetg(l, t_COL);
     Lbad = cgetg(l, t_VEC);
     for(i = j = 1; i < l; i++)
     {
-      GEN pr = gel(famod,i);
-      gel(PR,i) = rnfidealprimedec(rnf, pr);
+      GEN q, pr = gel(famod,i);
+      gel(P,i) = rnfidealprimedec(rnf, pr);
       q = pr_get_p(pr);
       if (lgefint(q) == 3) gel(Lbad,j++) = q;
     }
     setlg(Lbad,j);
     Lbad = ZV_to_zv(ZV_sort_uniq_shallow(Lbad));
-    PR = shallowconcat1(PR);
-    PR = gen_sort(PR, (void*)&cmp_prime_over_p, &cmp_nodata);
-    settyp(PR, t_COL); l = lg(PR);
+    P = shallowconcat1(P);
+    P = gen_sort(P, (void*)&cmp_prime_over_p, &cmp_nodata);
+    settyp(P, t_COL); l = lg(P);
     E = cgetg(l, t_COL);
     for (i = 1; i < l; i++)
     {
-      GEN pr = gel(PR,i);
+      GEN pr = gel(P,i);
       long e = equalii(p, pr_get_p(pr))? 1 + (pr_get_e(pr)*sp) / (sp-1): 1;
       gel(E,i) = utoipos(e);
     }
-    fa = mkmat2(PR, E);
+    fa = mkmat2(P, E);
   }
   bnr2 = Buchraymod(bnf2, mkvec2(fa, const_vec(r1,gen_1)), nf_INIT, pk);
 
@@ -1175,8 +1172,9 @@ bnrclassfield_tower(GEN bnr, GEN subgroup, GEN TB, GEN p, long finaldeg, long ab
   u_forprime_init(&iter, 2, ULONG_MAX);
   while ((ell = u_forprime_next(&iter))) if (!zv_search(Lbad, ell))
   {
-    dec = idealprimedec_limit_f(nf, utoi(ell), 1);
-    for (i=1; i<lg(dec); i++)
+    GEN dec = idealprimedec_limit_f(nf, utoi(ell), 1);
+    long l = lg(dec);
+    for (i = 1; i < l; i++)
     {
       GEN pr = gel(dec,i), Pr = gel(rnfidealprimedec(rnf, pr), 1);
       long f = pr_get_f(Pr) / pr_get_f(pr);
