@@ -3344,16 +3344,16 @@ select_L0(long L, long inv, long initial_L0)
    * when L=19 and L=29, nor why L0=7 and L0=11 don't work for L=19
    * either, nor why this happens for the otherwise unrelated
    * invariants Weber-f and (2,3) double-eta. */
-  if (inv == INV_W3W3E2 && L == 5) return 2;
 
   if (inv == INV_F || inv == INV_F2 || inv == INV_F4 || inv == INV_F8
       || inv == INV_W2W3 || inv == INV_W2W3E2
-      || inv == INV_W3W3 /* || inv == INV_W3W3E2 */) {
+      || inv == INV_W3W3) {
     if (L == 19) return 13;
     else if (L == 29 || L == 5) return 7;
     return 5;
   }
-  if ((inv == INV_W2W5 || inv == INV_W2W5E2)
+  if ((inv == INV_W2W5) && (L == 19)) return 13;
+  if ((inv == INV_W2W5E2)
       && (L == 7 || L == 19)) return 13;
   if ((inv == INV_W2W7 || inv == INV_W2W7E2)
       && L == 11) return 13;
@@ -3366,8 +3366,6 @@ select_L0(long L, long inv, long initial_L0)
     if (L == 11 || L == 19) return 13;
   }
   if (inv == INV_W5W7 && L == 17) return 3;
-  if (inv == INV_ATKIN5 && L == 3) return 11;
-  if (inv == INV_ATKIN7 && L == 5) return 3;
 
   /* L0 = smallest small prime different from L that doesn't divide modinv_N */
   for (L0 = unextprime(initial_L0 + 1);
@@ -3396,7 +3394,7 @@ orientation_ambiguity(long D1, long L0, long modinv_p1, long modinv_p2, long mod
 {
   pari_sp av = avma;
   long ambiguity = 0;
-  GEN D = stoi(D1), Q1 = primeform_u(D, modinv_p1), Q2 = NULL;
+  GEN D = stoi(D1), Q1 = red_primeform(D1, modinv_p1), Q2 = NULL;
 
   if (modinv_p2 > 1)
   {
