@@ -375,7 +375,7 @@ modinv_good_atkin(long L, long D)
   GEN q;
   if (kross(D,L) < 0 || -D%L2==0) return 0;
   if (-D > 4*L2) return 1;
-  q = qfi_red(primeform_u(stoi(D),L));
+  q = red_primeform(D,L);
   if (equali1(gel(q,1))) return 0;
   if (D%L==0) return 1;
   q = qfbsqr(q);
@@ -3394,15 +3394,15 @@ orientation_ambiguity(long D1, long L0, long modinv_p1, long modinv_p2, long mod
 {
   pari_sp av = avma;
   long ambiguity = 0;
-  GEN D = stoi(D1), Q1 = red_primeform(D1, modinv_p1), Q2 = NULL;
+  GEN Q1 = red_primeform(D1, modinv_p1), Q2 = NULL;
 
   if (modinv_p2 > 1)
   {
-    if (modinv_p1 == modinv_p2) Q1 = gsqr(Q1);
+    if (modinv_p1 == modinv_p2) Q1 = qfbsqr(Q1);
     else
     {
-      GEN P2 = primeform_u(D, modinv_p2);
-      GEN Q = gsqr(P2), R = gsqr(Q1);
+      GEN P2 = red_primeform(D1, modinv_p2);
+      GEN Q = qfbsqr(P2), R = qfbsqr(Q1);
       /* check that p1^2 != p2^{+/-2}, since this leads to
        * ambiguities when converting j's to f's */
       if (equalii(gel(Q,1), gel(R,1)) && absequalii(gel(Q,2), gel(R,2)))
@@ -3413,15 +3413,15 @@ orientation_ambiguity(long D1, long L0, long modinv_p1, long modinv_p2, long mod
       }
       else
       { /* generate both p1*p2 and p1*p2^{-1} */
-        Q2 = gmul(Q1, P2);
+        Q2 = qfbcomp(Q1, P2);
         P2 = ginv(P2);
-        Q1 = gmul(Q1, P2);
+        Q1 = qfbcomp(Q1, P2);
       }
     }
   }
   if (!ambiguity)
   {
-    GEN P = gsqr(primeform_u(D, L0));
+    GEN P = qfbsqr(red_primeform(D1, L0));
     if (equalii(gel(P,1), gel(Q1,1))
         || (modinv_p2 > 1 && modinv_p1 != modinv_p2
                           && equalii(gel(P,1), gel(Q2,1)))) {
