@@ -783,7 +783,7 @@ ecpp_step2(GEN step1, GEN *X0, GEN primelist)
       GEN N = NDmqg_get_N(S);
       long tt = timer_record(X0, "C1", &ti);
       err_printf(ANSI_BRIGHT_GREEN "\n[ %3d | %4ld bits]" ANSI_RESET, i, expi(N));
-      err_printf(ANSI_GREEN " D = %8ld poldeg = %4ld" ANSI_RESET, D, degpol(HD));
+      err_printf(ANSI_GREEN " D = %8ld inv = %3ld poldeg = %4ld" ANSI_RESET, D, inv, degpol(HD));
       if (D == Dprev) err_printf(" %6ld", tt);
       else err_printf(ANSI_BRIGHT_WHITE " %6ld" ANSI_RESET, tt);
     }
