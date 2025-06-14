@@ -51,8 +51,9 @@ modpoly_hashes = [
 
 check_modpoly(L, hash, inv = 0) =
 {
-   if (hash_ZXX(polmodular(L, inv)) != hash,
-       error("Bad modpoly"));
+   my(h=hash_ZXX(polmodular(L, inv)));
+   if (h != hash,
+       error("Bad modpoly, hash = ",h));
 }
 
 default(parisize, "18M"); \\ overflows 16M
@@ -88,7 +89,8 @@ modfn_in = [[2, 5, 7818678061185],
             [7, 24, 15539023920884183490],
             [5, 27, 2153788462654972246],
             [5, 28, 4579080621787198547],
-
+            [3,105, 9015536079142792],
+            [5,107, 5830263597744775317],
             [41, 2, 18150754343002627833],
             [41, 5, 3465379807262449566],
             [41, 6, 12863521307608118553],
