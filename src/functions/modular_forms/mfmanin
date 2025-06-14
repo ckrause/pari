@@ -3,15 +3,15 @@ Section: modular_forms
 C-Name: mfmanin
 Prototype: Gb
 Help: mfmanin(FS): Given the modular symbol FS associated to an eigenform F
- by mfsymbol(mf,F), computes the even and odd special polynomials as well as
- the even and odd periods om+ and om- as a vector [[P+,P-],[om+,om-,r]],
+ by mfsymbol(mf,F), computes the odd and even special polynomials as well as
+ the odd and even periods om- and om+ as a vector [[P-,P+],[om-,om+,r]],
  where r = imag(om+*conj(om-))/<F,F>.
  If F has several embeddings into C, give the vector of results corresponding
  to each embedding.
 Doc: Given the modular symbol $FS$ associated to an eigenform $F$ by
- \kbd{mfsymbol(mf,F)}, computes the even and odd special polynomials as well
- as the even and odd periods $\omega^{+}$ and $\omega^{-}$ as a vector
- $[[P^{+},P^{-}],[\omega^{+},\omega^{-},r]]$, where
+ \kbd{mfsymbol(mf,F)}, computes the odd and even special polynomials as well
+ as the odd and even periods $\omega^{-}$ and $\omega^{+}$ as a vector
+ $[[P^{-},P^{+}],[\omega^{-},\omega^{+},r]]$, where
  $r=\Im(\omega^{+}\overline{\omega^{-}})/<F,F>$. If $F$ has several embeddings
  into $\C$, give the vector of results corresponding to each embedding.
  \bprog
