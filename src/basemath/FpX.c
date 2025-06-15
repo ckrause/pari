@@ -3575,7 +3575,7 @@ FpXXk_divides_i(pari_sp av, GEN x, GEN y, GEN p, long v)
   long dx = degpol(x), dy = degpol(y), dz, i, j, s;
   GEN z, y_lead = gel(y,dy+2);
   if (dx < dy)
-    return gen_0;
+    return NULL;
   dz = dx-dy;
   z = cgetg(dz+3,t_POL); z[1] = x[1];
   gel(z,dz+2) = FpXXk_divides_s(gel(x,dx+2), y_lead, p, v);
