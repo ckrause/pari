@@ -223,6 +223,12 @@ bnrclassfield(K,5)
 \\ #2280
 setrand(1);bnf=bnfinit(quadpoly(-2923,a)); R=bnrclassfield(bnf,3);
 if(!check(bnf,R[1],x^3 + 48*x + (26*a - 13)),error("quadpoly(-2923),3"));
+test(D)=
+{
+  my(bnf=bnfinit(quadpoly(D,'y)),bnr=bnrinit(bnf,[2^3*5,[1,1]]),S=subgrouplist(bnr,[4],1));
+  for(i=1,#S,bnrclassfield(bnr,S[i]));
+}
+test(41);
 
 print("bad inputs");
 bnrclassfield(y^2+6,Mat(2))

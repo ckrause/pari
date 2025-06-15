@@ -1153,7 +1153,7 @@ bnrclassfield_tower(GEN bnr, GEN subgroup, GEN TB, GEN p, long finaldeg, long ab
     setlg(Lbad,j);
     Lbad = ZV_to_zv(ZV_sort_uniq_shallow(Lbad));
     P = shallowconcat1(P);
-    P = gen_sort(P, (void*)&cmp_prime_over_p, &cmp_nodata);
+    P = gen_sort(P, (void*)&cmp_prime_ideal, &cmp_nodata);
     settyp(P, t_COL); l = lg(P);
     E = cgetg(l, t_COL);
     for (i = 1; i < l; i++)
