@@ -159,13 +159,13 @@ disc_best_modinv(long D)
   ret = INV_W2W7E2;if (modinv_good_disc(ret, D)) return ret;
   ret = INV_W5W7;  if (modinv_good_disc(ret, D)) return ret;
   ret = INV_W3W3E2;if (modinv_good_disc(ret, D)) return ret;
-  ret = INV_G2;    if (modinv_good_disc(ret, D)) return ret;
   ret = INV_ATKIN19;if (modinv_good_disc(ret, D)) return ret;
   ret = INV_ATKIN17;if (modinv_good_disc(ret, D)) return ret;
   ret = INV_ATKIN13;if (modinv_good_disc(ret, D)) return ret;
   ret = INV_ATKIN11;if (modinv_good_disc(ret, D)) return ret;
   ret = INV_ATKIN7;if (modinv_good_disc(ret, D)) return ret;
   ret = INV_ATKIN5;if (modinv_good_disc(ret, D)) return ret;
+  ret = INV_G2;    if (modinv_good_disc(ret, D)) return ret;
   ret = INV_ATKIN3;if (modinv_good_disc(ret, D)) return ret;
   return INV_J;
 }
