@@ -3045,10 +3045,9 @@ zlog(GEN nf, GEN a, GEN sgn, zlog_S *S)
     default: /* case t_COL: */
     {
       GEN den;
-      check_nfelt(a, &den);
+      a = Q_remove_denom(a, &den);
       if (den)
       {
-        a = Q_muli_to_int(a, den);
         a = mkmat2(mkcol2(a, den), mkcol2(gen_1, gen_m1));
         return famat_zlog(nf, a, sgn, S);
       }
@@ -3447,27 +3446,6 @@ idealstarmod(GEN nf, GEN ideal, long flag, GEN MOD)
 }
 GEN
 idealstar0(GEN nf, GEN ideal,long flag) { return idealstarmod(nf, ideal, flag, NULL); }
-
-void
-check_nfelt(GEN x, GEN *den)
-{
-  long l = lg(x), i;
-  GEN t, d = NULL;
-  if (typ(x) != t_COL) pari_err_TYPE("check_nfelt", x);
-  for (i=1; i<l; i++)
-  {
-    t = gel(x,i);
-    switch (typ(t))
-    {
-      case t_INT: break;
-      case t_FRAC:
-        if (!d) d = gel(t,2); else d = lcmii(d, gel(t,2));
-        break;
-      default: pari_err_TYPE("check_nfelt", x);
-    }
-  }
-  *den = d;
-}
 
 GEN
 ZV_snf_gcd(GEN x, GEN mod)
