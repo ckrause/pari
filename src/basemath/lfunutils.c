@@ -1884,11 +1884,21 @@ lfunmfspec_i(GEN lmisc, long bit)
     gel(ve,j) = gel(v,2*j);
     gel(vo,j+1) = gel(v,2*j+1);
   }
-  if (k2 == 1) { om = gen_1;    op = gel(v,1); }
-  else         { om = gel(v,2); op = gel(v,3); }
+  if (k2 == 1) { om = gen_1; op = gel(v,1); }
+  else
+  {
+    om = gel(v,2); op = gel(v,3);
+    if (gexpo(op) < -bit/2) op = gel(v, 1);
+    /* should happen only in weight 6 */
+  }
   if (maxss(gexpo(imag_i(om)), gexpo(imag_i(op))) > -bit/2)
     pari_err_TYPE("lfunmfspec", lmisc);
-  ve = gdiv(ve, om);
+  if(gexpo(ve) > -bit/2) ve = gdiv(ve, om);
+  else
+  {
+    /* should happen only in weight 4 */
+    pari_warn(warner, "zero period, use mfmanin instead");
+  }
   vo = gdiv(vo, op);
   return mkvec4(bestappr(ve,B), bestappr(vo,B), om, op);
 }
