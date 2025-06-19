@@ -1888,18 +1888,15 @@ lfunmfspec_i(GEN lmisc, long bit)
   else
   {
     om = gel(v,2); op = gel(v,3);
-    if (gexpo(op) < -bit/2) op = gel(v, 1);
+    if (gexpo(op) < -bit/2) op = gel(v,1);
     /* should happen only in weight 6 */
   }
   if (maxss(gexpo(imag_i(om)), gexpo(imag_i(op))) > -bit/2)
     pari_err_TYPE("lfunmfspec", lmisc);
-  if(gexpo(ve) > -bit/2) ve = gdiv(ve, om);
-  else
-  {
-    /* should happen only in weight 4 */
-    pari_warn(warner, "zero period, use mfmanin instead");
-  }
-  vo = gdiv(vo, op);
+  if(gexpo(om) > -bit/2) ve = gdiv(ve, om);
+  else om = gen_0;
+  if(gexpo(op) > -bit/2) vo = gdiv(vo, op);
+  else op = gen_0;
   return mkvec4(bestappr(ve,B), bestappr(vo,B), om, op);
 }
 GEN
