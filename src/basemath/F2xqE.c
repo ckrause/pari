@@ -741,10 +741,20 @@ Z2XQ_invnorm(GEN a, GEN T, long e)
   return s;
 }
 
-/* Assume a2==0, so 4|E(F_p): if t^4 = a6 then (t,t^2) is of order 4
-   8|E(F_p) <=> trace(a6)==0
- */
+static int
+F2x_is_pcyc(GEN T)
+{
+  long i, n;
+  ulong k;
+  if (!uisprime(F2x_degree(T) + 1)) return 0;
+  n = lg(T)-1;
+  for (i = 2; i < n; i++)
+    if (uel(T,i) != ~0UL) return 0;
+  k = uel(T,i); return !(k & (k+1)); /* test if k+1 is a power of 2 */
+}
 
+/* Assume a2==0, so 4|E(F_p): if t^4 = a6 then (t,t^2) is of order 4
+   8|E(F_p) <=> trace(a6)==0 */
 static GEN
 F2xq_elltrace_Harley(GEN a6, GEN T2)
 {
@@ -761,7 +771,7 @@ F2xq_elltrace_Harley(GEN a6, GEN T2)
   timer_start(&ti);
   sqx = mkvec2(F2xq_sqrt(polx_F2x(T2[1]),T2), T2);
   if (DEBUGLEVEL>1) timer_printf(&ti,"Sqrtx");
-  ispcyc = zx_is_pcyc(F2x_to_Flx(T2));
+  ispcyc = F2x_is_pcyc(T2);
   T = ispcyc? F2x_to_ZX(T2): F2x_Teichmuller(T2, N-2);
   if (DEBUGLEVEL>1) timer_printf(&ti,"Teich");
   T = FpX_get_red(T, int2n(N));
