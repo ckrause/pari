@@ -1853,10 +1853,19 @@ lfunsympow(GEN ldata, ulong m)
 }
 
 static GEN
+check_0(GEN z, long bit) { return gexpo(z) < -bit? gen_0: z; }
+static GEN
+check_real(GEN z, long bit)
+{
+  if (typ(z) != t_COMPLEX) return check_0(z, bit);
+  if (check_0(gel(z,2), bit) != gen_0) pari_err_BUG("lfunmfspec");
+  return check_0(gel(z,1), bit);
+}
+static GEN
 lfunmfspec_i(GEN lmisc, long bit)
 {
   GEN linit, ldataf, v, ve, vo, om, op, B, dom;
-  long k, k2, j;
+  long k, k2, bit2, j;
 
   ldataf = lfunmisc_to_ldata_shallow(lmisc);
   if (!gequal(ldata_get_gammavec(ldataf), mkvec2(gen_0,gen_1)))
@@ -1875,28 +1884,23 @@ lfunmfspec_i(GEN lmisc, long bit)
   om = gel(v,1);
   if (odd(k)) return mkvec2(bestappr(gdiv(v, om), B), om);
 
-  k2 = k/2;
+  k2 = k/2; bit2 = bit/2;
   ve = cgetg(k2, t_VEC);
   vo = cgetg(k2+1, t_VEC);
-  gel(vo,1) = om;
+  gel(vo,1) = check_real(gel(v,1), bit2);
   for (j = 1; j < k2; j++)
   {
-    gel(ve,j) = gel(v,2*j);
-    gel(vo,j+1) = gel(v,2*j+1);
+    gel(ve,j)   = check_real(gel(v,2*j), bit2);
+    gel(vo,j+1) = check_real(gel(v,2*j+1), bit2);
   }
-  if (k2 == 1) { om = gen_1; op = gel(v,1); }
+  if (k2 == 1) { om = gen_1; op = gel(vo,1); }
   else
   {
-    om = gel(v,2); op = gel(v,3);
-    if (gexpo(op) < -bit/2) op = gel(v,1);
-    /* should happen only in weight 6 */
+    om = gel(ve,1); if (om != gen_0) ve = gdiv(ve, om);
+    op = gel(vo,2);
+    if (gexpo(op) < -bit2) op = gel(vo,1); /* should happen only in weight 6 */
+    if (op != gen_0) vo = gdiv(vo, op);
   }
-  if (maxss(gexpo(imag_i(om)), gexpo(imag_i(op))) > -bit/2)
-    pari_err_TYPE("lfunmfspec", lmisc);
-  if(gexpo(om) > -bit/2) ve = gdiv(ve, om);
-  else om = gen_0;
-  if(gexpo(op) > -bit/2) vo = gdiv(vo, op);
-  else op = gen_0;
   return mkvec4(bestappr(ve,B), bestappr(vo,B), om, op);
 }
 GEN
