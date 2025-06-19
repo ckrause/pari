@@ -2953,38 +2953,35 @@ getallrootsof1(GEN bnf)
   for (i=2; i <= n; i++) gel(u,i) = ZM_ZC_mul(T, gel(u,i-1));
   return u;
 }
-/* assume bnr has the right conductor */
+static int
+_ZV_cmp(void *E, GEN x, GEN y) { (void)E; return ZV_cmp(x,y); }
+
+/* assume bnr has the right conductor. Find la != root of 1 mod F such that
+ * Norm la = 1 mod 2*(F \cap Z) */
 static GEN
 get_lambda(GEN bnr)
 {
-  GEN bnf = bnr_get_bnf(bnr), nf = bnf_get_nf(bnf), pol = nf_get_pol(nf);
-  GEN f = gel(bnr_get_mod(bnr), 1), labas, lamodf, u;
-  long a, b, f2, i, lu, v = varn(pol);
+  GEN bnf = bnr_get_bnf(bnr), nf = bnf_get_nf(bnf), T = nf_get_pol(nf);
+  GEN U, la, F = gel(bnr_get_mod(bnr), 1);
+  long a, b, i, lu, f = itos(gcoeff(F,1,1)), f2 = 2*f, v = varn(T);
 
-  f2 = 2 * itos(gcoeff(f,1,1));
-  u = getallrootsof1(bnf); lu = lg(u);
-  for (i=1; i<lu; i++)
-    gel(u,i) = ZC_hnfrem(gel(u,i), f); /* roots of 1, mod f */
-  if (DEBUGLEVEL>1)
-    err_printf("quadray: looking for [a,b] != unit mod 2f\n[a,b] = ");
-  for (a=0; a<f2; a++)
-    for (b=0; b<f2; b++)
+  U = getallrootsof1(bnf); lu = lg(U);
+  for (i=1; i<lu; i++) gel(U,i) = ZC_modhnf(gel(U,i), F, NULL);
+  U = gen_sort_uniq(U, NULL, &_ZV_cmp); /* set of roots of 1 mod F */
+  for (b = 3; b < f; b += 2)
+  { /* a = 0: shortcut */
+    if (Fl_sqr(b, f2) != 1) continue;
+    la = scalarcol_shallow(stoi(b), 2); /* unit mod F ? */
+    if (!tablesearch(U, la, &ZV_cmp)) return la;
+  }
+  for (a = 1; a < f2; a++)
+    for (b = 0; b < f2; b++)
     {
-      GEN la = deg1pol_shallow(stoi(a), stoi(b), v); /* ax + b */
-      if (umodiu(gnorm(mkpolmod(la, pol)), f2) != 1) continue;
-      if (DEBUGLEVEL>1) err_printf("[%ld,%ld] ",a,b);
-
-      labas = poltobasis(nf, la);
-      lamodf = ZC_hnfrem(labas, f);
-      for (i=1; i<lu; i++)
-        if (ZV_equal(lamodf, gel(u,i))) break;
-      if (i < lu) continue; /* la = unit mod f */
-      if (DEBUGLEVEL)
-      {
-        if (DEBUGLEVEL>1) err_printf("\n");
-        err_printf("lambda = %Ps\n",la);
-      }
-      return labas;
+      if (!odd(a) && !odd(b)) continue;
+      la = deg1pol_shallow(stoi(a), stoi(b), v); /* ax + b */
+      if (umodiu(ZX_resultant(la,T), f2) != 1) continue;
+      la = poltobasis(nf, la); /* unit mod F ? */
+      if (!tablesearch(U, ZC_modhnf(la, F, NULL), &ZV_cmp)) return la;
     }
   pari_err_BUG("get_lambda");
   return NULL;/*LCOV_EXCL_LINE*/
@@ -3137,6 +3134,7 @@ computeP2(GEN bnr, long prec)
   pari_sp av=avma, av2;
   GEN listray, P0, P, lanum, la = get_lambda(bnr);
   GEN nf = bnr_get_nf(bnr), f = gel(bnr_get_mod(bnr), 1);
+  if (DEBUGLEVEL) err_printf("lambda = %Ps\n",la);
   listray = getallelts(bnr);
   clrayno = lg(listray)-1; av2 = avma;
 PRECPB:
