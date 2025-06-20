@@ -220,15 +220,7 @@ F2x_eval(GEN P, ulong x)
     ulong c = 0;
     for (i=2; i<lP; i++)
       c ^= P[i];
-#ifdef LONG_IS_64BIT
-    c ^= c >> 32;
-#endif
-    c ^= c >> 16;
-    c ^= c >>  8;
-    c ^= c >>  4;
-    c ^= c >>  2;
-    c ^= c >>  1;
-    return c & 1;
+    return thuemorseu(c);
   }
   else return F2x_coeff(P,0);
 }

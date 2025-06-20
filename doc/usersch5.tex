@@ -2083,6 +2083,9 @@ $\kbd{hiremainder}\ge\kbd{y}$.
 \fun{long}{hammingl}{ulong x)} returns the Hamming weight of $x$, i.e.~the
 number of nonzero bits in its binary expansion.
 
+\fun{long}{thuemorseu}{ulong x} return the parity of the number of nonzero bits
+in the binary expansion of $x$, that is, the Hamming weight modulo $2$.
+
 \misctitle{Obsolete routines} Those functions are awkward and no longer used;
 they are only provided for backward compatibility:
 

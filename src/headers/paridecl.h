@@ -6139,6 +6139,7 @@ INLINE GEN    subrs(GEN x, long y);
 INLINE GEN    subsi(long x, GEN y);
 INLINE GEN    subss(long x, long y);
 INLINE GEN    subuu(ulong x, ulong y);
+INLINE ulong  thuemorseu(ulong c);
 INLINE void   togglesign(GEN x);
 INLINE void   togglesign_safe(GEN *px);
 INLINE void   affectsign(GEN x, GEN y);

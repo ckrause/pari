@@ -1395,3 +1395,17 @@ affur(ulong x, GEN y)
   y[1] = evalsigne(1) | _evalexpo((BITS_IN_LONG-1)-sh);
   y[2] = x<<sh; for (i=3; i<ly; i++) y[i] = 0;
 }
+
+INLINE ulong
+thuemorseu(ulong c)
+{
+#ifdef LONG_IS_64BIT
+    c ^= c >> 32;
+#endif
+    c ^= c >> 16;
+    c ^= c >>  8;
+    c ^= c >>  4;
+    c ^= c >>  2;
+    c ^= c >>  1;
+    return c & 1;
+}
