@@ -1396,6 +1396,22 @@ affur(ulong x, GEN y)
   y[2] = x<<sh; for (i=3; i<ly; i++) y[i] = 0;
 }
 
+INLINE long
+hammingl(ulong x)
+{
+#ifdef LONG_IS_64BIT
+  x = (x & 0x5555555555555555UL) + ((x >> 1) & 0x5555555555555555UL);
+  x = (x & 0x3333333333333333UL) + ((x >> 2) & 0x3333333333333333UL);
+  x = (x & 0x0F0F0F0F0F0F0F0FUL) + ((x >> 4) & 0x0F0F0F0F0F0F0F0FUL);
+  return (x * 0x0101010101010101UL) >> 56;
+#else
+  x = (x & 0x55555555UL) + ((x >> 1) & 0x55555555UL);
+  x = (x & 0x33333333UL) + ((x >> 2) & 0x33333333UL);
+  x = (x & 0x0F0F0F0FUL) + ((x >> 4) & 0x0F0F0F0FUL);
+  return (x * 0x01010101UL) >> 24;
+#endif
+}
+
 INLINE ulong
 thuemorseu(ulong c)
 {
