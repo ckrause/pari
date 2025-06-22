@@ -938,6 +938,21 @@ element.)
 \fun{GEN}{gmael2}{GEN A, long x1, long x2} is an alias for \kbd{gmael}.
 Similar macros \tet{gmael3}, \tet{gmael4}, \tet{gmael5} are available.
 
+\noindent The following routines return the component of \typ{VECSMALL} as
+\kbd{ulong}.
+
+\fun{ulong}{uel}{GEN x, long i} returns the entry \kbd{x[i]} as a \kbd{ulong},
+assuming $x$ is a \typ{VECSMALL}.
+
+\fun{ulong}{ucoeff}{GEN x, long i, long j} returns the \kbd{x[j][i]} entry of~\kbd{x} as
+a \kbd{ulong} assuming \kbd{x[i][j]} is a \typ{VECSMALL}.
+
+\fun{ulong}{umael}{GEN x, long i, long j} returns the \kbd{x[i][j]} entry of~\kbd{x} as
+a \kbd{ulong} assuming \kbd{x[i]} is a \typ{VECSMALL}.
+
+\fun{ulong}{umael2}{GEN A, long x1, long x2} is an alias for \kbd{umael}.
+Similar macros \tet{umael3}, \tet{umael4}, \tet{umael5} are available.
+
 \section{Global numerical constants}
 These are defined in the various public PARI headers.
 

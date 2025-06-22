@@ -26,7 +26,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #define gmael(m,x,y) gmael2(m,x,y)
 #define gel(m,x)     gmael1(m,x)
 
+#define uel(a,i)            (((ulong*)(a))[i])
+#define umael(a,i,j)        (((ulong**)(a))[i][j])
+#define umael2(a,i,j)       (((ulong**)(a))[i][j])
+#define umael3(a,i,j,k)     (((ulong***)(a))[i][j][k])
+#define umael4(a,i,j,k,l)   (((ulong****)(a))[i][j][k][l])
+#define umael5(a,i,j,k,l,m) (((ulong*****)(a))[i][j][k][l][m])
+
 #define gcoeff(a,i,j) (((GEN**)(a))[j][i])
 #define coeff(a,i,j) (((GEN*)(a))[j][i])
+#define ucoeff(a,i,j)       (((ulong**)(a))[j][i])
 
 #define GSTR(x) ((char*) (((GEN) (x)) + 1 ))
