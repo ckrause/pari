@@ -59,7 +59,7 @@ matpermanent(GEN M)
     { for (i=1; i <= n; ++i) gel(in, i) = gadd(gel(in, i), gel(col, i)); }
     else
     { for (i=1; i <= n; ++i) gel(in, i) = gsub(gel(in, i), gel(col, i)); }
-    if (hammingl(gray)&1)
+    if (hammingu(gray)&1)
       p = gsub(p, RgV_prod(in));
     else
       p = gadd(p, RgV_prod(in));
@@ -107,7 +107,7 @@ ZM_permanent(GEN M)
     else
     { for (i=1; i <= n; ++i) gel(in, i) = subii(gel(in,i), gel(col,i)); }
     c = ZV_prod(in);
-    if (hammingl(gray)&1) togglesign_safe(&c);
+    if (hammingu(gray)&1) togglesign_safe(&c);
     p = addii(p, c);
     if (gc_needed(av, 1)) (void)gc_all(av, 2, &in, &p);
   }
@@ -134,7 +134,7 @@ zm_permanent(GEN M)
     else
     { for (i = 1; i <= n; ++i) in[i] -= col[i]; }
     c = vecsmall_prod(in);
-    if (hammingl(gray)&1) togglesign_safe(&c);
+    if (hammingu(gray)&1) togglesign_safe(&c);
     p = addii(p, c);
     if (gc_needed(av2, 1)) p = gc_INT(av2, p);
   }

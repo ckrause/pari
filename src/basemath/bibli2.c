@@ -980,9 +980,9 @@ binomialuu(ulong n, ulong k)
   }
   setlg(v, c); z = mulii(z, ZV_prod(v));
   { /* p = 2 */
-    ulong e = hammingl(k);
-    e += (k == nk)? e: hammingl(nk);
-    e -= hammingl(n); if (e) z = shifti(z, e);
+    ulong e = hammingu(k);
+    e += (k == nk)? e: hammingu(nk);
+    e -= hammingu(n); if (e) z = shifti(z, e);
   }
   return gc_INT(av, z);
 }

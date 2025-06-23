@@ -281,7 +281,7 @@ ulong
 F2v_hamming(GEN H)
 {
   long i, n=0, l=lg(H);
-  for (i=2; i<l; i++) n += hammingl(uel(H,i));
+  for (i=2; i<l; i++) n += hammingu(uel(H,i));
   return n;
 }
 

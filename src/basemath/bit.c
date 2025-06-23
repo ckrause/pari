@@ -702,8 +702,8 @@ hamming_int(GEN n)
 {
   long lx = lgefint(n), i, sum;
   if (lx == 2) return 0;
-  sum = hammingl(n[2]);
-  for (i = 3; i < lx; i++) sum += hammingl(n[i]);
+  sum = hammingu(n[2]);
+  for (i = 3; i < lx; i++) sum += hammingu(n[i]);
   return sum;
 }
 

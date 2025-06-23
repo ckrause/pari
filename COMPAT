@@ -73,6 +73,7 @@ This file lists the incompatible changes between Version 2.x and older versions
   - remove obsolete function bnrconductor_i. Use bnrconductor instead (which is
     also obsolete but still present) or (better) bnrtoprimitive and bnrmap
   - removed ZXC_to_FlxqC, ZXM_to_FlxqM, use FqC_to_FlxqC, FqM_to_FlxqM
+  - rename hammingl to hammingu
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.16 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - binomial changed to agree with Loeb's definition

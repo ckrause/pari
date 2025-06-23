@@ -1397,7 +1397,7 @@ affur(ulong x, GEN y)
 }
 
 INLINE long
-hammingl(ulong x)
+hammingu(ulong x)
 {
 #ifdef LONG_IS_64BIT
   x = (x & 0x5555555555555555UL) + ((x >> 1) & 0x5555555555555555UL);

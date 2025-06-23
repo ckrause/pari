@@ -2310,7 +2310,7 @@ FpXQ_autpow(GEN x, ulong n, GEN T, GEN p)
   if (n==0) return FpX_rem(pol_x(varn(x)), T, p);
   if (n==1) return FpX_rem(x, T, p);
   D.T = FpX_get_red(T, p); D.p = p;
-  d = brent_kung_optpow(degpol(T), hammingl(n)-1, 1);
+  d = brent_kung_optpow(degpol(T), hammingu(n)-1, 1);
   D.aut = FpXQ_powers(x, d, T, p);
   x = gen_powu_fold(x,n,(void*)&D,FpXQ_autpow_sqr,FpXQ_autpow_msqr);
   return gc_GEN(av, x);
@@ -2678,7 +2678,7 @@ FpXQ_sumautsum(GEN ax, long i, GEN T, GEN p) {
   ulong d;
   D.T = FpX_get_red(T, p); D.p = p;
   a = gel(ax, 1); xi = gel(ax,2);
-  d = brent_kung_optpow(get_FpX_degree(T)-1,2*(hammingl(i)-1),1);
+  d = brent_kung_optpow(get_FpX_degree(T)-1,2*(hammingu(i)-1),1);
   zeta = FpX_FpXQ_eval(a, xi, T, p);
   D.aut = mkvec2(FpXQ_powers(xi, d, T, p), zeta);
 

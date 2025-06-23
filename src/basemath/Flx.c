@@ -3206,7 +3206,7 @@ Flxq_autpow_pre(GEN x, ulong n, GEN T, ulong p, ulong pi)
   if (n==0) return Flx_rem_pre(polx_Flx(x[1]), T, p, pi);
   if (n==1) return Flx_rem_pre(x, T, p, pi);
   set_Flxq_pre(&D, T, p, pi);
-  d = brent_kung_optpow(get_Flx_degree(T), hammingl(n)-1, 1);
+  d = brent_kung_optpow(get_Flx_degree(T), hammingu(n)-1, 1);
   D.aut = Flxq_powers_pre(x, d, T, p, D.pi);
   x = gen_powu_fold_i(x,n,(void*)&D,Flxq_autpow_sqr,Flxq_autpow_msqr);
   return gc_GEN(av, x);
@@ -3502,7 +3502,7 @@ Flxq_sumautsum_pre(GEN ax, long i, GEN T, ulong p, ulong pi) {
   ulong d;
   D.T = Flx_get_red(T, p); D.p = p; D.pi = pi;
   a = gel(ax, 1); xi = gel(ax,2);
-  d = brent_kung_optpow(get_Flx_degree(T)-1,2*(hammingl(i)-1),1);
+  d = brent_kung_optpow(get_Flx_degree(T)-1,2*(hammingu(i)-1),1);
   zeta = Flx_Flxq_eval_pre(a, xi, T, p, pi);
   D.aut = mkvec2(Flxq_powers_pre(xi, d, T, p, pi), zeta);
 

@@ -6033,7 +6033,7 @@ INLINE ulong  gc_ulong(pari_sp av, ulong s);
 INLINE GEN    gc_utoi(pari_sp av, ulong x);
 INLINE GEN    gc_utoipos(pari_sp av, ulong x);
 INLINE GEN    gc_NULL(pari_sp av);
-INLINE long   hammingl(ulong x);
+INLINE long   hammingu(ulong x);
 INLINE GEN    icopy(GEN x);
 INLINE GEN    icopyspec(GEN x, long nx);
 INLINE GEN    icopy_avma(GEN x, pari_sp av);
