@@ -12425,6 +12425,9 @@ returns the \typ{INTMOD} \kbd{Mod(x, y)}.
 \fun{GEN}{retmkpolmod}{GEN x, GEN y}
 returns the \typ{POLMOD} \kbd{Mod(x, y)}.
 
+\fun{GEN}{retmkqfb}{GEN a, GEN b, GEN c, GEN D} returns the \typ{QFB} equal
+to \kbd{Qfb(a,b,c)}, assuming that $D = b^2 - 4ac$.
+
 \smallskip
 
 \fun{GEN}{mkintn}{long n, ...} returns the nonnegative \typ{INT} whose
