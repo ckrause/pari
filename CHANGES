@@ -64,7 +64,7 @@ BA  23- [libpari] get_FlxqX_algebra
     25- [libpari] affgc
 BA  26- [libpari] zero_FlxM_copy
     27- [libpari] abmap_char_image, abmap_nchar_image
-BA  28- [libpari] ZMV_producttree, ZM_trace, FpM_trace
+BA  28- [libpari] ZMV_producttree, ZM_trace, FpM_trace, Flm_trace
     29- [libpari] bnrconductor_factored_arch, bnrtoprimitive
     30- [libpari] char_renormalize
 AP  31- [libpari] alg_get_invol

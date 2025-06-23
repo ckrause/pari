@@ -288,6 +288,17 @@ FpM_trace(GEN x, GEN p)
   return Fp_red(ZM_trace(x), p);
 }
 
+ulong
+Flm_trace(GEN x, ulong p)
+{
+  long i, lx = lg(x);
+  ulong t;
+  if (lx < 3) return lx == 1? 0: ucoeff(x,1,1);
+  t = ucoeff(x,1,1);
+  for (i = 2; i < lx; i++) t = Fl_add(t, ucoeff(x,i,i), p);
+  return t;
+}
+
 /* assume x square matrice */
 static GEN
 mattrace(GEN x)

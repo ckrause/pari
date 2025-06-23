@@ -1970,6 +1970,7 @@ GEN     suppl(GEN x);
 GEN     Flm_charpoly(GEN x, ulong p);
 GEN     Flm_hess_pre(GEN x, ulong p, ulong pi);
 GEN     Flm_hess(GEN x, ulong p);
+ulong   Flm_trace(GEN x, ulong p);
 GEN     FpM_charpoly(GEN x, GEN p);
 GEN     FpM_hess(GEN x, GEN p);
 GEN     FpM_trace(GEN x, GEN p);
