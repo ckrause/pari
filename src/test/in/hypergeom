@@ -188,6 +188,8 @@ algdep(R,6)
 hypergeom([1],['a,'b,'b],-x/256+O(x^4))
 \\ #2551
 b=9/10; hypergeom([b+2, b], 2*b, 2/3)
+\\ #2628
+hypergeom([8,8.5],7,-0.4)
 
 
 \\ Errors, keep at end

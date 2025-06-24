@@ -561,10 +561,10 @@ F21finitetaylor(long m, GEN b, GEN c, GEN z, long prec)
   C = vecbinomial(m);
   P = real_1(prec); S = P; ct = 0;
   av = avma;
-  for(j = 0; j < m; j++) /* 15.2.4 */
+  for(j = 1; j <= m; j++) /* NIST 15.2.4 */
   {
     GEN p;
-    P = gmul(P, gmul(z, gdiv(gaddsg(j,b), gaddsg(j,c)))); /*(b)_j z^j / (c)_j*/
+    P = gmul(P, gmul(z, gdiv(gaddsg(j-1,b), gaddsg(j-1,c)))); /*(b)_j z^j / (c)_j*/
     p = gmul(P, gel(C, j+1)); /* times binomial(m,j) */
     if (j > mi && !gequal0(S))
     { if (gexpo(p) - gexpo(S) > bitmin) ct = 0; else if (++ct == 3) break; }
