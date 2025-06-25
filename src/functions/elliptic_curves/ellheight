@@ -20,5 +20,10 @@ Doc: Let $E$ be an elliptic curve defined over $K = \Q$ or a number field,
  \item If the argument $Q \in E(K)$ is also present, computes the value of
  the bilinear form $(h(P+Q)-h(P-Q)) / 4$.
 
+ The canonical height is equal to the N\'eron-Tate height
+ divided by the degree of the number field.
+ For a curve over a number field, it can be computed with
+ \kbd{ellheight(E,P$\{,Q\}$)/\#E.nf.zk}.
+
 Variant: Also available is \fun{GEN}{ellheight}{GEN E, GEN P, long prec}
  ($Q$ omitted).
