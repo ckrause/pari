@@ -6,7 +6,7 @@ Help: ellheight(E,{P},{Q}): Faltings height of the curve E, resp. canonical
  height of the point P on elliptic curve E, resp. the value of the attached
  bilinear form at (P,Q).
 Doc: Let $E$ be an elliptic curve defined over $K = \Q$ or a number field,
- as output by \kbd{ellinit}; it needs not be given by a minimal model
+ as output by \kbd{ellinit}; it need not be given by a minimal model
  although the computation will be faster if it is.
 
  \item Without arguments $P,Q$, returns the Faltings height of the curve $E$
@@ -22,7 +22,7 @@ Doc: Let $E$ be an elliptic curve defined over $K = \Q$ or a number field,
 
  The canonical height is equal to the N\'eron-Tate height
  divided by the degree of the number field.
- For a curve over a number field, it can be computed with
+ For a curve over a number field, it is
  \kbd{ellheight(E,P$\{,Q\}$)/\#E.nf.zk}.
 
 Variant: Also available is \fun{GEN}{ellheight}{GEN E, GEN P, long prec}
