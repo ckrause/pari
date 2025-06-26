@@ -1779,7 +1779,8 @@ atoms appearing before the code \kbd{I}, \kbd{E} or \kbd{J} in the prototype.
 \+& \kbd{f} &  Fake \kbd{*long}. C function requires a pointer but we
 do not use the resulting \kbd{long}\cr
 \+& \kbd{b} &  current real precision in bits \cr
-\+& \kbd{p} &  current real precision in words \cr
+\+& \kbd{p} &  current real precision in bits, rounded up to a multiple of
+                \kbd{BITS\_IN\_LONG} \cr
 \+& \kbd{P} &  series precision (default \kbd{seriesprecision},
  global variable \kbd{precdl} for the library)\cr
 \+& \kbd{C} &  lexical context (internal, for \kbd{eval},
