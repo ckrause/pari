@@ -54,5 +54,7 @@ BEGINEXTERN
 #  include "pariinl.h"
 #endif
 ENDEXTERN
-#include "pariold.h"
+#ifndef PARI_NO_PARIOLD_H
+#  include "pariold.h"
+#endif
 #endif
