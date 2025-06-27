@@ -527,21 +527,20 @@ static GEN
 RgX_Rg_translate_basecase(GEN P, GEN c)
 {
   pari_sp av = avma;
-  GEN Q, R;
+  GEN Q;
   long i, k, n;
 
   if (!signe(P) || gequal0(c)) return RgX_copy(P);
-  Q = leafcopy(P);
-  R = Q+2; n = degpol(P);
+  Q = leafcopy(P); n = degpol(P);
   if (isint1(c))
   {
     for (i=1; i<=n; i++)
     {
-      for (k=n-i; k<n; k++) gel(R,k) = gadd(gel(R,k), gel(R,k+1));
+      for (k=n-i; k<n; k++) gel(Q,2+k) = gadd(gel(Q,2+k), gel(Q,2+k+1));
       if (gc_needed(av,2))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"RgX_Rg_translate(1), i = %ld/%ld", i,n);
-        Q = gc_GEN(av, Q); R = Q+2;
+        Q = gc_GEN(av, Q);
       }
     }
   }
@@ -549,11 +548,11 @@ RgX_Rg_translate_basecase(GEN P, GEN c)
   {
     for (i=1; i<=n; i++)
     {
-      for (k=n-i; k<n; k++) gel(R,k) = gsub(gel(R,k), gel(R,k+1));
+      for (k=n-i; k<n; k++) gel(Q,2+k) = gsub(gel(Q,2+k), gel(Q,2+k+1));
       if (gc_needed(av,2))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"RgX_Rg_translate(-1), i = %ld/%ld", i,n);
-        Q = gc_GEN(av, Q); R = Q+2;
+        Q = gc_GEN(av, Q);
       }
     }
   }
@@ -561,11 +560,11 @@ RgX_Rg_translate_basecase(GEN P, GEN c)
   {
     for (i=1; i<=n; i++)
     {
-      for (k=n-i; k<n; k++) gel(R,k) = gadd(gel(R,k), gmul(c, gel(R,k+1)));
+      for (k=n-i; k<n; k++) gel(Q,2+k) = gadd(gel(Q,2+k), gmul(c, gel(Q,2+k+1)));
       if (gc_needed(av,2))
       {
         if(DEBUGMEM>1) pari_warn(warnmem,"RgX_Rg_translate, i = %ld/%ld", i,n);
-        Q = gc_GEN(av, Q); R = Q+2;
+        Q = gc_GEN(av, Q);
       }
     }
   }
@@ -650,24 +649,23 @@ GEN
 RgXQX_RgXQ_translate(GEN P, GEN c, GEN T)
 {
   pari_sp av = avma;
-  GEN Q, R;
+  GEN Q;
   long i, k, n;
 
   if (!signe(P) || gequal0(c)) return RgX_copy(P);
-  Q = leafcopy(P);
-  R = Q+2; n = degpol(P);
+  Q = leafcopy(P); n = degpol(P);
   for (i=1; i<=n; i++)
   {
     for (k=n-i; k<n; k++)
     {
       pari_sp av2 = avma;
-      gel(R,k) = gc_upto(av2,
-                   RgX_rem(gadd(gel(R,k), gmul(c, gel(R,k+1))), T));
+      gel(Q,2+k) = gc_upto(av2,
+                   RgX_rem(gadd(gel(Q,2+k), gmul(c, gel(Q,2+k+1))), T));
     }
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"RgXQX_RgXQ_translate, i = %ld/%ld", i,n);
-      Q = gc_GEN(av, Q); R = Q+2;
+      Q = gc_GEN(av, Q);
     }
   }
   return gc_GEN(av, Q);

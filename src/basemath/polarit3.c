@@ -800,21 +800,20 @@ static GEN
 FpX_Fp_translate_basecase(GEN P, GEN c, GEN p)
 {
   pari_sp av = avma;
-  GEN Q, *R;
+  GEN Q;
   long i, k, n;
 
   if (!signe(P) || !signe(c)) return ZX_copy(P);
-  Q = leafcopy(P);
-  R = (GEN*)(Q+2); n = degpol(P);
+  Q = leafcopy(P); n = degpol(P);
   for (i=1; i<=n; i++)
   {
     for (k=n-i; k<n; k++)
-      R[k] = Fp_add(R[k], Fp_mul(c, R[k+1], p), p);
+      gel(Q,2+k) = Fp_add(gel(Q,2+k), Fp_mul(c, gel(Q,2+k+1), p), p);
 
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"FpX_Fp_translate, i = %ld/%ld", i,n);
-      Q = gc_GEN(av, Q); R = (GEN*)Q+2;
+      Q = gc_GEN(av, Q);
     }
   }
   return gc_GEN(av, FpX_renormalize(Q, lg(Q)));
@@ -842,22 +841,21 @@ GEN
 FqX_Fq_translate(GEN P, GEN c, GEN T, GEN p)
 {
   pari_sp av = avma;
-  GEN Q, *R;
+  GEN Q;
   long i, k, n;
 
   /* signe works for t_(INT|POL) */
   if (!signe(P) || !signe(c)) return RgX_copy(P);
-  Q = leafcopy(P);
-  R = (GEN*)(Q+2); n = degpol(P);
+  Q = leafcopy(P); n = degpol(P);
   for (i=1; i<=n; i++)
   {
     for (k=n-i; k<n; k++)
-      R[k] = Fq_add(R[k], Fq_mul(c, R[k+1], T, p), T, p);
+      gel(Q,2+k) = Fq_add(gel(Q,2+k), Fq_mul(c, gel(Q,2+k+1), T, p), T, p);
 
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"FqX_Fq_translate, i = %ld/%ld", i,n);
-      Q = gc_GEN(av, Q); R = (GEN*)Q+2;
+      Q = gc_GEN(av, Q);
     }
   }
   return gc_GEN(av, FpXQX_renormalize(Q, lg(Q)));
