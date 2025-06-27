@@ -45,7 +45,7 @@ BA   7- [libpari] Flx_unscale, Flx_Fl_translate
 BA   8- [libpari] FlxqC_red_pre, FlxqM_red_pre, FlxM_mul
 BA   9- [libpari] FlxC_Fl_translate, FlxM_Fl_translate
     10- [libpari] RgX_type_code
-    11- [libpari] mkpadic, retmkpadic, padic_p, padic_u, padic_pd
+    11- [libpari] mkpadic, retmkpadic, retmkpadic_i, padic_p, padic_u, padic_pd
 AP  12- new GP functions algskolemnoether, algisisom
     13- allow t_PADICs in chinese
 MTB 14- FpXQ_sqrtn: implement fast algorithm

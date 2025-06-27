@@ -12423,6 +12423,17 @@ returns the \typ{INTMOD} \kbd{Mod(x, y)}.
 \typ{PADIC} $p^v(u + O(p^d))$ of valuation $v$ and precision $d$. See
 \kbd{mkpadic} for constraints on arguments.
 
+\fun{GEN}{retmkpadic_i}{GEN u, GEN p, GEN pd, long v, long d} this is a
+technical internal variant of \kbd{retmkpadic}, where the \kbd{pd} argument is
+an expression computing $\kbd{\_pd} := p^d$ and the $u$ argument is
+an expression allowed to use that private \kbd{\_pd} variable. Both
+expressions must be stack-clean. This is used as in
+\bprog
+  retmkpadic_i(modii(x, _pd), p, powiu(p,d), 0, d);
+@eprog\noindent where the \kbd{\_pd} trick allows to defer evaluation until
+the macro has created the \typ{PADIC} root of the object. The result is then
+stack-clean.
+
 \fun{GEN}{retmkquad}{GEN n, GEN a, GEN b}.
 
 \fun{GEN}{retmkpolmod}{GEN x, GEN y}
