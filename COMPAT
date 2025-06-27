@@ -74,6 +74,11 @@ This file lists the incompatible changes between Version 2.x and older versions
     also obsolete but still present) or (better) bnrtoprimitive and bnrmap
   - removed ZXC_to_FlxqC, ZXM_to_FlxqM, use FqC_to_FlxqC, FqM_to_FlxqM
   - rename hammingl to hammingu
+  - rename RgX_translate -> RgX_Rg_translate
+           RgXQX_translate -> RgXQX_RgXQ_translate
+           ZX_translate -> ZX_Z_translate
+           FpX_translate -> FpX_Fp_translate
+           FqX_translate -> FqX_Fq_translate
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.16 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - binomial changed to agree with Loeb's definition

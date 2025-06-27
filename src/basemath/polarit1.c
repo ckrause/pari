@@ -327,7 +327,7 @@ ZX_Zp_root(GEN f, GEN a, GEN p, long prec)
     return mkcol(a);
   }
 
-  f = ZX_unscale_div(ZX_translate(f,a), p); /* f(pX + a) / p */
+  f = ZX_unscale_div(ZX_Z_translate(f,a), p); /* f(pX + a) / p */
   (void)ZX_pvalrem(f,p,&f);
   z = cgetg(degpol(f)+1,t_COL);
 
@@ -418,7 +418,7 @@ ZXY_ZpQ_root(GEN f, GEN a, GEN T, GEN p, long prec)
     if (prec > 1) a = ZpXQX_liftroot(f, a, T, p, prec);
     return mkcol(a);
   }
-  f = RgX_unscale(RgXQX_translate(f, a, T), p);
+  f = RgX_unscale(RgXQX_RgXQ_translate(f, a, T), p);
   f = RgX_Rg_div(f, powiu(p, gvaluation(f,p)));
   z = cgetg(degpol(f)+1,t_COL);
   R = FpXQX_roots(FqX_red(f,T,p), T, p); lR = lg(R);

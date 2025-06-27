@@ -2461,7 +2461,7 @@ makepolC5(GEN nf, GEN e, GEN b, GEN aut)
   gel(v, 4) = mulsi(-5, mulii(e, nftrace(nf, t1)));
   gel(v, 3) = mului(5, mulii(e, subii(e, nftrace(nf,t2))));
   gel(v, 2) = mulii(negi(e), nftrace(nf, nfmuli(nf, t1, t2)));
-  if (umodiu(e, 5)) v = ZX_translate(v, gen_m1);
+  if (umodiu(e, 5)) v = ZX_Z_translate(v, gen_m1);
   return ZX_Z_divexact(ZX_z_unscale(v, 5), utoipos(3125));
 }
 
@@ -3190,7 +3190,7 @@ makeA5resolvent(GEN pol, long flag)
 {
   GEN R = cgetg(9, t_POL), D = ZX_disc(pol), c, d, e, f, v;
   GEN c2, d2, e2, c4, df;
-  pol = RgX_translate(pol, gdivgs(gel(pol, 6), -5));
+  pol = RgX_Rg_translate(pol, gdivgs(gel(pol, 6), -5));
   c = gdivgu(gel(pol, 5), 10);
   d = gdivgu(gel(pol, 4), 10);
   e = gdivgu(gel(pol, 3), 5);

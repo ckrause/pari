@@ -1337,7 +1337,7 @@ split_1(GEN p, long bit, GEN *F, GEN *G)
   imax = polreal? 3: 4;
   for (i=1; i<=imax; i++)
   {
-    qq = RgX_translate(q, gel(v,i));
+    qq = RgX_Rg_translate(q, gel(v,i));
     lrmin = logmin_modulus(qq,0.05);
     if (LOG3 > lrmin + lthick)
     {
@@ -1350,8 +1350,8 @@ split_1(GEN p, long bit, GEN *F, GEN *G)
   bit2 = bit + gexpo(newq) - ep + (long)(n*LOG3/M_LN2 + 1);
   split_2(newq, bit2, ctr, lthick, &FF, &GG);
   r = gneg(mygprec(ctr,bit2));
-  FF = RgX_translate(FF,r);
-  GG = RgX_translate(GG,r);
+  FF = RgX_Rg_translate(FF,r);
+  GG = RgX_Rg_translate(GG,r);
 
   gr = invr(gr); bit2 = bit - ep + gexpo(FF)+gexpo(GG);
   *F = scalepol(FF,gr,bit2);
@@ -1383,7 +1383,7 @@ split_0_2(GEN p, long bit, GEN *F, GEN *G)
   else
   {
     b = gdivgs(gdiv(gel(q,n+1),gel(q,n+2)),-n);
-    q = RgX_translate(q,b);
+    q = RgX_Rg_translate(q,b);
   }
   gel(q,n+1) = gen_0; eq = gexpo(q);
   k = 0;
@@ -1406,8 +1406,8 @@ split_0_2(GEN p, long bit, GEN *F, GEN *G)
   if (b)
   {
     GEN mb = mygprec(gneg(b), bit2);
-    *F = RgX_translate(*F, mb);
-    *G = RgX_translate(*G, mb);
+    *F = RgX_Rg_translate(*F, mb);
+    *G = RgX_Rg_translate(*G, mb);
   }
   return 1;
 }
@@ -2279,7 +2279,7 @@ usp(GEN Q0, long flag, long bitprec)
       Q = Q0 = ZX_rescale2prim(Q0);
       c = gen_0;
     }
-    if (!equalii(nc, c)) Q = ZX_translate(Q, subii(nc, c));
+    if (!equalii(nc, c)) Q = ZX_Z_translate(Q, subii(nc, c));
     av2 = avma;
     k = Lk[ind];
     ind++;

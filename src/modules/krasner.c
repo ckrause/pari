@@ -196,7 +196,7 @@ get_topx(KRASNER_t *data, GEN eis)
   /* top poly. is the minimal polynomial of root(T) + root(eis) */
   if (data->f == 1) return eis;
   c = FpX_neg(pol_x(data->v),data->pr);
-  rpl = FqX_translate(eis, c, data->T, data->pr);
+  rpl = FqX_Fq_translate(eis, c, data->T, data->pr);
   p1 = p2 = rpl; av = avma;
   for (j = 1; j < data->f; j++)
   {
@@ -288,7 +288,7 @@ GetSharp(FAD_t *fdata, GEN pp, GEN ppp, GEN pol, GEN beta, long *pl)
   pari_sp av = avma;
 
   if (!gequal0(beta))
-    p1 = FqX_translate(pol, beta, fdata->topr, pp);
+    p1 = FqX_Fq_translate(pol, beta, fdata->topr, pp);
   else
     p1 = shallowcopy(pol);
   p2 = p1;

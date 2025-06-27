@@ -1804,12 +1804,12 @@ nfsqff_trager(GEN u, GEN T, GEN dent, long fl)
   P = cgetg(lx,t_VEC);
   x0 = deg1pol_shallow(stoi(-k), gen_0, varn(T));
   mx0 = deg1pol_shallow(stoi(k), gen_0, varn(T));
-  U = RgXQX_translate(u, mx0, T);
+  U = RgXQX_RgXQ_translate(u, mx0, T);
   if (!tmonic) U = Q_primpart(U);
   for (i=lx-1; i>0; i--)
   {
     GEN f = gel(fa,i), F = nfgcd(U, f, T, dent);
-    F = RgXQX_translate(F, x0, T);
+    F = RgXQX_RgXQ_translate(F, x0, T);
     /* F = gcd(f, u(t - x0)) [t + x0] = gcd(f(t + x0), u), more efficient */
     if (typ(F) != t_POL || degpol(F) == 0)
       pari_err_IRREDPOL("factornf [modulus]",T);
@@ -2069,7 +2069,7 @@ ZXirred_is_cyclo_translate(GEN T, long n_squarefree)
     if (r != 1 && r != -1) return NULL;
   }
   if (signe(c)) /* presumably Phi_guess(c \pm x) */
-    T = RgX_translate(T, negi(c));
+    T = RgX_Rg_translate(T, negi(c));
   if (!n_squarefree) T = RgX_deflate_max(T, &m);
   /* presumably Phi_core(guess)(\pm x), cyclotomic iff original T was */
   T1 = ZX_graeffe(T);

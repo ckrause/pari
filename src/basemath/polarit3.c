@@ -797,7 +797,7 @@ Fp_XpN_powu(GEN u, long n, GEN p, long v)
 }
 
 static GEN
-FpX_translate_basecase(GEN P, GEN c, GEN p)
+FpX_Fp_translate_basecase(GEN P, GEN c, GEN p)
 {
   pari_sp av = avma;
   GEN Q, *R;
@@ -813,7 +813,7 @@ FpX_translate_basecase(GEN P, GEN c, GEN p)
 
     if (gc_needed(av,2))
     {
-      if(DEBUGMEM>1) pari_warn(warnmem,"FpX_translate, i = %ld/%ld", i,n);
+      if(DEBUGMEM>1) pari_warn(warnmem,"FpX_Fp_translate, i = %ld/%ld", i,n);
       Q = gc_GEN(av, Q); R = (GEN*)Q+2;
     }
   }
@@ -821,17 +821,17 @@ FpX_translate_basecase(GEN P, GEN c, GEN p)
 }
 
 GEN
-FpX_translate(GEN P, GEN c, GEN p)
+FpX_Fp_translate(GEN P, GEN c, GEN p)
 {
   pari_sp av = avma;
   long n = degpol(P);
   if (n<=3 || 25*(n-3) < expi(p))
-    return FpX_translate_basecase(P, c, p);
+    return FpX_Fp_translate_basecase(P, c, p);
   else
   {
     long d = n >> 1;
-    GEN Q = FpX_translate(RgX_shift_shallow(P, -d), c, p);
-    GEN R = FpX_translate(RgXn_red_shallow(P, d), c, p);
+    GEN Q = FpX_Fp_translate(RgX_shift_shallow(P, -d), c, p);
+    GEN R = FpX_Fp_translate(RgXn_red_shallow(P, d), c, p);
     GEN S = Fp_XpN_powu(c, d, p, varn(P));
     return gc_upto(av, FpX_add(FpX_mul(Q, S, p), R, p));
   }
@@ -839,7 +839,7 @@ FpX_translate(GEN P, GEN c, GEN p)
 
 /* P(X + c), c an Fq */
 GEN
-FqX_translate(GEN P, GEN c, GEN T, GEN p)
+FqX_Fq_translate(GEN P, GEN c, GEN T, GEN p)
 {
   pari_sp av = avma;
   GEN Q, *R;
@@ -856,7 +856,7 @@ FqX_translate(GEN P, GEN c, GEN T, GEN p)
 
     if (gc_needed(av,2))
     {
-      if(DEBUGMEM>1) pari_warn(warnmem,"FqX_translate, i = %ld/%ld", i,n);
+      if(DEBUGMEM>1) pari_warn(warnmem,"FqX_Fq_translate, i = %ld/%ld", i,n);
       Q = gc_GEN(av, Q); R = (GEN*)Q+2;
     }
   }
@@ -1870,7 +1870,7 @@ ZX_ZXY_resultant_LERS(GEN A, GEN B0, long *plambda, GEN *LERS)
   if (degA == 1)
   {
     GEN a1 = gel(A,3), a0 = gel(A,2);
-    B = lambda? RgX_translate(B0, monomial(stoi(lambda), 1, vY)): B0;
+    B = lambda? RgX_Rg_translate(B0, monomial(stoi(lambda), 1, vY)): B0;
     H = gsubst(B, vY, gdiv(gneg(a0),a1));
    if (!equali1(a1)) H = RgX_Rg_mul(H, powiu(a1, poldegree(B,vY)));
     *LERS = mkvec2(scalarpol_shallow(a0,vX), scalarpol_shallow(a1,vX));
@@ -1891,7 +1891,7 @@ ZX_ZXY_resultant_LERS(GEN A, GEN B0, long *plambda, GEN *LERS)
 INIT:
   /* always except the first time */
   if (av2) { set_avma(av2); lambda = next_lambda(lambda); }
-  if (lambda) B = RgX_translate(B0, monomial(stoi(lambda), 1, vY));
+  if (lambda) B = RgX_Rg_translate(B0, monomial(stoi(lambda), 1, vY));
   B = swap_vars(B, vY, v);
   /* B0(lambda v + x, v) */
   if (DEBUGLEVEL>4) err_printf("Trying lambda = %ld\n", lambda);
@@ -2844,7 +2844,7 @@ ZX_ZXY_rnfequation_lambda(GEN A, GEN B0, long lambda)
   B = B0;
   setvarn(A,v);
 INIT:
-  if (lambda) B = RgX_translate(B0, monomial(stoi(lambda), 1, vY));
+  if (lambda) B = RgX_Rg_translate(B0, monomial(stoi(lambda), 1, vY));
   B = swap_vars(B, vY, v);
   /* B0(lambda v + x, v) */
   if (DEBUGLEVEL>4) err_printf("Trying lambda = %ld\n", lambda);
@@ -2873,7 +2873,7 @@ ZX_ZXY_rnfequation(GEN A, GEN B, long *lambda)
   if (lambda)
   {
     *lambda = ZX_ZXY_rnfequation_lambda(A, B, *lambda);
-    if (*lambda) B = RgX_translate(B, monomial(stoi(*lambda), 1, varn(A)));
+    if (*lambda) B = RgX_Rg_translate(B, monomial(stoi(*lambda), 1, varn(A)));
   }
   return ZX_ZXY_resultant(A,B);
 }

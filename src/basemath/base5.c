@@ -34,7 +34,7 @@ eltreltoabs(GEN eq, GEN x)
   x = RgX_nffix("eltreltoabs", T, x, 1);
   /* Mod(X - k a, Pabs(X)) is a root of the relative polynomial */
   if (signe(k))
-    x = RgXQX_translate(x, deg1pol_shallow(negi(k), gen_0, varn(T)), T);
+    x = RgXQX_RgXQ_translate(x, deg1pol_shallow(negi(k), gen_0, varn(T)), T);
   b = pol_x(v);
   s = gen_0;
   for (i=lg(x)-1; i>1; i--)
@@ -87,7 +87,7 @@ eltabstorel_lift(GEN rnfeq, GEN P)
   k = gel(rnfeq,3);
   P = lift_shallow(P);
   if (signe(k))
-    P = RgXQX_translate(P, deg1pol_shallow(k, gen_0, varn(T)), T);
+    P = RgXQX_RgXQ_translate(P, deg1pol_shallow(k, gen_0, varn(T)), T);
   P = RgXQX_rem(P, R, T);
   return QXQX_to_mod_shallow(P, T);
 }
@@ -1917,7 +1917,7 @@ static GEN
 K6_pol(GEN P, GEN D)
 {
   GEN t = gel(P,5);
-  GEN P2 = signe(t) ? ZX_translate(ZX_rescale2n(P,2), gneg(t)): P;
+  GEN P2 = signe(t) ? ZX_Z_translate(ZX_rescale2n(P,2), gneg(t)): P;
   GEN D2 = sqri(D), D3 = mulii(D,D2);
   GEN a2 = gel(P2, 4), a1 = gel(P2, 3), a0 = gel(P2, 2);
   return mkpoln(7,gen_1, gen_0, mulii(D,shifti(a2,1)), gen_0,

@@ -430,7 +430,7 @@ embedding(GEN g, GEN DATA, primedata *S, GEN den, GEN listdelta)
     w0 = w1; w0_Q = w1_Q; p = q; q = q2;
   }
   TR = gel(DATA,5);
-  if (!gequal0(TR)) w1_Q = RgX_translate(w1_Q, TR);
+  if (!gequal0(TR)) w1_Q = RgX_Rg_translate(w1_Q, TR);
   return gdiv(w1_Q,den);
 }
 
@@ -627,7 +627,7 @@ compute_data(blockdata *B)
 
     if (DEBUGLEVEL>1) err_printf("... update (translate) an existing DATA\n\n");
     gel(DATA,5) = TR;
-    pol = RgX_translate(gel(DATA,1), gen_m1);
+    pol = RgX_Rg_translate(gel(DATA,1), gen_m1);
     roo = RgV_translate(roo, TR);
     fk = RgV_negtranslate(gel(DATA,4),
                           deg1pol_shallow(gen_1, gen_m1, varn(pol)));
@@ -636,13 +636,13 @@ compute_data(blockdata *B)
     for (i=1; i<l; i++)
     {
       if (degpol(gel(interp,i)) > 0) /* do not turn pol_1(0) into gen_1 */
-        gel(interp,i) = FpXX_red(RgX_translate(gel(interp,i), gen_m1), p);
+        gel(interp,i) = FpXX_red(RgX_Rg_translate(gel(interp,i), gen_m1), p);
       if (degpol(gel(bezoutC,i)) > 0)
-        gel(bezoutC,i)= FpXX_red(RgX_translate(gel(bezoutC,i), gen_m1), p);
+        gel(bezoutC,i)= FpXX_red(RgX_Rg_translate(gel(bezoutC,i), gen_m1), p);
     }
     ff = cgetg(lff, t_VEC); /* copy, do not overwrite! */
     for (i=1; i<lff; i++)
-      gel(ff,i) = FpX_red(RgX_translate(gel(S->ff,i), mTR), p);
+      gel(ff,i) = FpX_red(RgX_Rg_translate(gel(S->ff,i), mTR), p);
   }
   else
   {

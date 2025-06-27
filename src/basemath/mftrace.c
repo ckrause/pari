@@ -11576,7 +11576,7 @@ intAoo(GEN van, long nlim, GEN al, long w, GEN P, GEN A, long k, long prec)
 
   if (nlim < 1) nlim = 1;
   alw = gmulsg(w, al);
-  P1 = RgX_translate(P, gneg(A));
+  P1 = RgX_Rg_translate(P, gneg(A));
   piI2A = gmul(PiI2n(1, prec), A);
   q = gexp(gdivgu(piI2A, w), prec);
   S = gen_0;
@@ -12620,10 +12620,10 @@ mfpetersson_i(GEN FS, GEN GS)
     GEN ga = gel(cosets,j), PGj1, PGjm1;
     long iT, D;
     iT = mftocoset_iD(N, ZM_mulTi(ga), cosets, &D);
-    PGj1 = RgX_translate(gel(PG, iT), gen_1);
+    PGj1 = RgX_Rg_translate(gel(PG, iT), gen_1);
     PGj1 = RgX_Rg_mul(PGj1, mfcharcxeval(CHI, D, prec));
     iT = mftocoset_iD(N, ZM_mulT(ga), cosets, &D);
-    PGjm1 = RgX_translate(gel(PG,iT), gen_m1);
+    PGjm1 = RgX_Rg_translate(gel(PG,iT), gen_m1);
     PGjm1 = RgX_Rg_mul(PGjm1, mfcharcxeval(CHI, D, prec));
     gel(PH,j) = gsub(PGj1, PGjm1);
   }

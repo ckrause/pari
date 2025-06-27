@@ -524,7 +524,7 @@ RgX_inflate(GEN x0, long d)
 
 /* return P(X + c) using destructive Horner, optimize for c = 1,-1 */
 static GEN
-RgX_translate_basecase(GEN P, GEN c)
+RgX_Rg_translate_basecase(GEN P, GEN c)
 {
   pari_sp av = avma;
   GEN Q, R;
@@ -540,7 +540,7 @@ RgX_translate_basecase(GEN P, GEN c)
       for (k=n-i; k<n; k++) gel(R,k) = gadd(gel(R,k), gel(R,k+1));
       if (gc_needed(av,2))
       {
-        if(DEBUGMEM>1) pari_warn(warnmem,"RgX_translate(1), i = %ld/%ld", i,n);
+        if(DEBUGMEM>1) pari_warn(warnmem,"RgX_Rg_translate(1), i = %ld/%ld", i,n);
         Q = gc_GEN(av, Q); R = Q+2;
       }
     }
@@ -552,7 +552,7 @@ RgX_translate_basecase(GEN P, GEN c)
       for (k=n-i; k<n; k++) gel(R,k) = gsub(gel(R,k), gel(R,k+1));
       if (gc_needed(av,2))
       {
-        if(DEBUGMEM>1) pari_warn(warnmem,"RgX_translate(-1), i = %ld/%ld", i,n);
+        if(DEBUGMEM>1) pari_warn(warnmem,"RgX_Rg_translate(-1), i = %ld/%ld", i,n);
         Q = gc_GEN(av, Q); R = Q+2;
       }
     }
@@ -564,7 +564,7 @@ RgX_translate_basecase(GEN P, GEN c)
       for (k=n-i; k<n; k++) gel(R,k) = gadd(gel(R,k), gmul(c, gel(R,k+1)));
       if (gc_needed(av,2))
       {
-        if(DEBUGMEM>1) pari_warn(warnmem,"RgX_translate, i = %ld/%ld", i,n);
+        if(DEBUGMEM>1) pari_warn(warnmem,"RgX_Rg_translate, i = %ld/%ld", i,n);
         Q = gc_GEN(av, Q); R = Q+2;
       }
     }
@@ -582,7 +582,7 @@ zero_FpX_mod(GEN p, long v)
 }
 
 static GEN
-RgX_translate_FpX(GEN P, GEN c, GEN p)
+RgX_Rg_translate_FpX(GEN P, GEN c, GEN p)
 {
   pari_sp av = avma;
   GEN r;
@@ -590,64 +590,64 @@ RgX_translate_FpX(GEN P, GEN c, GEN p)
   if (lgefint(p) == 3)
   {
     ulong pp = uel(p, 2);
-    r = Flx_to_ZX_inplace(Flx_translate(RgX_to_Flx(x, pp), Rg_to_Fl(c, pp), pp));
+    r = Flx_to_ZX_inplace(Flx_Fl_translate(RgX_to_Flx(x, pp), Rg_to_Fl(c, pp), pp));
   }
   else
 #endif
-    r = FpX_translate(RgX_to_FpX(P, p), Rg_to_Fp(c, p), p);
+    r = FpX_Fp_translate(RgX_to_FpX(P, p), Rg_to_Fp(c, p), p);
   if (signe(r)==0) { set_avma(av); return zero_FpX_mod(p, varn(P)); }
   return gc_upto(av, FpX_to_mod(r, p));
 }
 
 static GEN
-RgX_translate_fast(GEN P, GEN c)
+RgX_Rg_translate_fast(GEN P, GEN c)
 {
   GEN p, pol;
   long pa;
   long t = RgX_Rg_type(P, c, &p,&pol,&pa);
   switch(t)
   {
-    case t_INT:    return ZX_translate(P, c);
-    case t_INTMOD: return RgX_translate_FpX(P, c, p);
+    case t_INT:    return ZX_Z_translate(P, c);
+    case t_INTMOD: return RgX_Rg_translate_FpX(P, c, p);
     default:       return NULL;
   }
 }
 
 static GEN
-RgX_translate_i(GEN P, GEN c)
+RgX_Rg_translate_i(GEN P, GEN c)
 {
   pari_sp av = avma;
   long n;
   n = degpol(P);
   if (n < 40)
-    return RgX_translate_basecase(P, c);
+    return RgX_Rg_translate_basecase(P, c);
   else
   {
     long d = n >> 1;
-    GEN Q = RgX_translate_i(RgX_shift_shallow(P, -d), c);
-    GEN R = RgX_translate_i(RgXn_red_shallow(P, d), c);
+    GEN Q = RgX_Rg_translate_i(RgX_shift_shallow(P, -d), c);
+    GEN R = RgX_Rg_translate_i(RgXn_red_shallow(P, d), c);
     GEN S = gpowgs(deg1pol_shallow(gen_1, c, varn(P)), d);
     return gc_upto(av, RgX_add(RgX_mul(Q, S), R));
   }
 }
 
 GEN
-RgX_translate(GEN P, GEN c)
+RgX_Rg_translate(GEN P, GEN c)
 {
-  GEN R = RgX_translate_fast(P, c);
-  return R ? R: RgX_translate_i(P,c);
+  GEN R = RgX_Rg_translate_fast(P, c);
+  return R ? R: RgX_Rg_translate_i(P,c);
 }
 /* P(ax + b) */
 GEN
 RgX_affine(GEN P, GEN a, GEN b)
 {
-  if (!gequal0(b)) P = RgX_translate(P, b);
+  if (!gequal0(b)) P = RgX_Rg_translate(P, b);
   return RgX_unscale(P, a);
 }
 
 /* return lift( P(X + c) ) using Horner, c in R[y]/(T) */
 GEN
-RgXQX_translate(GEN P, GEN c, GEN T)
+RgXQX_RgXQ_translate(GEN P, GEN c, GEN T)
 {
   pari_sp av = avma;
   GEN Q, R;
@@ -666,7 +666,7 @@ RgXQX_translate(GEN P, GEN c, GEN T)
     }
     if (gc_needed(av,2))
     {
-      if(DEBUGMEM>1) pari_warn(warnmem,"RgXQX_translate, i = %ld/%ld", i,n);
+      if(DEBUGMEM>1) pari_warn(warnmem,"RgXQX_RgXQ_translate, i = %ld/%ld", i,n);
       Q = gc_GEN(av, Q); R = Q+2;
     }
   }

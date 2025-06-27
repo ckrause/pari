@@ -184,9 +184,9 @@ Kderivsmallinit(GEN ldata, GEN Vga, long m, long bit)
     c = cgetg(limn+2,t_COL); gel(c,1) = G;
     for (n=1; n <= limn; n++)
     {
-      GEN A = utoineg(2*n), T = RgX_translate(tj, A);
+      GEN A = utoineg(2*n), T = RgX_Rg_translate(tj, A);
       /* T = exact polynomial, may vanish at 0 (=> pole in c[n+1]) */
-      if (t) T = RgX_mul(T, RgX_translate(t, A)); /* no pole here */
+      if (t) T = RgX_mul(T, RgX_Rg_translate(t, A)); /* no pole here */
       gel(c,n+1) = gdiv(gel(c,n), T);
     }
     gel(mat, j) = C = cgetg(lj+1, t_COL);

@@ -1443,7 +1443,7 @@ getprime(decomp_t *S, GEN phi, GEN chip, GEN nup, long *Lp, long *Ep,
   if (degpol(nup) == 1)
   {
     GEN c = gel(nup,2); /* nup = X + c */
-    chin = signe(c)? RgX_translate(chip, negi(c)): chip;
+    chin = signe(c)? RgX_Rg_translate(chip, negi(c)): chip;
   }
   else
     chin = ZXQ_charpoly(nup, chip, varn(chip));
@@ -1686,7 +1686,7 @@ loop(decomp_t *S, long Ea)
       long Le, Ee;
       GEN chie, nue, e, pie;
       d = negi(gel(nug,2));
-      chie = RgX_translate(chig, d);
+      chie = RgX_Rg_translate(chig, d);
       nue = pol_x(v);
       e = RgX_Rg_sub(g, d);
       pie = getprime(S, e, chie, nue, &Le, &Ee,  0,Ea);
@@ -3181,9 +3181,9 @@ rnfdedekind_i(GEN nf, GEN P, GEN pr, long vdisc, long only_maximal)
       if (!z) pari_err_IMPL( "Dedekind in the difficult case");
       z = Fq_to_nf(z, modpr);
       if (typ(z) == t_INT)
-        P = RgX_translate(P, z);
+        P = RgX_Rg_translate(P, z);
       else
-        P = RgXQX_translate(P, z, T);
+        P = RgXQX_RgXQ_translate(P, z, T);
       P = RgX_recip_i(P);
       Ppr = nfX_to_FqX(P, nf, modpr); /* degpol(P) = degpol(Ppr) = m */
     }

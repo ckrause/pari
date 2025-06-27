@@ -136,7 +136,7 @@ lambda_ord(GEN W, GEN xpm, long v, long p, long D, long R, GEN ap)
     P1 = polPn(W, xpm, p, D, R, n);
     alpha = mspadic_unit_eigenvalue(ap, 2, utoipos(p), n+1);
     alpha = padic_to_Q(ginv(alpha));
-    xi = FpX_translate(polcyclo(pn, 0), gen_1, Q);
+    xi = FpX_Fp_translate(polcyclo(pn, 0), gen_1, Q);
     P = ZX_sub(P1, ZX_Z_mul(FpX_mul(P0, xi, Q), alpha)); /* mod p^n */
 
     if (!signe(P) || n + v <= 0) continue;

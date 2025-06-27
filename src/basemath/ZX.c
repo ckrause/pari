@@ -337,7 +337,7 @@ ZX_div_by_X_1(GEN a, GEN *r)
 
 /* return P(X + c) using destructive Horner, optimize for c = 1,-1 */
 static GEN
-ZX_translate_basecase(GEN P, GEN c)
+ZX_Z_translate_basecase(GEN P, GEN c)
 {
   pari_sp av = avma;
   GEN Q, R;
@@ -353,7 +353,7 @@ ZX_translate_basecase(GEN P, GEN c)
       for (k=n-i; k<n; k++) gel(R,k) = addii(gel(R,k), gel(R,k+1));
       if (gc_needed(av,2))
       {
-        if(DEBUGMEM>1) pari_warn(warnmem,"ZX_translate(1), i = %ld/%ld", i,n);
+        if(DEBUGMEM>1) pari_warn(warnmem,"ZX_Z_translate(1), i = %ld/%ld", i,n);
         Q = gc_GEN(av, Q); R = Q+2;
       }
     }
@@ -365,7 +365,7 @@ ZX_translate_basecase(GEN P, GEN c)
       for (k=n-i; k<n; k++) gel(R,k) = subii(gel(R,k), gel(R,k+1));
       if (gc_needed(av,2))
       {
-        if(DEBUGMEM>1) pari_warn(warnmem,"ZX_translate(-1), i = %ld/%ld", i,n);
+        if(DEBUGMEM>1) pari_warn(warnmem,"ZX_Z_translate(-1), i = %ld/%ld", i,n);
         Q = gc_GEN(av, Q); R = Q+2;
       }
     }
@@ -377,7 +377,7 @@ ZX_translate_basecase(GEN P, GEN c)
       for (k=n-i; k<n; k++) gel(R,k) = addmulii_inplace(gel(R,k), c, gel(R,k+1));
       if (gc_needed(av,2))
       {
-        if(DEBUGMEM>1) pari_warn(warnmem,"ZX_translate, i = %ld/%ld", i,n);
+        if(DEBUGMEM>1) pari_warn(warnmem,"ZX_Z_translate, i = %ld/%ld", i,n);
         Q = gc_GEN(av, Q); R = Q+2;
       }
     }
@@ -428,19 +428,19 @@ Z_XpN_powu(GEN u, long n, long v)
 }
 
 GEN
-ZX_translate(GEN P, GEN c)
+ZX_Z_translate(GEN P, GEN c)
 {
   pari_sp av = avma;
   long n;
   if (!signe(c)) return ZX_copy(P);
   n = degpol(P);
   if (n < 220)
-    return ZX_translate_basecase(P, c);
+    return ZX_Z_translate_basecase(P, c);
   else
   {
     long d = n >> 1;
-    GEN Q = ZX_translate(RgX_shift_shallow(P, -d), c);
-    GEN R = ZX_translate(RgXn_red_shallow(P, d), c);
+    GEN Q = ZX_Z_translate(RgX_shift_shallow(P, -d), c);
+    GEN R = ZX_Z_translate(RgXn_red_shallow(P, d), c);
     GEN S = Z_XpN_powu(c, d, varn(P));
     return gc_upto(av, ZX_add(ZX_mul(Q, S), R));
   }
@@ -450,7 +450,7 @@ ZX_translate(GEN P, GEN c)
 GEN
 ZX_affine(GEN P, GEN a, GEN b)
 {
-  if (signe(b)) P = ZX_translate(P, b);
+  if (signe(b)) P = ZX_Z_translate(P, b);
   return ZX_unscale(P, a);
 }
 

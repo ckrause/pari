@@ -790,7 +790,7 @@ cassels_oo_solve_i(GEN q, GEN g)
   a = gel(g,4); D = subii(sqri(b), shifti(mulii(a,c), 2)); /* g = ax^2+bx+c */
   if (signe(D) <= 0) return 1; /* sign(g) = 1 is constant */
   /* Rescale q and g: x->(x - b)/2a; roots of new g are \pm sqrt(D) */
-  q = ZX_translate(ZX_rescale(q, shifti(a,1)), negi(b));
+  q = ZX_Z_translate(ZX_rescale(q, shifti(a,1)), negi(b));
   /* Now g has sign -1 in I=[-sqrt(D),sqrt(D)] and 1 elsewhere.
    * Check if q vanishes in I <=> Graeffe(q) vanishes on [0,D].
    * If so or if q(0) > 0 we take r in there; else r is outside of I */
@@ -834,7 +834,7 @@ quartic_findunit(GEN D, GEN q)
     if (signe(QXQ_norm(z,T)))
       return absequalii(quartic_disc(q), D)? q: ZX_shifti(q, 2);
     set_avma(av);
-    q = ZX_translate(RgX_recip(q), gen_1);
+    q = ZX_Z_translate(RgX_recip(q), gen_1);
   }
 }
 
@@ -995,7 +995,7 @@ projratpointxz2(GEN T, long lim, long effort, GEN *py)
       GEN t, U = ZM2_mul(M, mkmat22(p, gel(r,j), gen_0, gen_1));
       if (dvdii(gcoeff(U,1,2), p) && dvdii(gcoeff(U,2,2), p))
       { set_avma(av3); continue; } /* content(U) != 1 (in fact p) */
-      t = ZX_unscale_div(ZX_translate(pol, gel(r,j)), p);
+      t = ZX_unscale_div(ZX_Z_translate(pol, gel(r,j)), p);
       list = vec_append(list, mkvec4(t, U, K, C));
     }
   }

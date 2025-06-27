@@ -5012,7 +5012,7 @@ $x=\sum_{i=0}^{n}{c_i\*B^i}$.
 \fun{GEN}{FpXV_FpX_fromdigits}{GEN v, GEN B, GEN p} where $v=[c_0,\ldots,c_n]$
 is a vector of \kbd{FpX}, returns $\sum_{i=0}^{n}{c_i\*B^i}$.
 
-\fun{GEN}{FpX_translate}{GEN P, GEN c, GEN p} let $c$ be an \kbd{Fp} and let
+\fun{GEN}{FpX_Fp_translate}{GEN P, GEN c, GEN p} let $c$ be an \kbd{Fp} and let
 $P$ be an \kbd{FpX}; returns the translated \kbd{FpX} of $P(X+c)$.
 
 \fun{GEN}{FpX_gcd}{GEN x, GEN y, GEN p} returns a (not necessarily monic)
@@ -5758,7 +5758,7 @@ Not stack-clean but suitable for \kbd{gc\_upto}.
 \fun{GEN}{FqX_integ}{GEN x, GEN T, GEN p} returns the primitive of \kbd{x}.
 whose constant term is $0$.
 
-\fun{GEN}{FqX_translate}{GEN P, GEN c, GEN T, GEN p} let $c$ be an \kbd{Fq}
+\fun{GEN}{FqX_Fq_translate}{GEN P, GEN c, GEN T, GEN p} let $c$ be an \kbd{Fq}
 defined modulo $(p, T)$, and let $P$ be an \kbd{FqX}; returns the translated
 \kbd{FqX} of $P(X+c)$.
 
@@ -6248,7 +6248,7 @@ here $p$ must be prime.
 \fun{GEN}{Flx_integ}{GEN z, ulong p},
 here $p$ must be prime.
 
-\fun{GEN}{Flx_translate}{GEN P, ulong c, ulong p} return $P(x+c)$, $p$ must be
+\fun{GEN}{Flx_Fl_translate}{GEN P, ulong c, ulong p} return $P(x+c)$, $p$ must be
 prime. Asymptotically fast (quasi-linear in the degree of $P$).
 
 \fun{GEN}{Flx_translate1}{GEN P, ulong p} return $P(x+1)$, $p$ must be prime.
@@ -6551,7 +6551,7 @@ $[F_j(v[1]),\ldots,F_j(v[n])]$, with $F_j = F[j]$.
 
 \fun{GEN}{FlxC_sub}{GEN x, GEN y, ulong p}
 
-\fun{GEN}{FlxC_translate}{GEN x, ulong c, ulong p}
+\fun{GEN}{FlxC_Fl_translate}{GEN x, ulong c, ulong p}
 
 \fun{GEN}{zero_FlxC}{long n, long sv}
 
@@ -6566,7 +6566,7 @@ this function applies \kbd{FlxC\_eval\_powers\_pre} to all entries of \kbd{M}.
 
 \fun{GEN}{FlxM_mul}{GEN x, GEN y, ulong p}
 
-\fun{GEN}{FlxM_translate}{GEN x, ulong c, ulong p}
+\fun{GEN}{FlxM_Fl_translate}{GEN x, ulong c, ulong p}
 
 \fun{GEN}{zero_FlxM}{long r, long c, long sv}
 
@@ -10257,7 +10257,7 @@ function.
 $h^{\deg(P)-1} P(x/h)$, where \kbd{P} is a nonzero \kbd{ZX} and \kbd{h} is
 its leading coefficient. Shallow function.
 
-\fun{GEN}{ZX_translate}{GEN P, GEN c} assume $P$ is a \kbd{ZX} and $c$ an
+\fun{GEN}{ZX_Z_translate}{GEN P, GEN c} assume $P$ is a \kbd{ZX} and $c$ an
 integer. Returns $P(X + c)$ (optimized for $c = \pm 1$).
 
 \fun{GEN}{ZX_affine}{GEN P, GEN a, GEN b} $P$ is a \kbd{ZX}, $a$ and $b$
@@ -11073,7 +11073,7 @@ on the stack. Suitable but inefficient for \kbd{gc\_upto}.)
 \fun{GEN}{RgXV_unscale}{GEN v, GEN h} apply \kbd{RgX\_unscale} to a vector
 of \kbd{RgX}.
 
-\fun{GEN}{RgX_translate}{GEN P, GEN c} assume $c$ is a scalar or
+\fun{GEN}{RgX_Rg_translate}{GEN P, GEN c} assume $c$ is a scalar or
 a polynomials whose main variable has lower priority than the main variable
 $X$ of $P$. Returns $P(X + c)$ (optimized for $c = \pm 1$).
 
@@ -11270,7 +11270,7 @@ coefficients are \kbd{RgX}s (arbitrary \kbd{GEN}s in fact), reduce them to
 
 \fun{GEN}{RgXQX_rem}{GEN x, GEN y, GEN T}
 
-\fun{GEN}{RgXQX_translate}{GEN P, GEN c, GEN T} assume the main variable
+\fun{GEN}{RgXQX_RgXQ_translate}{GEN P, GEN c, GEN T} assume the main variable
 $X$ of $P$ has higher priority than the main variable $Y$ of $T$ and $c$.
 Return a lift of $P(X+\text{Mod}(c(Y), T(Y)))$.
 

@@ -2088,7 +2088,7 @@ psi1series(long n, long v, long prec)
 static GEN
 tr(GEN T, GEN z0, long L)
 {
-  GEN s = RgX_to_ser(RgX_translate(T, z0), L+3);
+  GEN s = RgX_to_ser(RgX_Rg_translate(T, z0), L+3);
   setvarn(s, 0); return s;
 }
 /* z0 a complex number with Re(z0) > 1/2; return psi(z0+x) + O(x^L)

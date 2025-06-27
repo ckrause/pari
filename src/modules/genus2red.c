@@ -421,7 +421,7 @@ polymini(GEN H, GEN p)
       }
       /* maxord >= 3 */
       if (!rac) { quad = 1; goto end; }
-      if (signe(rac)) H = ZX_translate(H, rac);
+      if (signe(rac)) H = ZX_Z_translate(H, rac);
       lambda = 6 - maxord;
     }
     if (lambda <= 2)
@@ -466,7 +466,7 @@ polymini(GEN H, GEN p)
       if (m > 1)
       {
         rac = FpX_oneroot(gel(v,m), p); /* v[m] is linear */
-        H = ZX_translate(H,rac);
+        H = ZX_Z_translate(H,rac);
         t60 = theta_j(H,p,3);
         if (t60 < 60) break;
       }
@@ -498,7 +498,7 @@ polymini_zi(GEN pol) /* polynome minimal dans Z[i] */
   for(;;)
   {
     long e;
-    polh = RgX_translate(polh, rac);
+    polh = RgX_Rg_translate(polh, rac);
     t6 = theta_3_zi(polh); e = t6 / 6;
     if (e)
     {
@@ -546,7 +546,7 @@ polymini_zi2(GEN pol)
   for(;;)
   {
     long e;
-    polh = RgX_translate(polh, rac);
+    polh = RgX_Rg_translate(polh, rac);
     t6 = theta_3_zi2(polh); e = t6 / 6;
     if (e)
     {

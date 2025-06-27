@@ -1623,7 +1623,7 @@ genus2_halfstablemodel_i(GEN P, GEN p, long vt)
   R = FpX_roots_mult(FpX_red(Qp,p), 4-e, p);
   if (lg(R) > 1)
   {
-    GEN C = Zst_red1(ZX_translate(P, gel(R,1)), pol_x(vt), p, vt);
+    GEN C = Zst_red1(ZX_Z_translate(P, gel(R,1)), pol_x(vt), p, vt);
     return Zst_red3(C, p, vt);
   }
   Poo = RgXn_recip_shallow(P, 7);

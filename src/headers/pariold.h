@@ -13,6 +13,12 @@ with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 /* For compatibility with older PARI versions */
+
+#define RgX_translate RgX_Rg_translate
+#define RgXQX_translate RgXQX_RgXQ_translate
+#define ZX_translate ZX_Z_translate
+#define FpX_translate FpX_Fp_translate
+#define FqX_translate FqX_Fq_translate
 #define hammingl hammingu
 #define bnrconductor_i bnrconductor
 #define gerepileall (void)gc_all

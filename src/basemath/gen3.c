@@ -4428,7 +4428,7 @@ poleval(GEN x, GEN y)
           GEN a = gel(y,3), b = gel(y,2); /* y = a t + b */
           if (isint1(a))
           {
-            y = RgX_translate(x, b);
+            y = RgX_Rg_translate(x, b);
             if (M == 1) return y;
           }
           else

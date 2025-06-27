@@ -3171,7 +3171,7 @@ do_compo(GEN A0, GEN B)
   A = A0 = leafcopy(A0); setvarn(A0, v);
   for  (a = 0;; a = nexta(a))
   {
-    if (a) A = RgX_translate(A0, stoi(a));
+    if (a) A = RgX_Rg_translate(A0, stoi(a));
     z = resultant(A,B); /* in variable 0 */
     if (issquarefree(z)) break;
   }
