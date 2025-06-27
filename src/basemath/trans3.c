@@ -178,7 +178,7 @@ bessel_get_lim(double B, double L)
 static GEN vjbesselh(void* E, GEN z, long prec){return jbesselh((GEN)E,z,prec);}
 static GEN vjbessel(void* E, GEN z, long prec) {return jbessel((GEN)E,z,prec);}
 static GEN vibessel(void* E, GEN z, long prec) {return ibessel((GEN)E,z,prec);}
-static GEN vnbessel(void* E, GEN z, long prec) {return nbessel((GEN)E,z,prec);}
+static GEN vnbessel(void* E, GEN z, long prec) {return ybessel((GEN)E,z,prec);}
 static GEN vkbessel(void* E, GEN z, long prec) {return kbessel((GEN)E,z,prec);}
 
 /* if J != 0 BesselJ, else BesselI. */
@@ -1483,7 +1483,7 @@ sererfc(GEN x, long prec)
   setsigne(z, -1); /* -2/sqrt(Pi) */
   z = gmul(z, integser(gmul(derivser(x), gexp(gneg(gsqr(x)), prec))));
   u = polcoef_i(x, 0, varn(x));
-  if (!gcmp0(u)) z = gadd(z, gerfc(u, prec));
+  if (!gequal0(u)) z = gadd(z, gerfc(u, prec));
   return z;
 }
 

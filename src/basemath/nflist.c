@@ -4973,7 +4973,7 @@ nflist_C32D4_worker(GEN P, GEN X, GEN Xinf, GEN gs)
   GEN bd = bigdisc(P), RES = cgetg(1, t_VEC), L, bnf, nf, aut;
   long s = itos(gs), lim, j;
 
-  if (absi_cmp(bd, X) > 0) retgc_const(av, cgetg(1, t_VEC));
+  if (abscmpii(bd, X) > 0) retgc_const(av, cgetg(1, t_VEC));
   bnf = bnfY(P); nf = bnf_get_nf(bnf); aut = cycfindaut(nf);
   lim = itos(divii(X, absi_shallow(bd)));
   L = ideallistsquare(bnf, lim);
