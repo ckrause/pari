@@ -957,8 +957,12 @@ rnfscal(GEN m, GEN x, GEN y)
 {
   long i, l = lg(m);
   GEN z = cgetg(l, t_COL);
-  for (i = 1; i < l; i++)
-    gel(z,i) = gmul(conj_i(shallowtrans(gel(x,i))), gmul(gel(m,i), gel(y,i)));
+  if (x == y)
+    for (i = 1; i < l; i++)
+      gel(z,i) = hqfeval(gel(m,i), gel(x,i));
+  else
+    for (i = 1; i < l; i++)
+      gel(z,i) = qfevalb(gel(m,i), conj_i(gel(x,i)), gel(y,i));
   return z;
 }
 
@@ -1094,11 +1098,10 @@ rnfT2(GEN nf, GEN pol, long prec)
   return T2;
 }
 
-/* given a base field nf (e.g main variable y), a polynomial pol with
- * coefficients in nf    (e.g main variable x), and an order as output
- * by rnfpseudobasis, outputs a reduced order. */
+/* Given a polynomial pol with coefficients in nf and an order as output by
+ * rnfpseudobasis, outputs a reduced order. */
 GEN
-rnflllgram(GEN nf, GEN pol, GEN order,long prec)
+rnflllgram(GEN nf, GEN pol, GEN order, long prec)
 {
   pari_sp av = avma;
   long j, k, l, kmax, r1, lx, count = 0;
@@ -1141,7 +1144,7 @@ PRECPB:
     gel(B,j) = gen_0;
   }
   if (DEBUGLEVEL) err_printf("k = ");
-  gel(B,1) = real_i(rnfscal(T2,gel(MC,1),gel(MC,1)));
+  gel(B,1) = rnfscal(T2,gel(MC,1),gel(MC,1));
   gel(MCS,1) = gel(MC,1);
   kmax = 1; k = 2;
   do
@@ -1156,7 +1159,7 @@ PRECPB:
         gcoeff(mu,k,j) = vecdiv(rnfscal(T2,gel(MCS,j),gel(MC,k)), gel(B,j));
         gel(MCS,k) = gsub(gel(MCS,k), vecmul(gcoeff(mu,k,j),gel(MCS,j)));
       }
-      gel(B,k) = real_i(rnfscal(T2,gel(MCS,k),gel(MCS,k)));
+      gel(B,k) = rnfscal(T2,gel(MCS,k),gel(MCS,k));
       if (check_0(gel(B,k))) goto PRECPB;
     }
     if (!RED(k, k-1, U, mu, MC, nf, idealmul(nf, gel(I,k-1), Ik_inv)))
