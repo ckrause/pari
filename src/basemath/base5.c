@@ -1010,7 +1010,7 @@ RED(long k, long l, GEN U, GEN mu, GEN MC, GEN nf, GEN ideal)
 
   xc = nftocomplex(nf,x);
   gel(MC,k) = gsub(gel(MC,k), vecmul(xc,gel(MC,l)));
-  gel(U,k) = gsub(gel(U,k), gmul(coltoalg(nf,x), gel(U,l)));
+  gel(U,k) = gsub(gel(U,k), nfC_nf_mul(nf, gel(U,l), x));
   gcoeff(mu,k,l) = gsub(gcoeff(mu,k,l), xc);
   for (i=1; i<l; i++)
     gcoeff(mu,k,i) = gsub(gcoeff(mu,k,i), vecmul(xc,gcoeff(mu,l,i)));
@@ -1027,7 +1027,7 @@ check_0(GEN B)
 }
 
 static int
-do_SWAP(GEN I, GEN MC, GEN MCS, GEN h, GEN mu, GEN B, long kmax, long k,
+do_SWAP(GEN I, GEN MC, GEN MCS, GEN U, GEN mu, GEN B, long kmax, long k,
         const long alpha, long r1)
 {
   GEN p1, p2, muf, mufc, Bf, temp;
@@ -1039,7 +1039,7 @@ do_SWAP(GEN I, GEN MC, GEN MCS, GEN h, GEN mu, GEN B, long kmax, long k,
   if (gcmp(gmulsg(alpha,p1), gmulsg(alpha-1,p2)) > 0) return 0;
 
   swap(gel(MC,k-1),gel(MC,k));
-  swap(gel(h,k-1), gel(h,k));
+  swap(gel(U,k-1), gel(U,k));
   swap(gel(I,k-1), gel(I,k));
   for (j=1; j<=k-2; j++) swap(gcoeff(mu,k-1,j),gcoeff(mu,k,j));
   muf = gcoeff(mu,k,k-1);
@@ -1105,7 +1105,7 @@ rnflllgram(GEN nf, GEN pol, GEN order, long prec)
 {
   pari_sp av = avma;
   long j, k, l, kmax, r1, lx, count = 0;
-  GEN H = NULL, M, I, U, T2, MC, MPOL, MCS, B, mu;
+  GEN H = NULL, M, I, U, T2, MC, MCS, B, mu;
   const long alpha = 10, MAX_COUNT = 4;
 
   nf = checknf(nf); r1 = nf_get_r1(nf);
@@ -1115,7 +1115,6 @@ rnflllgram(GEN nf, GEN pol, GEN order, long prec)
   if (lx < 3) return gcopy(order);
   if (lx-1 != degpol(pol)) pari_err_DIM("rnflllgram");
   I = leafcopy(I);
-  MPOL = matbasistoalg(nf, M);
   MCS = matid(lx-1); /* dummy for GC */
 PRECNF:
   if (count == MAX_COUNT)
@@ -1131,11 +1130,11 @@ PRECPB:
   if (U)
   { /* precision problem, recompute. If no progress, increase nf precision */
     if (++count == MAX_COUNT || RgM_isidentity(U)) {count = MAX_COUNT; goto PRECNF;}
-    H = H? gmul(H, U): U;
-    MPOL = gmul(MPOL, U);
+    H = H? nfM_mul(nf, H, U): U;
+    M = nfM_mul(nf, M, U);
   }
   U = matid(lx-1);
-  MC = mattocomplex(nf, MPOL);
+  MC = mattocomplex(nf, M);
   mu = cgetg(lx,t_MAT);
   B  = cgetg(lx,t_COL);
   for (j=1; j<lx; j++)
@@ -1179,16 +1178,14 @@ PRECPB:
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"rnflllgram");
-      (void)gc_all(av, H?10:9, &nf,&T2,&U,&MPOL,&B,&MC,&MCS,&mu,&I,&H);
+      (void)gc_all(av, H?10:9, &nf,&T2,&U,&M,&B,&MC,&MCS,&mu,&I,&H);
     }
   }
   while (k < lx);
-  MPOL = gmul(MPOL,U);
-  if (H) U = gmul(H, U);
+  M = nfM_mul(nf, M, U);
+  if (H) U = nfM_mul(nf, H, U);
   if (DEBUGLEVEL) err_printf("\n");
-  MPOL = RgM_to_nfM(nf,MPOL);
-  U = RgM_to_nfM(nf,U);
-  return gc_GEN(av, mkvec2(mkvec2(MPOL,I), U));
+  return gc_GEN(av, mkvec2(mkvec2(M,I), U));
 }
 
 GEN
