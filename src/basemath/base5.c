@@ -907,15 +907,6 @@ nftau(long r1, GEN x)
 }
 
 static GEN
-initmat(long l)
-{
-  GEN x = cgetg(l, t_MAT);
-  long i;
-  for (i = 1; i < l; i++) gel(x,i) = cgetg(l, t_COL);
-  return x;
-}
-
-static GEN
 nftocomplex(GEN nf, GEN x)
 {
   GEN M = nf_get_M(nf);
@@ -939,6 +930,7 @@ mattocomplex(GEN nf, GEN x)
   return v;
 }
 
+/* x and nfX; return v such that v[i] = complex roots of sigma_i(x) */
 static GEN
 nf_all_roots(GEN nf, GEN x, long prec)
 {
@@ -1069,42 +1061,34 @@ do_SWAP(GEN I, GEN MC, GEN MCS, GEN h, GEN mu, GEN B, long kmax, long k,
 }
 
 static GEN
-rel_T2(GEN nf, GEN pol, long lx, long prec)
+rnfT2(GEN nf, GEN pol, long prec)
 {
-  long ru, i, j, k, l;
-  GEN T2, s, unro, roorder, powreorder;
+  long ru, i, a, b, n = degpol(pol);
+  GEN T2, ropow, RO = nf_all_roots(nf, pol, prec);
 
-  roorder = nf_all_roots(nf, pol, prec);
-  if (!roorder) return NULL;
-  ru = lg(roorder);
-  unro = cgetg(lx,t_COL); for (i=1; i<lx; i++) gel(unro,i) = gen_1;
-  powreorder = cgetg(lx,t_MAT); gel(powreorder,1) = unro;
-  T2 = cgetg(ru, t_VEC);
+  if (!RO) return NULL;
+  ru = lg(RO); T2 = cgetg(ru, t_VEC);
+  ropow = cgetg(n+1,t_MAT); gel(ropow,1) = const_col(n, gen_1);
   for (i = 1; i < ru; i++)
   {
-    GEN ro = gel(roorder,i);
-    GEN m = initmat(lx);
-    for (k=2; k<lx; k++)
+    GEN conjropow, ro = gel(RO,i), m = cgetg(n+1, t_MAT);
+    for (a = 2; a <= n; a++) gel(ropow,a) = vecmul(ro, gel(ropow,a-1));
+    conjropow = conj_i(ropow);
+    for (b = 1; b <= n; b++)
     {
-      GEN c = cgetg(lx, t_COL); gel(powreorder,k) = c;
-      for (j=1; j < lx; j++)
-        gel(c,j) = gmul(gel(ro,j), gmael(powreorder,k-1,j));
-    }
-    for (l = 1; l < lx; l++)
-      for (k = 1; k <= l; k++)
+      gel(m,b) = cgetg(n+1, t_COL);
+      for (a = 1; a <= b; a++)
       {
-        s = gen_0;
-        for (j = 1; j < lx; j++)
-          s = gadd(s, gmul(conj_i(gmael(powreorder,k,j)),
-                                  gmael(powreorder,l,j)));
-        if (l == k)
-          gcoeff(m, l, l) = real_i(s);
+        GEN s = RgV_dotproduct(gel(conjropow,a), gel(ropow,b));
+        if (b == a)
+          gcoeff(m, b, b) = real_i(s);
         else
         {
-          gcoeff(m, k, l) = s;
-          gcoeff(m, l, k) = conj_i(s);
+          gcoeff(m, a, b) = s;
+          gcoeff(m, b, a) = conj_i(s);
         }
       }
+    }
     gel(T2,i) = m;
   }
   return T2;
@@ -1118,7 +1102,7 @@ rnflllgram(GEN nf, GEN pol, GEN order,long prec)
 {
   pari_sp av = avma;
   long j, k, l, kmax, r1, lx, count = 0;
-  GEN M, I, h, H, mth, MC, MPOL, MCS, B, mu;
+  GEN H = NULL, M, I, U, T2, MC, MPOL, MCS, B, mu;
   const long alpha = 10, MAX_COUNT = 4;
 
   nf = checknf(nf); r1 = nf_get_r1(nf);
@@ -1128,7 +1112,6 @@ rnflllgram(GEN nf, GEN pol, GEN order,long prec)
   if (lx < 3) return gcopy(order);
   if (lx-1 != degpol(pol)) pari_err_DIM("rnflllgram");
   I = leafcopy(I);
-  H = NULL;
   MPOL = matbasistoalg(nf, M);
   MCS = matid(lx-1); /* dummy for GC */
 PRECNF:
@@ -1138,17 +1121,17 @@ PRECNF:
     if (DEBUGLEVEL) pari_warn(warnprec,"rnflllgram",prec);
     nf = nfnewprec_shallow(nf,prec);
   }
-  mth = rel_T2(nf, pol, lx, prec);
-  if (!mth) { count = MAX_COUNT; goto PRECNF; }
-  h = NULL;
+  T2 = rnfT2(nf, pol, prec);
+  if (!T2) { count = MAX_COUNT; goto PRECNF; }
+  U = NULL;
 PRECPB:
-  if (h)
+  if (U)
   { /* precision problem, recompute. If no progress, increase nf precision */
-    if (++count == MAX_COUNT || RgM_isidentity(h)) {count = MAX_COUNT; goto PRECNF;}
-    H = H? gmul(H, h): h;
-    MPOL = gmul(MPOL, h);
+    if (++count == MAX_COUNT || RgM_isidentity(U)) {count = MAX_COUNT; goto PRECNF;}
+    H = H? gmul(H, U): U;
+    MPOL = gmul(MPOL, U);
   }
-  h = matid(lx-1);
+  U = matid(lx-1);
   MC = mattocomplex(nf, MPOL);
   mu = cgetg(lx,t_MAT);
   B  = cgetg(lx,t_COL);
@@ -1158,7 +1141,7 @@ PRECPB:
     gel(B,j) = gen_0;
   }
   if (DEBUGLEVEL) err_printf("k = ");
-  gel(B,1) = real_i(rnfscal(mth,gel(MC,1),gel(MC,1)));
+  gel(B,1) = real_i(rnfscal(T2,gel(MC,1),gel(MC,1)));
   gel(MCS,1) = gel(MC,1);
   kmax = 1; k = 2;
   do
@@ -1170,15 +1153,15 @@ PRECPB:
       kmax = k; gel(MCS,k) = gel(MC,k);
       for (j=1; j<k; j++)
       {
-        gcoeff(mu,k,j) = vecdiv(rnfscal(mth,gel(MCS,j),gel(MC,k)), gel(B,j));
+        gcoeff(mu,k,j) = vecdiv(rnfscal(T2,gel(MCS,j),gel(MC,k)), gel(B,j));
         gel(MCS,k) = gsub(gel(MCS,k), vecmul(gcoeff(mu,k,j),gel(MCS,j)));
       }
-      gel(B,k) = real_i(rnfscal(mth,gel(MCS,k),gel(MCS,k)));
+      gel(B,k) = real_i(rnfscal(T2,gel(MCS,k),gel(MCS,k)));
       if (check_0(gel(B,k))) goto PRECPB;
     }
-    if (!RED(k, k-1, h, mu, MC, nf, idealmul(nf, gel(I,k-1), Ik_inv)))
+    if (!RED(k, k-1, U, mu, MC, nf, idealmul(nf, gel(I,k-1), Ik_inv)))
       goto PRECPB;
-    if (do_SWAP(I,MC,MCS,h,mu,B,kmax,k,alpha, r1))
+    if (do_SWAP(I,MC,MCS,U,mu,B,kmax,k,alpha, r1))
     {
       if (!B[k]) goto PRECPB;
       if (k > 2) k--;
@@ -1186,23 +1169,23 @@ PRECPB:
     else
     {
       for (l=k-2; l; l--)
-        if (!RED(k, l, h, mu, MC, nf, idealmul(nf, gel(I,l), Ik_inv)))
+        if (!RED(k, l, U, mu, MC, nf, idealmul(nf, gel(I,l), Ik_inv)))
           goto PRECPB;
       k++;
     }
     if (gc_needed(av,2))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"rnflllgram");
-      (void)gc_all(av, H?10:9, &nf,&mth,&h,&MPOL,&B,&MC,&MCS,&mu,&I,&H);
+      (void)gc_all(av, H?10:9, &nf,&T2,&U,&MPOL,&B,&MC,&MCS,&mu,&I,&H);
     }
   }
   while (k < lx);
-  MPOL = gmul(MPOL,h);
-  if (H) h = gmul(H, h);
+  MPOL = gmul(MPOL,U);
+  if (H) U = gmul(H, U);
   if (DEBUGLEVEL) err_printf("\n");
   MPOL = RgM_to_nfM(nf,MPOL);
-  h = RgM_to_nfM(nf,h);
-  return gc_GEN(av, mkvec2(mkvec2(MPOL,I), h));
+  U = RgM_to_nfM(nf,U);
+  return gc_GEN(av, mkvec2(mkvec2(MPOL,I), U));
 }
 
 GEN
