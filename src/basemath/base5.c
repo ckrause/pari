@@ -1004,14 +1004,11 @@ findmin(GEN nf, GEN x, GEN muf)
 }
 
 static int
-RED(long k, long l, GEN U, GEN mu, GEN MC, GEN nf, GEN I, GEN *Ik_inv)
+RED(long k, long l, GEN U, GEN mu, GEN MC, GEN nf, GEN ideal)
 {
-  GEN x, xc, ideal;
+  GEN xc, x = findmin(nf, ideal, gcoeff(mu,k,l));
   long i;
 
-  if (!*Ik_inv) *Ik_inv = idealinv(nf, gel(I,k));
-  ideal = idealmul(nf,gel(I,l), *Ik_inv);
-  x = findmin(nf, ideal, gcoeff(mu,k,l));
   if (!x) return 0;
   if (gequal0(x)) return 1;
 
@@ -1166,21 +1163,21 @@ PRECPB:
   kmax = 1; k = 2;
   do
   {
-    GEN Ik_inv = NULL;
+    GEN Ik_inv = idealinv(nf, gel(I,k));
     if (DEBUGLEVEL) err_printf("%ld ",k);
     if (k > kmax)
     { /* Incremental Gram-Schmidt */
       kmax = k; gel(MCS,k) = gel(MC,k);
       for (j=1; j<k; j++)
       {
-        gcoeff(mu,k,j) = vecdiv(rnfscal(mth,gel(MCS,j),gel(MC,k)),
-                                gel(B,j));
+        gcoeff(mu,k,j) = vecdiv(rnfscal(mth,gel(MCS,j),gel(MC,k)), gel(B,j));
         gel(MCS,k) = gsub(gel(MCS,k), vecmul(gcoeff(mu,k,j),gel(MCS,j)));
       }
       gel(B,k) = real_i(rnfscal(mth,gel(MCS,k),gel(MCS,k)));
       if (check_0(gel(B,k))) goto PRECPB;
     }
-    if (!RED(k, k-1, h, mu, MC, nf, I, &Ik_inv)) goto PRECPB;
+    if (!RED(k, k-1, h, mu, MC, nf, idealmul(nf, gel(I,k-1), Ik_inv)))
+      goto PRECPB;
     if (do_SWAP(I,MC,MCS,h,mu,B,kmax,k,alpha, r1))
     {
       if (!B[k]) goto PRECPB;
@@ -1189,7 +1186,8 @@ PRECPB:
     else
     {
       for (l=k-2; l; l--)
-        if (!RED(k, l, h, mu, MC, nf, I, &Ik_inv)) goto PRECPB;
+        if (!RED(k, l, h, mu, MC, nf, idealmul(nf, gel(I,l), Ik_inv)))
+          goto PRECPB;
       k++;
     }
     if (gc_needed(av,2))
