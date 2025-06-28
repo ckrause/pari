@@ -3813,23 +3813,26 @@ ellQ_minimalu(GEN E, GEN *pDP)
   return gc_INT(av, u);
 }
 
-/* Ensure a1 and a3 are 2-restricted and a2 is 3-restricted */
+/* True nf. Ensure a1 and a3 are 2-restricted and a2 is 3-restricted */
 static GEN
 nfrestrict23(GEN nf, GEN E)
 {
   GEN a1 = nf_to_scalar_or_basis(nf, ell_get_a1(E)), A1, A2, A3, r, s, t;
   GEN a2 = nf_to_scalar_or_basis(nf, ell_get_a2(E));
-  GEN a3 = nf_to_scalar_or_basis(nf, ell_get_a3(E));
+  GEN a3 = nf_to_scalar_or_basis(nf, ell_get_a3(E)), T = nf_get_pol(nf);
 
   A1 = gmodgs(a1,2);
   s = gshift(gsub(A1,a1), -1);
-  s = lift_if_rational(basistoalg(nf, s));
+  s = nf_to_scalar_or_alg(nf, s);
   A2 = nfsub(nf, a2, nfmul(nf,s, nfadd(nf,a1,s)));
   r = gdivgu(gsub(gmodgs(A2,3), A2), 3);
-  r = lift_if_rational(basistoalg(nf, r));
+  r = nf_to_scalar_or_alg(nf, r);
   A3 = nfadd(nf, a3, nfmul(nf,r,A1));
   t = nfadd(nf, nfmul(nf, r,s), gshift(gsub(gmodgs(A3,2), A3), -1));
-  t = lift_if_rational(basistoalg(nf, t));
+  t = nf_to_scalar_or_alg(nf, t);
+  if (typ(r) == t_POL) r = mkpolmod(r, T);
+  if (typ(s) == t_POL) s = mkpolmod(s, T);
+  if (typ(t) == t_POL) t = mkpolmod(t, T);
   return mkvec4(gen_1, r, s, t);
 }
 
