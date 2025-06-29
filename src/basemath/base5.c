@@ -411,7 +411,7 @@ fail(const char *f, GEN x)
 { pari_err_DOMAIN(f,"element","not in", strtoGENstr("the base field"),x); }
 /* x t_COL of length degabs */
 static GEN
-eltdown(GEN rnf, GEN x, long flag)
+eltdown(GEN rnf, GEN x)
 {
   GEN y, d, proj = obj_check(rnf,rnf_MAPS);
   GEN M = gel(proj,1), iM = gel(proj,2), diM = gel(proj,3), perm = gel(proj,4);
@@ -423,7 +423,6 @@ eltdown(GEN rnf, GEN x, long flag)
 
   d = mul_denom(d, diM);
   if (d) y = gdiv(y,d);
-  if (!flag) y = basistoalg(rnf_get_nf(rnf), y);
   return y;
 }
 GEN
@@ -481,7 +480,11 @@ rnfeltdown0(GEN rnf, GEN x, long flag)
   if (NF)
   {
     x = nf_to_scalar_or_basis(NF, x);
-    if (typ(x) == t_COL) x = eltdown(rnf,x,flag);
+    if (typ(x) == t_COL)
+    {
+      x = eltdown(rnf,x);
+      if (!flag) return gc_upto(av, basistoalg(nf, x));
+    }
     return gc_GEN(av, x);
   }
   z = rnfeltabstorel(rnf,x);
