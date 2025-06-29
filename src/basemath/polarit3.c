@@ -850,7 +850,7 @@ FpXQX_XpN_powu(GEN u, ulong n, GEN T, GEN p, long v)
   C[1] = evalsigne(1)| evalvarn(v);
   for (k=1; k <= n+1; k++)
     gel(C,k+1) = Fq_mul(gel(V,n+2-k), gel(B,k), T, p);
-  return gerepileupto(av, C);
+  return gc_upto(av, C);
 }
 
 static GEN
@@ -890,7 +890,7 @@ FpXQX_FpXQ_translate(GEN P, GEN c, GEN T, GEN p)
     GEN Q = FpXQX_FpXQ_translate(RgX_shift_shallow(P, -d), c, T, p);
     GEN R = FpXQX_FpXQ_translate(RgXn_red_shallow(P, d), c, T, p);
     GEN S = FpXQX_XpN_powu(c, d, T, p, varn(P));
-    return gerepileupto(av, FpXX_add(FpXQX_mul(Q, S, T, p), R, p));
+    return gc_upto(av, FpXX_add(FpXQX_mul(Q, S, T, p), R, p));
   }
 }
 
