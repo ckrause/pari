@@ -564,7 +564,6 @@ GEN  export_get(const char *str);
 
 /* parinf.h */
 
-GEN     coltoalg(GEN nf,GEN x);
 GEN     fincke_pohst(GEN a,GEN BOUND,long stockmax,long PREC, FP_chk_fun *CHECK);
 void    init_zlog(zlog_S *S, GEN bid);
 GEN     log_gen_arch(zlog_S *S, long index);

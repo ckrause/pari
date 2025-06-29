@@ -1088,13 +1088,6 @@ gpnfvalrem(GEN nf, GEN x, GEN pr, GEN *py)
   return v == LONG_MAX? mkoo(): stoi(v);
 }
 
-/* true nf */
-GEN
-coltoalg(GEN nf, GEN x)
-{
-  return mkpolmod( nf_to_scalar_or_alg(nf, x), nf_get_pol(nf) );
-}
-
 GEN
 basistoalg(GEN nf, GEN x)
 {
@@ -1104,8 +1097,8 @@ basistoalg(GEN nf, GEN x)
   switch(typ(x))
   {
     case t_COL: {
-      pari_sp av = avma;
-      return gc_GEN(av, coltoalg(nf, x));
+      pari_sp av = avma; x = nf_to_scalar_or_alg(nf, x);
+      return gc_GEN(av, mkpolmod(x, nf_get_pol(nf)));
     }
     case t_POLMOD:
       T = nf_get_pol(nf);
@@ -1209,6 +1202,16 @@ nf_to_scalar_or_alg(GEN nf, GEN x)
   }
   pari_err_TYPE("nf_to_scalar_or_alg",x);
   return NULL; /* LCOV_EXCL_LINE */
+}
+
+/* Assume nf is a genuine nf. */
+GEN
+nf_to_scalar_or_polmod(GEN nf, GEN x)
+{
+  x = nf_to_scalar_or_alg(nf, x);
+  if (typ(x) == t_POL && varn(x) == nf_get_varn(nf))
+    x = mkpolmod(x, nf_get_pol(nf));
+  return x;
 }
 
 /* gmul(A, RgX_to_RgC(x)), A t_MAT of compatible dimensions */

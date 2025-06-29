@@ -1609,7 +1609,7 @@ RecCoeff(GEN nf,  GEN pol,  long v, long flag, long prec)
     d.beta = real_i( gel(pol,cf+2) );
     d.B    = bound;
     if (! (t = RecCoeff2(nf, &d, prec)) ) return NULL;
-    gel(pol, cf+2) = coltoalg(nf,t);
+    gel(pol, cf+2) = nf_to_scalar_or_polmod(nf, t);
   }
   gel(pol,cl+2) = gen_1;
   return gc_GEN(av, pol);
@@ -3061,7 +3061,7 @@ findbezk(GEN nf, GEN x)
   if (eb > -20) return NULL;
   a = grndtoi(mpsub(real_i(x), mpmul(b,gel(u,1))), &ea);
   if (ea > -20) return NULL;
-  return signe(b)? coltoalg(nf, mkcol2(a,b)): a;
+  return nf_to_scalar_or_polmod(nf, mkcol2(a,b));
 }
 
 static GEN

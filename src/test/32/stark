@@ -127,8 +127,8 @@ Mod(72410409996832*y + 102403783874596, y^2 - 2)*x^16 + Mod(-242801944176048
 - 2)*x^7 + Mod(72410409996832*y + 102403783874596, y^2 - 2)*x^6 + Mod(-12282
 06324448*y - 1736946041486, y^2 - 2)*x^5 + Mod(12359949244*y + 17479607892, 
 y^2 - 2)*x^4 + Mod(-74642968*y - 105561124, y^2 - 2)*x^3 + Mod(262460*y + 37
-1189, y^2 - 2)*x^2 + Mod(-484*y - 690, y^2 - 2)*x + Mod(1, y^2 - 2)
+1189, y^2 - 2)*x^2 + Mod(-484*y - 690, y^2 - 2)*x + 1
   ***   at top-level: ...rinit(bnf,[id[1],[1,1]]);bnrstarkunit(bnr)
   ***                                             ^-----------------
   *** bnrstarkunit: domain error in bnrstarkunit: # unramified places != 1
-Total time spent: 5000
+Total time spent: 14917

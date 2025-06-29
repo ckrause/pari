@@ -117,13 +117,9 @@ point_to_a4a6_Fl(GEN E, GEN P, ulong p, ulong *pa4)
 /* shallow basistoalg; true nf */
 static GEN
 nftoalg(GEN nf, GEN x)
-{
-  switch(typ(x))
-  {
-    case t_INT: case t_FRAC: case t_POLMOD: return x;
-    case t_POL: if (varn(x) != nf_get_varn(nf)) return x; /*hope for the best*/
-  }
-  return basistoalg(nf, x);
+{ /* hope for the best */
+  if (typ(x) == t_POL && varn(x) != nf_get_varn(nf)) return x;
+  return nf_to_scalar_or_polmod(nf, x);
 }
 static GEN
 nfVtoalg(GEN nf, GEN x) { pari_APPLY_same(nftoalg(nf,gel(x,i))); }
@@ -1538,8 +1534,8 @@ ellnf_isisom(GEN nf, GEN E, GEN F)
   pari_sp av = avma;
   GEN j, u, r, s, t, u2, u3;
   GEN Ea1, Ea2, Ea3, Ec4, Ec6, Fa1, Fa2, Fa3, Fc4, Fc6;
-  j = basistoalg(nf, ell_get_j(E));
-  if (!gequal(j, basistoalg(nf, ell_get_j(F))))
+  j = nf_to_scalar_or_alg(nf, ell_get_j(E));
+  if (!gequal(j, nf_to_scalar_or_alg(nf, ell_get_j(F))))
     return gc_const(av, gen_0);
   Ec4  = ell_get_c4(E); Ec6 = ell_get_c6(E);
   Fc4  = ell_get_c4(F); Fc6 = ell_get_c6(F);
@@ -1562,9 +1558,10 @@ ellnf_isisom(GEN nf, GEN E, GEN F)
   s = gdivgs(nfsub(nf, nfmul(nf, u, Fa1), Ea1),2);
   r = gdivgs(nfadd(nf, nfsub(nf, nfadd(nf, nfmul(nf, u2, Fa2), nfmul(nf, s, Ea1)), Ea2), nfsqr(nf, s)), 3);
   t = gdivgs(nfsub(nf, nfsub(nf, nfmul(nf, u3, Fa3), nfmul(nf, r, Ea1)), Ea3), 2);
-  u = basistoalg(nf, u); r = basistoalg(nf, r);
-  s = basistoalg(nf, s); t = basistoalg(nf, t);
-  return gc_GEN(av, mkvec4(u,r,s,t));
+  u = nftoalg(nf, u);
+  r = nftoalg(nf, r);
+  s = nftoalg(nf, s);
+  t = nftoalg(nf, t); return gc_GEN(av, mkvec4(u,r,s,t));
 }
 
 GEN
@@ -3954,11 +3951,11 @@ bnf_get_v(GEN E)
   if (!gequal0(gel(F,1))) return gel(F,1);
   nf = bnf_get_nf(bnf);
   C = idealchinese(nf, mkmat2(L, ZC_z_mul(U,6)), NULL);
-  U = basistoalg(nf, gel(F,2));
-  R = basistoalg(nf, idealchinese(nf, C, Lr));
-  S = basistoalg(nf, idealchinese(nf, C, Ls));
-  T = basistoalg(nf, idealchinese(nf, C, Lt));
-  return lift_if_rational(mkvec4(U,R,S,T));
+  U = nftoalg(nf, gel(F,2));
+  R = nftoalg(nf, idealchinese(nf, C, Lr));
+  S = nftoalg(nf, idealchinese(nf, C, Ls));
+  T = nftoalg(nf, idealchinese(nf, C, Lt));
+  return mkvec4(U,R,S,T);
 }
 
 GEN
@@ -5313,7 +5310,7 @@ ellnf_get_CM(GEN E)
 {
   long av = avma;
   GEN j = ell_get_j(E), nf = ellnf_get_nf(E);
-  GEN P = minpoly(basistoalg(nf, j), 0);
+  GEN P = minpoly(nftoalg(nf, j), 0);
   return gc_long(av, polisclass(P));
 }
 

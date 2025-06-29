@@ -76,6 +76,7 @@ BA  35- [libpari] FqC_to_FlxqC FqM_to_FlxqM
 BA  36- [libpari] hash_create_INT, hash_create_GEN
 BA  37- [libpari] thuemorseu
 BA  38- new accessor macros uel, ucoeff, umael, umael2, umael3, umael4, umael5
+    39- [libpari] nf_to_scalar_or_polmod
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate

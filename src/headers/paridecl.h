@@ -2546,6 +2546,7 @@ GEN     matbasistoalg(GEN nf, GEN x);
 GEN     multable(GEN nf, GEN x);
 GEN     nf_to_scalar_or_alg(GEN nf, GEN x);
 GEN     nf_to_scalar_or_basis(GEN nf, GEN x);
+GEN     nf_to_scalar_or_polmod(GEN nf, GEN x);
 GEN     nf_cxlog(GEN nf, GEN x, long prec);
 GEN     nfV_cxlog(GEN nf, GEN x, long prec);
 GEN     nfadd(GEN nf, GEN x, GEN y);
