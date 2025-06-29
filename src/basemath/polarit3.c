@@ -776,7 +776,21 @@ const struct bb_field *get_Fq_field(void **E, GEN T, GEN p)
 /*                             Fq[X]                               */
 /*                                                                 */
 /*******************************************************************/
-/* P(X + c) */
+/* FpV_red(vecbinomial(n), p) */
+static GEN
+vecbinomial_Fp(long n, GEN p)
+{
+  GEN C = vecbinomial(n) + 1;
+  long k, d = (n + 1) >> 1;
+  for (k = d; k >= 1; k--)
+  {
+    GEN a = gel(C,k);
+    if (cmpii(a, p) < 0) break;
+    gel(C,k) = gel(C, n-k) = remii(a, p);
+  }
+  return C - 1;
+}
+/* (X+u)^n */
 static GEN
 Fp_XpN_powu(GEN u, ulong n, GEN p, long v)
 {
@@ -788,7 +802,7 @@ Fp_XpN_powu(GEN u, ulong n, GEN p, long v)
     return Xpm1_powu(n, signe(u), v);
   av = avma;
   V = Fp_powers(u, n, p);
-  B = FpV_red(vecbinomial(n), p);
+  B = vecbinomial_Fp(n, p);
   C = cgetg(n+3, t_POL);
   C[1] = evalsigne(1)| evalvarn(v);
   for (k=1; k <= n+1; k++)
@@ -836,6 +850,7 @@ FpX_Fp_translate(GEN P, GEN c, GEN p)
   }
 }
 
+/* (X+u)^n mod (T,p) */
 static GEN
 FpXQX_XpN_powu(GEN u, ulong n, GEN T, GEN p, long v)
 {
@@ -845,7 +860,7 @@ FpXQX_XpN_powu(GEN u, ulong n, GEN T, GEN p, long v)
   if (!n) return pol_1(v);
   av = avma;
   V = FpXQ_powers(u, n, T, p);
-  B = vecbinomial(n);
+  B = vecbinomial_Fp(n, p);
   C = cgetg(n+3, t_POL);
   C[1] = evalsigne(1)| evalvarn(v);
   for (k=1; k <= n+1; k++)
