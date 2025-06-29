@@ -781,7 +781,7 @@ static GEN
 Fp_XpN_powu(GEN u, ulong n, GEN p, long v)
 {
   pari_sp av;
-  long k;
+  ulong k;
   GEN B, C, V;
   if (!n) return pol_1(v);
   if (is_pm1(u))
@@ -840,7 +840,7 @@ static GEN
 FpXQX_XpN_powu(GEN u, ulong n, GEN T, GEN p, long v)
 {
   pari_sp av;
-  long k;
+  ulong k;
   GEN B, C, V;
   if (!n) return pol_1(v);
   av = avma;
