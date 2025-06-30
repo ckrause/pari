@@ -983,8 +983,9 @@ static GEN
 lindepcx(GEN V, long bit)
 {
   GEN Vr = real_i(V), Vi = imag_i(V);
-  if (gexpo(Vr) < -bit) V = Vi;
-  else if (gexpo(Vi) < -bit) V = Vr;
+  long d = gexpo(Vr) - gexpo(Vi);
+  if (d < -bit) V = Vi;
+  else if (d > bit) V = Vr;
   return lindepfull_bit(V, bit);
 }
 /* c floating point t_REAL or t_COMPLEX, T ZX, recognize in Q[x]/(T).

@@ -775,7 +775,9 @@ mffrometaquo([1,1],1)
 M8=mfinit([8,5/2]);
 a8=mfatkininit(M8,8);
 M82=mfatkininit(a8[1],8); a8[2]*M82[2]
-
+mf=mfinit([31,12]);F=mfbasis(mf)[1];
+mfa=mfatkininit(mfinit([31,12]),31);
+mfcoefs(mfatkin(mfa,F),40)
 
 mf=mfinit([11,4]);B=mfbasis(mf)[1..2];
 FE1=mflinear(B,[1,-1]);FE2=mflinear(B,[1,-11^4]);
