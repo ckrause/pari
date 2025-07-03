@@ -1,0 +1,29 @@
+Function: bitclear
+C-Name: bitclear
+Section: conversions
+Prototype: vWL
+Help: bitclear(~x,n): clear bit n of x in place, assuming x >= 2^(n+1).
+Doc:
+ Clear in place the $n^{\text{th}}$ bit of the integer $x \geq 2^{n+1}$ starting
+ from the right (i.e.~the coefficient of $2^{n}$ in the binary expansion of $x$).
+ If you need to clear an higher bit, do \kbd{x = bitnegimply(x,1<<n);}.
+
+ See \kbd{bitset} for more detail.
+ A GP implementation of the sieve of Eratosthenes:
+ \bprog
+ ? erato(N)=
+ {
+   my(V=1<<(N+2)-1); \\@com set all bits up to N+1
+   bitclear(~V,0); bitclear(~V,1);
+   for (i=2,sqrtint(N),
+      if (bittest(V,i),
+        forstep(j=2*i,N,i, bitclear(~V,j))));
+   vecextract([0..N],V-1<<(N+1));
+ }
+ ? erato(100)
+ %2 = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97]
+ ? erato(2^20)==primes([1,2^20])
+ %3= 1
+ ? ##
+   ***   last result computed in 157 ms.
+ @eprog

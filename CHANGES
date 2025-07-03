@@ -81,6 +81,7 @@ BA  38- new accessor macros uel, ucoeff, umael, umael2, umael3, umael4, umael5
 BA  40- [libpari] FlxX_resultant_pre, ZXX_resultant
 BA  41- [libpari] RgX_is_ZXX
 BA  42- [libpari] FqM_add, FqM_sub
+BA  43- new GP functions bitset, bitclear, bitjoin
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate

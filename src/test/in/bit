@@ -30,3 +30,21 @@ bittest(-1,10)
 bitneg(-2,64)
 bitneg(1,-2)
 bitneg(1,128)
+
+N=100;
+x=2^N; forprime(p=2,N-1,bitset(~x,p)); vecextract([0..N],x)
+for(i=0,N-1,bitflip(~x,i));  vecextract([0..N],x)
+for(i=0,N-1,if(!isprime(i),bitclear(~x,i))); vecextract([0..N],x)
+
+\\ error
+x = 0; bitset(~x,0)
+bitclear(~x,0)
+bitflip(~x,0)
+x = 2^62; bitset(~x,62);x
+bitset(~x,63)
+bitclear(~x,62)
+bitflip(~x,62)
+x=2^63-1; bitset(~x,62);x
+bitset(~x,63)
+bitclear(~x,62)
+bitflip(~x,62)

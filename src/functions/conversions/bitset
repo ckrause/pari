@@ -1,0 +1,22 @@
+Function: bitset
+C-Name: bitset
+Section: conversions
+Prototype: vWL
+Help: bitset(~x,n): set bit n of x in place, assuming x >= 2^n.
+Doc:
+ Set in place the $n^{\text{th}}$ bit of the integer $x \geq 2^n $ starting
+ from the right (i.e.~the coefficient of $2^{n}$ in the binary expansion of $x$).
+ If you need to set an higher bit, do \kbd{x = bitor(x,1<<n);}.
+
+ This function can be used to work with bit vectors, by initializing $x$ to
+ a sufficiently large power of $2$.
+ \bprog
+ ? n = 100;
+ ? V = 1<<n; \\@com initialize V for n bits (0 to n-1)
+ ? forprime(p=0,n-1,bitset(~V, p));
+ ? for(i=0,n-1,if(bittest(V,i),print1(i," ")));
+ 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
+ ? vecextract([0..n-1],V-1<<n)
+ %5 = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97]
+ @eprog
+ See \kbd{bitclear} for another example.

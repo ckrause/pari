@@ -182,4 +182,40 @@ error("incorrect type in bitwise negation (t_COMPLEX).")
   ***                 ^------------
   *** bitneg: domain error in bitwise negation: exponent < -1
 340282366920938463463374607431768211454
-Total time spent: 0
+[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
+ 73, 79, 83, 89, 97, 100]
+[0, 1, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 3
+0, 32, 33, 34, 35, 36, 38, 39, 40, 42, 44, 45, 46, 48, 49, 50, 51, 52, 54, 5
+5, 56, 57, 58, 60, 62, 63, 64, 65, 66, 68, 69, 70, 72, 74, 75, 76, 77, 78, 8
+0, 81, 82, 84, 85, 86, 87, 88, 90, 91, 92, 93, 94, 95, 96, 98, 99, 100]
+[100]
+  ***   at top-level: x=0;bitset(~x,0)
+  ***                     ^------------
+  *** bitset: domain error in bitset: x == 0
+  ***   at top-level: bitclear(~x,0)
+  ***                 ^--------------
+  *** bitclear: incorrect type in bitclear (t_POL).
+  ***   at top-level: bitflip(~x,0)
+  ***                 ^-------------
+  *** bitflip: incorrect type in bitflip (t_POL).
+4611686018427387904
+  ***   at top-level: bitset(~x,63)
+  ***                 ^-------------
+  *** bitset: domain error in bitset: n > 62
+  ***   at top-level: bitclear(~x,62)
+  ***                 ^---------------
+  *** bitclear: domain error in bitclear: n >= 62
+  ***   at top-level: bitflip(~x,62)
+  ***                 ^--------------
+  *** bitflip: domain error in bitflip: n >= 62
+9223372036854775807
+  ***   at top-level: bitset(~x,63)
+  ***                 ^-------------
+  *** bitset: domain error in bitset: n > 62
+  ***   at top-level: bitclear(~x,62)
+  ***                 ^---------------
+  *** bitclear: domain error in bitclear: n >= 62
+  ***   at top-level: bitflip(~x,62)
+  ***                 ^--------------
+  *** bitflip: domain error in bitflip: n >= 62
+Total time spent: 1
