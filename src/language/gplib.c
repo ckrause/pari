@@ -165,7 +165,29 @@ print_fun_list(char **list, long nbli)
   if (i) pari_putc('\n');
 }
 
-static const long MAX_SECTION = 17;
+static const char *help_sections[] = {
+  "user-defined functions (aliases, installed and user functions)",
+  "PROGRAMMING under GP",
+  "Standard monadic or dyadic OPERATORS",
+  "CONVERSIONS and similar elementary functions",
+  "functions related to COMBINATORICS",
+  "NUMBER THEORETICAL functions",
+  "POLYNOMIALS and power series",
+  "Vectors, matrices, LINEAR ALGEBRA and sets",
+  "TRANSCENDENTAL functions",
+  "SUMS, products, integrals and similar functions",
+  "General NUMBER FIELDS",
+  "Associative and central simple ALGEBRAS",
+  "ELLIPTIC CURVES",
+  "L-FUNCTIONS",
+  "HYPERGEOMETRIC MOTIVES",
+  "MODULAR FORMS",
+  "MODULAR SYMBOLS",
+  "GRAPHIC functions"
+};
+
+static const long MAX_SECTION = numberof(help_sections) - 1;
+
 static void
 commands(long n)
 {
@@ -273,29 +295,10 @@ static void
 menu_commands(void)
 {
   ulong i;
-  const char *s[] = {
-  "user-defined functions (aliases, installed and user functions)",
-  "PROGRAMMING under GP",
-  "Standard monadic or dyadic OPERATORS",
-  "CONVERSIONS and similar elementary functions",
-  "functions related to COMBINATORICS",
-  "NUMBER THEORETICAL functions",
-  "POLYNOMIALS and power series",
-  "Vectors, matrices, LINEAR ALGEBRA and sets",
-  "TRANSCENDENTAL functions",
-  "SUMS, products, integrals and similar functions",
-  "General NUMBER FIELDS",
-  "Associative and central simple ALGEBRAS",
-  "ELLIPTIC CURVES",
-  "L-FUNCTIONS",
-  "HYPERGEOMETRIC MOTIVES",
-  "MODULAR FORMS",
-  "MODULAR SYMBOLS",
-  "GRAPHIC functions",
-  "The PARI community"
-  };
   pari_puts("Help topics: for a list of relevant subtopics, type ?n for n in\n");
-  for (i = 0; i < numberof(s); i++) pari_printf("  %2lu: %s\n", i, s[i]);
+  for (i = 0; i <= MAX_SECTION; i++)
+    pari_printf("  %2lu: %s\n", i, help_sections[i]);
+  pari_printf("  %2lu: The PARI community\n", i);
   pari_puts("Also:\n\
   ? functionname (short on-line help)\n\
   ?\\             (keyboard shortcuts)\n\
