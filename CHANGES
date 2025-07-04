@@ -33,6 +33,7 @@ BA  26- 12*harmonic(1) -> 12/1
     27- hyperellratpoints(P, d) could miss points when P(-d) = 0
     28- obscure bnrclassfield bug [internally creating an incorrect ideal
         factorization whose prime ideals were not sorted]
+BA  29- qfeval(Qfb(2,3,4),[1,2;3,4]).disc was wrong [#2630]
 
   Added
      1- [libpari] prodprimes, prodprimeslim

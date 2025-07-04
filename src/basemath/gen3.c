@@ -4256,23 +4256,31 @@ qfbevalb(GEN q, GEN z, GEN z2)
            gmul(y, gadd(gmul(c2,Y), gmul(b,X))));
   return gc_upto(av, gmul2n(A, -1));
 }
-GEN
-qfb_ZM_apply(GEN q, GEN M)
+static GEN
+qfb_ZM_apply_i(GEN q, GEN M)
 {
-  pari_sp av = avma;
-  GEN A, B, C, a = gel(q,1), b = gel(q,2), c = gel(q,3);
+  GEN a = gel(q,1), b = gel(q,2), c = gel(q,3), d = gel(q,4);
   GEN x = gcoeff(M,1,1), y = gcoeff(M,2,1);
   GEN z = gcoeff(M,1,2), t = gcoeff(M,2,2);
   GEN by = mulii(b,y), bt = mulii(b,t), bz  = mulii(b,z);
   GEN a2 = shifti(a,1), c2 = shifti(c,1);
 
-  A = addii(mulii(x, addii(mulii(a,x), by)), mulii(c, sqri(y)));
-  B = addii(mulii(x, addii(mulii(a2,z), bt)),
-            mulii(y, addii(mulii(c2,t), bz)));
-  C = addii(mulii(z, addii(mulii(a,z), bt)), mulii(c, sqri(t)));
-  q = leafcopy(q);
-  gel(q,1) = A; gel(q,2) = B; gel(q,3) = C;
-  return gc_GEN(av, q);
+  GEN A1 = mulii(x, addii(mulii(a,x), by));
+  GEN A2 = mulii(c, sqri(y));
+  GEN B1 = mulii(x, addii(mulii(a2,z), bt));
+  GEN B2 = mulii(y, addii(mulii(c2,t), bz));
+  GEN C1 = mulii(z, addii(mulii(a,z), bt));
+  GEN C2 = mulii(c, sqri(t));
+  GEN m = sqri(subii(mulii(x,t), mulii(y,z)));
+  if (signe(m)==0) pari_err_INV("qfapply",M);
+  retmkqfb(addii(A1,A2), addii(B1,B2), addii(C1, C2), mulii(d, m));
+}
+
+GEN
+qfb_ZM_apply(GEN q, GEN M)
+{
+  pari_sp av = avma;
+  return gc_upto(av, qfb_ZM_apply_i(q, M));
 }
 
 static GEN

@@ -25,6 +25,8 @@ Qfb(4, 3, -3)
 4
 -3
 3/2
+1
+1
 [Qfb(4, 3, -3), [127327, -416128; -148995, 486943]]
 Qfb(18446744073709551629, 4741036151112220792, 304625896260305173)
 Qfb(18446744073709551629, 7562574061564804959, 775103267656920011)
@@ -90,4 +92,4 @@ test qfbredsl2, large coefs
   ***   at top-level: ...18,-18);g=Qfb(11,52,-41);qfbcomp([f,1.],g)
   ***                                             ^-----------------
   *** qfbcomp: sorry, Shanks's distance in general composition is not yet implemented.
-Total time spent: 165
+Total time spent: 126

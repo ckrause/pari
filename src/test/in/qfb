@@ -31,7 +31,8 @@ qfeval(q,U)
 qfeval(q,U[,1])
 qfeval(q,U[,2])
 qfeval(q,U[,1],U[,2])
-D=poldisc(q);
+q2=qfeval(q,[1,2;3,23]);q2.disc==poldisc(Pol(q2))
+D=poldisc(Pol(q)); D==q.disc
 qfbredsl2(q,sqrtint(D))
 qfbredsl2(q);
 p=2^64+13;

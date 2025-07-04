@@ -842,6 +842,10 @@ ulong   modfn_root(ulong j, norm_eqn_t ne, long inv);
 long    modfn_unambiguous_root(ulong *r, long inv, ulong j0, norm_eqn_t ne, GEN jdb);
 GEN     qfb_nform(long D, long n);
 
+/* Qfb.c */
+
+GEN     qfb3_SL2_apply(GEN q, GEN M);
+
 /* Fle.c */
 
 ulong   Flj_order_ufact(GEN P, ulong n, GEN F, ulong a4, ulong p, ulong pi);

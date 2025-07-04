@@ -757,6 +757,24 @@ qfb_minexpi(GEN Q)
   return m < 0 ? 0: m;
 }
 
+GEN
+qfb3_SL2_apply(GEN q, GEN M)
+{
+  GEN a = gel(q,1), b = gel(q,2), c = gel(q,3);
+  GEN x = gcoeff(M,1,1), y = gcoeff(M,2,1);
+  GEN z = gcoeff(M,1,2), t = gcoeff(M,2,2);
+  GEN by = mulii(b,y), bt = mulii(b,t), bz  = mulii(b,z);
+  GEN a2 = shifti(a,1), c2 = shifti(c,1);
+
+  GEN A1 = mulii(x, addii(mulii(a,x), by));
+  GEN A2 = mulii(c, sqri(y));
+  GEN B1 = mulii(x, addii(mulii(a2,z), bt));
+  GEN B2 = mulii(y, addii(mulii(c2,t), bz));
+  GEN C1 = mulii(z, addii(mulii(a,z), bt));
+  GEN C2 = mulii(c, sqri(t));
+  retmkvec3(addii(A1,A2), addii(B1,B2), addii(C1, C2));
+}
+
 static GEN
 pqfbred_rec(GEN Q, long m, GEN *pt_U)
 {
@@ -794,7 +812,7 @@ pqfbred_rec(GEN Q, long m, GEN *pt_U)
     }
     if (p > 0)
     {
-      GEN Q0U = qfb_ZM_apply(Q0,U);
+      GEN Q0U = qfb3_SL2_apply(Q0,U);
       QR = mkqfb(addii(shifti(gel(QR,1), p), gel(Q0U,1)),
                  addii(shifti(gel(QR,2), p), gel(Q0U,2)),
                  addii(shifti(gel(QR,3), p), gel(Q0U,3)), d);
