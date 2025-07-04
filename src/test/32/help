@@ -35,14 +35,14 @@ Help topics: for a list of relevant subtopics, type ?n for n in
    2: Standard monadic or dyadic OPERATORS
    3: CONVERSIONS and similar elementary functions
    4: functions related to COMBINATORICS
-   5: NUMBER THEORETICAL functions
+   5: basic NUMBER THEORY
    6: POLYNOMIALS and power series
    7: Vectors, matrices, LINEAR ALGEBRA and sets
    8: TRANSCENDENTAL functions
    9: SUMS, products, integrals and similar functions
   10: General NUMBER FIELDS
   11: Associative and central simple ALGEBRAS
-  12: ELLIPTIC CURVES
+  12: ELLIPTIC and HYPERELLIPTIC curves
   13: L-FUNCTIONS
   14: HYPERGEOMETRIC MOTIVES
   15: MODULAR FORMS
