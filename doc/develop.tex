@@ -421,6 +421,9 @@ implements \kbd{[x<-b,c(x)]}.
 \fun{GEN}{vecselapply}{void *Epred, long (*pred)(void* E, GEN x), void *Efun, GEN (*fun)(void* E, GEN x), GEN A}
 implements \kbd{[a(x)|x<-b,c(x)]}.
 
+\fun{GEN}{veccatselapply}{void *Ep, long (*p)(void* E, GEN x), void *E, GEN (*f)(void* E, GEN x), GEN A}
+implements \kbd{concat([a(x)|x<-b,c(x)])}.
+
 \subsec{Local precision}
 
 These functions allow to change \kbd{realprecision} locally when
