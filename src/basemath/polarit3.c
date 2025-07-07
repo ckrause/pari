@@ -1857,7 +1857,7 @@ Flx_FlxY_resultant(GEN a, GEN b, ulong p)
   GEN z;
   b = FlxY_to_FlyX(b,sx);
   if ((ulong)dres >= p)
-    z = FlxX_resultant_pre(Fly_to_FlxY(a, sy), b, p, pi, sy);
+    z = FlxX_resultant_subres(Fly_to_FlxY(a, sy), b, p, pi, sy);
   else
     z = Flx_FlxY_resultant_polint(a, b, p, pi, (ulong)dres, sy);
   return gc_upto(ltop,z);
