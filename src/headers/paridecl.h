@@ -5349,6 +5349,7 @@ GEN     ZV_lcm(GEN x);
 
 GEN     Flx_FlxY_resultant(GEN a, GEN b, ulong p);
 GEN     FlxX_resultant(GEN u, GEN v, ulong p, long sx);
+GEN     FlxX_resultant_pre(GEN a, GEN b, ulong p, ulong pi, long sx);
 GEN     FpX_Fp_translate(GEN P, GEN c, GEN p);
 GEN     FpX_FpXY_resultant(GEN a, GEN b0, GEN p);
 GEN     FpXQX_FpXQ_translate(GEN P, GEN c, GEN T, GEN p);

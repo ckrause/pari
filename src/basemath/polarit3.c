@@ -1643,6 +1643,32 @@ Flx_FlxY_eval_resultant(GEN a, GEN b, ulong n, ulong p, ulong pi, ulong la)
   if (drop && la != 1) r = Fl_mul(r, Fl_powu_pre(la, drop, p, pi), p);
   return r;
 }
+/* return Res(a(Y), b(n,Y)) over Fp. la = leading_coeff(a) [for efficiency] */
+static ulong
+FlxY_eval_resultant(GEN a, GEN b, ulong n, ulong p, ulong pi, GEN la, GEN lb)
+{
+  GEN av = FlxY_evalx_pre(a, n, p, pi);
+  GEN bv = FlxY_evalx_pre(b, n, p, pi);
+  long dropa = lg(a) - lg(av);
+  long dropb = lg(b) - lg(bv);
+  ulong r = Flx_resultant_pre(av, bv, p, pi);
+  if (dropa && dropb) return 0UL;
+  if (dropa)
+  { /* multiply by ((-1)^deg B lc(B))^(deg A - deg a) */
+    ulong c = Flx_eval_pre(lb, n,p ,pi); /* lc(B) */
+    if (odd(degpol(b))) c = p - c;
+    c = Fl_powu(c, dropa, p);
+    if (c != 1UL) r = Fl_mul(r, c, p);
+  }
+  else if (dropb)
+  { /* multiply by lc(A)^(deg B - deg b) */
+    ulong c = Flx_eval_pre(la, n,p ,pi); /* lc(B) */
+    c = Fl_powu(c, dropb, p);
+    if (c != 1UL) r = Fl_mul(r, c, p);
+  }
+  return r;
+}
+
 static GEN
 FpX_FpXY_eval_resultant(GEN a, GEN b, GEN n, GEN p, GEN la, long db, long vX)
 {
@@ -1672,6 +1698,30 @@ Flx_FlxY_resultant_polint(GEN a, GEN b, ulong p, ulong pi, long dres, long sx)
   if (i == dres)
   {
     x[++i] = 0;   y[i] = Flx_FlxY_eval_resultant(a,b, x[i], p,pi,la);
+  }
+  return Flv_polint(x,y, p, sx);
+}
+
+/* assume dres := deg(Res_X(a,b), Y) <= deg(a,X) * deg(b,Y) < p */
+/* Return a Fly */
+static GEN
+FlxY_resultant_polint(GEN a, GEN b, ulong p, ulong pi, long dres, long sx)
+{
+  long i;
+  ulong n;
+  GEN la = leading_coeff(a), lb = leading_coeff(b);
+  GEN x = cgetg(dres+2, t_VECSMALL);
+  GEN y = cgetg(dres+2, t_VECSMALL);
+ /* Evaluate at dres+ 1 points: 0 (if dres even) and +/- n, so that P_n(X) =
+  * P_{-n}(-X), where P_i is Lagrange polynomial: P_i(j) = delta_{i,j} */
+  for (i=0,n = 1; i < dres; n++)
+  {
+    x[++i] = n;   y[i] = FlxY_eval_resultant(a,b, x[i], p,pi, la,lb);
+    x[++i] = p-n; y[i] = FlxY_eval_resultant(a,b, x[i], p,pi, la,lb);
+  }
+  if (i == dres)
+  {
+    x[++i] = 0;   y[i] = FlxY_eval_resultant(a,b, x[i], p,pi, la,lb);
   }
   return Flv_polint(x,y, p, sx);
 }
@@ -1717,12 +1767,11 @@ FlxX_pseudorem(GEN x, GEN y, ulong p, ulong pi)
 }
 
 /* return a Flx */
-GEN
-FlxX_resultant(GEN u, GEN v, ulong p, long sx)
+static GEN
+FlxX_resultant_subres(GEN u, GEN v, ulong p, ulong pi, long sx)
 {
   pari_sp av = avma, av2;
   long degq, dx, dy, du, dv, dr, signh;
-  ulong pi;
   GEN z, g, h, r, p1;
 
   dx = degpol(u); dy = degpol(v); signh = 1;
@@ -1732,7 +1781,6 @@ FlxX_resultant(GEN u, GEN v, ulong p, long sx)
     if (both_odd(dx, dy)) signh = -signh;
   }
   if (dy < 0) return zero_Flx(sx);
-  pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
   if (dy==0) return gc_upto(av, Flx_powu_pre(gel(v,2),dx,p,pi));
 
   g = h = pol1_Flx(sx); av2 = avma;
@@ -1768,9 +1816,25 @@ FlxX_resultant(GEN u, GEN v, ulong p, long sx)
   return gc_upto(av, z);
 }
 
+/* Return a Flx*/
+GEN
+FlxX_resultant_pre(GEN a, GEN b, ulong p, ulong pi, long sx)
+{
+  pari_sp ltop=avma;
+  long da = degpol(a), db = degpol(b);
+  if (da<0 || db<0) return pol0_Flx(sx);
+  ulong dres = FlxY_degreex(a)*db+FlxY_degreex(b)*da;
+  GEN z = dres >= p ? FlxX_resultant_subres(a, b, p, pi, sx)
+                    : FlxY_resultant_polint(a, b, p, pi, dres, sx);
+  return gc_upto(ltop, z);
+}
+
+GEN
+FlxX_resultant(GEN a, GEN b, ulong p, long sx)
+{ return FlxX_resultant_pre(a, b, p, SMALL_ULONG(p)? 0: get_Fl_red(p), sx); }
+
 /* Warning:
  * This function switches between valid and invalid variable ordering*/
-
 static GEN
 FlxY_to_FlyX(GEN b, long sv)
 {
@@ -1787,15 +1851,13 @@ Flx_FlxY_resultant(GEN a, GEN b, ulong p)
   pari_sp ltop=avma;
   long dres = degpol(a)*degpol(b);
   long sx=a[1], sy=b[1]&VARNBITS;
+  ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
   GEN z;
   b = FlxY_to_FlyX(b,sx);
   if ((ulong)dres >= p)
-    z = FlxX_resultant(Fly_to_FlxY(a, sy), b, p, sx);
+    z = FlxX_resultant_pre(Fly_to_FlxY(a, sy), b, p, pi, sy);
   else
-  {
-    ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
     z = Flx_FlxY_resultant_polint(a, b, p, pi, (ulong)dres, sy);
-  }
   return gc_upto(ltop,z);
 }
 
