@@ -1820,12 +1820,14 @@ FlxX_resultant_subres(GEN u, GEN v, ulong p, ulong pi, long sx)
 GEN
 FlxX_resultant_pre(GEN a, GEN b, ulong p, ulong pi, long sx)
 {
-  pari_sp ltop=avma;
+  pari_sp ltop = avma;
   long da = degpol(a), db = degpol(b);
+  ulong dres;
+  GEN z;
   if (da<0 || db<0) return pol0_Flx(sx);
-  ulong dres = FlxY_degreex(a)*db+FlxY_degreex(b)*da;
-  GEN z = dres >= p ? FlxX_resultant_subres(a, b, p, pi, sx)
-                    : FlxY_resultant_polint(a, b, p, pi, dres, sx);
+  dres = FlxY_degreex(a)*db+FlxY_degreex(b)*da;
+  z = dres >= p ? FlxX_resultant_subres(a, b, p, pi, sx)
+                : FlxY_resultant_polint(a, b, p, pi, dres, sx);
   return gc_upto(ltop, z);
 }
 
