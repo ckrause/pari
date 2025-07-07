@@ -96,11 +96,12 @@ BA   4- rename gerepilecopy -> gc_GEN, gerepileuptoint -> gc_INT
      9- rnfconductor: return a bnr not including generators (which is the
         default for bnrinit); this saves time and no PARI function needs them
 BA  10- hammingl renamed to hammingu
-BA  10- Rename RgX_translate -> RgX_Rg_translate
+BA  11- Rename RgX_translate -> RgX_Rg_translate
                RgXQX_translate -> RgXQX_RgXQ_translate
                ZX_translate -> ZX_Z_translate
                FpX_translate -> FpX_Fp_translate
                FqX_translate -> FqX_Fq_translate
+    12- faster strjoin when delimiter is empty
 
   Removed
      1- obsolete functions gerepileall, gerepilemany: use gc_all

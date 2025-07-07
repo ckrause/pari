@@ -200,13 +200,25 @@ strjoin(GEN v, GEN p)
     char *s = GENtostr_unquoted(gel(v,1));
     return gc_leaf(av, strtoGENstr(s));
   }
-  if (!p) p = strtoGENstr("");
-  w = cgetg(2*l - 2, t_VEC);
-  gel(w, 1) = gel(v, 1);
-  for (i = 2; i < l; i++)
+  if (!p || !*GSTR(p))
+  { /* no delimiter: shortcut */
+    w = cgetg(l, t_VEC);
+    for (i = 1; i < l; i++)
+    {
+      GEN s = gel(v,i);
+      if (typ(s) != t_STR) s = GENtoGENstr(gel(v,i));
+      gel(w,i) = s;
+    }
+  }
+  else
   {
-    gel(w, 2*i-2) = p;
-    gel(w, 2*i-1) = gel(v, i);
+    w = cgetg(2*l - 2, t_VEC);
+    gel(w, 1) = gel(v, 1);
+    for (i = 2; i < l; i++)
+    {
+      gel(w, 2*i-2) = p;
+      gel(w, 2*i-1) = gel(v, i);
+    }
   }
   return gc_leaf(av, shallowconcat1(w));
 }
