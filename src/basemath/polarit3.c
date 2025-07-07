@@ -1567,13 +1567,13 @@ log2N2(GEN A)
  *   bound = N_2(A)^degpol B N_2(B)^degpol(A),  where
  *     N_2(A) = sqrt(sum (N_1(Ai))^2)
  * Return e such that Res(A, B) < 2^e */
-ulong
-ZX_ZXY_ResBound(GEN A, GEN B, GEN dB)
+
+static double
+resbound(GEN B)
 {
   pari_sp av = avma;
-  GEN b = gen_0;
   long i, lB = lg(B);
-  double logb;
+  GEN b = gen_0;
   for (i=2; i<lB; i++)
   {
     GEN t = gel(B,i);
@@ -1585,10 +1585,28 @@ ZX_ZXY_ResBound(GEN A, GEN B, GEN dB)
       b = gc_upto(av, b);
     }
   }
-  logb = dbllog2(b); if (dB) logb -= 2 * dbllog2(dB);
+  return gc_double(av, dbllog2(b));
+}
+
+ulong
+ZX_ZXY_ResBound(GEN A, GEN B, GEN dB)
+{
+  pari_sp av = avma;
+  double logb = resbound(B);
+  long i;
+  if (dB) logb -= 2 * dbllog2(dB);
   i = (long)((degpol(B) * log2N2(A) + degpol(A) * logb) / 2);
   return gc_ulong(av, (i <= 0)? 1: 1 + (ulong)i);
 }
+static ulong
+ZXX_ResBound(GEN A, GEN B)
+{
+  pari_sp av = avma;
+  double loga  = resbound(A), logb = resbound(B);
+  long i = (long)((degpol(B) * loga + degpol(A) * logb) / 2);
+  return gc_ulong(av, (i <= 0)? 1: 1 + (ulong)i);
+}
+
 /* A,B ZX. Return ZX_ZXY_ResBound(A(x), B(x+y)) */
 static ulong
 ZX_ZXY_ResBound_1(GEN A, GEN B)
@@ -1649,10 +1667,12 @@ FlxY_eval_resultant(GEN a, GEN b, ulong n, ulong p, ulong pi, GEN la, GEN lb)
 {
   GEN av = FlxY_evalx_pre(a, n, p, pi);
   GEN bv = FlxY_evalx_pre(b, n, p, pi);
-  long dropa = lg(a) - lg(av);
-  long dropb = lg(b) - lg(bv);
-  ulong r = Flx_resultant_pre(av, bv, p, pi);
-  if (dropa && dropb) return 0UL;
+  long lav = lgpol(av), lbv = lgpol(bv), dropa, dropb;
+  ulong r;
+  if (lav==0 && lbv==0) return 1UL;
+  dropa = lgpol(a) - lav;
+  dropb = lgpol(b) - lbv;
+  r = Flx_resultant_pre(av, bv, p, pi);
   if (dropa)
   { /* multiply by ((-1)^deg B lc(B))^(deg A - deg a) */
     ulong c = Flx_eval_pre(lb, n,p ,pi); /* lc(B) */
@@ -2856,6 +2876,7 @@ static GEN
 ZX_ZXY_resultant_prime(GEN a, GEN b, ulong dp, ulong p,
                        long degA, long degB, long dres, long sX)
 {
+  pari_sp av = avma;
   long dropa = degA - degpol(a), dropb = degB - degpol(b);
   ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
   GEN Hp = Flx_FlxY_resultant_polint(a, b, p, pi, dres, sX);
@@ -2879,7 +2900,7 @@ ZX_ZXY_resultant_prime(GEN a, GEN b, ulong dp, ulong p,
     }
   }
   if (dp != 1) Hp = Flx_Fl_mul_pre(Hp, Fl_powu_pre(Fl_inv(dp,p), degA, p, pi), p, pi);
-  return Hp;
+  return gc_leaf(av, Hp);
 }
 
 static GEN
@@ -2947,6 +2968,89 @@ ZX_ZXY_resultant(GEN A, GEN B)
   H = gen_crt("ZX_ZXY_resultant_all", worker, &S, dB, bound, 0, NULL,
                nxV_chinese_center, FpX_center_i);
   setvarn(H, vX); (void)delete_var();
+  return gc_GEN(av, H);
+}
+
+static GEN
+ZXX_resultant_prime(GEN a, GEN b, ulong p, long degA, long degB, long dres, long sX)
+{
+  long dropa = degA - degpol(a), dropb = degB - degpol(b);
+  ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
+  GEN Hp = FlxY_resultant_polint(a, b, p, pi, dres, sX);
+  if (dropa && dropb)
+    Hp = zero_Flx(sX);
+  else {
+    if (dropa)
+    { /* multiply by ((-1)^deg B lc(B))^(deg A - deg a) */
+      GEN c = gel(b,degB+2); /* lc(B) */
+      if (odd(degB)) c = Flx_neg(c, p);
+      if (!Flx_equal1(c)) {
+        c = Flx_powu_pre(c, dropa, p, pi);
+        if (!Flx_equal1(c)) Hp = Flx_mul_pre(Hp, c, p, pi);
+      }
+    }
+    else if (dropb)
+    { /* multiply by lc(A)^(deg B - deg b) */
+      ulong c = uel(a, degA+2); /* lc(A) */
+      c = Fl_powu(c, dropb, p);
+      if (c != 1) Hp = Flx_Fl_mul_pre(Hp, c, p, pi);
+    }
+  }
+  return Hp;
+}
+
+static GEN
+ZXX_resultant_slice(GEN A, GEN B, long degA, long degB, long dres,
+                       GEN P, GEN *mod, long sX, long vY)
+{
+  pari_sp av = avma;
+  long i, n = lg(P)-1;
+  GEN H, T;
+  if (n == 1)
+  {
+    ulong p = uel(P,1);
+    GEN a = ZXX_to_FlxX(A, p, vY), b = ZXX_to_FlxX(B, p, vY);
+    GEN Hp = ZXX_resultant_prime(a, b, p, degA, degB, dres, sX);
+    H = gc_upto(av, Flx_to_ZX(Hp));
+    *mod = utoipos(p); return H;
+  }
+  T = ZV_producttree(P);
+  A = ZXX_nv_mod_tree(A, P, T, vY);
+  B = ZXX_nv_mod_tree(B, P, T, vY);
+  H = cgetg(n+1, t_VEC);
+  for(i=1; i <= n; i++)
+  {
+    ulong p = P[i];
+    GEN a = gel(A,i), b = gel(B,i);
+    gel(H,i) = ZXX_resultant_prime(a, b, p, degA, degB, dres, sX);
+  }
+  H = nxV_chinese_center_tree(H, P, T, ZV_chinesetree(P, T));
+  *mod = gmael(T, lg(T)-1, 1); return gc_all(av, 2, &H, mod);
+}
+
+GEN
+ZXX_resultant_worker(GEN P, GEN A, GEN B, GEN v)
+{
+  GEN V = cgetg(3, t_VEC);
+  gel(V,1) = ZXX_resultant_slice(A, B, v[1], v[2], v[3], P, &gel(V,2), v[4], v[5]);
+  return V;
+}
+
+GEN
+ZXX_resultant(GEN A, GEN B, long vX)
+{
+  pari_sp av = avma;
+  forprime_t S;
+  ulong bound;
+  long degA = degpol(A), degB = degpol(B), dres = degA * RgXY_degreex(B) + RgXY_degreex(A)*degB;
+  long vY = varn(A), sX = evalvarn(vX);
+  GEN worker, H;
+  bound = ZXX_ResBound(A, B);
+  if (DEBUGLEVEL>4) err_printf("bound for resultant coeffs: 2^%ld\n",bound);
+  worker = snm_closure(is_entry("_ZXX_resultant_worker"),
+                       mkvec3(A, B, mkvecsmall5(degA, degB, dres, sX, vY)));
+  init_modular_big(&S);
+  H = gen_crt("ZXX_resultant", worker, &S, NULL, bound, 0, NULL, nxV_chinese_center, FpX_center_i);
   return gc_GEN(av, H);
 }
 

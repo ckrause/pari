@@ -10363,6 +10363,9 @@ is advised to make $P$ primitive first.
 under the assumption that \kbd{A} in $\Z[Y]$, \kbd{B} in $\Q[Y][X]$, and
 $R = \text{Res}_Y(A, B) \in \Z[X]$, returns the resultant $R$.
 
+\fun{GEN}{ZXX_resultant}{GEN A, GEN B} returns the resultant with respect
+to the main variable.
+
 \fun{GEN}{ZX_composedsum}{GEN P, GEN Q} if
 $P=a\prod_i(x-p_i)$ and $Q=b\prod_j(x-q_j)$ in some suitable algebraic
 extension, return $a\*b\prod_{i,j}(x-(p_i+q_j))$.

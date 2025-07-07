@@ -114,6 +114,7 @@ GEN  QXQ_inv_worker(GEN P, GEN A, GEN B);
 GEN  RgM_ZM_mul_worker(GEN y, GEN x);
 GEN  ZX_resultant_worker(GEN P, GEN A, GEN B, GEN dB);
 GEN  ZXQX_resultant_worker(GEN P, GEN A, GEN B, GEN T, GEN dB);
+GEN  ZXX_resultant_worker(GEN P, GEN A, GEN B, GEN v);
 GEN  ZX_ZXY_resultant_worker(GEN P, GEN A, GEN B, GEN dB, GEN v);
 GEN  ZX_composedsum_worker(GEN P, GEN A, GEN B);
 GEN  ZXQX_composedsum_worker(GEN P, GEN A, GEN B, GEN C);

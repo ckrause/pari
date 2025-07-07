@@ -5436,6 +5436,7 @@ int     ZXM_incremental_CRT(GEN *pH, GEN Hp, GEN *ptq, ulong p);
 GEN     ZXM_init_CRT(GEN Hp, long deg, ulong p);
 GEN     ZXQ_minpoly(GEN A, GEN T, long d, ulong b);
 GEN     ZXQ_charpoly(GEN A, GEN T, long v);
+GEN     ZXX_resultant(GEN a, GEN b, long v);
 GEN     characteristic(GEN x);
 GEN     ffinit(GEN p, long n, long v);
 GEN     ffnbirred(GEN p, long n);

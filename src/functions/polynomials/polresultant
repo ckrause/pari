@@ -49,6 +49,12 @@ Prototype: GGGGG
 Section: programming/internals
 Help: worker for ZX_ZXY_resultant
 
+Function: _ZXX_resultant_worker
+C-Name: ZXX_resultant_worker
+Prototype: GGGG
+Section: programming/internals
+Help: worker for ZXX_resultant
+
 Function: _ZXQX_resultant_worker
 C-Name: ZXQX_resultant_worker
 Prototype: GGGGG
