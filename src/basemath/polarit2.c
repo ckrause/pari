@@ -3266,6 +3266,12 @@ resultant_fast(GEN x, GEN y)
     case t_INTMOD: return RgX_resultant_FpX(x, y, p);
     case RgX_type_code(t_POLMOD, t_INTMOD):
                    return RgX_resultant_FpXQX(x, y, pol, p);
+    case RgX_type_code(t_POL, t_INT):
+    {
+      long v = -1;
+      if (varn(x)==varn(y) && RgX_is_ZXX(x, &v) && RgX_is_ZXX(y, &v) && v>=0)
+                   return ZXX_resultant(x,y,v);
+    } /* FALL THROUGH */
     default:       return NULL;
   }
 }
