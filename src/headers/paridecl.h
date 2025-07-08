@@ -5381,6 +5381,8 @@ GEN     FqC_red(GEN x, GEN T, GEN p);
 GEN     FqC_sub(GEN x, GEN y, GEN T, GEN p);
 GEN     FqC_to_FlxqC(GEN x, GEN T, ulong p);
 GEN     FqM_red(GEN x, GEN T, GEN p);
+GEN     FqM_add(GEN x, GEN y, GEN T, GEN p);
+GEN     FqM_sub(GEN x, GEN y, GEN T, GEN p);
 GEN     FqM_to_FlxqM(GEN x, GEN T, ulong p);
 GEN     FqV_red(GEN x, GEN T, GEN p);
 GEN     FqV_roots_to_pol(GEN V, GEN T, GEN p, long v);

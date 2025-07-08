@@ -4401,12 +4401,16 @@ reduced (i.e arbitrary \typ{INT}s and \kbd{ZX}s in the same variable as
 
 \fun{GEN}{FqC_FqV_mul}{GEN a, GEN b, GEN T, GEN p}
 
+\fun{GEN}{FqM_add}{GEN a, GEN b, GEN T, GEN p}
+
+\fun{GEN}{FqM_sub}{GEN a, GEN b, GEN T, GEN p}
+
+\fun{GEN}{FqM_FqC_mul}{GEN a, GEN b, GEN T, GEN p}
+
 \fun{GEN}{FqM_FqC_gauss}{GEN a, GEN b, GEN T, GEN p}
 as \kbd{gauss}, where $b$ is a \kbd{FqC}.
 
 \fun{GEN}{FqM_FqC_invimage}{GEN a, GEN b, GEN T, GEN p}
-
-\fun{GEN}{FqM_FqC_mul}{GEN a, GEN b, GEN T, GEN p}
 
 \fun{GEN}{FqM_deplin}{GEN x, GEN T, GEN p} returns a nontrivial
 kernel vector, or \kbd{NULL} if none exist.

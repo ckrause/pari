@@ -979,10 +979,24 @@ FqC_add(GEN x, GEN y, GEN T, GEN p)
 }
 
 GEN
+FqM_add(GEN x, GEN y, GEN T, GEN p)
+{
+  if (!T) return FpM_add(x, y, p);
+  pari_APPLY_same(FqC_add(gel(x,i), gel(y,i), T, p))
+}
+
+GEN
 FqC_sub(GEN x, GEN y, GEN T, GEN p)
 {
   if (!T) return FpC_sub(x, y, p);
   pari_APPLY_type(t_COL, Fq_sub(gel(x,i), gel(y,i), T, p))
+}
+
+GEN
+FqM_sub(GEN x, GEN y, GEN T, GEN p)
+{
+  if (!T) return FpM_sub(x, y, p);
+  pari_APPLY_same(FqC_sub(gel(x,i), gel(y,i), T, p))
 }
 
 GEN
