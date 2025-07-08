@@ -7,7 +7,7 @@ Help: polresultant(x,y,{v},{flag=0}): resultant of the polynomials x and y,
  to the variable v otherwise. flag is optional, and can be 0: default,
  uses either the subresultant algorithm, a modular algorithm or Sylvester's
  matrix, depending on the inputs; 1 uses Sylvester's matrix (should always be
- slower than the default).
+ slower than the default); 2 uses subresultant algorithm.
 Doc: resultant of the two
  polynomials $x$ and $y$ with exact entries, with respect to the main
  variables of $x$ and $y$ if $v$ is omitted, with respect to the variable $v$
@@ -22,6 +22,8 @@ Doc: resultant of the two
 
  If $\fl=1$, uses the determinant of Sylvester's matrix instead; this should
  always be slower than the default.
+
+ If $\fl=2$, uses the subresultant algorithm (Lazard/Ducos variant).
 
  If $x$ or $y$ are multivariate with a huge content, it is advisable to
  remove it before calling this function. Compare:

@@ -1,7 +1,7 @@
 k;c;d;e;f;g;junk2;junk3;b;h;j;a;z;x2;x3;x4;x1;
 
 allocatemem(20*10^6);
-do(P,Q)=my(v=variable()); substvec(polresultant(P,Q), v, vector(#v,i,i));
+do(P,Q,f=0)=my(v=variable()); substvec(polresultant(P,Q,,f), v, vector(#v,i,i));
 
 P = Pol([k,c,d,e,f,g]);
 Q = P';
@@ -33,7 +33,7 @@ do(P,Q)
 
 P = 1 + Polrev( vector(101, j, b^(101-j)) );
 Q = 1 + Polrev( vector(101, j, b^(j-1)) );
-do(P,Q)
+do(P,Q,2) \\ too slow using CRT+interpolation
 
 P = 1 + Polrev( vector(301,i,1) );
 Q = 1 + Polrev( vector(201,i,i-1) );

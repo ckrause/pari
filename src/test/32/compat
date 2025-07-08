@@ -3386,7 +3386,7 @@ respect to the main variables of x and y if v is omitted, with respect to the
 variable v otherwise. flag is optional, and can be 0: default, uses either the 
 subresultant algorithm, a modular algorithm or Sylvester's matrix, depending on 
 the inputs; 1 uses Sylvester's matrix (should always be slower than the 
-default).
+default); 2 uses subresultant algorithm.
 
 
   ***   at top-level: resultant2()
@@ -3401,7 +3401,7 @@ respect to the main variables of x and y if v is omitted, with respect to the
 variable v otherwise. flag is optional, and can be 0: default, uses either the 
 subresultant algorithm, a modular algorithm or Sylvester's matrix, depending on 
 the inputs; 1 uses Sylvester's matrix (should always be slower than the 
-default).
+default); 2 uses subresultant algorithm.
 
 
   ***   at top-level: reverse()
@@ -4499,4 +4499,4 @@ New syntax: texprint(x) ===> printtex(x)
 printtex({str}*): outputs its string arguments in TeX format.
 
 
-Total time spent: 8
+Total time spent: 5

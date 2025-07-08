@@ -3383,9 +3383,9 @@ polresultant0(GEN x, GEN y, long v, long flag)
   }
   switch(flag)
   {
-    case 2:
     case 0: x=resultant(x,y); break;
     case 1: x=resultant2(x,y); break;
+    case 2: x=RgX_resultant_all(x,y,NULL); break;
     default: pari_err_FLAG("polresultant");
   }
   if (v >= 0) (void)delete_var();
