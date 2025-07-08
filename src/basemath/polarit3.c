@@ -198,6 +198,23 @@ Rg_is_FpXQ(GEN x, GEN *pT, GEN *pp)
 }
 
 int
+RgX_is_ZXX(GEN x, long *v)
+{
+  long i;
+  for (i = lg(x)-1; i > 1; i--)
+  {
+    GEN xi = gel(x,i);
+    long t = typ(xi), vi;
+    if (t==t_INT) continue;
+    if (t!=t_POL || !RgX_is_ZX(xi)) return 0;
+    vi = varn(xi);
+    if (*v < 0) *v = vi;
+    else if (vi!=*v) return 0;
+  }
+  return 1;
+}
+
+int
 RgX_is_FpXQX(GEN x, GEN *pT, GEN *pp)
 {
   long i, lx = lg(x);

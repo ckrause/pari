@@ -5420,6 +5420,7 @@ GEN     RgX_to_FpX(GEN x, GEN p);
 int     RgX_is_FpXQX(GEN x, GEN *pT, GEN *pp);
 GEN     RgX_to_FpXQX(GEN x, GEN T, GEN p);
 GEN     RgX_to_FqX(GEN x, GEN T, GEN p);
+int     RgX_is_ZXX(GEN x, long *v);
 int     Z_incremental_CRT(GEN *H, ulong Hp, GEN *q, ulong p);
 GEN     Z_init_CRT(ulong Hp, ulong p);
 int     ZM_incremental_CRT(GEN *H, GEN Hp, GEN *q, ulong p);

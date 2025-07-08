@@ -10706,6 +10706,11 @@ rational coefficients (\typ{INT} and \typ{FRAC}), and 0 otherwise.
 \fun{int}{RgX_is_ZX}{GEN P} return 1 if the \kbd{RgX}~$P$ has only
 \typ{INT} coefficients, and 0 otherwise.
 
+\fun{int}{RgX_is_ZXX}{GEN P, long *v} return $1$ if the \kbd{RgX}~$P$ is
+a bivariate polynomial with \typ{INT} coeffcients. If \kbd{*v}$\geq 0$, also
+check that the secondary variable is equal to $v$, otherwise set \kbd{*v} to
+the secondary variable, if any.
+
 \fun{int}{RgX_is_monomial}{GEN x} returns 1 (true) if \kbd{x} is a nonzero
 monomial in its main variable, 0~otherwise.
 
