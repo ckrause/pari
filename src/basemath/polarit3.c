@@ -2219,6 +2219,7 @@ QXQ_charpoly(GEN A, GEN T, long v)
 static ulong
 ZX_resultant_prime(GEN a, GEN b, GEN dB, long degA, long degB, ulong p)
 {
+  pari_sp av = avma;
   long dropa = degA - degpol(a), dropb = degB - degpol(b);
   ulong H, dp;
   if (dropa && dropb) return 0; /* p | lc(A), p | lc(B) */
@@ -2238,7 +2239,7 @@ ZX_resultant_prime(GEN a, GEN b, GEN dB, long degA, long degB, ulong p)
   }
   dp = dB ? umodiu(dB, p): 1;
   if (dp != 1) H = Fl_mul(H, Fl_powu(Fl_inv(dp,p), degA, p), p);
-  return H;
+  return gc_ulong(av, H);
 }
 
 /* If B=NULL, assume B=A' */
@@ -2401,6 +2402,7 @@ ZX_disc(GEN x) { return ZX_disc_all(x,0); }
 static GEN
 ZXQX_resultant_prime(GEN a, GEN b, GEN dB, long degA, long degB, GEN T, ulong p)
 {
+  pari_sp av = avma;
   long dropa = degA - degpol(a), dropb = degB - degpol(b);
   GEN H, dp;
   if (dropa && dropb) return pol0_Flx(T[1]); /* p | lc(A), p | lc(B) */
@@ -2426,7 +2428,7 @@ ZXQX_resultant_prime(GEN a, GEN b, GEN dB, long degA, long degB, GEN T, ulong p)
     if (!idp) return NULL;
     H = Flxq_mul(H, Flxq_powu(idp, degA, T, p), T, p);
   }
-  return H;
+  return gc_leaf(av, H);
 }
 
 /* If B=NULL, assume B=A' */
@@ -2991,6 +2993,7 @@ ZX_ZXY_resultant(GEN A, GEN B)
 static GEN
 ZXX_resultant_prime(GEN a, GEN b, ulong p, long degA, long degB, long dres, long sX)
 {
+  pari_sp av = avma;
   long dropa = degA - degpol(a), dropb = degB - degpol(b);
   ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
   GEN Hp = FlxY_resultant_polint(a, b, p, pi, dres, sX);
@@ -3013,7 +3016,7 @@ ZXX_resultant_prime(GEN a, GEN b, ulong p, long degA, long degB, long dres, long
       if (c != 1) Hp = Flx_Fl_mul_pre(Hp, c, p, pi);
     }
   }
-  return Hp;
+  return gc_leaf(av, Hp);
 }
 
 static GEN
