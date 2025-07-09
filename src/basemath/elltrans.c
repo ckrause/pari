@@ -2048,6 +2048,7 @@ redmod2Z(GEN z)
 static GEN
 thetaall_ii(GEN z, GEN tau, long flz, long prec)
 {
+  pari_sp av;
   GEN zold, tauold, k, u, un, q, q2, qd, qn;
   GEN S, Skeep, S00, S01, S10, S11, u2, ui2, uin;
   GEN Z00 = gen_1, Z01 = gen_1, Z10 = gen_0, Z11 = gen_0, SR, ZR;
@@ -2088,6 +2089,7 @@ thetaall_ii(GEN z, GEN tau, long flz, long prec)
     un = uin = gen_1;
   }
   qd = q; B = prec2nbits(prec);
+  av = avma;
   for (n = 1;; n++)
   { /* qd = q^(4n-3), qn = q^(4(n-1)^2), un = u^(2n-2), uin = 1/un */
     long e = 0, eqn, prec2;
@@ -2128,6 +2130,8 @@ thetaall_ii(GEN z, GEN tau, long flz, long prec)
     prec2 = minss(prec, nbits2prec(eqn + B + 64));
     qn = gprec_w(qn, prec2); qd = gprec_w(qd, prec2);
     if (u) { un = gprec_w(un, prec2); uin = gprec_w(uin, prec2); }
+    if (gc_needed(av, 1))
+      gc_all(av, flz ? 12 : 8, &qd, &qn, &un, &uin, &S00, &S01, &S10, &S11, &Z00, &Z01, &Z10, &Z11);
   }
   if (u)
   {
