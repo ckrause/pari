@@ -216,8 +216,10 @@ strjoin(GEN v, GEN p)
     gel(w, 1) = gel(v, 1);
     for (i = 2; i < l; i++)
     {
+      GEN s = gel(v,i);
+      if (typ(s) != t_STR) s = GENtoGENstr(gel(v,i));
       gel(w, 2*i-2) = p;
-      gel(w, 2*i-1) = gel(v, i);
+      gel(w, 2*i-1) = s;
     }
   }
   return gc_leaf(av, shallowconcat1(w));
