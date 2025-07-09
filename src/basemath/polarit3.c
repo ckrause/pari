@@ -1756,7 +1756,7 @@ Flx_FlxY_resultant_polint(GEN a, GEN b, ulong p, ulong pi, long dres, long sx)
 /* assume dres := deg(Res_X(a,b), Y) <= deg(a,X) * deg(b,Y) < p */
 /* Return a Fly */
 static GEN
-FlxY_resultant_polint(GEN a, GEN b, ulong p, ulong pi, long dres, long sx)
+FlxX_resultant_polint(GEN a, GEN b, ulong p, ulong pi, long dres, long sx)
 {
   long i;
   ulong n;
@@ -1878,7 +1878,7 @@ FlxX_resultant_pre(GEN a, GEN b, ulong p, ulong pi, long sx)
   if (da<0 || db<0) return pol0_Flx(sx);
   dres = FlxY_degreex(a)*db+FlxY_degreex(b)*da;
   z = dres >= p ? FlxX_resultant_subres(a, b, p, pi, sx)
-                : FlxY_resultant_polint(a, b, p, pi, dres, sx);
+                : FlxX_resultant_polint(a, b, p, pi, dres, sx);
   return gc_upto(ltop, z);
 }
 
@@ -3010,7 +3010,7 @@ ZXX_resultant_prime(GEN a, GEN b, ulong p, long degA, long degB, long dres, long
   pari_sp av = avma;
   long dropa = degA - degpol(a), dropb = degB - degpol(b);
   ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
-  GEN Hp = FlxY_resultant_polint(a, b, p, pi, dres, sX);
+  GEN Hp = FlxX_resultant_polint(a, b, p, pi, dres, sX);
   if (dropa && dropb)
     Hp = zero_Flx(sX);
   else {
