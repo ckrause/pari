@@ -3565,7 +3565,7 @@ void    err_printf(const char* pat, ...);
 long    gp_embedded(const char *s);
 void    gp_embedded_init(long rsize, long vsize);
 void    gp_fileclose(long n);
-long    gp_fileextern(const char *s);
+long    gp_fileextern(const char *s, const char *mode);
 void    gp_fileflush(long n);
 void    gp_fileflush0(GEN n);
 long    gp_fileopen(const char *s, const char *mode);

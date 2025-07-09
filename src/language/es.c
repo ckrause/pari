@@ -5011,7 +5011,7 @@ check_compress(const char *name)
   { /* compressed file (compress or gzip) */
     char *cmd = stack_malloc(strlen(ZCAT) + l + 4);
     sprintf(cmd,"%s \"%s\"",ZCAT,name);
-    return gp_fileextern(cmd);
+    return gp_fileextern(cmd,"r");
   }
   return -1;
 }
@@ -5048,18 +5048,36 @@ gp_fileopen(const char *s, const char *mode)
 }
 
 long
-gp_fileextern(const char *s)
+gp_fileextern(const char *s, const char *mode)
 {
+  FILE *f;
+  if (mode[0]==0 || mode[1]!=0)
+    pari_err_TYPE("fileopen",strtoGENstr(mode));
+  check_secure(s);
+  switch (mode[0])
+  {
+  case 'r':
 #ifndef HAVE_PIPES
   pari_err(e_ARCH,"pipes");
   return NULL;/*LCOV_EXCL_LINE*/
 #else
-  FILE *f;
-  check_secure(s);
-  f = popen(s, "r");
-  if (!f) pari_err(e_MISC,"[pipe:] '%s' failed",s);
-  return new_gp_file(s,f, mf_PIPE);
+    f = popen(s, "r");
 #endif
+    if (!f) pari_err(e_MISC,"[pipe:] '%s' failed",s);
+    return new_gp_file(s, f, mf_PIPE|mf_IN);
+  case 'w':
+#ifndef HAVE_PIPES
+  pari_err(e_ARCH,"pipes");
+  return NULL;/*LCOV_EXCL_LINE*/
+#else
+    f = popen(s, "w");
+#endif
+    if (!f) pari_err(e_MISC,"[pipe:] '%s' failed",s);
+    return new_gp_file(s, f, mf_PIPE|mf_OUT);
+  default:
+    pari_err_TYPE("fileextern",strtoGENstr(mode));
+    return -1; /* LCOV_EXCL_LINE */
+  }
 }
 
 void
@@ -5067,7 +5085,7 @@ gp_fileclose(long n)
 {
   check_gp_file("fileclose", n);
   if (DEBUGLEVEL) err_printf("fileclose(%ld)\n",n);
-  if (gp_file[n].type == mf_PIPE)
+  if (gp_file[n].type&mf_PIPE)
     pclose(gp_file[n].fp);
   else
     fclose(gp_file[n].fp);
@@ -5106,10 +5124,8 @@ gp_fileread(long n)
   Buffer *b;
   FILE *fp;
   GEN z;
-  int t;
   check_gp_file("fileread", n);
-  t = gp_file[n].type;
-  if (t!=mf_IN && t!=mf_PIPE)
+  if ((gp_file[n].type&mf_IN)==0)
     pari_err_FILEDESC("fileread",n);
   fp = gp_file[n].fp;
   b = new_buffer();
@@ -5128,7 +5144,7 @@ gp_filewrite(long n, const char *s)
 {
   FILE *fp;
   check_gp_file("filewrite", n);
-  if (gp_file[n].type!=mf_OUT)
+  if ((gp_file[n].type&mf_OUT)==0)
     pari_err_FILEDESC("filewrite",n);
   fp = gp_file[n].fp;
   fputs(s, fp);
@@ -5140,7 +5156,7 @@ gp_filewrite1(long n, const char *s)
 {
   FILE *fp;
   check_gp_file("filewrite1", n);
-  if (gp_file[n].type!=mf_OUT)
+  if ((gp_file[n].type&mf_OUT)==0)
     pari_err_FILEDESC("filewrite1",n);
   fp = gp_file[n].fp;
   fputs(s, fp);
@@ -5156,7 +5172,7 @@ gp_filereadstr(long n)
   input_method IM;
   check_gp_file("filereadstr", n);
   t = gp_file[n].type;
-  if (t!=mf_IN && t!=mf_PIPE)
+  if ((t&mf_IN)==0)
     pari_err_FILEDESC("fileread",n);
   b = new_buffer();
   IM.myfgets = (fgets_t)&fgets;
