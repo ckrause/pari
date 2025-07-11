@@ -218,7 +218,6 @@ modinv_pfilter(long inv)
   case INV_W2W5:
   case INV_W2W3E2:
   case INV_W2W5E2:
-  case INV_W5W7:
   case INV_W3W13:
     return IQ_FILTER_1MOD3; /* ensure unique cube roots */
   case INV_W2W7:
@@ -437,7 +436,7 @@ modinv_good_disc(long inv, long D)
   case INV_W3W7:
     return (D & 1) && (-D % 21) && modinv_double_eta_good_disc(D, inv);
   case INV_W5W7: /* NB: This is a guess; avs doesn't have an entry */
-    return (D % 3) && modinv_double_eta_good_disc(D, inv);
+    return modinv_double_eta_good_disc(D, inv);
   case INV_W3W13: /* NB: This is a guess; avs doesn't have an entry */
     return (D & 1) && (D % 3) && modinv_double_eta_good_disc(D, inv);
   case INV_ATKIN3:
@@ -3639,7 +3638,6 @@ select_L0(long L, long inv, long initial_L0)
     if (L == 29 || L == 101) return 11;
     if (L == 11 || L == 19) return 13;
   }
-  if (inv == INV_W5W7 && L == 17) return 3;
 
   /* L0 = smallest small prime different from L that doesn't divide modinv_N */
   for (L0 = unextprime(initial_L0 + 1);
