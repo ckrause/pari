@@ -2131,7 +2131,13 @@ thetaall_ii(GEN z, GEN tau, long flz, long prec)
     qn = gprec_w(qn, prec2); qd = gprec_w(qd, prec2);
     if (u) { un = gprec_w(un, prec2); uin = gprec_w(uin, prec2); }
     if (gc_needed(av, 1))
-      gc_all(av, flz ? 12 : 8, &qd, &qn, &un, &uin, &S00, &S01, &S10, &S11, &Z00, &Z01, &Z10, &Z11);
+    {
+      if(DEBUGMEM>1) pari_warn(warnmem,"theta");
+      if (u)
+        gc_all(av, flz ? 12 : 8, &qd, &qn, &un, &uin, &S00, &S01, &S10, &S11, &Z00, &Z01, &Z10, &Z11);
+      else
+        gc_all(av, flz ? 10 : 6, &qd, &qn, &S00, &S01, &S10, &S11, &Z00, &Z01, &Z10, &Z11);
+    }
   }
   if (u)
   {
