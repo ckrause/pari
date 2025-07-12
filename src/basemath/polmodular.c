@@ -3612,8 +3612,7 @@ select_L0(long L, long inv, long initial_L0)
       || inv == INV_W2W3 || inv == INV_W2W3E2
       || inv == INV_W3W3) {
     if (L == 19) return 13;
-    else if (L == 29 || L == 5) return 7;
-    return 5;
+    else if (L == 29) return 7;
   }
   if ((inv == INV_W2W5) && (L == 19)) return 13;
   if ((inv == INV_W2W5E2)
