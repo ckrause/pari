@@ -3539,16 +3539,6 @@ modpoly_height_bound(long L, long inv)
 
 #define MAX_ATKIN 255
 
-/* Must have primes at least up to MAX_ATKIN */
-static const long PRIMES[] = {
-    0,   2,   3,   5,   7,  11,  13,  17,  19,  23,
-   29,  31,  37,  41,  43,  47,  53,  59,  61,  67,
-   71,  73,  79,  83,  89,  97, 101, 103, 107, 109,
-  113, 127, 131, 137, 139, 149, 151, 157, 163, 167,
-  173, 179, 181, 191, 193, 197, 199, 211, 223, 227,
-  229, 233, 239, 241, 251, 257, 263, 269, 271, 277
-};
-
 #define MAX_L1      255
 
 typedef struct D_entry_struct {
@@ -4004,7 +3994,7 @@ modpoly_pickD(disc_info Ds[MODPOLY_MAX_DCNT], long L, long inv,
     L1 = 0;
     for (i = 1 ; i <= SMOOTH_PRIMES; i++)
     {
-      long p = PRIMES[i];
+      ulong p = (ulong) pari_PRIMES[i];
       if (p <= L0) continue;
       /* If 1 + (D0 | p) = 1, i.e. p | D0 */
       if (((D0_entry.m >> (2*i)) & 3) == 1) {
@@ -4053,7 +4043,7 @@ modpoly_pickD(disc_info Ds[MODPOLY_MAX_DCNT], long L, long inv,
       /* i = 0 corresponds to 1, which we do not want to skip! (i.e. DK = D) */
       if (i) {
         if (modinv_odd_conductor(inv) && i == 1) continue;
-        p = PRIMES[i];
+        p = (ulong) pari_PRIMES[i];
         /* Don't allow large factors in the conductor. */
         if (p > max_L1) break;
         if (p == L0 || p == L1 || p == L || p == modinv_p1 || p == modinv_p2)
@@ -4316,7 +4306,7 @@ scanD0(long *tablelen, long *minD, long maxD, long maxh, long L0)
     /* bits j and j+1 give the 2-bit number 1 + (D|p) where p = prime(j) */
     for (j = 1 ; j <= SMOOTH_PRIMES; j++)
     {
-      ulong x = (ulong) (1 + kross(D, PRIMES[j]));
+      ulong x = (ulong) (1 + kross(D, (long) pari_PRIMES[j]));
       m |= x << (2*j);
     }
 
