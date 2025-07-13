@@ -3994,7 +3994,7 @@ modpoly_pickD(disc_info Ds[MODPOLY_MAX_DCNT], long L, long inv,
     L1 = 0;
     for (i = 1 ; i <= SMOOTH_PRIMES; i++)
     {
-      ulong p = (ulong) pari_PRIMES[i];
+      long p = (long)pari_PRIMES[i];
       if (p <= L0) continue;
       /* If 1 + (D0 | p) = 1, i.e. p | D0 */
       if (((D0_entry.m >> (2*i)) & 3) == 1) {
@@ -4043,7 +4043,7 @@ modpoly_pickD(disc_info Ds[MODPOLY_MAX_DCNT], long L, long inv,
       /* i = 0 corresponds to 1, which we do not want to skip! (i.e. DK = D) */
       if (i) {
         if (modinv_odd_conductor(inv) && i == 1) continue;
-        p = (ulong) pari_PRIMES[i];
+        p = (long)pari_PRIMES[i];
         /* Don't allow large factors in the conductor. */
         if (p > max_L1) break;
         if (p == L0 || p == L1 || p == L || p == modinv_p1 || p == modinv_p2)
