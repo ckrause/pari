@@ -1817,6 +1817,22 @@ FlxX_pseudorem(GEN x, GEN y, ulong p, ulong pi)
   return gc_GEN(av, x);
 }
 
+static GEN
+Flx_Lazard(GEN x, GEN y, long n, ulong p, ulong pi)
+{
+  long a;
+  GEN c;
+  if (n == 1) return x;
+  a = 1 << expu(n); /* a = 2^k <= n < 2^(k+1) */
+  c=x; n-=a;
+  while (a>1)
+  {
+    a>>=1; c = Flx_div_pre(Flx_sqr_pre(c, p, pi), y, p, pi);
+    if (n>=a) { c = Flx_div_pre(Flx_mul_pre(c,x,p,pi),y, p,pi); n -= a; }
+  }
+  return c;
+}
+
 /* return a Flx */
 static GEN
 FlxX_resultant_subres(GEN u, GEN v, ulong p, ulong pi, long sx)
@@ -1848,8 +1864,7 @@ FlxX_resultant_subres(GEN u, GEN v, ulong p, ulong pi, long sx)
         p1 = Flx_mul_pre(h,p1, p, pi); h = g; break;
       default:
         p1 = Flx_mul_pre(Flx_powu_pre(h,degq,p,pi), p1, p, pi);
-        h = Flx_div_pre(Flx_powu_pre(g,degq,p,pi),
-                        Flx_powu_pre(h,degq-1,p,pi), p, pi);
+        h = Flx_Lazard(g,h,degq, p, pi);
     }
     if (both_odd(du,dv)) signh = -signh;
     v = FlxY_Flx_div(r, p1, p);
