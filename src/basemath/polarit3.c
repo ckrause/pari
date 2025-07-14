@@ -3070,8 +3070,32 @@ ZXX_resultant_worker(GEN P, GEN A, GEN B, GEN v)
   return V;
 }
 
-GEN
-ZXX_resultant(GEN A, GEN B, long vX)
+static int
+ZXX_is_sparse(GEN x, long r)
+{
+  long c = 0, i, l = lg(x), ly = 2, thr;
+  for (i = 2; i < l; i++)
+  {
+    GEN xi = gel(x,i);
+    if (typ(xi)==t_INT)
+      c += !!signe(xi);
+    else
+    {
+      long j, li = lg(xi);
+      ly = maxss(ly, li);
+      for (j = 2; j < li; j++)
+        c += !!signe(gel(xi,j));
+    }
+  }
+  thr = (l-2)*(ly-2)/r;
+  if (DEBUGLEVEL >= 5)
+    err_printf("ZXX_is_sparse: lx=%ld ly=%ld r=%ld c=%ld < thr=%ld \n",l-2, ly-2,r,c,thr);
+  return c < thr;
+}
+
+
+static GEN
+ZXX_resultant_interp(GEN A, GEN B, long vX)
 {
   pari_sp av = avma;
   forprime_t S;
@@ -3086,6 +3110,14 @@ ZXX_resultant(GEN A, GEN B, long vX)
   init_modular_big(&S);
   H = gen_crt("ZXX_resultant", worker, &S, NULL, bound, 0, NULL, nxV_chinese_center, FpX_center_i);
   return gc_GEN(av, H);
+}
+
+GEN
+ZXX_resultant(GEN A, GEN B, long vX)
+{
+  if (!ZXX_is_sparse(A,6) && !ZXX_is_sparse(B,6))
+    return ZXX_resultant_interp(A, B, vX);
+  return RgX_resultant_all(A, B, NULL);
 }
 
 static long
