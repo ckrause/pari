@@ -511,6 +511,7 @@ FlxY_Flx_div(GEN x, GEN y, ulong p)
   else
   {
     ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
+    y = Flx_get_red_pre(y, p, pi);
     z = cgetg_copy(x, &l); z[1] = x[1];
     for (i=2; i<l; i++) gel(z,i) = Flx_div_pre(gel(x,i),y,p,pi);
   }
