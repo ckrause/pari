@@ -572,7 +572,10 @@ GEN     zx_to_Flx(GEN x, ulong p);
 
 GEN     FlxX_Fl_mul(GEN x, ulong y, ulong p);
 GEN     FlxY_Flx_add(GEN y, GEN x, ulong p);
+GEN     FlxY_Flx_div(GEN x, GEN y, ulong p);
+GEN     FlxY_Flx_div_pre(GEN x, GEN y, ulong p, ulong pi);
 GEN     FlxY_Flx_mul(GEN x, GEN y, ulong p);
+GEN     FlxY_Flx_mul_pre(GEN x, GEN y, ulong p, ulong pi);
 GEN     FlxY_Flx_sub(GEN y, GEN x, ulong p);
 GEN     FlxX_Laplace(GEN x, ulong p);
 GEN     FlxX_add(GEN P, GEN Q, ulong p);
@@ -596,7 +599,6 @@ GEN     FlxXC_to_ZXXC(GEN B);
 GEN     FlxXM_to_ZXXM(GEN B);
 GEN     FlxXV_to_FlxM(GEN v, long n, long sv);
 GEN     FlxXn_red(GEN a, long n);
-GEN     FlxY_Flx_div(GEN x, GEN y, ulong p);
 GEN     FlxY_Flx_translate(GEN P, GEN c, ulong p);
 GEN     FlxY_FlxqV_evalx(GEN P, GEN x, GEN T, ulong p);
 GEN     FlxY_FlxqV_evalx_pre(GEN P, GEN x, GEN T, ulong p, ulong pi);

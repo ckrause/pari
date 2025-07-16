@@ -401,18 +401,21 @@ FlxX_sub(GEN x, GEN y, ulong p)
 }
 
 GEN
-FlxY_Flx_mul(GEN P, GEN U, ulong p)
+FlxY_Flx_mul_pre(GEN P, GEN U, ulong p, ulong pi)
 {
   long i, lP = lg(P);
   GEN res = cgetg(lP,t_POL);
-  ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
   res[1] = P[1];
   for(i=2; i<lP; i++) gel(res,i) = Flx_mul_pre(U,gel(P,i), p, pi);
   return FlxX_renormalize(res, lP);
 }
 
 GEN
-FlxY_Flx_div(GEN x, GEN y, ulong p)
+FlxY_Flx_mul(GEN P, GEN U, ulong p)
+{ return FlxY_Flx_mul_pre(P, U, p, SMALL_ULONG(p)? 0: get_Fl_red(p)); }
+
+GEN
+FlxY_Flx_div_pre(GEN x, GEN y, ulong p, ulong pi)
 {
   long i, l;
   GEN z;
@@ -422,17 +425,19 @@ FlxY_Flx_div(GEN x, GEN y, ulong p)
     if (t == 1) return x;
     t = Fl_inv(t, p);
     z = cgetg_copy(x, &l); z[1] = x[1];
-    for (i=2; i<l; i++) gel(z,i) = Flx_Fl_mul(gel(x,i),t,p);
+    for (i=2; i<l; i++) gel(z,i) = Flx_Fl_mul_pre(gel(x,i),t,p,pi);
   }
   else
   {
-    ulong pi = SMALL_ULONG(p)? 0: get_Fl_red(p);
     y = Flx_get_red_pre(y, p, pi);
     z = cgetg_copy(x, &l); z[1] = x[1];
     for (i=2; i<l; i++) gel(z,i) = Flx_div_pre(gel(x,i),y,p,pi);
   }
   return z;
 }
+GEN
+FlxY_Flx_div(GEN P, GEN U, ulong p)
+{ return FlxY_Flx_div_pre(P, U, p, SMALL_ULONG(p)? 0: get_Fl_red(p)); }
 
 GEN
 FlxY_evalx_pre(GEN Q, ulong x, ulong p, ulong pi)
