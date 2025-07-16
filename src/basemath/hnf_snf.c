@@ -1793,7 +1793,7 @@ ZM_hnflll(GEN A, GEN *ptB, int remove)
       GEN b = D-1;
       if (DEBUGMEM>1) pari_warn(warnmem,"hnflll, kmax = %ld / %ld",kmax,n-1);
       (void)gc_all(av, B? 4: 3, &A, &lambda, &b, &B);
-      if (gc_needed(av,1)) paristack_resize(0); /* avoid desperation GC */
+      if (_gc_needed(av,1)) paristack_resize(0); /* avoid desperation GC */
       D = b+1;
     }
   }

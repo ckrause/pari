@@ -402,13 +402,14 @@ extern char *current_psfile, *pari_datadir;
   if (_once==0) {_once=1; err_printf("t=%ld s=%ld\n",var,s); }\
 }
 
+#  define _gc_needed(av,n) (avma < (pari_sp)stack_lim(av,n))
 /* Define this to thoroughly check "random" garbage collecting */
 #ifdef DEBUG_LOWSTACK
 #  define low_stack(x,l) 1
 #  define gc_needed(av,n) ((void)av,1)
 #else
 #  define low_stack(x,l) ((void)(x),avma < (pari_sp)(l))
-#  define gc_needed(av,n) (avma < (pari_sp)stack_lim(av,n) && (av) > ((pari_mainstack->bot >> 1) + (pari_mainstack->top >> 1)))
+#  define gc_needed(av,n) (_gc_needed(av,n) && (av) > ((pari_mainstack->bot >> 1) + (pari_mainstack->top >> 1)))
 #endif
 
 #define stack_lim(av,n) (pari_mainstack->bot+(((av)-pari_mainstack->bot)>>(n)))
