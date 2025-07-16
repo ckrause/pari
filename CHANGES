@@ -105,6 +105,9 @@ BA  11- Rename RgX_translate -> RgX_Rg_translate
                FpX_translate -> FpX_Fp_translate
                FqX_translate -> FqX_Fq_translate
     12- faster strjoin when delimiter is empty
+BA  13- Rename FlxX_Flx_mul->FlxY_Flx_mul
+               FlxX_Flx_add->FlxY_Flx_add
+               FlxX_Flx_sub->FlxY_Flx_sub
 
   Removed
      1- obsolete functions gerepileall, gerepilemany: use gc_all

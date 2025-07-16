@@ -3400,7 +3400,7 @@ ffinit_Artin_Schreier(ulong p, long l)
   xp[1] = v;
   R = Flx_sub(polxn_Flx(2*p-1,0), polxn_Flx(p,0),p);
   S = Flx_sub(xp, polx_Flx(0), p);
-  Q = FlxX_Flx_sub(Flx_to_FlxX(S, v), R, p); /* x^p - x - (y^(2p-1)-y^p) */
+  Q = FlxY_Flx_sub(Flx_to_FlxX(S, v), R, p); /* x^p - x - (y^(2p-1)-y^p) */
   for (i = 2; i <= l; ++i) T = Flx_FlxY_resultant(T, Q, p);
   (void)delete_var(); T[1] = 0; return T;
 }

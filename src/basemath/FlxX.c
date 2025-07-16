@@ -250,7 +250,7 @@ FlxX_add(GEN x, GEN y, ulong p)
 }
 
 GEN
-FlxX_Flx_add(GEN y, GEN x, ulong p)
+FlxY_Flx_add(GEN y, GEN x, ulong p)
 {
   long i, lz = lg(y);
   GEN z;
@@ -264,7 +264,7 @@ FlxX_Flx_add(GEN y, GEN x, ulong p)
 }
 
 GEN
-FlxX_Flx_sub(GEN y, GEN x, ulong p)
+FlxY_Flx_sub(GEN y, GEN x, ulong p)
 {
   long i, lz = lg(y);
   GEN z;
@@ -401,7 +401,7 @@ FlxX_sub(GEN x, GEN y, ulong p)
 }
 
 GEN
-FlxX_Flx_mul(GEN P, GEN U, ulong p)
+FlxY_Flx_mul(GEN P, GEN U, ulong p)
 {
   long i, lP = lg(P);
   GEN res = cgetg(lP,t_POL);
@@ -1930,7 +1930,7 @@ _FlxqX_sub(void *data, GEN x, GEN y) {
 static GEN
 _FlxqXQ_cmul(void *data, GEN P, long a, GEN x) {
   struct _FlxqXQ *d = (struct _FlxqXQ*) data;
-  return FlxX_Flx_mul(x,gel(P,a+2), d->p);
+  return FlxY_Flx_mul(x,gel(P,a+2), d->p);
 }
 #endif
 static GEN

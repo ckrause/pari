@@ -571,9 +571,9 @@ GEN     zx_to_Flx(GEN x, ulong p);
 /* FlxX.c */
 
 GEN     FlxX_Fl_mul(GEN x, ulong y, ulong p);
-GEN     FlxX_Flx_add(GEN y, GEN x, ulong p);
-GEN     FlxX_Flx_mul(GEN x, GEN y, ulong p);
-GEN     FlxX_Flx_sub(GEN y, GEN x, ulong p);
+GEN     FlxY_Flx_add(GEN y, GEN x, ulong p);
+GEN     FlxY_Flx_mul(GEN x, GEN y, ulong p);
+GEN     FlxY_Flx_sub(GEN y, GEN x, ulong p);
 GEN     FlxX_Laplace(GEN x, ulong p);
 GEN     FlxX_add(GEN P, GEN Q, ulong p);
 GEN     FlxX_blocks(GEN P, long n, long m, long vs);

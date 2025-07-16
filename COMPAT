@@ -79,6 +79,9 @@ This file lists the incompatible changes between Version 2.x and older versions
            ZX_translate -> ZX_Z_translate
            FpX_translate -> FpX_Fp_translate
            FqX_translate -> FqX_Fq_translate
+  - rename FlxX_Flx_mul->FlxY_Flx_mul
+           FlxX_Flx_add->FlxY_Flx_add
+           FlxX_Flx_sub->FlxY_Flx_sub
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% VERSION 2.16 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    - binomial changed to agree with Loeb's definition

@@ -1430,7 +1430,7 @@ FlxqX_roots_split(GEN Sp, GEN xp, GEN Xp, GEN S, GEN T, ulong p, long pi)
     GEN a = deg1pol(pol1_Flx(vT), random_Flx(dT, vT, p), varn(Sp));
     GEN R = FlxqXQ_halfFrobenius_i(a, xp, Xp, S, T, p, pi);
     if (DEBUGLEVEL >= 7) timer_printf(&ti, "FlxqXQ_halfFrobenius");
-    f = FlxqX_gcd_pre(FlxX_Flx_sub(R, pol1_Flx(vT), p), Sp, T, p, pi);
+    f = FlxqX_gcd_pre(FlxY_Flx_sub(R, pol1_Flx(vT), p), Sp, T, p, pi);
     if (degpol(f) > 0 && degpol(f) < n) break;
     set_avma(btop);
   }
@@ -2332,8 +2332,8 @@ FlxqX_edf_simple(GEN Sp, GEN xp, GEN Xp, GEN Xq, long d, GEN T, ulong p,
     {
       pari_sp btop2 = avma;
       GEN r = random_Flx(dT, vT, p);
-      GEN R = FlxqXQ_halfFrobenius_i(FlxX_Flx_add(t, r, p), xp, Xp, S, T, p, pi);
-      f = FlxqX_gcd_pre(FlxX_Flx_sub(R, pol1_Flx(vT), p), Sp, T, p, pi);
+      GEN R = FlxqXQ_halfFrobenius_i(FlxY_Flx_add(t, r, p), xp, Xp, S, T, p, pi);
+      f = FlxqX_gcd_pre(FlxY_Flx_sub(R, pol1_Flx(vT), p), Sp, T, p, pi);
       if (degpol(f) > 0 && degpol(f) < n) break;
       set_avma(btop2);
     }
