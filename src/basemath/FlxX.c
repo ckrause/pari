@@ -1935,7 +1935,7 @@ _FlxqX_sub(void *data, GEN x, GEN y) {
 static GEN
 _FlxqXQ_cmul(void *data, GEN P, long a, GEN x) {
   struct _FlxqXQ *d = (struct _FlxqXQ*) data;
-  return FlxY_Flx_mul(x,gel(P,a+2), d->p);
+  return FlxY_Flx_mul_pre(x,gel(P,a+2), d->p, d->pi);
 }
 #endif
 static GEN

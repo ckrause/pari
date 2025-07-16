@@ -1868,7 +1868,7 @@ FlxX_resultant_subres(GEN u, GEN v, ulong p, ulong pi, long sx)
         h = Flx_Lazard(g,h,degq, p, pi);
     }
     if (both_odd(du,dv)) signh = -signh;
-    v = FlxY_Flx_div(r, p1, p);
+    v = FlxY_Flx_div_pre(r, p1, p, pi);
     if (dr==3) break;
     if (gc_needed(av2,1))
     {
