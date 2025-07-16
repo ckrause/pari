@@ -1825,6 +1825,7 @@ Flx_Lazard(GEN x, GEN y, long n, ulong p, ulong pi)
   if (n == 1) return x;
   a = 1 << expu(n); /* a = 2^k <= n < 2^(k+1) */
   c=x; n-=a;
+  y = Flx_get_red_pre(y, p, pi);
   while (a>1)
   {
     a>>=1; c = Flx_div_pre(Flx_sqr_pre(c, p, pi), y, p, pi);
@@ -1876,8 +1877,7 @@ FlxX_resultant_subres(GEN u, GEN v, ulong p, ulong pi, long sx)
     }
   }
   z = gel(v,2);
-  if (dv > 1) z = Flx_div_pre(Flx_powu_pre(z,dv,p,pi),
-                              Flx_powu_pre(h,dv-1,p,pi), p, pi);
+  if (dv > 1) z = Flx_Lazard(z,h,dv,p,pi);
   if (signh < 0) z = Flx_neg(z,p);
   return gc_upto(av, z);
 }
