@@ -365,14 +365,11 @@ bitset(GEN x, long n)
 {
   long r, q = dvmdsBIL(n, &r), e;
   if (typ(x) != t_INT) pari_err_TYPE("bitset",x);
-  if (signe(x)==0)
-    pari_err_DOMAIN("bitset","x","==",gen_0,x);
-  if (n < 0)
-    pari_err_DOMAIN("bitset","n","<",gen_0,stoi(n));
+  if (signe(x)==0) pari_err_DOMAIN("bitset","x","==",gen_0,x);
+  if (n < 0) pari_err_DOMAIN("bitset","n","<",gen_0,stoi(n));
   e = expi(x);
-  if (n > e)
-    pari_err_DOMAIN("bitset","n",">",utoi(e),stoi(n));
-  *int_W(x,q)|= 1UL<<r;
+  if (n > e) pari_err_DOMAIN("bitset","n",">",utoi(e),stoi(n));
+  *int_W(x,q) |= 1UL<<r;
 }
 
 void
@@ -380,14 +377,11 @@ bitflip(GEN x, long n)
 {
   long r, q = dvmdsBIL(n, &r), e;
   if (typ(x) != t_INT) pari_err_TYPE("bitflip",x);
-  if (signe(x)==0)
-    pari_err_DOMAIN("bitset","x","==",gen_0,x);
-  if (n < 0)
-    pari_err_DOMAIN("bitflip","n","<",gen_0,stoi(n));
+  if (signe(x)==0) pari_err_DOMAIN("bitset","x","==",gen_0,x);
+  if (n < 0) pari_err_DOMAIN("bitflip","n","<",gen_0,stoi(n));
   e = expi(x);
-  if (n >= e)
-    pari_err_DOMAIN("bitflip","n",">=",utoi(e),stoi(n));
-  *int_W(x,q)^= 1UL<<r;
+  if (n >= e) pari_err_DOMAIN("bitflip","n",">=",utoi(e),stoi(n));
+  *int_W(x,q) ^= 1UL<<r;
 }
 
 void
@@ -395,14 +389,11 @@ bitclear(GEN x, long n)
 {
   long r, q = dvmdsBIL(n, &r), e;
   if (typ(x) != t_INT) pari_err_TYPE("bitclear",x);
-  if (signe(x)==0)
-    pari_err_DOMAIN("bitset","x","==",gen_0,x);
-  if (n < 0)
-    pari_err_DOMAIN("bitclear","n","<",gen_0,stoi(n));
+  if (signe(x)==0) pari_err_DOMAIN("bitset","x","==",gen_0,x);
+  if (n < 0) pari_err_DOMAIN("bitclear","n","<",gen_0,stoi(n));
   e = expi(x);
-  if (n >= e)
-    pari_err_DOMAIN("bitclear","n",">=",utoi(e),stoi(n));
-  *int_W(x,q)&= ~(1UL<<r);
+  if (n >= e) pari_err_DOMAIN("bitclear","n",">=",utoi(e),stoi(n));
+  *int_W(x,q) &= ~(1UL<<r);
 }
 
 GEN
