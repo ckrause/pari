@@ -352,10 +352,9 @@ bittest(GEN x, long n)
   if (!signe(x) || n < 0) return 0;
   if (signe(x) < 0)
   {
-    pari_sp ltop=avma;
+    pari_sp av = avma;
     long b = !int_bit(inegate(x),n);
-    set_avma(ltop);
-    return b;
+    return gc_long(av, b);
   }
   return int_bit(x, n);
 }
