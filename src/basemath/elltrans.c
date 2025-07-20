@@ -2001,19 +2001,15 @@ clearim(GEN *v, GEN z, long fl)
 }
 
 static GEN
-clearimall(GEN z, GEN tau, GEN VS)
+clearimall(GEN z, GEN n, GEN VS)
 {
-  GEN n;
-  if (isint(real_i(tau), &n))
+  long nmod4 = Mod4(n);
+  clearim(&gel(VS,1), z, 3);
+  clearim(&gel(VS,2), z, 4);
+  if (!nmod4)
   {
-    long nmod4 = Mod4(n);
-    clearim(&gel(VS,1), z, 3);
-    clearim(&gel(VS,2), z, 4);
-    if (!nmod4)
-    {
-      clearim(&gel(VS,3), z, 2);
-      clearim(&gel(VS,4), z, 1);
-    }
+    clearim(&gel(VS,3), z, 2);
+    clearim(&gel(VS,4), z, 1);
   }
   return VS;
 }
@@ -2042,20 +2038,18 @@ redmod2Z(GEN z)
   return z;
 }
 
-/* If z = NULL assume z = 0 and compute theta[1,1]' instead of theta[1,1] = 0 */
-/* If flz = 1, compute for z and 0, and must have z nonzero. */
-
+/* If z = NULL assume z = 0 and compute theta[1,1]' instead of theta[1,1] = 0
+ * If flz = 1, compute for z and 0, and must have z != NULL. */
 static GEN
 thetaall_ii(GEN z, GEN tau, long flz, long prec)
 {
   pari_sp av;
   GEN zold, tauold, k, u, un, q, q2, qd, qn;
-  GEN S, Skeep, S00, S01, S10, S11, u2, ui2, uin;
-  GEN Z00 = gen_1, Z01 = gen_1, Z10 = gen_0, Z11 = gen_0, SR, ZR;
+  GEN Z, S, Skeep, S00, S01, S10, S11, u2, ui2, uin;
+  GEN Z00 = gen_1, Z01 = gen_1, Z10 = gen_0, Z11 = gen_0;
   long n, ct, eS, B, sumr, precold = prec;
   int theta1p = !z;
 
-  if (flz && !z) pari_err_DOMAIN("theta_ii","z","=",gen_0,z);
   if (z) z = redmod2Z(z);
   tau = upper_to_cx(tau, &prec);
   prec = thetaprec(z, tau, prec);
@@ -2133,10 +2127,8 @@ thetaall_ii(GEN z, GEN tau, long flz, long prec)
     if (gc_needed(av, 1))
     {
       if(DEBUGMEM>1) pari_warn(warnmem,"theta");
-      if (u)
-        gc_all(av, flz ? 12 : 8, &qd, &qn, &un, &uin, &S00, &S01, &S10, &S11, &Z00, &Z01, &Z10, &Z11);
-      else
-        gc_all(av, flz ? 10 : 6, &qd, &qn, &S00, &S01, &S10, &S11, &Z00, &Z01, &Z10, &Z11);
+      gc_all(av, flz? 12: (u? 8: 6), &qd, &qn, &S00,&S01,&S10,&S11, &un,&uin,
+             &Z00,&Z01,&Z10,&Z11);
     }
   }
   if (u)
@@ -2177,14 +2169,18 @@ thetaall_ii(GEN z, GEN tau, long flz, long prec)
       Z10 = gprec_w(Z10, prec); Z11 = gprec_w(Z11, prec);
     }
   }
-  SR = clearimall(zold, tauold, gmul(S, mkvec4(S00, S01, S10, S11)));
-  if (flz) ZR = clearimall(gen_0, tauold, gmul(Skeep, mkvec4(Z00, Z01, Z10, Z11)));
-  return flz ? mkvec2(SR, ZR) : SR;
+  S = gmul(S, mkvec4(S00, S01, S10, S11)); Z = NULL; /* -Wall */
+  if (flz) Z = gmul(Skeep, mkvec4(Z00, Z01, Z10, Z11));
+  if (isint(real_i(tauold), &k))
+  {
+    S = clearimall(zold, k, S);
+    if (flz) Z = clearimall(NULL, k, Z);
+  }
+  return flz ? mkvec2(S, Z) : S;
 }
 
 static GEN
-thetaall_i(GEN z, GEN tau, long prec)
-{ return thetaall_ii(z, tau, 0, prec); }
+thetaall_i(GEN z, GEN tau, long prec) { return thetaall_ii(z, tau, 0, prec); }
 
 static GEN
 thetanull_i(GEN tau, long prec) { return thetaall_i(NULL, tau, prec); }
