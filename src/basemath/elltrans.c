@@ -756,7 +756,7 @@ ellwp0(GEN w, GEN z, long flag, long prec)
   return gc_upto(av, y);
 }
 
-static GEN ellzeta_cx_i(GEN w, GEN z, GEN W2, long flet, long prec);
+static GEN ellzeta_cx_i(GEN w, GEN z, GEN W2, long prec);
 
 GEN
 ellzeta(GEN w, GEN z, long prec0)
@@ -783,7 +783,7 @@ ellzeta(GEN w, GEN z, long prec0)
   if (!get_periods(w, z, &T, prec0)) pari_err_TYPE("ellzeta", w);
   if (!T.Z) pari_err_DOMAIN("ellzeta", "z", "=", gen_0, z);
   prec = T.prec;
-  y2 = ellzeta_cx_i(mkvec2(gen_1, T.Tau), T.Z, T.W2, 1, prec);
+  y2 = ellzeta_cx_i(mkvec2(gen_1, T.Tau), T.Z, T.W2, prec);
   y = gdiv(gel(y2, 1), T.W2);
   if (signe(T.x) || signe(T.y)) et = eta_period(&T, gel(y2, 2));
   if (T.some_q_is_real)
@@ -2481,32 +2481,30 @@ mfE2eval(GEN tau, long prec)
 }
 
 static GEN
-checkom(GEN w, GEN z)
+checkom(GEN w, GEN z, GEN *pom)
 {
-  GEN om1, om2, y, tau0;
+  GEN om1, om2, tau, y;
   if (typ(w) != t_VEC || lg(w) != 3) pari_err_TYPE("ellweierstrass", w);
   om1 = gel(w, 1); om2 = gel(w, 2);
-  if (gequal0(om1) || gequal0(om2)) pari_err_DOMAIN("ellweierstrass","w[i]","=",gen_0,w);
-  tau0 = gdiv(om1, om2); y = imag_i(tau0);
-  if(gequal0(y)) pari_err_DOMAIN("ellweierstrass","imag(tau)","=",gen_0,w);
-  return gsigne(y) > 0 ? mkvec3(gdiv(z, om2), tau0, gen_0) : mkvec3(gdiv(z, om1), ginv(tau0), gen_1);
+  if (gequal0(om2)) pari_err_DOMAIN("ellweierstrass","w2","=",gen_0,om2);
+  tau = gdiv(om1, om2); y = imag_i(tau);
+  if (gequal0(y)) pari_err_DOMAIN("ellweierstrass","imag(tau)","=",gen_0,w);
+  if (gsigne(y) > 0) *pom = gel(w,2); else { tau = ginv(tau); *pom = gel(w,1); }
+  return tau;
 }
 
 static GEN
 ellwp_cx(GEN w, GEN z, long flag, long prec)
 {
   pari_sp av = avma;
-  GEN ZT = checkom(w, z), omi, omi2, a;
-  GEN znew = gel(ZT, 1), tau = gel(ZT, 2);
-  GEN TT = thetaall_ii(znew, tau, 1, prec);
+  long prec2 = prec + EXTRAPREC64;
+  GEN a, P, PP, om, tau = checkom(w, z, &om), omi = ginv(om), omi2 = gsqr(omi);
+  GEN TT = thetaall_ii(gmul(z, omi), tau, 1, prec);
   GEN T0 = gel(TT, 2), z1 = gel(T0, 1), z3 = gel(T0, 3);
   GEN T = gel(TT, 1), t2 = gel(T, 2), t4 = gel(T, 4);
-  GEN P, PP;
-  long fl = itos(gel(ZT, 3)), prec2 = prec + EXTRAPREC64;
-  omi = ginv(fl ? gel(w, 1) : gel(w, 2));
-  omi2 = gsqr(omi); a = gmul(divru(sqrr(mppi(prec2)), 3), omi2);
+  a = gmul(divru(sqrr(mppi(prec2)), 3), omi2);
   P = gmul(a, gsub(gmulgs(gsqr(gdiv(gmul3(z1, z3, t2), t4)), 3),
-                      gadd(gpowgs(z1, 4), gpowgs(z3, 4))));
+                   gadd(gpowgs(z1, 4), gpowgs(z3, 4))));
   if (flag)
   {
     GEN t1 = gel(T, 1), t3 = gel(T, 3);
@@ -2518,17 +2516,13 @@ ellwp_cx(GEN w, GEN z, long flag, long prec)
 }
 
 static GEN
-ellzeta_cx_i(GEN w, GEN z, GEN W2, long flet, long prec)
+ellzeta_cx_i(GEN w, GEN z, GEN W2, long prec)
 {
-  GEN ZT = checkom(w, z), om, a, e, R, R1;
-  GEN znew = gel(ZT, 1), tau = gel(ZT, 2);
+  long prec2 = prec + EXTRAPREC64;
+  GEN e, R, R1, om, tau = checkom(w, z, &om), znew = gdiv(z, om);
   GEN TALL = theta11prime(znew, tau, prec);
-  long fl = itos(gel(ZT, 3)), prec2 = prec + EXTRAPREC64;
-  om = fl ? gel(w, 1) : gel(w, 2);
-  a = divru(sqrr(mppi(prec2)), 3);
-  e = gmul(a, mfE2eval(tau, prec2));
+  e = gmul(divru(sqrr(mppi(prec2)), 3), mfE2eval(tau, prec2));
   R = gdiv(gadd(gmul(znew, e), gdiv(gel(TALL, 2), gel(TALL, 1))), om);
-  if (!flet) return R;
   R1 = gdiv(mkvec2(gsub(gmul(tau, e), PiI2n(1,prec)), e), W2);
   return mkvec2(R, R1);
 }
@@ -2538,24 +2532,12 @@ GEN
 ellsigma_cx(GEN w, GEN z, long flag, long prec)
 {
   pari_sp av = avma;
-  GEN ZT = checkom(w, z), om, e, E, R;
-  GEN znew = gel(ZT, 1), tau = gel(ZT, 2);
-  GEN TT = thetaall_ii(znew, tau, 1, prec);
-  GEN T0 = gel(TT, 2), T = gel(TT, 1);
-  long fl = itos(gel(ZT, 3)), prec2 = prec + EXTRAPREC64;
-  om = fl ? gel(w, 1) : gel(w, 2);
-  e = gmul(divru(sqrr(mppi(prec2)), 6), mfE2eval(tau, prec2));
-  if (flag)
-  {
-    E = gmul(gsqr(znew), e);
-    R = gadd(E, glog(gmul(gdiv(gel(T, 4), gel(T0, 4)), om), prec));
-  }
-  else
-  {
-    E = gexp(gmul(gsqr(znew), e), prec);
-    R = gmul(gdiv(gmul(E, gel(T, 4)), gel(T0, 4)), om);
-  }
-  return gc_upto(av, R);
+  long prec2 = prec + EXTRAPREC64;
+  GEN t, E, om, tau = checkom(w, z, &om), znew = gdiv(z, om);
+  GEN TT = thetaall_ii(znew, tau, 1, prec), T0 = gel(TT, 2), T = gel(TT, 1);
+  E = gmul(gsqr(znew), gmul(divru(sqrr(mppi(prec2)), 6), mfE2eval(tau, prec2)));
+  t = gmul(gdiv(gel(T, 4), gel(T0, 4)), om);
+  return gc_upto(av, flag? gadd(E, glog(t, prec)): gmul(gexp(E, prec), t));
 }
 
 static GEN
@@ -2575,32 +2557,18 @@ wg2g3(GEN T0, GEN a, GEN *pe)
   *pe = mkvec3(e1, e2, e3); return mkvec2(g2, g3);
 }
 
-static GEN
-ellweierstrass_i(GEN tau, long prec)
-{
-  long prec2 = prec + EXTRAPREC64;
-  GEN T0 = thetanull_i(tau, prec), a = divru(sqrr(mppi(prec2)), 3);
-  GEN e = gmul(a, mfE2eval(tau, prec2));
-  GEN e1e2e3, g2g3 = wg2g3(T0, a, &e1e2e3);
-  return mkvec4(mkvec2(tau, gen_1), g2g3, e1e2e3, weta1eta2(tau, e, prec));
-}
+static void
+swap2(GEN v) { swap(gel(v,1), gel(v,2)); }
 
 GEN
 ellweierstrass(GEN w, long prec)
 {
   pari_sp av = avma;
-  GEN ZT = checkom(w, gen_0);
-  GEN R1 = ellweierstrass_i(gel(ZT, 2), prec);
-  GEN omi, tmp, R13, R14;
-  long fl = itos(gel(ZT, 3));
-  omi = ginv(fl ? gel(w, 1) : gel(w, 2));
-  gel(R1, 1) = w; tmp = gel(R1, 2);
-  gel(R1, 2) = mkvec2(gmul(gel(tmp, 1), gpowgs(omi, 4)), gmul(gel(tmp, 2), gpowgs(omi, 6)));
-  R13 = gmul(gel(R1, 3), gsqr(omi));
-  if (!fl) swap(gel(R13, 1), gel(R13, 2));
-  gel(R1, 3) = R13;
-  R14 = gmul(gel(R1, 4), omi);
-  if (fl) swap(gel(R14, 1), gel(R14, 2));
-  gel(R1, 4) = R14;
-  return gc_GEN(av, R1);
+  long prec2 = prec + EXTRAPREC64;
+  GEN om, tau = checkom(w, gen_0, &om), omi = ginv(om);
+  GEN T0 = thetanull_i(tau, prec), a = divru(sqrr(mppi(prec2)), 3);
+  GEN et = weta1eta2(tau, gmul(a, mfE2eval(tau, prec2)), prec);
+  GEN e, g = wg2g3(T0, gmul(a, gsqr(omi)), &e);
+  et = gmul(et, omi); swap2(om == gel(w,1)? et: e);
+  return gc_GEN(av, mkvec4(w, g, e, et));
 }
