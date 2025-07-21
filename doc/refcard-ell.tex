@@ -28,7 +28,7 @@ or simply $\kbd{[}a_4,a_6\kbd{]}$. It must be converted to an \var{ell} struct.
 \endindentedkeys
 \leavevmode
 Points are \kbd{[x,y]}, the origin is \kbd{[0]}.
-Struct members accessed as \kbd{E.}\var{member}:\hfill\break
+Struct members:\hfill\break
 $\bullet$ All domains:
 \kbd{E.a1},\kbd{a2},\kbd{a3},\kbd{a4},\kbd{a6},
 \kbd{b2},\kbd{b4},\kbd{b6},\kbd{b8},
@@ -70,6 +70,7 @@ $\bullet$ All domains:
 \li{$P\in E(\bar{\QQ_p})$ to $z\in \bar{\QQ}^*/q^{\ZZ}$}{ellpointtoz$(E,P)$}
 
 \subsec{Change of Weierstrass models, using $v = [u,r,s,t]$}
+\li{compose/invert changes}{ellchangecompose{\rm, }ellchangeinvert}
 \li{change curve $E$ using $v$}{ellchangecurve$(E,v)$}
 \li{change point $P$ using $v$}{ellchangepoint$(P,v)$}
 \li{change point $P$ using inverse of $v$}{ellchangepointinv$(P,v)$}
@@ -129,6 +130,7 @@ $\bullet$ All domains:
 \li{a modular equation of prime degree $N$}{ellmodulareqn$(N)$}
 
 \subsec{$L$-function}
+\li{char. poly. of Frobenius}{ellcharpoly$(E,p)$}
 \li{$p$-th coeff $a_p$ of $L$-function, $p$ prime}{ellap$(E,p)$}
 \li{$k$-th coeff $a_k$ of $L$-function}{ellak$(E,k)$}
 \li{$L(E,s)$ (using less memory than \kbd{lfun})}{elllseries$(E,s)$}
@@ -160,8 +162,8 @@ $\bullet$ All domains:
 \subsec{Elldata package, Cremona's database:}
 \li{db code \kbd{"11a1"} $\leftrightarrow$ $[\var{conductor}, \var{class}, \var{index}]$}{ellconvertname$(s)$}
 \li{generators of Mordell-Weil group}{ellgenerators$(E)$}
-\li{look up $E$ in database}{ellidentify$(E)$}
 \newcolumn
+\li{look up $E$ in database}{ellidentify$(E)$}
 \li{all curves matching criterion}{ellsearch$(N)$}
 \li{loop over curves with cond.~from $a$ to $b$}{forell$(E, a,b,\seq)$}
 
@@ -196,12 +198,13 @@ squarefree) or a single squarefree polynomial $P$ ($y^2 = P$).\hfil\break
 \li{minimal model of integral $C$}{hyperellminimalmodel$(C)$}
 \li{reduction of $y^2+Qy = P$ (genus $2$)}{genus2red$(C,\{p\})$}
 \li{Igusa invariants for $C$ of genus $2$}{genus2igusa$(C)$}
+\li{char. poly. of Frobenius}{genus2charpoly$(C,p)$}
 \li{affine rational points of height $\leq h$}{hyperellratpoints$(C, h)$}
 \li{find a rational point on a conic, $^t x G x = 0$}{qfsolve$(G)$}
 \li{$[H,U]$ such that $H = c{}^tU GU$ has minimat det}{qfminimize$(G)$}
 \li{quadratic Hilbert symbol (at $p$)}{hilbert$(x,y,\{p\})$}
 \li{all solutions in $\QQ^3$ of ternary form}{qfparam$(G,x)$}
-\li{$P,Q\in\FF_q[X]$; char. poly. of Frobenius}{hyperellcharpoly$(Q)$}
+\li{$P,Q\in\FF_q[X]$; char. poly. of Frobenius}{hyperellcharpoly$(C)$}
 \li{matrix of Frobenius on $\QQ_p\otimes H^1_{dR}$}{hyperellpadicfrobenius}
 \medskip
 
@@ -213,16 +216,37 @@ $w = [\omega_1,\omega_2]$ or \var{ell} struct (\kbd{E.omega}), $\tau=\omega_1/\o
 \li{Weierstrass $\sigma$/$\wp$/$\zeta$ function}
    {ellsigma$(w,z)${\rm, }ellwp{\rm, }ellzeta}
 \li{periods/quasi-periods}{ellperiods$(E,\{\fl\})${\rm, }elleta$(w)$}
+\li{$(\omega_1,\omega_2), (g_2,g_3), (e_1,e_2,e_3), (\eta_1,\eta_2)$}{ellweierstrass$(w)$}
 \li{$(2i\pi/\omega_2)^k E_k(\tau)$}{elleisnum$(w,k)$}
-\li{modified Dedekind $\eta$ func. $\prod(1-q^n)$}{eta$(x,\{\fl\})$}
+
+\vfill
+\copyrightnotice
+\newcolumn
+
+\li{modified Dedekind $\eta$ func. $\prod_n(1-q^n)$}{eta$(x)$}
+\li{\dots true $\eta$ function $q^{1/24}\prod_n(1-q^n)$}{eta$(x, 1)$}
 \li{Dedekind sum $s(h,k)$}{sumdedekind$(h,k)$}
-\li{Jacobi sine theta function}{theta$(q,z)$}
-\li{k-th derivative at z=0 of \kbd{theta}$(q,z)$}{thetanullk$(q,k)$}
+\li{Riemann-Jacobi theta functions $\vartheta_{a,b}(z;\tau)$}
+   {theta$(z,t,[a,b])$}
+\li{\dots Thetanullwerte (at $z = 0$)}{thetanull$(t,\{[a,b]\})$}
+\li{Jacobi sine-theta function $\theta(q;z)$}{theta$(q,z)$}
+\li{\dots $\theta^{(k)}(q,0)$}{thetanullk$(q,k)$}
+\li{Jacobi elliptic functions (sn, cn, dn)}{elljacobi$(z,k)$}
 \li{Weber's $f$ functions}{weber$(x,\{\fl\})$}
 \li{modular pol.~of level $N$}{polmodular$(N,\{\var{inv = j}\})$}
 \li{Hilbert class polynomial for $\QQ(\sqrt{D})$}
    {polclass$(D,\{\var{inv = j}\})$}
 %
+\newcolumn
+\title{\TITLE}
+\centerline{(PARI-GP version \PARIversion)}
+\smallskip
+
+\vfill
+\newcolumn
+
+\strut
 \vfill
 \copyrightnotice
+
 \bye
