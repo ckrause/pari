@@ -472,6 +472,28 @@ naivedirpowerssum(GEN V, GEN F, long prec)
   return Qtor(S, prec);
 }
 
+/* set *p0 and *p1 to 0 and 1 in the algebra where f takes its values */
+static int
+mk01(void *E, GEN (*f)(void*,ulong,long), long prec, GEN *p0, GEN *p1)
+{
+  *p0 = gen_0; *p1 = gen_1;
+  if (!f) return 1;
+  *p1 = f(E, 1, prec);
+  if (is_vec_t(typ(*p1)))
+  {
+    long l = lg(*p1);
+    if (l == 1) { *p0 = *p1 = NULL; return 0; }
+    *p0 = const_vec(l-1, gen_0);
+  }
+  return 1;
+}
+static GEN
+mktrivial(long both)
+{
+  if (!both) return cgetg(1, t_VEC);
+  return mkvec2(cgetg(1,t_VEC), cgetg(1,t_VEC));
+}
+
 static GEN
 smalldirpowerssum(long N, GEN s, void *E, GEN (*f)(void *, ulong, long),
                   long both, long prec)
@@ -479,8 +501,9 @@ smalldirpowerssum(long N, GEN s, void *E, GEN (*f)(void *, ulong, long),
   GEN F, V, S, SB;
   if (!N)
   {
-    if (!f) return both? mkvec2(gen_0, gen_0): gen_0;
-    return gmul(gen_0, f(E, 1, prec));
+    GEN zerf, onef;
+    if (!mk01(E, f, prec, &zerf, &onef)) return mktrivial(both);
+    return zerf;
   }
   V = vecpowug(N, s, prec);
   F = vecf(N, E, f, prec);
@@ -755,28 +778,6 @@ gp_callUp(void *E, ulong x, long prec)
 {
   long n[] = {evaltyp(t_INT)|_evallg(3), evalsigne(1)|evallgefint(3),0};
   n[2] = x; return gp_callprec(E, n, prec);
-}
-
-/* set *p0 and *p1 to 0 and 1 in the algebra where f takes its values */
-static int
-mk01(void *E, GEN (*f)(void*,ulong,long), long prec, GEN *p0, GEN *p1)
-{
-  *p0 = gen_0; *p1 = gen_1;
-  if (!f) return 1;
-  *p1 = f(E, 1, prec);
-  if (is_vec_t(typ(*p1)))
-  {
-    long l = lg(*p1);
-    if (l == 1) { *p0 = *p1 = NULL; return 0; }
-    *p0 = const_vec(l-1, gen_0);
-  }
-  return 1;
-}
-static GEN
-mktrivial(long both)
-{
-  if (!both) return cgetg(1, t_VEC);
-  return mkvec2(cgetg(1,t_VEC), cgetg(1,t_VEC));
 }
 
 /* both is
