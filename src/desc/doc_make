@@ -215,8 +215,7 @@ sub library_syntax { my ($fun, $args) = @_;
     $post = " where $vl are variable numbers";
   }
   my ($proto) = "$type $Cname($args);\n";
-  $proto =~ s/= NULL//g;
-  $proto =~ s/= -1//g;
+  $proto =~ s/ = (?:NULL|-1)//g;
   print PROTO $proto;
   return "" if ($class eq 'gp');
   my ($txt) = "\n\nThe library syntax is \\fun{$type}{$Cname}{$args}$post.";
