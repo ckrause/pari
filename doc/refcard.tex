@@ -400,10 +400,9 @@ in gp header.\hfil\break
 \li{rank of the matrix $x$}{matrank$(x)$}
 
 \li{solve $MX = B$ mod $D$}{matsolvemod$(M,D,B)$}
-\li{image mod $D$}{matimagemod$(M,D)$}
-\li{kernel mod $D$}{matkermod$(M,D)$}
-\li{inverse mod $D$}{matinvmod$(M,D)$}
-\li{determinant mod $D$}{matdetmod$(M,D)$}
+Image, kernel, inverse and determinant modulo $D$:
+\kbd{matimagemod}, \kbd{matkermod}, \kbd{matinvmod}
+, \kbd{matdetmod}.
 
 \section{Lattices \& Quadratic Forms}
 \subsec{Quadratic forms}
@@ -421,6 +420,7 @@ in gp header.\hfil\break
 \li{HNF of $(x \mid\,$\kbd{diagonal}$(D))$}{mathnfmodid$(x,D)$}
 \li{elementary divisors of $x$}{matsnf$(x)$}
 \li{$q$-rank from elementary divisors}{snfrank$(v,q)$}
+\li{write $A = QH + R$, $H$ in HNF}{mathmodhnf$(A,H,\{\&Q\})$}
 \li{elementary divisors of $\ZZ[a]/(f'(a))$}{poldiscreduced$(f)$}
 \li{integer kernel of $x$}{matkerint$(x)$}
 \li{$\ZZ$-module $\leftrightarrow$ $\QQ$-vector space}{matrixqz$(x,p)$}
