@@ -3838,9 +3838,7 @@ GEN
 matker0(GEN x,long flag)
 {
   if (typ(x)!=t_MAT) pari_err_TYPE("matker",x);
-  if (!flag) return ker(x);
-  RgM_check_ZM(x, "matker");
-  return ZM_ker(x);
+  (void)flag; return ker(x);
 }
 
 static GEN
