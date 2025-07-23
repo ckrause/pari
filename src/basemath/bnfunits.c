@@ -271,18 +271,34 @@ sunit_famat_val(GEN nf, GEN S, GEN x)
   for (i = 1; i < l; i++) gel(v,i) = famat_nfvalrem(nf, x, gel(S,i), NULL);
   return v;
 }
-/* v_S(x), x algebraic number */
+/* v_S(x) */
 static GEN
-sunit_val(GEN nf, GEN S, GEN x, GEN N)
+sunit_val(GEN nf, GEN S, GEN x)
 {
   long i, l = lg(S);
-  GEN v = zero_zv(l-1), N0 = N;
+  GEN v, Nx, dx, Ndx = gen_1;
+  if (isintzero(x)) return NULL;
+  v = zerocol(l-1);
+  x = Q_remove_denom(x, &dx);
+  Nx = idealnorm(nf, x);
+  if (dx) Ndx = powiu(dx, nf_get_degree(nf)); else if (is_pm1(Nx)) return v;
   for (i = 1; i < l; i++)
   {
     GEN P = gel(S,i), p = pr_get_p(P);
-    if (dvdii(N, p)) { v[i] = nfval(nf,x,P); (void)Z_pvalrem(N0, p, &N0); }
+    long f = pr_get_f(P), vn = 0, vd = 0;
+    if (dvdii(Nx, p))
+    {
+      vn = nfval(nf, x, P);
+      if (vn) Nx = diviiexact(Nx, powiu(p, vn * f));
+    }
+    if (dx && dvdii(dx, p))
+    {
+      vd = pr_get_e(P) * Z_pval(dx, p);
+      if (vd) Ndx = diviiexact(Ndx, powiu(p, vd * f));
+    }
+    vn -= vd; if (vn) gel(v,i) = stoi(vn);
   }
-  return is_pm1(N0)? v: NULL;
+  return is_pm1(Nx) && is_pm1(Ndx)? v: NULL;
 }
 
 /* if *px a famat, assume it's an S-unit */
@@ -296,29 +312,15 @@ make_unit(GEN nf, GEN U, GEN *px)
   A = gel(U,3); den = gel(U,4);
   cH = nbrows(A);
   if (typ(x) == t_MAT && lg(x) == 3)
-  {
     w = sunit_famat_val(nf, S, x); /* x = S v */
-    v = ZM_ZC_mul(A, w);
-    w += cH; w[0] = evaltyp(t_COL) | _evallg(lg(A) - cH);
-  }
   else
   {
-    GEN N;
     x = nf_to_scalar_or_basis(nf,x);
-    switch(typ(x))
-    {
-      case t_INT:  N = x; if (!signe(N)) return NULL; break;
-      case t_FRAC: N = mulii(gel(x,1),gel(x,2)); break;
-      default: { GEN d = Q_denom(x); N = mulii(idealnorm(nf,gmul(x,d)), d); }
-    }
-    /* relevant primes divide N */
-    if (is_pm1(N)) return zerocol(l-1);
-    w = sunit_val(nf, S, x, N);
+    w = sunit_val(nf, S, x);
     if (!w) return NULL;
-    v = ZM_zc_mul(A, w);
-    w += cH; w[0] = evaltyp(t_VECSMALL) | _evallg(lg(A) - cH);
-    w = zc_to_ZC(w);
   }
+  v = ZM_ZC_mul(A, w);
+  w += cH; w[0] = evaltyp(t_COL) | _evallg(lg(A) - cH);
   if (!is_pm1(den)) for (i = 1; i <= cH; i++)
   {
     GEN r;

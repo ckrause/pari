@@ -21,10 +21,12 @@ bnfissunit(bnf,S,2)
 bnfissunit(bnf,S,-1)
 bnfissunit(bnf,S,bnf.fu[1])
 
-bnf=bnfinit(x^2+23); S=bnfsunit(bnf,idealprimedec(bnf,2)[1..1]);
+bnf=bnfinit(x^2+23); pr = idealprimedec(bnf,2)[1]; S=bnfsunit(bnf,[pr]);
 S[1]
 S[4]
 S[5]
+S = bnfsunit(bnf, concat(idealprimedec(bnf,3), [pr]));
+bnfissunit(bnf, S, [19/36, 85/216]~)
 
 bnf=bnfinit(x^2-210); S=bnfsunit(bnf,idealprimedec(bnf,2)[1..1]);
 S[1]
