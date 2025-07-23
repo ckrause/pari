@@ -2173,8 +2173,8 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: ker(x) ===> matker(x)
 
-matker(x,{flag=0}): basis of the kernel of the matrix x. flag is optional, and 
-may be set to 0: default; nonzero: x is known to have integral entries.
+matker(x,{flag}): basis of the kernel of the matrix x; flag is obsolete, ignore 
+it.
 
 
   ***   at top-level: keri()
@@ -2184,8 +2184,8 @@ A function with that name existed in GP-1.39.15. Please update your script.
 
 New syntax: keri(x) ===> matker(x,1)
 
-matker(x,{flag=0}): basis of the kernel of the matrix x. flag is optional, and 
-may be set to 0: default; nonzero: x is known to have integral entries.
+matker(x,{flag}): basis of the kernel of the matrix x; flag is obsolete, ignore 
+it.
 
 
   ***   at top-level: kerint()
@@ -4499,4 +4499,4 @@ New syntax: texprint(x) ===> printtex(x)
 printtex({str}*): outputs its string arguments in TeX format.
 
 
-Total time spent: 5
+Total time spent: 11
