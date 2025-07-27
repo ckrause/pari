@@ -485,7 +485,7 @@ issquare(GEN x)
       return (signe(x)>=0);
 
     case t_INTMOD:
-      return Zn_ispower(gel(x,2), gel(x,1), gen_2, NULL);
+      return Zn_issquare(gel(x,2), gel(x,1));
 
     case t_FRAC:
       return Z_issquare(gel(x,1)) && Z_issquare(gel(x,2));
