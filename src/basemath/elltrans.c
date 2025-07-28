@@ -611,7 +611,7 @@ ellperiods(GEN w, long flag, long prec)
 static double
 get_toadd(GEN z) { return (2*M_PI/M_LN2)*gtodouble(imag_i(z)); }
 
-static GEN ellwp_cx(GEN w, GEN z, long flag, long prec);
+static GEN ellwp_cx(GEN tau, GEN z, long flag, long prec);
 
 /* computes the numerical value of wp(z | L), L = om1 Z + om2 Z
  * return NULL if z in L.  If flall=1, compute also wp' */
@@ -627,7 +627,7 @@ ellwpnum_all(GEN e, GEN z, long flall, long prec)
   prec = T.prec;
 
   /* Now L,Z normalized to <1,tau>. Z in fund. domain of <1, tau> */
-  y2 = ellwp_cx(mkvec2(gen_1, T.Tau), T.Z, flall, prec);
+  y2 = ellwp_cx(T.Tau, T.Z, flall, prec);
   if (flall) { y = gel(y2, 1); yp = gel(y2, 2); }
   else { y = y2; yp = NULL; }
   u1 = gsqr(T.W2); y = gdiv(y, u1);
@@ -756,7 +756,7 @@ ellwp0(GEN w, GEN z, long flag, long prec)
   return gc_upto(av, y);
 }
 
-static GEN ellzeta_cx_i(GEN w, GEN z, GEN W2, long prec);
+static GEN ellzeta_cx(GEN tau, GEN z, long prec);
 
 GEN
 ellzeta(GEN w, GEN z, long prec0)
@@ -783,9 +783,9 @@ ellzeta(GEN w, GEN z, long prec0)
   if (!get_periods(w, z, &T, prec0)) pari_err_TYPE("ellzeta", w);
   if (!T.Z) pari_err_DOMAIN("ellzeta", "z", "=", gen_0, z);
   prec = T.prec;
-  y2 = ellzeta_cx_i(mkvec2(gen_1, T.Tau), T.Z, T.W2, prec);
-  y = gdiv(gel(y2, 1), T.W2);
-  if (signe(T.x) || signe(T.y)) et = eta_period(&T, gel(y2, 2));
+  y2 = ellzeta_cx(T.Tau, T.Z, prec);
+  y = gdiv(gel(y2,1), T.W2);
+  if (signe(T.x) || signe(T.y)) et = eta_period(&T, gdiv(gel(y2,2), T.W2));
   if (T.some_q_is_real)
   {
     if (T.some_z_is_real)
@@ -2489,37 +2489,36 @@ checkom(GEN w, GEN *pom)
   return tau;
 }
 
+/* tau,z reduced */
 static GEN
-ellwp_cx(GEN w, GEN z, long flag, long prec)
+ellwp_cx(GEN tau, GEN z, long flag, long prec)
 {
-  pari_sp av = avma;
   long prec2 = prec + EXTRAPREC64;
-  GEN a, P, PP, om, tau = checkom(w, &om), omi = ginv(om), omi2 = gsqr(omi);
-  GEN TT = thetaall_ii(gmul(z, omi), tau, 1, prec);
+  GEN a, P;
+  GEN TT = thetaall_ii(z, tau, 1, prec);
   GEN T0 = gel(TT, 2), z1 = gel(T0, 1), z3 = gel(T0, 3);
   GEN T = gel(TT, 1), t2 = gel(T, 2), t4 = gel(T, 4);
-  a = gmul(divru(sqrr(mppi(prec2)), 3), omi2);
+  a = divru(sqrr(mppi(prec2)), 3);
   P = gmul(a, gsub(gmulgs(gsqr(gdiv(gmul3(z1, z3, t2), t4)), 3),
                    gadd(gpowgs(z1, 4), gpowgs(z3, 4))));
   if (flag)
   {
     GEN t1 = gel(T, 1), t3 = gel(T, 3);
     GEN c = gmul(Pi2n(1, prec), gsqr(gel(T0, 4)));
-    PP = gmul(gmul(omi, omi2), gdiv(gmul4(c, t1, t2, t3), gpowgs(t4, 3)));
-    return gc_GEN(av, mkvec2(P, PP));
+    P = mkvec2(P, gdiv(gmul4(c, t1, t2, t3), gpowgs(t4, 3)));
   }
-  return gc_upto(av, P);
+  return P;
 }
 
+/* tau,z reduced */
 static GEN
-ellzeta_cx_i(GEN w, GEN z, GEN W2, long prec)
+ellzeta_cx(GEN tau, GEN z, long prec)
 {
   long prec2 = prec + EXTRAPREC64;
-  GEN e, R, R1, om, tau = checkom(w, &om), znew = gdiv(z, om);
-  GEN TALL = theta11prime(znew, tau, prec);
+  GEN e, R, R1, TALL = theta11prime(z, tau, prec);
   e = gmul(divru(sqrr(mppi(prec2)), 3), mfE2eval(tau, prec2));
-  R = gdiv(gadd(gmul(znew, e), gdiv(gel(TALL, 2), gel(TALL, 1))), om);
-  R1 = gdiv(mkvec2(gsub(gmul(tau, e), PiI2n(1,prec)), e), W2);
+  R = gadd(gmul(z, e), gdiv(gel(TALL, 2), gel(TALL, 1)));
+  R1 = mkvec2(gsub(gmul(tau, e), PiI2n(1,prec)), e);
   return mkvec2(R, R1);
 }
 
