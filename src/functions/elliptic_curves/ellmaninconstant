@@ -1,15 +1,19 @@
 Function: ellmaninconstant
 Section: elliptic_curves
 C-Name: ellmaninconstant
-Prototype: G
-Help: ellmaninconstant(E): let E be an elliptic curve over Q given by
+Prototype: GD0,L,
+Help: ellmaninconstant(E,{fl=0}): let E be an elliptic curve over Q given by
  ellinit or a rational isogeny class given by ellisomat. Return the
  Manin constant of the curve, see ellweilcurve.
- The algorithm is slow but unconditional.
+ If fl=0, the algorithm is slow but unconditional. If fl=1, use Cremona table.
 Doc: let $E$ be an elliptic curve over $Q$ given by
  \kbd{ellinit} or a rational isogeny class given by ellisomat. Return the
  Manin constant of the curve, see \kbd{ellweilcurve}.
- The algorithm is slow but unconditional.
+ If $\fl=0$, the algorithm is slow but unconditional.
+ If $\fl=1$ and the conductor is less than $500000$, return the value
+ in the Cremona table.
+ If $\fl=1$ and the conductor is larger than $500000$, return a conjectural
+ multiple of the true value.
  The function also accepts the output of \kbd{ellisomat} and returns the list
  of Manin constants for all the isogeny class.
  \bprog

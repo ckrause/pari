@@ -1721,11 +1721,27 @@ path_to_manin(GEN A, long i, long k)
 }
 
 GEN
-ellmaninconstant(GEN E)
+ellmaninconstant(GEN E, long flag)
 {
   pari_sp av = avma;
   GEN M, A, vS, L;
   long i, k, lvS, is_ell = checkell_i(E);
+  if (flag==1)
+  {
+    if (is_ell) return utoi(ellmanintable(E));
+    vS = get_isomat(E);
+    if (!vS) pari_err_TYPE("ellmaninconstant",E);
+    L = gel(vS,1); lvS = lg(L);
+    M = cgetg(lvS, t_VECSMALL);
+    for (k = 1; k < lvS; k++)
+    {
+      GEN e = gel(L,k);
+      uel(M,k) = ellmanintable(e);
+      obj_free(e);
+    }
+    return gc_upto(av, zv_to_ZV(M));
+  }
+  if (flag) pari_err_FLAG("ellmaninconstant");
   L = is_ell ? ellisomat(E,0,1): E;
   A = gel(ellisotree(L), 2);
   vS = gel(ellweilcurve(L, NULL), 2); lvS = lg(vS);

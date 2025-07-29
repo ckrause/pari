@@ -696,6 +696,10 @@ void    ellnfembed_free(GEN L);
 GEN     ellpointnfembed(GEN E, GEN P, long prec);
 void    ellprint(GEN e);
 
+/* ellmanin.c */
+
+long    ellmanintable(GEN E);
+
 /* ellrank.c */
 
 GEN     ell2selmer_basis(GEN ell, GEN *cb, long prec);

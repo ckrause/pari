@@ -3453,6 +3453,7 @@ GEN     point_to_a4a6(GEN E, GEN P, GEN p, GEN *pa4);
 GEN     point_to_a4a6_Fl(GEN E, GEN P, ulong p, ulong *pa4);
 
 /* ellpadic.c */
+
 GEN     Qp_agm2_sequence(GEN a1, GEN b1);
 void    Qp_ascending_Landen(GEN AB, GEN *ptx, GEN *pty);
 void    Qp_descending_Landen(GEN AB, GEN *ptx, GEN *pty);
@@ -3529,7 +3530,7 @@ GEN     zell(GEN e, GEN z, long prec);
 GEN     ellisogenyapply(GEN f, GEN P);
 GEN     ellisogeny(GEN e, GEN G, long only_image, long vx, long vy);
 GEN     ellisomat(GEN E, long p, long flag);
-GEN     ellmaninconstant(GEN E);
+GEN     ellmaninconstant(GEN E, long flag);
 GEN     ellweilcurve(GEN E, GEN *pm);
 
 /* ellsea.c */

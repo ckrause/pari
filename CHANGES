@@ -84,6 +84,7 @@ BA  41- [libpari] RgX_is_ZXX
 BA  42- [libpari] FqM_add, FqM_sub
 BA  43- new GP functions bitset, bitclear, bitjoin
 BA  44- [libpari] FlxY_Flx_mul_pre, FlxY_Flx_div_pre
+BA  45- ellmaninconstant: add flag=1: use Cremona table.
 
   Changed
      1- subst: use fast RgX_affine function to compute P(a*x+b) + RgX_deflate
