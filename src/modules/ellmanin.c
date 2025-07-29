@@ -95,9 +95,12 @@ static long
 ellmanintable_i(GEN E)
 {
   GEN G = ellglobalred(E), N = gel(G,1);
-  GEN M = ellchangecurve(E, gel(G,2));
-  GEN C4 = ell_get_c4(M), C6 = ell_get_c6(M);
-  obj_free(M);
+  GEN u = gmael(G,2,1), C4 = ell_get_c4(E), C6 = ell_get_c6(E);
+  if (!is_pm1(u))
+  {
+    C4 = gmul(C4, gpowgs(u, -4));
+    C6 = gmul(C6, gpowgs(u, -6));
+  }
   if (cmpiu(N, 500000) > 0)
   {
     GEN M = gel(ellisomat(E,0,1),2);
