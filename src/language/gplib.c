@@ -334,6 +334,7 @@ slash_commands(void)
 \\pb{n}  : change real bit precision\n\
 \\ps{n}  : change series precision\n\
 \\q      : quit completely this GP session\n\
+\\qf     : quit reading current file\n\
 \\r {f}  : read in a file\n\
 \\s      : print stack information\n\
 \\t      : print the list of PARI types\n\
