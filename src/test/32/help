@@ -112,6 +112,7 @@ zkst : structure of (Z_K/m)*         bid,                     bnr
 \pb{n}  : change real bit precision
 \ps{n}  : change series precision
 \q      : quit completely this GP session
+\qf     : quit reading current file
 \r {f}  : read in a file
 \s      : print stack information
 \t      : print the list of PARI types
