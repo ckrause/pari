@@ -1939,8 +1939,14 @@ glcm0(GEN x, GEN y)
   if (!y) return fix_lcm(gassoc_proto(glcm,x,y));
   return glcm(x,y);
 }
+
+static GEN
+_lcmii(void*E, GEN x, GEN y)
+{ (void) E; return lcmii(x,y); }
+
 GEN
-ZV_lcm(GEN x) { return fix_lcm(gassoc_proto(lcmii,x,NULL)); }
+ZV_lcm(GEN x) { return gen_product(x, NULL, _lcmii); }
+
 GEN
 glcm(GEN x, GEN y)
 {
