@@ -7,3 +7,8 @@ test(elljacobi(z+2*I*Kp,k), elljacobi(z,k), [-1,-1,-1])
 S^2 + C^2
 k^2*S^2 + D^2
 [S' - C*D, C' + S*D, D' + k^2*S*C]
+elljacobi(O(x), k)
+
+/* ERRORS */
+elljacobi(x + 1, k)
+elljacobi(1/x, k)

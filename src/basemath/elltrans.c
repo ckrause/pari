@@ -2309,55 +2309,55 @@ elljacobi_cx(GEN z, GEN k, long prec)
   return mkvec3(SN, CN, DN);
 }
 
+/* N >= 1 */
 static GEN
 elljacobi_pol(long N, GEN k)
 {
-  GEN S = cgetg(N, t_VEC);
-  GEN C = cgetg(N + 1, t_VEC);
-  GEN D = cgetg(N + 1, t_VEC);
-  GEN SS, SC, SD, q, k2 = gsqr(k), B;
+  GEN S = cgetg(N, t_VEC), C = cgetg(N+1, t_VEC), D = cgetg(N+1, t_VEC);
+  GEN SS, SC, SD, F, P, k2 = gsqr(k);
   long n, j;
-  gel(S, 1) = gen_1;
-  gel(C, 1) = gen_1;
-  gel(D, 1) = gen_1;
-  B = mkvec2(gen_1,gen_1); /* B = vecbinomial(2*n-1); */
+  if (N > 1) gel(S,1) = gen_1;
+  gel(C,1) = gel(D,1) = gen_1;
+  P = matqpascal(2*N-1, NULL);
   for (n = 1; n < N; n++)
   {
-    GEN TD = gen_0, TC = gen_0, TS = gen_0;
-    for (j = 0; j < n; j++)
+    GEN TD, TC, TS;
+    TC = gmulgs(gel(D, n), 2*n-1);
+    TD = gmulgs(gel(C, n), 2*n-1); /* j = 0 */
+    for (j = 1; j < n; j++)
     {
-      GEN Si  = gmul(gel(B,1+2*j+1), gel(S, j+1));
-      TC = gadd(TC, gmul(Si, gel(D, n-j)));
-      TD = gadd(TD, gmul(Si, gel(C, n-j)));
+      GEN a  = gmul(gcoeff(P, 1 + 2*n-1, 1 + 2*j+1), gel(S, j+1));
+      TC = gadd(TC, gmul(a, gel(D, n-j)));
+      TD = gadd(TD, gmul(a, gel(C, n-j)));
     }
     gel(C, n+1) = TC;
     gel(D, n+1) = gmul(TD, k2);
-    if (n==N-1) break;
-    for (j = 0; j <= n; j++)
-      TS = gadd(TS, gmul(j==0 || j== n ? gen_1 : addii(gel(B,2*j), gel(B,2*j+1)),
-                    gmul(gel(C, j+1), gel(D, n+1-j))));
+    if (n+1 == N) break;
+    TS = gadd(gel(C, n+1), gel(D, n+1)); /* j = 0 and n */
+    for (j = 1; j < n; j++)
+      TS = gadd(TS, gmul3(gcoeff(P, 1+2*n, 1+2*j), gel(C,j+1), gel(D,n+1-j)));
     gel(S, n+1) = TS;
-    B = gadd(vec_prepend(B,gen_0), vec_append(B,gen_0)); /* B = vecbinomial(2*n); */
-    B = gadd(vec_prepend(B,gen_0), vec_append(B,gen_0)); /* B = vecbinomial(2*n+1); */
-}
-  SS = cgetg(2*N, t_SER);   SS[1] = evalsigne(1) | _evalvalser(1);
+  }
+  F = cgetg(2*N, t_VEC); gel(F,1) = gen_1;
+  for (j = 2; j < 2*N; j++) gel(F,j) = mulis(gel(F,j-1), odd(j)? j: -j);
+  SS = cgetg(2*N, t_SER);   SS[1] = evalsigne(N == 1? 0: 1) | _evalvalser(1);
   SC = cgetg(2*N+2, t_SER); SC[1] = evalsigne(1) | _evalvalser(0);
   SD = cgetg(2*N+2, t_SER); SD[1] = evalsigne(1) | _evalvalser(0);
-  q = gen_1;
-  for (j = 1; j < N; j++)
+  gel(SC, 2) = gel(SD, 2) = gel(SS, 2) = gen_1;
+  gel(SC, 3) = gel(SD, 3) = gel(SS, 3) = gen_0;
+  for (j = 2; j <= N; j++)
   {
-    gel(SS,2*j) = gmul(q, gel(S, j));
-    gel(SS,2*j+1) = gen_0;
-    q = gdiv(q, mulss(2*j+1,-2*j));
-  }
-  q = gen_1;
-  for (j = 1; j <= N; j++)
-  {
-    gel(SC, 2*j) = gmul(q, gel(C, j));
+    GEN q = gel(F, 2*j-2); /* (-1)^(j-1) (2j-2)! */
+    gel(SC, 2*j) = gdiv(gel(C,j), q);
+    gel(SD, 2*j) = gdiv(gel(D,j), q);
     gel(SC, 2*j+1) = gen_0;
-    gel(SD, 2*j) = gmul(q, gel(D, j));
     gel(SD, 2*j+1) = gen_0;
-    q = gdiv(q, mulss(-2*j,2*j-1));
+    if (j < N)
+    {
+      q = gel(F, 2*j-1); /* (-1)^(j-1) (2j-1)! */
+      gel(SS, 2*j) = gdiv(gel(S,j), q);
+      gel(SS, 2*j+1) = gen_0;
+    }
   }
   return mkvec3(SS, SC, SD);
 }
@@ -2366,27 +2366,32 @@ GEN
 elljacobi(GEN z, GEN k, long prec)
 {
   pari_sp av = avma;
-  GEN R;
-  long tz;
+  long N = (precdl + 3) >> 1;
   if (!z) z = pol_x(0);
-  tz = typ(z);
-  switch (tz)
+  switch (typ(z))
   {
     case t_QUAD: z = gtofp(z, prec); /* fall through */
     case t_INT: case t_REAL: case t_FRAC: case t_COMPLEX:
-      R = elljacobi_cx(z, k, prec); break;
-    case t_POL: case t_RFRAC:
-      if (!gequal0(gsubst(z, gvar(z), gen_0)))
+      return gc_GEN(av, elljacobi_cx(z, k, prec)); break;
+    case t_POL:
+      if (lg(z) > 2 && !gequal0(gel(z,2)))
         pari_err(e_IMPL, "elljacobi(t_SER) away from 0");
-      R = gsubst(elljacobi_pol((precdl + 3) >> 1, k), 0, z); break;
+      break;
+    case t_RFRAC:
+    {
+      GEN b = gel(z,2);
+      if (gequal0(gel(b,2)) || !gequal0(gsubst(gel(z,1), varn(b), gen_0)))
+        pari_err(e_IMPL, "elljacobi(t_SER) away from 0");
+      break;
+    }
     case t_SER:
       if (valser(z) <= 0)
         pari_err(e_IMPL, "elljacobi(t_SER) away from 0");
-      R = gsubst(elljacobi_pol(lg(z) - 1, k), 0, z); break;
+      N = lg(z) - 1; break;
     default: pari_err_TYPE("elljacobi", z);
       return NULL; /* LCOV_EXCL_LINE */
   }
-  return gc_GEN(av, R);
+  return gc_upto(av, gsubst(elljacobi_pol(N, k), 0, z));
 }
 
 /********************************************************************/
