@@ -2314,8 +2314,16 @@ elljacobi_pol(long N, GEN k)
   GEN S = cgetg(N, t_VEC), C = cgetg(N+1, t_VEC), D = cgetg(N+1, t_VEC);
   GEN SS, SC, SD, F, P, k2 = gsqr(k);
   long n, j;
-  if (N > 1) gel(S,1) = gen_1;
-  gel(C,1) = gel(D,1) = gen_1;
+  if (N == 1)
+  {
+    SS = cgetg(2, t_SER); SS[1] = evalsigne(0) | _evalvalser(1);
+    SC = cgetg(4, t_SER); SC[1] = evalsigne(1) | _evalvalser(0);
+    SD = cgetg(4, t_SER); SD[1] = evalsigne(1) | _evalvalser(0);
+    gel(SC, 2) = gel(SD, 2) = gen_1;
+    gel(SC, 3) = gel(SD, 3) = gen_0; return mkvec3(SS, SC, SD);
+  }
+  /* N > 1 */
+  gel(C,1) = gel(D,1) = gel(S,1) = gen_1;
   P = matqpascal(2*N-1, NULL);
   for (n = 1; n < N; n++)
   {
@@ -2338,7 +2346,7 @@ elljacobi_pol(long N, GEN k)
   }
   F = cgetg(2*N, t_VEC); gel(F,1) = gen_1;
   for (j = 2; j < 2*N; j++) gel(F,j) = mulis(gel(F,j-1), odd(j)? j: -j);
-  SS = cgetg(2*N, t_SER);   SS[1] = evalsigne(N == 1? 0: 1) | _evalvalser(1);
+  SS = cgetg(2*N, t_SER);   SS[1] = evalsigne(1) | _evalvalser(1);
   SC = cgetg(2*N+2, t_SER); SC[1] = evalsigne(1) | _evalvalser(0);
   SD = cgetg(2*N+2, t_SER); SD[1] = evalsigne(1) | _evalvalser(0);
   gel(SC, 2) = gel(SD, 2) = gel(SS, 2) = gen_1;
