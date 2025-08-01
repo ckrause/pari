@@ -1,11 +1,9 @@
-k=2/7;kp=sqrt(1-k^2);
-[K,Kp]=[ellK(k),ellK(kp)]
-vecdivadd(V1,V2,A)=vector(#V1,i,exponent(V1[i]/V2[i]+A[i]));
-z=1/3+I/2;
-vecdivadd(elljacobi(z+2*K,k),elljacobi(z,k),[1,1,-1])
-vecdivadd(elljacobi(z+2*I*Kp,k),elljacobi(z,k),[-1,-1,-1])
+z = 1/3+I/2; k = 2/7; [K,Kp] = [ellK(k),ellK(sqrt(1-k^2))]
+test(v,w,A)=vector(#v,i,exponent(v[i]/w[i] + A[i]));
+test(elljacobi(z+2*K,k), elljacobi(z,k), [1,1,-1])
+test(elljacobi(z+2*I*Kp,k), elljacobi(z,k), [-1,-1,-1])
 
-[S,C,D]=elljacobi(x+O(x^10),k)
-S^2+C^2
-k^2*S^2+D^2
-[S'-C*D,C'+S*D,D'+k^2*S*C]
+[S,C,D] = elljacobi(x+O(x^10),k)
+S^2 + C^2
+k^2*S^2 + D^2
+[S' - C*D, C' + S*D, D' + k^2*S*C]
