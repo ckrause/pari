@@ -2292,8 +2292,6 @@ theta11prime(GEN z, GEN tau, long prec)
 /**                     Jacobi sn, cn, dn                          **/
 /********************************************************************/
 
-/* Basic Jacobi elliptic functions */
-
 static GEN
 elljacobi_cx(GEN z, GEN k, long prec)
 {
