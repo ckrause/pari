@@ -3434,7 +3434,6 @@ long    ellrootno_global(GEN e);
 GEN     ellsaturation(GEN E, GEN P, long B, long prec);
 GEN     ellsea(GEN E, long smallfact);
 GEN     ellsigma(GEN om, GEN z, long flag, long prec);
-GEN     ellsigma_cx(GEN w, GEN z, long flag, long prec);
 GEN     ellsub(GEN e, GEN z1, GEN z2);
 GEN     ellsupersingularj(GEN a);
 GEN     elltamagawa(GEN e);
