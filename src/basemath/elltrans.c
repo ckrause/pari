@@ -2152,11 +2152,7 @@ thetaall_ii(GEN z, GEN tau, long flz, long prec)
     if (flz) { Z10 = gmul(Z10, zet); Z11 = gmul(Z11, zet); }
   }
   if (theta1p) S11 = gmul(gsqr(S), S11);
-  else if (mpodd(k))
-  {
-    S01 = gneg(S01); S11 = gneg(S11);
-    if (flz) { Z01 = gneg(Z01); Z11 = gneg(Z11); }
-  }
+  else if (mpodd(k)) { S01 = gneg(S01); S11 = gneg(S11); }
   if (flz) Z11 = gmul(gsqr(Skeep), Z11);
   if (precold < prec)
   {
