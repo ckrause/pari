@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 #include "paripriv.h"
 
 #define DEBUGLEVEL DEBUGLEVEL_ell
+static GEN thetaall(GEN z, GEN tau, GEN *pT0, long prec);
+static GEN thetanull_i(GEN tau, long prec);
+static GEN ellwp_cx(GEN tau, GEN z, long flag, long prec);
+static GEN ellzeta_cx(GEN tau, GEN z, long prec);
 
 /********************************************************************/
 /**                       Periods                                  **/
@@ -605,11 +609,6 @@ ellperiods(GEN w, long flag, long prec)
   return gc_GEN(av, W);
 }
 
-static GEN ellwp_cx(GEN tau, GEN z, long flag, long prec);
-static GEN ellzeta_cx(GEN tau, GEN z, long prec);
-static GEN ellsigma_theta(GEN tau, GEN z, long prec);
-static GEN thetanull_i(GEN tau, long prec);
-
 /* computes the numerical value of wp(z | L), L = om1 Z + om2 Z
  * return NULL if z in L.  If flall=1, compute also wp' */
 static GEN
@@ -836,8 +835,12 @@ ellsigma(GEN w, GEN z, long flag, long prec0)
     pari_err_DOMAIN("log(ellsigma)", "argument","=",gen_0,z);
   }
   prec = T.prec; ETA = _elleta(&T);
-  y = gmul(T.W2, ellsigma_theta(T.Tau, T.Z, prec));
-  /* = sigma([W1, W2], W2 Z) * exp(-eta2 W2 Z^2/2)
+  {
+    GEN t0, t = thetaall(T.Z, T.Tau, &t0, prec);
+    y = gmul(T. W2, gdiv(gel(t, 4), gel(t0, 4)));
+  }
+  /* y = W2 theta_1(q, Z) / theta_1'(q, 0)
+   *   = sigma([W1, W2], W2 Z) * exp(-eta2 W2 Z^2/2)
    * We have z/W2 = Z + x Tau + y, so
    * sigma([W1,W2], z) = (-1)^(x+y+xy) sigma([W1,W2], W2 Z) exp(W2 y1) where
    *   y1 = eta2 Z^2/2 + (x eta1 + y eta2)(Z + (x Tau + y)/2) */
@@ -2461,15 +2464,6 @@ ellzeta_cx(GEN tau, GEN z, long prec)
   R = gadd(gmul(z, e), gdiv(gel(TALL, 2), gel(TALL, 1)));
   R1 = mkvec2(gsub(gmul(tau, e), PiI2n(1,prec)), e);
   return mkvec2(R, R1);
-}
-
-/* tau,z reduced; return sigma([tau, 1], z) exp(-eta2 z^2/2)
- * = theta_1(q, z) / theta_1'(q, 0) */
-static GEN
-ellsigma_theta(GEN tau, GEN z, long prec)
-{
-  GEN T0, T = thetaall(z, tau, &T0, prec);
-  return gdiv(gel(T, 4), gel(T0, 4));
 }
 
 static GEN
