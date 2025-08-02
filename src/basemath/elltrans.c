@@ -1597,7 +1597,7 @@ GEN
 cxEk(GEN tau, long k, long prec)
 {
   pari_sp av = avma;
-  GEN P, T0, y, pi22, pi24, c4, c6, z2, z3, z4, E4 = NULL, E6 = NULL;
+  GEN P, T0, y, z2, z3, z4, E4 = NULL, E6 = NULL;
   long b;
   int fl;
 
@@ -1611,7 +1611,7 @@ cxEk(GEN tau, long k, long prec)
     y = vecthetanullk_loop(qq(tau,prec), 2, prec);
     return gdiv(gel(y,2), gel(y,1));
   }
-  T0 = thetanull_i(tau, prec);
+  T0 = thetanull_i(tau, k > 14? prec + EXTRAPREC64: prec);
   z3 = gpowgs(gel(T0, 1), 4);
   z4 = gpowgs(gel(T0, 2), 4);
   z2 = gpowgs(gel(T0, 3), 4);
@@ -1639,10 +1639,12 @@ cxEk(GEN tau, long k, long prec)
     }
     case 14: return gc_upto(av, gmul(gsqr(E4), E6));
   }
-  pi22 = sqrr(Pi2n(1, prec)); pi24 = sqrr(pi22);
-  c6 = gmul(E6, mulrr(pi24, pi22));
-  c4 = gmul(E4, pi24); P = ellwpseries_aux(c4, c6, 0, k + 2);
-  return gc_upto(av, gdiv(gel(P, k + 2), mulur(2*k-2, szeta(k, prec))));
+  P = ellwpseries_aux(E4, E6, 0, k + 2);
+  /* P[k+2] = Ek * (k-1) * 2 zeta(k) / (2pi)^k
+   * now use 2 zeta(k) / (2pi)^k = |B_k| / k! */
+  P = gdiv(gmul(gel(P, k + 2), muliu(mpfact(k-2), k)),
+                          absfrac_shallow(bernfrac(k)));
+  return gc_GEN(av, gprec_wtrunc(P, prec));
 }
 
 /********************************************************************/
