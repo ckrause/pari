@@ -1587,69 +1587,62 @@ qq(GEN x, long prec)
   return y;
 }
 
+/* is q = exp(2ipi tau) a real number ? */
 static int
 isqreal(GEN tau)
-{
-  GEN R = gmul2n(real_i(tau), 1);
-  return gequal0(gfrac(R));
-}
+{ return gequal0(gfrac(gmul2n(real_i(tau), 1))); }
 
-/* Return E_k(tau). */
+/* k even, tau reduced (im particular Im tau > 0). Return E_k(tau). */
 GEN
 cxEk(GEN tau, long k, long prec)
 {
   pari_sp av = avma;
-  GEN y;
-  GEN T0, z2, z3, z4, R4 = NULL, R6 = NULL, V;
+  GEN P, T0, y, pi22, pi24, c4, c6, z2, z3, z4, E4 = NULL, E6 = NULL;
+  long b;
   int fl;
-  long b, l = precision(tau), m;
 
   if (odd(k) || k <= 0) pari_err_DOMAIN("cxEk", "k", "<=", gen_0, stoi(k));
-  if (l) prec = l;
+  if ((b = precision(tau))) prec = b;
   b = prec2nbits(prec);
   if (gcmpgs(imag_i(tau), (M_LN2 / (2*M_PI)) * (b+1+10)) > 0)
     return real_1(prec);
   if (k == 2)
-  { /* -theta^(3)(tau/2) / theta^(1)(tau/2). Assume that Im tau > 0 */
+  { /* -theta^(3)(tau/2) / theta^(1)(tau/2) */
     y = vecthetanullk_loop(qq(tau,prec), 2, prec);
     return gdiv(gel(y,2), gel(y,1));
   }
-  T0 = thetanull_i(tau, prec); z3 = gpowgs(gel(T0, 1), 4);
-  z4 = gpowgs(gel(T0, 2), 4); z2 = gpowgs(gel(T0, 3), 4);
+  T0 = thetanull_i(tau, prec);
+  z3 = gpowgs(gel(T0, 1), 4);
+  z4 = gpowgs(gel(T0, 2), 4);
+  z2 = gpowgs(gel(T0, 3), 4);
   fl = isqreal(tau);
   if (k != 6)
   {
-    R4 = gmul2n(gadd(gadd(gsqr(z2), gsqr(z3)), gsqr(z4)), -1);
-    if (fl) R4 = real_i(R4);
+    E4 = gmul2n(gadd(gadd(gsqr(z2), gsqr(z3)), gsqr(z4)), -1);
+    if (fl) E4 = real_i(E4);
   }
   if (k != 4 && k != 8)
   {
-    R6 = gmul2n(gmul3(gadd(z3, z4), gadd(z2, z3), gsub(z4, z2)), -1);
-    if (fl) R6 = real_i(R6);
+    E6 = gmul2n(gmul3(gadd(z3, z4), gadd(z2, z3), gsub(z4, z2)), -1);
+    if (fl) E6 = real_i(E6);
   }
   switch (k)
   {
-    case 4: return gc_GEN(av, R4);
-    case 6: return gc_GEN(av, R6);
-    case 8: return gc_upto(av, gsqr(R4));
-    case 10: return gc_upto(av, gmul(R4, R6));
-    case 14: return gc_upto(av, gmul(gsqr(R4), R6));
-  }
-  V = cgetg(k/2 + 2, t_VEC);
-  gel(V, 2) = R4; gel(V, 3) = R6;
-  for (m = 4; m <= k/2; m++)
-  {
-    GEN S = gen_0;
-    long j;
-    for (j = 2; j <= m - 2; j++)
+    case 4: return gc_GEN(av, E4);
+    case 6: return gc_GEN(av, E6);
+    case 8: return gc_upto(av, gsqr(E4));
+    case 10: return gc_upto(av, gmul(E4, E6));
+    case 12:
     {
-      GEN tmp = gmul4(bernfrac(2*j), bernfrac(2*(m-j)), gel(V,j), gel(V, m-j));
-      tmp = gmul(gmulsg(3*(2*j-1)*(2*m-2*j-1), tmp), binomialuu(2*m, 2*j));
-      S = gadd(S, gdiv(tmp,gmulsg((m-3)*(4*m*m-1),bernfrac(2*m))));
+      GEN e = gadd(gmulsg(441, gpowgs(E4,3)), gmulsg(250, gsqr(E6)));
+      return gc_upto(av, gdivgs(e, 691));
     }
-    gel(V, m) = gneg(S);
+    case 14: return gc_upto(av, gmul(gsqr(E4), E6));
   }
-  return gc_GEN(av, gel(V, k/2));
+  pi22 = sqrr(Pi2n(1, prec)); pi24 = sqrr(pi22);
+  c6 = gmul(E6, mulrr(pi24, pi22));
+  c4 = gmul(E4, pi24); P = ellwpseries_aux(c4, c6, 0, k + 2);
+  return gc_upto(av, gdiv(gel(P, k + 2), mulur(2*k-2, szeta(k, prec))));
 }
 
 /********************************************************************/
