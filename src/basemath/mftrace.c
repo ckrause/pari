@@ -12642,7 +12642,7 @@ Wparams(GEN *ph, long *pN, long k, double x, long prec)
 {
   double B = prec2nbits(prec) + 10;
   double C = B + k*log(x)/M_LN2 + 1, D = C*M_LN2 + 2.065;
-  double F = 2 * ((C - 1) * M_LN2 + log(gtodouble(mpfact(k)))) / x;
+  double F = 2 * M_LN2 * (C - 1 + dbllog2(mpfact(k))) / x;
   double T = log(F) * (1 + 2*k/x/F), PI2 = M_PI*M_PI;
   *pN = (long)ceil((T/PI2) * (D + log(D/PI2)));
   *ph = gprec_w(dbltor(T / *pN), prec);
