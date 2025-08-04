@@ -507,7 +507,7 @@ LLL_cmbf(GEN P, GEN famod, GEN p, GEN pa, GEN bound, long a, long rec)
   if (equali1(lP)) lP = NULL;
   Br = root_bound(P);
   if (lP) Br = mulii(lP, Br);
-  logBr = gtodouble(glog(Br, DEFAULTPREC)) / logp;
+  logBr = dbllog2(Br) * LOGp2; /* log_p Br */
 
   n0 = lg(famod) - 1;
   C = (long)ceil( sqrt(N0 * n0 / 4.) ); /* > 1 */
@@ -651,7 +651,7 @@ AGAIN:
 static int
 cmbf_precs(GEN q, GEN A, GEN B, long *pta, long *ptb, GEN *qa, GEN *qb)
 {
-  long a,b,amin,d = (long)(31 * M_LN2/gtodouble(glog(q,DEFAULTPREC)) - 1e-5);
+  long a, b, amin, d = (long)(31 / dbllog2(q) - 1e-5);
   int fl = 0;
 
   b = logintall(B, q, qb) + 1;
