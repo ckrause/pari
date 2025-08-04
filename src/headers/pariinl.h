@@ -1426,7 +1426,7 @@ gisdouble(GEN x, double *g)
   if (typ(x)!=t_REAL) {
     pari_sp av = avma;
     x = gtofp(x, DEFAULTPREC);
-    if (typ(x)!=t_REAL) pari_err_TYPE("gisdouble [t_REAL expected]", x);
+    if (typ(x)!=t_REAL) return gc_double(av, 0);
     set_avma(av);
   }
   if (expo(x) >= 0x3ff) return 0;
