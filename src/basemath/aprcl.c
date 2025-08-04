@@ -456,8 +456,8 @@ compute_t_small(double C)
 /* return t such that e(t) > sqrt(N), set *faet = odd prime divisors of e(t) */
 static ulong
 compute_t(GEN N, GEN *e, GEN *faet)
-{ /* 2^e b <= N < 2^e (b+1), where b >= 2^52. Approximating log_2 N by
-   * log2(gtodouble(N)) ~ e+log2(b), the error is less than log(1+1/b) < 1e-15*/
+{ /* 2^e b <= N < 2^e (b+1), where b >= 2^52. Approximate log_2 N ~ e+log2(b),
+   * the error is less than log(1+1/b) < 1e-15 */
   double C = dbllog2(N) + 1e-10; /* > log_2 N at least for N < 2^(2^21) */
   ulong t;
   /* Return "smallest" t such that f(t) >= C, which implies e(t) > sqrt(N) */
