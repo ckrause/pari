@@ -11778,9 +11778,10 @@ faster and without cluttering the stack.
 \fun{ulong}{dblmantissa}{double x} returns the most significant word
 in the mantissa of \kbd{dbltor(x)}.
 
-\fun{int}{gisdouble}{GEN x} if \kbd{x} is a real number (not necessarily
-a~\typ{REAL}), return $1$ if \kbd{x} can be converted to a \kbd{double},
-$0$ otherwise.
+\fun{int}{gisdouble}{GEN x, double *dx} if \kbd{x} is a real number (not
+necessarily a~\typ{REAL}) and if \kbd{x} can be converted to a
+\kbd{double}, set \kbd{*dx} to the converted value and return $1$.
+Otherwise return $0$.
 
 \fun{double}{gtodouble}{GEN x} if \kbd{x} is a real number (not necessarily
 a~\typ{REAL}), converts \kbd{x} into a \kbd{double} if possible.
