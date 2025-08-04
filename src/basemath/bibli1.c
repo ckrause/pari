@@ -504,12 +504,12 @@ choose_params(GEN P, GEN N, GEN X, GEN B, long *pdelta, long *pt)
 {
   long d = degpol(P), dim;
   GEN P0 = leading_coeff(P);
-  double logN = gtodouble(glog(N, DEFAULTPREC)), x, b, rho;
-  x = gtodouble(glog(X, DEFAULTPREC)) / logN;
-  b = B? gtodouble(glog(B, DEFAULTPREC)) / logN: 1.;
+  double logN = dbllog2(N), x, b, rho;
+  x = dbllog2(X) / logN;
+  b = B? dbllog2(B) / logN: 1.;
   if (x * d >= b * b) pari_err_OVERFLOW("zncoppersmith [bound too large]");
   /* TODO : remove P0 completely */
-  rho = is_pm1(P0)? 0: gtodouble(glog(P0, DEFAULTPREC)) / logN;
+  rho = is_pm1(P0)? 0: dbllog2(P0) / logN;
 
   /* Enumerate (delta,t) by increasing lattice dimension */
   for(dim = d + 1;; dim++)
