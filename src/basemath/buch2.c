@@ -2421,21 +2421,22 @@ step(GEN x, double *y, GEN inc, long k)
   }
 }
 
+/* degree n >= 2 */
 static double
 Fincke_Pohst_bound(double T, GEN r)
 {
   pari_sp av = avma;
-  GEN zT = dbltor(T * T), p = gmael(r,1,1), B = real_1(DEFAULTPREC);
+  GEN zT = dbltor(T * T), p = gmael(r,1,1), B = NULL;
   long i, n = lg(r)-1;
-  double g;
+  double g = 0.;
   for (i = 2; i <= n; i++)
   {
     p = gmul(p, gmael(r,i,i));
     B = sqrtnr(gmul(zT,p), i);
     if (i == n || cmprr(B, gmael(r,i+1,i+1)) < 0) break;
   }
-  if (!gisdouble(B,&g)) return gc_double(av, 0.);
-  return gc_double(av, rtodbl(B));
+  if (!gisdouble(B,&g)) g = 0.;
+  return gc_double(av, g);
 }
 
 static void
