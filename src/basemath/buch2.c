@@ -3723,6 +3723,18 @@ _nfnewprec(GEN nf, long prec, long *isclone)
   *isclone = 1; return NF;
 }
 
+/* In small_norm, LLL reduction produces v0 in I such that
+*     T2(v0) <= (4/3)^((n-1)/2) (NI sqrt(disc(K)))^(2/n)
+* NI <= LIMCMAX^2. We consider v with T2(v) ~ T2(v0), hence
+*     Nv <= ((4/3)^((n-1)/2) / n)^(n/2) LIMCMAX^2 sqrt(disc(K)) */
+static long
+small_norm_prec(long N, double LOGD, long LIMCMAX)
+{
+  double a = N/2. * ((N-1)/2.*log(4./3) - log((double)N));
+  double b = 2*log((double)LIMCMAX) + LOGD/2;
+  return nbits2prec(BITS_IN_LONG + (a + b) / M_LN2);
+}
+
 /* Nrelid = nb relations per ideal, possibly 0. If flag is set, keep data in
  * algebraic form. */
 GEN
@@ -3774,7 +3786,12 @@ Buchall_param(GEN P, double cbach, double cbach2, long Nrelid, long flag, long p
   LIMCMAX = (long)(4.*LOGD2);
   if (nf) PREC = maxss(PREC, nf_get_prec(nf));
   PREC = maxss(PREC, nbits2prec((long)(LOGD2 * 0.02) + N*N));
+
+  if (nf) PREC = maxss(PREC, nf_get_prec(nf));
+  PREC = maxss(PREC, nbits2prec((long)(LOGD2 * 0.02) + N*N));
+  PREC = maxss(PREC, small_norm_prec(N, LOGD, LIMCMAX));
   if (DEBUGLEVEL) err_printf("PREC = %ld\n", PREC);
+
   if (!nf)
     nf = nfinit_complete(&nfT, flag_nfinit, PREC);
   else if (nf_get_prec(nf) < PREC)

@@ -131,4 +131,7 @@ apply(x->idealnorm(bnf,x),bnf.fu)
 
 localbitprec(64); setrand(1); bnfinit(x^4 - 330*x^2 + 5445).cyc
 
+\\ #2632
+localbitprec(64); setrand(1); bnfinit(x^3+x^2-1686565*x-151236552,1).cyc
+
 \\ ERRORS: keep at end of file
