@@ -24,7 +24,7 @@ Doc: $k$ being an even positive integer, computes the numerical value of the
  ? e = ellinit([1, 2]);
  ? E4 = elleisnum(e, 4)
  %5 = -48.000000000000000000000000000000000000 - 6.11... E-56*I
- ? E6 = elleisnum(e, 4)
+ ? E6 = elleisnum(e, 6)
  %5 = 1728.000000000000000000000000000000000000 - 1.30... E-54*I
  @eprog
 
