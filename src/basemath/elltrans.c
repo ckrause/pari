@@ -662,12 +662,33 @@ _elleta(ellred_t *T)
   return mkvec2(y1, y2); /* y2 Tau - y1 = 2i pi/W2 => y2 W1 - y1 W2 = 2i pi */
 }
 
+static GEN
+elleta_i(ellred_t *T)
+{
+  GEN y1, y2, E2, pi = mppi(T->prec);
+
+  E2 = cxEk(T->Tau, 2, T->prec); /* E_2(Tau) */
+  if (signe(T->c))
+  {
+    GEN u = gdiv(T->w2, T->W2); /* E2(tau) = u^2 E2(Tau) + 6iuc/pi */
+    E2 = gadd(gmul(gsqr(u), E2), mulcxI(gdiv(gmul(mului(6,T->c), u), pi)));
+  }
+  y2 = gdiv(gmul(E2, sqrr(pi)), gmulsg(3, T->w2)); /* E2(tau) pi^2 / (3 w2) */
+  if (T->swap)
+  {
+    y1 = y2;
+    y2 = gadd(gmul(T->tau,y1), PiI2div(T->w2, T->prec));
+  }
+  else
+    y1 = gsub(gmul(T->tau,y2), PiI2div(T->w2, T->prec));
+  if (is_real_t(typ(T->w1))) y1 = real_i(y1);
+  return mkvec2(y1, y2);
+}
 /* compute eta1, eta2 */
 GEN
 elleta(GEN om, long prec)
 {
   pari_sp av = avma;
-  GEN y1, y2, E2, pi;
   ellred_t T;
 
   if (!check_periods(om, &T))
@@ -676,30 +697,8 @@ elleta(GEN om, long prec)
     return NULL;/*LCOV_EXCL_LINE*/
   }
   if (T.type == t_PER_ELL) return ellR_eta(om, prec);
-
   compute_periods(&T, NULL, prec);
-  prec = T.prec;
-  pi = mppi(prec);
-  E2 = cxEk(T.Tau, 2, prec); /* E_2(Tau) */
-  if (signe(T.c))
-  {
-    GEN u = gdiv(T.w2, T.W2); /* E2(tau) = u^2 E2(Tau) + 6iuc/pi */
-    E2 = gadd(gmul(gsqr(u), E2), mulcxI(gdiv(gmul(mului(6,T.c), u), pi)));
-  }
-  y2 = gdiv(gmul(E2, sqrr(pi)), gmulsg(3, T.w2)); /* E2(tau) pi^2 / (3 w2) */
-  if (T.swap)
-  {
-    y1 = y2;
-    y2 = gadd(gmul(T.tau,y1), PiI2div(T.w2, prec));
-  }
-  else
-    y1 = gsub(gmul(T.tau,y2), PiI2div(T.w2, prec));
-  switch(typ(T.w1))
-  {
-    case t_INT: case t_FRAC: case t_REAL:
-      y1 = real_i(y1);
-  }
-  return gc_GEN(av, mkvec2(y1,y2));
+  return gc_GEN(av, elleta_i(&T));
 }
 GEN
 ellperiods(GEN w, long flag, long prec)
@@ -1406,11 +1405,10 @@ static GEN
 ellzeta_cx(GEN tau, GEN z, long prec)
 {
   long prec2 = prec + EXTRAPREC64;
-  GEN e, R, R1, TALL = theta11prime(z, tau, prec);
+  GEN e, R, TALL = theta11prime(z, tau, prec);
   e = gmul(divru(sqrr(mppi(prec2)), 3), cxEk(tau, 2, prec2));
   R = gadd(gmul(z, e), gdiv(gel(TALL, 2), gel(TALL, 1)));
-  R1 = mkvec2(gsub(gmul(tau, e), PiI2n(1,prec)), e);
-  return mkvec2(R, R1);
+  return mkvec2(R, mkvec2(gsub(gmul(tau, e), PiI2n(1, prec)), e));
 }
 
 GEN
@@ -1592,7 +1590,7 @@ static int
 isqreal(GEN tau)
 { return gequal0(gfrac(gmul2n(real_i(tau), 1))); }
 
-/* k even, tau reduced (im particular Im tau > 0). Return E_k(tau). */
+/* k > 0 even, tau reduced (im particular Im tau > 0). Return E_k(tau). */
 GEN
 cxEk(GEN tau, long k, long prec)
 {
@@ -1601,7 +1599,6 @@ cxEk(GEN tau, long k, long prec)
   long b;
   int fl;
 
-  if (odd(k) || k <= 0) pari_err_DOMAIN("cxEk", "k", "<=", gen_0, stoi(k));
   if ((b = precision(tau))) prec = b;
   b = prec2nbits(prec);
   if (gcmpgs(imag_i(tau), (M_LN2 / (2*M_PI)) * (b+1+10)) > 0)
@@ -1651,38 +1648,6 @@ cxEk(GEN tau, long k, long prec)
 /**           Weierstrass elliptic data in terms of thetas         **/
 /********************************************************************/
 
-/* E2(tau) */
-static GEN
-mfE2eval(GEN tau, long prec)
-{
-  GEN M, R = cxEk(cxredsl2(tau, &M), 2, prec);
-  GEN c = gcoeff(M,2,1);
-  if (signe(c))
-  {
-    GEN d = gcoeff(M,2,2), J = gadd(gmul(c, tau), d);
-    R = gadd(R, gdiv(mulcxI(gmul(mului(6,c), J)), mppi(prec)));
-    R = gdiv(R, gsqr(J));
-  }
-  return R;
-}
-
-static GEN
-checkom(GEN w, GEN *pom)
-{
-  GEN om1, om2, tau, y;
-  if (typ(w) != t_VEC || lg(w) != 3) pari_err_TYPE("ellweierstrass", w);
-  om1 = gel(w, 1); om2 = gel(w, 2);
-  if (gequal0(om2)) pari_err_DOMAIN("ellweierstrass","w2","=",gen_0,om2);
-  tau = gdiv(om1, om2); y = imag_i(tau);
-  if (gequal0(y)) pari_err_DOMAIN("ellweierstrass","imag(tau)","=",gen_0,w);
-  if (gsigne(y) > 0) *pom = gel(w,2); else { tau = ginv(tau); *pom = gel(w,1); }
-  return tau;
-}
-
-static GEN
-weta1eta2(GEN tau, GEN e, long prec)
-{ return mkvec2(gsub(gmul(tau, e), PiI2n(1, prec)), e); }
-
 static GEN
 wg2g3(GEN T0, GEN a, GEN *pe)
 {
@@ -1696,20 +1661,19 @@ wg2g3(GEN T0, GEN a, GEN *pe)
   *pe = mkvec3(e1, e2, e3); return mkvec2(g2, g3);
 }
 
-static void
-swap2(GEN v) { swap(gel(v,1), gel(v,2)); }
-
 GEN
 ellweierstrass(GEN w, long prec)
 {
   pari_sp av = avma;
   long prec2 = prec + EXTRAPREC64;
-  GEN om, tau = checkom(w, &om), omi = ginv(om);
-  GEN T0 = thetanull_i(tau, prec), a = divru(sqrr(mppi(prec2)), 3);
-  GEN et = weta1eta2(tau, gmul(a, mfE2eval(tau, prec2)), prec);
-  GEN e, g = wg2g3(T0, gmul(a, gsqr(omi)), &e);
-  et = gmul(et, omi); swap2(om == gel(w,1)? et: e);
-  return gc_GEN(av, mkvec4(w, g, e, et));
+  GEN a, e, T0, g;
+  ellred_t T;
+
+  if (!get_periods(w, NULL, &T, prec)) pari_err_TYPE("ellweierstrass",w);
+  T0 = thetanull_i(T.Tau, prec);
+  a = divru(sqrr(mppi(prec2)), 3);
+  g = wg2g3(T0, gdiv(a, gsqr(T.swap? T.W1: T.W2)), &e);
+  return gc_GEN(av, mkvec4(w, g, e, elleta_i(&T)));
 }
 
 /********************************************************************/
