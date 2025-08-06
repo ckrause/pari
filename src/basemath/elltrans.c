@@ -1683,7 +1683,7 @@ cxEk(GEN tau, long k, long prec)
   /* P[k+2] = Ek * (k-1) * 2 zeta(k) / (2pi)^k
    * now use 2 zeta(k) / (2pi)^k = |B_k| / k! */
   P = gdiv(gmul(gel(P, k + 2), muliu(mpfact(k-2), k)),
-                          absfrac_shallow(bernfrac(k)));
+           absfrac_shallow(bernfrac(k)));
   return gc_GEN(av, gprec_wtrunc(P, prec));
 }
 
