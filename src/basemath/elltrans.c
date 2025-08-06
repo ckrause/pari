@@ -26,6 +26,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 /* add3, add4, mul3, mul4 and these 2 should be exported as convenience
  * functions (cf dirichlet.c, lfunlarge.c, hypergeom.c) */
 static GEN
+gadd3(GEN a, GEN b, GEN c) { return gadd(gadd(a, b), c); }
+static GEN
 gmul3(GEN a, GEN b, GEN c) { return gmul(gmul(a, b), c); }
 static GEN
 gmul4(GEN a, GEN b, GEN c, GEN d) { return gmul(gmul(a, b), gmul(c,d)); }
@@ -636,18 +638,15 @@ GEN
 elleisnum(GEN om, long k, long prec)
 {
   pari_sp av = avma;
-  GEN y;
+  GEN y, iW;
   ellred_t T;
 
   if (k<=0) pari_err_DOMAIN("elleisnum", "k", "<=", gen_0, stoi(k));
   if (k&1) pari_err_DOMAIN("elleisnum", "k % 2", "!=", gen_0, stoi(k));
   if (!get_periods(om, NULL, &T, prec)) pari_err_TYPE("elleisnum",om);
-  y = _elleisnum(&T, PiI2div(T.W2, T.prec), k);
+  iW = PiI2div(T.W2, T.prec); y = _elleisnum(&T, iW, k);
   if (k==2 && signe(T.c))
-  {
-    GEN a = mulri(Pi2n(1,T.prec), mului(12, T.c));
-    y = gsub(y, mulcxI(gdiv(a, gmul(T.w2, T.W2))));
-  }
+    y = gsub(y, gmul(mului(12, T.c), gdiv(iW, T.w2)));
   return gc_GEN(av, gprec_wtrunc(y, T.prec0));
 }
 
@@ -1237,6 +1236,70 @@ theta11prime(GEN z, GEN tau, long prec)
   return gc_upto(av, gmul(S, gmul(ginv(mat) , S11all)));
 }
 
+static void
+cxE4E6_init(GEN tau, GEN w2, GEN *pz2, GEN *pz3, GEN *pz4, long prec)
+{
+  GEN z2, z3, z4, T0 = thetanull_i(tau, prec);
+  z3 = gpowgs(gel(T0, 1), 4);
+  z4 = gpowgs(gel(T0, 2), 4);
+  z2 = gpowgs(gel(T0, 3), 4);
+  if (w2)
+  {
+    GEN a = gdiv(divru(sqrr(mppi(prec + EXTRAPREC64)), 3), gsqr(w2));
+    z2 = gmul(a, z2);
+    z3 = gmul(a, z3);
+    z4 = gmul(a, z4);
+  }
+  *pz2 = z2;
+  *pz3 = z3;
+  *pz4 = z4;
+}
+
+/* is q = exp(2ipi tau) a real number ? */
+static int
+isqreal(GEN tau)
+{ return gequal0(gfrac(gmul2n(real_i(tau), 1))); }
+static void
+cxE4E6(GEN tau, GEN *pE4, GEN *pE6, long prec)
+{
+  GEN z2, z3, z4;
+  int fl = isqreal(tau);
+  cxE4E6_init(tau, NULL, &z2,&z3,&z4, prec);
+  if (pE4)
+  {
+    GEN e = gadd3(gsqr(z2), gsqr(z3), gsqr(z4));
+    *pE4 = gmul2n(fl? real_i(e): e, -1);
+  }
+  if (pE6)
+  {
+    GEN e = gmul3(gadd(z3, z4), gadd(z2, z3), gsub(z4, z2));
+    *pE6 = gmul2n(fl? real_i(e): e, -1);
+  }
+}
+/* variation on cxEk, tau = w1/w2 reduced, return [g2,g3] and set [e1,e2,e3] */
+static GEN
+cxg2g3(GEN tau, GEN w2, GEN *pe, long prec)
+{
+  GEN z2, z3, z4, g2, g3, e1, e2, e3;
+  cxE4E6_init(tau, w2, &z2,&z3,&z4, prec);
+  e1 = gadd(z3, z4); e2 = gneg(gadd(z2, z3)); e3 = gsub(z2, z4);
+  g2 = gmulgs(gadd3(gsqr(z2), gsqr(z3), gsqr(z4)), 6);
+  g3 = gmul2n(gmul3(e1, e2, e3), 2);
+  *pe = mkvec3(e1, e2, e3); return mkvec2(g2, g3);
+}
+
+/* Weierstrass elliptic data in terms of thetas */
+GEN
+ellweierstrass(GEN w, long prec)
+{
+  pari_sp av = avma;
+  GEN e, g;
+  ellred_t T;
+  if (!get_periods(w, NULL, &T, prec)) pari_err_TYPE("ellweierstrass",w);
+  g = cxg2g3(T.Tau, T.swap? T.W1: T.W2, &e, prec);
+  return gc_GEN(av, mkvec4(w, g, e, elleta_w(&T)));
+}
+
 /* tau,z reduced */
 static GEN
 ellwp_cx(GEN tau, GEN z, long flag, long prec)
@@ -1336,17 +1399,16 @@ get_c4c6(GEN w, GEN *c4, GEN *c6, long prec)
   {
     case 17:
       *c4 = ell_get_c4(w);
-      *c6 = ell_get_c6(w);
-      return 1;
+      *c6 = ell_get_c6(w); return 1;
     case 3:
     {
+      GEN E4, E6, a2, a;
       ellred_t T;
-      GEN iW;
       if (!get_periods(w,NULL,&T, prec)) break;
-      iW = PiI2div(T.W2, T.prec);
-      *c4 = _elleisnum(&T, iW, 4);
-      *c6 = gneg(_elleisnum(&T, iW, 6));
-      return 1;
+      a = gdiv(divru(sqrr(mppi(T.prec + EXTRAPREC64)), 3), gsqr(T.W2));
+      cxE4E6(T.Tau, &E4, &E6, prec); a2 = gsqr(a);
+      *c4 = gmul(gmulgs(E4, 144), a2);
+      *c6 = gmul(gmulgs(E6, 1728), gmul(a2,a)); return 1;
     }
   }
   *c4 = *c6 = NULL;
@@ -1586,53 +1648,33 @@ qq(GEN x, long prec)
   return y;
 }
 
-/* is q = exp(2ipi tau) a real number ? */
-static int
-isqreal(GEN tau)
-{ return gequal0(gfrac(gmul2n(real_i(tau), 1))); }
-
 /* k > 0 even, tau reduced (im particular Im tau > 0). Return E_k(tau). */
 GEN
 cxEk(GEN tau, long k, long prec)
 {
   pari_sp av = avma;
-  GEN P, T0, y, z2, z3, z4, E4 = NULL, E6 = NULL;
+  GEN P, y, E4 = NULL, E6 = NULL;
   long b;
-  int fl;
 
   if ((b = precision(tau))) prec = b;
-  b = prec2nbits(prec);
-  if (gcmpgs(imag_i(tau), (M_LN2 / (2*M_PI)) * (b+1+10)) > 0)
+  if (gcmpgs(imag_i(tau), (M_LN2 / (2*M_PI)) * (prec2nbits(prec)+1+10)) > 0)
     return real_1(prec);
   if (k == 2)
   { /* -theta^(3)(tau/2) / theta^(1)(tau/2) */
     y = vecthetanullk_loop(qq(tau,prec), 2, prec);
     return gdiv(gel(y,2), gel(y,1));
   }
-  T0 = thetanull_i(tau, k > 14? prec + EXTRAPREC64: prec);
-  z3 = gpowgs(gel(T0, 1), 4);
-  z4 = gpowgs(gel(T0, 2), 4);
-  z2 = gpowgs(gel(T0, 3), 4);
-  fl = isqreal(tau);
-  if (k != 6)
-  {
-    E4 = gmul2n(gadd(gadd(gsqr(z2), gsqr(z3)), gsqr(z4)), -1);
-    if (fl) E4 = real_i(E4);
-  }
-  if (k != 4 && k != 8)
-  {
-    E6 = gmul2n(gmul3(gadd(z3, z4), gadd(z2, z3), gsub(z4, z2)), -1);
-    if (fl) E6 = real_i(E6);
-  }
+  if (k > 8) cxE4E6(tau, &E4, &E6, k < 16? prec: prec + EXTRAPREC64);
   switch (k)
   {
-    case 4: return gc_GEN(av, E4);
-    case 6: return gc_GEN(av, E6);
-    case 8: return gc_upto(av, gsqr(E4));
+    case 4:  cxE4E6(tau, &E4, NULL, prec); return gc_GEN(av, E4);
+    case 6:  cxE4E6(tau, NULL, &E6, prec); return gc_GEN(av, E6);
+    case 8:  cxE4E6(tau, &E4, NULL, prec); return gc_upto(av, gsqr(E4));
     case 10: return gc_upto(av, gmul(E4, E6));
     case 12:
     {
-      GEN e = gadd(gmulsg(441, gpowgs(E4,3)), gmulsg(250, gsqr(E6)));
+      GEN e;
+      e = gadd(gmulsg(441, gpowgs(E4,3)), gmulsg(250, gsqr(E6)));
       return gc_upto(av, gdivgs(e, 691));
     }
     case 14: return gc_upto(av, gmul(gsqr(E4), E6));
@@ -1643,38 +1685,6 @@ cxEk(GEN tau, long k, long prec)
   P = gdiv(gmul(gel(P, k + 2), muliu(mpfact(k-2), k)),
                           absfrac_shallow(bernfrac(k)));
   return gc_GEN(av, gprec_wtrunc(P, prec));
-}
-
-/********************************************************************/
-/**           Weierstrass elliptic data in terms of thetas         **/
-/********************************************************************/
-
-static GEN
-wg2g3(GEN T0, GEN a, GEN *pe)
-{
-  GEN z2 = gel(T0,3), z3 = gel(T0,1), z4 = gel(T0,2), g2, g3, e1, e2, e3;
-  z2 = gmul(a, gpowgs(z2, 4));
-  z3 = gmul(a, gpowgs(z3, 4));
-  z4 = gmul(a, gpowgs(z4, 4));
-  e1 = gadd(z3, z4); e2 = gneg(gadd(z2, z3)); e3 = gsub(z2, z4);
-  g2 = gmulgs(gadd(gadd(gsqr(z2), gsqr(z3)), gsqr(z4)), 6);
-  g3 = gmul2n(gmul3(e1, e2, e3), 2);
-  *pe = mkvec3(e1, e2, e3); return mkvec2(g2, g3);
-}
-
-GEN
-ellweierstrass(GEN w, long prec)
-{
-  pari_sp av = avma;
-  long prec2 = prec + EXTRAPREC64;
-  GEN a, e, T0, g;
-  ellred_t T;
-
-  if (!get_periods(w, NULL, &T, prec)) pari_err_TYPE("ellweierstrass",w);
-  T0 = thetanull_i(T.Tau, prec);
-  a = divru(sqrr(mppi(prec2)), 3);
-  g = wg2g3(T0, gdiv(a, gsqr(T.swap? T.W1: T.W2)), &e);
-  return gc_GEN(av, mkvec4(w, g, e, elleta_w(&T)));
 }
 
 /********************************************************************/
