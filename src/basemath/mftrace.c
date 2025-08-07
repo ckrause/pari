@@ -12446,7 +12446,7 @@ mfmanin(GEN FS, long bitprec)
     p = normal(RgXV_embed(vpp, E), polabs, roabs, rnfeq, &wp, prec);
     m = normal(RgXV_embed(vmm, E), polabs, roabs, rnfeq, &wm, prec);
     petdiag = typ(pet)==t_MAT? gcoeff(pet,i,i): pet;
-    r = gdiv(imag_i(gmul(wp, conj_i(wm))), petdiag);
+    r = gdiv(mulimag(wp, conj_i(wm)), petdiag);
     r = bestapprnfrel(r, polabs, roabs, rnfeq, prec);
     gel(M,i) = mkvec2(mkvec2(p,m), mkvec3(wp,wm,r));
   }

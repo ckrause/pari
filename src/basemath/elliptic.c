@@ -5835,9 +5835,9 @@ ellheight_C(GEN E, GEN P, long prec)
   GEN per = ellperiods(E, 1, prec);
   GEN w = gel(per,1), w1 = gel(w,1), cw2 = conj_i(gel(w,2));
   GEN e = gel(per,2), e1 = gel(e,1), e2 = gel(e, 2);
-  GEN d = imag_i(gmul(w1, cw2));
-  GEN b = gdiv(imag_i(gmul(w1, conj_i(z))), d);
-  GEN a = gdiv(imag_i(gmul(cw2, z)), d); /* write z = a w1 + b w2, a,b real */
+  GEN d = mulimag(w1, cw2);
+  GEN b = gdiv(mulimag(w1, conj_i(z)), d);
+  GEN a = gdiv(mulimag(cw2, z), d); /* write z = a w1 + b w2, a,b real */
   GEN eta = gadd(gmul(a, e1), gmul(b, e2)); /* eta(z) */
   GEN r = gmul2n(mulreal(z, eta), -1);
   GEN l = real_i(ellsigma(per, z, 1, prec));

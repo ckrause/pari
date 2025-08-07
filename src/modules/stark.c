@@ -3094,11 +3094,11 @@ ellphistinit(GEN om, long prec)
 {
   GEN res,om1b,om2b, om1 = gel(om,1), om2 = gel(om,2);
 
-  if (gsigne(imag_i(gdiv(om1,om2))) < 0) { swap(om1,om2); om = mkvec2(om1,om2); }
+  if (gsigne(mulimag(om1,conj_i(om2))) < 0) { swap(om1,om2); om = mkvec2(om1,om2); }
   om1b = conj_i(om1);
   om2b = conj_i(om2); res = cgetg(4,t_VEC);
   gel(res,1) = gdivgu(elleisnum(om,2,prec),12);
-  gel(res,2) = gdiv(PiI2(prec), gmul(om2, imag_i(gmul(om1b,om2))));
+  gel(res,2) = gdiv(PiI2(prec), gmul(om2, mulimag(om1b,om2)));
   gel(res,3) = om2b; return res;
 }
 
@@ -3106,7 +3106,7 @@ ellphistinit(GEN om, long prec)
 static GEN
 ellphist(GEN om, GEN res, GEN z, long prec)
 {
-  GEN u = imag_i(gmul(z, gel(res,3)));
+  GEN u = mulimag(z, gel(res,3));
   GEN zst = gsub(gmul(u, gel(res,2)), gmul(z,gel(res,1)));
   return gsub(ellsigma(om,z,1,prec),gmul2n(gmul(z,zst),-1));
 }

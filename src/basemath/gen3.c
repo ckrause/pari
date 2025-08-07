@@ -3994,6 +3994,26 @@ gimag(GEN x)
   return op_ReIm(gimag,x);
 }
 
+/* return Im(x * y), x and y scalars */
+GEN
+mulimag(GEN x, GEN y)
+{
+  if (typ(x) == t_COMPLEX)
+  {
+    if (typ(y) == t_COMPLEX)
+    {
+      pari_sp av = avma;
+      GEN a = gmul(gel(x,1), gel(y,2));
+      GEN b = gmul(gel(x,2), gel(y,1));
+      return gc_upto(av, gadd(a, b));
+    }
+    x = gel(x,2);
+  }
+  else if (typ(y) == t_COMPLEX) y = gel(y,2);
+  else return gen_0;
+  return gmul(x,y);
+}
+
 /* return Re(x * y), x and y scalars */
 GEN
 mulreal(GEN x, GEN y)
