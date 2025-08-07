@@ -1318,19 +1318,18 @@ ellweierstrass(GEN w, long prec)
 
 /* tau,z reduced */
 static GEN
-ellwp_cx(GEN tau, GEN z, long flag, long prec)
+ellwp_cx(GEN tau, GEN z, GEN *pyp, long prec)
 {
-  long prec2 = prec + EXTRAPREC64;
   GEN a, P, T0, T = thetaall(z, tau, &T0, prec);
   GEN z1 = gel(T0, 1), z3 = gel(T0, 3), t2 = gel(T, 2), t4 = gel(T, 4);
-  a = divru(sqrr(mppi(prec2)), 3);
+  a = divru(sqrr(mppi(prec)), 3);
   P = gmul(a, gsub(gmulgs(gsqr(gdiv(gmul3(z1, z3, t2), t4)), 3),
                    gadd(gpowgs(z1, 4), gpowgs(z3, 4))));
-  if (flag)
+  if (pyp)
   {
     GEN t1 = gel(T, 1), t3 = gel(T, 3);
     GEN c = gmul(Pi2n(1, prec), gsqr(gel(T0, 4)));
-    P = mkvec2(P, gdiv(gmul4(c, t1, t2, t3), gpowgs(t4, 3)));
+    *pyp = gdiv(gmul4(c, t1, t2, t3), gpowgs(t4, 3));
   }
   return P;
 }
@@ -1341,7 +1340,7 @@ static GEN
 ellwpnum_all(GEN e, GEN z, long flall, long prec)
 {
   pari_sp av = avma;
-  GEN y, yp, u1, y2;
+  GEN yp = NULL, y, u1;
   ellred_t T;
 
   if (!get_periods(e, z, &T, prec)) pari_err_TYPE("ellwp",e);
@@ -1349,9 +1348,7 @@ ellwpnum_all(GEN e, GEN z, long flall, long prec)
   prec = T.prec;
 
   /* Now L,Z normalized to <1,tau>. Z in fund. domain of <1, tau> */
-  y2 = ellwp_cx(T.Tau, T.Z, flall, prec);
-  if (flall) { y = gel(y2, 1); yp = gel(y2, 2); }
-  else { y = y2; yp = NULL; }
+  y = ellwp_cx(T.Tau, T.Z, flall? &yp: NULL, prec);
   u1 = gsqr(T.W2); y = gdiv(y, u1);
   if (yp) yp = gdiv(yp, gmul(u1, T.W2));
   if (T.some_q_is_real && (T.some_z_is_real || T.some_z_is_pure_imag))
